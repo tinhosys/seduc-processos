@@ -1,0 +1,18 @@
+# Logs e temporários
+*.log
+*.tmp
+
+# Dados locais (não versionar planilhas com dados sensíveis)
+*.xlsx
+*.xls
+*.csv
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
