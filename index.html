@@ -1,438 +1,526 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SEDUC — Sistema de Acompanhamento de Convênios e Contratos</title>
-  <meta name="description" content="Sistema de acompanhamento de convênios e contratos da Secretaria de Educação de Rondônia.">
+  <title>SAP/SEDUC — Sistema de Acompanhamento de Processos</title>
+  <meta name="description" content="Sistema de acompanhamento de processos da Secretaria de Educação de Rondônia.">
 
   <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=13">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- jsPDF & AutoTable -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
+
 <body>
 
-<div class="app-layout">
+  <div class="app-layout">
 
-  <!-- ===================== SIDEBAR ===================== -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-badge">
-        <div class="logo-icon">🎓</div>
-        <h1>SEDUC</h1>
-      </div>
-      <p>Convênios & Contratos — RO</p>
-    </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-section-label">Menu Principal</div>
-
-      <button class="nav-item active" data-page="dashboard">
-        <span class="nav-icon">📊</span>
-        Dashboard
-      </button>
-
-      <button class="nav-item" data-page="processos">
-        <span class="nav-icon">📋</span>
-        Processos
-      </button>
-
-      <button class="nav-item" data-page="novo">
-        <span class="nav-icon">➕</span>
-        Novo Processo
-      </button>
-
-      <div class="nav-section-label">Ferramentas</div>
-
-      <button class="nav-item" data-page="importar">
-        <span class="nav-icon">📥</span>
-        Importar Planilha
-      </button>
-    </nav>
-
-    <div class="sidebar-footer">
-      SEDUC-RO · v1.0<br>
-      <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
-    </div>
-  </aside>
-
-  <!-- ===================== CONTEÚDO ===================== -->
-  <main class="main-content">
-
-    <!-- TOPBAR -->
-    <header class="topbar">
-      <div>
-        <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-subtitle">Secretaria de Estado de Educação de Rondônia</div>
-      </div>
-      <div class="topbar-actions">
-        <button class="btn btn-ghost btn-sm" onclick="navegar('importar')">📥 Importar</button>
-        <button class="btn btn-primary btn-sm" onclick="novoProcesso()">➕ Novo Processo</button>
-      </div>
-    </header>
-
-    <!-- ============= PAGE: DASHBOARD ============= -->
-    <section class="page active" id="page-dashboard">
-
-      <div class="stats-grid">
-        <div class="stat-card blue">
-          <div class="stat-icon">📋</div>
-          <div class="stat-label">Total de Processos</div>
-          <div class="stat-value" id="stat-total">0</div>
-        </div>
-        <div class="stat-card purple">
-          <div class="stat-icon">💰</div>
-          <div class="stat-label">Valor Total Oficial</div>
-          <div class="stat-value" id="stat-valor" style="font-size:18px">R$ 0</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-icon">✅</div>
-          <div class="stat-label">Autorizados</div>
-          <div class="stat-value" id="stat-autorizado">0</div>
-        </div>
-        <div class="stat-card blue">
-          <div class="stat-icon">💳</div>
-          <div class="stat-label">Pagos</div>
-          <div class="stat-value" id="stat-pago">0</div>
-        </div>
-        <div class="stat-card yellow">
-          <div class="stat-icon">⏳</div>
-          <div class="stat-label">Pendentes/Aguardando</div>
-          <div class="stat-value" id="stat-pendente">0</div>
-        </div>
-        <div class="stat-card red">
-          <div class="stat-icon">🔴</div>
-          <div class="stat-label">Prioridade</div>
-          <div class="stat-value" id="stat-prioridade">0</div>
-        </div>
+    <!-- ===================== SIDEBAR ===================== -->
+    <aside class="sidebar">
+      <div class="sidebar-logo"
+        style="display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;">
+        <a href="https://rondonia.ro.gov.br/seduc/" target="_blank"
+          style="background: white; padding: 12px 10px; border-radius: 8px; width: 100%; box-sizing: border-box; display: flex; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2); text-decoration: none; cursor: pointer;">
+          <img src="img/logo-seduc.png" alt="SEDUC RO" style="max-width: 100%; height: auto;">
+        </a>
+        <p style="font-size:10px; line-height:1.3; margin: 0; color: var(--text-muted);">CAM - COORDENADORIA DE
+          ARTICULAÇÃO COM OS MUNICÍPIOS</p>
       </div>
 
-      <div class="charts-grid">
-        <div class="chart-card">
-          <h4>📈 Distribuição por Status</h4>
-          <canvas id="chart-status" height="260"></canvas>
-        </div>
-        <div class="chart-card">
-          <h4>🏙️ Top Municípios por Valor</h4>
-          <canvas id="chart-municipio" height="260"></canvas>
-        </div>
-      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Menu Principal</div>
 
-      <div style="display:grid;grid-template-columns:1fr 320px;gap:16px">
+        <button class="nav-item active" data-page="dashboard">
+          <span class="nav-icon">📊</span>
+          Dashboard
+        </button>
+
+        <button class="nav-item" data-page="processos">
+          <span class="nav-icon">📋</span>
+          Processos
+        </button>
+
+        <button class="nav-item" data-page="novo">
+          <span class="nav-icon">➕</span>
+          Novo Processo
+        </button>
+
+        <div class="nav-section-label">Ferramentas</div>
+
+        <button class="nav-item" data-page="importar">
+          <span class="nav-icon">📥</span>
+          Importar Planilha
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        SEDUC-RO · v1.0<br>
+        <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
+      </div>
+    </aside>
+
+    <!-- ===================== CONTEÚDO ===================== -->
+    <main class="main-content">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div>
+          <div id="topbar-title" style="display: none;"></div>
+        </div>
+        <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;">
+
+          <button class="btn btn-ghost btn-sm action-editor" onclick="navegar('importar')">📥 Importar</button>
+          <button class="btn btn-primary btn-sm action-editor" onclick="novoProcesso()">➕ Novo Processo</button>
+          <div class="user-profile"
+            style="display:flex;align-items:center;gap:8px;margin-left:16px;padding-left:16px;border-left:1px solid var(--border)">
+            <div style="text-align:right">
+              <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-primary)">Admin</div>
+              <div id="user-role" style="font-size:11px;color:var(--text-muted)">Administrador</div>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="fazerLogout()" title="Sair">Sair</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- ============= PAGE: DASHBOARD ============= -->
+      <section class="page active" id="page-dashboard">
+
+        <div class="stats-grid" style="grid-template-columns: repeat(6, 1fr);">
+          <div class="stat-card blue">
+            <div class="stat-icon">📋</div>
+            <div class="stat-label">Total de Processos</div>
+            <div class="stat-value" id="stat-total">0</div>
+          </div>
+          <div class="stat-card yellow">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-label">Pendentes/Aguardando</div>
+            <div class="stat-value" id="stat-pendente">0</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">✅</div>
+            <div class="stat-label">Autorizados</div>
+            <div class="stat-value" id="stat-autorizado">0</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-icon">🔴</div>
+            <div class="stat-label">Prioridade</div>
+            <div class="stat-value" id="stat-prioridade">0</div>
+          </div>
+          <div class="stat-card blue">
+            <div class="stat-icon">💳</div>
+            <div class="stat-label">Pagos</div>
+            <div class="stat-value" id="stat-pago">0</div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Valor Total Oficial</div>
+            <div class="stat-value" id="stat-valor" style="font-size:18px">R$ 0</div>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-card" style="display: flex; flex-direction: column; height: 630px;">
+            <h4>📈 Distribuição por Status</h4>
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+              <canvas id="chart-status" height="520"></canvas>
+            </div>
+          </div>
+          <div class="chart-card" style="display: flex; flex-direction: column; height: 630px;">
+            <h4>🏙️ Municípios por Valor</h4>
+            <div style="flex: 1; overflow-y: auto; height: 100%; min-height: 0; padding-right: 4px;">
+              <div id="chart-municipio-wrapper" style="position: relative; height: 100%;">
+                <canvas id="chart-municipio"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:16px">
+          <div class="card">
+            <div class="section-header" style="margin-bottom:16px">
+              <div>
+                <h2 style="font-size:15px">Lançamentos Recentes</h2>
+                <p>Últimos processos cadastrados</p>
+              </div>
+              <button class="btn btn-ghost btn-sm" onclick="navegar('processos')">Ver todos →</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Município</th>
+                    <th>Processo</th>
+                    <th>Interessado</th>
+                    <th>Status</th>
+                    <th style="text-align:right">Valor</th>
+                  </tr>
+                </thead>
+                <tbody id="table-recentes">
+                  <tr>
+                    <td colspan="5">
+                      <div class="loader">
+                        <div class="spinner"></div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h4
+              style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
+              📍 Por Localização</h4>
+            <div id="loc-list"></div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ============= PAGE: PROCESSOS ============= -->
+      <section class="page" id="page-processos">
+
+        <div class="print-header">
+          <img src="img/logo-seduc.png" alt="SEDUC">
+          <div class="print-meta" id="print-date-time"></div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <h2>Lista de Processos</h2>
+            <p id="valor-filtrado" style="color:var(--text-muted);font-size:13px;margin-top:2px">Carregando...</p>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <button class="btn btn-ghost btn-sm action-editor" onclick="window.print()"
+              style="border:1px solid var(--border);color:var(--text-primary)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2">
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" />
+                <rect x="6" y="14" width="12" height="8" />
+              </svg> Imprimir
+            </button>
+            <button class="btn btn-ghost btn-sm action-editor" onclick="exportarExcel()"
+              style="border:1px solid var(--border);color:var(--text-primary)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" />
+                <path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6" />
+              </svg> EXCEL
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-bar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, município...">
+          </div>
+          <select id="filtro-status">
+            <option value="">Status</option>
+          </select>
+          <select id="filtro-localizacao">
+            <option value="">Localização</option>
+          </select>
+          <div class="search-box" style="min-width:160px;max-width:200px">
+            <span class="search-icon" style="font-size:12px">🏷️</span>
+            <input type="text" id="filtro-prefixo" placeholder="Prefixo..." list="list-filtro-prefixos"
+              autocomplete="off" style="padding-left:30px">
+            <datalist id="list-filtro-prefixos"></datalist>
+          </div>
+          <select id="filtro-municipio">
+            <option value="">Município</option>
+          </select>
+          <select id="filtro-objeto">
+            <option value="">Objeto</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">✕ Limpar</button>
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-sort="prefixo">Prefixo</th>
+                <th data-sort="municipio">Município</th>
+                <th data-sort="numero">Nº Processo</th>
+                <th data-sort="interessado">Interessado</th>
+                <th data-sort="objeto">Objeto</th>
+                <th data-sort="status">Status</th>
+                <th data-sort="localizacao">Localização</th>
+                <th data-sort="valorOf" style="text-align:right">Valor Oficial</th>
+                <th data-sort="data">Data</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="table-processos">
+              <tr>
+                <td colspan="9">
+                  <div class="loader">
+                    <div class="spinner"></div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginação -->
+        <div class="pagination">`n <div class="pagination-info" id="pg-info">Carregando...</div>
+          <div class="pagination-controls" id="pg-controls"></div>
+        </div>
+
+        <div class="print-footer"
+          style="display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 10mm; min-height: 20mm;">
+          <div style="flex: 1; text-align: left;">SAP/SEDUC — Sistema de Acompanhamento de Processos</div>
+          <div class="page-number" style="text-align: right;"></div>
+        </div>
+      </section>
+
+      <!-- ============= PAGE: NOVO PROCESSO ============= -->
+      <section class="page" id="page-novo">
+
+        <div class="section-header">
+          <div>
+            <h2 id="form-title">Novo Processo</h2>
+            <p>Preencha os dados do processo</p>
+          </div>
+        </div>
+
         <div class="card">
-          <div class="section-header" style="margin-bottom:16px">
-            <div>
-              <h2 style="font-size:15px">Lançamentos Recentes</h2>
-              <p>Últimos processos cadastrados</p>
+          <form id="form-processo">
+
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label for="form-municipio">Município *</label>
+                <input type="text" id="form-municipio" placeholder="Ex: Porto Velho" required list="list-municipios">
+                <datalist id="list-municipios"></datalist>
+              </div>
+
+              <div class="form-group">
+                <label>Nº do Processo</label>
+                <div id="container-numeros" style="display:flex;flex-direction:column;gap:8px;">
+                  <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47"
+                      style="flex:1;">
+                    <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()"
+                      style="padding:0 8px;height:40px;border:1px solid var(--border);"
+                      title="Adicionar número">+</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="form-prefixo">Prefixo</label>
+                <input type="text" id="form-prefixo" placeholder="Digite ou selecione..." maxlength="20"
+                  list="list-prefixos" autocomplete="off">
+                <datalist id="list-prefixos"></datalist>
+              </div>
+
+              <div class="form-group full">
+                <label for="form-interessado">Interessado / Escola *</label>
+                <input type="text" id="form-interessado" placeholder="Nome da escola ou entidade" required
+                  list="list-interessados">
+                <datalist id="list-interessados"></datalist>
+              </div>
+
+              <div class="form-group full">
+                <label for="form-objeto">Objeto</label>
+                <input type="text" id="form-objeto" placeholder="Descrição do objeto" list="list-objetos">
+                <datalist id="list-objetos"></datalist>
+              </div>
+
+              <div class="form-group">
+                <label for="form-valorOf">Valor Oficial (R$)</label>
+                <input type="text" id="form-valorOf" placeholder="0,00" class="input-currency">
+              </div>
+
+              <div class="form-group">
+                <label for="form-valorPlan">Valor Planilha (R$)</label>
+                <input type="text" id="form-valorPlan" placeholder="0,00" class="input-currency">
+              </div>
+
+              <div class="form-group">
+                <label for="form-status">Status</label>
+                <select id="form-status"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="form-localizacao">Localização</label>
+                <select id="form-localizacao"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="form-data">Data</label>
+                <input type="date" id="form-data">
+              </div>
+
+              <!-- Contatos / WhatsApp -->
+              <div class="form-group full"
+                style="margin-top: 8px; background: rgba(0,0,0,0.1); padding: 12px; border-radius: 8px;">
+                <label style="margin-bottom: 8px; display: block; color: var(--blue);">📞 Contatos WhatsApp</label>
+
+                <div id="lista-contatos" style="display:flex; flex-direction:column; gap:8px; margin-bottom: 8px;">
+                </div>
+
+                <div style="display:grid; grid-template-columns: 180px 1fr 40px; gap: 8px; align-items: start;">
+                  <input type="text" id="form-contato-whatsapp" placeholder="(00) 0 0000-0000" maxlength="20"
+                    oninput="maskTelefone(this)">
+                  <input type="text" id="form-contato-detalhes" placeholder="Nome/Detalhe (ex: Maria Diretora)"
+                    maxlength="100">
+                  <button type="button" class="btn btn-primary" onclick="adicionarContato()"
+                    style="padding: 0; display:flex; justify-content:center; align-items:center; height: 38px; font-weight: bold; font-size: 20px;"
+                    title="Adicionar Contato">+</button>
+                </div>
+              </div>
+
+
+              <div class="form-group full">
+                <label for="form-obs">Observações</label>
+                <textarea id="form-obs" placeholder="Observações sobre o processo..."></textarea>
+              </div>
+
+              <div class="form-group full">
+                <label for="form-anotacao">Anotação Interna</label>
+                <textarea id="form-anotacao" placeholder="Anotações internas..."></textarea>
+              </div>
+
             </div>
-            <button class="btn btn-ghost btn-sm" onclick="navegar('processos')">Ver todos →</button>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-ghost" id="btn-cancelar-form">Cancelar</button>
+              <button type="submit" class="btn btn-success">💾 Salvar Processo</button>
+            </div>
+
+          </form>
+        </div>
+
+      </section>
+
+      <!-- ============= PAGE: IMPORTAR ============= -->
+      <section class="page" id="page-importar">
+
+        <div class="section-header">
+          <div>
+            <h2>Importar Planilha Excel</h2>
+            <p>Importe os processos a partir da planilha .xlsx</p>
           </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Município</th>
-                  <th>Processo</th>
-                  <th>Interessado</th>
-                  <th>Status</th>
-                  <th style="text-align:right">Valor</th>
-                </tr>
-              </thead>
-              <tbody id="table-recentes">
-                <tr><td colspan="5"><div class="loader"><div class="spinner"></div></div></td></tr>
-              </tbody>
-            </table>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <h4 style="margin-bottom:12px;font-size:14px">📋 Colunas esperadas na planilha:</h4>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
+            <div class="badge badge-AUTORIZADO">Prefixo</div>
+            <div class="badge badge-AUTORIZADO">Município</div>
+            <div class="badge badge-AUTORIZADO">Processo</div>
+            <div class="badge badge-AUTORIZADO">Interessado</div>
+            <div class="badge badge-AUTORIZADO">Objeto</div>
+            <div class="badge badge-AUTORIZADO">Valor Of.</div>
+            <div class="badge badge-AUTORIZADO">Valor/Planilha</div>
+            <div class="badge badge-AUTORIZADO">Diferença</div>
+            <div class="badge badge-AUTORIZADO">Status</div>
+            <div class="badge badge-AUTORIZADO">Localização</div>
+            <div class="badge badge-AUTORIZADO">Obs.</div>
+            <div class="badge badge-AUTORIZADO">Data</div>
+            <div class="badge badge-AUTORIZADO">Anotação</div>
           </div>
+          <p style="color:var(--text-muted);font-size:12px;margin-top:12px">
+            ⚠️ Processos com número já existente serão ignorados (sem sobrescrever).
+          </p>
         </div>
 
-        <div class="card">
-          <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">📍 Por Localização</h4>
-          <div id="loc-list"></div>
+        <div class="import-zone" id="import-zone">
+          <div class="import-icon">📊</div>
+          <h3>Arraste o arquivo .xlsx aqui</h3>
+          <p>ou clique para selecionar do computador</p>
+          <input type="file" id="import-input" accept=".xlsx,.xls" style="display:none">
         </div>
-      </div>
 
-    </section>
+        <div id="import-status" style="margin-top:20px"></div>
 
-    <!-- ============= PAGE: PROCESSOS ============= -->
-    <section class="page" id="page-processos">
-
-      <div class="section-header">
-        <div>
-          <h2>Lista de Processos</h2>
-          <p id="valor-filtrado" style="color:var(--text-muted);font-size:13px;margin-top:2px">Carregando...</p>
+        <div class="card" style="margin-top:20px">
+          <h4 style="margin-bottom:12px;font-size:14px">⚠️ Atenção: Resetar Banco de Dados</h4>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">
+            Isso apagará <strong>todos</strong> os processos cadastrados e não pode ser desfeito.
+          </p>
+          <button class="btn btn-danger btn-sm" onclick="resetarBanco()">🗑️ Apagar todos os dados</button>
         </div>
-        <div style="display:flex;gap:8px">
-          <button class="btn btn-ghost btn-sm" id="btn-exportar">📤 Exportar Excel</button>
-          <button class="btn btn-primary" onclick="novoProcesso()">➕ Novo Processo</button>
-        </div>
-      </div>
 
-      <!-- Filtros -->
-      <div class="filters-bar">
-        <div class="search-box">
-          <span class="search-icon">🔍</span>
-          <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, município...">
-        </div>
-        <select id="filtro-status"><option value="">Status</option></select>
-        <select id="filtro-localizacao"><option value="">Localização</option></select>
-        <div class="search-box" style="min-width:160px;max-width:200px">
-          <span class="search-icon" style="font-size:12px">🏷️</span>
-          <input type="text" id="filtro-prefixo" placeholder="Prefixo..."
-                 list="list-filtro-prefixos" autocomplete="off"
-                 style="padding-left:30px">
-          <datalist id="list-filtro-prefixos"></datalist>
-        </div>
-        <select id="filtro-municipio"><option value="">Município</option></select>
-        <select id="filtro-objeto"><option value="">Objeto</option></select>
-        <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">✕ Limpar</button>
-      </div>
+      </section>
 
-      <!-- Tabela -->
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th data-sort="prefixo">Prefixo</th>
-              <th data-sort="municipio">Município</th>
-              <th data-sort="numero">Nº Processo</th>
-              <th data-sort="interessado">Interessado</th>
-              <th data-sort="objeto">Objeto</th>
-              <th data-sort="status">Status</th>
-              <th data-sort="localizacao">Localização</th>
-              <th data-sort="valorOf" style="text-align:right">Valor Oficial</th>
-              <th data-sort="data">Data</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="table-processos">
-            <tr><td colspan="9"><div class="loader"><div class="spinner"></div></div></td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Paginação -->
-      <div class="pagination">
-        <div class="pagination-info" id="pg-info">Carregando...</div>
-        <div class="pagination-controls" id="pg-controls"></div>
-      </div>
-
-    </section>
-
-    <!-- ============= PAGE: NOVO PROCESSO ============= -->
-    <section class="page" id="page-novo">
-
-      <div class="section-header">
-        <div>
-          <h2 id="form-title">Novo Processo</h2>
-          <p>Preencha os dados do processo</p>
-        </div>
-      </div>
-
-      <div class="card">
-        <form id="form-processo">
-
-          <div class="form-grid">
-
-            <div class="form-group">
-              <label for="form-municipio">Município *</label>
-              <input type="text" id="form-municipio" placeholder="Ex: Porto Velho" required list="list-municipios">
-              <datalist id="list-municipios"></datalist>
-            </div>
-
-            <div class="form-group">
-              <label for="form-numero">Nº do Processo</label>
-              <input type="text" id="form-numero" placeholder="Ex: 0029.059244/2025-47">
-            </div>
-
-            <div class="form-group">
-              <label for="form-prefixo">Prefixo <span style="color:var(--text-muted);font-weight:400;text-transform:none;font-size:10px">(código de prioridade)</span></label>
-              <input type="text" id="form-prefixo" placeholder="Digite ou selecione..." maxlength="20"
-                     list="list-prefixos" autocomplete="off">
-              <datalist id="list-prefixos"></datalist>
-            </div>
-
-            <div class="form-group full">
-              <label for="form-interessado">Interessado / Escola *</label>
-              <input type="text" id="form-interessado" placeholder="Nome da escola ou entidade" required>
-            </div>
-
-            <div class="form-group full">
-              <label for="form-objeto">Objeto</label>
-              <input type="text" id="form-objeto" placeholder="Descrição do objeto" list="list-objetos">
-              <datalist id="list-objetos">
-                <option value="AQUISIÇÃO DE MATERIAL PERMANENTE">
-                <option value="PINTURA INTERNA E EXTERNA">
-                <option value="REFORMA">
-                <option value="CONSTRUÇÃO">
-                <option value="AMPLIAÇÃO">
-                <option value="EQUIPAMENTOS">
-                <option value="MOBILIÁRIO">
-              </datalist>
-            </div>
-
-            <div class="form-group">
-              <label for="form-valorOf">Valor Oficial (R$)</label>
-              <input type="number" id="form-valorOf" placeholder="0,00" step="0.01" min="0">
-            </div>
-
-            <div class="form-group">
-              <label for="form-valorPlan">Valor Planilha (R$)</label>
-              <input type="number" id="form-valorPlan" placeholder="0,00" step="0.01" min="0">
-            </div>
-
-            <div class="form-group">
-              <label for="form-status">Status</label>
-              <select id="form-status"></select>
-            </div>
-
-            <div class="form-group">
-              <label for="form-localizacao">Localização</label>
-              <select id="form-localizacao"></select>
-            </div>
-
-            <div class="form-group">
-              <label for="form-data">Data</label>
-              <input type="date" id="form-data">
-            </div>
-
-
-            <div class="form-group full">
-              <label for="form-obs">Observações</label>
-              <textarea id="form-obs" placeholder="Observações sobre o processo..."></textarea>
-            </div>
-
-            <div class="form-group full">
-              <label for="form-anotacao">Anotação Interna</label>
-              <textarea id="form-anotacao" placeholder="Anotações internas..."></textarea>
-            </div>
-
-          </div>
-
-          <div class="form-actions">
-            <button type="button" class="btn btn-ghost" id="btn-cancelar-form">Cancelar</button>
-            <button type="submit" class="btn btn-success">💾 Salvar Processo</button>
-          </div>
-
-        </form>
-      </div>
-
-    </section>
-
-    <!-- ============= PAGE: IMPORTAR ============= -->
-    <section class="page" id="page-importar">
-
-      <div class="section-header">
-        <div>
-          <h2>Importar Planilha Excel</h2>
-          <p>Importe os processos a partir da planilha .xlsx</p>
-        </div>
-      </div>
-
-      <div class="card" style="margin-bottom:20px">
-        <h4 style="margin-bottom:12px;font-size:14px">📋 Colunas esperadas na planilha:</h4>
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
-          <div class="badge badge-AUTORIZADO">Prefixo</div>
-          <div class="badge badge-AUTORIZADO">Município</div>
-          <div class="badge badge-AUTORIZADO">Processo</div>
-          <div class="badge badge-AUTORIZADO">Interessado</div>
-          <div class="badge badge-AUTORIZADO">Objeto</div>
-          <div class="badge badge-AUTORIZADO">Valor Of.</div>
-          <div class="badge badge-AUTORIZADO">Valor/Planilha</div>
-          <div class="badge badge-AUTORIZADO">Diferença</div>
-          <div class="badge badge-AUTORIZADO">Status</div>
-          <div class="badge badge-AUTORIZADO">Localização</div>
-          <div class="badge badge-AUTORIZADO">Obs.</div>
-          <div class="badge badge-AUTORIZADO">Data</div>
-          <div class="badge badge-AUTORIZADO">Anotação</div>
-        </div>
-        <p style="color:var(--text-muted);font-size:12px;margin-top:12px">
-          ⚠️ Processos com número já existente serão ignorados (sem sobrescrever).
-        </p>
-      </div>
-
-      <div class="import-zone" id="import-zone">
-        <div class="import-icon">📊</div>
-        <h3>Arraste o arquivo .xlsx aqui</h3>
-        <p>ou clique para selecionar do computador</p>
-        <input type="file" id="import-input" accept=".xlsx,.xls" style="display:none">
-      </div>
-
-      <div id="import-status" style="margin-top:20px"></div>
-
-      <div class="card" style="margin-top:20px">
-        <h4 style="margin-bottom:12px;font-size:14px">⚠️ Atenção: Resetar Banco de Dados</h4>
-        <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">
-          Isso apagará <strong>todos</strong> os processos cadastrados e não pode ser desfeito.
-        </p>
-        <button class="btn btn-danger btn-sm" onclick="resetarBanco()">🗑️ Apagar todos os dados</button>
-      </div>
-
-    </section>
-
-  </main>
-</div>
-
-<!-- ============= MODAL DETALHE ============= -->
-<div class="modal-overlay" id="modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Detalhes do Processo</h3>
-      <button class="modal-close" onclick="fecharModal()">✕</button>
-    </div>
-    <div class="modal-body" id="modal-content"></div>
+    </main>
   </div>
-</div>
 
-<!-- TOAST -->
-<div id="toast-container"></div>
+  <!-- ============= MODAL DETALHE ============= -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Detalhes do Processo</h3>
+        <button class="modal-close" onclick="fecharModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-content"></div>
+    </div>
+  </div>
 
-<!-- Scripts -->
-<script src="js/dados.js"></script>
-<script src="js/app.js"></script>
+  <!-- TOAST -->
+  <div id="toast-container"></div>
 
-<script>
-  // Atualizar contador sidebar
-  function atualizarContador() {
-    const n = carregarProcessos().length;
-    const el = document.getElementById('sidebar-total-count');
-    if (el) el.textContent = n > 0 ? n.toLocaleString('pt-BR') + ' processos' : '';
-  }
+  <!-- Scripts -->
+  <script src="js/dados.js"></script>
+  <script src="js/app.js?v=19"></script>
 
-  // Override navegar para atualizar contador
-  const _navegar = navegar;
-  navegar = function(p) { _navegar(p); atualizarContador(); };
+  <script>
+    // Atualizar contador sidebar
+    function atualizarContador() {
+      const n = carregarProcessos().length;
+      const el = document.getElementById('sidebar-total-count');
+      if (el) el.textContent = n > 0 ? n.toLocaleString('pt-BR') + ' processos' : '';
+    }
 
-  // Resetar banco
-  function resetarBanco() {
-    if (confirm('⚠️ Isso apagará TODOS os processos. Tem certeza?')) {
-      if (confirm('Confirme novamente: apagar todos os dados?')) {
-        localStorage.removeItem('seduc_processos_v1');
-        toast('Banco de dados resetado.', 'info');
-        navegar('dashboard');
+    // Override navegar para atualizar contador
+    const _navegar = navegar;
+    navegar = function (p) { _navegar(p); atualizarContador(); };
+
+    // Resetar banco
+    function resetarBanco() {
+      if (confirm('⚠️ Isso apagará TODOS os processos. Tem certeza?')) {
+        if (confirm('Confirme novamente: apagar todos os dados?')) {
+          localStorage.removeItem('seduc_processos_v1');
+          toast('Banco de dados resetado.', 'info');
+          navegar('dashboard');
+        }
       }
     }
-  }
 
-  // Preencher datalist municípios dinamicamente
-  document.addEventListener('DOMContentLoaded', () => {
-    const dl = document.getElementById('list-municipios');
-    if (dl) {
-      const muns = [...new Set(carregarProcessos().map(p => p.municipio).filter(Boolean))].sort();
-      dl.innerHTML = muns.map(m => `<option value="${m}">`).join('');
-    }
-    atualizarContador();
-  });
-</script>
+    // Preencher datalist municípios dinamicamente
+    document.addEventListener('DOMContentLoaded', () => {
+      const dl = document.getElementById('list-municipios');
+      if (dl) {
+        const muns = [...new Set(carregarProcessos().map(p => p.municipio).filter(Boolean))].sort();
+        dl.innerHTML = muns.map(m => `<option value="${m}">`).join('');
+      }
+      atualizarContador();
+    });
+  </script>
 
 </body>
+
 </html>
