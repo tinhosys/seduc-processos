@@ -6,7 +6,7 @@ const DB_KEY = 'seduc_processos_v1';
 
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? ''
-  : 'https://seu-backend-seduc.onrender.com'; // TODO: Substitua pelo link real do seu backend após hospedar
+  : 'https://seduc-backend.onrender.com';
 
 
 // Helper para incluir cabeçalho de autenticação

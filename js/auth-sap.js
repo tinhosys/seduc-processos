@@ -7,7 +7,7 @@ const SAP_USER_KEY    = 'sap_user_data';
 
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? ''
-  : 'https://seu-backend-seduc.onrender.com'; // TODO: Substitua pelo link real do seu backend após hospedar
+  : 'https://seduc-backend.onrender.com';
 
 
 // Retorna o usuário da sessão atual, ou null
