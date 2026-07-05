@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================
    TOKENS DE DESIGN
@@ -1068,4 +1068,154 @@ body.role-leitor .action-editor,
 body.role-leitor th:nth-child(10),
 body.role-leitor td:nth-child(10) {
   display: none !important;
+}
+
+/* ============================================================
+   RESPONSIVIDADE (MOBILE-FRIENDLY)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Layout */
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -240px; /* Hide sidebar offscreen */
+    width: 240px;
+    height: 100vh;
+    z-index: 1000;
+    box-shadow: 5px 0 15px rgba(0,0,0,0.5);
+  }
+
+  .sidebar.open {
+    left: 0 !important; /* Slide in sidebar */
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  /* Hamburger Menu Toggle */
+  .sidebar-toggle {
+    display: block !important;
+  }
+
+  /* Topbar */
+  .topbar {
+    padding: 10px 16px;
+  }
+  
+  .topbar-actions {
+    gap: 8px;
+  }
+
+  .topbar-actions .user-profile {
+    margin-left: 8px !important;
+    padding-left: 8px !important;
+  }
+
+  .topbar-actions #user-name, 
+  .topbar-actions #user-role {
+    display: none; /* Hide name/role text on very small screens to save space */
+  }
+
+  .topbar-actions .btn-danger {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  
+  .stat-card {
+    padding: 12px !important;
+  }
+
+  .stat-card .stat-value {
+    font-size: 20px !important;
+  }
+
+  .stat-card .stat-label {
+    font-size: 11px !important;
+  }
+
+  /* Charts Grid */
+  .charts-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  
+  .charts-grid .chart-card {
+    height: 380px !important; /* Make charts shorter on mobile */
+  }
+
+  /* Processos por Prefixo grid */
+  div[style*="grid-template-columns:1fr 320px"], 
+  .prefixo-loc-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Filters Bar */
+  .filters-bar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+  
+  .filters-bar > * {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Table responsiveness */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrap table {
+    min-width: 800px; /* Force minimum width to enable horizontal scroll rather than squishing columns */
+  }
+
+  .pagination {
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 12px;
+  }
+
+  /* Form Grid */
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+  
+  .form-group.full {
+    grid-column: span 1 !important;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  /* Modal Details */
+  .modal {
+    width: 95% !important;
+    max-height: 90vh !important;
+    margin: 10px auto;
+  }
+  
+  .modal-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
