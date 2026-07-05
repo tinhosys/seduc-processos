@@ -1077,12 +1077,12 @@ function getFormattedDateForTitle() {
 
 function getCommonHeader(subtitle) {
   return `
-    <div style="height:15mm; display:flex; justify-content:space-between; align-items:flex-end;  padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
-      <img src="img/logo-seduc.png" style="height:35px; margin-bottom:-5px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
+      <div style="text-align:left;">
+        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
+      </div>
       <div style="text-align:right;">
-        <h2 style="margin:0 0 2px 0; font-size:11px; color:#000;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS</h2>
         <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>
-        <div class="print-date-time-rodape" style="font-size:8px; font-weight:normal; color:#555; margin-top:2px;"></div>
       </div>
     </div>
   `;
@@ -1100,8 +1100,12 @@ function injectFixedHeader(subtitle) {
   header.innerHTML = getCommonHeader(subtitle);
 }
 function getCommonFooter() {
-  // Retorna apenas um espaçador para a tabela. O footer fixo ficará no body.
-  return ``;
+  return `
+    <div style="border-top:1px solid #ccc; padding-top:4px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:9px; font-weight:normal; color:#333; font-family: Arial, sans-serif; width:100%;">
+      <div style="flex:1; text-align:left; font-weight:bold; color:#000;">GBZ</div>
+      <div style="flex:1; text-align:right;" class="print-date-time-rodape"></div>
+    </div>
+  `;
 }
 
 function updatePrintDateTime() {
@@ -1148,35 +1152,38 @@ window.imprimirPadrao = function() {
       rowsHtml += totalRowPadrao;
 
       const html = `
-          ${getCommonHeader('Lista de Processos')}
-          <table class="print-table-detalhado" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word;" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:20px;">
-
-            <colgroup>
-              <col style="width: 3%;">
-              <col style="width: 8%;">
-              <col style="width: 12%;">
-              <col style="width: 18%;">
-              <col style="width: 28%;">
-              <col style="width: 9%;">
-              <col style="width: 7%;">
-              <col style="width: 7%;">
-              <col style="width: 8%;">
-            </colgroup>
-  
-            <thead>
-            <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:12px; font-weight:bold;">Nº</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:8%; font-size:12px; font-weight:bold;">PREFIXO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:12px; font-weight:bold;">PROCESSO SEI</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:18%; font-size:12px; font-weight:bold;">INTERESSADO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:28%; font-size:12px; font-weight:bold;">OBJETO / FINALIDADE</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:9%; font-size:12px; font-weight:bold;">STATUS</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:12px; font-weight:bold;">LOCAL</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:7%; font-size:12px; font-weight:bold;">DATA</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:right; width:8%; font-size:12px; font-weight:bold;">VALOR R$</th>
-            </tr></thead>
-          ${rowsHtml || '<tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr></tbody>'}
-          
+        <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+          <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('Lista de Processos')}</td></tr></thead>
+          <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
+            <table class="print-table-detalhado" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:20px;">
+              <colgroup>
+                <col style="width: 3%;">
+                <col style="width: 8%;">
+                <col style="width: 12%;">
+                <col style="width: 18%;">
+                <col style="width: 28%;">
+                <col style="width: 9%;">
+                <col style="width: 7%;">
+                <col style="width: 7%;">
+                <col style="width: 8%;">
+              </colgroup>
+              <thead>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:12px; font-weight:bold;">Nº</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:8%; font-size:12px; font-weight:bold;">PREFIXO</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:12px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:18%; font-size:12px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:28%; font-size:12px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:9%; font-size:12px; font-weight:bold;">STATUS</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:12px; font-weight:bold;">LOCAL</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:7%; font-size:12px; font-weight:bold;">DATA</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:right; width:8%; font-size:12px; font-weight:bold;">VALOR R$</th>
+                </tr>
+              </thead>
+              ${rowsHtml || '<tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr></tbody>'}
+            </table>
+          </td></tr></tbody>
+          <tfoot><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonFooter()}</td></tr></tfoot>
         </table>
       `;
       
@@ -1361,12 +1368,17 @@ window.imprimirDetalhado = function() {
   `;
 
   const html = `
-    ${getCommonHeader('RELATÓRIO DETALHADO DE PROCESSOS')}
-    <div style="margin-top: 20mm;">
-      ${cardsHtml}
-      ${tableHtml}
-      ${execSummaryHtml}
-    </div>
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('RELATÓRIO DETALHADO DE PROCESSOS')}</td></tr></thead>
+      <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
+        <div style="margin-top: 5mm;">
+          ${cardsHtml}
+          ${tableHtml}
+          ${execSummaryHtml}
+        </div>
+      </td></tr></tbody>
+      <tfoot><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonFooter()}</td></tr></tfoot>
+    </table>
   `;
   document.getElementById('print-layout-detalhado').innerHTML = html;
   
@@ -1450,7 +1462,7 @@ window.imprimirAnalise = function() {
   });
 
   const html = `
-    <table style="width:100%; font-family: Arial, sans-serif;">
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
       <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('ANÁLISE GERENCIAL')}</td></tr></thead>
       <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
         
@@ -1467,7 +1479,7 @@ window.imprimirAnalise = function() {
         </div>
         
       </td></tr></tbody>
-      
+      <tfoot><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonFooter()}</td></tr></tfoot>
     </table>
   `;
   
