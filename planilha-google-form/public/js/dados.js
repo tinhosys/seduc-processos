@@ -4,6 +4,11 @@
 
 const DB_KEY = 'seduc_processos_v1';
 
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? ''
+  : 'https://seu-backend-seduc.onrender.com'; // TODO: Substitua pelo link real do seu backend após hospedar
+
+
 // Helper para incluir cabeçalho de autenticação
 function getHeaders(extraHeaders = {}) {
   const token = sessionStorage.getItem('sap_session_token');
@@ -119,7 +124,7 @@ const mapToSheet = (dados) => {
 
 async function inicializarDados() {
   try {
-    const res = await fetch('/api/registros', { headers: getHeaders() });
+    const res = await fetch(API_BASE + '/api/registros', { headers: getHeaders() });
 
     if (res.status === 401 || res.status === 403) {
       fazerLogout();
@@ -150,7 +155,7 @@ async function adicionarProcesso(dados) {
   window.processosCache.push(novo);
   
   try {
-    await fetch('/api/registros', {
+    await fetch(API_BASE + '/api/registros', {
       method: 'POST',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(dados)
@@ -170,7 +175,7 @@ async function atualizarProcesso(id, dados) {
 
   try {
     if (String(id).startsWith('temp-')) return; // Can't update temp ids yet in backend
-    await fetch(`/api/registros/${id}`, {
+    await fetch(API_BASE + `/api/registros/${id}`, {
       method: 'PUT',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(dados)
@@ -184,7 +189,7 @@ async function excluirProcesso(id) {
   window.processosCache = window.processosCache.filter(p => p.id !== id);
   try {
     if (String(id).startsWith('temp-')) return;
-    await fetch(`/api/registros/${id}`, {
+    await fetch(API_BASE + `/api/registros/${id}`, {
       method: 'PUT',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ status: 'EXCLUÍDO' })

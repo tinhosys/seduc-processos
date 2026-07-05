@@ -2,11 +2,13 @@ import express from "express";
 import dotenv from "dotenv";
 import { google } from "googleapis";
 import crypto from "crypto";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -16,10 +18,17 @@ if (!SPREADSHEET_ID) {
   throw new Error("Informe SHEET_ID no arquivo .env");
 }
 
-const auth = new google.auth.GoogleAuth({
-  keyFile: "service-account.json",
+let authConfig = {
   scopes: ["https://www.googleapis.com/auth/spreadsheets"]
-});
+};
+
+if (process.env.GOOGLE_CREDS_JSON) {
+  authConfig.credentials = JSON.parse(process.env.GOOGLE_CREDS_JSON);
+} else {
+  authConfig.keyFile = "service-account.json";
+}
+
+const auth = new google.auth.GoogleAuth(authConfig);
 
 const sheets = google.sheets({ version: "v4", auth });
 

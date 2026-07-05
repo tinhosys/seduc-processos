@@ -14,7 +14,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783227128071">
+  <link rel="stylesheet" href="css/style.css?v=1783227128072">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -105,6 +105,13 @@
           Novo Processo
         </button>
 
+        <div class="nav-section-label">Ferramentas</div>
+
+        <button class="nav-item" data-page="importar">
+          <span class="nav-icon">📥</span>
+          Importar Planilha
+        </button>
+
       </nav>
 
       <div class="sidebar-footer">
@@ -124,6 +131,7 @@
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;">
 
 
+          <button class="btn btn-ghost btn-sm action-editor" onclick="navegar('importar')">📥 Importar</button>
           <button class="btn btn-primary btn-sm action-editor" onclick="novoProcesso()">➕ Novo Processo</button>
           <div class="user-profile"
             style="display:flex;align-items:center;gap:8px;margin-left:16px;padding-left:16px;border-left:1px solid var(--border)">
@@ -422,6 +430,57 @@
 
       </section>
 
+      <!-- ============= PAGE: IMPORTAR ============= -->
+      <section class="page" id="page-importar">
+
+        <div class="section-header">
+          <div>
+            <h2>Importar Planilha Excel</h2>
+            <p>Importe os processos a partir da planilha .xlsx</p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px">
+          <h4 style="margin-bottom:12px;font-size:14px">📋 Colunas esperadas na planilha:</h4>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
+            <div class="badge badge-AUTORIZADO">Prefixo</div>
+            <div class="badge badge-AUTORIZADO">Município</div>
+            <div class="badge badge-AUTORIZADO">Processo</div>
+            <div class="badge badge-AUTORIZADO">Interessado</div>
+            <div class="badge badge-AUTORIZADO">Objeto</div>
+            <div class="badge badge-AUTORIZADO">Valor Of.</div>
+            <div class="badge badge-AUTORIZADO">Valor/Planilha</div>
+            <div class="badge badge-AUTORIZADO">Diferença</div>
+            <div class="badge badge-AUTORIZADO">Status</div>
+            <div class="badge badge-AUTORIZADO">Localização</div>
+            <div class="badge badge-AUTORIZADO">Obs.</div>
+            <div class="badge badge-AUTORIZADO">Data</div>
+            <div class="badge badge-AUTORIZADO">Anotação</div>
+          </div>
+          <p style="color:var(--text-muted);font-size:12px;margin-top:12px">
+            ⚠️ Processos com número já existente serão ignorados (sem sobrescrever).
+          </p>
+        </div>
+
+        <div class="import-zone" id="import-zone">
+          <div class="import-icon">📊</div>
+          <h3>Arraste o arquivo .xlsx aqui</h3>
+          <p>ou clique para selecionar do computador</p>
+          <input type="file" id="import-input" accept=".xlsx,.xls" style="display:none">
+        </div>
+
+        <div id="import-status" style="margin-top:20px"></div>
+
+        <div class="card" style="margin-top:20px">
+          <h4 style="margin-bottom:12px;font-size:14px">⚠️ Atenção: Resetar Banco de Dados</h4>
+          <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">
+            Isso apagará <strong>todos</strong> os processos cadastrados e não pode ser desfeito.
+          </p>
+          <button class="btn btn-danger btn-sm" onclick="resetarBanco()">🗑️ Apagar todos os dados</button>
+        </div>
+
+      </section>
+
     </main>
   </div>
 
@@ -441,7 +500,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js"></script>
-  <script src="js/app.js?v=1783229441521"></script>
+  <script src="js/app.js?v=1783229441526"></script>
   <script src="js/auth-sap.js"></script>
 
   <script>
@@ -466,6 +525,16 @@
         }
       }
     }
+
+    // Preencher datalist municípios dinamicamente
+    document.addEventListener('DOMContentLoaded', () => {
+      const dl = document.getElementById('list-municipios');
+      if (dl) {
+        const muns = [...new Set(carregarProcessos().map(p => p.municipio).filter(Boolean))].sort();
+        dl.innerHTML = muns.map(m => '<option value="' + m + '">').join('');
+      }
+      atualizarContador();
+    });
   </script>
 
 
@@ -475,5 +544,4 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 </body>
-
 </html>

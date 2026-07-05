@@ -5,6 +5,11 @@
 const SAP_SESSION_KEY = 'sap_session_token';
 const SAP_USER_KEY    = 'sap_user_data';
 
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? ''
+  : 'https://seu-backend-seduc.onrender.com'; // TODO: Substitua pelo link real do seu backend após hospedar
+
+
 // Retorna o usuário da sessão atual, ou null
 function getSessaoAtual() {
   try {
@@ -89,7 +94,7 @@ async function realizarLogin() {
   if (btnLogin) btnLogin.disabled = true;
 
   try {
-    const res = await fetch('/api/auth', {
+    const res = await fetch(API_BASE + '/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
@@ -130,7 +135,7 @@ async function fazerLogout() {
   const token = sessionStorage.getItem(SAP_SESSION_KEY);
   if (token) {
     try {
-      await fetch('/api/logout', {
+      await fetch(API_BASE + '/api/logout', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + token }
       });
@@ -148,7 +153,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (usuario && token) {
     // Sessão existente: valida no servidor
     try {
-      const testRes = await fetch('/api/registros', {
+      const testRes = await fetch(API_BASE + '/api/registros', {
         headers: { 'Authorization': 'Bearer ' + token }
       });
 
