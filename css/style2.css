@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================
    TOKENS DE DESIGN
@@ -163,7 +163,7 @@ body {
   text-align: center;
 }
 
-/* CONTEÃšDO PRINCIPAL */
+/* CONTEÚDO PRINCIPAL */
 .main-content {
   margin-left: var(--sidebar-w);
   flex: 1;
@@ -322,10 +322,10 @@ tbody tr {
 
 tbody tr:hover { background: var(--bg-card-hover); }
 
-.col-numero { font-family: monospace; font-size: 12px; color: var(--blue); min-width: 170px; white-space: nowrap; }
+.col-numero { font-family: monospace; font-size: 12px; color: var(--blue); white-space: nowrap; }
 .col-municipio { font-weight: 500; color: var(--text-primary); }
 .col-interessado { color: var(--text-primary); font-weight: 500; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.col-objeto { color: var(--text-secondary); min-width: 200px; white-space: normal; word-wrap: break-word; }
+.col-objeto { color: var(--text-secondary); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .col-valor { font-family: monospace; font-weight: 600; color: var(--green); text-align: right; }
 
 /* ============================================
@@ -422,7 +422,7 @@ select:focus { border-color: var(--blue); }
 select option { background: #1e293b; }
 
 /* ============================================
-   BOTÃ•ES
+   BOTÕES
    ============================================ */
 .btn {
   display: inline-flex;
@@ -469,7 +469,7 @@ select option { background: #1e293b; }
 .btn-sm { padding: 6px 12px; font-size: 12px; }
 
 /* ============================================
-   FORMULÃRIO
+   FORMULÁRIO
    ============================================ */
 .form-grid {
   display: grid;
@@ -636,7 +636,7 @@ textarea { resize: vertical; min-height: 80px; }
 .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ============================================
-   SEÃ‡ÃƒO DE IMPORTAÃ‡ÃƒO
+   SEÇÃO DE IMPORTAÇÃO
    ============================================ */
 .import-zone {
   border: 2px dashed var(--border);
@@ -655,7 +655,7 @@ textarea { resize: vertical; min-height: 80px; }
 .import-zone p { color: var(--text-muted); font-size: 13px; }
 
 /* ============================================
-   NOTIFICAÃ‡ÃƒO TOAST
+   NOTIFICAÇÃO TOAST
    ============================================ */
 #toast-container {
   position: fixed;
@@ -726,6 +726,73 @@ textarea { resize: vertical; min-height: 80px; }
 .info-item p { font-size: 14px; color: var(--text-primary); margin-top: 4px; font-weight: 500; }
 
 /* ============================================
+   DASHBOARD CUSTOM LAYOUT
+   ============================================ */
+.dashboard-row {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: stretch;
+}
+
+@media (max-width: 900px) {
+  .dashboard-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-title {
+  font-size: 13px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.chart-container-status {
+  position: relative;
+  height: 240px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loc-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.loc-list-wrapper {
+  flex: 1;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.loc-list-wrapper::-webkit-scrollbar { width: 6px; }
+.loc-list-wrapper::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+.chart-full-card {
+  margin-bottom: 24px;
+  padding: 20px;
+}
+
+.chart-municipio-wrap {
+  position: relative;
+  width: 100%;
+  max-height: 400px;
+  overflow: auto;
+  padding-right: 8px;
+}
+.chart-municipio-wrap canvas {
+  min-width: 800px;
+}
+.chart-municipio-wrap::-webkit-scrollbar { width: 6px; height: 6px; }
+.chart-municipio-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ============================================
    RESPONSIVO
    ============================================ */
 @media (max-width: 900px) {
@@ -742,7 +809,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 /* ============================================
-   ANIMAÃ‡Ã•ES
+   ANIMAÇÕES
    ============================================ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -775,7 +842,7 @@ textarea { resize: vertical; min-height: 80px; }
 .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state h3 { font-size: 16px; color: var(--text-secondary); margin-bottom: 6px; }
 
-/* HEADER SEÃ‡ÃƒO */
+/* HEADER SEÇÃO */
 .section-header {
   display: flex;
   align-items: center;
@@ -837,7 +904,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* PREFIXO â€” badge de cÃ³digo de prioridade */
+/* PREFIXO — badge de código de prioridade */
 .badge-prefixo {
   display: inline-flex;
   align-items: center;
@@ -853,7 +920,7 @@ textarea { resize: vertical; min-height: 80px; }
   white-space: nowrap;
 }
 
-/* INDICAÃ‡ÃƒO â€” discreto, quase invisÃ­vel */
+/* INDICAÇÃO — discreto, quase invisível */
 .indicado-txt {
   font-size: 11px;
   color: var(--text-muted);
@@ -873,199 +940,24 @@ mark {
   padding: 0 2px;
 }
 
-.input-currency { text-align: right; }
-
-@media print {
-  * { font-family: Arial, sans-serif !important; }
-  thead { display: table-header-group !important; }
-  .print-only-layout { padding-top: 0; }
-  tr, .no-page-break { page-break-inside: avoid !important; break-inside: avoid !important; }
-
-  @page { size: A4 landscape; }
-
-  .sidebar, .topbar, .filters-bar, .pagination, #export-buttons, .action-editor, .btn {
-    display: none !important;
-  }
-  .main-content {
-    margin-left: 0 !important;
-    padding: 0 !important;
-  }
-  body, .dashboard {
-    background: white !important;
-    color: black !important;
-  }
-  table {
-    border-collapse: collapse !important;
-    width: 100% !important;
-  }
-  th, td {
-    border: 1px solid #ddd !important;
-    color: black !important;
-  }
-  .badge { border: 1px solid #000 !important; color: #000 !important; background: transparent !important; }
+/* ============================================
+   AUTENTICAÇÃO E NOVOS LAYOUTS
+   ============================================ */
+.login-container {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
-
-
-@media print {
-  @page { margin: 10mm 10mm; }
-  body { padding: 0; }
-  .print-header {
-    display: flex !important;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #000;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-  }
-  .print-header img {
-    height: 45px;
-  }
-  .print-header .print-meta {
-    text-align: right;
-    font-size: 12px;
-  }
-  .print-footer {
-    display: block !important;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    text-align: center;
-    font-size: 12px;
-    font-weight: bold;
-    border-top: 1px solid #ccc;
-    padding-top: 5px;
-    margin-top: 20px;
-  }
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
 }
-.print-header, .print-footer {
-  display: none;
-}
-
-
-@media print {
-  .page-number::after {
-    counter-increment: page;
-    content: "Página " counter(page);
-  }
-}
-
-/* ==================== PRINT LAYOUTS (DETALHADO / ANALISE) ==================== */
-@media print {
-  body.print-mode-detalhado .sidebar,
-  body.print-mode-detalhado .topbar,
-  body.print-mode-detalhado .section-header,
-  body.print-mode-detalhado .filters-bar,
-  body.print-mode-detalhado .table-wrap,
-  body.print-mode-detalhado .pagination,
-  body.print-mode-detalhado #export-buttons,
-  body.print-mode-detalhado .charts-grid,
-  body.print-mode-detalhado .dashboard,
-  body.print-mode-detalhado > section:not(#page-processos) {
-    display: none !important;
-  }
-  
-  body.print-mode-detalhado #print-layout-detalhado {
-    display: block !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-  }
-
-  body.print-mode-analise .sidebar,
-  body.print-mode-analise .topbar,
-  body.print-mode-analise .section-header,
-  body.print-mode-analise .filters-bar,
-  body.print-mode-analise .table-wrap,
-  body.print-mode-analise .pagination,
-  body.print-mode-analise #export-buttons,
-  body.print-mode-analise .charts-grid,
-  body.print-mode-analise .dashboard,
-  body.print-mode-analise > section:not(#page-processos) {
-    display: none !important;
-  }
-
-  body.print-mode-analise #print-layout-analise {
-    display: block !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-  }
-  
-  /* Reset padding for print */
-  body.print-mode-detalhado, body.print-mode-analise {
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  /* Table borders in detalhado */
-  .print-table-detalhado th, .print-table-detalhado td {
-    border: 1px solid #ccc !important;
-  }
-}
-
-@media print {
-  .watermark-print { display: none !important; }
-}
-@media screen {
-  .watermark-print {
-    display: none !important;
-  }
-}
-
-/* ==================== NOVO FOOTER FIXO E PAGINACAO ==================== */
-@media print {
-}
-
-@media print { .col-numero { white-space: nowrap !important; } }
-
-@media print {
-  body.print-mode-padrao .sidebar,
-  body.print-mode-padrao .topbar,
-  body.print-mode-padrao .section-header,
-  body.print-mode-padrao .filters-bar,
-  body.print-mode-padrao .table-wrap,
-  body.print-mode-padrao .pagination,
-  body.print-mode-padrao #export-buttons,
-  body.print-mode-padrao .charts-grid,
-  body.print-mode-padrao .dashboard,
-  body.print-mode-padrao > section:not(#page-processos) {
-    display: none !important;
-  }
-
-  body.print-mode-padrao #print-layout-padrao {
-    display: block !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-  }
-}
-
-  /* ====== CABECALHO FIXO QUE REPETE EM TODAS AS PAGINAS ====== */
-  .fixed-print-header-el {
-    display: none;
-  }
-  @media print {
-    .fixed-print-header-el {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: white;
-      z-index: 9999;
-    }
-    
-  }
-
-/* ====== CONTROLE DE ACESSO LEITOR ====== */
-body.role-leitor .action-editor,
-body.role-leitor th:nth-child(10),
-body.role-leitor td:nth-child(10) {
-  display: none !important;
+.dashboard-stacked {
+  display: flex;
+  flex-direction: column;
 }

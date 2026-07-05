@@ -4,16 +4,6 @@
 
 const DB_KEY = 'seduc_processos_v1';
 
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
 const STATUS_LIST = [
   '.', 'AUTORIZADO', 'CANCELADO', 'CONCLUÍDO', 'DUPLICADO',
   'ENCERRADO', 'Não autorizado', 'Não chegou na CAM',
@@ -44,154 +34,39 @@ function gerarId() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-// ----- CRUD REMOTO (Google Sheets) -----
-window.processosCache = [];
-
-const mapToApp = (row) => {
-  let contatosStr = '';
-  for (const key in row) {
-    if (key.toLowerCase().includes('contato')) {
-      contatosStr = row[key];
-      break;
-    }
-  }
-
-  let contatosParsed = [];
-  if (contatosStr) {
-    contatosStr.split(';').forEach(c => {
-      c = c.trim();
-      if (!c) return;
-      let parts = c.split('-');
-      if (parts.length >= 2) {
-        contatosParsed.push({ detalhes: parts[0].trim(), whatsapp: parts[1].trim() });
-      } else {
-        contatosParsed.push({ detalhes: '', whatsapp: c });
-      }
-    });
-  }
-
-  const parseMoney = (val) => {
-    if (!val) return 0;
-    if (typeof val === 'number') return val;
-    const cleaned = String(val).replace(/[^\d,\.-]/g, '');
-    return parseFloat(cleaned.replace(/\./g, '').replace(',', '.')) || 0;
-  };
-  return {
-    id: `${row._tabName}__${row._rowNumber}`,
-    prefixo: row._tabName || row['Prefixo (codigo de prioridade)'] || row['Prefixo'] || '',
-    municipio: row['Município'] || row['Municipio'] || '',
-    numero: row['Processo'] || row['Nº Processo'] || '',
-    interessado: row['Interessado'] || '',
-    objeto: row['Objeto'] || '',
-    valorOf: parseMoney(row['Valor Of.']),
-    valorPlan: parseMoney(row['Valor/Planilha']),
-    diferenca: parseMoney(row['Diferença']),
-    status: row['Status'] || '',
-    localizacao: row['Localização'] || '',
-    obs: row['Obs.:'] || row['Obs'] || '',
-    data: row['Data'] || '',
-    anotacao: row['Anotação'] || '',
-    contatos: contatosParsed
-  };
-};
-
-const mapToSheet = (dados) => {
-  const formatMoney = (val) => {
-    if (!val && val !== 0) return "";
-    return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
-  return {
-    'Prefixo (codigo de prioridade)': dados.prefixo || '',
-    'Município': dados.municipio || '',
-    'Processo': dados.numero || '',
-    'Interessado': dados.interessado || '',
-    'Objeto': dados.objeto || '',
-    'Valor Of.': formatMoney(dados.valorOf),
-    'Valor/Planilha': formatMoney(dados.valorPlan),
-    'Diferença': formatMoney(dados.diferenca),
-    'Status': dados.status || '',
-    'Localização': dados.localizacao || '',
-    'Obs.:': dados.obs || '',
-    'Data': dados.data || '',
-    'Anotação': dados.anotacao || ''
-  };
-};
-
-async function inicializarDados() {
-  try {
-    const res = await fetch('/api/registros', { headers: getHeaders() });
-
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    const data = await res.json();
-    if (data.rows) {
-      window.processosCache = data.rows.map(mapToApp);
-    }
-  } catch (err) {
-    console.error('Erro ao carregar do backend:', err);
-  }
-}
-
+// ----- CRUD LOCAL -----
 function carregarProcessos() {
-  return window.processosCache || [];
+  try {
+    const raw = localStorage.getItem(DB_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
 }
 
 function salvarProcessos(lista) {
-  window.processosCache = lista;
+  localStorage.setItem(DB_KEY, JSON.stringify(lista));
 }
 
-async function adicionarProcesso(dados) {
-  const payload = mapToSheet(dados);
-  
-  // Update locally for instant feedback
-  const novo = { ...dados, id: 'temp-' + Date.now(), createdAt: new Date().toISOString() };
-  window.processosCache.push(novo);
-  
-  try {
-    await fetch('/api/registros', {
-      method: 'POST',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify(dados)
-    });
-  } catch(err) {
-    console.error(err);
-  }
+function adicionarProcesso(dados) {
+  const lista = carregarProcessos();
+  const novo = { ...dados, id: gerarId(), createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+  lista.push(novo);
+  salvarProcessos(lista);
   return novo;
 }
 
-async function atualizarProcesso(id, dados) {
-  const payload = mapToSheet(dados);
-
-  // Update locally for instant feedback
-  const idx = window.processosCache.findIndex(p => p.id === id);
-  if (idx !== -1) window.processosCache[idx] = { ...window.processosCache[idx], ...dados };
-
-  try {
-    if (String(id).startsWith('temp-')) return; // Can't update temp ids yet in backend
-    await fetch(`/api/registros/${id}`, {
-      method: 'PUT',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify(dados)
-    });
-  } catch(err) {
-    console.error(err);
-  }
+function atualizarProcesso(id, dados) {
+  const lista = carregarProcessos();
+  const idx = lista.findIndex(p => p.id === id);
+  if (idx === -1) return null;
+  lista[idx] = { ...lista[idx], ...dados, updatedAt: new Date().toISOString() };
+  salvarProcessos(lista);
+  return lista[idx];
 }
 
-async function excluirProcesso(id) {
-  window.processosCache = window.processosCache.filter(p => p.id !== id);
-  try {
-    if (String(id).startsWith('temp-')) return;
-    await fetch(`/api/registros/${id}`, {
-      method: 'PUT',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ status: 'EXCLUÍDO' })
-    });
-  } catch(err) {
-    console.error(err);
-  }
+function excluirProcesso(id) {
+  const lista = carregarProcessos();
+  const nova = lista.filter(p => p.id !== id);
+  salvarProcessos(nova);
 }
 
 function buscarProcessoPorId(id) {
@@ -298,25 +173,6 @@ async function importarExcel(file) {
   });
 }
 
-// ----- IMPORTAÇÃO GOOGLE SHEETS -----
-async function importarGoogleSheets(url) {
-  const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-  if (!match) throw new Error('URL da planilha inválida. Use o link completo do Google Sheets.');
-  
-  const id = match[1];
-  const exportUrl = `https://docs.google.com/spreadsheets/d/${id}/export?format=xlsx`;
-  const proxyUrl = `https://corsproxy.io/?` + encodeURIComponent(exportUrl);
-
-  const response = await fetch(proxyUrl);
-  if (!response.ok) {
-     throw new Error(`Acesso negado ou erro ao baixar (Status: ${response.status}). Certifique-se de que a planilha está configurada como "Qualquer pessoa com o link pode ver".`);
-  }
-  
-  const arrayBuffer = await response.arrayBuffer();
-  const file = new File([arrayBuffer], "google_sheet.xlsx", { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-  return importarExcel(file);
-}
-
 // ----- EXPORTAÇÃO EXCEL -----
 function exportarExcel(filtrados) {
   const dados = filtrados.map(p => ({
@@ -339,6 +195,90 @@ function exportarExcel(filtrados) {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Processos');
   XLSX.writeFile(wb, `seduc_processos_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// ----- EXPORTAÇÃO PDF -----
+function exportarPDF(filtrados) {
+  if (!window.jspdf) {
+    alert('Biblioteca PDF ainda carregando. Aguarde e tente novamente.');
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+  const dataHoje   = new Date().toLocaleDateString('pt-BR');
+  const valorTotal = filtrados.reduce((a, p) => a + (p.valorOf || 0), 0);
+
+  // Faixa azul no topo
+  doc.setFillColor(37, 99, 235);
+  doc.rect(0, 0, 297, 12, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.text('SEDUC/RO 2026', 10, 8);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.text('CAM - Coordenadoria de Articulacao com os Municipios', 10, 11.5);
+  doc.text(dataHoje, 285, 8, { align: 'right' });
+
+  // Resumo
+  doc.setTextColor(30, 30, 50);
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'bold');
+  doc.text('RELATORIO DE PROCESSOS', 10, 22);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.text(`Total de registros: ${filtrados.length}`, 10, 28);
+  doc.text(`Valor total oficial: ${formatCurrency(valorTotal)}`, 65, 28);
+
+  // Linha separadora
+  doc.setDrawColor(200, 210, 230);
+  doc.line(10, 31, 287, 31);
+
+  // Tabela
+  const head = [['Prefixo', 'Municipio', 'N Processo', 'Interessado', 'Objeto', 'Status', 'Localizacao', 'Valor', 'Data']];
+  const body = filtrados.map(p => [
+    p.prefixo     || '',
+    p.municipio   || '',
+    p.numero      || '',
+    p.interessado || '',
+    (p.objeto && p.objeto.length > 35) ? p.objeto.slice(0,35)+'...' : (p.objeto || ''),
+    p.status      || '',
+    p.localizacao || '',
+    formatCurrency(p.valorOf),
+    formatDate(p.data),
+  ]);
+
+  doc.autoTable({
+    head,
+    body,
+    startY: 34,
+    styles:             { fontSize: 7.5, cellPadding: 2, overflow: 'ellipsize' },
+    headStyles:         { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [245, 248, 255] },
+    columnStyles: {
+      0: { cellWidth: 16 },
+      1: { cellWidth: 28 },
+      2: { cellWidth: 38 },
+      3: { cellWidth: 48 },
+      4: { cellWidth: 42 },
+      5: { cellWidth: 22 },
+      6: { cellWidth: 22 },
+      7: { cellWidth: 26, halign: 'right' },
+      8: { cellWidth: 20 },
+    },
+    didDrawPage: () => {
+      const pg  = doc.internal.getCurrentPageInfo().pageNumber;
+      const tot = doc.internal.getNumberOfPages();
+      doc.setFontSize(7);
+      doc.setTextColor(150);
+      doc.text('SEDUC/RO 2026 - CAM', 10, 205);
+      doc.text(`Pagina ${pg} de ${tot}`, 287, 205, { align: 'right' });
+    },
+  });
+
+  doc.save(`SEDUC_Relatorio_${new Date().toISOString().slice(0,10)}.pdf`);
 }
 
 // ----- UTILITÁRIOS -----
