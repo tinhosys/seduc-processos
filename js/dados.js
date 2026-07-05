@@ -4,7 +4,7 @@
 
 const DB_KEY = 'seduc_processos_v1';
 
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? ''
   : 'https://seduc-backend.onrender.com';
 

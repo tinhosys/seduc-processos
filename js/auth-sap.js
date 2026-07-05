@@ -5,7 +5,7 @@
 const SAP_SESSION_KEY = 'sap_session_token';
 const SAP_USER_KEY    = 'sap_user_data';
 
-const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? ''
   : 'https://seduc-backend.onrender.com';
 
