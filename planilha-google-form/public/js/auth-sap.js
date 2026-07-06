@@ -184,7 +184,8 @@ document.addEventListener('DOMContentLoaded', async () => {
           dl.innerHTML = muns.map(m => `<option value="${m}">`).join('');
         }
         atualizarContador();
-        renderProcessos();
+        navegar('dashboard');
+        renderDashboard();
         return;
       }
     } catch (e) { /* cai no login */ }

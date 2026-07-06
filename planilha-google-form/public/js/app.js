@@ -969,7 +969,6 @@ function exportarPDF() {
     ];
   });
 
-  const logoImg = document.querySelector('.sidebar-logo img');
   const totalPagesExp = "{total_pages_count_string}";
 
   doc.autoTable({
@@ -980,10 +979,9 @@ function exportarPDF() {
     headStyles: { fillColor: [41, 128, 185], textColor: 255 },
     alternateRowStyles: { fillColor: [245, 245, 245] },
     didDrawPage: function (data) {
-      if (logoImg) doc.addImage(logoImg, 'PNG', 14, 10, 45, 15);
-      doc.setFontSize(16);
+      doc.setFontSize(12);
       doc.setTextColor(40);
-      doc.text("Relatório de Processos - SEDUC", 65, 20);
+      doc.text("CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
       
       const str = "Página " + data.pageNumber + " de " + totalPagesExp;
       doc.setFontSize(8);
