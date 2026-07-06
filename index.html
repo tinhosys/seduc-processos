@@ -618,6 +618,22 @@
   <script src="js/auth-sap.js"></script>
 
   <script>
+    // Detector de erros para depuração visual
+    window.addEventListener('error', function(e) {
+      const errDiv = document.createElement('div');
+      errDiv.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:12px 24px;border-radius:8px;z-index:999999;font-family:monospace;font-size:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);max-width:90%;word-break:break-all;';
+      errDiv.innerHTML = '<strong>Erro JS:</strong> ' + e.message + ' em ' + (e.filename || '').split('/').pop() + ':' + e.lineno;
+      document.body.appendChild(errDiv);
+      setTimeout(() => errDiv.remove(), 10000);
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      const errDiv = document.createElement('div');
+      errDiv.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#f59e0b;color:white;padding:12px 24px;border-radius:8px;z-index:999999;font-family:monospace;font-size:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);max-width:90%;word-break:break-all;';
+      errDiv.innerHTML = '<strong>Promise Rejeitada:</strong> ' + e.reason;
+      document.body.appendChild(errDiv);
+      setTimeout(() => errDiv.remove(), 10000);
+    });
+
     // Atualizar contador sidebar
     function atualizarContador() {
       const n = carregarProcessos().length;
