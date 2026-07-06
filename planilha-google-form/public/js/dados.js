@@ -380,3 +380,19 @@ function getStatusBadgeClass(status) {
   };
   return 'badge-' + (map[s] || 'DEFAULT');
 }
+
+function maskCelular(v) {
+  v = v.replace(/\D/g, "");
+  if (v.length > 11) v = v.substring(0, 11);
+  
+  if (v.length > 10) {
+    return `(${v.substring(0, 2)}) ${v.substring(2, 3)} ${v.substring(3, 7)}-${v.substring(7)}`;
+  } else if (v.length > 6) {
+    return `(${v.substring(0, 2)}) ${v.substring(2, 6)}-${v.substring(6)}`;
+  } else if (v.length > 2) {
+    return `(${v.substring(0, 2)}) ${v.substring(2)}`;
+  } else if (v.length > 0) {
+    return `(${v}`;
+  }
+  return v;
+}

@@ -52,13 +52,14 @@
     </h2>
     
     <div style="text-align:left; margin-bottom:16px;">
-      <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">E-MAIL DE ACESSO</label>
-      <input type="email" id="login-email" placeholder="usuario@seduc.ro.gov.br"
+      <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">WHATSAPP DE ACESSO</label>
+      <input type="text" id="login-whatsapp" placeholder="(00) 0 0000-0000"
         style="
           width:100%; padding:12px 16px; border-radius:10px;
           background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
           color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;
         "
+        oninput="this.value = maskCelular(this.value)"
         onkeydown="if(event.key==='Enter') realizarLogin()"
       >
     </div>
@@ -707,6 +708,61 @@
     });
   </script>
 
+
+  <!-- ============= MODAL PRIMEIRO ACESSO ============= -->
+  <div class="modal-overlay" id="modal-primeiro-acesso-overlay" style="display:none; z-index: 100000;">
+    <div class="modal" style="max-width:400px; background: #111827; color: #f3f4f6; border: 1px solid rgba(255,255,255,0.1);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="color: #f8fafc; font-size:18px; margin:0;">🔒 Primeiro Acesso - Alterar Senha</h3>
+      </div>
+      <div class="modal-body" style="padding-top: 16px;">
+        <p style="font-size: 13px; color: #9ca3af; margin-bottom: 16px; line-height: 1.4;">
+          Olá! Este é seu primeiro acesso ao sistema. Por motivos de segurança, você deve definir uma nova senha numérica de 4 dígitos.
+        </p>
+        <form id="form-primeiro-acesso" onsubmit="salvarNovaSenhaPrimeiroAcesso(event)">
+          <input type="hidden" id="pa-token">
+          <input type="hidden" id="pa-email">
+          
+          <div class="form-group" style="margin-bottom:12px; text-align: left;">
+            <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color: #9ca3af;">Nome</label>
+            <input type="text" id="pa-nome" readonly style="width:100%; padding:8px 12px; border:1px solid rgba(255,255,255,0.15); border-radius:6px; font-size:13px; background: rgba(255,255,255,0.05); color: #d1d5db; outline: none;">
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px; text-align: left;">
+            <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color: #9ca3af;">WhatsApp</label>
+            <input type="text" id="pa-whatsapp" readonly style="width:100%; padding:8px 12px; border:1px solid rgba(255,255,255,0.15); border-radius:6px; font-size:13px; background: rgba(255,255,255,0.05); color: #d1d5db; outline: none;">
+          </div>
+
+          <div class="form-group" style="margin-bottom:16px; text-align: left;">
+            <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color: #9ca3af;">Nível de Acesso</label>
+            <input type="text" id="pa-nivel" readonly style="width:100%; padding:8px 12px; border:1px solid rgba(255,255,255,0.15); border-radius:6px; font-size:13px; background: rgba(255,255,255,0.05); color: #d1d5db; outline: none;">
+          </div>
+
+          <div class="form-group" style="margin-bottom:12px; text-align: left;">
+            <label for="pa-senha-nova" style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color: #f3f4f6;">Nova Senha (4 números)</label>
+            <input type="password" id="pa-senha-nova" required maxlength="4" pattern="[0-9]*" inputmode="numeric" placeholder="••••"
+              style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.2); border-radius:6px; font-size:15px; background: rgba(0,0,0,0.2); color: #fff; text-align: center; letter-spacing: 4px; box-sizing: border-box;"
+              oninput="this.value = this.value.replace(/\D/g, '')"
+            >
+          </div>
+
+          <div class="form-group" style="margin-bottom:20px; text-align: left;">
+            <label for="pa-senha-confirma" style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color: #f3f4f6;">Confirmar Nova Senha</label>
+            <input type="password" id="pa-senha-confirma" required maxlength="4" pattern="[0-9]*" inputmode="numeric" placeholder="••••"
+              style="width:100%; padding:10px; border:1px solid rgba(255,255,255,0.2); border-radius:6px; font-size:15px; background: rgba(0,0,0,0.2); color: #fff; text-align: center; letter-spacing: 4px; box-sizing: border-box;"
+              oninput="this.value = this.value.replace(/\D/g, '')"
+            >
+          </div>
+
+          <div id="pa-error" style="color: #ef4444; font-size:12px; margin-bottom:12px; text-align:center; min-height:16px;"></div>
+
+          <button type="submit" class="btn btn-primary" style="width:100%; background:#10b981; color:#fff; border:none; padding:10px; border-radius:6px; font-weight:600; cursor:pointer;">
+            Gravar Nova Senha e Acessar
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 
   <!-- ============= PRINT LAYOUT: DETALHADO ============= -->
   <div id="print-layout-detalhado" class="print-only-layout" style="display:none;"></div>

@@ -87,17 +87,17 @@ function ocultarLogin() {
 
 // ====== CHAMADO PELO BOTÃO "ENTRAR" ======
 async function realizarLogin() {
-  const emailInput = document.getElementById('login-email');
+  const whatsappInput = document.getElementById('login-whatsapp');
   const senhaInput = document.getElementById('login-senha');
   const errDiv     = document.getElementById('login-error');
   const loadingDiv = document.getElementById('login-loading');
   const btnLogin   = document.getElementById('btn-login');
 
-  const email = emailInput ? emailInput.value.trim() : '';
+  const whatsapp = whatsappInput ? whatsappInput.value.trim() : '';
   const senha = senhaInput ? senhaInput.value.trim() : '';
 
-  if (!email || !email.includes('@')) {
-    if (errDiv) errDiv.textContent = 'Digite um e-mail válido.';
+  if (!whatsapp || whatsapp.replace(/\D/g, '').length < 10) {
+    if (errDiv) errDiv.textContent = 'Digite um número de WhatsApp válido.';
     return;
   }
   if (!senha || senha.length !== 4) {
@@ -114,7 +114,7 @@ async function realizarLogin() {
     const res = await fetch(API_BASE + '/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, senha })
+      body: JSON.stringify({ whatsapp, senha })
     });
 
     const data = await res.json();
@@ -124,8 +124,14 @@ async function realizarLogin() {
       return;
     }
 
+    // Se for primeiro acesso, exibir modal de alteração de senha
+    if (data.primeiroAcesso) {
+      abrirModalPrimeiroAcesso(data.token, data.nome, data.whatsapp, data.nivel, data.email);
+      return;
+    }
+
     // Sucesso: salvar sessão e carregar app
-    salvarSessao(data.token, { email: data.email, nome: data.nome, nivel: data.nivel });
+    salvarSessao(data.token, { email: data.email, whatsapp: data.whatsapp, nome: data.nome, nivel: data.nivel });
 
     // Atualiza topbar
     const elName = document.getElementById('user-name');
@@ -140,10 +146,99 @@ async function realizarLogin() {
     atualizarContador();
 
   } catch (err) {
+    console.error(err);
     if (errDiv) errDiv.textContent = 'Erro de conexão com o servidor.';
   } finally {
     if (loadingDiv) loadingDiv.style.display = 'none';
     if (btnLogin) btnLogin.disabled = false;
+  }
+}
+
+// ====== PRIMEIRO ACESSO ======
+function abrirModalPrimeiroAcesso(token, nome, whatsapp, nivel, email) {
+  document.getElementById('pa-token').value = token;
+  document.getElementById('pa-email').value = email;
+  document.getElementById('pa-nome').value = nome;
+  document.getElementById('pa-whatsapp').value = maskCelular(whatsapp);
+  
+  const nivelDisplay = {
+    leitor: '👁️ Leitor',
+    editor: '✏️ Editor',
+    adm: '🛡️ Administrador'
+  }[nivel] || nivel;
+  document.getElementById('pa-nivel').value = nivelDisplay;
+
+  document.getElementById('pa-senha-nova').value = '';
+  document.getElementById('pa-senha-confirma').value = '';
+  document.getElementById('pa-error').textContent = '';
+
+  document.getElementById('modal-primeiro-acesso-overlay').style.display = 'flex';
+}
+
+async function salvarNovaSenhaPrimeiroAcesso(event) {
+  event.preventDefault();
+  const token = document.getElementById('pa-token').value;
+  const email = document.getElementById('pa-email').value;
+  const nome = document.getElementById('pa-nome').value;
+  const whatsapp = document.getElementById('pa-whatsapp').value.replace(/\D/g, '');
+  const nivelDisplay = document.getElementById('pa-nivel').value;
+  const novaSenha = document.getElementById('pa-senha-nova').value;
+  const senhaConfirma = document.getElementById('pa-senha-confirma').value;
+  const errDiv = document.getElementById('pa-error');
+
+  if (!novaSenha || novaSenha.length !== 4) {
+    if (errDiv) errDiv.textContent = 'A nova senha deve ter 4 dígitos.';
+    return;
+  }
+  if (novaSenha !== senhaConfirma) {
+    if (errDiv) errDiv.textContent = 'As senhas não coincidem.';
+    return;
+  }
+
+  if (errDiv) errDiv.textContent = '';
+
+  try {
+    const res = await fetch(API_BASE + '/api/auth/change-password', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ novaSenha })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (errDiv) errDiv.textContent = data.erro || 'Erro ao alterar senha.';
+      return;
+    }
+
+    document.getElementById('modal-primeiro-acesso-overlay').style.display = 'none';
+
+    let nivel = 'leitor';
+    if (nivelDisplay.includes('Administrador')) nivel = 'adm';
+    else if (nivelDisplay.includes('Editor')) nivel = 'editor';
+
+    // Sucesso: salvar sessão e carregar app
+    salvarSessao(token, { email, whatsapp, nome, nivel });
+
+    const elName = document.getElementById('user-name');
+    if (elName) elName.textContent = nome;
+
+    aplicarPermissoes(nivel);
+    ocultarLogin();
+
+    await inicializarDados();
+    navegar('dashboard');
+    atualizarContador();
+    
+    if (typeof toast === 'function') {
+      toast('Senha alterada com sucesso! Bem-vindo.', 'success');
+    }
+  } catch (err) {
+    console.error(err);
+    if (errDiv) errDiv.textContent = 'Erro ao conectar ao servidor.';
   }
 }
 

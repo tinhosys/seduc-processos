@@ -79,44 +79,52 @@ function validarSessao(req) {
 
 // ====== ENDPOINT: LOGIN ======
 app.post("/api/auth", async (req, res) => {
-  const { email, senha } = req.body;
-  if (!email || !email.includes("@")) {
-    return res.status(400).json({ erro: "E-mail inválido." });
+  const { whatsapp, senha } = req.body;
+  if (!whatsapp) {
+    return res.status(400).json({ erro: "WhatsApp é obrigatório." });
   }
   if (!senha) {
     return res.status(400).json({ erro: "Senha de acesso é obrigatória." });
   }
 
+  const whatsappNorm = whatsapp.trim().replace(/\D/g, "");
+
   try {
-    // Ler aba "Acessos" da planilha (A=NOME, B=WHATSAPP, C=EMAIL, D=NIVEL DE ACESSO, E=BLOQUEADO/LIBERADO, F=SENHA)
+    // Ler aba "Acessos" da planilha (A=NOME, B=WHATSAPP, C=EMAIL, D=NIVEL DE ACESSO, E=BLOQUEADO/LIBERADO, F=SENHA, G=CONTAGEM ACESSO, H=ULTIMO ACESSO)
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:F"
+      range: "Acessos!A:H"
     });
 
     const rows = result.data.values || [];
-    const emailNorm = email.trim().toLowerCase();
 
     // Skip header row
-    const usuario = rows.slice(1).find(row => {
-      const emailPlanilha = (row[2] || "").trim().toLowerCase(); // EMAIL é coluna C (index 2)
-      return emailPlanilha === emailNorm;
+    let userRowIndex = -1;
+    const usuario = rows.slice(1).find((row, idx) => {
+      const whatsappPlanilha = (row[1] || "").toString().trim().replace(/\D/g, ""); // WHATSAPP é coluna B (index 1)
+      if (whatsappPlanilha === whatsappNorm) {
+        userRowIndex = idx + 2; // +2 porque pulamos o header (1-based) e index 0-based
+        return true;
+      }
+      return false;
     });
 
     if (!usuario) {
-      return res.status(403).json({ erro: "Acesso negado. Seu e-mail não está na lista de usuários autorizados." });
+      return res.status(403).json({ erro: "Acesso temporariamente indisponível" });
     }
 
-    const nome  = (usuario[0] || email).trim();               // NOME é coluna A (index 0)
-    const whatsapp = (usuario[1] || "").trim();               // WHATSAPP é coluna B (index 1)
-    const nivel = (usuario[3] || "").trim().toLowerCase();    // NIVEL é coluna D (index 3)
-    const statusRaw = (usuario[4] || "1").toString().trim();  // STATUS é coluna E (index 4)
-    const senhaPlanilha = (usuario[5] || "").toString().trim(); // SENHA é coluna F (index 5)
+    const nome  = (usuario[0] || "").toString().trim();
+    const email = (usuario[2] || "").toString().trim().toLowerCase();
+    const nivel = (usuario[3] || "").toString().trim().toLowerCase();
+    const statusRaw = (usuario[4] || "1").toString().trim();
+    const senhaPlanilha = (usuario[5] || "").toString().trim();
+    const contagemRaw = (usuario[6] || "0").toString().trim();
+    const contagem = parseInt(contagemRaw) || 0;
 
     const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
 
     if (status === "bloqueado") {
-      return res.status(403).json({ erro: "Seu acesso está bloqueado pelo administrador." });
+      return res.status(403).json({ erro: "Acesso temporariamente indisponível" });
     }
 
     if (senhaPlanilha !== senha.toString().trim()) {
@@ -127,16 +135,69 @@ app.post("/api/auth", async (req, res) => {
       return res.status(403).json({ erro: "Nível de acesso inválido. Contate o administrador." });
     }
 
-    // Criar sessão
+    const primeiroAcesso = (contagem === 0);
     const token = gerarToken();
-    sessoes.set(token, { email: emailNorm, nome, nivel, criadoEm: Date.now() });
 
-    console.log(`[AUTH] Login: ${email} | Nível: ${nivel} | Token: ${token.substring(0,8)}...`);
+    // Se NÃO for primeiro acesso, incrementa a contagem e atualiza data/hora agora
+    if (!primeiroAcesso) {
+      const novaContagem = contagem + 1;
+      const dataHoraAtual = new Date().toLocaleString("pt-BR", { timeZone: "America/Porto_Velho" }); // Usar timezone do RO
+      
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `Acessos!G${userRowIndex}:H${userRowIndex}`,
+        valueInputOption: "USER_ENTERED",
+        requestBody: { values: [[novaContagem, dataHoraAtual]] }
+      });
+    }
 
-    return res.json({ token, email: emailNorm, nome, nivel });
+    // Criar sessão
+    sessoes.set(token, { 
+      email, 
+      whatsapp: whatsappNorm, 
+      nome, 
+      nivel, 
+      rowNumber: userRowIndex,
+      criadoEm: Date.now() 
+    });
+
+    console.log(`[AUTH] Login: ${nome} (${whatsappNorm}) | Nível: ${nivel} | Primeiro Acesso: ${primeiroAcesso}`);
+
+    return res.json({ token, email, whatsapp: whatsappNorm, nome, nivel, primeiroAcesso });
   } catch (err) {
     console.error("[AUTH] Erro:", err);
     return res.status(500).json({ erro: "Erro ao verificar acesso. Tente novamente." });
+  }
+});
+
+// ====== ENDPOINT: ALTERAR SENHA (PRIMEIRO ACESSO) ======
+app.post("/api/auth/change-password", authMiddleware, async (req, res) => {
+  const { novaSenha } = req.body;
+  if (!novaSenha || novaSenha.toString().trim().length !== 4) {
+    return res.status(400).json({ erro: "A nova senha deve ter exatamente 4 dígitos." });
+  }
+
+  const { rowNumber } = req.sessao;
+  if (!rowNumber) {
+    return res.status(400).json({ erro: "Sessão inválida." });
+  }
+
+  try {
+    const dataHoraAtual = new Date().toLocaleString("pt-BR", { timeZone: "America/Porto_Velho" });
+    
+    // Atualiza SENHA (F), CONTAGEM ACESSO (G) = 1, e ULTIMO ACESSO (H) = dataHoraAtual
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `Acessos!F${rowNumber}:H${rowNumber}`,
+      valueInputOption: "USER_ENTERED",
+      requestBody: { values: [[novaSenha.toString().trim(), 1, dataHoraAtual]] }
+    });
+
+    console.log(`[AUTH] Senha alterada e primeiro acesso registrado para linha ${rowNumber}`);
+    res.json({ sucesso: true, mensagem: "Senha alterada com sucesso!" });
+  } catch (err) {
+    console.error("[AUTH] Erro ao alterar senha:", err);
+    res.status(500).json({ erro: "Erro ao atualizar senha na planilha." });
   }
 });
 
@@ -434,7 +495,7 @@ app.get("/api/acessos", adminOnly, async (req, res) => {
   try {
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:F"
+      range: "Acessos!A:H"
     });
 
     const rows = result.data.values || [];
@@ -444,21 +505,22 @@ app.get("/api/acessos", adminOnly, async (req, res) => {
 
     const validRows = [];
 
-    // Colunas: A=NOME, B=WHATSAPP, C=EMAIL, D=NIVEL DE ACESSO, E=BLOQUEADO/LIBERADO (1=liberado, 0=bloqueado), F=SENHA
+    // Colunas: A=NOME, B=WHATSAPP, C=EMAIL, D=NIVEL DE ACESSO, E=BLOQUEADO/LIBERADO, F=SENHA, G=CONTAGEM ACESSO, H=ULTIMO ACESSO
     rows.slice(1).forEach((row, index) => {
-      // Pular linhas vazias
       if (!row || row.length === 0 || row.every(cell => !cell || String(cell).trim() === "")) {
         return;
       }
       const statusRaw = (row[4] || "1").toString().trim();
       const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
       validRows.push({
-        nome:     (row[0] || "").trim(),
-        whatsapp: (row[1] || "").trim(),
-        email:    (row[2] || "").trim(),
-        nivel:    (row[3] || "").trim().toLowerCase(),
-        status:   status,
-        senha:    (row[5] || "").toString().trim(),
+        nome:           (row[0] || "").trim(),
+        whatsapp:       (row[1] || "").trim(),
+        email:          (row[2] || "").trim(),
+        nivel:          (row[3] || "").trim().toLowerCase(),
+        status:         status,
+        senha:          (row[5] || "").toString().trim(),
+        contagemAcesso: (row[6] || "0").toString().trim(),
+        ultimoAcesso:   (row[7] || "").toString().trim(),
         _rowNumber: index + 2
       });
     });
@@ -478,29 +540,29 @@ app.post("/api/acessos", adminOnly, async (req, res) => {
     }
 
     const nomeTrim  = nome.trim();
-    const whatsappTrim = (whatsapp || "").trim();
+    const whatsappTrim = (whatsapp || "").trim().replace(/\D/g, "");
     const emailNorm = email.trim().toLowerCase();
     const nivelNorm = nivel.trim().toLowerCase();
     const statusVal = (status === "bloqueado") ? "0" : "1"; // Converte para 1/0
     const senhaTrim = senha.toString().trim();
 
-    // Validar se o e-mail já existe (EMAIL está na coluna C)
+    // Validar se o whatsapp já existe (WHATSAPP está na coluna B)
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!C:C"
+      range: "Acessos!B:B"
     });
     const rows = result.data.values || [];
-    const emailExists = rows.some(r => (r[0] || "").trim().toLowerCase() === emailNorm);
-    if (emailExists) {
-      return res.status(400).json({ erro: "Este e-mail já está cadastrado." });
+    const whatsappExists = rows.some(r => (r[0] || "").toString().trim().replace(/\D/g, "") === whatsappTrim);
+    if (whatsappExists) {
+      return res.status(400).json({ erro: "Este WhatsApp já está cadastrado." });
     }
 
-    // Ordem correta: NOME | WHATSAPP | EMAIL | NIVEL | STATUS | SENHA
-    const newRow = [nomeTrim, whatsappTrim, emailNorm, nivelNorm, statusVal, senhaTrim];
+    // Ordem correta: NOME | WHATSAPP | EMAIL | NIVEL | STATUS | SENHA | CONTAGEM ACESSO | ULTIMO ACESSO
+    const newRow = [nomeTrim, whatsappTrim, emailNorm, nivelNorm, statusVal, senhaTrim, "0", ""];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:F",
+      range: "Acessos!A:H",
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
@@ -526,13 +588,13 @@ app.put("/api/acessos/:row", adminOnly, async (req, res) => {
     }
 
     const nomeTrim  = nome.trim();
-    const whatsappTrim = (whatsapp || "").trim();
+    const whatsappTrim = (whatsapp || "").trim().replace(/\D/g, "");
     const emailNorm = email.trim().toLowerCase();
     const nivelNorm = nivel.trim().toLowerCase();
     const statusVal = (status === "bloqueado") ? "0" : "1"; // Converte para 1/0
     const senhaTrim = senha.toString().trim();
 
-    // Ordem correta: NOME | WHATSAPP | EMAIL | NIVEL | STATUS | SENHA
+    // Ordem correta: NOME | WHATSAPP | EMAIL | NIVEL | STATUS | SENHA (mantém colunas G e H intocadas no Sheets)
     const updatedRow = [nomeTrim, whatsappTrim, emailNorm, nivelNorm, statusVal, senhaTrim];
 
     await sheets.spreadsheets.values.update({
