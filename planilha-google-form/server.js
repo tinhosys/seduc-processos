@@ -8,6 +8,30 @@ dotenv.config();
 
 const app = express();
 
+// In-memory log buffer for remote debugging
+const logHistory = [];
+const originalLog = console.log;
+const originalError = console.error;
+
+console.log = function(...args) {
+  const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+  logHistory.push(`[LOG] ${new Date().toISOString()} - ${message}`);
+  if (logHistory.length > 200) logHistory.shift();
+  originalLog.apply(console, args);
+};
+
+console.error = function(...args) {
+  const message = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+  logHistory.push(`[ERROR] ${new Date().toISOString()} - ${message}`);
+  if (logHistory.length > 200) logHistory.shift();
+  originalError.apply(console, args);
+};
+
+app.get("/api/logs", (req, res) => {
+  res.setHeader("Content-Type", "text/plain; charset=utf-8");
+  res.send(logHistory.join("\n"));
+});
+
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
@@ -244,7 +268,7 @@ async function getAllRows() {
 }
 
 app.get("/api/version", (req, res) => {
-  res.json({ version: "1.0.2", timestamp: "2026-07-06T02:38:00Z" });
+  res.json({ version: "1.0.3", timestamp: "2026-07-06T02:43:00Z" });
 });
 
 app.get("/api/registros", authMiddleware, async (req, res) => {
