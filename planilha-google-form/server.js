@@ -243,6 +243,10 @@ async function getAllRows() {
   return { rows: allRows, headers: globalHeaders };
 }
 
+app.get("/api/version", (req, res) => {
+  res.json({ version: "1.0.2", timestamp: "2026-07-06T02:38:00Z" });
+});
+
 app.get("/api/registros", authMiddleware, async (req, res) => {
   try {
     const data = await getAllRows();
