@@ -105,9 +105,10 @@ function renderDashboard() {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { 
-          position: 'right', 
+          position: 'bottom', 
           onClick: function(e, legendItem, legend) {
             const index = legendItem.index;
             const ci = legend.chart;

@@ -733,6 +733,7 @@ textarea { resize: vertical; min-height: 80px; }
   .sidebar.open { transform: translateX(0); }
   .main-content { margin-left: 0; }
   .charts-grid { grid-template-columns: 1fr; }
+  .charts-grid .chart-card { height: 460px !important; }
 }
 
 @media (max-width: 600px) {
@@ -1287,32 +1288,37 @@ input:checked + .slider:before {
   margin-top: 20px;
 }
 .sharing-card {
-  background: #ffffff;
+  background: var(--bg-card);
   padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+  transition: var(--transition);
+}
+.sharing-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,0.12);
 }
 .sharing-card h3 {
   margin: 0 0 12px 0;
   font-size: 16px;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 .sharing-card p {
   font-size: 13px;
-  color: #64748b;
+  color: var(--text-muted);
   margin: 0 0 16px 0;
 }
 .qrcode-container {
-  background: #f8fafc;
+  background: rgba(255, 255, 255, 0.03);
   padding: 12px;
   border-radius: 8px;
-  border: 1px dashed #cbd5e1;
+  border: 1px dashed var(--border);
   margin-bottom: 12px;
   width: 174px;
   height: 174px;
@@ -1324,6 +1330,7 @@ input:checked + .slider:before {
   width: 150px;
   height: 150px;
   display: block;
+  filter: brightness(0.95); /* Keep QR code slightly readable but not blindingly bright */
 }
 .phone-share-form {
   width: 100%;
@@ -1332,5 +1339,18 @@ input:checked + .slider:before {
 }
 .phone-share-form .form-group {
   margin-bottom: 12px;
+}
+
+/* Responsive Prefixo & Localização Grid */
+.prefixo-loc-grid {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+@media (max-width: 768px) {
+  .prefixo-loc-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
