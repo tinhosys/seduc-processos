@@ -29,21 +29,33 @@ var API_BASE = window.location.hostname === 'localhost' || window.location.hostn
 // Retorna o usuário da sessão atual, ou null
 function getSessaoAtual() {
   try {
-    const raw = sessionStorage.getItem(SAP_USER_KEY);
+    const raw = sessionStorage.getItem(SAP_USER_KEY) || localStorage.getItem(SAP_USER_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch (e) { return null; }
 }
 
-// Salva sessão no sessionStorage (se fechar aba, perde o login)
-function salvarSessao(token, usuario) {
-  sessionStorage.setItem(SAP_SESSION_KEY, token);
-  sessionStorage.setItem(SAP_USER_KEY, JSON.stringify(usuario));
+// Retorna o token da sessão atual
+function getSessionToken() {
+  return sessionStorage.getItem(SAP_SESSION_KEY) || localStorage.getItem(SAP_SESSION_KEY);
 }
 
-// Limpa sessão
+// Salva sessão no sessionStorage ou localStorage dependendo de manterConectado
+function salvarSessao(token, usuario, manterConectado = false) {
+  if (manterConectado) {
+    localStorage.setItem(SAP_SESSION_KEY, token);
+    localStorage.setItem(SAP_USER_KEY, JSON.stringify(usuario));
+  } else {
+    sessionStorage.setItem(SAP_SESSION_KEY, token);
+    sessionStorage.setItem(SAP_USER_KEY, JSON.stringify(usuario));
+  }
+}
+
+// Limpa sessão em ambos
 function limparSessao() {
   sessionStorage.removeItem(SAP_SESSION_KEY);
   sessionStorage.removeItem(SAP_USER_KEY);
+  localStorage.removeItem(SAP_SESSION_KEY);
+  localStorage.removeItem(SAP_USER_KEY);
 }
 
 // Aplica as restrições de UI baseadas no nível do usuário
@@ -142,7 +154,9 @@ async function realizarLogin() {
     }
 
     // Sucesso: salvar sessão e carregar app
-    salvarSessao(data.token, { whatsapp: data.whatsapp, nome: data.nome, nivel: data.nivel });
+    const manterCheckbox = document.getElementById('login-manter');
+    const manterConectado = manterCheckbox ? manterCheckbox.checked : false;
+    salvarSessao(data.token, { whatsapp: data.whatsapp, nome: data.nome, nivel: data.nivel }, manterConectado);
 
     // Atualiza topbar
     const elName = document.getElementById('user-name');
@@ -166,7 +180,7 @@ async function realizarLogin() {
 
 // ====== CHAMADO PELO BOTÃO "SAIR" ======
 async function fazerLogout() {
-  const token = sessionStorage.getItem(SAP_SESSION_KEY);
+  const token = getSessionToken();
   if (token) {
     try {
       await fetch(API_BASE + '/api/logout', {
@@ -181,8 +195,14 @@ async function fazerLogout() {
 
 // ====== INICIALIZAÇÃO: verifica se já tem sessão válida ======
 document.addEventListener('DOMContentLoaded', async () => {
+  // Sempre inicie limpo (sem pre-enchimento)
+  const whatsappInput = document.getElementById('login-whatsapp');
+  const senhaInput = document.getElementById('login-senha');
+  if (whatsappInput) whatsappInput.value = '';
+  if (senhaInput) senhaInput.value = '';
+
   const usuario = getSessaoAtual();
-  const token   = sessionStorage.getItem(SAP_SESSION_KEY);
+  const token   = getSessionToken();
 
   if (usuario && token) {
     // Sessão existente: valida no servidor
