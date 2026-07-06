@@ -164,20 +164,34 @@ function columnToLetter(column) {
 async function getAllRows() {
   const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const allSheets = response.data.sheets;
-  
-  const ranges = allSheets.map(s => `${s.properties.title}!A1:Z`);
+
+  // Excluir aba de controle de acessos dos dados de processos
+  const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos');
+
+  // IMPORTANTE: nomes de abas com caracteres especiais (/, espaço, etc.)
+  // precisam ser envolvidos em aspas simples no range da API
+  const ranges = processSheets.map(s => {
+    const title = s.properties.title;
+    const safeTitle = title.replace(/'/g, "''"); // escapar aspas simples dentro do nome
+    return `'${safeTitle}'!A1:Z`;
+  });
+
   const batchResponse = await sheets.spreadsheets.values.batchGet({
     spreadsheetId: SPREADSHEET_ID,
     ranges: ranges
   });
 
   const valueRanges = batchResponse.data.valueRanges || [];
+
+  // Debug logs
+  console.log('DEBUG: Total ranges requested:', ranges.length);
+  console.log('DEBUG: ValueRanges returned:', valueRanges.length);
   
   let globalHeaders = [];
   let allRows = [];
 
   valueRanges.forEach((vr, sheetIndex) => {
-    const tabName = allSheets[sheetIndex].properties.title;
+    const tabName = processSheets[sheetIndex].properties.title;
     const values = vr.values || [];
     if (values.length > 0) {
       if (globalHeaders.length === 0) globalHeaders = values[0];
@@ -195,7 +209,6 @@ async function getAllRows() {
           if (!cell) return false;
           const cleanCell = String(cell).toLowerCase().trim();
           
-          // Se a célula começa com "total" ou tem "total geral", "total a pagar", "total 1+2"
           if (
             cleanCell.startsWith("total") || 
             cleanCell.includes("total geral") || 
@@ -222,6 +235,10 @@ async function getAllRows() {
       allRows = allRows.concat(validRows);
     }
   });
+
+  // Debug final count
+  console.log('DEBUG: Total rows collected:', allRows.length);
+  console.log('DEBUG: Headers count:', globalHeaders.length);
 
   return { rows: allRows, headers: globalHeaders };
 }
