@@ -378,7 +378,10 @@ function renderProcessos() {
   if (el) el.textContent = `Total: ${formatCurrency(valorTotal)}`;
 
   // Botão exportar
-  document.getElementById('btn-exportar').onclick = () => exportarExcel(filtrados);
+  const btnExportar = document.getElementById('btn-exportar');
+  if (btnExportar) {
+    btnExportar.onclick = () => exportarExcel(filtrados);
+  }
 }
 
 function hl(txt, busca) {
