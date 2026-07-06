@@ -1539,7 +1539,6 @@ function abrirModalAcesso(index = null) {
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
-  const emailInput = document.getElementById('acesso-email');
   const nivelInput = document.getElementById('acesso-nivel');
   const senhaInput = document.getElementById('acesso-senha');
   const statusToggle = document.getElementById('acesso-status-toggle');
@@ -1556,15 +1555,14 @@ function abrirModalAcesso(index = null) {
     rowInput.value = user._rowNumber;
     nomeInput.value = user.nome;
     whatsappInput.value = user.whatsapp || '';
-    emailInput.value = user.email;
-    emailInput.disabled = true;
+    whatsappInput.disabled = true;
     nivelInput.value = user.nivel;
     senhaInput.value = user.senha || '';
     statusToggle.checked = user.status === 'liberado';
     statusLabel.textContent = user.status === 'liberado' ? 'Liberado' : 'Bloqueado';
   } else {
     title.textContent = 'Novo Usuário';
-    emailInput.disabled = false;
+    whatsappInput.disabled = false;
   }
 
   modal.style.display = 'flex';
@@ -1576,11 +1574,11 @@ function fecharModalAcesso() {
 
 async function carregarAcessos() {
   const tbody = document.getElementById('table-acessos');
-  tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Carregando acessos...</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px;">Carregando acessos...</td></tr>`;
 
   try {
     const token = sessionStorage.getItem('sap_session_token');
-    const res = await fetch(API_BASE + '/api/acessos', {
+    const res = await fetch('/api/acessos', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 
@@ -1592,7 +1590,7 @@ async function carregarAcessos() {
     listaAcessos = await res.json();
     
     if (listaAcessos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px;">Nenhum usuário cadastrado.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px;">Nenhum usuário cadastrado.</td></tr>`;
       return;
     }
 
@@ -1609,18 +1607,21 @@ async function carregarAcessos() {
 
       const whatsappDisplay = user.whatsapp || '—';
       const senhaDisplay = user.senha || '—';
+      const contagemDisplay = user.contagem || '0';
+      const dataDisplay = user.data || '—';
 
       return `
         <tr style="border-bottom:1px solid #f1f5f9;">
           <td style="padding:12px 16px; font-size:14px; font-weight:500; color:#1e293b;">${user.nome}</td>
           <td style="padding:12px 16px; font-size:14px; color:#64748b;">${whatsappDisplay}</td>
-          <td style="padding:12px 16px; font-size:14px; color:#64748b;">${user.email}</td>
           <td style="padding:12px 16px; font-size:14px; color:#334155;">${nivelDisplay}</td>
           <td style="padding:12px 16px; font-size:14px;">${statusBadge}</td>
           <td style="padding:12px 16px; font-size:14px; font-family:monospace; font-weight:600; color:#475569;">${senhaDisplay}</td>
+          <td style="padding:12px 16px; font-size:14px; color:#64748b; font-weight:500;">${contagemDisplay}</td>
+          <td style="padding:12px 16px; font-size:13px; color:#64748b;">${dataDisplay}</td>
           <td style="padding:12px 16px; font-size:14px; text-align:right;">
             <button class="btn btn-ghost btn-sm" onclick="abrirModalAcesso(${index})" style="padding:4px 8px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; background:#fff; cursor:pointer;">✏️ Editar</button>
-            <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.email}')" style="padding:4px 8px; font-size:12px; margin-left:6px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">🗑️ Excluir</button>
+            <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="padding:4px 8px; font-size:12px; margin-left:6px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">🗑️ Excluir</button>
           </td>
         </tr>
       `;
@@ -1628,7 +1629,7 @@ async function carregarAcessos() {
   } catch (error) {
     console.error(error);
     toast(error.message, 'error');
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:20px; color:#ef4444;">${error.message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:#ef4444;">${error.message}</td></tr>`;
   }
 }
 
@@ -1637,20 +1638,19 @@ async function salvarAcessoForm(event) {
   const row = document.getElementById('acesso-row').value;
   const nome = document.getElementById('acesso-nome').value;
   const whatsapp = document.getElementById('acesso-whatsapp').value;
-  const email = document.getElementById('acesso-email').value;
   const nivel = document.getElementById('acesso-nivel').value;
   const senha = document.getElementById('acesso-senha').value;
   const status = document.getElementById('acesso-status-toggle').checked ? 'liberado' : 'bloqueado';
 
-  const payload = { nome, whatsapp, email, nivel, status, senha };
+  const payload = { nome, whatsapp, nivel, status, senha };
   const token = sessionStorage.getItem('sap_session_token');
 
   try {
-    let url = API_BASE + '/api/acessos';
+    let url = '/api/acessos';
     let method = 'POST';
 
     if (row) {
-      url = API_BASE + '/api/acessos/' + row;
+      url += '/' + row;
       method = 'PUT';
     }
 
@@ -1684,7 +1684,7 @@ async function deletarAcesso(rowNumber, email) {
 
   const token = sessionStorage.getItem('sap_session_token');
   try {
-    const res = await fetch(API_BASE + `/api/acessos/${rowNumber}`, {
+    const res = await fetch(`/api/acessos/${rowNumber}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });
