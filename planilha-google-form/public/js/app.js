@@ -1579,7 +1579,7 @@ async function carregarAcessos() {
 
   try {
     const token = sessionStorage.getItem('sap_session_token');
-    const res = await fetch('/api/acessos', {
+    const res = await fetch(API_BASE + '/api/acessos', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
 
@@ -1647,7 +1647,7 @@ async function salvarAcessoForm(event) {
   const token = sessionStorage.getItem('sap_session_token');
 
   try {
-    let url = '/api/acessos';
+    let url = API_BASE + '/api/acessos';
     let method = 'POST';
 
     if (row) {
@@ -1678,14 +1678,14 @@ async function salvarAcessoForm(event) {
   }
 }
 
-async function deletarAcesso(rowNumber, email) {
-  if (!confirm(`Deseja realmente excluir o acesso do usuário ${email}?`)) {
+async function deletarAcesso(rowNumber, whatsapp) {
+  if (!confirm(`Deseja realmente excluir o acesso do usuário ${whatsapp}?`)) {
     return;
   }
 
   const token = sessionStorage.getItem('sap_session_token');
   try {
-    const res = await fetch(`/api/acessos/${rowNumber}`, {
+    const res = await fetch(API_BASE + `/api/acessos/${rowNumber}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });
