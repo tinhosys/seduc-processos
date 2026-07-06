@@ -1733,4 +1733,3 @@ setTimeout(() => {
   document.body.classList.remove('print-mode-analise');
   document.getElementById('print-layout-analise').style.display = 'none';
 }, 1000);
-};
