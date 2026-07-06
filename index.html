@@ -62,6 +62,19 @@
         onkeydown="if(event.key==='Enter') realizarLogin()"
       >
     </div>
+
+    <div style="text-align:left; margin-bottom:24px;">
+      <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">SENHA (4 DÍGITOS)</label>
+      <input type="password" id="login-senha" placeholder="••••" maxlength="4" pattern="[0-9]*" inputmode="numeric"
+        style="
+          width:100%; padding:12px 16px; border-radius:10px;
+          background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+          color:#f0f4ff; font-size:16px; text-align:center; letter-spacing:6px; outline:none; box-sizing:border-box;
+        "
+        oninput="this.value = this.value.replace(/\D/g, '')"
+        onkeydown="if(event.key==='Enter') realizarLogin()"
+      >
+    </div>
     
     <button onclick="realizarLogin()" id="btn-login"
       style="
@@ -511,7 +524,7 @@
       </section>
 
       <!-- ============= PAGE: ACESSOS (ADMIN ONLY) ============= -->
-      <section class="page" id="page-acessos" style="display:none;">
+      <section class="page" id="page-acessos">
 
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
           <div>
@@ -528,9 +541,11 @@
             <thead>
               <tr style="border-bottom:1px solid #e2e8f0; background:#f8fafc;">
                 <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">Nome</th>
+                <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">WhatsApp</th>
                 <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">E-mail</th>
                 <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">Nível de Acesso</th>
                 <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">Status</th>
+                <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">Senha</th>
                 <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px; text-align:right;">Ações</th>
               </tr>
             </thead>
@@ -560,6 +575,11 @@
             <label for="acesso-nome" style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#334155;">Nome Completo</label>
             <input type="text" id="acesso-nome" required style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px;" placeholder="Ex: Elton Silva">
           </div>
+
+          <div class="form-group" style="margin-bottom:16px;">
+            <label for="acesso-whatsapp" style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#334155;">WhatsApp</label>
+            <input type="text" id="acesso-whatsapp" style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)">
+          </div>
           
           <div class="form-group" style="margin-bottom:16px;">
             <label for="acesso-email" style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#334155;">E-mail de Acesso</label>
@@ -573,6 +593,11 @@
               <option value="editor">✏️ Editor</option>
               <option value="adm">🛡️ Administrador</option>
             </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom:16px;">
+            <label for="acesso-senha" style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#334155;">Senha (4 números)</label>
+            <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')">
           </div>
           
           <div class="form-group" style="margin-bottom:24px;">

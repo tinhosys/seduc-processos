@@ -88,13 +88,20 @@ function ocultarLogin() {
 // ====== CHAMADO PELO BOTÃO "ENTRAR" ======
 async function realizarLogin() {
   const emailInput = document.getElementById('login-email');
+  const senhaInput = document.getElementById('login-senha');
   const errDiv     = document.getElementById('login-error');
   const loadingDiv = document.getElementById('login-loading');
   const btnLogin   = document.getElementById('btn-login');
 
   const email = emailInput ? emailInput.value.trim() : '';
+  const senha = senhaInput ? senhaInput.value.trim() : '';
+
   if (!email || !email.includes('@')) {
     if (errDiv) errDiv.textContent = 'Digite um e-mail válido.';
+    return;
+  }
+  if (!senha || senha.length !== 4) {
+    if (errDiv) errDiv.textContent = 'Digite a senha de 4 dígitos.';
     return;
   }
 
@@ -107,7 +114,7 @@ async function realizarLogin() {
     const res = await fetch(API_BASE + '/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email, senha })
     });
 
     const data = await res.json();

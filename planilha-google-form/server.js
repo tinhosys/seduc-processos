@@ -79,16 +79,19 @@ function validarSessao(req) {
 
 // ====== ENDPOINT: LOGIN ======
 app.post("/api/auth", async (req, res) => {
-  const { email } = req.body;
+  const { email, senha } = req.body;
   if (!email || !email.includes("@")) {
     return res.status(400).json({ erro: "E-mail inválido." });
   }
+  if (!senha) {
+    return res.status(400).json({ erro: "Senha de acesso é obrigatória." });
+  }
 
   try {
-    // Ler aba "Acessos" da planilha (A=NOME, B=EMAIL, C=NIVEL DE ACESSO, D=BLOQUEADO/LIBERADO)
+    // Ler aba "Acessos" da planilha (A=NOME, B=WHATSAPP, C=EMAIL, D=NIVEL DE ACESSO, E=BLOQUEADO/LIBERADO, F=SENHA)
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:D"
+      range: "Acessos!A:F"
     });
 
     const rows = result.data.values || [];
@@ -96,7 +99,7 @@ app.post("/api/auth", async (req, res) => {
 
     // Skip header row
     const usuario = rows.slice(1).find(row => {
-      const emailPlanilha = (row[1] || "").trim().toLowerCase(); // EMAIL é coluna B (index 1)
+      const emailPlanilha = (row[2] || "").trim().toLowerCase(); // EMAIL é coluna C (index 2)
       return emailPlanilha === emailNorm;
     });
 
@@ -105,12 +108,19 @@ app.post("/api/auth", async (req, res) => {
     }
 
     const nome  = (usuario[0] || email).trim();               // NOME é coluna A (index 0)
-    const nivel = (usuario[2] || "").trim().toLowerCase();    // NIVEL é coluna C (index 2)
-    const statusRaw = (usuario[3] || "1").toString().trim();  // STATUS é coluna D (index 3): 1=liberado, 0=bloqueado
+    const whatsapp = (usuario[1] || "").trim();               // WHATSAPP é coluna B (index 1)
+    const nivel = (usuario[3] || "").trim().toLowerCase();    // NIVEL é coluna D (index 3)
+    const statusRaw = (usuario[4] || "1").toString().trim();  // STATUS é coluna E (index 4)
+    const senhaPlanilha = (usuario[5] || "").toString().trim(); // SENHA é coluna F (index 5)
+
     const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
 
     if (status === "bloqueado") {
       return res.status(403).json({ erro: "Seu acesso está bloqueado pelo administrador." });
+    }
+
+    if (senhaPlanilha !== senha.toString().trim()) {
+      return res.status(401).json({ erro: "Senha incorreta." });
     }
 
     if (nivel !== "editor" && nivel !== "leitor" && nivel !== "adm") {
@@ -424,7 +434,7 @@ app.get("/api/acessos", adminOnly, async (req, res) => {
   try {
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:D"
+      range: "Acessos!A:F"
     });
 
     const rows = result.data.values || [];
@@ -434,19 +444,21 @@ app.get("/api/acessos", adminOnly, async (req, res) => {
 
     const validRows = [];
 
-    // Colunas: A=NOME, B=EMAIL, C=NIVEL DE ACESSO, D=BLOQUEADO/LIBERADO (1=liberado, 0=bloqueado)
+    // Colunas: A=NOME, B=WHATSAPP, C=EMAIL, D=NIVEL DE ACESSO, E=BLOQUEADO/LIBERADO (1=liberado, 0=bloqueado), F=SENHA
     rows.slice(1).forEach((row, index) => {
       // Pular linhas vazias
       if (!row || row.length === 0 || row.every(cell => !cell || String(cell).trim() === "")) {
         return;
       }
-      const statusRaw = (row[3] || "1").toString().trim();
+      const statusRaw = (row[4] || "1").toString().trim();
       const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
       validRows.push({
-        nome:   (row[0] || "").trim(),
-        email:  (row[1] || "").trim(),
-        nivel:  (row[2] || "").trim().toLowerCase(),
-        status: status,
+        nome:     (row[0] || "").trim(),
+        whatsapp: (row[1] || "").trim(),
+        email:    (row[2] || "").trim(),
+        nivel:    (row[3] || "").trim().toLowerCase(),
+        status:   status,
+        senha:    (row[5] || "").toString().trim(),
         _rowNumber: index + 2
       });
     });
@@ -460,20 +472,22 @@ app.get("/api/acessos", adminOnly, async (req, res) => {
 
 app.post("/api/acessos", adminOnly, async (req, res) => {
   try {
-    const { email, nivel, nome, status } = req.body;
-    if (!email || !nivel || !nome) {
-      return res.status(400).json({ erro: "Nome, e-mail e nível de acesso são obrigatórios." });
+    const { email, nivel, nome, whatsapp, status, senha } = req.body;
+    if (!email || !nivel || !nome || !senha) {
+      return res.status(400).json({ erro: "Nome, e-mail, nível de acesso e senha são obrigatórios." });
     }
 
     const nomeTrim  = nome.trim();
+    const whatsappTrim = (whatsapp || "").trim();
     const emailNorm = email.trim().toLowerCase();
     const nivelNorm = nivel.trim().toLowerCase();
     const statusVal = (status === "bloqueado") ? "0" : "1"; // Converte para 1/0
+    const senhaTrim = senha.toString().trim();
 
-    // Validar se o e-mail já existe (EMAIL está na coluna B)
+    // Validar se o e-mail já existe (EMAIL está na coluna C)
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!B:B"
+      range: "Acessos!C:C"
     });
     const rows = result.data.values || [];
     const emailExists = rows.some(r => (r[0] || "").trim().toLowerCase() === emailNorm);
@@ -481,12 +495,12 @@ app.post("/api/acessos", adminOnly, async (req, res) => {
       return res.status(400).json({ erro: "Este e-mail já está cadastrado." });
     }
 
-    // Ordem correta: NOME | EMAIL | NIVEL | STATUS
-    const newRow = [nomeTrim, emailNorm, nivelNorm, statusVal];
+    // Ordem correta: NOME | WHATSAPP | EMAIL | NIVEL | STATUS | SENHA
+    const newRow = [nomeTrim, whatsappTrim, emailNorm, nivelNorm, statusVal, senhaTrim];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:D",
+      range: "Acessos!A:F",
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
@@ -506,22 +520,24 @@ app.put("/api/acessos/:row", adminOnly, async (req, res) => {
       return res.status(400).json({ erro: "Linha inválida." });
     }
 
-    const { email, nivel, nome, status } = req.body;
-    if (!email || !nivel || !nome) {
-      return res.status(400).json({ erro: "Nome, e-mail e nível de acesso são obrigatórios." });
+    const { email, nivel, nome, whatsapp, status, senha } = req.body;
+    if (!email || !nivel || !nome || !senha) {
+      return res.status(400).json({ erro: "Nome, e-mail, nível de acesso e senha são obrigatórios." });
     }
 
     const nomeTrim  = nome.trim();
+    const whatsappTrim = (whatsapp || "").trim();
     const emailNorm = email.trim().toLowerCase();
     const nivelNorm = nivel.trim().toLowerCase();
     const statusVal = (status === "bloqueado") ? "0" : "1"; // Converte para 1/0
+    const senhaTrim = senha.toString().trim();
 
-    // Ordem correta: NOME | EMAIL | NIVEL | STATUS
-    const updatedRow = [nomeTrim, emailNorm, nivelNorm, statusVal];
+    // Ordem correta: NOME | WHATSAPP | EMAIL | NIVEL | STATUS | SENHA
+    const updatedRow = [nomeTrim, whatsappTrim, emailNorm, nivelNorm, statusVal, senhaTrim];
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
-      range: `Acessos!A${rowNumber}:D${rowNumber}`,
+      range: `Acessos!A${rowNumber}:F${rowNumber}`,
       valueInputOption: "USER_ENTERED",
       requestBody: { values: [updatedRow] }
     });
