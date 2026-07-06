@@ -1534,8 +1534,7 @@ window.imprimirAnalise = function() {
 let listaAcessos = [];
 
 function abrirModalAcesso(index = null) {
-  const modal = document.getElementById('modal-acesso-overlay');
-  const title = document.getElementById('modal-acesso-title');
+  const title = document.getElementById('cadastro-acesso-title');
   const form = document.getElementById('form-acesso');
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
@@ -1544,15 +1543,13 @@ function abrirModalAcesso(index = null) {
   const senhaInput = document.getElementById('acesso-senha');
   const statusToggle = document.getElementById('acesso-status-toggle');
   const statusLabel = document.getElementById('acesso-status-label');
+  const btnCancelar = document.getElementById('btn-cancelar-edicao');
 
-  form.reset();
-  rowInput.value = '';
-  statusToggle.checked = true;
-  statusLabel.textContent = 'Liberado';
+  if (!rowInput) return;
 
   if (index !== null) {
     const user = listaAcessos[index];
-    title.textContent = 'Editar Usuário';
+    title.innerHTML = '<span>✏️</span> Editar Registro de Acesso';
     rowInput.value = user._rowNumber;
     nomeInput.value = user.nome;
     whatsappInput.value = user.whatsapp || '';
@@ -1560,22 +1557,139 @@ function abrirModalAcesso(index = null) {
     nivelInput.value = user.nivel;
     senhaInput.value = user.senha || '';
     statusToggle.checked = user.status === 'liberado';
-    statusLabel.textContent = user.status === 'liberado' ? 'Liberado' : 'Bloqueado';
+    statusLabel.textContent = user.status === 'liberado' ? 'ON' : 'OFF';
+    statusLabel.style.color = user.status === 'liberado' ? '#10b981' : '#ef4444';
+    if (btnCancelar) btnCancelar.style.display = 'inline-flex';
   } else {
-    title.textContent = 'Novo Usuário';
-    whatsappInput.disabled = false;
+    cancelarEdicaoAcesso();
   }
+}
 
-  modal.style.display = 'flex';
+function cancelarEdicaoAcesso() {
+  const title = document.getElementById('cadastro-acesso-title');
+  const form = document.getElementById('form-acesso');
+  const rowInput = document.getElementById('acesso-row');
+  const whatsappInput = document.getElementById('acesso-whatsapp');
+  const statusToggle = document.getElementById('acesso-status-toggle');
+  const statusLabel = document.getElementById('acesso-status-label');
+  const btnCancelar = document.getElementById('btn-cancelar-edicao');
+
+  if (form) form.reset();
+  if (rowInput) rowInput.value = '';
+  if (title) title.innerHTML = '<span>👤</span> Novo Registro de Acesso';
+  if (whatsappInput) whatsappInput.disabled = false;
+  if (statusToggle) statusToggle.checked = true;
+  if (statusLabel) {
+    statusLabel.textContent = 'ON';
+    statusLabel.style.color = '#10b981';
+  }
+  if (btnCancelar) btnCancelar.style.display = 'none';
 }
 
 function fecharModalAcesso() {
-  document.getElementById('modal-acesso-overlay').style.display = 'none';
+  cancelarEdicaoAcesso();
+}
+
+function renderListaAcessosUI() {
+  const tbody = document.getElementById('table-acessos');
+  if (!tbody) return;
+
+  if (listaAcessos.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--text-muted);">Nenhum usuário cadastrado.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = listaAcessos.map((user, index) => {
+    const nivelDisplay = {
+      leitor: '👁️ Leitor',
+      editor: '✏️ Editor',
+      adm: '🛡️ Administrador'
+    }[user.nivel] || user.nivel;
+
+    const whatsappDisplay = user.whatsapp || '—';
+    const senhaDisplay = user.senha || '—';
+    const contagemDisplay = user.contagem || '0';
+    const dataDisplay = user.data || '—';
+
+    return `
+      <tr style="border-bottom:1px solid var(--border);">
+        <td style="padding:12px 16px; font-size:14px; font-weight:600; color:var(--text-primary);">${user.nome}</td>
+        <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${whatsappDisplay}</td>
+        <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${nivelDisplay}</td>
+        <td style="padding:12px 16px; font-size:14px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label class="switch" style="transform:scale(0.85); margin:0;">
+              <input type="checkbox" onchange="toggleStatusAcesso(${user._rowNumber}, this.checked)" ${user.status === 'liberado' ? 'checked' : ''}>
+              <span class="slider"></span>
+            </label>
+            <span style="font-size:11px; font-weight:800; letter-spacing:0.5px; width:24px; color:${user.status === 'liberado' ? '#10b981' : '#ef4444'};">
+              ${user.status === 'liberado' ? 'ON' : 'OFF'}
+            </span>
+          </div>
+        </td>
+        <td style="padding:12px 16px; font-size:14px; font-family:monospace; font-weight:600; color:var(--text-secondary);">${senhaDisplay}</td>
+        <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary); font-weight:600;">${contagemDisplay}</td>
+        <td style="padding:12px 16px; font-size:13px; color:var(--text-muted);">${dataDisplay}</td>
+        <td style="padding:12px 16px; font-size:14px; text-align:right;">
+          <button class="btn btn-ghost btn-sm" onclick="abrirModalAcesso(${index})" style="padding:4px 8px; font-size:12px; border:1px solid var(--border); border-radius:4px; background:var(--bg-secondary); color:var(--text-primary); cursor:pointer;">✏️ Editar</button>
+          <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="padding:4px 8px; font-size:12px; margin-left:6px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">🗑️ Excluir</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function toggleStatusAcesso(rowNumber, isChecked) {
+  const status = isChecked ? 'liberado' : 'bloqueado';
+  const token = sessionStorage.getItem('sap_session_token');
+
+  // Optimistic update
+  const user = listaAcessos.find(u => u._rowNumber === rowNumber);
+  if (user) {
+    user.status = status;
+  }
+  renderListaAcessosUI();
+
+  try {
+    if (!user) throw new Error('Usuário não encontrado.');
+
+    const payload = {
+      nome: user.nome,
+      whatsapp: user.whatsapp,
+      nivel: user.nivel,
+      status: status,
+      senha: user.senha
+    };
+
+    const res = await fetch(API_BASE + `/api/acessos/${rowNumber}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.erro || 'Erro ao alterar status.');
+    }
+
+    toast(`Acesso do usuário ${user.nome} foi ${status === 'liberado' ? 'ativado' : 'inativado'}!`, 'info');
+  } catch (error) {
+    console.error(error);
+    toast(error.message, 'error');
+    // Revert
+    if (user) {
+      user.status = status === 'liberado' ? 'bloqueado' : 'liberado';
+      renderListaAcessosUI();
+    }
+  }
 }
 
 async function carregarAcessos() {
   const tbody = document.getElementById('table-acessos');
-  tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px;">Carregando acessos...</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--text-muted);">Carregando acessos...</td></tr>`;
 
   try {
     const token = sessionStorage.getItem('sap_session_token');
@@ -1589,44 +1703,7 @@ async function carregarAcessos() {
     }
 
     listaAcessos = await res.json();
-    
-    if (listaAcessos.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px;">Nenhum usuário cadastrado.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = listaAcessos.map((user, index) => {
-      const statusBadge = user.status === 'liberado' 
-        ? `<span class="badge badge-AUTORIZADO" style="background:#d1fae5; color:#065f46;">Liberado</span>`
-        : `<span class="badge badge-PENDENTE" style="background:#fee2e2; color:#991b1b;">Bloqueado</span>`;
-
-      const nivelDisplay = {
-        leitor: '👁️ Leitor',
-        editor: '✏️ Editor',
-        adm: '🛡️ Administrador'
-      }[user.nivel] || user.nivel;
-
-      const whatsappDisplay = user.whatsapp || '—';
-      const senhaDisplay = user.senha || '—';
-      const contagemDisplay = user.contagem || '0';
-      const dataDisplay = user.data || '—';
-
-      return `
-        <tr style="border-bottom:1px solid #f1f5f9;">
-          <td style="padding:12px 16px; font-size:14px; font-weight:500; color:#1e293b;">${user.nome}</td>
-          <td style="padding:12px 16px; font-size:14px; color:#64748b;">${whatsappDisplay}</td>
-          <td style="padding:12px 16px; font-size:14px; color:#334155;">${nivelDisplay}</td>
-          <td style="padding:12px 16px; font-size:14px;">${statusBadge}</td>
-          <td style="padding:12px 16px; font-size:14px; font-family:monospace; font-weight:600; color:#475569;">${senhaDisplay}</td>
-          <td style="padding:12px 16px; font-size:14px; color:#64748b; font-weight:500;">${contagemDisplay}</td>
-          <td style="padding:12px 16px; font-size:13px; color:#64748b;">${dataDisplay}</td>
-          <td style="padding:12px 16px; font-size:14px; text-align:right;">
-            <button class="btn btn-ghost btn-sm" onclick="abrirModalAcesso(${index})" style="padding:4px 8px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; background:#fff; cursor:pointer;">✏️ Editar</button>
-            <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="padding:4px 8px; font-size:12px; margin-left:6px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">🗑️ Excluir</button>
-          </td>
-        </tr>
-      `;
-    }).join('');
+    renderListaAcessosUI();
   } catch (error) {
     console.error(error);
     toast(error.message, 'error');

@@ -1245,7 +1245,7 @@ body:not(.role-adm) .action-adm {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #cbd5e1;
+  background-color: #ef4444; /* Red for OFF */
   transition: .3s;
   border-radius: 22px;
 }
@@ -1262,7 +1262,7 @@ body:not(.role-adm) .action-adm {
   box-shadow: 0 1px 3px rgba(0,0,0,0.15);
 }
 input:checked + .slider {
-  background-color: #3b82f6;
+  background-color: #10b981; /* Green for ON */
 }
 input:checked + .slider:before {
   transform: translateX(22px);
