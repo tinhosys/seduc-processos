@@ -110,6 +110,11 @@
           <span class="nav-icon">➕</span>
           Novo Processo
         </button>
+
+        <button class="nav-item action-adm" data-page="acessos">
+          <span class="nav-icon">🔑</span>
+          Gerenciar Acessos
+        </button>
       </nav>
 
       <div class="sidebar-footer">
@@ -216,6 +221,33 @@
           </div>
         </div>
 
+        <!-- Seção Compartilhar Link (QR Code e WhatsApp) -->
+        <div class="sharing-grid">
+          <div class="sharing-card">
+            <h3>📱 Compartilhar por QR Code</h3>
+            <p>Escaneie o código para abrir o sistema diretamente no celular</p>
+            <div class="qrcode-container">
+              <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://tinhosys.github.io/seduc-processos/" alt="QR Code do Sistema">
+            </div>
+            <a href="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://tinhosys.github.io/seduc-processos/" target="_blank" class="btn btn-ghost btn-sm" style="margin-top:8px">Visualizar Ampliado</a>
+          </div>
+
+          <div class="sharing-card" style="align-items: flex-start; text-align: left;">
+            <h3>💬 Enviar Link via WhatsApp</h3>
+            <p>Digite o número de celular para enviar o link de acesso ao sistema pelo WhatsApp</p>
+            <div class="phone-share-form">
+              <div class="form-group" style="margin-bottom: 16px;">
+                <label for="share-whatsapp-number" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:#475569;">Número do Celular</label>
+                <input type="text" id="share-whatsapp-number" placeholder="(00) 9 9999-9999" style="width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px;">
+              </div>
+              <button class="btn btn-primary" onclick="enviarLinkWhatsApp()" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#10b981; border:none; padding:10px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                Enviar pelo WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- ============= PAGE: PROCESSOS ============= -->
@@ -227,19 +259,19 @@
             <p id="valor-filtrado" style="color:var(--text-muted);font-size:13px;margin-top:2px">Carregando...</p>
           </div>
           <div style="display:flex;align-items:center;gap:12px; flex: 2;">
-            <button class="btn action-editor" onclick="imprimirAnalise()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#9333ea; color:white; cursor:pointer; font-weight:600;" title="Análise Gerencial">
+            <button class="btn action-adm" onclick="imprimirAnalise()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#9333ea; color:white; cursor:pointer; font-weight:600;" title="Análise Gerencial">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> Análise
             </button>
-            <button class="btn action-editor" onclick="imprimirDetalhado()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#2563eb; color:white; cursor:pointer; font-weight:600;" title="Relatório Detalhado">
+            <button class="btn action-adm" onclick="imprimirDetalhado()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#2563eb; color:white; cursor:pointer; font-weight:600;" title="Relatório Detalhado">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Detalhado
             </button>
-            <button class="btn action-editor" onclick="imprimirPadrao()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Lista Atual">
+            <button class="btn action-adm" onclick="imprimirPadrao()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Lista Atual">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Padrão
             </button>
-            <button class="btn action-editor" onclick="exportarExcel()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#16a34a; color:white; cursor:pointer; font-weight:600;" title="Exportar para Excel">
+            <button class="btn action-adm" onclick="exportarExcel()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#16a34a; color:white; cursor:pointer; font-weight:600;" title="Exportar para Excel">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
             </button>
-            <button class="btn action-editor" onclick="navegar('importar')" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#d97706; color:white; cursor:pointer; font-weight:600;" title="Importar Planilha Excel">
+            <button class="btn action-adm" onclick="navegar('importar')" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#d97706; color:white; cursor:pointer; font-weight:600;" title="Importar Planilha Excel">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> Importar
             </button>
           </div>
@@ -482,7 +514,89 @@
 
       </section>
 
+      <!-- ============= PAGE: ACESSOS (ADMIN ONLY) ============= -->
+      <section class="page" id="page-acessos" style="display:none;">
+
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <h2>Gerenciamento de Acessos</h2>
+            <p>Cadastre, edite e controle o acesso de usuários à Planilha de Controle GDSM</p>
+          </div>
+          <button class="btn btn-primary" onclick="abrirModalAcesso()">
+            <span>➕</span> Novo Usuário
+          </button>
+        </div>
+
+        <div class="card" style="padding:0; overflow-x:auto;">
+          <table class="table" style="width:100%; border-collapse:collapse; text-align:left;">
+            <thead>
+              <tr style="border-bottom:1px solid #e2e8f0; background:#f8fafc;">
+                <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">Nome</th>
+                <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">E-mail</th>
+                <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">Nível de Acesso</th>
+                <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px;">Status</th>
+                <th style="padding:12px 16px; font-weight:600; color:#475569; font-size:13px; text-align:right;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="table-acessos">
+              <!-- Usuários carregados dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+
     </main>
+  </div>
+
+  <!-- ============= MODAL CADASTRO/EDIÇÃO DE ACESSO ============= -->
+  <div class="modal-overlay" id="modal-acesso-overlay" style="display:none;">
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-header">
+        <h3 id="modal-acesso-title">Novo Usuário</h3>
+        <button class="modal-close" onclick="fecharModalAcesso()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-acesso" onsubmit="salvarAcessoForm(event)">
+          <input type="hidden" id="acesso-row">
+          
+          <div class="form-group" style="margin-bottom:16px;">
+            <label for="acesso-nome" style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#334155;">Nome Completo</label>
+            <input type="text" id="acesso-nome" required style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px;" placeholder="Ex: Elton Silva">
+          </div>
+          
+          <div class="form-group" style="margin-bottom:16px;">
+            <label for="acesso-email" style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#334155;">E-mail de Acesso</label>
+            <input type="email" id="acesso-email" required style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px;" placeholder="Ex: nome@seduc.ro.gov.br">
+          </div>
+          
+          <div class="form-group" style="margin-bottom:16px;">
+            <label for="acesso-nivel" style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#334155;">Nível de Acesso</label>
+            <select id="acesso-nivel" required style="width:100%; padding:8px 12px; border:1px solid #cbd5e1; border-radius:6px; font-size:14px; background:#fff;">
+              <option value="leitor">👁️ Leitor</option>
+              <option value="editor">✏️ Editor</option>
+              <option value="adm">🛡️ Administrador</option>
+            </select>
+          </div>
+          
+          <div class="form-group" style="margin-bottom:24px;">
+            <label style="display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:#334155;">Status de Acesso</label>
+            <div class="switch-wrapper">
+              <label class="switch">
+                <input type="checkbox" id="acesso-status-toggle" checked>
+                <span class="slider"></span>
+              </label>
+              <span id="acesso-status-label" class="switch-label">Liberado</span>
+            </div>
+          </div>
+          
+          <div class="form-actions" style="display:flex; justify-content:flex-end; gap:12px;">
+            <button type="button" class="btn btn-ghost" onclick="fecharModalAcesso()" style="background:#f1f5f9; border:none; padding:10px 16px; border-radius:6px; font-weight:600; cursor:pointer;">Cancelar</button>
+            <button type="submit" class="btn btn-primary" style="background:#3b82f6; color:#fff; border:none; padding:10px 16px; border-radius:6px; font-weight:600; cursor:pointer;">Confirmar</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 
   <!-- ============= MODAL DETALHE ============= -->

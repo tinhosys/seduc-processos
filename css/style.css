@@ -1219,3 +1219,118 @@ body.role-leitor td:nth-child(10) {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ==================== CONTROLE DE ACESSO (ADM ONLY) ==================== */
+body:not(.role-adm) .action-adm {
+  display: none !important;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: .3s;
+  border-radius: 22px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+input:checked + .slider {
+  background-color: #3b82f6;
+}
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+.switch-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+.switch-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #475569;
+}
+
+/* Card de Compartilhamento */
+.sharing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+.sharing-card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.sharing-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #1e293b;
+}
+.sharing-card p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0 0 16px 0;
+}
+.qrcode-container {
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e1;
+  margin-bottom: 12px;
+  width: 174px;
+  height: 174px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.qrcode-container img {
+  width: 150px;
+  height: 150px;
+  display: block;
+}
+.phone-share-form {
+  width: 100%;
+  max-width: 320px;
+  text-align: left;
+}
+.phone-share-form .form-group {
+  margin-bottom: 12px;
+}
+

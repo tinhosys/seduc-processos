@@ -35,10 +35,12 @@ function aplicarPermissoes(nivel) {
   const body = document.body;
 
   // Remove classes anteriores
-  body.classList.remove('role-editor', 'role-leitor');
+  body.classList.remove('role-editor', 'role-leitor', 'role-adm');
 
   if (nivel === 'leitor') {
     body.classList.add('role-leitor');
+  } else if (nivel === 'adm') {
+    body.classList.add('role-adm');
   } else {
     body.classList.add('role-editor');
   }
@@ -46,8 +48,16 @@ function aplicarPermissoes(nivel) {
   // Atualiza badge de perfil na topbar
   const elRole = document.getElementById('user-role');
   if (elRole) {
-    elRole.textContent = nivel === 'editor' ? '✏️ Editor' : '👁️ Leitor';
-    elRole.style.color = nivel === 'editor' ? '#10b981' : '#f59e0b';
+    if (nivel === 'adm') {
+      elRole.textContent = '🛡️ Administrador';
+      elRole.style.color = '#3b82f6';
+    } else if (nivel === 'editor') {
+      elRole.textContent = '✏️ Editor';
+      elRole.style.color = '#10b981';
+    } else {
+      elRole.textContent = '👁️ Leitor';
+      elRole.style.color = '#f59e0b';
+    }
   }
 }
 

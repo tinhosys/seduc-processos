@@ -35,6 +35,7 @@ function navegar(pagina) {
     processos: 'Processos',
     novo: state.editandoId ? 'Editar Processo' : 'Novo Processo',
     importar: 'Importar Planilha',
+    acessos: 'Gerenciamento de Acessos',
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -42,6 +43,7 @@ function navegar(pagina) {
   if (pagina === 'dashboard') renderDashboard();
   if (pagina === 'processos') renderProcessos();
   if (pagina === 'novo') renderFormulario();
+  if (pagina === 'acessos') carregarAcessos();
 }
 
 // ---- TOAST ----
@@ -877,6 +879,31 @@ document.addEventListener('DOMContentLoaded', () => {
   fillSelectFiltro('filtro-status',      STATUS_LIST.filter(s => s !== '.'));
   fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
 
+  // Máscara de Celular (WhatsApp)
+  const shareNum = document.getElementById("share-whatsapp-number");
+  if (shareNum) {
+    shareNum.addEventListener("input", (e) => {
+      e.target.value = maskCelular(e.target.value);
+    });
+  }
+
+  // Toggle de Status no modal de acessos
+  const statusToggle = document.getElementById("acesso-status-toggle");
+  const statusLabel = document.getElementById("acesso-status-label");
+  if (statusToggle && statusLabel) {
+    statusToggle.addEventListener("change", (e) => {
+      statusLabel.textContent = e.target.checked ? "Liberado" : "Bloqueado";
+    });
+  }
+
+  // Fechar modal de acesso ao clicar fora
+  const modalAcessoOverlay = document.getElementById('modal-acesso-overlay');
+  if (modalAcessoOverlay) {
+    modalAcessoOverlay.addEventListener('click', e => {
+      if (e.target === modalAcessoOverlay) fecharModalAcesso();
+    });
+  }
+
   // Página inicial
   navegar('dashboard');
 });
@@ -1498,4 +1525,214 @@ window.imprimirAnalise = function() {
     document.body.classList.remove('print-mode-analise');
     document.getElementById('print-layout-analise').style.display = 'none';
   }, 1000);
+};
+
+// ---- GERENCIAMENTO DE ACESSOS (CRUD) ----
+
+let listaAcessos = [];
+
+function abrirModalAcesso(index = null) {
+  const modal = document.getElementById('modal-acesso-overlay');
+  const title = document.getElementById('modal-acesso-title');
+  const form = document.getElementById('form-acesso');
+  const rowInput = document.getElementById('acesso-row');
+  const nomeInput = document.getElementById('acesso-nome');
+  const emailInput = document.getElementById('acesso-email');
+  const nivelInput = document.getElementById('acesso-nivel');
+  const statusToggle = document.getElementById('acesso-status-toggle');
+  const statusLabel = document.getElementById('acesso-status-label');
+
+  form.reset();
+  rowInput.value = '';
+  statusToggle.checked = true;
+  statusLabel.textContent = 'Liberado';
+
+  if (index !== null) {
+    const user = listaAcessos[index];
+    title.textContent = 'Editar Usuário';
+    rowInput.value = user._rowNumber;
+    nomeInput.value = user.nome;
+    emailInput.value = user.email;
+    emailInput.disabled = true;
+    nivelInput.value = user.nivel;
+    statusToggle.checked = user.status === 'liberado';
+    statusLabel.textContent = user.status === 'liberado' ? 'Liberado' : 'Bloqueado';
+  } else {
+    title.textContent = 'Novo Usuário';
+    emailInput.disabled = false;
+  }
+
+  modal.style.display = 'flex';
+}
+
+function fecharModalAcesso() {
+  document.getElementById('modal-acesso-overlay').style.display = 'none';
+}
+
+async function carregarAcessos() {
+  const tbody = document.getElementById('table-acessos');
+  tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px;">Carregando acessos...</td></tr>`;
+
+  try {
+    const token = sessionStorage.getItem('sap_session_token');
+    const res = await fetch('/api/acessos', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.erro || 'Erro ao carregar lista de acessos.');
+    }
+
+    listaAcessos = await res.json();
+    
+    if (listaAcessos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px;">Nenhum usuário cadastrado.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = listaAcessos.map((user, index) => {
+      const statusBadge = user.status === 'liberado' 
+        ? `<span class="badge badge-AUTORIZADO" style="background:#d1fae5; color:#065f46;">Liberado</span>`
+        : `<span class="badge badge-PENDENTE" style="background:#fee2e2; color:#991b1b;">Bloqueado</span>`;
+
+      const nivelDisplay = {
+        leitor: '👁️ Leitor',
+        editor: '✏️ Editor',
+        adm: '🛡️ Administrador'
+      }[user.nivel] || user.nivel;
+
+      return `
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:12px 16px; font-size:14px; font-weight:500; color:#1e293b;">${user.nome}</td>
+          <td style="padding:12px 16px; font-size:14px; color:#64748b;">${user.email}</td>
+          <td style="padding:12px 16px; font-size:14px; color:#334155;">${nivelDisplay}</td>
+          <td style="padding:12px 16px; font-size:14px;">${statusBadge}</td>
+          <td style="padding:12px 16px; font-size:14px; text-align:right;">
+            <button class="btn btn-ghost btn-sm" onclick="abrirModalAcesso(${index})" style="padding:4px 8px; font-size:12px; border:1px solid #cbd5e1; border-radius:4px; background:#fff; cursor:pointer;">✏️ Editar</button>
+            <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.email}')" style="padding:4px 8px; font-size:12px; margin-left:6px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">🗑️ Excluir</button>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } catch (error) {
+    console.error(error);
+    toast(error.message, 'error');
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:#ef4444;">${error.message}</td></tr>`;
+  }
+}
+
+async function salvarAcessoForm(event) {
+  event.preventDefault();
+  const row = document.getElementById('acesso-row').value;
+  const nome = document.getElementById('acesso-nome').value;
+  const email = document.getElementById('acesso-email').value;
+  const nivel = document.getElementById('acesso-nivel').value;
+  const status = document.getElementById('acesso-status-toggle').checked ? 'liberado' : 'bloqueado';
+
+  const payload = { nome, email, nivel, status };
+  const token = sessionStorage.getItem('sap_session_token');
+
+  try {
+    let url = '/api/acessos';
+    let method = 'POST';
+
+    if (row) {
+      url += '/' + row;
+      method = 'PUT';
+    }
+
+    const res = await fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.erro || 'Erro ao salvar acesso.');
+    }
+
+    toast(row ? 'Usuário atualizado!' : 'Usuário cadastrado!', 'success');
+    fecharModalAcesso();
+    carregarAcessos();
+  } catch (error) {
+    console.error(error);
+    toast(error.message, 'error');
+  }
+}
+
+async function deletarAcesso(rowNumber, email) {
+  if (!confirm(`Deseja realmente excluir o acesso do usuário ${email}?`)) {
+    return;
+  }
+
+  const token = sessionStorage.getItem('sap_session_token');
+  try {
+    const res = await fetch(`/api/acessos/${rowNumber}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.erro || 'Erro ao deletar acesso.');
+    }
+
+    toast('Usuário removido com sucesso!', 'info');
+    carregarAcessos();
+  } catch (error) {
+    console.error(error);
+    toast(error.message, 'error');
+  }
+}
+
+// ---- MÁSCARA E ENVIAR WHATSAPP ----
+
+function maskCelular(v) {
+  v = v.replace(/\D/g, "");
+  if (v.length > 11) v = v.substring(0, 11);
+  
+  if (v.length > 10) {
+    return `(${v.substring(0, 2)}) ${v.substring(2, 3)} ${v.substring(3, 7)}-${v.substring(7)}`;
+  } else if (v.length > 6) {
+    return `(${v.substring(0, 2)}) ${v.substring(2, 6)}-${v.substring(6)}`;
+  } else if (v.length > 2) {
+    return `(${v.substring(0, 2)}) ${v.substring(2)}`;
+  } else if (v.length > 0) {
+    return `(${v}`;
+  }
+  return v;
+}
+
+function enviarLinkWhatsApp() {
+  const inputVal = document.getElementById('share-whatsapp-number').value;
+  const digits = inputVal.replace(/\D/g, "");
+
+  if (digits.length < 10) {
+    toast('Por favor, informe um número de celular válido com DDD.', 'error');
+    return;
+  }
+
+  const phoneFormatted = digits.startsWith('55') ? digits : '55' + digits;
+  const textMsg = encodeURIComponent("Olá! Segue o link de acesso ao sistema de Acompanhamento de Processos da SEDUC-RO:\n\nhttps://tinhosys.github.io/seduc-processos/");
+
+  const url = `https://api.whatsapp.com/send?phone=${phoneFormatted}&text=${textMsg}`;
+  window.open(url, '_blank');
+}
+
+window.abrirModalAcesso = abrirModalAcesso;
+window.fecharModalAcesso = fecharModalAcesso;
+window.salvarAcessoForm = salvarAcessoForm;
+window.deletarAcesso = deletarAcesso;
+window.enviarLinkWhatsApp = enviarLinkWhatsApp;
+window.maskCelular = maskCelular;
+
+setTimeout(() => {
+  document.body.classList.remove('print-mode-analise');
+  document.getElementById('print-layout-analise').style.display = 'none';
+}, 1000);
 };
