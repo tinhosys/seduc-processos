@@ -339,7 +339,7 @@ async function getAllRows() {
 }
 
 app.get("/api/version", (req, res) => {
-  res.json({ version: "1.0.4", timestamp: "2026-07-06T03:43:00Z" });
+  res.json({ version: "1.0.5", timestamp: "2026-07-06T04:10:00Z" });
 });
 
 app.get("/api/registros", authMiddleware, async (req, res) => {
