@@ -276,30 +276,32 @@
       </section>
 
       <!-- ============= PAGE: SENHA ============= -->
-      <section class="page" id="page-senha" style="display:flex; align-items:center; justify-content:center; min-height: 80vh;">
-        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 420px; backdrop-filter: blur(20px); box-shadow: 0 25px 60px rgba(0,0,0,0.5); text-align: center;">
-          <h2 style="color:#f0f4ff; font-size:18px; font-weight:800; margin-bottom:40px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">Trocar Senha</h2>
-          
-          <div style="text-align:left; margin-bottom:16px;">
-            <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">SENHA ATUAL</label>
-            <input type="password" id="page-senha-atual" placeholder="****" style="width:100%; padding:12px 16px; border-radius:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;">
+      <section class="page" id="page-senha">
+        <div style="display:flex; align-items:center; justify-content:center; min-height: 80vh;">
+          <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 420px; backdrop-filter: blur(20px); box-shadow: 0 25px 60px rgba(0,0,0,0.5); text-align: center;">
+            <h2 style="color:#f0f4ff; font-size:18px; font-weight:800; margin-bottom:40px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">Trocar Senha</h2>
+            
+            <div style="text-align:left; margin-bottom:16px;">
+              <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">SENHA ATUAL</label>
+              <input type="password" id="page-senha-atual" placeholder="****" style="width:100%; padding:12px 16px; border-radius:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;">
+            </div>
+
+            <div style="text-align:left; margin-bottom:16px;">
+              <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">NOVA SENHA (4 NÚMEROS)</label>
+              <input type="password" id="page-nova-senha" placeholder="****" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '')" style="width:100%; padding:12px 16px; border-radius:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;">
+            </div>
+
+            <div style="text-align:left; margin-bottom:24px;">
+              <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">REPETIR NOVA SENHA</label>
+              <input type="password" id="page-confirma-senha" placeholder="****" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '')" style="width:100%; padding:12px 16px; border-radius:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;">
+            </div>
+
+            <div id="page-senha-msg" style="margin-bottom:24px; font-size:13px; font-weight:600; color:#ef4444; min-height: 20px;"></div>
+
+            <button onclick="salvarNovaSenhaPage()" style="width:100%; background:linear-gradient(90deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:1px; transition: 0.3s; box-shadow: 0 4px 15px rgba(59,130,246,0.3);">
+              Salvar Senha
+            </button>
           </div>
-
-          <div style="text-align:left; margin-bottom:16px;">
-            <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">NOVA SENHA (4 NÚMEROS)</label>
-            <input type="password" id="page-nova-senha" placeholder="****" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '')" style="width:100%; padding:12px 16px; border-radius:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;">
-          </div>
-
-          <div style="text-align:left; margin-bottom:24px;">
-            <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">REPETIR NOVA SENHA</label>
-            <input type="password" id="page-confirma-senha" placeholder="****" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '')" style="width:100%; padding:12px 16px; border-radius:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;">
-          </div>
-
-          <div id="page-senha-msg" style="margin-bottom:24px; font-size:13px; font-weight:600; color:#ef4444; min-height: 20px;"></div>
-
-          <button onclick="salvarNovaSenhaPage()" style="width:100%; background:linear-gradient(90deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:1px; transition: 0.3s; box-shadow: 0 4px 15px rgba(59,130,246,0.3);">
-            Salvar Senha
-          </button>
         </div>
       </section>
 

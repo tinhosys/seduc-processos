@@ -535,7 +535,7 @@ function renderFormulario() {
   document.getElementById('form-title').textContent = processo ? 'Editar Processo' : 'Novo Processo';
 
   // Lógica de Apontamento e Histórico
-  const currentSessao = getSessaoLocal();
+  const currentSessao = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
   const userNivel = currentSessao ? currentSessao.nivel : 'leitor';
 
   const legendDiv = document.getElementById('legend-ultima-edicao');
@@ -576,7 +576,7 @@ function renderFormulario() {
 function salvarFormulario(e) {
   e.preventDefault();
   
-  const currentSessao = getSessaoLocal();
+  const currentSessao = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
   const userNivel = currentSessao ? currentSessao.nivel : 'leitor';
 
   if (userNivel === 'leitor') {
