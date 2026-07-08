@@ -240,26 +240,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // ====== TROCA DE SENHA ======
-function abrirModalSenha() {
-  document.getElementById('senha-atual').value = '';
-  document.getElementById('nova-senha').value = '';
-  document.getElementById('confirma-nova-senha').value = '';
-  const msg = document.getElementById('senha-msg');
-  msg.style.display = 'none';
-  msg.className = '';
-  msg.textContent = '';
-  document.getElementById('modal-senha-overlay').style.display = 'flex';
-}
-
-function fecharModalSenha() {
-  document.getElementById('modal-senha-overlay').style.display = 'none';
-}
-
-async function salvarNovaSenha() {
-  const senhaAtual = document.getElementById('senha-atual').value;
-  const novaSenha = document.getElementById('nova-senha').value;
-  const confirmaSenha = document.getElementById('confirma-nova-senha').value;
-  const msg = document.getElementById('senha-msg');
+async function salvarNovaSenhaPage() {
+  const senhaAtual = document.getElementById('page-senha-atual').value;
+  const novaSenha = document.getElementById('page-nova-senha').value;
+  const confirmaSenha = document.getElementById('page-confirma-senha').value;
+  const msg = document.getElementById('page-senha-msg');
 
   msg.style.display = 'block';
 
@@ -298,7 +283,7 @@ async function salvarNovaSenha() {
   msg.textContent = 'Alterando senha...';
 
   try {
-    const res = await fetch(`${API_BASE_URL}/auth/senha`, {
+    const res = await fetch(`${API_BASE}/api/auth/senha`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -311,7 +296,13 @@ async function salvarNovaSenha() {
     if (res.ok) {
       msg.style.color = '#10b981';
       msg.textContent = 'Senha atualizada com sucesso!';
-      setTimeout(fecharModalSenha, 1500);
+      document.getElementById('page-senha-atual').value = '';
+      document.getElementById('page-nova-senha').value = '';
+      document.getElementById('page-confirma-senha').value = '';
+      setTimeout(() => {
+        navegar('dashboard');
+        msg.textContent = '';
+      }, 1500);
     } else {
       msg.style.color = '#ef4444';
       msg.textContent = data.erro || 'Erro ao alterar senha.';
