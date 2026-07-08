@@ -548,73 +548,11 @@ function renderFormulario() {
   } else {
     if (legendDiv) legendDiv.style.display = 'none';
   }
-
-  const groupApont = document.getElementById('group-apontamento');
-  const inputApont = document.getElementById('form-apontamento');
-  const histApont = document.getElementById('historico-apontamentos');
-  
-  if (userNivel === 'adm' || userNivel === 'leitor') {
-    if (groupApont) groupApont.style.display = 'block';
-    if (userNivel === 'adm') {
-      if (inputApont) inputApont.style.display = 'none';
-      if (histApont) {
-        histApont.style.display = 'block';
-        histApont.textContent = p.apontamento || 'Nenhum apontamento registrado.';
-      }
-    } else if (userNivel === 'leitor') {
-      if (inputApont) {
-        inputApont.style.display = 'block';
-        inputApont.value = ''; 
-      }
-      if (histApont) histApont.style.display = 'none';
-    }
-  } else {
-    if (groupApont) groupApont.style.display = 'none';
-  }
 }
 
 function salvarFormulario(e) {
   e.preventDefault();
   
-  const currentSessao = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
-  const userNivel = currentSessao ? currentSessao.nivel : 'leitor';
-
-  if (userNivel === 'leitor') {
-    const apont = document.getElementById('form-apontamento').value.trim();
-    if (!apont) {
-      toast('Digite um apontamento antes de salvar.', 'error');
-      return;
-    }
-    if (!state.editandoId) return;
-
-    const btnSubmit = e.target.querySelector('button[type="submit"]');
-    const originalText = btnSubmit ? btnSubmit.innerHTML : 'Salvar';
-    if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.innerHTML = 'Salvando...'; }
-
-    fetch(API_BASE + `/api/registros/${state.editandoId}/apontamento`, {
-      method: 'PUT',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ apontamento: apont })
-    }).then(res => res.json()).then(resData => {
-      if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = originalText; }
-      if (resData.sucesso) {
-        toast('Apontamento salvo com sucesso!', 'success');
-        document.getElementById('form-apontamento').value = '';
-        state.editandoId = null;
-        document.getElementById('form-processo').reset();
-        navegar('processos');
-        inicializarDados(); // re-fetch data
-      } else {
-        toast(resData.erro || 'Erro ao salvar', 'error');
-      }
-    }).catch(err => {
-       console.error(err);
-       if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = originalText; }
-       toast('Erro de conexão.', 'error');
-    });
-    return;
-  }
-
   // Obter todos os números preenchidos
   const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
   const numerosJoined = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ');
@@ -700,6 +638,27 @@ function abrirDetalhe(id) {
       </div>`;
   }
 
+  const currentSessao = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
+  const userNivel = currentSessao ? currentSessao.nivel : 'leitor';
+  
+  let apontamentoHtml = '';
+  if (userNivel === 'leitor') {
+    apontamentoHtml = `
+      <div class="card" style="margin-bottom:16px; border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.05);">
+        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">📝 Novo Apontamento</h4>
+        <textarea id="modal-apontamento-texto" placeholder="Digite seu apontamento..." style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:12px;"></textarea>
+        <button onclick="salvarApontamentoModal('${p.id}')" id="btn-salvar-apont" style="width:100%; padding:10px; border-radius:6px; border:none; background:#22c55e; color:#fff; font-weight:bold; cursor:pointer;">Salvar Apontamento</button>
+      </div>
+    `;
+  } else if (userNivel === 'adm') {
+    apontamentoHtml = `
+      <div class="card" style="margin-bottom:16px; border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.05);">
+        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">📝 Histórico de Apontamentos</h4>
+        <div style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; white-space:pre-wrap; min-height:60px;">${p.apontamento || 'Nenhum apontamento registrado.'}</div>
+      </div>
+    `;
+  }
+
   document.getElementById('modal-overlay').classList.add('open');
   document.getElementById('modal-content').innerHTML = `
     <div class="detail-header" style="display:flex; flex-direction:column; gap:20px;">
@@ -770,8 +729,41 @@ function abrirDetalhe(id) {
     ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">🗒️ Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
+    ${apontamentoHtml}
   `;
 }
+
+window.salvarApontamentoModal = function(id) {
+  const textarea = document.getElementById('modal-apontamento-texto');
+  if (!textarea) return;
+  const apont = textarea.value.trim();
+  if (!apont) {
+    toast('Digite um apontamento antes de salvar.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btn-salvar-apont');
+  if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+
+  fetch(API_BASE + `/api/registros/${id}/apontamento`, {
+    method: 'PUT',
+    headers: getHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ apontamento: apont })
+  }).then(res => res.json()).then(resData => {
+    if (btn) { btn.disabled = false; btn.textContent = 'Salvar Apontamento'; }
+    if (resData.sucesso) {
+      toast('Apontamento salvo com sucesso!', 'success');
+      fecharModal();
+      inicializarDados();
+    } else {
+      toast(resData.erro || 'Erro ao salvar', 'error');
+    }
+  }).catch(err => {
+      console.error(err);
+      if (btn) { btn.disabled = false; btn.textContent = 'Salvar Apontamento'; }
+      toast('Erro de conexão.', 'error');
+  });
+};
 
 
 function fecharModal() {
