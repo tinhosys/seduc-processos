@@ -532,8 +532,8 @@ function renderFormulario() {
 
     const groupHistorico = document.getElementById('group-historico-apontamentos');
     if (groupHistorico) {
-      if (getSessaoAtual()?.nivel === 'adm' && p && p.apontamento) {
-        document.getElementById('historico-apontamentos-content').innerHTML = p.apontamento.split(';').map(x => x.trim()).filter(Boolean).join('<br><br>');
+      if (getSessaoAtual()?.nivel === 'adm' && p && (p.apontamento || p.alerta === '1')) {
+        document.getElementById('historico-apontamentos-content').innerHTML = (p.apontamento || '').split(';').map(x => x.trim()).filter(Boolean).join('<br><br>');
         groupHistorico.style.display = 'block';
         
         const chkAlerta = document.getElementById('form-alerta-toggle');
