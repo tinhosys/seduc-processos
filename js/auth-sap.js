@@ -238,3 +238,87 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Sem sessão válida: mostra tela de login
   mostrarLogin();
 });
+
+// ====== TROCA DE SENHA ======
+function abrirModalSenha() {
+  document.getElementById('senha-atual').value = '';
+  document.getElementById('nova-senha').value = '';
+  document.getElementById('confirma-nova-senha').value = '';
+  const msg = document.getElementById('senha-msg');
+  msg.style.display = 'none';
+  msg.className = '';
+  msg.textContent = '';
+  document.getElementById('modal-senha-overlay').style.display = 'flex';
+}
+
+function fecharModalSenha() {
+  document.getElementById('modal-senha-overlay').style.display = 'none';
+}
+
+async function salvarNovaSenha() {
+  const senhaAtual = document.getElementById('senha-atual').value;
+  const novaSenha = document.getElementById('nova-senha').value;
+  const confirmaSenha = document.getElementById('confirma-nova-senha').value;
+  const msg = document.getElementById('senha-msg');
+
+  msg.style.display = 'block';
+
+  if (!senhaAtual || !novaSenha || !confirmaSenha) {
+    msg.style.color = '#ef4444';
+    msg.textContent = 'Preencha todos os campos.';
+    return;
+  }
+
+  if (novaSenha !== confirmaSenha) {
+    msg.style.color = '#ef4444';
+    msg.textContent = 'A nova senha e a confirmação não conferem.';
+    return;
+  }
+
+  if (!/^\d{4}$/.test(novaSenha)) {
+    msg.style.color = '#ef4444';
+    msg.textContent = 'A nova senha deve ter exatamente 4 números.';
+    return;
+  }
+
+  if (novaSenha[0].repeat(4) === novaSenha) {
+    msg.style.color = '#ef4444';
+    msg.textContent = 'A nova senha não pode ser números repetidos (ex: 1111).';
+    return;
+  }
+
+  const token = getSessaoLocal()?.token;
+  if (!token) {
+    msg.style.color = '#ef4444';
+    msg.textContent = 'Erro de sessão. Faça login novamente.';
+    return;
+  }
+
+  msg.style.color = '#3b82f6';
+  msg.textContent = 'Alterando senha...';
+
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/senha`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ senhaAtual, novaSenha })
+    });
+    
+    const data = await res.json();
+    if (res.ok) {
+      msg.style.color = '#10b981';
+      msg.textContent = 'Senha atualizada com sucesso!';
+      setTimeout(fecharModalSenha, 1500);
+    } else {
+      msg.style.color = '#ef4444';
+      msg.textContent = data.erro || 'Erro ao alterar senha.';
+    }
+  } catch (error) {
+    msg.style.color = '#ef4444';
+    msg.textContent = 'Erro de conexão.';
+  }
+}
+

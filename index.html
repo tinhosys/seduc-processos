@@ -160,6 +160,9 @@
               <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
               <div id="user-role" style="font-size:11px;color:var(--text-muted)">Carregando...</div>
             </div>
+            <button onclick="abrirModalSenha()" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; padding:4px;" title="Trocar Senha">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </button>
             <button class="btn btn-danger btn-sm" onclick="fazerLogout()" title="Sair">Sair</button>
           </div>
         </div>
@@ -704,5 +707,35 @@
 
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
+
+  <!-- ============= MODAL TROCA DE SENHA ============= -->
+  <div class="modal-overlay" id="modal-senha-overlay">
+    <div class="modal" style="max-width: 400px;">
+      <div class="modal-header">
+        <h2 style="font-size:16px; margin:0;">Mudar Senha</h2>
+        <button class="modal-close" onclick="fecharModalSenha()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Senha Atual</label>
+          <input type="password" id="senha-atual" class="form-control" placeholder="****">
+        </div>
+        <div class="form-group">
+          <label>Nova Senha (4 números)</label>
+          <input type="password" id="nova-senha" class="form-control" placeholder="****" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '')">
+        </div>
+        <div class="form-group">
+          <label>Confirmar Nova Senha</label>
+          <input type="password" id="confirma-nova-senha" class="form-control" placeholder="****" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '')">
+        </div>
+        <div id="senha-msg" style="margin-top:10px; font-size:13px; font-weight:500; display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="fecharModalSenha()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarNovaSenha()">Salvar Nova Senha</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

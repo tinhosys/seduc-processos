@@ -166,7 +166,7 @@ app.post("/api/logout", (req, res) => {
   res.json({ ok: true });
 });
 
-// ====== MIDDLEWARE DE AUTH ======
+// Middleware de AUTH
 const authMiddleware = (req, res, next) => {
   const sessao = validarSessao(req);
   if (!sessao) {
@@ -175,6 +175,63 @@ const authMiddleware = (req, res, next) => {
   req.sessao = sessao;
   next();
 };
+
+// ====== ENDPOINT: TROCAR SENHA ======
+app.put("/api/auth/senha", authMiddleware, async (req, res) => {
+  try {
+    const { senhaAtual, novaSenha } = req.body;
+    const whatsappSessao = req.sessao.whatsapp;
+
+    if (!senhaAtual || !novaSenha) {
+      return res.status(400).json({ erro: "Senha atual e nova senha são obrigatórias." });
+    }
+
+    const novaSenhaStr = novaSenha.toString().trim();
+    if (!/^\d{4}$/.test(novaSenhaStr) || novaSenhaStr[0].repeat(4) === novaSenhaStr) {
+      return res.status(400).json({ erro: "Nova senha inválida." });
+    }
+
+    const result = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: "Acessos!A:G"
+    });
+
+    const rows = result.data.values || [];
+    let userRowIndex = -1;
+    let usuarioEncontrado = null;
+
+    rows.slice(1).find((row, index) => {
+      const waPlanilha = (row[1] || "").toString().replace(/\D/g, "");
+      if (waPlanilha === whatsappSessao) {
+        userRowIndex = index + 2;
+        usuarioEncontrado = row;
+        return true;
+      }
+      return false;
+    });
+
+    if (!usuarioEncontrado || userRowIndex === -1) {
+      return res.status(404).json({ erro: "Usuário não encontrado." });
+    }
+
+    const senhaPlanilha = (usuarioEncontrado[4] || "").toString().trim();
+    if (senhaPlanilha !== senhaAtual.toString().trim()) {
+      return res.status(401).json({ erro: "Senha atual incorreta." });
+    }
+
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `Acessos!E${userRowIndex}`,
+      valueInputOption: "USER_ENTERED",
+      requestBody: { values: [[novaSenhaStr]] }
+    });
+
+    res.json({ sucesso: true, mensagem: "Senha atualizada com sucesso!" });
+  } catch (error) {
+    console.error("[AUTH] Erro ao trocar senha:", error);
+    res.status(500).json({ erro: "Erro interno ao trocar a senha." });
+  }
+});
 
 // Middleware para bloquear somente-leitores em mutações (editores e adm permitidos)
 const editorOnly = (req, res, next) => {
