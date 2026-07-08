@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783553457534.0.6">
+  <link rel="stylesheet" href="css/style.css?v=1783554528478.0.6">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -353,7 +353,12 @@
           <select id="filtro-objeto">
             <option value="">Objeto</option>
           </select>
-          <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">✕ Limpar</button>
+          <select id="filtro-alerta" class="action-adm" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
+            <option value="">&#9888; Alerta</option>
+            <option value="sim">&#128308; Com Alerta</option>
+            <option value="nao">&#128994; Sem Alerta</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">&times; Limpar</button>
         </div>
 
         <!-- Tabela -->
@@ -508,6 +513,17 @@
                 <textarea id="form-anotacao" placeholder="Anotações internas..."></textarea>
               </div>
 
+              <div class="form-group full action-adm" id="group-historico-apontamentos" style="display:none; margin-top:16px; border: 1px solid rgba(245,158,11,0.5); padding:16px; border-radius:8px; background: rgba(245,158,11,0.05);">
+                <div style="margin-bottom:12px;">
+                  <label style="color:#f59e0b; font-weight:bold; font-size:13px; display:block; margin-bottom:10px;">&#128203; HIST&Oacute;RICO DE APONTAMENTOS</label>
+                  <div id="historico-apontamentos-content" style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; line-height:1.7; margin-bottom:12px; min-height:40px;"></div>
+                  <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:10px 14px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,255,255,0.1); width:fit-content;">
+                    <input type="checkbox" id="form-alerta-toggle" style="width:18px; height:18px; cursor:pointer; accent-color:#10b981;">
+                    <span style="font-size:13px; color:#cbd5e1;">Desativar Alerta <span style="color:#94a3b8; font-size:12px;">(marque para limpar o alerta ao salvar)</span></span>
+                  </label>
+                </div>
+              </div>
+
             </div>
 
             <div class="form-actions">
@@ -602,9 +618,9 @@
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nivel" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nível de Acesso</label>
               <select id="acesso-nivel" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:var(--bg-secondary); color:var(--text-primary); outline:none; height: 40px; box-sizing: border-box;">
-                <option value="leitor">Leitor</option>
-                <option value="editor">Editor</option>
-                <option value="adm">Administrador</option>
+                <option value="leitor">👁️ Leitor</option>
+                <option value="editor">✏️ Editor</option>
+                <option value="adm">🛡️ Administrador</option>
               </select>
             </div>
 
@@ -664,13 +680,27 @@
     </div>
   </div>
 
+  <!-- Modal Alertas ADM -->
+  <div id="modal-alertas-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#1e293b; border:1px solid rgba(245,158,11,0.4); border-radius:16px; padding:28px; max-width:500px; width:90%; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="color:#f59e0b; margin:0; font-size:18px;">&#9888;&#65039; Apontamentos Pendentes</h2>
+        <button onclick="fecharModalAlertas()" style="background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;">&times;</button>
+      </div>
+      <div id="modal-alertas-content" style="overflow-y:auto; flex:1; padding-right:4px;"></div>
+      <div style="margin-top:20px; text-align:right;">
+        <button onclick="fecharModalAlertas()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; padding:8px 20px; border-radius:8px; cursor:pointer;">Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.0.6"></script>
-  <script src="js/app.js?v=1783553457591.0.6"></script>
-  <script src="js/auth-sap.js?v=1.0.6"></script>
+  <script src="js/dados.js?v=1.0.9"></script>
+  <script src="js/app.js?v=1783554528551.0.9"></script>
+  <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -740,6 +770,21 @@
     });
   </script>
 
+
+  <!-- Modal Alertas (ADM) -->
+  <div class="modal-overlay" id="modal-alertas-overlay">
+    <div class="modal" style="max-width: 450px;">
+      <div class="modal-header">
+        <h2 style="color: #f59e0b; display: flex; align-items: center; gap: 8px;"><span>⚠️</span> Apontamentos Pendentes</h2>
+        <button class="modal-close" onclick="fecharModalAlertas()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-alertas-content">
+      </div>
+      <div class="modal-footer" style="margin-top: 20px; text-align: right;">
+        <button class="btn btn-ghost" onclick="fecharModalAlertas()">Fechar</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ============= PRINT LAYOUT: DETALHADO ============= -->
   <div id="print-layout-detalhado" class="print-only-layout" style="display:none;"></div>
