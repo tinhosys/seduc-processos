@@ -519,7 +519,7 @@ app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
     // Update row logic
     const updatedRow = headers.map((h, i) => {
       const hLow = (h || "").toLowerCase().trim();
-      if (hLow === 'apontamento') {
+      if (hLow.includes('apontamento')) {
         const msgAtual = existingRow[i] || "";
         return msgAtual ? msgAtual + "; " + novaMensagem : novaMensagem;
       }
