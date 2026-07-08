@@ -11,10 +11,10 @@ function applyFinalFixes() {
             <tr><td colspan="9" style="border:none;">\${getCommonHeader('Lista de Processos Oficial')}</td></tr>`);
 
   // 2. Change font-size of CAM title from 14px to 11px
-  app = app.replace(/<h2 style="margin:0 0 2px 0; font-size:14px; color:#000;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS<\/h2>/g, 
-                    '<h2 style="margin:0 0 2px 0; font-size:11px; color:#000;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS</h2>');
-  app = app.replace(/<h2 style="margin:0 0 2px 0; font-size:14px; color:#000;">CAM - COORDENAǟO DE ARTICULAǟO COM OS MUNIC?PIOS<\/h2>/g, 
-                    '<h2 style="margin:0 0 2px 0; font-size:11px; color:#000;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS</h2>');
+  app = app.replace(/<h2 style="margin:0 0 2px 0; font-size:14px; color:#000;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS<\/h2>/g, 
+                    '<h2 style="margin:0 0 2px 0; font-size:11px; color:#000;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</h2>');
+  app = app.replace(/<h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS<\/h2>/g, 
+                    '<h2 style="margin:0 0 2px 0; font-size:11px; color:#000;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</h2>');
   app = app.replace(/<h2 style="margin:0 0 2px 0; font-size:14px; color:#000;">CAM -/g, 
                     '<h2 style="margin:0 0 2px 0; font-size:11px; color:#000;">CAM -');
 

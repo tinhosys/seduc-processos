@@ -11,7 +11,7 @@ var API_BASE = window.location.hostname === 'localhost' || window.location.hostn
 
 // Helper para incluir cabeçalho de autenticação
 function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
+  const token = typeof getSessionToken === 'function' ? getSessionToken() : sessionStorage.getItem('sap_session_token');
   return {
     ...extraHeaders,
     ...(token ? { 'Authorization': 'Bearer ' + token } : {})

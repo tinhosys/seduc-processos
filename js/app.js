@@ -985,7 +985,7 @@ function exportarPDF() {
     didDrawPage: function (data) {
       doc.setFontSize(12);
       doc.setTextColor(40);
-      doc.text("CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
+      doc.text("CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
       
       const str = "Página " + data.pageNumber + " de " + totalPagesExp;
       doc.setFontSize(8);
@@ -1108,7 +1108,7 @@ function getCommonHeader(subtitle) {
   return `
     <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left;">
-        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
+        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
       </div>
       <div style="text-align:right;">
         <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>
@@ -1645,9 +1645,15 @@ function renderListaAcessosUI() {
         <td style="padding:12px 16px; font-size:14px; font-family:monospace; font-weight:600; color:var(--text-secondary);">${senhaDisplay}</td>
         <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary); font-weight:600;">${contagemDisplay}</td>
         <td style="padding:12px 16px; font-size:13px; color:var(--text-muted);">${dataDisplay}</td>
-        <td style="padding:12px 16px; font-size:14px; text-align:right;">
-          <button class="btn btn-ghost btn-sm" onclick="abrirModalAcesso(${index})" style="padding:4px 8px; font-size:12px; border:1px solid var(--border); border-radius:4px; background:var(--bg-secondary); color:var(--text-primary); cursor:pointer;">✏️ Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="padding:4px 8px; font-size:12px; margin-left:6px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">🗑️ Excluir</button>
+        <td style="padding:12px 16px; font-size:14px; text-align:right; white-space:nowrap;">
+          <button class="btn btn-ghost btn-sm" onclick="abrirModalAcesso(${index})" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; border:1px solid rgba(59, 130, 246, 0.2); border-radius:6px; background:rgba(59, 130, 246, 0.08); color:#60a5fa; font-weight:600; cursor:pointer; transition:var(--transition);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Editar
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; margin-left:6px; background:rgba(239, 68, 68, 0.08); color:#f87171; border:1px solid rgba(239, 68, 68, 0.2); border-radius:6px; font-weight:600; cursor:pointer; transition:var(--transition);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            Excluir
+          </button>
         </td>
       </tr>
     `;

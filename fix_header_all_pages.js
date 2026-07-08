@@ -29,7 +29,7 @@ function injectPrintHeader(subtitle) {
     <div style="display:flex; justify-content:space-between; align-items:center; padding: 3mm 5mm 3mm 5mm; border-bottom: 1px solid #999; background:white; width:100%;">
       <img src="img/logo-seduc.png" style="height:28px;">
       <div style="text-align:right; font-family:Arial, sans-serif;">
-        <div style="font-size:9px; font-weight:bold; color:#000;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+        <div style="font-size:9px; font-weight:bold; color:#000;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
         <div style="font-size:9px; font-weight:bold; color:#000;">\${subtitle.toUpperCase()}</div>
         <div style="font-size:7px; color:#555; font-style:italic;">\${d} / \${t}</div>
       </div>

@@ -13,7 +13,7 @@ function getCommonHeader(subtitle) {
     <div style="height:10mm; display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
       <img src="img/logo-seduc.png" style="height:35px; margin-bottom:-5px;">
       <div style="text-align:right;">
-        <h2 style="margin:0 0 2px 0; font-size:14px; color:#000;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS</h2>
+        <h2 style="margin:0 0 2px 0; font-size:14px; color:#000;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</h2>
         <div style="font-size:11px; color:#000; font-weight:bold;">\${subtitle.toUpperCase()}</div>
       </div>
     </div>

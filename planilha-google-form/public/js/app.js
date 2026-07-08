@@ -985,7 +985,7 @@ function exportarPDF() {
     didDrawPage: function (data) {
       doc.setFontSize(12);
       doc.setTextColor(40);
-      doc.text("CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
+      doc.text("CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
       
       const str = "Página " + data.pageNumber + " de " + totalPagesExp;
       doc.setFontSize(8);
@@ -1108,7 +1108,7 @@ function getCommonHeader(subtitle) {
   return `
     <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left;">
-        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENAÇÃO DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
+        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
       </div>
       <div style="text-align:right;">
         <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>
