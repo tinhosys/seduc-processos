@@ -1551,14 +1551,26 @@ function abrirModalAcesso(index = null) {
     const user = listaAcessos[index];
     title.innerHTML = '<span>✏️</span> Editar Registro de Acesso';
     rowInput.value = user._rowNumber;
+    
     nomeInput.value = user.nome;
+    nomeInput.disabled = false;
+    
     whatsappInput.value = user.whatsapp || '';
-    whatsappInput.disabled = true;
+    whatsappInput.disabled = true; // Permanece desabilitado para não trocar o número (identificador principal)
+    
     nivelInput.value = user.nivel;
+    nivelInput.disabled = false;
+    
     senhaInput.value = user.senha || '';
+    senhaInput.disabled = false;
+    
     statusToggle.checked = user.status === 'liberado';
+    statusToggle.disabled = false;
     statusLabel.textContent = user.status === 'liberado' ? 'ON' : 'OFF';
     statusLabel.style.color = user.status === 'liberado' ? '#10b981' : '#ef4444';
+    
+    if (btnSalvar) btnSalvar.disabled = false;
+
     if (btnCancelar) btnCancelar.style.display = 'inline-flex';
   } else {
     cancelarEdicaoAcesso();
@@ -1569,16 +1581,26 @@ function cancelarEdicaoAcesso() {
   const title = document.getElementById('cadastro-acesso-title');
   const form = document.getElementById('form-acesso');
   const rowInput = document.getElementById('acesso-row');
+  const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
+  const nivelInput = document.getElementById('acesso-nivel');
+  const senhaInput = document.getElementById('acesso-senha');
   const statusToggle = document.getElementById('acesso-status-toggle');
   const statusLabel = document.getElementById('acesso-status-label');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
+  const btnSalvar = document.getElementById('btn-salvar-acesso');
 
   if (form) form.reset();
   if (rowInput) rowInput.value = '';
-  if (title) title.innerHTML = '<span>👤</span> Novo Registro de Acesso';
-  if (whatsappInput) whatsappInput.disabled = false;
-  if (statusToggle) statusToggle.checked = true;
+  if (title) title.innerHTML = '<span>👤</span> Selecione um registro para editar';
+  
+  if (nomeInput) nomeInput.disabled = true;
+  if (whatsappInput) whatsappInput.disabled = true;
+  if (nivelInput) nivelInput.disabled = true;
+  if (senhaInput) senhaInput.disabled = true;
+  if (statusToggle) statusToggle.disabled = true;
+  if (btnSalvar) btnSalvar.disabled = true;
+
   if (statusLabel) {
     statusLabel.textContent = 'ON';
     statusLabel.style.color = '#10b981';
