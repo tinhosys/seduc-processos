@@ -272,7 +272,7 @@ async function salvarNovaSenhaPage() {
     return;
   }
 
-  const token = getSessionToken();
+  const token = getSessaoLocal()?.token;
   if (!token) {
     msg.style.color = '#ef4444';
     msg.textContent = 'Erro de sessão. Faça login novamente.';

@@ -366,7 +366,7 @@ app.get("/api/registros", authMiddleware, async (req, res) => {
   }
 });
 
-function mapDataToRow(data, headers, originalRow = []) {
+function mapDataToRow(data, headers, originalRow = [], user = null) {
   const formatMoney = (val) => {
     if (val === undefined || val === null || val === "") return "";
     return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -389,7 +389,7 @@ function mapDataToRow(data, headers, originalRow = []) {
     else if (hLow.includes('obs')) val = data.obs;
     else if (hLow === 'data') val = data.data;
     else if (hLow.includes('anota')) val = data.anotacao;
-    else if (hLow.includes('contato')) {
+    if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
         val = data.contatos.map(c => {
           const tel = c.whatsapp || c.telefone;
@@ -398,6 +398,15 @@ function mapDataToRow(data, headers, originalRow = []) {
         }).filter(Boolean).join('; ');
       } else {
         val = "";
+      }
+    }
+
+    if (user && user.nivel !== 'leitor') {
+      if (hLow === 'ultima edicao' || hLow === 'última edição') val = user.nome || user.whatsapp;
+      if (hLow === 'data/hora edição' || hLow === 'data/hora edicao') {
+        const now = new Date();
+        const dh = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        val = dh;
       }
     }
 
@@ -442,7 +451,7 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
       return res.status(400).json({ erro: "A planilha não possui cabeçalho." });
     }
 
-    const updatedRow = mapDataToRow(req.body, headers, existingRow);
+    const updatedRow = mapDataToRow(req.body, headers, existingRow, req.user);
 
     const lastColumn = columnToLetter(headers.length);
     const range = `${tabName}!A${rowNumber}:${lastColumn}${rowNumber}`;
@@ -454,10 +463,83 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
       requestBody: { values: [updatedRow] }
     });
 
-    res.json({ sucesso: true, mensagem: "Registro atualizado com sucesso." });
+    res.json({ sucesso: true, mensagem: "Atualizado com sucesso." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ erro: "Erro ao atualizar a planilha." });
+    res.status(500).json({ erro: "Erro ao atualizar registro." });
+  }
+});
+
+// NOVA ROTA: Apontamento exclusivo para Leitores
+app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
+  try {
+    if (req.user.nivel !== 'leitor') {
+      return res.status(403).json({ erro: "Somente perfil leitor pode usar esta rota." });
+    }
+
+    const rawId = req.params.id;
+    const parts = rawId.split("__");
+    
+    let tabName, rowNumber;
+    if (parts.length >= 2) {
+      rowNumber = Number(parts.pop());
+      tabName = parts.join("__");
+    } else {
+      rowNumber = Number(parts[0]);
+      const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+      tabName = response.data.sheets[0].properties.title;
+    }
+
+    if (!rowNumber || rowNumber < 2) {
+      return res.status(400).json({ erro: "Número de linha inválido." });
+    }
+
+    const headerDefRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${tabName}!A1:Z1`
+    });
+    const headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
+
+    const existingRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${tabName}!A${rowNumber}:Z${rowNumber}`
+    });
+    const existingRow = (existingRes.data.values && existingRes.data.values[0]) ? existingRes.data.values[0] : [];
+
+    const { apontamento } = req.body;
+    if (!apontamento || !apontamento.trim()) {
+      return res.status(400).json({ erro: "Mensagem de apontamento vazia." });
+    }
+
+    const now = new Date();
+    const dh = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const novaMensagem = `[${dh}] ${req.user.nome || req.user.whatsapp}: ${apontamento.trim()}`;
+
+    // Update row logic
+    const updatedRow = headers.map((h, i) => {
+      const hLow = h.toLowerCase().trim();
+      if (hLow === 'apontamento') {
+        const msgAtual = existingRow[i] || "";
+        return msgAtual ? msgAtual + "; " + novaMensagem : novaMensagem;
+      }
+      if (hLow === 'alerta') return "1"; // Seta o alerta
+      return existingRow[i] ?? ""; // Mantém o resto
+    });
+
+    const lastColumn = columnToLetter(headers.length);
+    const range = `${tabName}!A${rowNumber}:${lastColumn}${rowNumber}`;
+
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: range,
+      valueInputOption: "USER_ENTERED",
+      requestBody: { values: [updatedRow] }
+    });
+
+    res.json({ sucesso: true, mensagem: "Apontamento salvo com sucesso." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erro: "Erro ao salvar apontamento." });
   }
 });
 

@@ -276,9 +276,8 @@
       </section>
 
       <!-- ============= PAGE: SENHA ============= -->
-      <section class="page" id="page-senha">
-        <div style="display:flex; align-items:center; justify-content:center; min-height: 80vh;">
-          <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 420px; backdrop-filter: blur(20px); box-shadow: 0 25px 60px rgba(0,0,0,0.5); text-align: center;">
+      <section class="page" id="page-senha" style="display:flex; align-items:center; justify-content:center; min-height: 80vh;">
+        <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 420px; backdrop-filter: blur(20px); box-shadow: 0 25px 60px rgba(0,0,0,0.5); text-align: center;">
           <h2 style="color:#f0f4ff; font-size:18px; font-weight:800; margin-bottom:40px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">Trocar Senha</h2>
           
           <div style="text-align:left; margin-bottom:16px;">
@@ -301,7 +300,6 @@
           <button onclick="salvarNovaSenhaPage()" style="width:100%; background:linear-gradient(90deg, #3b82f6, #2563eb); color:#fff; border:none; padding:14px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; text-transform:uppercase; letter-spacing:1px; transition: 0.3s; box-shadow: 0 4px 15px rgba(59,130,246,0.3);">
             Salvar Senha
           </button>
-          </div>
         </div>
       </section>
 
@@ -397,10 +395,15 @@
       <!-- ============= PAGE: NOVO PROCESSO ============= -->
       <section class="page" id="page-novo">
 
-        <div class="section-header">
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
           <div>
             <h2 id="form-title">Novo Processo</h2>
             <p>Preencha os dados do processo</p>
+          </div>
+          <div id="legend-ultima-edicao" style="display:none; text-align:right; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: var(--text-muted);">
+            <div style="font-size: 10px; font-weight: 700; color: #f59e0b; margin-bottom: 2px;">ÚLTIMA ATUALIZAÇÃO:</div>
+            <div id="ultima-edicao-nome" style="font-size: 13px; font-weight: 600; color: var(--text-primary);"></div>
+            <div id="ultima-edicao-data" style="font-size: 11px;"></div>
           </div>
         </div>
 
@@ -503,6 +506,12 @@
                 <textarea id="form-anotacao" placeholder="Anotações internas..."></textarea>
               </div>
 
+              <div class="form-group full" id="group-apontamento" style="display:none; border: 2px solid #22c55e; padding: 12px; border-radius: 8px; background: rgba(34, 197, 94, 0.05); margin-top: 8px;">
+                <label for="form-apontamento" style="color: #22c55e; font-weight: bold; margin-bottom: 8px; display: block;">📝 Apontamento</label>
+                <textarea id="form-apontamento" placeholder="Deixe um apontamento para o Administrador..."></textarea>
+                <div id="historico-apontamentos" style="display:none; margin-top: 12px; font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 10px; border-radius: 6px; white-space: pre-wrap;"></div>
+              </div>
+
             </div>
 
             <div class="form-actions">
@@ -579,24 +588,24 @@
         <!-- FORM DE CADASTRO/EDIÇÃO DIRETO NA TELA -->
         <div class="card" style="margin-bottom: 24px; padding: 20px;">
           <h3 id="cadastro-acesso-title" style="font-size: 14px; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-            <span>👤</span> Selecione um registro para editar
+            <span>👤</span> Novo Registro de Acesso
           </h3>
           <form id="form-acesso" onsubmit="salvarAcessoForm(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: flex-end;">
             <input type="hidden" id="acesso-row">
             
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nome" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nome Completo</label>
-              <input type="text" id="acesso-nome" disabled required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;" placeholder="Ex: Elton Silva">
+              <input type="text" id="acesso-nome" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;" placeholder="Ex: Elton Silva">
             </div>
 
             <div class="form-group" style="margin: 0;">
               <label for="acesso-whatsapp" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">WhatsApp</label>
-              <input type="text" id="acesso-whatsapp" disabled required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)">
+              <input type="text" id="acesso-whatsapp" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)">
             </div>
             
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nivel" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nível de Acesso</label>
-              <select id="acesso-nivel" disabled required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:var(--bg-secondary); color:var(--text-primary); outline:none; height: 40px; box-sizing: border-box;">
+              <select id="acesso-nivel" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:var(--bg-secondary); color:var(--text-primary); outline:none; height: 40px; box-sizing: border-box;">
                 <option value="leitor">👁️ Leitor</option>
                 <option value="editor">✏️ Editor</option>
                 <option value="adm">🛡️ Administrador</option>
@@ -605,14 +614,14 @@
 
             <div class="form-group" style="margin: 0;">
               <label for="acesso-senha" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Senha (4 números)</label>
-              <input type="password" id="acesso-senha" disabled required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none; text-align: center; letter-spacing: 2px; height: 40px; box-sizing: border-box;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')">
+              <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none; text-align: center; letter-spacing: 2px; height: 40px; box-sizing: border-box;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')">
             </div>
             
             <div class="form-group" style="margin: 0; min-height: 40px; display: flex; flex-direction: column; justify-content: flex-end;">
               <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Status de Acesso</label>
               <div class="switch-wrapper" style="margin: 0; display:flex; align-items:center; gap:8px; height: 38px;">
                 <label class="switch" style="margin:0;">
-                  <input type="checkbox" id="acesso-status-toggle" disabled checked onchange="document.getElementById('acesso-status-label').textContent = this.checked ? 'ON' : 'OFF'; document.getElementById('acesso-status-label').style.color = this.checked ? '#10b981' : '#ef4444';">
+                  <input type="checkbox" id="acesso-status-toggle" checked onchange="document.getElementById('acesso-status-label').textContent = this.checked ? 'ON' : 'OFF'; document.getElementById('acesso-status-label').style.color = this.checked ? '#10b981' : '#ef4444';">
                   <span class="slider"></span>
                 </label>
                 <span id="acesso-status-label" class="switch-label" style="font-size:12px; font-weight:800; color:#10b981; width:24px;">ON</span>
@@ -620,7 +629,7 @@
             </div>
             
             <div class="form-actions" style="margin: 0; display:flex; gap:8px; height: 40px; align-items: center;">
-              <button type="submit" id="btn-salvar-acesso" disabled class="btn btn-primary" style="flex: 1; height: 40px; background:#10b981; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer;">Salvar</button>
+              <button type="submit" class="btn btn-primary" style="flex: 1; height: 40px; background:#10b981; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer;">Salvar</button>
               <button type="button" id="btn-cancelar-edicao" class="btn btn-ghost" onclick="cancelarEdicaoAcesso()" style="height: 40px; background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:0 12px; border-radius:6px; font-weight:600; color:var(--text-primary); cursor:pointer; display:none; align-items:center;">Cancelar</button>
             </div>
           </form>

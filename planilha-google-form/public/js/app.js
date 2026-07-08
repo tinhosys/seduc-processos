@@ -533,11 +533,88 @@ function renderFormulario() {
   }
 
   document.getElementById('form-title').textContent = processo ? 'Editar Processo' : 'Novo Processo';
+
+  // Lógica de Apontamento e Histórico
+  const currentSessao = getSessaoLocal();
+  const userNivel = currentSessao ? currentSessao.nivel : 'leitor';
+
+  const legendDiv = document.getElementById('legend-ultima-edicao');
+  const nomeDiv = document.getElementById('ultima-edicao-nome');
+  const dataDiv = document.getElementById('ultima-edicao-data');
+  if (p['ultima edicao'] || p['última edição'] || p['data/hora edição'] || p['data/hora edicao']) {
+    if (legendDiv) legendDiv.style.display = 'block';
+    if (nomeDiv) nomeDiv.textContent = p['ultima edicao'] || p['última edição'] || '-';
+    if (dataDiv) dataDiv.textContent = p['data/hora edição'] || p['data/hora edicao'] || '-';
+  } else {
+    if (legendDiv) legendDiv.style.display = 'none';
+  }
+
+  const groupApont = document.getElementById('group-apontamento');
+  const inputApont = document.getElementById('form-apontamento');
+  const histApont = document.getElementById('historico-apontamentos');
+  
+  if (userNivel === 'adm' || userNivel === 'leitor') {
+    if (groupApont) groupApont.style.display = 'block';
+    if (userNivel === 'adm') {
+      if (inputApont) inputApont.style.display = 'none';
+      if (histApont) {
+        histApont.style.display = 'block';
+        histApont.textContent = p.apontamento || 'Nenhum apontamento registrado.';
+      }
+    } else if (userNivel === 'leitor') {
+      if (inputApont) {
+        inputApont.style.display = 'block';
+        inputApont.value = ''; 
+      }
+      if (histApont) histApont.style.display = 'none';
+    }
+  } else {
+    if (groupApont) groupApont.style.display = 'none';
+  }
 }
 
 function salvarFormulario(e) {
   e.preventDefault();
   
+  const currentSessao = getSessaoLocal();
+  const userNivel = currentSessao ? currentSessao.nivel : 'leitor';
+
+  if (userNivel === 'leitor') {
+    const apont = document.getElementById('form-apontamento').value.trim();
+    if (!apont) {
+      toast('Digite um apontamento antes de salvar.', 'error');
+      return;
+    }
+    if (!state.editandoId) return;
+
+    const btnSubmit = e.target.querySelector('button[type="submit"]');
+    const originalText = btnSubmit ? btnSubmit.innerHTML : 'Salvar';
+    if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.innerHTML = 'Salvando...'; }
+
+    fetch(API_BASE + `/api/registros/${state.editandoId}/apontamento`, {
+      method: 'PUT',
+      headers: getHeaders({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ apontamento: apont })
+    }).then(res => res.json()).then(resData => {
+      if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = originalText; }
+      if (resData.sucesso) {
+        toast('Apontamento salvo com sucesso!', 'success');
+        document.getElementById('form-apontamento').value = '';
+        state.editandoId = null;
+        document.getElementById('form-processo').reset();
+        navegar('processos');
+        inicializarDados(); // re-fetch data
+      } else {
+        toast(resData.erro || 'Erro ao salvar', 'error');
+      }
+    }).catch(err => {
+       console.error(err);
+       if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = originalText; }
+       toast('Erro de conexão.', 'error');
+    });
+    return;
+  }
+
   // Obter todos os números preenchidos
   const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
   const numerosJoined = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ');
@@ -1551,26 +1628,14 @@ function abrirModalAcesso(index = null) {
     const user = listaAcessos[index];
     title.innerHTML = '<span>✏️</span> Editar Registro de Acesso';
     rowInput.value = user._rowNumber;
-    
     nomeInput.value = user.nome;
-    nomeInput.disabled = false;
-    
     whatsappInput.value = user.whatsapp || '';
-    whatsappInput.disabled = true; // Permanece desabilitado para não trocar o número (identificador principal)
-    
+    whatsappInput.disabled = true;
     nivelInput.value = user.nivel;
-    nivelInput.disabled = false;
-    
     senhaInput.value = user.senha || '';
-    senhaInput.disabled = false;
-    
     statusToggle.checked = user.status === 'liberado';
-    statusToggle.disabled = false;
     statusLabel.textContent = user.status === 'liberado' ? 'ON' : 'OFF';
     statusLabel.style.color = user.status === 'liberado' ? '#10b981' : '#ef4444';
-    
-    if (btnSalvar) btnSalvar.disabled = false;
-
     if (btnCancelar) btnCancelar.style.display = 'inline-flex';
   } else {
     cancelarEdicaoAcesso();
@@ -1581,26 +1646,16 @@ function cancelarEdicaoAcesso() {
   const title = document.getElementById('cadastro-acesso-title');
   const form = document.getElementById('form-acesso');
   const rowInput = document.getElementById('acesso-row');
-  const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
-  const nivelInput = document.getElementById('acesso-nivel');
-  const senhaInput = document.getElementById('acesso-senha');
   const statusToggle = document.getElementById('acesso-status-toggle');
   const statusLabel = document.getElementById('acesso-status-label');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
-  const btnSalvar = document.getElementById('btn-salvar-acesso');
 
   if (form) form.reset();
   if (rowInput) rowInput.value = '';
-  if (title) title.innerHTML = '<span>👤</span> Selecione um registro para editar';
-  
-  if (nomeInput) nomeInput.disabled = true;
-  if (whatsappInput) whatsappInput.disabled = true;
-  if (nivelInput) nivelInput.disabled = true;
-  if (senhaInput) senhaInput.disabled = true;
-  if (statusToggle) statusToggle.disabled = true;
-  if (btnSalvar) btnSalvar.disabled = true;
-
+  if (title) title.innerHTML = '<span>👤</span> Novo Registro de Acesso';
+  if (whatsappInput) whatsappInput.disabled = false;
+  if (statusToggle) statusToggle.checked = true;
   if (statusLabel) {
     statusLabel.textContent = 'ON';
     statusLabel.style.color = '#10b981';
@@ -1667,9 +1722,15 @@ function renderListaAcessosUI() {
         <td style="padding:12px 16px; font-size:14px; font-family:monospace; font-weight:600; color:var(--text-secondary);">${senhaDisplay}</td>
         <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary); font-weight:600;">${contagemDisplay}</td>
         <td style="padding:12px 16px; font-size:13px; color:var(--text-muted);">${dataDisplay}</td>
-        <td style="padding:12px 16px; font-size:14px; text-align:right;">
-          <button class="btn btn-ghost btn-sm" onclick="abrirModalAcesso(${index})" style="padding:4px 8px; font-size:12px; border:1px solid var(--border); border-radius:4px; background:var(--bg-secondary); color:var(--text-primary); cursor:pointer;">✏️ Editar</button>
-          <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="padding:4px 8px; font-size:12px; margin-left:6px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;">🗑️ Excluir</button>
+        <td style="padding:12px 16px; font-size:14px; text-align:right; white-space:nowrap;">
+          <button class="btn btn-ghost btn-sm" onclick="abrirModalAcesso(${index})" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; border:1px solid rgba(59, 130, 246, 0.2); border-radius:6px; background:rgba(59, 130, 246, 0.08); color:#60a5fa; font-weight:600; cursor:pointer; transition:var(--transition);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Editar
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; margin-left:6px; background:rgba(239, 68, 68, 0.08); color:#f87171; border:1px solid rgba(239, 68, 68, 0.2); border-radius:6px; font-weight:600; cursor:pointer; transition:var(--transition);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            Excluir
+          </button>
         </td>
       </tr>
     `;
