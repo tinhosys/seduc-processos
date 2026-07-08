@@ -353,15 +353,12 @@
           <select id="filtro-objeto">
             <option value="">Objeto</option>
           </select>
-          <label class="toggle-apontamento action-adm" style="display:flex; align-items:center; gap:8px; cursor:pointer; background: rgba(34, 197, 94, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.3);">
-            <span style="font-size: 13px; color: #22c55e; font-weight: 600;">Com Apontamento</span>
-            <div style="position: relative; width: 34px; height: 18px;">
-              <input type="checkbox" id="filtro-apontamento-toggle" style="opacity: 0; width: 0; height: 0;">
-              <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.2); transition: .4s; border-radius: 18px;"></span>
-              <span class="slider-circle" style="position: absolute; content: ''; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-            </div>
-          </label>
-          <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">✕ Limpar</button>
+          <select id="filtro-alerta" class="action-adm" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
+            <option value="">&#9888; Alerta</option>
+            <option value="sim">&#128308; Com Alerta</option>
+            <option value="nao">&#128994; Sem Alerta</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">&times; Limpar</button>
         </div>
 
         <!-- Tabela -->
@@ -516,19 +513,15 @@
                 <textarea id="form-anotacao" placeholder="Anotações internas..."></textarea>
               </div>
 
-              <div class="form-group full action-adm" id="group-historico-apontamentos" style="display:none; margin-top:16px; border: 1px solid #f59e0b; padding:16px; border-radius:8px; background: rgba(245, 158, 11, 0.05);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                  <label style="color: #f59e0b; font-weight: bold; margin: 0; display: block; font-size: 13px;">📝 HISTÓRICO DE APONTAMENTOS</label>
-                  <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
-                    <div style="position: relative; width: 44px; height: 24px;">
-                      <input type="checkbox" id="form-alerta-toggle" style="opacity: 0; width: 0; height: 0;" onchange="this.nextElementSibling.style.backgroundColor=this.checked?'#10b981':'rgba(255,255,255,0.2)';this.nextElementSibling.nextElementSibling.style.transform=this.checked?'translateX(20px)':'translateX(0)'; document.getElementById('form-alerta-label').textContent=this.checked?'ON':'OFF'; document.getElementById('form-alerta-label').style.color=this.checked?'#10b981':'#cbd5e1'">
-                      <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.2); transition: .4s; border-radius: 24px;"></span>
-                      <span class="slider-circle" style="position: absolute; content: ''; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;"></span>
-                    </div>
-                    <span id="form-alerta-label" style="font-size: 14px; font-weight: bold; color: #cbd5e1; width: 28px;">OFF</span>
+              <div class="form-group full action-adm" id="group-historico-apontamentos" style="display:none; margin-top:16px; border: 1px solid rgba(245,158,11,0.5); padding:16px; border-radius:8px; background: rgba(245,158,11,0.05);">
+                <div style="margin-bottom:12px;">
+                  <label style="color:#f59e0b; font-weight:bold; font-size:13px; display:block; margin-bottom:10px;">&#128203; HIST&Oacute;RICO DE APONTAMENTOS</label>
+                  <div id="historico-apontamentos-content" style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; line-height:1.7; margin-bottom:12px; min-height:40px;"></div>
+                  <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:10px 14px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,255,255,0.1); width:fit-content;">
+                    <input type="checkbox" id="form-alerta-toggle" style="width:18px; height:18px; cursor:pointer; accent-color:#10b981;">
+                    <span style="font-size:13px; color:#cbd5e1;">Desativar Alerta <span style="color:#94a3b8; font-size:12px;">(marque para limpar o alerta ao salvar)</span></span>
                   </label>
                 </div>
-                <div id="historico-apontamentos-content" style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; line-height: 1.6;"></div>
               </div>
 
             </div>

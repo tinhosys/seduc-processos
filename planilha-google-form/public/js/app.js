@@ -302,10 +302,12 @@ function renderDashboard() {
 // ---- LISTA DE PROCESSOS ----
 function getFiltrados() {
   let lista = carregarProcessos();
-  const { busca, status, localizacao, municipio, objeto, prefixo, apontamento } = state.filtros;
+  const { busca, status, localizacao, municipio, objeto, prefixo, alerta } = state.filtros;
 
-  if (apontamento) {
-    lista = lista.filter(p => p.apontamento || p.alerta === '1');
+  if (alerta === 'sim') {
+    lista = lista.filter(p => String(p.alerta || '').trim() === '1');
+  } else if (alerta === 'nao') {
+    lista = lista.filter(p => String(p.alerta || '').trim() !== '1');
   }
 
   if (busca) {
@@ -404,7 +406,7 @@ function renderProcessos() {
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente ajustar os filtros</p>
       </div>
-    </td></tr>`;
+    </tr>`;
 
   // Info paginação
   document.getElementById('pg-info').textContent = total === 0
@@ -541,20 +543,9 @@ function renderFormulario() {
         groupHistorico.style.display = 'block';
         
         const chkAlerta = document.getElementById('form-alerta-toggle');
-        const lblAlerta = document.getElementById('form-alerta-label');
         if (chkAlerta) {
-          chkAlerta.checked = (p.alerta === '1');
-          const slider = chkAlerta.nextElementSibling;
-          const circle = slider.nextElementSibling;
-          if (chkAlerta.checked) {
-            slider.style.backgroundColor = '#10b981';
-            circle.style.transform = 'translateX(20px)';
-            if (lblAlerta) { lblAlerta.textContent = 'ON'; lblAlerta.style.color = '#10b981'; }
-          } else {
-            slider.style.backgroundColor = 'rgba(255,255,255,0.2)';
-            circle.style.transform = 'translateX(0)';
-            if (lblAlerta) { lblAlerta.textContent = 'OFF'; lblAlerta.style.color = '#cbd5e1'; }
-          }
+          // Se alerta = 1, NÃO marca (o check é para DESATIVAR)
+          chkAlerta.checked = false;
         }
       } else {
         groupHistorico.style.display = 'none';
@@ -662,7 +653,11 @@ function salvarFormulario(e) {
 
   const chkAlerta = document.getElementById('form-alerta-toggle');
   if (chkAlerta && chkAlerta.offsetParent !== null) {
-    dados.alerta = chkAlerta.checked ? '1' : '';
+    // Se marcou "Desativar Alerta" → salva vazio (null). Se não marcou → não mexe no alerta
+    if (chkAlerta.checked) {
+      dados.alerta = '';
+    }
+    // Se não marcou, não envia campo alerta (mantém valor que já estava na planilha)
   }
 
   if (!dados.interessado && !dados.numero) {
@@ -983,24 +978,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filtro-municipio').addEventListener('change', e => aplicarFiltro('municipio', e.target.value));
   document.getElementById('filtro-objeto').addEventListener('change', e => aplicarFiltro('objeto', e.target.value));
 
-  const chkApont = document.getElementById('filtro-apontamento-toggle');
-  if (chkApont) {
-    chkApont.addEventListener('change', (e) => {
-      const slider = e.target.nextElementSibling;
-      const circle = slider.nextElementSibling;
-      if (e.target.checked) {
-        slider.style.backgroundColor = '#22c55e';
-        circle.style.transform = 'translateX(16px)';
-      } else {
-        slider.style.backgroundColor = 'rgba(255,255,255,0.2)';
-        circle.style.transform = 'translateX(0)';
-      }
-      aplicarFiltro('apontamento', e.target.checked);
-    });
+  const filtroAlertaEl = document.getElementById('filtro-alerta');
+  if (filtroAlertaEl) {
+    filtroAlertaEl.addEventListener('change', e => aplicarFiltro('alerta', e.target.value));
   }
 
   document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', apontamento: false };
+    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', alerta: '' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
     document.getElementById('filtro-status').value = '';
@@ -1008,11 +992,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filtro-municipio').value = '';
     document.getElementById('filtro-objeto').value = '';
     document.getElementById('filtro-prefixo').value = '';
-    if (chkApont) {
-      chkApont.checked = false;
-      chkApont.nextElementSibling.style.backgroundColor = 'rgba(255,255,255,0.2)';
-      chkApont.nextElementSibling.nextElementSibling.style.transform = 'translateX(0)';
-    }
+    const fa = document.getElementById('filtro-alerta');
+    if (fa) fa.value = '';
     renderProcessos();
   });
 
