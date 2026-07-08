@@ -373,7 +373,7 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
   };
   
   return headers.map((h, i) => {
-    const hLow = h.toLowerCase().trim();
+    const hLow = (h || "").toLowerCase().trim();
     let val = undefined;
     
     if (hLow.includes('prefixo')) val = data.prefixo;
@@ -517,7 +517,7 @@ app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
 
     // Update row logic
     const updatedRow = headers.map((h, i) => {
-      const hLow = h.toLowerCase().trim();
+      const hLow = (h || "").toLowerCase().trim();
       if (hLow === 'apontamento') {
         const msgAtual = existingRow[i] || "";
         return msgAtual ? msgAtual + "; " + novaMensagem : novaMensagem;
