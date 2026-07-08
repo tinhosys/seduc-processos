@@ -11,7 +11,7 @@ var API_BASE = window.location.hostname === 'localhost' || window.location.hostn
 
 // Helper para incluir cabeçalho de autenticação
 function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
+  const token = typeof getSessionToken === 'function' ? getSessionToken() : sessionStorage.getItem('sap_session_token');
   return {
     ...extraHeaders,
     ...(token ? { 'Authorization': 'Bearer ' + token } : {})
@@ -95,7 +95,9 @@ const mapToApp = (row) => {
     localizacao: row['Localização'] || '',
     obs: row['Obs.:'] || row['Obs'] || '',
     data: row['Data'] || '',
-    anotacao: row['Anotação'] || '',
+    anotacao: row['Anotação'] || row['Anota\u00e7\u00e3o'] || '',
+    alerta: String(row['Alerta'] || '').trim(),
+    apontamento: row['Apontamento'] || '',
     contatos: contatosParsed
   };
 };
@@ -379,20 +381,4 @@ function getStatusBadgeClass(status) {
     'DUPLICADO':      'DUPLICADO',
   };
   return 'badge-' + (map[s] || 'DEFAULT');
-}
-
-function maskCelular(v) {
-  v = v.replace(/\D/g, "");
-  if (v.length > 11) v = v.substring(0, 11);
-  
-  if (v.length > 10) {
-    return `(${v.substring(0, 2)}) ${v.substring(2, 3)} ${v.substring(3, 7)}-${v.substring(7)}`;
-  } else if (v.length > 6) {
-    return `(${v.substring(0, 2)}) ${v.substring(2, 6)}-${v.substring(6)}`;
-  } else if (v.length > 2) {
-    return `(${v.substring(0, 2)}) ${v.substring(2)}`;
-  } else if (v.length > 0) {
-    return `(${v}`;
-  }
-  return v;
 }

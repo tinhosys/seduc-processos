@@ -95,7 +95,9 @@ const mapToApp = (row) => {
     localizacao: row['Localização'] || '',
     obs: row['Obs.:'] || row['Obs'] || '',
     data: row['Data'] || '',
-    anotacao: row['Anotação'] || '',
+    anotacao: row['Anotação'] || row['Anota\u00e7\u00e3o'] || '',
+    alerta: String(row['Alerta'] || '').trim(),
+    apontamento: row['Apontamento'] || '',
     contatos: contatosParsed
   };
 };
