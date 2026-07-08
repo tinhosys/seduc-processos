@@ -389,6 +389,7 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     else if (hLow.includes('obs')) val = data.obs;
     else if (hLow === 'data') val = data.data;
     else if (hLow.includes('anota')) val = data.anotacao;
+    else if (hLow === 'alerta' && data.alerta !== undefined) val = data.alerta;
     if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
         val = data.contatos.map(c => {

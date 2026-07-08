@@ -22,6 +22,36 @@ let state = {
   ordenacao: { coluna: '', asc: true }
 };
 
+let alertasExibidos = false;
+
+function checkAlertasADM(processos) {
+  if (getSessaoAtual()?.nivel !== 'adm') return;
+  const comAlerta = processos.filter(p => p.alerta === '1');
+  if (comAlerta.length > 0) {
+    const listHtml = comAlerta.map(p => `
+      <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 8px; display:flex; justify-content: space-between; align-items: center;">
+        <div>
+          <strong style="color: #60a5fa;">${p.prefixo || ''} ${p.numero || 'S/N'}</strong><br>
+          <span style="font-size: 12px; color: #cbd5e1;">${p.interessado || ''} - ${p.municipio || ''}</span>
+        </div>
+        <button onclick="editarProcesso('${p.id}'); fecharModalAlertas()" style="background: #3b82f6; border: none; padding: 6px 12px; border-radius: 4px; color: white; cursor: pointer; font-size: 12px;">Visualizar</button>
+      </div>
+    `).join('');
+    
+    document.getElementById('modal-alertas-content').innerHTML = `
+      <p style="color: #f0f4ff; margin-bottom: 16px; font-size: 14px;">Você tem <strong>${comAlerta.length}</strong> processo(s) com alerta de apontamento:</p>
+      <div style="max-height: 300px; overflow-y: auto; padding-right: 4px;">
+        ${listHtml}
+      </div>
+    `;
+    document.getElementById('modal-alertas-overlay').classList.add('open');
+  }
+}
+window.fecharModalAlertas = () => {
+  const m = document.getElementById('modal-alertas-overlay');
+  if (m) m.classList.remove('open');
+};
+
 // ---- NAVEGAÇÃO ----
 function navegar(pagina) {
   state.page = pagina;
@@ -310,6 +340,12 @@ function getFiltrados() {
 }
 
 function renderProcessos() {
+  const processos = carregarProcessos();
+  if (!alertasExibidos && processos.length > 0) {
+    checkAlertasADM(processos);
+    alertasExibidos = true;
+  }
+
   const filtrados = getFiltrados();
   const total = filtrados.length;
   const totalPags = Math.ceil(total / state.itensPorPagina);
@@ -504,6 +540,20 @@ function renderFormulario() {
       if (getSessaoAtual()?.nivel === 'adm' && p && p.apontamento) {
         document.getElementById('historico-apontamentos-content').innerHTML = p.apontamento.split(';').map(x => x.trim()).filter(Boolean).join('<br><br>');
         groupHistorico.style.display = 'block';
+        
+        const chkAlerta = document.getElementById('form-alerta-toggle');
+        if (chkAlerta) {
+          chkAlerta.checked = (p.alerta === '1');
+          const slider = chkAlerta.nextElementSibling;
+          const circle = slider.nextElementSibling;
+          if (chkAlerta.checked) {
+            slider.style.backgroundColor = '#22c55e';
+            circle.style.transform = 'translateX(16px)';
+          } else {
+            slider.style.backgroundColor = 'rgba(255,255,255,0.2)';
+            circle.style.transform = 'translateX(0)';
+          }
+        }
       } else {
         groupHistorico.style.display = 'none';
       }
@@ -607,6 +657,11 @@ function salvarFormulario(e) {
     anotacao:    document.getElementById('form-anotacao').value.trim(),
     contatos:    JSON.parse(JSON.stringify(contatosTemporarios))
   };
+
+  const chkAlerta = document.getElementById('form-alerta-toggle');
+  if (chkAlerta && chkAlerta.offsetParent !== null) {
+    dados.alerta = chkAlerta.checked ? '1' : '';
+  }
 
   if (!dados.interessado && !dados.numero) {
     toast('Informe ao menos o Nº do Processo ou o Interessado.', 'error');
