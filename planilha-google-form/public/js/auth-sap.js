@@ -230,6 +230,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         atualizarContador();
         navegar('dashboard');
         renderDashboard();
+        
+        if (typeof checkAlertasADM === 'function' && window.processosCache) {
+           checkAlertasADM(window.processosCache);
+        }
         return;
       }
     } catch (e) { /* cai no login */ }

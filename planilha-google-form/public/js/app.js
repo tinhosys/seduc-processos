@@ -341,11 +341,6 @@ function getFiltrados() {
 
 function renderProcessos() {
   const processos = carregarProcessos();
-  if (!alertasExibidos && processos.length > 0) {
-    checkAlertasADM(processos);
-    alertasExibidos = true;
-  }
-
   const filtrados = getFiltrados();
   const total = filtrados.length;
   const totalPags = Math.ceil(total / state.itensPorPagina);
@@ -542,16 +537,19 @@ function renderFormulario() {
         groupHistorico.style.display = 'block';
         
         const chkAlerta = document.getElementById('form-alerta-toggle');
+        const lblAlerta = document.getElementById('form-alerta-label');
         if (chkAlerta) {
           chkAlerta.checked = (p.alerta === '1');
           const slider = chkAlerta.nextElementSibling;
           const circle = slider.nextElementSibling;
           if (chkAlerta.checked) {
-            slider.style.backgroundColor = '#22c55e';
-            circle.style.transform = 'translateX(16px)';
+            slider.style.backgroundColor = '#10b981';
+            circle.style.transform = 'translateX(20px)';
+            if (lblAlerta) { lblAlerta.textContent = 'ON'; lblAlerta.style.color = '#10b981'; }
           } else {
             slider.style.backgroundColor = 'rgba(255,255,255,0.2)';
             circle.style.transform = 'translateX(0)';
+            if (lblAlerta) { lblAlerta.textContent = 'OFF'; lblAlerta.style.color = '#cbd5e1'; }
           }
         }
       } else {
