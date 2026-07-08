@@ -353,6 +353,14 @@
           <select id="filtro-objeto">
             <option value="">Objeto</option>
           </select>
+          <label class="toggle-apontamento action-adm" style="display:flex; align-items:center; gap:8px; cursor:pointer; background: rgba(34, 197, 94, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.3);">
+            <span style="font-size: 13px; color: #22c55e; font-weight: 600;">Com Apontamento</span>
+            <div style="position: relative; width: 34px; height: 18px;">
+              <input type="checkbox" id="filtro-apontamento-toggle" style="opacity: 0; width: 0; height: 0;">
+              <span class="slider" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.2); transition: .4s; border-radius: 18px;"></span>
+              <span class="slider-circle" style="position: absolute; content: ''; height: 14px; width: 14px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+            </div>
+          </label>
           <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">✕ Limpar</button>
         </div>
 
@@ -506,6 +514,11 @@
               <div class="form-group full">
                 <label for="form-anotacao">Anotação Interna</label>
                 <textarea id="form-anotacao" placeholder="Anotações internas..."></textarea>
+              </div>
+
+              <div class="form-group full action-adm" id="group-historico-apontamentos" style="display:none; margin-top:16px; border: 1px solid #f59e0b; padding:16px; border-radius:8px; background: rgba(245, 158, 11, 0.05);">
+                <label style="color: #f59e0b; font-weight: bold; margin-bottom: 12px; display: block; font-size: 13px;">📝 HISTÓRICO DE APONTAMENTOS</label>
+                <div id="historico-apontamentos-content" style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 6px; line-height: 1.6;"></div>
               </div>
 
             </div>

@@ -12,12 +12,14 @@ let state = {
     municipio: '',
     objeto: '',
     prefixo: '',
+    apontamento: false
   },
   paginaAtual: 1,
-  itensPorPagina: 20,
+  itensPorPagina: 50,
   editandoId: null,
   sortCol: '',
   sortDir: 'asc',
+  ordenacao: { coluna: '', asc: true }
 };
 
 // ---- NAVEGAÇÃO ----
@@ -266,7 +268,11 @@ function renderDashboard() {
 // ---- LISTA DE PROCESSOS ----
 function getFiltrados() {
   let lista = carregarProcessos();
-  const { busca, status, localizacao, municipio, objeto } = state.filtros;
+  const { busca, status, localizacao, municipio, objeto, prefixo, apontamento } = state.filtros;
+
+  if (apontamento) {
+    lista = lista.filter(p => p.apontamento || p.alerta === '1');
+  }
 
   if (busca) {
     const q = normalizar(busca);
@@ -491,7 +497,18 @@ function renderFormulario() {
   if (processo) {
     document.getElementById('form-prefixo').value    = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
-    
+    document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
+
+    const groupHistorico = document.getElementById('group-historico-apontamentos');
+    if (groupHistorico) {
+      if (getSessaoAtual()?.nivel === 'adm' && p && p.apontamento) {
+        document.getElementById('historico-apontamentos-content').innerHTML = p.apontamento.split(';').map(x => x.trim()).filter(Boolean).join('<br><br>');
+        groupHistorico.style.display = 'block';
+      } else {
+        groupHistorico.style.display = 'none';
+      }
+    }
+
     // Processar array de números
     const containerNum = document.getElementById('container-numeros');
     containerNum.innerHTML = '';
@@ -909,8 +926,24 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filtro-municipio').addEventListener('change', e => aplicarFiltro('municipio', e.target.value));
   document.getElementById('filtro-objeto').addEventListener('change', e => aplicarFiltro('objeto', e.target.value));
 
+  const chkApont = document.getElementById('filtro-apontamento-toggle');
+  if (chkApont) {
+    chkApont.addEventListener('change', (e) => {
+      const slider = e.target.nextElementSibling;
+      const circle = slider.nextElementSibling;
+      if (e.target.checked) {
+        slider.style.backgroundColor = '#22c55e';
+        circle.style.transform = 'translateX(16px)';
+      } else {
+        slider.style.backgroundColor = 'rgba(255,255,255,0.2)';
+        circle.style.transform = 'translateX(0)';
+      }
+      aplicarFiltro('apontamento', e.target.checked);
+    });
+  }
+
   document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '' };
+    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', apontamento: false };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
     document.getElementById('filtro-status').value = '';
@@ -918,6 +951,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filtro-municipio').value = '';
     document.getElementById('filtro-objeto').value = '';
     document.getElementById('filtro-prefixo').value = '';
+    if (chkApont) {
+      chkApont.checked = false;
+      chkApont.nextElementSibling.style.backgroundColor = 'rgba(255,255,255,0.2)';
+      chkApont.nextElementSibling.nextElementSibling.style.transform = 'translateX(0)';
+    }
     renderProcessos();
   });
 
