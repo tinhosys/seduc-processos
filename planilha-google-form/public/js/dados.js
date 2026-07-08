@@ -54,11 +54,13 @@ window.processosCache = [];
 
 const mapToApp = (row) => {
   let contatosStr = '';
+  let alertaStr = '';
+  let apontamentoStr = '';
   for (const key in row) {
-    if (key.toLowerCase().includes('contato')) {
-      contatosStr = row[key];
-      break;
-    }
+    const lower = key.toLowerCase().trim();
+    if (lower.includes('contato')) contatosStr = row[key];
+    if (lower === 'alerta') alertaStr = row[key];
+    if (lower === 'apontamento' || lower === 'apontamentos') apontamentoStr = row[key];
   }
 
   let contatosParsed = [];
@@ -96,8 +98,8 @@ const mapToApp = (row) => {
     obs: row['Obs.:'] || row['Obs'] || '',
     data: row['Data'] || '',
     anotacao: row['Anotação'] || row['Anota\u00e7\u00e3o'] || '',
-    alerta: String(row['Alerta'] || '').trim(),
-    apontamento: row['Apontamento'] || '',
+    alerta: String(alertaStr || '').trim(),
+    apontamento: apontamentoStr || '',
     contatos: contatosParsed
   };
 };
@@ -135,6 +137,10 @@ async function inicializarDados() {
     const data = await res.json();
     if (data.rows) {
       window.processosCache = data.rows.map(mapToApp);
+      
+      if (typeof checkAlertasADM === 'function') {
+         checkAlertasADM(window.processosCache);
+      }
     }
   } catch (err) {
     console.error('Erro ao carregar do backend:', err);
