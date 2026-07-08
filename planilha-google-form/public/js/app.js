@@ -26,30 +26,34 @@ let alertasExibidos = false;
 
 function checkAlertasADM(processos) {
   if (getSessaoAtual()?.nivel !== 'adm') return;
-  const comAlerta = processos.filter(p => p.alerta === '1');
+  const comAlerta = processos.filter(p => String(p.alerta || '').trim() === '1');
   if (comAlerta.length > 0) {
     const listHtml = comAlerta.map(p => `
       <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 8px; margin-bottom: 8px; display:flex; justify-content: space-between; align-items: center;">
         <div>
           <strong style="color: #60a5fa;">${p.prefixo || ''} ${p.numero || 'S/N'}</strong><br>
-          <span style="font-size: 12px; color: #cbd5e1;">${p.interessado || ''} - ${p.municipio || ''}</span>
+          <span style="font-size: 12px; color: #cbd5e1;">${p.interessado || ''} - ${p.municipio || ''}</span><br>
+          <span style="font-size: 11px; color: #94a3b8;">${(p.apontamento || '').split(';').pop().trim()}</span>
         </div>
-        <button onclick="editarProcesso('${p.id}'); fecharModalAlertas()" style="background: #3b82f6; border: none; padding: 6px 12px; border-radius: 4px; color: white; cursor: pointer; font-size: 12px;">Visualizar</button>
+        <button onclick="editarProcesso('${p.id}'); fecharModalAlertas()" style="background: #3b82f6; border: none; padding: 6px 12px; border-radius: 6px; color: white; cursor: pointer; font-size: 12px; font-weight:bold;">Visualizar</button>
       </div>
     `).join('');
     
-    document.getElementById('modal-alertas-content').innerHTML = `
-      <p style="color: #f0f4ff; margin-bottom: 16px; font-size: 14px;">Você tem <strong>${comAlerta.length}</strong> processo(s) com alerta de apontamento:</p>
+    const content = document.getElementById('modal-alertas-content');
+    const overlay = document.getElementById('modal-alertas-overlay');
+    if (!content || !overlay) { console.warn('[ALERTA] modal-alertas-overlay nao encontrado no DOM'); return; }
+    content.innerHTML = `
+      <p style="color: #f0f4ff; margin-bottom: 16px; font-size: 14px;">Você tem <strong>${comAlerta.length}</strong> processo(s) com apontamento pendente:</p>
       <div style="max-height: 300px; overflow-y: auto; padding-right: 4px;">
         ${listHtml}
       </div>
     `;
-    document.getElementById('modal-alertas-overlay').classList.add('open');
+    overlay.style.display = 'flex';
   }
 }
 window.fecharModalAlertas = () => {
   const m = document.getElementById('modal-alertas-overlay');
-  if (m) m.classList.remove('open');
+  if (m) m.style.display = 'none';
 };
 
 // ---- NAVEGAÇÃO ----

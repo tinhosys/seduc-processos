@@ -687,13 +687,27 @@
     </div>
   </div>
 
+  <!-- Modal Alertas ADM -->
+  <div id="modal-alertas-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#1e293b; border:1px solid rgba(245,158,11,0.4); border-radius:16px; padding:28px; max-width:500px; width:90%; max-height:80vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.5);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2 style="color:#f59e0b; margin:0; font-size:18px;">&#9888;&#65039; Apontamentos Pendentes</h2>
+        <button onclick="fecharModalAlertas()" style="background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;">&times;</button>
+      </div>
+      <div id="modal-alertas-content" style="overflow-y:auto; flex:1; padding-right:4px;"></div>
+      <div style="margin-top:20px; text-align:right;">
+        <button onclick="fecharModalAlertas()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; padding:8px 20px; border-radius:8px; cursor:pointer;">Fechar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.0.6"></script>
-  <script src="js/app.js?v=1.0.6"></script>
-  <script src="js/auth-sap.js?v=1.0.6"></script>
+  <script src="js/dados.js?v=1.0.9"></script>
+  <script src="js/app.js?v=1.0.9"></script>
+  <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>
     // Detector de erros para depuração visual
