@@ -451,7 +451,7 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
       return res.status(400).json({ erro: "A planilha não possui cabeçalho." });
     }
 
-    const updatedRow = mapDataToRow(req.body, headers, existingRow, req.user);
+    const updatedRow = mapDataToRow(req.body, headers, existingRow, req.sessao);
 
     const lastColumn = columnToLetter(headers.length);
     const range = `${tabName}!A${rowNumber}:${lastColumn}${rowNumber}`;
@@ -473,7 +473,7 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
 // NOVA ROTA: Apontamento exclusivo para Leitores
 app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
   try {
-    if (req.user.nivel !== 'leitor') {
+    if (req.sessao.nivel !== 'leitor') {
       return res.status(403).json({ erro: "Somente perfil leitor pode usar esta rota." });
     }
 
@@ -513,7 +513,7 @@ app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
 
     const now = new Date();
     const dh = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const novaMensagem = `[${dh}] ${req.user.nome || req.user.whatsapp}: ${apontamento.trim()}`;
+    const novaMensagem = `[${dh}] ${req.sessao.nome || req.sessao.whatsapp}: ${apontamento.trim()}`;
 
     // Update row logic
     const updatedRow = headers.map((h, i) => {
@@ -539,7 +539,7 @@ app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
     res.json({ sucesso: true, mensagem: "Apontamento salvo com sucesso." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ erro: "Erro ao salvar apontamento." });
+    res.status(500).json({ erro: "Erro ao salvar apontamento: " + (error.stack || error.message || String(error)) });
   }
 });
 
