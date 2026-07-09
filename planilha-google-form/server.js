@@ -514,7 +514,7 @@ app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
     }
 
     const now = new Date();
-    const dh = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const dh = now.toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
     const novaMensagem = `[${dh}] ${req.sessao.nome || req.sessao.whatsapp}: ${apontamento.trim()}`;
 
     // Update row logic

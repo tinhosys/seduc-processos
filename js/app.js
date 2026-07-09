@@ -856,36 +856,74 @@ window.salvarApontamentoModal = function(id) {
   });
 };
 
-window.adicionarApontamentoEdicao = function() {
+window.gravarApontamentoImediato = function() {
   const input = document.getElementById('form-novo-apontamento');
   const txtHistorico = document.getElementById('form-historico-acumulado-texto');
   if (!input || !txtHistorico) return;
 
   const texto = input.value.trim();
   if (!texto) {
-    toast('Digite um novo apontamento antes de clicar em editar.', 'error');
+    toast('Digite um novo apontamento antes de gravar.', 'error');
     return;
   }
 
-  const now = new Date();
-  const dh = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-  const sessao = getSessaoAtual();
-  const novaMsg = `[${dh}] ${sessao?.nome || sessao?.whatsapp}: ${texto}`;
-
-  const valorAtual = txtHistorico.value.trim();
-  if (valorAtual) {
-    txtHistorico.value = valorAtual + '; ' + novaMsg;
-  } else {
-    txtHistorico.value = novaMsg;
+  const id = state.editandoId;
+  if (!id) {
+    toast('Para um novo processo, salve o processo primeiro antes de gravar apontamentos.', 'error');
+    return;
   }
 
-  // Ativa o alarme automaticamente
-  const chk = document.getElementById('form-alerta-toggle');
-  if (chk) chk.checked = true;
+  const btn = document.getElementById('btn-gravar-apontamento-edicao');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> Gravando...';
+  }
 
-  // Limpa o campo de entrada do novo apontamento
-  input.value = '';
-  toast('Apontamento adicionado. Lembre-se de salvar o processo.', 'success');
+  fetch(API_BASE + `/api/registros/${id}/apontamento`, {
+    method: 'PUT',
+    headers: getHeaders({ 'Content-Type': 'application/json' }),
+    body: JSON.stringify({ apontamento: texto })
+  })
+  .then(res => res.json())
+  .then(resData => {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span>💾</span> Gravar';
+    }
+    
+    if (resData.sucesso) {
+      const now = new Date();
+      const dh = now.toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+      const sessao = getSessaoAtual();
+      const novaMsg = `[${dh}] ${sessao?.nome || sessao?.whatsapp}: ${texto}`;
+
+      const valorAtual = txtHistorico.value.trim();
+      txtHistorico.value = valorAtual ? valorAtual + '; ' + novaMsg : novaMsg;
+
+      const chk = document.getElementById('form-alerta-toggle');
+      if (chk) chk.checked = true;
+
+      input.value = '';
+
+      const idx = window.processosCache.findIndex(proc => proc.id === id);
+      if (idx !== -1) {
+        window.processosCache[idx].apontamento = txtHistorico.value;
+        window.processosCache[idx].alerta = '1';
+      }
+
+      toast('Apontamento gravado com sucesso na planilha!', 'success');
+    } else {
+      toast(resData.erro || 'Erro ao gravar apontamento', 'error');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span>💾</span> Gravar';
+    }
+    toast('Erro de conexão ao gravar apontamento.', 'error');
+  });
 };
 
 window.limparApontamentoEdicao = function() {
@@ -894,11 +932,10 @@ window.limparApontamentoEdicao = function() {
     txtHistorico.value = '';
   }
 
-  // Desativa o alarme automaticamente
   const chk = document.getElementById('form-alerta-toggle');
   if (chk) chk.checked = false;
 
-  toast('Histórico de apontamentos limpo e alarme desativado. Lembre-se de salvar o processo.', 'info');
+  toast('Histórico limpo localmente. Clique em Salvar Processo para confirmar a limpeza na planilha.', 'info');
 };
 
 
