@@ -1496,3 +1496,67 @@ input:checked + .slider:before {
   }
 }
 
+/* ============================================================
+   COLLAPSIBLE FORMS & FILTERS (PIN SYSTEM)
+   ============================================================ */
+.filters-bar.collapsed {
+  display: none !important;
+}
+
+.card.collapsed form,
+.card.collapsed > form {
+  display: none !important;
+}
+
+.card.collapsed {
+  padding: 12px 20px !important;
+  margin-bottom: 12px !important;
+}
+
+/* ============================================================
+   RESPONSIVIDADE E BOTÕES HEADER NO CELULAR
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Altera comportamento do flex da seção de header no celular */
+  .section-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .section-header > div {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Faz os botões dividirem o espaço em grid de 2x2 no celular */
+  .header-buttons, 
+  .section-header .header-buttons {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Diminui fonte e padding dos botões de ação no celular */
+  .header-buttons .btn {
+    padding: 8px 6px !important;
+    font-size: 11px !important;
+    gap: 4px !important;
+    justify-content: center !important;
+  }
+
+  /* Oculta os textos dos botões se a tela for muito estreita, mantendo apenas ícones/emojis */
+  @media (max-width: 480px) {
+    .btn-text {
+      display: none !important;
+    }
+    .header-buttons .btn {
+      padding: 10px 4px !important;
+      font-size: 14px !important;
+    }
+  }
+}
+

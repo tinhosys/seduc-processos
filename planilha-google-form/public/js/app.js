@@ -2280,3 +2280,121 @@ setTimeout(() => {
   document.body.classList.remove('print-mode-analise');
   document.getElementById('print-layout-analise').style.display = 'none';
 }, 1000);
+
+// ---- CONTROLE DE OCULTAR/MOSTRAR FILTROS E FORMULÁRIOS (PIN/ALFINETE) ----
+function toggleFiltros() {
+  const bar = document.querySelector('#page-processos .filters-bar');
+  const btn = document.getElementById('btn-toggle-filtros');
+  if (!bar || !btn) return;
+  const isCollapsed = bar.classList.toggle('collapsed');
+  
+  if (isCollapsed) {
+    btn.innerHTML = '📌 <span class="btn-text">Mostrar Filtros</span>';
+    btn.style.borderColor = 'var(--blue)';
+    btn.style.color = 'var(--blue)';
+    localStorage.setItem('filters_collapsed', '1');
+  } else {
+    btn.innerHTML = '📌 <span class="btn-text">Ocultar Filtros</span>';
+    btn.style.borderColor = 'var(--border)';
+    btn.style.color = '';
+    localStorage.removeItem('filters_collapsed');
+  }
+}
+
+function toggleFormAcesso() {
+  const card = document.getElementById('card-form-acesso');
+  const btn = document.getElementById('btn-toggle-form-acesso');
+  if (!card || !btn) return;
+  const isCollapsed = card.classList.toggle('collapsed');
+  
+  if (isCollapsed) {
+    btn.innerHTML = '📌 <span class="btn-text">Mostrar</span>';
+    btn.style.borderColor = 'var(--blue)';
+    btn.style.color = 'var(--blue)';
+    localStorage.setItem('form_acesso_collapsed', '1');
+  } else {
+    btn.innerHTML = '📌 <span class="btn-text">Ocultar</span>';
+    btn.style.borderColor = 'var(--border)';
+    btn.style.color = '';
+    localStorage.removeItem('form_acesso_collapsed');
+  }
+}
+
+function toggleFormProcesso() {
+  const card = document.getElementById('card-form-processo');
+  const btn = document.getElementById('btn-toggle-form-processo');
+  if (!card || !btn) return;
+  const isCollapsed = card.classList.toggle('collapsed');
+  
+  if (isCollapsed) {
+    btn.innerHTML = '📌 <span class="btn-text">Mostrar Formulário</span>';
+    btn.style.borderColor = 'var(--blue)';
+    btn.style.color = 'var(--blue)';
+  } else {
+    btn.innerHTML = '📌 <span class="btn-text">Ocultar Formulário</span>';
+    btn.style.borderColor = 'var(--border)';
+    btn.style.color = '';
+  }
+}
+
+async function recarregarDadosGlobais() {
+  toast('Recarregando dados do servidor...', 'info');
+  try {
+    await inicializarDados();
+    toast('Dados atualizados com sucesso!', 'success');
+    
+    // Atualizar tela atual
+    if (state.page === 'dashboard') renderDashboard();
+    else if (state.page === 'processos') renderProcessos();
+    else if (state.page === 'repetidos') renderProcessosRepetidos();
+    else if (state.page === 'acessos') carregarAcessos();
+    
+    // Atualizar contador sidebar
+    if (typeof atualizarContador === 'function') atualizarContador();
+  } catch (err) {
+    console.error(err);
+    toast('Erro ao recarregar dados.', 'error');
+  }
+}
+
+// Inicialização dos estados colapsados de acordo com tela (mobile ou localStorage)
+function inicializarEstadosColapsaveis() {
+  const isMobile = window.innerWidth <= 768;
+  
+  // 1. Filtros
+  const savedFiltersCollapse = localStorage.getItem('filters_collapsed');
+  const bar = document.querySelector('#page-processos .filters-bar');
+  const btnFilters = document.getElementById('btn-toggle-filtros');
+  if (bar && btnFilters) {
+    if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
+      bar.classList.add('collapsed');
+      btnFilters.innerHTML = '📌 <span class="btn-text">Mostrar Filtros</span>';
+      btnFilters.style.borderColor = 'var(--blue)';
+      btnFilters.style.color = 'var(--blue)';
+    }
+  }
+  
+  // 2. Formulário Acessos
+  const savedAcessosCollapse = localStorage.getItem('form_acesso_collapsed');
+  const cardAcessos = document.getElementById('card-form-acesso');
+  const btnAcessos = document.getElementById('btn-toggle-form-acesso');
+  if (cardAcessos && btnAcessos) {
+    if (savedAcessosCollapse === '1' || (savedAcessosCollapse === null && isMobile)) {
+      cardAcessos.classList.add('collapsed');
+      btnAcessos.innerHTML = '📌 <span class="btn-text">Mostrar</span>';
+      btnAcessos.style.borderColor = 'var(--blue)';
+      btnAcessos.style.color = 'var(--blue)';
+    }
+  }
+}
+
+// Chamar inicialização no DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  inicializarEstadosColapsaveis();
+});
+
+window.toggleFiltros = toggleFiltros;
+window.toggleFormAcesso = toggleFormAcesso;
+window.toggleFormProcesso = toggleFormProcesso;
+window.recarregarDadosGlobais = recarregarDadosGlobais;
+
