@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783562722668.0.6">
+  <link rel="stylesheet" href="css/style.css?v=1783564495234.0.6">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -136,6 +136,11 @@
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
           </span>
           Gerenciar Acessos
+        </button>
+
+        <button class="nav-item action-adm" data-page="repetidos" style="display: none;">
+          <span class="nav-icon">🔁</span>
+          Processos Repetidos
         </button>
       </nav>
 
@@ -406,11 +411,6 @@
             <h2 id="form-title">Novo Processo</h2>
             <p>Preencha os dados do processo</p>
           </div>
-          <div id="legend-ultima-edicao" style="display:none; text-align:right; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; background: rgba(0,0,0,0.2); color: var(--text-muted);">
-            <div style="font-size: 10px; font-weight: 700; color: #f59e0b; margin-bottom: 2px;">ÚLTIMA ATUALIZAÇÃO:</div>
-            <div id="ultima-edicao-nome" style="font-size: 13px; font-weight: 600; color: var(--text-primary);"></div>
-            <div id="ultima-edicao-data" style="font-size: 11px;"></div>
-          </div>
         </div>
 
         <div class="card">
@@ -442,6 +442,15 @@
                 <input type="text" id="form-prefixo" placeholder="Digite ou selecione..." maxlength="20"
                   list="list-prefixos" autocomplete="off">
                 <datalist id="list-prefixos"></datalist>
+              </div>
+
+              <div class="form-group" id="legend-ultima-edicao" style="display:none;">
+                <label style="color:var(--text-secondary); font-weight:600; display:block; margin-bottom:6px;">Última atualização</label>
+                <div style="border: 1px dashed rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.04); padding: 10px 14px; border-radius: 8px; font-size: 13px; color: var(--text-primary); line-height: 1.5; min-height: 40px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;">
+                  <div style="font-size: 11px; font-weight: 700; color: #f59e0b; margin-bottom: 2px;">ÚLTIMA ATUALIZAÇÃO:</div>
+                  <div id="ultima-edicao-nome" style="font-size: 13px; font-weight: 600; color: var(--text-primary);">—</div>
+                  <div id="ultima-edicao-data" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">—</div>
+                </div>
               </div>
 
               <div class="form-group full">
@@ -680,6 +689,19 @@
 
       </section>
 
+      <!-- ============= PAGE: REPETIDOS (ADMIN ONLY) ============= -->
+      <section class="page" id="page-repetidos">
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="flex: 1;">
+            <span id="total-repetidos-badge" style="display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 700; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); font-family: monospace; letter-spacing: 0.5px;">Calculando...</span>
+          </div>
+        </div>
+
+        <div id="lista-repetidos-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px; overflow-y: auto; max-height: calc(100vh - 160px); padding-right: 6px;">
+          <!-- Carregado via Javascript -->
+        </div>
+      </section>
+
   <!-- ============= MODAL DETALHE ============= -->
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
@@ -710,7 +732,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.0.9"></script>
-  <script src="js/app.js?v=1783562722743.0.9"></script>
+  <script src="js/app.js?v=1783564495321.0.9"></script>
   <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>

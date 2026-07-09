@@ -1371,9 +1371,24 @@ input:checked + .slider:before {
 
 /* ROLAGEM E CONGELAMENTO DA TABELA DE PROCESSOS */
 #page-processos {
+  display: none;
+}
+#page-processos.active {
   display: flex;
   flex-direction: column;
   height: calc(100vh - 68px); /* Altura da tela menos o Topbar */
+  box-sizing: border-box;
+  padding: 20px 28px 10px;
+  overflow: hidden;
+}
+
+#page-repetidos {
+  display: none;
+}
+#page-repetidos.active {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 68px);
   box-sizing: border-box;
   padding: 20px 28px 10px;
   overflow: hidden;

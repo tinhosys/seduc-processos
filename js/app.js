@@ -72,6 +72,7 @@ function navegar(pagina) {
     novo: state.editandoId ? 'Editar Processo' : 'Novo Processo',
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
+    repetidos: 'Processos Repetidos',
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -83,6 +84,7 @@ function navegar(pagina) {
     carregarAcessos();
     cancelarEdicaoAcesso();
   }
+  if (pagina === 'repetidos') renderProcessosRepetidos();
 }
 
 // ---- TOAST ----
@@ -624,10 +626,18 @@ function renderFormulario() {
   const legendDiv = document.getElementById('legend-ultima-edicao');
   const nomeDiv = document.getElementById('ultima-edicao-nome');
   const dataDiv = document.getElementById('ultima-edicao-data');
-  if (p['ultima edicao'] || p['última edição'] || p['data/hora edição'] || p['data/hora edicao']) {
-    if (legendDiv) legendDiv.style.display = 'block';
-    if (nomeDiv) nomeDiv.textContent = p['ultima edicao'] || p['última edição'] || '-';
-    if (dataDiv) dataDiv.textContent = p['data/hora edição'] || p['data/hora edicao'] || '-';
+  
+  if (p) {
+    const nomeEdicao = p['ULTIMA EDICAO'] || p['ultima edicao'] || p['última edição'] || p['ÚLTIMA EDIÇÃO'] || '';
+    const dataEdicao = p['DATA/HORA EDIÇÃO'] || p['data/hora edição'] || p['data/hora edicao'] || p['DATA/HORA EDICAO'] || '';
+    
+    if (nomeEdicao || dataEdicao) {
+      if (legendDiv) legendDiv.style.display = 'block';
+      if (nomeDiv) nomeDiv.textContent = nomeEdicao || '—';
+      if (dataDiv) dataDiv.textContent = dataEdicao || '—';
+    } else {
+      if (legendDiv) legendDiv.style.display = 'none';
+    }
   } else {
     if (legendDiv) legendDiv.style.display = 'none';
   }
@@ -2135,6 +2145,134 @@ window.salvarAcessoForm = salvarAcessoForm;
 window.deletarAcesso = deletarAcesso;
 window.enviarLinkWhatsApp = enviarLinkWhatsApp;
 window.maskCelular = maskCelular;
+
+// ---- PROCESSOS REPETIDOS ----
+function renderProcessosRepetidos() {
+  const badge = document.getElementById('total-repetidos-badge');
+  const container = document.getElementById('lista-repetidos-container');
+  if (!container) return;
+
+  const processos = carregarProcessos();
+
+  // Agrupar processos pelo número
+  const grupos = {};
+  processos.forEach(p => {
+    if (!p.numero) return;
+    const numClean = p.numero.trim();
+    if (!grupos[numClean]) grupos[numClean] = [];
+    grupos[numClean].push(p);
+  });
+
+  // Filtrar apenas grupos com tamanho > 1 (repetidos)
+  const repetidos = Object.keys(grupos)
+    .filter(num => grupos[num].length > 1)
+    .map(num => ({
+      numero: num,
+      itens: grupos[num]
+    }));
+
+  if (badge) {
+    badge.textContent = `${repetidos.length} Grupos Repetidos`;
+  }
+
+  if (repetidos.length === 0) {
+    container.innerHTML = `
+      <div class="card" style="padding: 30px; text-align: center; color: var(--text-muted);">
+        <h3>🎉 Nenhum processo repetido encontrado!</h3>
+        <p style="margin-top: 6px;">Todos os números de processos na planilha são únicos.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = repetidos.map((grp, idx) => {
+    const totalItens = grp.itens.length;
+    
+    // Gerar sub-tabela dos itens do grupo
+    const subRowsHtml = grp.itens.map(p => `
+      <tr class="linha-repetido-filho" ondblclick="editarProcesso('${p.id}')" style="cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
+        <td style="padding: 10px 12px; font-weight: 600; color: var(--text-primary);">${p.prefixo || '—'}</td>
+        <td style="padding: 10px 12px; color: var(--text-primary);">${p.municipio || '—'}</td>
+        <td style="padding: 10px 12px; color: var(--text-secondary);" title="${p.objeto || ''}">${p.objeto ? (p.objeto.length > 50 ? p.objeto.substring(0, 47) + '...' : p.objeto) : '—'}</td>
+        <td style="padding: 10px 12px; color: var(--text-primary); font-weight: 500;" title="${p.interessado || ''}">${p.interessado ? (p.interessado.length > 35 ? p.interessado.substring(0, 32) + '...' : p.interessado) : '—'}</td>
+        <td style="padding: 10px 12px;"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
+        <td style="padding: 10px 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right;">R$ ${formatCurrency(p.valorOf)}</td>
+        <td style="padding: 10px 12px; text-align: right;" onclick="event.stopPropagation()">
+          <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar" style="padding: 2px 6px; font-size:12px;">✏️</button>
+          <button class="btn btn-ghost btn-sm text-danger" onclick="excluirProcessoDireto('${p.id}')" style="color: #ef4444; margin-left: 6px; padding: 2px 6px; font-size:12px;" title="Excluir">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+
+    return `
+      <div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); margin-bottom: 8px;">
+        <!-- Cabeçalho do Grupo -->
+        <div onclick="toggleGrupoRepetido(${idx})" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: var(--bg-secondary); cursor: pointer; user-select: none; transition: background 0.2s;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span id="seta-repetido-${idx}" style="font-size: 14px; font-weight: 800; color: var(--blue); transition: transform 0.2s; display: inline-block;">▶</span>
+            <span style="font-size: 15px; font-weight: 700; color: var(--text-primary); font-family: monospace;">Nº: ${grp.numero}</span>
+            <span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalItens} Ocorrências</span>
+          </div>
+        </div>
+        
+        <!-- Lista de Processos do Grupo (Sub-tabela) -->
+        <div id="corpo-repetido-${idx}" style="display: none; border-top: 1px solid var(--border); overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+            <thead>
+              <tr style="background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);">
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 10%;">Prefixo</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 15%;">Município</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 30%;">Objeto</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 20%;">Interessado</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 10%;">Status</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 10%; text-align: right;">Valor</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 5%; text-align: right;">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${subRowsHtml}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleGrupoRepetido(idx) {
+  const corpo = document.getElementById(`corpo-repetido-${idx}`);
+  const seta = document.getElementById(`seta-repetido-${idx}`);
+  if (!corpo || !seta) return;
+
+  if (corpo.style.display === 'none') {
+    corpo.style.display = 'block';
+    seta.style.transform = 'rotate(90deg)';
+  } else {
+    corpo.style.display = 'none';
+    seta.style.transform = 'rotate(0deg)';
+  }
+}
+
+async function excluirProcessoDireto(id) {
+  if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta ação não pode ser desfeita e removerá o registro na planilha.")) {
+    try {
+      await excluirProcesso(id);
+      toast("Processo excluído com sucesso!", "success");
+      if (typeof inicializarDados === 'function') {
+        await inicializarDados();
+      }
+      renderProcessosRepetidos();
+    } catch (err) {
+      console.error(err);
+      toast("Erro ao excluir o processo.", "error");
+    }
+  }
+}
+
+window.renderProcessosRepetidos = renderProcessosRepetidos;
+window.toggleGrupoRepetido = toggleGrupoRepetido;
+window.excluirProcessoDireto = excluirProcessoDireto;
+window.editarProcesso = editarProcesso;
 
 setTimeout(() => {
   document.body.classList.remove('print-mode-analise');
