@@ -389,6 +389,7 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     else if (hLow.includes('obs')) val = data.obs;
     else if (hLow === 'data') val = data.data;
     else if (hLow.includes('anota')) val = data.anotacao;
+    else if (hLow.includes('apontamento') && data.apontamento !== undefined) val = data.apontamento;
     else if (hLow === 'alerta' && data.alerta !== undefined) val = data.alerta;
     if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
@@ -474,8 +475,8 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
 // NOVA ROTA: Apontamento exclusivo para Leitores
 app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
   try {
-    if (req.sessao.nivel !== 'leitor') {
-      return res.status(403).json({ erro: "Somente perfil leitor pode usar esta rota." });
+    if (req.sessao.nivel !== 'leitor' && req.sessao.nivel !== 'adm') {
+      return res.status(403).json({ erro: "Somente perfis leitor e adm podem usar esta rota." });
     }
 
     const rawId = req.params.id;

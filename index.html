@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783554528478.0.6">
+  <link rel="stylesheet" href="css/style.css?v=1783556830992.0.6">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -515,12 +515,29 @@
 
               <div class="form-group full action-adm" id="group-historico-apontamentos" style="display:none; margin-top:16px; border: 1px solid rgba(245,158,11,0.5); padding:16px; border-radius:8px; background: rgba(245,158,11,0.05);">
                 <div style="margin-bottom:12px;">
-                  <label style="color:#f59e0b; font-weight:bold; font-size:13px; display:block; margin-bottom:10px;">&#128203; HIST&Oacute;RICO DE APONTAMENTOS</label>
-                  <div id="historico-apontamentos-content" style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:12px; border-radius:6px; line-height:1.7; margin-bottom:12px; min-height:40px;"></div>
-                  <label style="display:flex; align-items:center; gap:10px; cursor:pointer; padding:10px 14px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,255,255,0.1); width:fit-content;">
-                    <input type="checkbox" id="form-alerta-toggle" style="width:18px; height:18px; cursor:pointer; accent-color:#10b981;">
-                    <span style="font-size:13px; color:#cbd5e1;">Desativar Alerta <span style="color:#94a3b8; font-size:12px;">(marque para limpar o alerta ao salvar)</span></span>
-                  </label>
+                  <label style="color:#f59e0b; font-weight:bold; font-size:13px; display:block; margin-bottom:10px;">&#128203; HIST&Oacute;RICO DE APONTAMENTOS (EDIT&Aacute;VEL)</label>
+                  <textarea id="form-historico-acumulado-texto" style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.3); color:#fff; font-size:13px; outline:none; margin-bottom:16px; line-height:1.5; font-family:inherit; resize:vertical;" placeholder="Nenhum histórico de apontamentos registrado."></textarea>
+                  
+                  <label style="color:#10b981; font-weight:bold; font-size:13px; display:block; margin-bottom:8px;">📝 NOVO APONTAMENTO</label>
+                  <textarea id="form-novo-apontamento" style="width:100%; min-height:50px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:16px; font-family:inherit; resize:vertical;" placeholder="Digite um novo apontamento aqui..."></textarea>
+                  
+                  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:8px;">
+                    <!-- Checkbox Ativar Alarme -->
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:8px 12px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size:13px; color:#cbd5e1; user-select:none; margin:0; height:38px;">
+                      <input type="checkbox" id="form-alerta-toggle" style="width:18px; height:18px; cursor:pointer; accent-color:#f59e0b;">
+                      <span>Ativar Alarme</span>
+                    </label>
+                    
+                    <!-- Botão Editar Apontamento (Adiciona novo apontamento ao histórico) -->
+                    <button type="button" class="btn" style="background:#10b981; color:#fff; padding:0 16px; height:38px; font-size:13px; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;" onclick="adicionarApontamentoEdicao()">
+                      <span>➕</span> Editar Apontamento
+                    </button>
+                    
+                    <!-- Botão Limpar Apontamento (Limpa histórico e desativa alarme) -->
+                    <button type="button" class="btn" style="background:#ef4444; color:#fff; padding:0 16px; height:38px; font-size:13px; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;" onclick="limparApontamentoEdicao()">
+                      <span>🧹</span> Limpar Apontamento
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -699,7 +716,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.0.9"></script>
-  <script src="js/app.js?v=1783554528551.0.9"></script>
+  <script src="js/app.js?v=1783556831060.0.9"></script>
   <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>

@@ -538,14 +538,19 @@ function renderFormulario() {
 
     const groupHistorico = document.getElementById('group-historico-apontamentos');
     if (groupHistorico) {
-      if (getSessaoAtual()?.nivel === 'adm' && p && (p.apontamento || p.alerta === '1')) {
-        document.getElementById('historico-apontamentos-content').innerHTML = (p.apontamento || '').split(';').map(x => x.trim()).filter(Boolean).join('<br><br>');
+      if (getSessaoAtual()?.nivel === 'adm') {
         groupHistorico.style.display = 'block';
-        
+        const txtHistorico = document.getElementById('form-historico-acumulado-texto');
+        if (txtHistorico) {
+          txtHistorico.value = p.apontamento || '';
+        }
+        const txtNovo = document.getElementById('form-novo-apontamento');
+        if (txtNovo) {
+          txtNovo.value = '';
+        }
         const chkAlerta = document.getElementById('form-alerta-toggle');
         if (chkAlerta) {
-          // Se alerta = 1, NÃO marca (o check é para DESATIVAR)
-          chkAlerta.checked = false;
+          chkAlerta.checked = p.alerta === '1';
         }
       } else {
         groupHistorico.style.display = 'none';
@@ -590,6 +595,21 @@ function renderFormulario() {
     `;
     contatosTemporarios = [];
     renderizarContatosForm();
+
+    const groupHistorico = document.getElementById('group-historico-apontamentos');
+    if (groupHistorico) {
+      if (getSessaoAtual()?.nivel === 'adm') {
+        groupHistorico.style.display = 'block';
+        const txtHistorico = document.getElementById('form-historico-acumulado-texto');
+        if (txtHistorico) txtHistorico.value = '';
+        const txtNovo = document.getElementById('form-novo-apontamento');
+        if (txtNovo) txtNovo.value = '';
+        const chkAlerta = document.getElementById('form-alerta-toggle');
+        if (chkAlerta) chkAlerta.checked = false;
+      } else {
+        groupHistorico.style.display = 'none';
+      }
+    }
   }
 
   document.getElementById('form-title').textContent = processo ? 'Editar Processo' : 'Novo Processo';
@@ -651,13 +671,15 @@ function salvarFormulario(e) {
     contatos:    JSON.parse(JSON.stringify(contatosTemporarios))
   };
 
-  const chkAlerta = document.getElementById('form-alerta-toggle');
-  if (chkAlerta && chkAlerta.offsetParent !== null) {
-    // Se marcou "Desativar Alerta" → salva vazio (null). Se não marcou → não mexe no alerta
-    if (chkAlerta.checked) {
-      dados.alerta = '';
+  if (getSessaoAtual()?.nivel === 'adm') {
+    const txtApontamento = document.getElementById('form-historico-acumulado-texto');
+    if (txtApontamento) {
+      dados.apontamento = txtApontamento.value.trim();
     }
-    // Se não marcou, não envia campo alerta (mantém valor que já estava na planilha)
+    const chkAlerta = document.getElementById('form-alerta-toggle');
+    if (chkAlerta) {
+      dados.alerta = chkAlerta.checked ? '1' : '';
+    }
   }
 
   if (!dados.interessado && !dados.numero) {
@@ -832,6 +854,51 @@ window.salvarApontamentoModal = function(id) {
       if (btn) { btn.disabled = false; btn.textContent = 'Salvar Apontamento'; }
       toast('Erro de conexão.', 'error');
   });
+};
+
+window.adicionarApontamentoEdicao = function() {
+  const input = document.getElementById('form-novo-apontamento');
+  const txtHistorico = document.getElementById('form-historico-acumulado-texto');
+  if (!input || !txtHistorico) return;
+
+  const texto = input.value.trim();
+  if (!texto) {
+    toast('Digite um novo apontamento antes de clicar em editar.', 'error');
+    return;
+  }
+
+  const now = new Date();
+  const dh = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const sessao = getSessaoAtual();
+  const novaMsg = `[${dh}] ${sessao?.nome || sessao?.whatsapp}: ${texto}`;
+
+  const valorAtual = txtHistorico.value.trim();
+  if (valorAtual) {
+    txtHistorico.value = valorAtual + '; ' + novaMsg;
+  } else {
+    txtHistorico.value = novaMsg;
+  }
+
+  // Ativa o alarme automaticamente
+  const chk = document.getElementById('form-alerta-toggle');
+  if (chk) chk.checked = true;
+
+  // Limpa o campo de entrada do novo apontamento
+  input.value = '';
+  toast('Apontamento adicionado. Lembre-se de salvar o processo.', 'success');
+};
+
+window.limparApontamentoEdicao = function() {
+  const txtHistorico = document.getElementById('form-historico-acumulado-texto');
+  if (txtHistorico) {
+    txtHistorico.value = '';
+  }
+
+  // Desativa o alarme automaticamente
+  const chk = document.getElementById('form-alerta-toggle');
+  if (chk) chk.checked = false;
+
+  toast('Histórico de apontamentos limpo e alarme desativado. Lembre-se de salvar o processo.', 'info');
 };
 
 
