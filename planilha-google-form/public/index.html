@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783560121668.0.6">
+  <link rel="stylesheet" href="css/style.css?v=1783560705434.0.6">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -624,7 +624,7 @@
             
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nome" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nome Completo</label>
-              <input type="text" id="acesso-nome" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;" placeholder="Ex: Elton Silva" disabled>
+              <input type="text" id="acesso-nome" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;" placeholder="Digite o primeiro nome ou nome popular" disabled>
             </div>
 
             <div class="form-group" style="margin: 0;">
@@ -635,9 +635,9 @@
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nivel" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nível de Acesso</label>
               <select id="acesso-nivel" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:var(--bg-secondary); color:var(--text-primary); outline:none; height: 40px; box-sizing: border-box;" disabled>
-                <option value="leitor">👁️ Leitor</option>
-                <option value="editor">📝 Editor</option>
-                <option value="adm">🛡️ Administrador</option>
+                <option value="leitor">👁️ LEITOR</option>
+                <option value="editor">📝 EDITOR</option>
+                <option value="adm">🛡️ ADMIN</option>
               </select>
             </div>
 
@@ -646,12 +646,15 @@
               <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none; text-align: center; letter-spacing: 2px; height: 40px; box-sizing: border-box;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')" disabled>
             </div>
             
-            <div class="form-actions" style="margin: 0; display:flex; gap:8px; height: 40px; align-items: center; min-width: 250px;">
-              <button type="button" class="btn" id="btn-novo-acesso" style="background:#f59e0b; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;" onclick="novoAcessoForm()">
-                <span>➕</span> Novo
-              </button>
-              <button type="submit" class="btn btn-primary" id="btn-salvar-acesso" style="flex: 1; height: 40px; background:#10b981; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer;" disabled>Salvar</button>
-              <button type="button" id="btn-cancelar-edicao" class="btn btn-ghost" onclick="cancelarEdicaoAcesso()" style="height: 40px; background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:0 12px; border-radius:6px; font-weight:600; color:var(--text-primary); cursor:pointer; display:none; align-items:center;">Cancelar</button>
+            <div class="form-group" style="margin: 0;">
+              <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary); visibility: hidden;">Ações</label>
+              <div class="form-actions" style="margin: 0; display:flex; gap:8px; height: 40px; align-items: center; min-width: 250px;">
+                <button type="button" class="btn" id="btn-novo-acesso" style="background:#f59e0b; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;" onclick="novoAcessoForm()">
+                  <span>➕</span> Novo
+                </button>
+                <button type="submit" class="btn btn-primary" id="btn-salvar-acesso" style="flex: 1; height: 40px; background:#10b981; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer;" disabled>Salvar</button>
+                <button type="button" id="btn-cancelar-edicao" class="btn btn-ghost" onclick="cancelarEdicaoAcesso()" style="height: 40px; background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:0 12px; border-radius:6px; font-weight:600; color:var(--text-primary); cursor:pointer; display:none; align-items:center;">Cancelar</button>
+              </div>
             </div>
           </form>
         </div>
@@ -708,7 +711,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.0.9"></script>
-  <script src="js/app.js?v=1783560121862.0.9"></script>
+  <script src="js/app.js?v=1783560705507.0.9"></script>
   <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>
