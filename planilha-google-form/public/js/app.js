@@ -2139,13 +2139,6 @@ function enviarLinkWhatsApp() {
   window.open(url, '_blank');
 }
 
-window.abrirModalAcesso = abrirModalAcesso;
-window.fecharModalAcesso = fecharModalAcesso;
-window.salvarAcessoForm = salvarAcessoForm;
-window.deletarAcesso = deletarAcesso;
-window.enviarLinkWhatsApp = enviarLinkWhatsApp;
-window.maskCelular = maskCelular;
-
 // ---- PROCESSOS REPETIDOS ----
 function renderProcessosRepetidos() {
   const badge = document.getElementById('total-repetidos-badge');
@@ -2159,6 +2152,19 @@ function renderProcessosRepetidos() {
   processos.forEach(p => {
     if (!p.numero) return;
     const numClean = p.numero.trim();
+    
+    // Ignorar processos sem número ou com marcações genéricas de vazio
+    if (
+      numClean === "" || 
+      numClean === "-" || 
+      numClean === "—" || 
+      numClean.toLowerCase() === "s/n" || 
+      numClean.toLowerCase() === "s/nº" ||
+      numClean.toLowerCase() === "s/n°"
+    ) {
+      return;
+    }
+    
     if (!grupos[numClean]) grupos[numClean] = [];
     grupos[numClean].push(p);
   });
@@ -2179,7 +2185,7 @@ function renderProcessosRepetidos() {
     container.innerHTML = `
       <div class="card" style="padding: 30px; text-align: center; color: var(--text-muted);">
         <h3>🎉 Nenhum processo repetido encontrado!</h3>
-        <p style="margin-top: 6px;">Todos os números de processos na planilha são únicos.</p>
+        <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são únicos.</p>
       </div>
     `;
     return;
@@ -2190,43 +2196,85 @@ function renderProcessosRepetidos() {
     
     // Gerar sub-tabela dos itens do grupo
     const subRowsHtml = grp.itens.map(p => `
-      <tr class="linha-repetido-filho" ondblclick="editarProcesso('${p.id}')" style="cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
-        <td style="padding: 10px 12px; font-weight: 600; color: var(--text-primary);">${p.prefixo || '—'}</td>
-        <td style="padding: 10px 12px; color: var(--text-primary);">${p.municipio || '—'}</td>
-        <td style="padding: 10px 12px; color: var(--text-secondary);" title="${p.objeto || ''}">${p.objeto ? (p.objeto.length > 50 ? p.objeto.substring(0, 47) + '...' : p.objeto) : '—'}</td>
-        <td style="padding: 10px 12px; color: var(--text-primary); font-weight: 500;" title="${p.interessado || ''}">${p.interessado ? (p.interessado.length > 35 ? p.interessado.substring(0, 32) + '...' : p.interessado) : '—'}</td>
-        <td style="padding: 10px 12px;"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
-        <td style="padding: 10px 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right;">R$ ${formatCurrency(p.valorOf)}</td>
-        <td style="padding: 10px 12px; text-align: right;" onclick="event.stopPropagation()">
+      <!-- Linha do Registro -->
+      <tr class="linha-repetido-filho" style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
+        <!-- Seta que abre Detalhes -->
+        <td style="padding: 12px; width: 42px; text-align: center; cursor: pointer; user-select: none; font-size: 13px; color: var(--blue);" onclick="toggleDetalheItemRepetido('${p.id}', event)">
+          <span id="seta-item-${p.id}" style="display: inline-block; transition: transform 0.2s;">▶</span>
+        </td>
+        <!-- Número (clicar abre Edição) -->
+        <td style="padding: 12px; font-weight: 700; font-family: monospace; color: #60a5fa; cursor: pointer; width: 22%;" onclick="editarProcesso('${p.id}')" title="Clique para editar este processo">
+          ${grp.numero}
+        </td>
+        <!-- Entidade / Interessado (clicar abre Edição) -->
+        <td style="padding: 12px; color: var(--text-primary); font-weight: 500; cursor: pointer; width: 43%;" onclick="editarProcesso('${p.id}')">
+          ${p.interessado || '—'}
+        </td>
+        <!-- Valor Oficial (clicar abre Edição) -->
+        <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; cursor: pointer; width: 20%;" onclick="editarProcesso('${p.id}')">
+          R$ ${formatCurrency(p.valorOf)}
+        </td>
+        <!-- Ações CRUD -->
+        <td style="padding: 12px; text-align: right; width: 10%;" onclick="event.stopPropagation()">
           <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar" style="padding: 2px 6px; font-size:12px;">✏️</button>
           <button class="btn btn-ghost btn-sm text-danger" onclick="excluirProcessoDireto('${p.id}')" style="color: #ef4444; margin-left: 6px; padding: 2px 6px; font-size:12px;" title="Excluir">🗑️</button>
+        </td>
+      </tr>
+      
+      <!-- Linha expansível com Acordeão de Detalhes -->
+      <tr id="detalhe-item-${p.id}" style="display: none; background: rgba(0,0,0,0.22);">
+        <td colspan="5" style="padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; font-size: 13px;">
+            <div>
+              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Prefixo (Aba)</span>
+              <strong style="color: var(--text-primary);">${p.prefixo || '—'}</strong>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Município</span>
+              <strong style="color: var(--text-primary);">${p.municipio || '—'}</strong>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Valor Oficial</span>
+              <strong style="color: var(--green);">R$ ${formatCurrency(p.valorOf)}</strong>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Entidade / Interessado</span>
+              <strong style="color: var(--text-primary);">${p.interessado || '—'}</strong>
+            </div>
+            <div style="grid-column: span 2;">
+              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Objeto</span>
+              <strong style="color: var(--text-primary); font-weight: normal; line-height: 1.4;">${p.objeto || '—'}</strong>
+            </div>
+            <div>
+              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Status</span>
+              <span class="badge ${getStatusBadgeClass(p.status)}" style="margin-top: 2px;">${p.status || '—'}</span>
+            </div>
+          </div>
         </td>
       </tr>
     `).join('');
 
     return `
       <div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); margin-bottom: 8px;">
-        <!-- Cabeçalho do Grupo -->
+        <!-- Cabeçalho do Grupo (Sempre Aberto) -->
         <div onclick="toggleGrupoRepetido(${idx})" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: var(--bg-secondary); cursor: pointer; user-select: none; transition: background 0.2s;">
           <div style="display: flex; align-items: center; gap: 12px;">
-            <span id="seta-repetido-${idx}" style="font-size: 14px; font-weight: 800; color: var(--blue); transition: transform 0.2s; display: inline-block;">▶</span>
+            <span id="seta-repetido-${idx}" style="font-size: 14px; font-weight: 800; color: var(--blue); transition: transform 0.2s; display: inline-block; transform: rotate(90deg);">▶</span>
             <span style="font-size: 15px; font-weight: 700; color: var(--text-primary); font-family: monospace;">Nº: ${grp.numero}</span>
             <span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalItens} Ocorrências</span>
           </div>
         </div>
         
-        <!-- Lista de Processos do Grupo (Sub-tabela) -->
-        <div id="corpo-repetido-${idx}" style="display: none; border-top: 1px solid var(--border); overflow-x: auto;">
+        <!-- Lista de Processos do Grupo (Sempre Aberta por Padrão) -->
+        <div id="corpo-repetido-${idx}" style="display: block; border-top: 1px solid var(--border); overflow-x: auto;">
           <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
             <thead>
               <tr style="background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);">
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 10%;">Prefixo</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 15%;">Município</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 30%;">Objeto</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 20%;">Interessado</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 10%;">Status</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 10%; text-align: right;">Valor</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 5%; text-align: right;">Ações</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 42px; text-align: center;">Seta</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 22%;">Nº Processo</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 43%;">Entidade / Interessado</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 20%; text-align: right;">Valor Oficial</th>
+                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 10%; text-align: right;">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -2253,6 +2301,23 @@ function toggleGrupoRepetido(idx) {
   }
 }
 
+function toggleDetalheItemRepetido(id, event) {
+  if (event) event.stopPropagation();
+  const corpo = document.getElementById(`detalhe-item-${id}`);
+  const seta = document.getElementById(`seta-item-${id}`);
+  if (!corpo || !seta) return;
+
+  if (corpo.style.display === 'none') {
+    corpo.style.display = 'table-row';
+    seta.style.transform = 'rotate(90deg)';
+    seta.style.color = '#f59e0b'; // Dourado do alerta
+  } else {
+    corpo.style.display = 'none';
+    seta.style.transform = 'rotate(0deg)';
+    seta.style.color = 'var(--blue)';
+  }
+}
+
 async function excluirProcessoDireto(id) {
   if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta ação não pode ser desfeita e removerá o registro na planilha.")) {
     try {
@@ -2271,6 +2336,7 @@ async function excluirProcessoDireto(id) {
 
 window.renderProcessosRepetidos = renderProcessosRepetidos;
 window.toggleGrupoRepetido = toggleGrupoRepetido;
+window.toggleDetalheItemRepetido = toggleDetalheItemRepetido;
 window.excluirProcessoDireto = excluirProcessoDireto;
 window.editarProcesso = editarProcesso;
 
