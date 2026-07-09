@@ -322,6 +322,21 @@ tbody tr {
 
 tbody tr:hover { background: var(--bg-card-hover); }
 
+tbody tr.linha-alerta td {
+  border-top: 1px solid rgba(239, 68, 68, 0.4) !important;
+  border-bottom: 1px solid rgba(239, 68, 68, 0.4) !important;
+  background: rgba(239, 68, 68, 0.1) !important;
+}
+tbody tr.linha-alerta td:first-child {
+  border-left: 4px solid #ef4444 !important;
+}
+tbody tr.linha-alerta td:last-child {
+  border-right: 1px solid rgba(239, 68, 68, 0.4) !important;
+}
+tbody tr.linha-alerta:hover td {
+  background: rgba(239, 68, 68, 0.2) !important;
+}
+
 .col-numero { font-family: monospace; font-size: 12px; color: var(--blue); min-width: 170px; white-space: nowrap; }
 .col-municipio { font-weight: 500; color: var(--text-primary); }
 .col-interessado { color: var(--text-primary); font-weight: 500; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

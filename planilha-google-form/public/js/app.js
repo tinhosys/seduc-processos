@@ -385,7 +385,7 @@ function renderProcessos() {
   const busca = state.filtros.busca;
 
   tbody.innerHTML = pagina.map(p => `
-    <tr onclick="abrirDetalhe('${p.id}')">
+    <tr onclick="abrirDetalhe('${p.id}')" ${p.alerta === '1' ? 'class="linha-alerta"' : ''}>
       <td>${p.prefixo ? `<span class="badge-prefixo">${p.prefixo}</span>` : '<span style="color:var(--text-muted);font-size:11px">—</span>'}</td>
       <td class="col-municipio">${hl(p.municipio, busca)}</td>
       <td class="col-numero">${hl(p.numero, busca) || '—'}</td>
