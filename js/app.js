@@ -79,7 +79,10 @@ function navegar(pagina) {
   if (pagina === 'dashboard') renderDashboard();
   if (pagina === 'processos') renderProcessos();
   if (pagina === 'novo') renderFormulario();
-  if (pagina === 'acessos') carregarAcessos();
+  if (pagina === 'acessos') {
+    carregarAcessos();
+    cancelarEdicaoAcesso();
+  }
 }
 
 // ---- TOAST ----
@@ -1786,15 +1789,13 @@ let listaAcessos = [];
 
 function abrirModalAcesso(index = null) {
   const title = document.getElementById('cadastro-acesso-title');
-  const form = document.getElementById('form-acesso');
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
   const nivelInput = document.getElementById('acesso-nivel');
   const senhaInput = document.getElementById('acesso-senha');
-  const statusToggle = document.getElementById('acesso-status-toggle');
-  const statusLabel = document.getElementById('acesso-status-label');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
+  const btnSalvar = document.getElementById('btn-salvar-acesso');
 
   if (!rowInput) return;
 
@@ -1804,13 +1805,19 @@ function abrirModalAcesso(index = null) {
     rowInput.value = user._rowNumber;
     nomeInput.value = user.nome;
     whatsappInput.value = user.whatsapp || '';
-    whatsappInput.disabled = true;
     nivelInput.value = user.nivel;
     senhaInput.value = user.senha || '';
-    statusToggle.checked = user.status === 'liberado';
-    statusLabel.textContent = user.status === 'liberado' ? 'ON' : 'OFF';
-    statusLabel.style.color = user.status === 'liberado' ? '#10b981' : '#ef4444';
+
+    // Habilitar campos
+    nomeInput.disabled = false;
+    whatsappInput.disabled = true; // WhatsApp não pode ser alterado na edição
+    nivelInput.disabled = false;
+    senhaInput.disabled = false;
+
+    if (btnSalvar) btnSalvar.disabled = false;
     if (btnCancelar) btnCancelar.style.display = 'inline-flex';
+    
+    nomeInput.focus();
   } else {
     cancelarEdicaoAcesso();
   }
@@ -1820,22 +1827,51 @@ function cancelarEdicaoAcesso() {
   const title = document.getElementById('cadastro-acesso-title');
   const form = document.getElementById('form-acesso');
   const rowInput = document.getElementById('acesso-row');
+  const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
-  const statusToggle = document.getElementById('acesso-status-toggle');
-  const statusLabel = document.getElementById('acesso-status-label');
+  const nivelInput = document.getElementById('acesso-nivel');
+  const senhaInput = document.getElementById('acesso-senha');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
+  const btnSalvar = document.getElementById('btn-salvar-acesso');
 
   if (form) form.reset();
   if (rowInput) rowInput.value = '';
-  if (title) title.innerHTML = '<span>👤</span> Novo Registro de Acesso';
-  if (whatsappInput) whatsappInput.disabled = false;
-  if (statusToggle) statusToggle.checked = true;
-  if (statusLabel) {
-    statusLabel.textContent = 'ON';
-    statusLabel.style.color = '#10b981';
-  }
+  if (title) title.innerHTML = '<span>👤</span> Registro de Acesso';
+
+  // Limpar e Desabilitar campos
+  if (nomeInput) { nomeInput.value = ''; nomeInput.disabled = true; }
+  if (whatsappInput) { whatsappInput.value = ''; whatsappInput.disabled = true; }
+  if (nivelInput) { nivelInput.selectedIndex = -1; nivelInput.disabled = true; }
+  if (senhaInput) { senhaInput.value = ''; senhaInput.disabled = true; }
+
+  if (btnSalvar) btnSalvar.disabled = true;
   if (btnCancelar) btnCancelar.style.display = 'none';
 }
+
+window.novoAcessoForm = function() {
+  cancelarEdicaoAcesso();
+
+  const title = document.getElementById('cadastro-acesso-title');
+  const nomeInput = document.getElementById('acesso-nome');
+  const whatsappInput = document.getElementById('acesso-whatsapp');
+  const nivelInput = document.getElementById('acesso-nivel');
+  const senhaInput = document.getElementById('acesso-senha');
+  const btnCancelar = document.getElementById('btn-cancelar-edicao');
+  const btnSalvar = document.getElementById('btn-salvar-acesso');
+
+  if (title) title.innerHTML = '<span>➕</span> Novo Registro de Acesso';
+
+  // Habilitar campos
+  if (nomeInput) nomeInput.disabled = false;
+  if (whatsappInput) whatsappInput.disabled = false;
+  if (nivelInput) nivelInput.disabled = false;
+  if (senhaInput) senhaInput.disabled = false;
+
+  if (btnSalvar) btnSalvar.disabled = false;
+  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
+
+  if (nomeInput) nomeInput.focus();
+};
 
 function fecharModalAcesso() {
   cancelarEdicaoAcesso();
@@ -1990,7 +2026,14 @@ async function salvarAcessoForm(event) {
   const whatsapp = document.getElementById('acesso-whatsapp').value;
   const nivel = document.getElementById('acesso-nivel').value;
   const senha = document.getElementById('acesso-senha').value;
-  const status = document.getElementById('acesso-status-toggle').checked ? 'liberado' : 'bloqueado';
+  
+  let status = 'liberado';
+  if (row) {
+    const user = listaAcessos.find(u => u._rowNumber === Number(row));
+    if (user) {
+      status = user.status;
+    }
+  }
 
   const payload = { nome, whatsapp, nivel, status, senha };
   const token = sessionStorage.getItem('sap_session_token');
@@ -2019,7 +2062,7 @@ async function salvarAcessoForm(event) {
     }
 
     toast(row ? 'Usuário atualizado!' : 'Usuário cadastrado!', 'success');
-    fecharModalAcesso();
+    cancelarEdicaoAcesso();
     carregarAcessos();
   } catch (error) {
     console.error(error);
