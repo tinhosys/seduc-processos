@@ -1441,3 +1441,58 @@ input:checked + .slider:before {
   }
 }
 
+/* ROLAGEM E CONGELAMENTO DA TELA DE ACESSOS */
+#page-acessos {
+  display: none;
+}
+#page-acessos.active {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 68px); /* Altura da tela menos o Topbar */
+  box-sizing: border-box;
+  padding: 20px 28px 10px;
+  overflow: hidden;
+}
+
+#page-acessos .section-header {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+#page-acessos .card {
+  flex-shrink: 0;
+  margin-bottom: 16px;
+}
+
+#page-acessos .table-wrap {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  margin-bottom: 12px;
+}
+
+#page-acessos .table-wrap table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+#page-acessos .table-wrap table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-secondary);
+  z-index: 10;
+  box-shadow: inset 0 -1px 0 var(--border);
+}
+
+/* RESPONSIVIDADE ADICIONAL PARA ACESSOS */
+@media (max-width: 600px) {
+  #page-acessos {
+    height: calc(100vh - 58px);
+    padding: 16px 16px 10px;
+  }
+}
+
