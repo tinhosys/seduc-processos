@@ -542,7 +542,7 @@ function renderFormulario() {
         groupHistorico.style.display = 'block';
         const txtHistorico = document.getElementById('form-historico-acumulado-texto');
         if (txtHistorico) {
-          txtHistorico.value = p.apontamento || '';
+          txtHistorico.value = (p.apontamento || '').split(';').map(x => x.trim()).filter(Boolean).join('\n');
         }
         const txtNovo = document.getElementById('form-novo-apontamento');
         if (txtNovo) {
@@ -674,7 +674,7 @@ function salvarFormulario(e) {
   if (getSessaoAtual()?.nivel === 'adm') {
     const txtApontamento = document.getElementById('form-historico-acumulado-texto');
     if (txtApontamento) {
-      dados.apontamento = txtApontamento.value.trim();
+      dados.apontamento = txtApontamento.value.split('\n').map(x => x.trim()).filter(Boolean).join('; ');
     }
     const chkAlerta = document.getElementById('form-alerta-toggle');
     if (chkAlerta) {
@@ -898,7 +898,7 @@ window.gravarApontamentoImediato = function() {
       const novaMsg = `[${dh}] ${sessao?.nome || sessao?.whatsapp}: ${texto}`;
 
       const valorAtual = txtHistorico.value.trim();
-      txtHistorico.value = valorAtual ? valorAtual + '; ' + novaMsg : novaMsg;
+      txtHistorico.value = valorAtual ? valorAtual + '\n' + novaMsg : novaMsg;
 
       const chk = document.getElementById('form-alerta-toggle');
       if (chk) chk.checked = true;
@@ -907,7 +907,7 @@ window.gravarApontamentoImediato = function() {
 
       const idx = window.processosCache.findIndex(proc => proc.id === id);
       if (idx !== -1) {
-        window.processosCache[idx].apontamento = txtHistorico.value;
+        window.processosCache[idx].apontamento = txtHistorico.value.split('\n').map(x => x.trim()).filter(Boolean).join('; ');
         window.processosCache[idx].alerta = '1';
       }
 
@@ -927,15 +927,17 @@ window.gravarApontamentoImediato = function() {
 };
 
 window.limparApontamentoEdicao = function() {
-  const txtHistorico = document.getElementById('form-historico-acumulado-texto');
-  if (txtHistorico) {
-    txtHistorico.value = '';
+  if (confirm('Tem certeza de que deseja limpar todo o histórico de apontamentos deste processo?')) {
+    const txtHistorico = document.getElementById('form-historico-acumulado-texto');
+    if (txtHistorico) {
+      txtHistorico.value = '';
+    }
+
+    const chk = document.getElementById('form-alerta-toggle');
+    if (chk) chk.checked = false;
+
+    toast('Histórico limpo localmente. Clique em Salvar Processo para confirmar a limpeza na planilha.', 'info');
   }
-
-  const chk = document.getElementById('form-alerta-toggle');
-  if (chk) chk.checked = false;
-
-  toast('Histórico limpo localmente. Clique em Salvar Processo para confirmar a limpeza na planilha.', 'info');
 };
 
 
