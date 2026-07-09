@@ -2142,8 +2142,8 @@ function enviarLinkWhatsApp() {
 // ---- PROCESSOS REPETIDOS ----
 function renderProcessosRepetidos() {
   const badge = document.getElementById('total-repetidos-badge');
-  const container = document.getElementById('lista-repetidos-container');
-  if (!container) return;
+  const tbody = document.getElementById('table-repetidos-body');
+  if (!tbody) return;
 
   const processos = carregarProcessos();
 
@@ -2178,144 +2178,81 @@ function renderProcessosRepetidos() {
     }));
 
   if (badge) {
-    badge.textContent = `${repetidos.length} Grupos Repetidos`;
+    badge.textContent = `${repetidos.length} Números com Ocorrências Repetidas`;
   }
 
   if (repetidos.length === 0) {
-    container.innerHTML = `
-      <div class="card" style="padding: 30px; text-align: center; color: var(--text-muted);">
-        <h3>🎉 Nenhum processo repetido encontrado!</h3>
-        <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são únicos.</p>
-      </div>
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
+          <h3>🎉 Nenhum processo repetido encontrado!</h3>
+          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são únicos.</p>
+        </td>
+      </tr>
     `;
     return;
   }
 
-  container.innerHTML = repetidos.map((grp, idx) => {
-    const totalItens = grp.itens.length;
+  let html = '';
+  repetidos.forEach((grp, idx) => {
+    const totalOcorrencias = grp.itens.length;
+    const safeNumClass = grp.numero.replace(/[^a-zA-Z0-9]/g, '_');
     
-    // Gerar sub-tabela dos itens do grupo
-    const subRowsHtml = grp.itens.map(p => `
-      <!-- Linha do Registro -->
-      <tr class="linha-repetido-filho" style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
-        <!-- Seta que abre Detalhes -->
-        <td style="padding: 12px; width: 42px; text-align: center; cursor: pointer; user-select: none; font-size: 13px; color: var(--blue);" onclick="toggleDetalheItemRepetido('${p.id}', event)">
-          <span id="seta-item-${p.id}" style="display: inline-block; transition: transform 0.2s;">▶</span>
+    // 1. Linha Pai: Exibe apenas o botão de expansão e o número do processo
+    html += `
+      <tr style="background: rgba(30, 41, 59, 0.85); border-bottom: 1px solid var(--border);">
+        <td style="padding: 12px; text-align: center; cursor: pointer; user-select: none; font-size: 14px; font-weight: 900; color: var(--blue);" onclick="toggleGrupoRepetidoTabela('${grp.numero}', this)">
+          ➕
         </td>
-        <!-- Número (clicar abre Edição) -->
-        <td style="padding: 12px; font-weight: 700; font-family: monospace; color: #60a5fa; cursor: pointer; width: 22%;" onclick="editarProcesso('${p.id}')" title="Clique para editar este processo">
-          ${grp.numero}
-        </td>
-        <!-- Entidade / Interessado (clicar abre Edição) -->
-        <td style="padding: 12px; color: var(--text-primary); font-weight: 500; cursor: pointer; width: 43%;" onclick="editarProcesso('${p.id}')">
-          ${p.interessado || '—'}
-        </td>
-        <!-- Valor Oficial (clicar abre Edição) -->
-        <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; cursor: pointer; width: 20%;" onclick="editarProcesso('${p.id}')">
-          R$ ${formatCurrency(p.valorOf)}
-        </td>
-        <!-- Ações CRUD -->
-        <td style="padding: 12px; text-align: right; width: 10%;" onclick="event.stopPropagation()">
-          <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar" style="padding: 2px 6px; font-size:12px;">✏️</button>
-          <button class="btn btn-ghost btn-sm text-danger" onclick="excluirProcessoDireto('${p.id}')" style="color: #ef4444; margin-left: 6px; padding: 2px 6px; font-size:12px;" title="Excluir">🗑️</button>
+        <td colspan="6" style="padding: 12px; font-weight: 700; font-family: monospace; color: var(--text-primary); font-size: 14px;">
+          Nº PROCESSO: <span style="color: #60a5fa; letter-spacing: 0.5px;">${grp.numero}</span>
+          <span style="font-size: 11px; font-weight: 700; margin-left: 12px; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalOcorrencias} Ocorrências</span>
         </td>
       </tr>
-      
-      <!-- Linha expansível com Acordeão de Detalhes -->
-      <tr id="detalhe-item-${p.id}" style="display: none; background: rgba(0,0,0,0.22);">
-        <td colspan="5" style="padding: 14px 20px; border-bottom: 1px solid rgba(255,255,255,0.05);">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; font-size: 13px;">
-            <div>
-              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Prefixo (Aba)</span>
-              <strong style="color: var(--text-primary);">${p.prefixo || '—'}</strong>
-            </div>
-            <div>
-              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Município</span>
-              <strong style="color: var(--text-primary);">${p.municipio || '—'}</strong>
-            </div>
-            <div>
-              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Valor Oficial</span>
-              <strong style="color: var(--green);">R$ ${formatCurrency(p.valorOf)}</strong>
-            </div>
-            <div>
-              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Entidade / Interessado</span>
-              <strong style="color: var(--text-primary);">${p.interessado || '—'}</strong>
-            </div>
-            <div style="grid-column: span 2;">
-              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Objeto</span>
-              <strong style="color: var(--text-primary); font-weight: normal; line-height: 1.4;">${p.objeto || '—'}</strong>
-            </div>
-            <div>
-              <span style="color: var(--text-muted); font-size: 10px; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 2px;">Status</span>
-              <span class="badge ${getStatusBadgeClass(p.status)}" style="margin-top: 2px;">${p.status || '—'}</span>
-            </div>
-          </div>
-        </td>
-      </tr>
-    `).join('');
-
-    return `
-      <div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-card); margin-bottom: 8px;">
-        <!-- Cabeçalho do Grupo (Sempre Aberto) -->
-        <div onclick="toggleGrupoRepetido(${idx})" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; background: var(--bg-secondary); cursor: pointer; user-select: none; transition: background 0.2s;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <span id="seta-repetido-${idx}" style="font-size: 14px; font-weight: 800; color: var(--blue); transition: transform 0.2s; display: inline-block; transform: rotate(90deg);">▶</span>
-            <span style="font-size: 15px; font-weight: 700; color: var(--text-primary); font-family: monospace;">Nº: ${grp.numero}</span>
-            <span style="font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalItens} Ocorrências</span>
-          </div>
-        </div>
-        
-        <!-- Lista de Processos do Grupo (Sempre Aberta por Padrão) -->
-        <div id="corpo-repetido-${idx}" style="display: block; border-top: 1px solid var(--border); overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
-            <thead>
-              <tr style="background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border);">
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 42px; text-align: center;">Seta</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 22%;">Nº Processo</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 43%;">Entidade / Interessado</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 20%; text-align: right;">Valor Oficial</th>
-                <th style="padding: 10px 12px; font-weight: 600; color: var(--text-secondary); width: 10%; text-align: right;">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${subRowsHtml}
-            </tbody>
-          </table>
-        </div>
-      </div>
     `;
-  }).join('');
+    
+    // 2. Linhas Filhas: Listadas abaixo em linha, uma abaixo da outra
+    grp.itens.forEach(p => {
+      html += `
+        <tr class="filha-repetido-${safeNumClass}" style="display: none; background: rgba(0, 0, 0, 0.15); border-bottom: 1px solid rgba(255, 255, 255, 0.03); cursor: pointer; transition: background 0.15s;" onclick="editarProcesso('${p.id}')" title="Clique para editar este processo">
+          <td style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 11px; font-weight: bold;">
+            —
+          </td>
+          <td style="padding: 12px; font-weight: 600; color: var(--text-primary);">${p.prefixo || '—'}</td>
+          <td style="padding: 12px; color: var(--text-primary);">${p.municipio || '—'}</td>
+          <td style="padding: 12px; color: var(--text-primary); font-weight: 500;" title="${p.interessado || ''}">
+            ${p.interessado ? (p.interessado.length > 40 ? p.interessado.substring(0, 37) + '...' : p.interessado) : '—'}
+          </td>
+          <td style="padding: 12px; color: var(--text-secondary);" title="${p.objeto || ''}">
+            ${p.objeto ? (p.objeto.length > 55 ? p.objeto.substring(0, 52) + '...' : p.objeto) : '—'}
+          </td>
+          <td style="padding: 12px;">
+            <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span>
+          </td>
+          <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; padding-right: 16px;">
+            R$ ${formatCurrency(p.valorOf)}
+          </td>
+        </tr>
+      `;
+    });
+  });
+
+  tbody.innerHTML = html;
 }
 
-function toggleGrupoRepetido(idx) {
-  const corpo = document.getElementById(`corpo-repetido-${idx}`);
-  const seta = document.getElementById(`seta-repetido-${idx}`);
-  if (!corpo || !seta) return;
-
-  if (corpo.style.display === 'none') {
-    corpo.style.display = 'block';
-    seta.style.transform = 'rotate(90deg)';
-  } else {
-    corpo.style.display = 'none';
-    seta.style.transform = 'rotate(0deg)';
-  }
-}
-
-function toggleDetalheItemRepetido(id, event) {
-  if (event) event.stopPropagation();
-  const corpo = document.getElementById(`detalhe-item-${id}`);
-  const seta = document.getElementById(`seta-item-${id}`);
-  if (!corpo || !seta) return;
-
-  if (corpo.style.display === 'none') {
-    corpo.style.display = 'table-row';
-    seta.style.transform = 'rotate(90deg)';
-    seta.style.color = '#f59e0b'; // Dourado do alerta
-  } else {
-    corpo.style.display = 'none';
-    seta.style.transform = 'rotate(0deg)';
-    seta.style.color = 'var(--blue)';
-  }
+function toggleGrupoRepetidoTabela(numeroProcesso, btnElement) {
+  const safeNumClass = numeroProcesso.replace(/[^a-zA-Z0-9]/g, '_');
+  const linhasFilhas = document.querySelectorAll(`.filha-repetido-${safeNumClass}`);
+  
+  if (linhasFilhas.length === 0) return;
+  
+  const estaOculto = linhasFilhas[0].style.display === 'none';
+  
+  linhasFilhas.forEach(linha => {
+    linha.style.display = estaOculto ? 'table-row' : 'none';
+  });
+  
+  btnElement.textContent = estaOculto ? '➖' : '➕';
 }
 
 async function excluirProcessoDireto(id) {
@@ -2335,8 +2272,7 @@ async function excluirProcessoDireto(id) {
 }
 
 window.renderProcessosRepetidos = renderProcessosRepetidos;
-window.toggleGrupoRepetido = toggleGrupoRepetido;
-window.toggleDetalheItemRepetido = toggleDetalheItemRepetido;
+window.toggleGrupoRepetidoTabela = toggleGrupoRepetidoTabela;
 window.excluirProcessoDireto = excluirProcessoDireto;
 window.editarProcesso = editarProcesso;
 

@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783565740267.0.6">
+  <link rel="stylesheet" href="css/style.css?v=1783566357937.0.6">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -693,12 +693,27 @@
       <section class="page" id="page-repetidos">
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
           <div style="flex: 1;">
-            <span id="total-repetidos-badge" style="display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 6px; font-size: 14px; font-weight: 700; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); font-family: monospace; letter-spacing: 0.5px;">Calculando...</span>
+            <span id="total-repetidos-badge" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 8px; font-size: 15px; font-weight: 700; background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); font-family: monospace; letter-spacing: 0.5px;">Calculando...</span>
           </div>
         </div>
 
-        <div id="lista-repetidos-container" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px; overflow-y: auto; max-height: calc(100vh - 160px); padding-right: 6px;">
-          <!-- Carregado via Javascript -->
+        <div class="table-wrap" style="flex: 1; overflow-y: auto; margin-top: 16px;">
+          <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px;">
+            <thead>
+              <tr style="background: var(--bg-secondary); border-bottom: 1px solid var(--border);">
+                <th style="padding: 12px; width: 60px; text-align: center;">Expandir</th>
+                <th style="padding: 12px; width: 12%;">Prefixo</th>
+                <th style="padding: 12px; width: 15%;">Município</th>
+                <th style="padding: 12px; width: 25%;">Entidade / Interessado</th>
+                <th style="padding: 12px; width: 28%;">Objeto</th>
+                <th style="padding: 12px; width: 10%;">Status</th>
+                <th style="padding: 12px; width: 10%; text-align: right; padding-right: 16px;">Valor</th>
+              </tr>
+            </thead>
+            <tbody id="table-repetidos-body">
+              <!-- Renderizado via Javascript -->
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -732,7 +747,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.0.9"></script>
-  <script src="js/app.js?v=1783565740339.0.9"></script>
+  <script src="js/app.js?v=1783566358056.0.9"></script>
   <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>
