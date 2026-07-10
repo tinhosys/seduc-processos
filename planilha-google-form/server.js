@@ -616,7 +616,7 @@ app.post("/api/registros", editorOnly, async (req, res) => {
       return res.status(400).json({ erro: `A aba ${tabName} não existe ou não tem cabeçalho.` });
     }
 
-    const newRow = mapDataToRow(req.body, headers, []);
+    const newRow = mapDataToRow(req.body, headers, [], req.sessao);
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
