@@ -391,6 +391,7 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     else if (hLow.includes('anota')) val = data.anotacao;
     else if (hLow.includes('apontamento') && data.apontamento !== undefined) val = data.apontamento;
     else if (hLow === 'alerta' && data.alerta !== undefined) val = data.alerta;
+    else if ((hLow === 'marca' || hLow.includes('marcado')) && data.marca !== undefined) val = data.marca;
     if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
         val = data.contatos.map(c => {
@@ -469,6 +470,57 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ erro: "Erro ao atualizar registro." });
+  }
+});
+
+app.delete("/api/registros/:id", editorOnly, async (req, res) => {
+  try {
+    const rawId = req.params.id;
+    const parts = rawId.split("__");
+    
+    let tabName, rowNumber;
+    if (parts.length >= 2) {
+      rowNumber = Number(parts.pop());
+      tabName = parts.join("__");
+    } else {
+      rowNumber = Number(parts[0]);
+      const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+      tabName = response.data.sheets[0].properties.title;
+    }
+
+    if (!rowNumber || rowNumber < 2) {
+      return res.status(400).json({ erro: "Número de linha inválido." });
+    }
+
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+    const sheet = meta.data.sheets.find(s => s.properties.title === tabName);
+    if (!sheet) {
+      return res.status(404).json({ erro: "Aba não encontrada." });
+    }
+    const sheetId = sheet.properties.sheetId;
+
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID,
+      requestBody: {
+        requests: [
+          {
+            deleteDimension: {
+              range: {
+                sheetId: sheetId,
+                dimension: "ROWS",
+                startIndex: rowNumber - 1,
+                endIndex: rowNumber
+              }
+            }
+          }
+        ]
+      }
+    });
+
+    res.json({ sucesso: true, mensagem: "Registro excluído com sucesso da planilha." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erro: "Erro ao excluir registro na planilha." });
   }
 });
 
@@ -742,6 +794,41 @@ app.delete("/api/acessos/:row", adminOnly, async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+async function garantirColunaMarca() {
+  try {
+    console.log("🔍 Verificando se a coluna 'Marca' existe nas abas de processos...");
+    const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+    const allSheets = response.data.sheets;
+    const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos');
+
+    for (const s of processSheets) {
+      const tabName = s.properties.title;
+      const headerRes = await sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${tabName}!A1:Z1`
+      });
+      const headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
+      if (headers.length > 0) {
+        const hasMarca = headers.some(h => (h || "").toLowerCase().trim() === "marca");
+        if (!hasMarca) {
+          const nextColLetter = columnToLetter(headers.length + 1);
+          const range = `${tabName}!${nextColLetter}1`;
+          await sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_ID,
+            range: range,
+            valueInputOption: "USER_ENTERED",
+            requestBody: { values: [["Marca"]] }
+          });
+          console.log(`✅ Coluna 'Marca' adicionada na aba: ${tabName} (posição ${nextColLetter}1)`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error("❌ Erro ao garantir coluna 'Marca':", err.message);
+  }
+}
+
+app.listen(PORT, async () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
+  await garantirColunaMarca();
 });

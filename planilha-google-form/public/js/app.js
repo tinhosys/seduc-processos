@@ -12,7 +12,9 @@ let state = {
     municipio: '',
     objeto: '',
     prefixo: '',
-    apontamento: false
+    apontamento: false,
+    alerta: '',
+    marca: ''
   },
   paginaAtual: 1,
   itensPorPagina: 50,
@@ -105,6 +107,21 @@ let chartMunicipio = null;
 function renderDashboard() {
   const processos = carregarProcessos();
   const total = processos.length;
+
+  const marcadosCount = processos.filter(p => p.marca === '1' || p.marca === 'SIM').length;
+  const elMarcado = document.getElementById('stat-marcado');
+  if (elMarcado) elMarcado.textContent = marcadosCount;
+
+  const cardMarcados = document.getElementById('card-stat-marcados');
+  if (cardMarcados) {
+    cardMarcados.style.cursor = 'pointer';
+    cardMarcados.onclick = () => {
+      state.filtros.marca = 'sim';
+      const selectMarca = document.getElementById('filtro-marca');
+      if (selectMarca) selectMarca.value = 'sim';
+      navegar('processos');
+    };
+  }
 
   // Stats
   const countStatus = (s) => processos.filter(p => normalizar(p.status) === normalizar(s)).length;
@@ -307,12 +324,18 @@ function renderDashboard() {
 // ---- LISTA DE PROCESSOS ----
 function getFiltrados() {
   let lista = carregarProcessos();
-  const { busca, status, localizacao, municipio, objeto, prefixo, alerta } = state.filtros;
+  const { busca, status, localizacao, municipio, objeto, prefixo, alerta, marca } = state.filtros;
 
   if (alerta === 'sim') {
     lista = lista.filter(p => String(p.alerta || '').trim() === '1');
   } else if (alerta === 'nao') {
     lista = lista.filter(p => String(p.alerta || '').trim() !== '1');
+  }
+
+  if (marca === 'sim') {
+    lista = lista.filter(p => p.marca === '1' || p.marca === 'SIM');
+  } else if (marca === 'nao') {
+    lista = lista.filter(p => p.marca !== '1' && p.marca !== 'SIM');
   }
 
   if (busca) {
@@ -390,8 +413,11 @@ function renderProcessos() {
   const busca = state.filtros.busca;
 
   tbody.innerHTML = pagina.map(p => `
-    <tr onclick="abrirDetalhe('${p.id}')" ${p.alerta === '1' ? 'class="linha-alerta"' : ''}>
-      <td>${p.prefixo ? `<span class="badge-prefixo">${p.prefixo}</span>` : '<span style="color:var(--text-muted);font-size:11px">—</span>'}</td>
+    <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''}">
+      <td>
+        ${p.prefixo ? `<span class="badge-prefixo">${p.prefixo}</span>` : '<span style="color:var(--text-muted);font-size:11px">—</span>'}
+        ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:14px;">📌</span>' : ''}
+      </td>
       <td class="col-municipio">${hl(p.municipio, busca)}</td>
       <td class="col-numero">${hl(p.numero, busca) || '—'}</td>
       <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || '—'}</td>
@@ -401,7 +427,8 @@ function renderProcessos() {
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
       <td>${formatDate(p.data)}</td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
-        <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')">✏️</button>
+        <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">✏️</button>
+        <button class="btn btn-ghost btn-sm" onclick="confirmarExcluir('${p.id}')" title="Excluir" style="color: var(--red); margin-left: 4px;">🗑️</button>
       </td>
     </tr>
   `).join('') || `
@@ -588,10 +615,12 @@ function renderFormulario() {
     document.getElementById('form-data').value        = p.data        || '';
     document.getElementById('form-obs').value         = p.obs         || '';
     document.getElementById('form-anotacao').value    = p.anotacao    || '';
+    document.getElementById('form-marca').checked     = p.marca === '1' || p.marca === 'SIM';
     contatosTemporarios = p.contatos ? JSON.parse(JSON.stringify(p.contatos)) : [];
     renderizarContatosForm();
   } else {
     document.getElementById('form-processo').reset();
+    document.getElementById('form-marca').checked = false;
     document.getElementById('container-numeros').innerHTML = `
       <div style="display:flex;gap:8px;align-items:center;">
         <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;">
@@ -641,6 +670,11 @@ function renderFormulario() {
   } else {
     if (legendDiv) legendDiv.style.display = 'none';
   }
+
+  const btnExcluir = document.getElementById('btn-excluir-form');
+  if (btnExcluir) {
+    btnExcluir.style.display = processo ? 'block' : 'none';
+  }
 }
 
 function salvarFormulario(e) {
@@ -681,6 +715,7 @@ function salvarFormulario(e) {
     data:        document.getElementById('form-data').value,
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
+    marca:       document.getElementById('form-marca').checked ? '1' : '',
     contatos:    JSON.parse(JSON.stringify(contatosTemporarios))
   };
 
@@ -713,6 +748,12 @@ function salvarFormulario(e) {
 
   navegar('processos');
 }
+
+window.confirmarExcluirForm = function() {
+  if (state.editandoId) {
+    confirmarExcluir(state.editandoId);
+  }
+};
 
 // ---- DETALHE / MODAL ----
 function abrirDetalhe(id) {
@@ -829,7 +870,22 @@ function abrirDetalhe(id) {
       </div>
     </div>
 
-    ${p.obs ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">📝 Observações</h4><p style="color:var(--text-secondary);font-size:14px">${p.obs}</p></div>` : ''}
+    ${p.marca === '1' || p.marca === 'SIM' ? `
+      <div class="card" style="margin-bottom:16px; border: 2px solid var(--blue); background: rgba(59, 130, 246, 0.08); display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(59,130,246,0.15);">
+        <span style="font-size: 24px;">📌</span>
+        <div>
+          <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para Atenção!</strong>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observações abaixo.</p>
+        </div>
+      </div>
+    ` : ''}
+
+    ${p.obs ? `
+      <div class="card" style="margin-bottom:16px; ${p.marca === '1' || p.marca === 'SIM' ? 'border: 1px solid var(--blue); background: rgba(59, 130, 246, 0.03);' : ''}">
+        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">📝 Observações</h4>
+        <p style="color:var(--text-secondary);font-size:14px">${p.obs}</p>
+      </div>
+    ` : ''}
     ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">🗒️ Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
@@ -1102,8 +1158,13 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroAlertaEl.addEventListener('change', e => aplicarFiltro('alerta', e.target.value));
   }
 
+  const filtroMarcaEl = document.getElementById('filtro-marca');
+  if (filtroMarcaEl) {
+    filtroMarcaEl.addEventListener('change', e => aplicarFiltro('marca', e.target.value));
+  }
+
   document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', alerta: '' };
+    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', alerta: '', marca: '' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
     document.getElementById('filtro-status').value = '';
@@ -1113,6 +1174,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filtro-prefixo').value = '';
     const fa = document.getElementById('filtro-alerta');
     if (fa) fa.value = '';
+    const fm = document.getElementById('filtro-marca');
+    if (fm) fm.value = '';
     renderProcessos();
   });
 

@@ -1560,3 +1560,24 @@ input:checked + .slider:before {
   }
 }
 
+/* ============================================================
+   PROCESSO MARCADO
+   ============================================================ */
+tr.linha-marcada {
+  background: rgba(59, 130, 246, 0.08) !important;
+  border-left: 4px solid #3b82f6 !important;
+}
+
+tr.linha-marcada:hover {
+  background: rgba(59, 130, 246, 0.12) !important;
+}
+
+.badge-marca {
+  background: rgba(59, 130, 246, 0.2);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: bold;
+}
+

@@ -98,6 +98,7 @@ const mapToApp = (row) => {
     obs: row['Obs.:'] || row['Obs'] || '',
     data: row['Data'] || '',
     anotacao: row['Anotação'] || row['Anota\u00e7\u00e3o'] || '',
+    marca: String(row['Marca'] || row['marca'] || row['Marcado'] || '').trim(),
     alerta: String(alertaStr || '').trim(),
     apontamento: apontamentoStr || '',
     contatos: contatosParsed
@@ -122,7 +123,8 @@ const mapToSheet = (dados) => {
     'Localização': dados.localizacao || '',
     'Obs.:': dados.obs || '',
     'Data': dados.data || '',
-    'Anotação': dados.anotacao || ''
+    'Anotação': dados.anotacao || '',
+    'Marca': dados.marca || ''
   };
 };
 
@@ -198,9 +200,8 @@ async function excluirProcesso(id) {
   try {
     if (String(id).startsWith('temp-')) return;
     await fetch(API_BASE + `/api/registros/${id}`, {
-      method: 'PUT',
-      headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ status: 'EXCLUÍDO' })
+      method: 'DELETE',
+      headers: getHeaders()
     });
   } catch(err) {
     console.error(err);
