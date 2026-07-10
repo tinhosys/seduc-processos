@@ -99,6 +99,8 @@ const mapToApp = (row) => {
     data: row['Data'] || '',
     anotacao: row['Anotação'] || row['Anota\u00e7\u00e3o'] || '',
     marca: String(row['Marca'] || row['marca'] || row['Marcado'] || '').trim(),
+    ultimaEdicao: row['ULTIMA EDICAO'] || row['ultima edicao'] || row['última edição'] || row['ÚLTIMA EDIÇÃO'] || '',
+    dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || row['DATA/HORA EDIÇÃO'] || '',
     alerta: String(alertaStr || '').trim(),
     apontamento: apontamentoStr || '',
     contatos: contatosParsed
@@ -124,7 +126,9 @@ const mapToSheet = (dados) => {
     'Obs.:': dados.obs || '',
     'Data': dados.data || '',
     'Anotação': dados.anotacao || '',
-    'Marca': dados.marca || ''
+    'Marca': dados.marca || '',
+    'ULTIMA EDICAO': dados.ultimaEdicao || '',
+    'DATA/HORA EDICAO': dados.dataHoraEdicao || ''
   };
 };
 

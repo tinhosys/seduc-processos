@@ -461,6 +461,14 @@
                 <datalist id="list-prefixos"></datalist>
               </div>
 
+              <div class="form-group" style="display:flex; flex-direction:column; justify-content: flex-end; height: 100%;">
+                <label style="visibility: hidden; margin-bottom: 6px;">Marcação</label>
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; color:var(--text-primary); user-select:none; margin:0; padding: 11px 0;">
+                  <input type="checkbox" id="form-marca" style="width:18px; height:18px; cursor:pointer; accent-color:#3b82f6;">
+                  <span>📌 Marcar Processo (Chamar Atenção)</span>
+                </label>
+              </div>
+
               <div class="form-group" id="legend-ultima-edicao" style="display:none;">
                 <label style="color:var(--text-secondary); font-weight:600; display:block; margin-bottom:6px;">Última atualização</label>
                 <div style="border: 1px dashed rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.04); padding: 10px 14px; border-radius: 8px; font-size: 13px; color: var(--text-primary); line-height: 1.5; min-height: 40px; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;">
@@ -507,12 +515,7 @@
                 <label for="form-data">Data</label>
                 <input type="date" id="form-data">
               </div>
-              <div class="form-group" style="display:flex; align-items:center; gap:8px; margin-top:28px;">
-                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; color:var(--text-primary); user-select:none; margin:0;">
-                  <input type="checkbox" id="form-marca" style="width:18px; height:18px; cursor:pointer; accent-color:#3b82f6;">
-                  <span>📌 Marcar Processo (Chamar Atenção)</span>
-                </label>
-              </div>
+
 
               <!-- Contatos / WhatsApp -->
               <div class="form-group full"

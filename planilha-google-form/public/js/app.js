@@ -657,8 +657,8 @@ function renderFormulario() {
   const dataDiv = document.getElementById('ultima-edicao-data');
   
   if (p) {
-    const nomeEdicao = p['ULTIMA EDICAO'] || p['ultima edicao'] || p['última edição'] || p['ÚLTIMA EDIÇÃO'] || '';
-    const dataEdicao = p['DATA/HORA EDIÇÃO'] || p['data/hora edição'] || p['data/hora edicao'] || p['DATA/HORA EDICAO'] || '';
+    const nomeEdicao = p.ultimaEdicao || '';
+    const dataEdicao = p.dataHoraEdicao || '';
     
     if (nomeEdicao || dataEdicao) {
       if (legendDiv) legendDiv.style.display = 'block';
@@ -716,6 +716,8 @@ function salvarFormulario(e) {
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
     marca:       document.getElementById('form-marca').checked ? '1' : '',
+    ultimaEdicao:   state.editandoId ? (buscarProcessoPorId(state.editandoId)?.ultimaEdicao || '') : '',
+    dataHoraEdicao: state.editandoId ? (buscarProcessoPorId(state.editandoId)?.dataHoraEdicao || '') : '',
     contatos:    JSON.parse(JSON.stringify(contatosTemporarios))
   };
 
