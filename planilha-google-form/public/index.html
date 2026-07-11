@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783800994696.0.6">
+  <link rel="stylesheet" href="css/style.css?v=1783807034896.0.6">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -420,11 +420,35 @@
       <!-- ============= PAGE: NOVO PROCESSO ============= -->
       <section class="page" id="page-novo">
 
-        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px; width: 100%;">
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 16px; width: 100%;">
           <div>
             <h2 id="form-title">Novo Processo</h2>
             <p>Preencha os dados do processo</p>
           </div>
+
+          <!-- Seletores de Categoria e Tipo -->
+          <div class="header-selectors" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+            <!-- Categoria -->
+            <div class="selector-group" style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Categoria:</span>
+              <div class="segmented-control" id="control-categoria" style="display: flex; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 2px; gap: 2px;">
+                <button type="button" class="segment-btn" data-value="F" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('categoria', 'F')">Fomento</button>
+                <button type="button" class="segment-btn" data-value="C" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('categoria', 'C')">Convênio</button>
+                <button type="button" class="segment-btn" data-value="O" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('categoria', 'O')">Outro</button>
+              </div>
+            </div>
+
+            <!-- Tipo -->
+            <div class="selector-group" style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px;">Tipo:</span>
+              <div class="segmented-control" id="control-tipo" style="display: flex; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 2px; gap: 2px;">
+                <button type="button" class="segment-btn" data-value="OB" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'OB')">Obras</button>
+                <button type="button" class="segment-btn" data-value="MP" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'MP')">Mat. Permanente</button>
+                <button type="button" class="segment-btn" data-value="MC" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'MC')">Mat. Consumo</button>
+              </div>
+            </div>
+          </div>
+
           <button type="button" id="btn-toggle-form-processo" onclick="toggleFormProcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 8px 12px; height: 38px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
             📌 <span class="btn-text">Ocultar Formulário</span>
           </button>
@@ -432,6 +456,8 @@
 
         <div class="card" id="card-form-processo">
           <form id="form-processo">
+            <input type="hidden" id="form-categoria" name="categoria" value="">
+            <input type="hidden" id="form-tipo" name="tipo" value="">
 
             <div class="form-grid">
 
@@ -778,7 +804,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.0.9"></script>
-  <script src="js/app.js?v=1783801004089.0.9"></script>
+  <script src="js/app.js?v=1783807043333.0.9"></script>
   <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>

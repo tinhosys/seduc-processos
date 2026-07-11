@@ -392,6 +392,8 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     else if (hLow.includes('apontamento') && data.apontamento !== undefined) val = data.apontamento;
     else if (hLow === 'alerta' && data.alerta !== undefined) val = data.alerta;
     else if ((hLow === 'marca' || hLow.includes('marcado')) && data.marca !== undefined) val = data.marca;
+    else if (hLow === 'categoria') val = data.categoria;
+    else if (hLow === 'tipo') val = data.tipo;
     if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
         val = data.contatos.map(c => {
@@ -794,9 +796,9 @@ app.delete("/api/acessos/:row", adminOnly, async (req, res) => {
   }
 });
 
-async function garantirColunaMarca() {
+async function garantirColunasAdicionais() {
   try {
-    console.log("🔍 Verificando se a coluna 'Marca' existe nas abas de processos...");
+    console.log("🔍 Verificando se as colunas 'Marca', 'CATEGORIA' e 'TIPO' existem nas abas de processos...");
     const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
     const allSheets = response.data.sheets;
     const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos');
@@ -807,28 +809,33 @@ async function garantirColunaMarca() {
         spreadsheetId: SPREADSHEET_ID,
         range: `${tabName}!A1:Z1`
       });
-      const headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
+      let headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
       if (headers.length > 0) {
-        const hasMarca = headers.some(h => (h || "").toLowerCase().trim() === "marca");
-        if (!hasMarca) {
-          const nextColLetter = columnToLetter(headers.length + 1);
-          const range = `${tabName}!${nextColLetter}1`;
-          await sheets.spreadsheets.values.update({
-            spreadsheetId: SPREADSHEET_ID,
-            range: range,
-            valueInputOption: "USER_ENTERED",
-            requestBody: { values: [["Marca"]] }
-          });
-          console.log(`✅ Coluna 'Marca' adicionada na aba: ${tabName} (posição ${nextColLetter}1)`);
+        const colunasParaGarantir = ["Marca", "CATEGORIA", "TIPO"];
+        
+        for (const col of colunasParaGarantir) {
+          const hasCol = headers.some(h => (h || "").toLowerCase().trim() === col.toLowerCase());
+          if (!hasCol) {
+            const nextColLetter = columnToLetter(headers.length + 1);
+            const range = `${tabName}!${nextColLetter}1`;
+            await sheets.spreadsheets.values.update({
+              spreadsheetId: SPREADSHEET_ID,
+              range: range,
+              valueInputOption: "USER_ENTERED",
+              requestBody: { values: [[col]] }
+            });
+            console.log(`✅ Coluna '${col}' adicionada na aba: ${tabName} (posição ${nextColLetter}1)`);
+            headers.push(col); // Atualiza cabeçalhos locais para calcular a letra da próxima coluna corretamente
+          }
         }
       }
     }
   } catch (err) {
-    console.error("❌ Erro ao garantir coluna 'Marca':", err.message);
+    console.error("❌ Erro ao garantir colunas adicionais:", err.message);
   }
 }
 
 app.listen(PORT, async () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
-  await garantirColunaMarca();
+  await garantirColunasAdicionais();
 });

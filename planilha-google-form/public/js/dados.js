@@ -99,6 +99,8 @@ const mapToApp = (row) => {
     data: row['Data'] || '',
     anotacao: row['Anotação'] || row['Anota\u00e7\u00e3o'] || '',
     marca: String(row['Marca'] || row['marca'] || row['Marcado'] || '').trim(),
+    categoria: row['CATEGORIA'] || row['categoria'] || '',
+    tipo: row['TIPO'] || row['tipo'] || '',
     ultimaEdicao: row['ULTIMA EDICAO'] || row['ultima edicao'] || row['última edição'] || row['ÚLTIMA EDIÇÃO'] || '',
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || row['DATA/HORA EDIÇÃO'] || '',
     alerta: String(alertaStr || '').trim(),
@@ -127,6 +129,8 @@ const mapToSheet = (dados) => {
     'Data': dados.data || '',
     'Anotação': dados.anotacao || '',
     'Marca': dados.marca || '',
+    'CATEGORIA': dados.categoria || '',
+    'TIPO': dados.tipo || '',
     'ULTIMA EDICAO': dados.ultimaEdicao || '',
     'DATA/HORA EDICAO': dados.dataHoraEdicao || ''
   };
@@ -339,6 +343,8 @@ async function importarGoogleSheets(url) {
 function exportarExcel(filtrados) {
   const dados = filtrados.map(p => ({
     'Prefixo':         p.prefixo      || '',
+    'Categoria':       p.categoria    || '',
+    'Tipo':            p.tipo         || '',
     'Município':       p.municipio,
     'Processo':        p.numero,
     'Interessado':     p.interessado,

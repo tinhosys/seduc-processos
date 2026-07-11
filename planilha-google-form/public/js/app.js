@@ -417,6 +417,7 @@ function renderProcessos() {
       <td>
         ${p.prefixo ? `<span class="badge-prefixo">${p.prefixo}</span>` : '<span style="color:var(--text-muted);font-size:11px">—</span>'}
         ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:14px;">📌</span>' : ''}
+        ${getCategoryBadge(p.categoria)}
       </td>
       <td class="col-municipio">${hl(p.municipio, busca)}</td>
       <td class="col-numero">${hl(p.numero, busca) || '—'}</td>
@@ -616,11 +617,19 @@ function renderFormulario() {
     document.getElementById('form-obs').value         = p.obs         || '';
     document.getElementById('form-anotacao').value    = p.anotacao    || '';
     document.getElementById('form-marca').checked     = p.marca === '1' || p.marca === 'SIM';
+    document.getElementById('form-categoria').value   = p.categoria   || '';
+    document.getElementById('form-tipo').value        = p.tipo        || '';
+    updateSegmentControl('categoria', p.categoria || '');
+    updateSegmentControl('tipo', p.tipo || '');
     contatosTemporarios = p.contatos ? JSON.parse(JSON.stringify(p.contatos)) : [];
     renderizarContatosForm();
   } else {
     document.getElementById('form-processo').reset();
     document.getElementById('form-marca').checked = false;
+    document.getElementById('form-categoria').value   = '';
+    document.getElementById('form-tipo').value        = '';
+    updateSegmentControl('categoria', '');
+    updateSegmentControl('tipo', '');
     document.getElementById('container-numeros').innerHTML = `
       <div style="display:flex;gap:8px;align-items:center;">
         <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;">
@@ -721,6 +730,8 @@ function salvarFormulario(e) {
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
     marca:       document.getElementById('form-marca').checked ? '1' : '',
+    categoria:   document.getElementById('form-categoria').value,
+    tipo:        document.getElementById('form-tipo').value,
     ultimaEdicao:   user ? (user.nome || user.whatsapp) : 'Sistema',
     dataHoraEdicao: dataHoraStr,
     contatos:    JSON.parse(JSON.stringify(contatosTemporarios))
@@ -1499,7 +1510,7 @@ window.imprimirPadrao = function() {
       let rowsHtml = filtrados.map((p, index) => `
         <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
           <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${index + 1}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:8%;">${p.prefixo || '-'}</td>
+            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:8%;">${p.prefixo || '-'}${p.categoria || p.tipo ? `<br><span style="font-size:8.5px;color:#64748b;font-weight:700;">${[p.categoria, p.tipo].filter(Boolean).join(' / ')}</span>` : ''}</td>
             <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:18%;">${p.interessado || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:28%;">${p.objeto || '-'}</td>
@@ -1637,7 +1648,7 @@ window.imprimirDetalhado = function() {
     tableRows += `
       <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
         <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${i + 1}</td>
-          <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:8%;">${p.prefixo || '-'}</td>
+          <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:8%;">${p.prefixo || '-'}${p.categoria || p.tipo ? `<br><span style="font-size:8.5px;color:#64748b;font-weight:700;">${[p.categoria, p.tipo].filter(Boolean).join(' / ')}</span>` : ''}</td>
           <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
           <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:18%;">${p.interessado || '-'}</td>
           <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:28%;">${p.objeto || '-'}</td>
@@ -2467,4 +2478,80 @@ window.toggleFiltros = toggleFiltros;
 window.toggleFormAcesso = toggleFormAcesso;
 window.toggleFormProcesso = toggleFormProcesso;
 window.recarregarDadosGlobais = recarregarDadosGlobais;
+
+function selectSegment(group, value) {
+  const hiddenInput = document.getElementById(`form-${group}`);
+  if (!hiddenInput) return;
+  
+  const isSelected = hiddenInput.value === value;
+  hiddenInput.value = isSelected ? '' : value;
+  
+  updateSegmentControl(group, hiddenInput.value);
+}
+
+function updateSegmentControl(group, activeValue) {
+  const control = document.getElementById(`control-${group}`);
+  if (!control) return;
+  const buttons = control.querySelectorAll('.segment-btn');
+  buttons.forEach(btn => {
+    const val = btn.getAttribute('data-value');
+    if (val === activeValue) {
+      btn.style.background = getActiveBgColor(group, val);
+      btn.style.borderColor = getActiveBorderColor(group, val);
+      btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
+      btn.style.color = '#fff';
+      btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+    } else {
+      btn.style.background = 'none';
+      btn.style.border = '1px solid transparent';
+      btn.style.color = 'var(--text-secondary)';
+      btn.style.boxShadow = 'none';
+    }
+  });
+}
+
+function getActiveBgColor(group, val) {
+  if (group === 'categoria') {
+    if (val === 'F') return 'rgba(59, 130, 246, 0.25)'; // Fomento - Blue
+    if (val === 'C') return 'rgba(16, 185, 129, 0.25)'; // Convênio - Green
+    if (val === 'O') return 'rgba(139, 92, 246, 0.25)'; // Outro - Purple
+  } else if (group === 'tipo') {
+    if (val === 'OB') return 'rgba(6, 182, 212, 0.25)'; // Obras - Cyan
+    if (val === 'MP') return 'rgba(249, 115, 22, 0.25)'; // Mat. Permanente - Orange
+    if (val === 'MC') return 'rgba(245, 158, 11, 0.25)'; // Mat. Consumo - Yellow/Amber
+  }
+  return 'rgba(255, 255, 255, 0.1)';
+}
+
+function getActiveBorderColor(group, val) {
+  if (group === 'categoria') {
+    if (val === 'F') return 'var(--blue)';
+    if (val === 'C') return 'var(--green)';
+    if (val === 'O') return 'var(--purple)';
+  } else if (group === 'tipo') {
+    if (val === 'OB') return 'var(--cyan)';
+    if (val === 'MP') return 'var(--orange)';
+    if (val === 'MC') return 'var(--yellow)';
+  }
+  return 'var(--border)';
+}
+
+function getCategoryBadge(categoria) {
+  if (!categoria) return '';
+  const char = String(categoria).trim().toUpperCase()[0];
+  if (char === 'F') {
+    return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
+  }
+  if (char === 'C') {
+    return `<span class="badge-cat badge-cat-c" title="Categoria: Convênio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
+  }
+  if (char === 'O') {
+    return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
+  }
+  return '';
+}
+
+window.selectSegment = selectSegment;
+window.updateSegmentControl = updateSegmentControl;
+window.getCategoryBadge = getCategoryBadge;
 
