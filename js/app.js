@@ -656,16 +656,17 @@ function renderFormulario() {
   const nomeDiv = document.getElementById('ultima-edicao-nome');
   const dataDiv = document.getElementById('ultima-edicao-data');
   
-  if (p) {
+  if (processo) {
+    if (legendDiv) legendDiv.style.display = 'block';
     const nomeEdicao = p.ultimaEdicao || '';
     const dataEdicao = p.dataHoraEdicao || '';
     
     if (nomeEdicao || dataEdicao) {
-      if (legendDiv) legendDiv.style.display = 'block';
-      if (nomeDiv) nomeDiv.textContent = nomeEdicao || '—';
-      if (dataDiv) dataDiv.textContent = dataEdicao || '—';
+      if (nomeDiv) nomeDiv.innerHTML = `👤 ${nomeEdicao}`;
+      if (dataDiv) dataDiv.innerHTML = `📅 ${dataEdicao}`;
     } else {
-      if (legendDiv) legendDiv.style.display = 'none';
+      if (nomeDiv) nomeDiv.innerHTML = `<span style="font-style: italic; color: var(--text-muted);">Sem registros</span>`;
+      if (dataDiv) dataDiv.innerHTML = '—';
     }
   } else {
     if (legendDiv) legendDiv.style.display = 'none';
@@ -701,6 +702,10 @@ function salvarFormulario(e) {
   const valOf = parseCurrency(document.getElementById('form-valorOf').value);
   const valPlan = parseCurrency(document.getElementById('form-valorPlan').value);
 
+  const user = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
+  const now = new Date();
+  const dataHoraStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
   const dados = {
     prefixo:     document.getElementById('form-prefixo').value.trim().toUpperCase(),
     municipio:   document.getElementById('form-municipio').value.trim(),
@@ -716,8 +721,8 @@ function salvarFormulario(e) {
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
     marca:       document.getElementById('form-marca').checked ? '1' : '',
-    ultimaEdicao:   state.editandoId ? (buscarProcessoPorId(state.editandoId)?.ultimaEdicao || '') : '',
-    dataHoraEdicao: state.editandoId ? (buscarProcessoPorId(state.editandoId)?.dataHoraEdicao || '') : '',
+    ultimaEdicao:   user ? (user.nome || user.whatsapp) : 'Sistema',
+    dataHoraEdicao: dataHoraStr,
     contatos:    JSON.parse(JSON.stringify(contatosTemporarios))
   };
 
