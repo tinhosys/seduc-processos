@@ -68,11 +68,29 @@ const mapToApp = (row) => {
     contatosStr.split(';').forEach(c => {
       c = c.trim();
       if (!c) return;
-      let parts = c.split('-');
-      if (parts.length >= 2) {
-        contatosParsed.push({ detalhes: parts[0].trim(), whatsapp: parts[1].trim() });
+      let matchIdx = c.lastIndexOf(' - ');
+      if (matchIdx !== -1) {
+        let detalhes = c.substring(0, matchIdx).trim();
+        let whatsapp = c.substring(matchIdx + 3).trim();
+        contatosParsed.push({ detalhes, whatsapp });
       } else {
-        contatosParsed.push({ detalhes: '', whatsapp: c });
+        const hasLetters = /[a-zA-Z]/.test(c);
+        if (hasLetters) {
+          let hyphenIdx = c.lastIndexOf('-');
+          let targetHyphen = hyphenIdx;
+          if (hyphenIdx === c.length - 5 || hyphenIdx === c.length - 6) {
+            targetHyphen = c.substring(0, hyphenIdx).lastIndexOf('-');
+          }
+          if (targetHyphen !== -1) {
+            let detalhes = c.substring(0, targetHyphen).trim();
+            let whatsapp = c.substring(targetHyphen + 1).trim();
+            contatosParsed.push({ detalhes, whatsapp });
+          } else {
+            contatosParsed.push({ detalhes: '', whatsapp: c });
+          }
+        } else {
+          contatosParsed.push({ detalhes: '', whatsapp: c });
+        }
       }
     });
   }

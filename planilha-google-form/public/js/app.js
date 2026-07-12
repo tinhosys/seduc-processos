@@ -791,10 +791,11 @@ function abrirDetalhe(id) {
         <div style="display:flex;flex-direction:column;gap:8px">
           ${p.contatos.map(c => {
             const numeroLimpo = c.whatsapp.replace(/\D/g, '');
+            const whatsappFormatado = maskCelular(numeroLimpo);
             return `
             <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,0.02);padding:8px 12px;border-radius:6px;border:1px solid var(--border)">
               <div style="display:flex;flex-direction:column;gap:2px">
-                <span style="font-weight:600;font-size:14px;color:var(--text-primary)">${c.whatsapp}</span>
+                <span style="font-weight:600;font-size:14px;color:var(--text-primary)">${whatsappFormatado}</span>
                 ${c.detalhes ? `<span style="font-size:12px;color:var(--text-secondary)">${c.detalhes}</span>` : ''}
               </div>
               <a href="https://web.whatsapp.com/send?phone=55${numeroLimpo}" target="whatsapp_tab" class="btn btn-success" style="padding:6px 12px;display:flex;align-items:center;gap:6px;border-radius:6px;font-size:13px;text-decoration:none;border:none">
@@ -1418,8 +1419,11 @@ function renderizarContatosForm() {
     const div = document.createElement('div');
     div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:8px 12px; border-radius:6px; border:1px solid var(--border);';
     
+    const numeroLimpo = c.whatsapp.replace(/\D/g, '');
+    const whatsappFormatado = maskCelular(numeroLimpo);
+    
     div.innerHTML = "<div style=\"display:flex; flex-direction:column; gap:2px;\">" +
-      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">📞 " + c.whatsapp + "</span>" +
+      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">📞 " + whatsappFormatado + "</span>" +
       (c.detalhes ? "<span style=\"color:var(--text-secondary); font-size:12px;\">" + c.detalhes + "</span>" : "") +
       "</div>" +
       "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">❌</button>";
@@ -2532,7 +2536,7 @@ function updateSegmentControl(group, activeValue) {
       btn.style.background = getActiveBgColor(group, val);
       btn.style.borderColor = getActiveBorderColor(group, val);
       btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
-      btn.style.color = '#fff';
+      btn.style.color = (val === 'OB' || val === 'MC') ? '#0f172a' : '#fff';
       btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
     } else {
       btn.style.background = 'none';
@@ -2545,28 +2549,22 @@ function updateSegmentControl(group, activeValue) {
 
 function getActiveBgColor(group, val) {
   if (group === 'categoria') {
-    if (val === 'F') return 'rgba(59, 130, 246, 0.25)'; // Fomento - Blue
-    if (val === 'C') return 'rgba(16, 185, 129, 0.25)'; // Convênio - Green
-    if (val === 'O') return 'rgba(139, 92, 246, 0.25)'; // Outro - Purple
+    if (val === 'F') return '#3b82f6'; // Fomento - Solid Blue
+    if (val === 'C') return '#10b981'; // Convênio - Solid Green
+    if (val === 'O' || val === 'T') return '#8b5cf6'; // Termo de Cooperação - Solid Purple
   } else if (group === 'tipo') {
-    if (val === 'OB') return 'rgba(6, 182, 212, 0.25)'; // Obras - Cyan
-    if (val === 'MP') return 'rgba(249, 115, 22, 0.25)'; // Mat. Permanente - Orange
-    if (val === 'MC') return 'rgba(245, 158, 11, 0.25)'; // Mat. Consumo - Yellow/Amber
+    if (val === 'OB') return '#06b6d4'; // Obras - Solid Cyan
+    if (val === 'MP') return '#f97316'; // Mat. Permanente - Solid Orange
+    if (val === 'MC') return '#f59e0b'; // Mat. Consumo - Solid Yellow/Amber
+    if (val === 'SI') return '#a855f7'; // Sistema - Solid Purple
+    if (val === 'TR') return '#10b981'; // Treinamento - Solid Emerald
+    if (val === 'OUT') return '#f43f5e'; // Outros - Solid Rose
   }
   return 'rgba(255, 255, 255, 0.1)';
 }
 
 function getActiveBorderColor(group, val) {
-  if (group === 'categoria') {
-    if (val === 'F') return 'var(--blue)';
-    if (val === 'C') return 'var(--green)';
-    if (val === 'O') return 'var(--purple)';
-  } else if (group === 'tipo') {
-    if (val === 'OB') return 'var(--cyan)';
-    if (val === 'MP') return 'var(--orange)';
-    if (val === 'MC') return 'var(--yellow)';
-  }
-  return 'var(--border)';
+  return getActiveBgColor(group, val);
 }
 
 function getCategoryBadge(categoria) {
@@ -2580,6 +2578,9 @@ function getCategoryBadge(categoria) {
   }
   if (char === 'O') {
     return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
+  }
+  if (char === 'T') {
+    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
   }
   return '';
 }
