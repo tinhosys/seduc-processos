@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783815338593.0.6">
+  <link rel="stylesheet" href="css/style.css?v=1783828175255.0.6">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -377,6 +377,9 @@
             <option value="OB">Obras (OB)</option>
             <option value="MP">Material Permanente (MP)</option>
             <option value="MC">Material de Consumo (MC)</option>
+            <option value="SI">Sistema (SI)</option>
+            <option value="TR">Treinamento (TR)</option>
+            <option value="OUT">Outros (OUT)</option>
           </select>
           <select id="filtro-alerta" class="action-adm" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
             <option value="">&#9888; Alerta</option>
@@ -457,6 +460,9 @@
                 <button type="button" class="segment-btn" data-value="OB" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'OB')">Obras</button>
                 <button type="button" class="segment-btn" data-value="MP" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'MP')">Mat. Permanente</button>
                 <button type="button" class="segment-btn" data-value="MC" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'MC')">Mat. Consumo</button>
+                <button type="button" class="segment-btn" data-value="SI" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'SI')">Sistema</button>
+                <button type="button" class="segment-btn" data-value="TR" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'TR')">Treinamento</button>
+                <button type="button" class="segment-btn" data-value="OUT" style="background:none; border:1px solid transparent; color:var(--text-secondary); font-size:12px; font-weight:600; padding:6px 12px; border-radius:6px; cursor:pointer; transition:var(--transition);" onclick="selectSegment('tipo', 'OUT')">Outros</button>
               </div>
             </div>
           </div>
@@ -816,7 +822,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.0.9"></script>
-  <script src="js/app.js?v=1783815352359.0.9"></script>
+  <script src="js/app.js?v=1783828187488.0.9"></script>
   <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>
