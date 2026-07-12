@@ -270,6 +270,29 @@ function columnToLetter(column) {
   return letter;
 }
 
+const defaultHeaders = [
+  "Município",
+  "Processo",
+  "Interessado",
+  "Objeto",
+  "Valor Of.",
+  "Valor/Planilha",
+  "Diferença",
+  "Status",
+  "Localização",
+  "Observação",
+  "Data",
+  "Anotação",
+  "contatos",
+  "Apontamento",
+  "ALERTA",
+  "ULTIMA EDICAO LOGIN",
+  "DATA/HORA EDIÇAO",
+  "marca",
+  "CATEGORIA",
+  "TIPO"
+];
+
 async function getAllRows() {
   const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const allSheets = response.data.sheets;
@@ -335,7 +358,8 @@ async function getAllRows() {
 
         const item = {};
         headers.forEach((header, colIndex) => {
-          item[header] = row[colIndex] || "";
+          const cleanHeader = (header && String(header).trim()) ? String(header).trim() : (defaultHeaders[colIndex] || `Coluna_${colIndex}`);
+          item[cleanHeader] = row[colIndex] || "";
         });
         item._rowNumber = index + 2;
         item._tabName = tabName;
@@ -373,7 +397,8 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
   };
   
   return headers.map((h, i) => {
-    const hLow = (h || "").toLowerCase().trim();
+    const hDef = (h && String(h).trim()) ? String(h).trim() : (defaultHeaders[i] || "");
+    const hLow = hDef.toLowerCase();
     let val = undefined;
     
     if (hLow.includes('prefixo')) val = data.prefixo;

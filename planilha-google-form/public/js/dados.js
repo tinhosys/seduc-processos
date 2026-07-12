@@ -233,8 +233,34 @@ async function importarExcel(file) {
 
         if (rows.length < 2) { resolve([]); return; }
 
+        const defaultHeaders = [
+          "Município",
+          "Processo",
+          "Interessado",
+          "Objeto",
+          "Valor Of.",
+          "Valor/Planilha",
+          "Diferença",
+          "Status",
+          "Localização",
+          "Observação",
+          "Data",
+          "Anotação",
+          "contatos",
+          "Apontamento",
+          "ALERTA",
+          "ULTIMA EDICAO LOGIN",
+          "DATA/HORA EDIÇAO",
+          "marca",
+          "CATEGORIA",
+          "TIPO"
+        ];
+
         // Mapear colunas pelo cabeçalho
-        const headers = rows[0].map(h => String(h).trim());
+        const headers = rows[0].map((h, colIndex) => {
+          const val = String(h || '').trim();
+          return val ? val : (defaultHeaders[colIndex] || `Coluna_${colIndex}`);
+        });
         const getIdx = (nome) => headers.findIndex(h => h.toLowerCase().includes(nome.toLowerCase()));
 
         const idxMunicipio   = getIdx('munic');
