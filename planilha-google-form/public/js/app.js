@@ -1518,23 +1518,23 @@ window.imprimirPadrao = function() {
       
       let rowsHtml = filtrados.map((p, index) => {
         const prefixoFormatado = `
-          <div style="font-family: monospace, Courier, sans-serif; white-space: nowrap; font-size: 9.5px;">
-            <span style="display:inline-block; width:36px; text-align:left;">${p.prefixo || '-'}</span> | 
-            <span style="display:inline-block; width:12px; text-align:center;">${p.categoria || '-'}</span> | 
-            <span style="display:inline-block; width:18px; text-align:center;">${p.tipo || '-'}</span>
+          <div style="font-family: monospace, Courier, sans-serif; white-space: nowrap; font-size: 9px;">
+            <span style="display:inline-block; width:34px; text-align:left;">${p.prefixo || '-'}</span> | 
+            <span style="display:inline-block; width:10px; text-align:center;">${p.categoria || '-'}</span> | 
+            <span style="display:inline-block; width:16px; text-align:center;">${p.tipo || '-'}</span>
           </div>
         `;
         return `
           <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
             <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${index + 1}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:12%;">${prefixoFormatado}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:10%;">${p.municipio || '-'}</td>
-            <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:10%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${prefixoFormatado}</td>
+            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:11%;">${p.municipio || '-'}</td>
+            <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:15%;">${p.interessado || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; text-transform: uppercase; font-size:10px; width:8%;">${p.status || '-'}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:6%;">${p.localizacao || '-'}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:6%;">${formatDate(p.data)}</td>
+            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${p.localizacao || '-'}</td>
+            <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:7%;">${formatDate(p.data)}</td>
             <td style="border: 1px solid #ccc; padding: 2px; text-align:right; font-size:10px; width:8%;">${formatNumberOnly(p.valorOf)}</td>
           </tr>
         `;
@@ -1553,28 +1553,28 @@ window.imprimirPadrao = function() {
             <table class="print-table-detalhado" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:20px;">
               <colgroup>
                 <col style="width: 3%;">
+                <col style="width: 7%;">
+                <col style="width: 11%;">
                 <col style="width: 12%;">
-                <col style="width: 10%;">
-                <col style="width: 10%;">
                 <col style="width: 15%;">
                 <col style="width: 22%;">
                 <col style="width: 8%;">
-                <col style="width: 6%;">
-                <col style="width: 6%;">
+                <col style="width: 7%;">
+                <col style="width: 7%;">
                 <col style="width: 8%;">
               </colgroup>
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:12px; font-weight:bold;">Nº</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:12px; font-weight:bold;">PREFIXO | C | T</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:10%; font-size:12px; font-weight:bold;">MUNICÍPIO</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:10%; font-size:12px; font-weight:bold;">PROCESSO SEI</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:12px; font-weight:bold;">INTERESSADO</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:12px; font-weight:bold;">OBJETO / FINALIDADE</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:8%; font-size:12px; font-weight:bold;">STATUS</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:6%; font-size:12px; font-weight:bold;">LOCAL</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:6%; font-size:12px; font-weight:bold;">DATA</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:right; width:8%; font-size:12px; font-weight:bold;">VALOR R$</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:8%; font-size:10.5px; font-weight:bold;">STATUS</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">LOCAL</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:7%; font-size:10.5px; font-weight:bold;">DATA</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:right; width:8%; font-size:10.5px; font-weight:bold;">VALOR R$</th>
                 </tr>
               </thead>
               ${rowsHtml || '<tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr></tbody>'}
@@ -1669,23 +1669,23 @@ window.imprimirDetalhado = function() {
   let tableRows = '';
   filtrados.forEach((p, i) => {
     const prefixoFormatado = `
-      <div style="font-family: monospace, Courier, sans-serif; white-space: nowrap; font-size: 9.5px;">
-        <span style="display:inline-block; width:36px; text-align:left;">${p.prefixo || '-'}</span> | 
-        <span style="display:inline-block; width:12px; text-align:center;">${p.categoria || '-'}</span> | 
-        <span style="display:inline-block; width:18px; text-align:center;">${p.tipo || '-'}</span>
+      <div style="font-family: monospace, Courier, sans-serif; white-space: nowrap; font-size: 9px;">
+        <span style="display:inline-block; width:34px; text-align:left;">${p.prefixo || '-'}</span> | 
+        <span style="display:inline-block; width:10px; text-align:center;">${p.categoria || '-'}</span> | 
+        <span style="display:inline-block; width:16px; text-align:center;">${p.tipo || '-'}</span>
       </div>
     `;
     tableRows += `
       <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
         <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${i + 1}</td>
-        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:12%;">${prefixoFormatado}</td>
-        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:10%;">${p.municipio || '-'}</td>
-        <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:10%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${prefixoFormatado}</td>
+        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:11%;">${p.municipio || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
         <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:15%;">${p.interessado || '-'}</td>
         <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
         <td style="border: 1px solid #ccc; padding: 2px; text-transform: uppercase; font-size:10px; width:8%;">${p.status || '-'}</td>
-        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:6%;">${p.localizacao || '-'}</td>
-        <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:6%;">${formatDate(p.data)}</td>
+        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${p.localizacao || '-'}</td>
+        <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:7%;">${formatDate(p.data)}</td>
         <td style="border: 1px solid #ccc; padding: 2px; text-align:right; font-size:10px; width:8%;">${formatNumberOnly(p.valorOf)}</td></tr>`;
   });
   const totalValorDetalhado = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
@@ -1700,29 +1700,29 @@ window.imprimirDetalhado = function() {
 
             <colgroup>
               <col style="width: 3%;">
+              <col style="width: 7%;">
+              <col style="width: 11%;">
               <col style="width: 12%;">
-              <col style="width: 10%;">
-              <col style="width: 10%;">
               <col style="width: 15%;">
               <col style="width: 22%;">
               <col style="width: 8%;">
-              <col style="width: 6%;">
-              <col style="width: 6%;">
+              <col style="width: 7%;">
+              <col style="width: 7%;">
               <col style="width: 8%;">
             </colgroup>
   
             <thead>
             <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:12px; font-weight:bold;">Nº</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:12px; font-weight:bold;">PREFIXO | C | T</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:10%; font-size:12px; font-weight:bold;">MUNICÍPIO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:10%; font-size:12px; font-weight:bold;">PROCESSO SEI</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:12px; font-weight:bold;">INTERESSADO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:12px; font-weight:bold;">OBJETO / FINALIDADE</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:8%; font-size:12px; font-weight:bold;">STATUS</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:6%; font-size:12px; font-weight:bold;">LOCAL</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:6%; font-size:12px; font-weight:bold;">DATA</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:right; width:8%; font-size:12px; font-weight:bold;">VALOR R$</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:8%; font-size:10.5px; font-weight:bold;">STATUS</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">LOCAL</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:7%; font-size:10.5px; font-weight:bold;">DATA</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:right; width:8%; font-size:10.5px; font-weight:bold;">VALOR R$</th>
             </tr></thead>
       ${tableRows}
     </table>
