@@ -132,9 +132,13 @@ function renderDashboard() {
   const pagos       = processos.filter(p => normalizar(p.status) === 'pago').length;
   const pendentes   = processos.filter(p => ['pendente','notificar','notificado','p/ autorizo','p/autorizo','para autorizo'].includes(normalizar(p.status))).length;
   const prioridade  = processos.filter(p => normalizar(p.status) === 'prioridade').length;
+  const valorPago   = processos.filter(p => normalizar(p.status) === 'pago').reduce((a,p) => a + (p.valorOf || 0), 0);
+  const valorAPagar = valorTotal - valorPago;
 
   document.getElementById('stat-total').textContent      = total.toLocaleString('pt-BR');
-  document.getElementById('stat-valor').textContent      = formatCurrency(valorTotal);
+  document.getElementById('stat-valor-pago').textContent = formatCurrency(valorPago);
+  document.getElementById('stat-valor-total-global').textContent = formatCurrency(valorTotal);
+  document.getElementById('stat-valor-a-pagar').textContent = formatCurrency(valorAPagar);
   document.getElementById('stat-autorizado').textContent = autorizados.toLocaleString('pt-BR');
   document.getElementById('stat-pago').textContent       = pagos.toLocaleString('pt-BR');
   document.getElementById('stat-pendente').textContent   = pendentes.toLocaleString('pt-BR');

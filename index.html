@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783831972476.0.6">
+  <link rel="stylesheet" href="css/style.css?v=1783835370444.0.6">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -202,20 +202,30 @@
             <div class="stat-label">Prioridade</div>
             <div class="stat-value" id="stat-prioridade">0</div>
           </div>
-          <div class="stat-card blue">
-            <div class="stat-icon">💳</div>
-            <div class="stat-label">Pagos</div>
-            <div class="stat-value" id="stat-pago">0</div>
-          </div>
           <div class="stat-card blue" style="border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.04); cursor: pointer;" id="card-stat-marcados">
             <div class="stat-icon">📌</div>
             <div class="stat-label">Processos Marcados</div>
             <div class="stat-value" id="stat-marcado" style="color: #60a5fa;">0</div>
           </div>
-          <div class="stat-card purple">
+          <div class="stat-card blue">
+            <div class="stat-icon">💳</div>
+            <div class="stat-label">Pagos</div>
+            <div class="stat-value" id="stat-pago">0</div>
+          </div>
+          <div class="stat-card green">
             <div class="stat-icon">💰</div>
-            <div class="stat-label">Valor Total Oficial</div>
-            <div class="stat-value" id="stat-valor" style="font-size:18px">R$ 0</div>
+            <div class="stat-label">Valor Pago</div>
+            <div class="stat-value" id="stat-valor-pago" style="font-size:18px; color: var(--green);">R$ 0</div>
+          </div>
+          <div class="stat-card yellow" style="display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 220px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; margin-bottom: 4px;">
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Valor Total</span>
+              <span id="stat-valor-total-global" style="font-size: 15px; font-weight: 800; color: #60a5fa; font-family: monospace;">R$ 0</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">A Pagar</span>
+              <span id="stat-valor-a-pagar" style="font-size: 15px; font-weight: 800; color: #f97316; font-family: monospace;">R$ 0</span>
+            </div>
           </div>
         </div>
 
@@ -825,7 +835,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.0.9"></script>
-  <script src="js/app.js?v=1783831992172.0.9"></script>
+  <script src="js/app.js?v=1783835382904.0.9"></script>
   <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>
