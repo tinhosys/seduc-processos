@@ -1581,3 +1581,21 @@ tr.linha-marcada:hover {
   font-weight: bold;
 }
 
+/* ============================================================
+   DESTAQUE DO CALENDÁRIO
+   ============================================================ */
+#form-data::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(1) sepia(1) saturate(5) hue-rotate(185deg); /* neon blue highlight */
+  background-color: rgba(59, 130, 246, 0.2);
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  transition: all 0.2s ease;
+}
+
+#form-data::-webkit-calendar-picker-indicator:hover {
+  background-color: rgba(59, 130, 246, 0.4);
+  transform: scale(1.1);
+}
+

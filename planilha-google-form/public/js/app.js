@@ -2614,3 +2614,15 @@ window.updateSegmentControl = updateSegmentControl;
 window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
 
+function inserirDataHoje() {
+  const dateInput = document.getElementById('form-data');
+  if (dateInput) {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    dateInput.value = `${yyyy}-${mm}-${dd}`;
+  }
+}
+window.inserirDataHoje = inserirDataHoje;
+
