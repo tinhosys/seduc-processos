@@ -585,59 +585,108 @@ async function renderChartAcessosDashboard() {
     if (!res.ok) throw new Error('Acesso negado');
 
     const acessos = await res.json();
-    let countEditor = 0;
-    let countLeitor = 0;
-    let nomesLeitores = [];
-    let nomesEditores = [];
 
-    acessos.forEach(a => {
-      if (a.nivel === 'adm' || !a.nivel) return;
-      if (a.nivel === 'editor') {
-        countEditor++;
-        nomesEditores.push(a.nome || a.whatsapp);
-      }
-      if (a.nivel === 'leitor') {
-        countLeitor++;
-        nomesLeitores.push(a.nome || a.whatsapp);
-      }
-    });
+    // ---- Usar o campo 'contagem' real da planilha (CONTAGEM ACESSO) ----
+    // Filtrar não-adm, mapear com contagem real, ordenar do maior pro menor
+    const usuarios = acessos
+      .filter(a => a.nivel && a.nivel !== 'adm')
+      .map(a => ({
+        nome:     (a.nome || a.whatsapp || 'DESCONHECIDO').toUpperCase(),
+        nivel:    a.nivel,
+        contagem: parseInt(a.contagem, 10) || 0
+      }))
+      .sort((a, b) => b.contagem - a.contagem);
 
+    // Totais por categoria (contagem real)
+    const totalAcessos = usuarios.reduce((s, u) => s + u.contagem, 0) || 1;
+    const totalEditor  = usuarios.filter(u => u.nivel === 'editor').reduce((s, u) => s + u.contagem, 0);
+    const totalLeitor  = usuarios.filter(u => u.nivel === 'leitor').reduce((s, u) => s + u.contagem, 0);
+
+    // ---- Limpar lista de badges (não usada) ----
     const elNomes = document.getElementById('lista-nomes-acessos');
-    if (elNomes) {
-      const makeBadge = (nome, cor) =>
-        `<div style="padding:6px 10px; border-radius:8px; background:${cor}22; border:1px solid ${cor}55; color:${cor}; font-size:11px; font-weight:700; letter-spacing:0.5px; text-align:center; white-space:nowrap;">${String(nome).toUpperCase()}</div>`;
+    if (elNomes) elNomes.innerHTML = '';
 
-      let html = '<div style="display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start;">';
+    // ---- Gráfico de barras VERTICAL proporcional (100% = total) ----
+    // Cada barra tem altura proporcional à sua participação no total de acessos
+    const barLabels = usuarios.map(u => u.nome);
+    const barData   = usuarios.map(u => parseFloat(((u.contagem / totalAcessos) * 100).toFixed(2)));
+    const barColors = usuarios.map(u => u.nivel === 'editor' ? '#10b981' : '#f59e0b');
+    const barRaw    = usuarios.map(u => u.contagem); // para tooltip
 
-      if (nomesEditores.length > 0) {
-        html += `<div style="flex:1; min-width:120px;">
-          <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#10b981; margin-bottom:8px; border-bottom:2px solid #10b981; padding-bottom:4px;">✏️ Editores (${countEditor})</div>
-          <div style="display:flex; flex-direction:column; gap:5px;">${nomesEditores.map(n => makeBadge(n, '#10b981')).join('')}</div>
-        </div>`;
-      }
-
-      if (nomesLeitores.length > 0) {
-        html += `<div style="flex:1; min-width:120px;">
-          <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#f59e0b; margin-bottom:8px; border-bottom:2px solid #f59e0b; padding-bottom:4px;">👁️ Leitores (${countLeitor})</div>
-          <div style="display:flex; flex-direction:column; gap:5px;">${nomesLeitores.map(n => makeBadge(n, '#f59e0b')).join('')}</div>
-        </div>`;
-      }
-
-      html += '</div>';
-      elNomes.innerHTML = html || 'Nenhum usuário encontrado.';
+    const barCtx = document.getElementById('chart-acessos-bar');
+    if (barCtx) {
+      const barCtx2d = barCtx.getContext('2d');
+      new Chart(barCtx2d, {
+        type: 'bar',
+        data: {
+          labels: barLabels,
+          datasets: [{
+            label: '% dos Acessos',
+            data: barData,
+            backgroundColor: barColors,
+            borderWidth: 0,
+            borderRadius: 6,
+            maxBarThickness: 36,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const raw = barRaw[ctx.dataIndex];
+                  const pct = ctx.parsed.y.toFixed(1);
+                  return ` ${raw} acessos  (${pct}% do total)`;
+                }
+              }
+            },
+            // Exibir o % em cima de cada barra
+            datalabels: {
+              display: false // usa plugin chartjs-plugin-datalabels se disponível
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: '#f8fafc',
+                font: { size: 10, weight: '600' },
+                maxRotation: 25,
+                minRotation: 0
+              },
+              grid: { color: 'rgba(255,255,255,0.04)' }
+            },
+            y: {
+              ticks: {
+                color: '#94a3b8',
+                callback: v => v + '%'
+              },
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              max: 100,
+              title: {
+                display: true,
+                text: '% do total de acessos',
+                color: '#64748b',
+                font: { size: 10 }
+              }
+            }
+          }
+        }
+      });
     }
 
-    const total = countEditor + countLeitor || 1;
-
+    // ---- Gráfico de pizza: proporção Editores x Leitores (contagem real) ----
     chartAcessos = new Chart(ctx2d, {
       type: 'pie',
       data: {
         labels: ['Editores', 'Leitores'],
         datasets: [{
-          data: [countEditor, countLeitor],
+          data: [totalEditor, totalLeitor],
           backgroundColor: ['#10b981', '#f59e0b'],
           borderWidth: 0,
-          hoverOffset: 4
+          hoverOffset: 6
         }]
       },
       options: {
@@ -651,20 +700,28 @@ async function renderChartAcessosDashboard() {
               font: { size: 12 },
               padding: 15,
               generateLabels: (chart) => {
-                const data = chart.data;
-                return data.labels.map((label, i) => {
-                  const val = data.datasets[0].data[i];
-                  const pct = ((val / total) * 100).toFixed(1) + '%';
+                const d = chart.data;
+                return d.labels.map((label, i) => {
+                  const val = d.datasets[0].data[i];
+                  const pct = ((val / totalAcessos) * 100).toFixed(1) + '%';
                   return {
                     text: `${label} - ${val} (${pct})`,
-                    fillStyle: data.datasets[0].backgroundColor[i],
+                    fillStyle: d.datasets[0].backgroundColor[i],
                     hidden: false,
                     index: i,
-                    fontColor: '#f8fafc',
-                    strokeStyle: data.datasets[0].backgroundColor[i],
+                    strokeStyle: d.datasets[0].backgroundColor[i],
                     lineWidth: 0
                   };
                 });
+              }
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const val = ctx.parsed;
+                const pct = ((val / totalAcessos) * 100).toFixed(1);
+                return ` ${val} acessos (${pct}%)`;
               }
             }
           }
@@ -672,7 +729,6 @@ async function renderChartAcessosDashboard() {
       }
     });
   } catch (err) {
-    // Se der erro (ex: 403 sem permissão), exibe mensagem no canvas
     ctx2d.font = '14px Inter, sans-serif';
     ctx2d.fillStyle = '#64748b';
     ctx2d.textAlign = 'center';
