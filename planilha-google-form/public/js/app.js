@@ -586,16 +586,28 @@ async function renderChartAcessosDashboard() {
 
     const acessos = await res.json();
 
+    // Debug: ver o que a API retorna para contagem
+    console.log('[ACESSOS] Dados brutos da API:', JSON.stringify(acessos.map(a => ({nome: a.nome, nivel: a.nivel, contagem: a.contagem}))));
+
     // ---- Usar o campo 'contagem' real da planilha (CONTAGEM ACESSO) ----
-    // Filtrar não-adm, mapear com contagem real, ordenar do maior pro menor
+    // Parsing robusto: trata string vazia, ponto, vírgula decimal
+    const parseContagem = (val) => {
+      if (!val && val !== 0) return 0;
+      const str = String(val).trim().replace(/\./g, '').replace(',', '.');
+      const n = parseFloat(str);
+      return isNaN(n) ? 0 : Math.round(n);
+    };
+
     const usuarios = acessos
       .filter(a => a.nivel && a.nivel !== 'adm')
       .map(a => ({
         nome:     (a.nome || a.whatsapp || 'DESCONHECIDO').toUpperCase(),
         nivel:    a.nivel,
-        contagem: parseInt(a.contagem, 10) || 0
+        contagem: parseContagem(a.contagem)
       }))
       .sort((a, b) => b.contagem - a.contagem);
+
+    console.log('[ACESSOS] Usuários processados:', usuarios);
 
     // Totais por categoria (contagem real)
     const totalAcessos = usuarios.reduce((s, u) => s + u.contagem, 0) || 1;
