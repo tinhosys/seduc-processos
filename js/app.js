@@ -629,6 +629,65 @@ async function renderChartAcessosDashboard() {
 
     const total = countEditor + countLeitor || 1;
 
+    // Preparar dados por usuário para o gráfico de barras
+    const userCounts = {};
+    acessos.forEach(a => {
+      if (a.nivel === 'adm' || !a.nivel) return;
+      const nome = (a.nome || a.whatsapp || 'UNKNOWN').toUpperCase();
+      if (!userCounts[nome]) {
+        userCounts[nome] = { count: 0, nivel: a.nivel };
+      }
+      userCounts[nome].count++;
+    });
+    const barLabels = Object.keys(userCounts);
+    const barData = barLabels.map(l => userCounts[l].count);
+    const barColors = barLabels.map(l => userCounts[l].nivel === 'editor' ? '#10b981' : '#f59e0b');
+
+    // Gráfico de barras vertical (acessos por usuário)
+    const barCtx = document.getElementById('chart-acessos-bar');
+    if (barCtx) {
+      const barCtx2d = barCtx.getContext('2d');
+      new Chart(barCtx2d, {
+        type: 'bar',
+        data: {
+          labels: barLabels,
+          datasets: [{
+            label: 'Acessos por Usuário',
+            data: barData,
+            backgroundColor: barColors,
+            borderWidth: 0,
+            borderRadius: 4,
+            maxBarThickness: 30,
+          }]
+        },
+        options: {
+          // indexAxis default is 'x' (vertical bars)
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.parsed.y} acessos`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#f8fafc' },
+              grid: { color: 'rgba(255,255,255,0.05)' },
+              title: { display: false }
+            },
+            y: {
+              ticks: { color: '#f8fafc' },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // Gráfico de pizza (acessos por categoria)
     chartAcessos = new Chart(ctx2d, {
       type: 'pie',
       data: {
