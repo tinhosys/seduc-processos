@@ -162,7 +162,7 @@ function renderDashboard() {
       if (parts.length === 3) {
         // Formato DD/MM/YYYY
         const d = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T12:00:00Z`);
-        if (!isNaN(d)) datasValidas.push({ date: d, original: p.data, prefixo: p.prefixo, num: p.numero });
+        if (!isNaN(d)) datasValidas.push({ date: d, original: p.data, prefixo: p.prefixo, num: p.numero, municipio: p.municipio || '' });
       }
     }
   });
@@ -173,7 +173,6 @@ function renderDashboard() {
   const elDataAntiga = document.getElementById('alert-data-antiga');
   const elDataAntigaList = document.getElementById('alert-data-antiga-list');
   if (elDataAntiga && datasValidas.length > 0) {
-    // Ordenar do mais antigo pro mais novo
     datasValidas.sort((a, b) => a.date - b.date);
     const oldestDateValue = datasValidas[0].date.getTime();
     const oldestProcesses = datasValidas.filter(d => d.date.getTime() === oldestDateValue);
@@ -181,13 +180,19 @@ function renderDashboard() {
     elDataAntiga.textContent = oldestProcesses[0].original;
     
     if (elDataAntigaList) {
-      elDataAntigaList.innerHTML = oldestProcesses.map(d => 
-        `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:3px;">
-           <span>${d.original}</span>
-           <span style="color:#f8fafc;">${d.municipio || 'S/ Mun'}</span>
-           <span style="color:#60a5fa; font-weight:600;">${d.prefixo || '-'}</span>
-         </div>`
-      ).join('');
+      elDataAntigaList.innerHTML = oldestProcesses.map(d => {
+        // Link que abre a tela de processos filtrando pelo número
+        const encodedNum = encodeURIComponent(d.num || '');
+        return `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:1px solid rgba(255,255,255,0.06); padding:5px 0;">
+          <span style="color:#94a3b8; min-width:90px;">${d.original}</span>
+          <span style="color:#f8fafc; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.municipio || 'S/ Município'}</span>
+          <span style="color:#60a5fa; font-weight:700; min-width:60px; text-align:center;">${d.prefixo || '-'}</span>
+          <a href="#" onclick="event.preventDefault(); state.filtros.busca='${(d.num||'').replace(/'/g,'')}'; navegar('processos');" 
+             style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:2px 10px; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap; transition:background 0.2s;" 
+             onmouseover="this.style.background='rgba(59,130,246,0.35)'" 
+             onmouseout="this.style.background='rgba(59,130,246,0.15)'">🔗 VER</a>
+        </div>`;
+      }).join('');
     }
   } else if (elDataAntiga) {
     elDataAntiga.textContent = '--/--/----';
@@ -599,13 +604,26 @@ async function renderChartAcessosDashboard() {
 
     const elNomes = document.getElementById('lista-nomes-acessos');
     if (elNomes) {
-      let html = '';
+      const makeBadge = (nome, cor) =>
+        `<div style="padding:6px 10px; border-radius:8px; background:${cor}22; border:1px solid ${cor}55; color:${cor}; font-size:11px; font-weight:700; letter-spacing:0.5px; text-align:center; white-space:nowrap;">${String(nome).toUpperCase()}</div>`;
+
+      let html = '<div style="display:flex; flex-wrap:wrap; gap:16px; align-items:flex-start;">';
+
       if (nomesEditores.length > 0) {
-        html += `<div style="margin-bottom:6px;"><strong style="color:#10b981;">Editores:</strong> ${nomesEditores.join(', ')}</div>`;
+        html += `<div style="flex:1; min-width:120px;">
+          <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#10b981; margin-bottom:8px; border-bottom:2px solid #10b981; padding-bottom:4px;">✏️ Editores (${countEditor})</div>
+          <div style="display:flex; flex-direction:column; gap:5px;">${nomesEditores.map(n => makeBadge(n, '#10b981')).join('')}</div>
+        </div>`;
       }
+
       if (nomesLeitores.length > 0) {
-        html += `<div><strong style="color:#f59e0b;">Leitores:</strong> ${nomesLeitores.join(', ')}</div>`;
+        html += `<div style="flex:1; min-width:120px;">
+          <div style="font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#f59e0b; margin-bottom:8px; border-bottom:2px solid #f59e0b; padding-bottom:4px;">👁️ Leitores (${countLeitor})</div>
+          <div style="display:flex; flex-direction:column; gap:5px;">${nomesLeitores.map(n => makeBadge(n, '#f59e0b')).join('')}</div>
+        </div>`;
       }
+
+      html += '</div>';
       elNomes.innerHTML = html || 'Nenhum usuário encontrado.';
     }
 
