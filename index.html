@@ -257,16 +257,11 @@
           
           <div class="chart-card" style="display: flex; flex-direction: column; min-height: 380px;">
             <h4>👥 ACESSOS</h4>
-            <div style="height: 170px; position: relative; width: 100%;" id="chart-acessos-container">
-              <canvas id="chart-acessos"></canvas>
-            </div>
-            <!-- Barra de acessos por usuário (vertical) -->
-            <div style="flex: 1; position: relative; width: 100%; margin-top: 12px; min-height: 180px;" id="chart-acessos-bar-container">
+            <!-- Barra de acessos por usuário (vertical, proporcional) -->
+            <div style="flex: 1; position: relative; width: 100%; min-height: 300px;" id="chart-acessos-bar-container">
               <canvas id="chart-acessos-bar"></canvas>
             </div>
-            <!-- Torres de nomes por categoria -->
-            <div id="lista-nomes-acessos" style="margin-top: 14px; overflow-y: auto; flex: 1; padding: 2px;">
-            </div>
+            <div id="lista-nomes-acessos" style="display:none;"></div>
           </div>
         </div>
 

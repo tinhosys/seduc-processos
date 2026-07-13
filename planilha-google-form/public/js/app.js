@@ -570,12 +570,9 @@ function renderDashboard() {
 }
 
 async function renderChartAcessosDashboard() {
-  const ctx = document.getElementById('chart-acessos');
-  if (!ctx) return;
-  const ctx2d = ctx.getContext('2d');
-  
-  if (chartAcessos) chartAcessos.destroy();
-  
+  // Pizza removida — apenas gráfico de barras proporcional
+  if (chartAcessos) { chartAcessos.destroy(); chartAcessos = null; }
+
   try {
     const token = sessionStorage.getItem('sap_session_token');
     const res = await fetch(API_BASE + '/api/acessos', {
@@ -689,62 +686,8 @@ async function renderChartAcessosDashboard() {
       });
     }
 
-    // ---- Gráfico de pizza: proporção Editores x Leitores (contagem real) ----
-    chartAcessos = new Chart(ctx2d, {
-      type: 'pie',
-      data: {
-        labels: ['Editores', 'Leitores'],
-        datasets: [{
-          data: [totalEditor, totalLeitor],
-          backgroundColor: ['#10b981', '#f59e0b'],
-          borderWidth: 0,
-          hoverOffset: 6
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: '#f8fafc',
-              font: { size: 12 },
-              padding: 15,
-              generateLabels: (chart) => {
-                const d = chart.data;
-                return d.labels.map((label, i) => {
-                  const val = d.datasets[0].data[i];
-                  const pct = ((val / totalAcessos) * 100).toFixed(1) + '%';
-                  return {
-                    text: `${label} - ${val} (${pct})`,
-                    fillStyle: d.datasets[0].backgroundColor[i],
-                    hidden: false,
-                    index: i,
-                    strokeStyle: d.datasets[0].backgroundColor[i],
-                    lineWidth: 0
-                  };
-                });
-              }
-            }
-          },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                const val = ctx.parsed;
-                const pct = ((val / totalAcessos) * 100).toFixed(1);
-                return ` ${val} acessos (${pct}%)`;
-              }
-            }
-          }
-        }
-      }
-    });
   } catch (err) {
-    ctx2d.font = '14px Inter, sans-serif';
-    ctx2d.fillStyle = '#64748b';
-    ctx2d.textAlign = 'center';
-    ctx2d.fillText('Dados de acesso restritos', ctx.width / 2, ctx.height / 2);
+    console.error('[ACESSOS] Erro:', err);
   }
 }
 
