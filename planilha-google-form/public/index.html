@@ -207,24 +207,18 @@
             <div class="stat-label">Processos Marcados</div>
             <div class="stat-value" id="stat-marcado" style="color: #60a5fa;">0</div>
           </div>
-          <div class="stat-card blue">
-            <div class="stat-icon">💳</div>
-            <div class="stat-label">Pagos</div>
-            <div class="stat-value" id="stat-pago">0</div>
-          </div>
-          <div class="stat-card green">
-            <div class="stat-icon">💰</div>
-            <div class="stat-label">Valor Pago</div>
-            <div class="stat-value" id="stat-valor-pago" style="font-size:18px; color: var(--green);">R$ 0</div>
-          </div>
-          <div class="stat-card yellow" style="display: flex; flex-direction: column; justify-content: center; gap: 4px; min-width: 220px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 6px; margin-bottom: 4px;">
-              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Valor Total</span>
-              <span id="stat-valor-total-global" style="font-size: 15px; font-weight: 800; color: #60a5fa; font-family: monospace;">R$ 0</span>
+          <div class="stat-card green super-card" style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+            <div class="super-row">
+              <span class="super-label">Valor Total</span>
+              <span class="super-value" id="stat-valor-total-global">R$ 0</span>
             </div>
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-              <span style="font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">A Pagar</span>
-              <span id="stat-valor-a-pagar" style="font-size: 15px; font-weight: 800; color: #f97316; font-family: monospace;">R$ 0</span>
+            <div class="super-row">
+              <span class="super-label">Valor Pago</span>
+              <span class="super-value green" id="stat-valor-pago">R$ 0</span>
+            </div>
+            <div class="super-row">
+              <span class="super-label">A Pagar</span>
+              <span class="super-value orange" id="stat-valor-a-pagar">R$ 0</span>
             </div>
           </div>
         </div>
@@ -241,20 +235,28 @@
                   <div class="alert-value" id="alert-sem-data">0</div>
                 </div>
               </div>
-              <div class="alert-item danger">
-                <span class="alert-icon">⏳</span>
-                <div class="alert-text">
-                  <div class="alert-title">Data Mais Antiga (Em Aberto)</div>
-                  <div class="alert-value" id="alert-data-antiga">--/--/----</div>
+              <div class="alert-item danger" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
+                  <span class="alert-icon">⏳</span>
+                  <div class="alert-text">
+                    <div class="alert-title">Data Mais Antiga (Em Aberto)</div>
+                    <div class="alert-value" id="alert-data-antiga">--/--/----</div>
+                  </div>
+                </div>
+                <!-- Lista de processos da data mais antiga na segunda linha -->
+                <div id="alert-data-antiga-list" style="width: 100%; display: flex; flex-direction: column; gap: 6px; padding-left: 10px; font-size: 13px; color: var(--text-muted);">
                 </div>
               </div>
             </div>
           </div>
           
-          <div class="chart-card" style="display: flex; flex-direction: column; height: 280px;">
-            <h4>👥 Acessos (Editores vs Leitores)</h4>
-            <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;" id="chart-acessos-container">
+          <div class="chart-card" style="display: flex; flex-direction: column; height: 350px;">
+            <h4>👥 ACESSOS</h4>
+            <div style="flex: 1; position: relative; width: 100%; height: 180px; min-height: 180px;" id="chart-acessos-container">
               <canvas id="chart-acessos"></canvas>
+            </div>
+            <!-- Lista de nomes de quem logou -->
+            <div id="lista-nomes-acessos" style="margin-top: 15px; max-height: 100px; overflow-y: auto; padding-right: 10px; font-size: 12px; color: var(--text-secondary); line-height: 1.6;">
             </div>
           </div>
         </div>

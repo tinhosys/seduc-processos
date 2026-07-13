@@ -215,8 +215,9 @@ body {
 /* STAT CARDS */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(6, 11.5%) 28%;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 24px;
 }
 
@@ -248,6 +249,40 @@ body {
 .stat-card.purple::before { background: linear-gradient(90deg, var(--purple), #c084fc); }
 
 .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+/* SUPER CARD FINANCEIRO */
+.super-card {
+  padding: 15px 20px !important;
+}
+
+.super-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding-bottom: 4px;
+}
+.super-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.super-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.super-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #f8fafc;
+  font-family: monospace;
+}
+.super-value.green { color: #34d399; }
+.super-value.orange { color: #f97316; }
 
 .stat-icon {
   width: 40px; height: 40px;

@@ -171,14 +171,27 @@ function renderDashboard() {
   if (elSemData) elSemData.textContent = processosSemData;
 
   const elDataAntiga = document.getElementById('alert-data-antiga');
+  const elDataAntigaList = document.getElementById('alert-data-antiga-list');
   if (elDataAntiga && datasValidas.length > 0) {
     // Ordenar do mais antigo pro mais novo
     datasValidas.sort((a, b) => a.date - b.date);
-    const oldest = datasValidas[0];
-    elDataAntiga.textContent = oldest.original;
-    elDataAntiga.title = `Processo: ${oldest.num} (Prefixo: ${oldest.prefixo})`;
+    const oldestDateValue = datasValidas[0].date.getTime();
+    const oldestProcesses = datasValidas.filter(d => d.date.getTime() === oldestDateValue);
+    
+    elDataAntiga.textContent = oldestProcesses[0].original;
+    
+    if (elDataAntigaList) {
+      elDataAntigaList.innerHTML = oldestProcesses.map(d => 
+        `<div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:3px;">
+           <span>${d.original}</span>
+           <span style="color:#f8fafc;">${d.municipio || 'S/ Mun'}</span>
+           <span style="color:#60a5fa; font-weight:600;">${d.prefixo || '-'}</span>
+         </div>`
+      ).join('');
+    }
   } else if (elDataAntiga) {
     elDataAntiga.textContent = '--/--/----';
+    if (elDataAntigaList) elDataAntigaList.innerHTML = '';
   }
 
   // --- Gráfico de Acessos ---
@@ -569,12 +582,32 @@ async function renderChartAcessosDashboard() {
     const acessos = await res.json();
     let countEditor = 0;
     let countLeitor = 0;
+    let nomesLeitores = [];
+    let nomesEditores = [];
 
     acessos.forEach(a => {
       if (a.nivel === 'adm' || !a.nivel) return;
-      if (a.nivel === 'editor') countEditor++;
-      if (a.nivel === 'leitor') countLeitor++;
+      if (a.nivel === 'editor') {
+        countEditor++;
+        nomesEditores.push(a.nome || a.whatsapp);
+      }
+      if (a.nivel === 'leitor') {
+        countLeitor++;
+        nomesLeitores.push(a.nome || a.whatsapp);
+      }
     });
+
+    const elNomes = document.getElementById('lista-nomes-acessos');
+    if (elNomes) {
+      let html = '';
+      if (nomesEditores.length > 0) {
+        html += `<div style="margin-bottom:6px;"><strong style="color:#10b981;">Editores:</strong> ${nomesEditores.join(', ')}</div>`;
+      }
+      if (nomesLeitores.length > 0) {
+        html += `<div><strong style="color:#f59e0b;">Leitores:</strong> ${nomesLeitores.join(', ')}</div>`;
+      }
+      elNomes.innerHTML = html || 'Nenhum usuário encontrado.';
+    }
 
     const total = countEditor + countLeitor || 1;
 
