@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1783835370442.0.6">
+  <link rel="stylesheet" href="css/style.css?v=2.1.0">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -229,24 +229,77 @@
           </div>
         </div>
 
-        <div class="charts-grid">
-          <div class="chart-card" style="display: flex; flex-direction: column; height: 630px;">
+        <!-- Alertas e Acessos -->
+        <div class="alerts-acessos-grid">
+          <div class="chart-card alert-card-premium" style="display: flex; flex-direction: column;">
+            <h4>⏰ Alertas de Prazos (Datas)</h4>
+            <div class="alerts-content" id="data-alertas-content" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 15px; padding: 10px 0;">
+              <div class="alert-item warning">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-text">
+                  <div class="alert-title">Processos sem Data</div>
+                  <div class="alert-value" id="alert-sem-data">0</div>
+                </div>
+              </div>
+              <div class="alert-item danger">
+                <span class="alert-icon">⏳</span>
+                <div class="alert-text">
+                  <div class="alert-title">Data Mais Antiga (Em Aberto)</div>
+                  <div class="alert-value" id="alert-data-antiga">--/--/----</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="chart-card" style="display: flex; flex-direction: column; height: 280px;">
+            <h4>👥 Acessos (Editores vs Leitores)</h4>
+            <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;" id="chart-acessos-container">
+              <canvas id="chart-acessos"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards de Distribuição Principal (Status, Categoria, Tipo) -->
+        <div class="main-charts-grid">
+          <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
             <h4>📈 Distribuição por Status</h4>
             <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
               <canvas id="chart-status"></canvas>
             </div>
           </div>
-          <div class="chart-card" style="display: flex; flex-direction: column; height: 630px;">
-            <h4>🏙️ Municípios por Valor</h4>
+          <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
+            <h4>🏷️ Distribuição por Categoria</h4>
+            <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
+              <canvas id="chart-categoria"></canvas>
+            </div>
+          </div>
+          <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
+            <h4>🛠️ Distribuição por Tipo</h4>
+            <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
+              <canvas id="chart-tipo"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="prefixo-loc-grid">
+          <div class="card" style="display: flex; flex-direction: column; height: 500px;">
+            <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
+              🏙️ Municípios por Valor</h4>
             <div style="flex: 1; overflow-y: auto; height: 100%; min-height: 0; padding-right: 4px;">
               <div id="chart-municipio-wrapper" style="position: relative; height: 100%;">
                 <canvas id="chart-municipio"></canvas>
               </div>
             </div>
           </div>
+
+          <div class="card" style="display: flex; flex-direction: column; height: 500px;">
+            <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
+              📍 Por Localização</h4>
+            <div id="loc-list" style="flex: 1; overflow-y: auto;"></div>
+          </div>
         </div>
 
-        <div class="prefixo-loc-grid">
+        <div class="prefixo-loc-grid" style="grid-template-columns: 1fr;">
           <div class="card">
             <div class="section-header" style="margin-bottom:16px">
               <div>
@@ -257,13 +310,6 @@
             <div style="position: relative; height: 300px; width: 100%;">
               <canvas id="chart-prefixo"></canvas>
             </div>
-          </div>
-
-          <div class="card">
-            <h4
-              style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
-              📍 Por Localização</h4>
-            <div id="loc-list"></div>
           </div>
         </div>
 
@@ -834,8 +880,8 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.0.9"></script>
-  <script src="js/app.js?v=1783835382902.0.9"></script>
+  <script src="js/dados.js?v=2.1.0"></script>
+  <script src="js/app.js?v=2.1.0"></script>
   <script src="js/auth-sap.js?v=1.0.9"></script>
 
   <script>

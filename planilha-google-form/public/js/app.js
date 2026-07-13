@@ -103,8 +103,10 @@ function toast(msg, tipo = 'info') {
 
 // ---- DASHBOARD ----
 let chartStatus = null;
-let chartObj = null;
+let chartCategoria = null;
+let chartTipo = null;
 let chartMunicipio = null;
+let chartAcessos = null;
 
 function renderDashboard() {
   const processos = carregarProcessos();
@@ -143,6 +145,44 @@ function renderDashboard() {
   document.getElementById('stat-pago').textContent       = pagos.toLocaleString('pt-BR');
   document.getElementById('stat-pendente').textContent   = pendentes.toLocaleString('pt-BR');
   document.getElementById('stat-prioridade').textContent = prioridade.toLocaleString('pt-BR');
+
+  // --- Alertas de Datas ---
+  let processosSemData = 0;
+  let datasValidas = [];
+  
+  processos.forEach(p => {
+    // Apenas considerar processos não encerrados/concluídos para o alerta de data antiga
+    const isEncerrado = ['pago', 'encerrado', 'concluído', 'cancelado', 'duplicado'].includes(normalizar(p.status));
+    
+    if (!p.data || String(p.data).trim() === '') {
+      if (!isEncerrado) processosSemData++;
+    } else if (!isEncerrado) {
+      // Tenta fazer o parse da data (esperado DD/MM/YYYY ou similar)
+      const parts = String(p.data).split('/');
+      if (parts.length === 3) {
+        // Formato DD/MM/YYYY
+        const d = new Date(`${parts[2]}-${parts[1]}-${parts[0]}T12:00:00Z`);
+        if (!isNaN(d)) datasValidas.push({ date: d, original: p.data, prefixo: p.prefixo, num: p.numero });
+      }
+    }
+  });
+
+  const elSemData = document.getElementById('alert-sem-data');
+  if (elSemData) elSemData.textContent = processosSemData;
+
+  const elDataAntiga = document.getElementById('alert-data-antiga');
+  if (elDataAntiga && datasValidas.length > 0) {
+    // Ordenar do mais antigo pro mais novo
+    datasValidas.sort((a, b) => a.date - b.date);
+    const oldest = datasValidas[0];
+    elDataAntiga.textContent = oldest.original;
+    elDataAntiga.title = `Processo: ${oldest.num} (Prefixo: ${oldest.prefixo})`;
+  } else if (elDataAntiga) {
+    elDataAntiga.textContent = '--/--/----';
+  }
+
+  // --- Gráfico de Acessos ---
+  renderChartAcessosDashboard();
 
   // Gráfico: Status
   const statusCounts = {};
@@ -199,7 +239,7 @@ function renderDashboard() {
                     lineWidth: style.borderWidth,
                     fontColor: isHidden ? '#475569' : '#f7f7f7',
                     textDecoration: 'none',
-                    hidden: false, // We handle the visual 'hidden' state manually now
+                    hidden: false,
                     index: i
                   };
                 });
@@ -213,6 +253,190 @@ function renderDashboard() {
             label: function(context) {
               const val = context.parsed;
               const pct = ((val / totalStatus) * 100).toFixed(1) + '%';
+              return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Gráfico: Categoria
+  const catCounts = {};
+  processos.forEach(p => {
+    let c = String(p.categoria || '').trim().toUpperCase();
+    if (!c) {
+      c = 'NÃO INFORMADO';
+    } else {
+      if (c === 'F') c = 'FOMENTO';
+      else if (c === 'C') c = 'CONVÊNIO';
+      else if (c === 'T') c = 'TERMO DE COOPERAÇÃO';
+      else if (c === 'O') c = 'OUTRO';
+    }
+    catCounts[c] = (catCounts[c] || 0) + 1;
+  });
+  const catLabels = Object.keys(catCounts).sort((a,b) => catCounts[b] - catCounts[a]);
+  const catValues = catLabels.map(k => catCounts[k]);
+  const totalCat = catValues.reduce((sum, v) => sum + v, 0) || 1;
+
+  const colorsCatMap = {
+    'FOMENTO': '#3b82f6',
+    'CONVÊNIO': '#10b981',
+    'TERMO DE COOPERAÇÃO': '#8b5cf6',
+    'OUTRO': '#06b6d4',
+    'NÃO INFORMADO': '#64748b'
+  };
+  const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
+
+  const ctxCategoria = document.getElementById('chart-categoria').getContext('2d');
+  if (chartCategoria) chartCategoria.destroy();
+  chartCategoria = new Chart(ctxCategoria, {
+    type: 'doughnut',
+    data: {
+      labels: catLabels,
+      datasets: [{ data: catValues, backgroundColor: colorsCat, borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: {
+      cutout: '65%',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          onClick: function(e, legendItem, legend) {
+            const index = legendItem.index;
+            const ci = legend.chart;
+            ci.toggleDataVisibility(index);
+            ci.update();
+          },
+          labels: {
+            color: '#f8fafc',
+            font: { size: 10 },
+            padding: 10,
+            generateLabels: (chart) => {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const meta = chart.getDatasetMeta(0);
+                  const style = meta.controller.getStyle(i);
+                  const value = data.datasets[0].data[i];
+                  const percent = ((value / totalCat) * 100).toFixed(1) + '%';
+                  const isHidden = !chart.getDataVisibility(i);
+                  return {
+                    text: `${label.toUpperCase()} (${percent})`,
+                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
+                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                    lineWidth: style.borderWidth,
+                    fontColor: isHidden ? '#475569' : '#f7f7f7',
+                    textDecoration: 'none',
+                    hidden: false,
+                    index: i
+                  };
+                });
+              }
+              return [];
+            }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const val = context.parsed;
+              const pct = ((val / totalCat) * 100).toFixed(1) + '%';
+              return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Gráfico: Tipo
+  const tipoCounts = {};
+  processos.forEach(p => {
+    let t = String(p.tipo || '').trim().toUpperCase();
+    if (!t) {
+      t = 'NÃO INFORMADO';
+    } else {
+      if (t === 'OB') t = 'OBRAS';
+      else if (t === 'MP') t = 'MATERIAL PERMANENTE';
+      else if (t === 'MC') t = 'MATERIAL DE CONSUMO';
+      else if (t === 'SI') t = 'SISTEMA';
+      else if (t === 'TR') t = 'TREINAMENTO';
+      else if (t === 'OUT' || t === 'OU') t = 'OUTROS';
+    }
+    tipoCounts[t] = (tipoCounts[t] || 0) + 1;
+  });
+  const tipoLabels = Object.keys(tipoCounts).sort((a,b) => tipoCounts[b] - tipoCounts[a]);
+  const tipoValues = tipoLabels.map(k => tipoCounts[k]);
+  const totalTipo = tipoValues.reduce((sum, v) => sum + v, 0) || 1;
+
+  const colorsTipoMap = {
+    'OBRAS': '#06b6d4',
+    'MATERIAL PERMANENTE': '#f97316',
+    'MATERIAL DE CONSUMO': '#f59e0b',
+    'SISTEMA': '#a855f7',
+    'TREINAMENTO': '#10b981',
+    'OUTROS': '#f43f5e',
+    'NÃO INFORMADO': '#64748b'
+  };
+  const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
+
+  const ctxTipo = document.getElementById('chart-tipo').getContext('2d');
+  if (chartTipo) chartTipo.destroy();
+  chartTipo = new Chart(ctxTipo, {
+    type: 'doughnut',
+    data: {
+      labels: tipoLabels,
+      datasets: [{ data: tipoValues, backgroundColor: colorsTipo, borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: {
+      cutout: '65%',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          onClick: function(e, legendItem, legend) {
+            const index = legendItem.index;
+            const ci = legend.chart;
+            ci.toggleDataVisibility(index);
+            ci.update();
+          },
+          labels: {
+            color: '#f8fafc',
+            font: { size: 10 },
+            padding: 10,
+            generateLabels: (chart) => {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const meta = chart.getDatasetMeta(0);
+                  const style = meta.controller.getStyle(i);
+                  const value = data.datasets[0].data[i];
+                  const percent = ((value / totalTipo) * 100).toFixed(1) + '%';
+                  const isHidden = !chart.getDataVisibility(i);
+                  return {
+                    text: `${label.toUpperCase()} (${percent})`,
+                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
+                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                    lineWidth: style.borderWidth,
+                    fontColor: isHidden ? '#475569' : '#f7f7f7',
+                    textDecoration: 'none',
+                    hidden: false,
+                    index: i
+                  };
+                });
+              }
+              return [];
+            }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const val = context.parsed;
+              const pct = ((val / totalTipo) * 100).toFixed(1) + '%';
               return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
             }
           }
@@ -325,6 +549,84 @@ function renderDashboard() {
       </div>
     `;
   }).join('') || '<p style="color:var(--text-muted);font-size:13px">Sem dados</p>';
+}
+
+async function renderChartAcessosDashboard() {
+  const ctx = document.getElementById('chart-acessos');
+  if (!ctx) return;
+  const ctx2d = ctx.getContext('2d');
+  
+  if (chartAcessos) chartAcessos.destroy();
+  
+  try {
+    const token = sessionStorage.getItem('sap_session_token');
+    const res = await fetch(API_BASE + '/api/acessos', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!res.ok) throw new Error('Acesso negado');
+
+    const acessos = await res.json();
+    let countEditor = 0;
+    let countLeitor = 0;
+
+    acessos.forEach(a => {
+      if (a.nivel === 'adm' || !a.nivel) return;
+      if (a.nivel === 'editor') countEditor++;
+      if (a.nivel === 'leitor') countLeitor++;
+    });
+
+    const total = countEditor + countLeitor || 1;
+
+    chartAcessos = new Chart(ctx2d, {
+      type: 'pie',
+      data: {
+        labels: ['Editores', 'Leitores'],
+        datasets: [{
+          data: [countEditor, countLeitor],
+          backgroundColor: ['#10b981', '#f59e0b'],
+          borderWidth: 0,
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              color: '#f8fafc',
+              font: { size: 12 },
+              padding: 15,
+              generateLabels: (chart) => {
+                const data = chart.data;
+                return data.labels.map((label, i) => {
+                  const val = data.datasets[0].data[i];
+                  const pct = ((val / total) * 100).toFixed(1) + '%';
+                  return {
+                    text: `${label} - ${val} (${pct})`,
+                    fillStyle: data.datasets[0].backgroundColor[i],
+                    hidden: false,
+                    index: i,
+                    fontColor: '#f8fafc',
+                    strokeStyle: data.datasets[0].backgroundColor[i],
+                    lineWidth: 0
+                  };
+                });
+              }
+            }
+          }
+        }
+      }
+    });
+  } catch (err) {
+    // Se der erro (ex: 403 sem permissão), exibe mensagem no canvas
+    ctx2d.font = '14px Inter, sans-serif';
+    ctx2d.fillStyle = '#64748b';
+    ctx2d.textAlign = 'center';
+    ctx2d.fillText('Dados de acesso restritos', ctx.width / 2, ctx.height / 2);
+  }
 }
 
 // ---- LISTA DE PROCESSOS ----
