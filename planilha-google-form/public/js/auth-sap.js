@@ -22,7 +22,7 @@ const SAP_SESSION_KEY = 'sap_session_token';
 const SAP_USER_KEY    = 'sap_user_data';
 
 var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? ''
+  ? 'http://localhost:3001'
   : 'https://seduc-backend.onrender.com';
 
 

@@ -297,8 +297,8 @@ async function getAllRows() {
   const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const allSheets = response.data.sheets;
 
-  // Excluir aba de controle de acessos dos dados de processos
-  const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos');
+  // Excluir aba de controle de acessos e a aba de escolas dos dados de processos
+  const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos' && s.properties.title.toLowerCase() !== 'escolas' && s.properties.title.toLowerCase() !== 'escola');
 
   // IMPORTANTE: nomes de abas com caracteres especiais (/, espaço, etc.)
   // precisam ser envolvidos em aspas simples no range da API
@@ -821,12 +821,202 @@ app.delete("/api/acessos/:row", adminOnly, async (req, res) => {
   }
 });
 
+
+// ====== ENDPOINTS: ESCOLAS ======
+
+const defaultEscolasHeaders = [
+  "Código Super", "Super", "MUNICIPIO", "CÓDIGO INEP", "NOME DA ESCOLA",
+  "LOCALIZAÇÃO", "Endereço - Nº", "Complemento", "BAIRRO", "CEP",
+  "Nº DE TELEFONE", "TOTAL MATRÍCULA", "SALAS DE AULA ULTILIZADAS NA ESCOLA"
+];
+
+function normalizarStr(str) {
+  if (!str) return '';
+  return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
+function mapDataToEscolaRow(data, headers, originalRow = [], user = null) {
+  return headers.map((h, i) => {
+    const hDef = (h && String(h).trim()) ? String(h).trim() : (defaultEscolasHeaders[i] || "");
+    const hLow = normalizarStr(hDef);
+    let val = undefined;
+    
+    if (hLow.includes('codigo super') || hLow.includes('cod super')) val = data.codigoSuper;
+    else if (hLow === 'super') val = data.super;
+    else if (hLow.includes('munic')) val = data.municipio;
+    else if (hLow.includes('inep')) val = data.codigoInep;
+    else if (hLow.includes('nome da escola') || hLow.includes('escola')) val = data.nome;
+    else if (hLow.includes('localiza')) val = data.localizacao;
+    else if (hLow.includes('endere')) val = data.endereco;
+    else if (hLow.includes('complement')) val = data.complemento;
+    else if (hLow.includes('bairro')) val = data.bairro;
+    else if (hLow === 'cep') val = data.cep;
+    else if (hLow.includes('telefone') || hLow.includes('fone')) val = data.telefone;
+    else if (hLow.includes('total matricula') || hLow.includes('matricula')) val = data.totalMatricula;
+    else if (hLow.includes('sala')) val = data.salas;
+
+    if (val !== undefined) return val;
+    return originalRow[i] ?? "";
+  });
+}
+
+function mapRowToEscolaObj(headers, row) {
+  const get = (termos) => {
+    for (const t of termos) {
+      const idx = headers.findIndex(h => normalizarStr(h).includes(normalizarStr(t)));
+      if (idx >= 0) return String(row[idx] || '').trim();
+    }
+    return '';
+  };
+  const getNum = (termos) => {
+    const v = get(termos);
+    const n = v ? Number(String(v).replace(/[^\d]/g, '')) : 0;
+    return isNaN(n) ? 0 : n;
+  };
+  return {
+    codigoSuper: get(['codigo super', 'cod super']),
+    super: get(['super']),
+    municipio: get(['municipio']),
+    codigoInep: get(['inep']),
+    nome: get(['nome da escola', 'escola']),
+    localizacao: get(['localiza']),
+    endereco: get(['endere', 'logradouro', 'nº']),
+    complemento: get(['complement']),
+    bairro: get(['bairro']),
+    cep: get(['cep']),
+    telefone: get(['telefone', 'fone']),
+    totalMatricula: getNum(['total matricula', 'matricula']),
+    salas: getNum(['sala'])
+  };
+}
+
+app.get("/api/escolas", authMiddleware, async (req, res) => {
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: "escolas!A1:Z"
+    });
+    const rows = response.data.values || [];
+    if (rows.length < 2) return res.json({ rows: [] });
+    
+    const headers = rows[0];
+    const dataRows = rows.slice(1).map((r, idx) => {
+      return {
+        id: (idx + 2) + "__escolas",
+        _tabName: "escolas",
+        ...mapRowToEscolaObj(headers, r)
+      };
+    });
+    res.json({ rows: dataRows });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erro: "Erro ao buscar escolas." });
+  }
+});
+
+app.post("/api/escolas", adminOnly, async (req, res) => {
+  try {
+    const headerDefRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: "escolas!A1:Z1"
+    });
+    let headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
+    
+    if (headers.length === 0) {
+      headers = defaultEscolasHeaders;
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: "escolas!A1",
+        valueInputOption: "USER_ENTERED",
+        requestBody: { values: [headers] }
+      });
+    }
+
+    const newRow = mapDataToEscolaRow(req.body, headers, [], req.sessao);
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: "escolas!A:A",
+      valueInputOption: "USER_ENTERED",
+      insertDataOption: "INSERT_ROWS",
+      requestBody: { values: [newRow] }
+    });
+    res.json({ sucesso: true, mensagem: "Escola cadastrada com sucesso." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erro: "Erro ao cadastrar escola." });
+  }
+});
+
+app.put("/api/escolas/:id", adminOnly, async (req, res) => {
+  try {
+    const rawId = req.params.id;
+    const parts = rawId.split("__");
+    const rowNumber = Number(parts[0]);
+
+    if (!rowNumber || rowNumber < 2) return res.status(400).json({ erro: "Linha inválida." });
+
+    const headerRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `escolas!A${rowNumber}:Z${rowNumber}`
+    });
+    const existingRow = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
+
+    const headerDefRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `escolas!A1:Z1`
+    });
+    const headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
+
+    const updatedRow = mapDataToEscolaRow(req.body, headers, existingRow, req.sessao);
+    const lastColumn = columnToLetter(headers.length);
+    const range = `escolas!A${rowNumber}:${lastColumn}${rowNumber}`;
+
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range,
+      valueInputOption: "USER_ENTERED",
+      requestBody: { values: [updatedRow] }
+    });
+    res.json({ sucesso: true, mensagem: "Escola atualizada." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erro: "Erro ao atualizar escola." });
+  }
+});
+
+app.delete("/api/escolas/:id", adminOnly, async (req, res) => {
+  try {
+    const rawId = req.params.id;
+    const rowNumber = Number(rawId.split("__")[0]);
+    if (!rowNumber || rowNumber < 2) return res.status(400).json({ erro: "Linha inválida." });
+
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+    const sheet = meta.data.sheets.find(s => s.properties.title.toLowerCase() === 'escolas');
+    if (!sheet) return res.status(404).json({ erro: "Aba escolas não encontrada." });
+
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SPREADSHEET_ID,
+      requestBody: {
+        requests: [{
+          deleteDimension: {
+            range: { sheetId: sheet.properties.sheetId, dimension: "ROWS", startIndex: rowNumber - 1, endIndex: rowNumber }
+          }
+        }]
+      }
+    });
+    res.json({ sucesso: true, mensagem: "Escola excluída." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ erro: "Erro ao excluir escola." });
+  }
+});
+
 async function garantirColunasAdicionais() {
   try {
     console.log("🔍 Verificando se as colunas 'Marca', 'CATEGORIA' e 'TIPO' existem nas abas de processos...");
     const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
     const allSheets = response.data.sheets;
-    const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos');
+    const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos' && s.properties.title.toLowerCase() !== 'escolas' && s.properties.title.toLowerCase() !== 'escola');
 
     for (const s of processSheets) {
       const tabName = s.properties.title;
@@ -836,7 +1026,7 @@ async function garantirColunasAdicionais() {
       });
       let headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
       if (headers.length > 0) {
-        const colunasParaGarantir = ["Marca", "CATEGORIA", "TIPO"];
+        const colunasParaGarantir = ["Marca", "CATEGORIA", "TIPO", "CAM", "GAB", "CC"];
         
         for (const col of colunasParaGarantir) {
           const hasCol = headers.some(h => (h || "").toLowerCase().trim() === col.toLowerCase());

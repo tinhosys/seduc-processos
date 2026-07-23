@@ -1708,3 +1708,117 @@ tr.linha-marcada:hover {
   transform: scale(1.1);
 }
 
+/* Autorizacoes Toggle */
+.autorizacao-toggles {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #334155;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #ef4444; /* Vermelho por padrão quando ligado (pendente) */
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #ef4444;
+}
+
+.autorizacao-toggles.all-on input:checked + .slider {
+  background-color: #10b981; /* Verde APENAS quando todos estão ON */
+}
+
+.autorizacao-toggles.all-on input:focus + .slider {
+  box-shadow: 0 0 1px #10b981;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.filtro-toggles {
+  margin-top: 0;
+  padding: 4px 8px;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  height: 38px;
+  align-items: center;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.toggle-text {
+  font-size: 12px;
+  font-weight: bold;
+  color: #64748b;
+  transition: color 0.3s ease;
+}
+
+input:checked ~ .toggle-text {
+  color: #10b981;
+}
+
+/* Borda dos processos */
+.process-row.border-autorizado {
+  border-left: 4px solid #10b981 !important;
+}
+
+.process-row.border-pendente {
+  border-left: 4px solid #ef4444 !important;
+}
+

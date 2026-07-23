@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=2.1.0">
+  <link rel="stylesheet" href="css/style.css?v=1784778162022.2.0">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -141,6 +141,13 @@
         <button class="nav-item action-adm" data-page="repetidos">
           <span class="nav-icon">🔁</span>
           Processos Repetidos
+        </button>
+
+        <button class="nav-item action-adm" data-page="escolas">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </span>
+          Escolas
         </button>
       </nav>
 
@@ -422,6 +429,30 @@
               autocomplete="off" style="padding-left:30px">
             <datalist id="list-filtro-prefixos"></datalist>
           </div>
+          <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
+            <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÃO:</span>
+            <div class="toggle-item">
+              <label class="toggle-switch">
+                <input type="checkbox" id="filtro-cam">
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label" style="font-size:10px;">CAM</span>
+            </div>
+            <div class="toggle-item">
+              <label class="toggle-switch">
+                <input type="checkbox" id="filtro-gab">
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label" style="font-size:10px;">GABINETE SEDUC</span>
+            </div>
+            <div class="toggle-item">
+              <label class="toggle-switch">
+                <input type="checkbox" id="filtro-cc">
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label" style="font-size:10px;">CASA CIVIL</span>
+            </div>
+          </div>
           <select id="filtro-municipio">
             <option value="">Município</option>
           </select>
@@ -614,6 +645,34 @@
               <div class="form-group">
                 <label for="form-localizacao">Localização</label>
                 <select id="form-localizacao"></select>
+              </div>
+
+              <!-- Autorizações -->
+              <div class="form-group full">
+                <label style="margin-bottom: 0;">Autorizações</label>
+                <div class="autorizacao-toggles" id="form-autorizacoes-container">
+                  <div class="toggle-item">
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="form-cam">
+                      <span class="slider"></span>
+                    </label>
+                    <span class="toggle-label">CAM</span>
+                  </div>
+                  <div class="toggle-item">
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="form-gab">
+                      <span class="slider"></span>
+                    </label>
+                    <span class="toggle-label">GABINETE SEDUC</span>
+                  </div>
+                  <div class="toggle-item">
+                    <label class="toggle-switch">
+                      <input type="checkbox" id="form-cc">
+                      <span class="slider"></span>
+                    </label>
+                    <span class="toggle-label">CASA CIVIL</span>
+                  </div>
+                </div>
               </div>
 
               <div class="form-group">
@@ -857,6 +916,200 @@
         </div>
       </section>
 
+      <!-- ============= PAGE: ESCOLAS (ADM ONLY) ============= -->
+      <section class="page action-adm" id="page-escolas">
+
+        <!-- Cabeçalho -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span id="escolas-badge" style="display:inline-flex;align-items:center;padding:8px 18px;border-radius:8px;font-size:16px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">🏫 Escolas</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button onclick="abrirModalFormEscola()" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;color:#fff;padding:9px 20px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 14px rgba(139,92,246,0.35);display:flex;align-items:center;gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Nova Escola
+            </button>
+            <button onclick="recarregarEscolas()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">🔄 Recarregar</button>
+          </div>
+        </div>
+
+        <!-- Filtros e Busca -->
+        <div id="escolas-filtros" style="display:none; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;">
+          <div style="position:relative; flex:2; min-width:220px;">
+            <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;">🔍</span>
+            <input type="text" id="escolas-busca"
+              placeholder="Buscar por nome, município, INEP, bairro..."
+              oninput="filtrarEscolas()"
+              style="width:100%;padding:10px 14px 10px 38px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
+          </div>
+          <select id="escolas-filtro-municipio" onchange="filtrarEscolas()"
+            style="min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+            <option value="">Todos os Municípios</option>
+          </select>
+          <select id="escolas-filtro-localizacao" onchange="filtrarEscolas()"
+            style="min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+            <option value="">Localização</option>
+          </select>
+          <button onclick="limparFiltrosEscolas()"
+            style="padding:10px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-muted);cursor:pointer;font-size:13px;white-space:nowrap;">
+            × Limpar Filtros
+          </button>
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-wrap" id="escolas-table-wrap" style="display:none; overflow-x:auto;">
+          <table style="table-layout:fixed; width:100%; min-width:1300px; border-collapse:separate; border-spacing:0; font-size:13px;">
+            <thead>
+              <tr style="background:var(--bg-secondary);">
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Cód.Super</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Super</th>
+                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Município</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">INEP</th>
+                <th style="width:20%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Nome da Escola</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Localização</th>
+                <th style="width:11%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Endereço</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Complemento</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Bairro</th>
+                <th style="width:5%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">CEP</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Telefone</th>
+                <th style="width:5%;padding:12px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Matrículas</th>
+                <th style="width:4%;padding:12px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Salas</th>
+                <th style="width:6%;padding:12px 10px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="table-escolas">
+              <tr><td colspan="14" style="text-align:center;padding:48px;color:var(--text-muted);">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                  <div style="width:32px;height:32px;border:3px solid rgba(139,92,246,0.3);border-top-color:#a78bfa;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+                  <span>Carregando escolas...</span>
+                </div>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Estado vazio -->
+        <div id="escolas-empty" style="display:none;text-align:center;padding:80px 20px;">
+          <div style="font-size:52px;margin-bottom:16px;">🏫</div>
+          <div style="font-size:17px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">Nenhuma escola encontrada</div>
+          <div id="escolas-empty-msg" style="font-size:13px;color:var(--text-muted);">Clique em "Recarregar" para buscar os dados.</div>
+        </div>
+
+        <!-- Paginação -->
+        <div class="pagination" id="escolas-pagination" style="display:none;margin-top:16px;">
+          <div class="pagination-info" id="escolas-pg-info"></div>
+          <div class="pagination-controls" id="escolas-pg-controls"></div>
+        </div>
+
+      </section>
+
+
+  <!-- ============= MODAL FORMULÁRIO DE ESCOLA ============= -->
+  <div class="modal-overlay" id="modal-form-escola" style="display:none; align-items:flex-start; padding-top:4vh; overflow-y:auto;">
+    <div class="modal card" style="width:95%; max-width:800px; margin:auto; margin-bottom:4vh; padding:0; border:1px solid rgba(139,92,246,0.3); border-radius:12px; overflow:hidden;">
+      <div style="background:linear-gradient(135deg,#1e293b,#0f172a); padding:20px 24px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center;">
+        <h3 id="form-escola-titulo" style="margin:0; font-size:18px; color:#f0f4ff; display:flex; align-items:center; gap:8px;">🏫 Nova Escola</h3>
+        <button class="modal-close" onclick="fecharModalFormEscola()" style="background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer;">✕</button>
+      </div>
+      <div style="padding:24px;">
+        <form id="form-escola-data" onsubmit="salvarEscola(event)">
+          <input type="hidden" id="form-escola-id">
+          
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin-bottom:16px;">
+            <div class="form-group">
+              <label>Nome da Escola *</label>
+              <input type="text" id="form-escola-nome" class="form-control" required placeholder="Ex: EEEFM Juscelino Kubitschek">
+            </div>
+            <div class="form-group">
+              <label>Município *</label>
+              <input type="text" id="form-escola-municipio" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Localização</label>
+              <select id="form-escola-localizacao" class="form-control">
+                <option value="">Selecione...</option>
+                <option value="Urbana">Urbana</option>
+                <option value="Rural">Rural</option>
+                <option value="Indígena">Indígena</option>
+                <option value="Quilombola">Quilombola</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:16px; margin-bottom:16px;">
+            <div class="form-group">
+              <label>Código INEP</label>
+              <input type="text" id="form-escola-inep" class="form-control" placeholder="Apenas números">
+            </div>
+            <div class="form-group">
+              <label>Código Super</label>
+              <input type="text" id="form-escola-codigoSuper" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Super</label>
+              <input type="text" id="form-escola-super" class="form-control">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-bottom:16px;">
+            <div class="form-group">
+              <label>Endereço e Nº</label>
+              <input type="text" id="form-escola-endereco" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Complemento</label>
+              <input type="text" id="form-escola-complemento" class="form-control">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:16px; margin-bottom:24px;">
+            <div class="form-group">
+              <label>Bairro</label>
+              <input type="text" id="form-escola-bairro" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>CEP</label>
+              <input type="text" id="form-escola-cep" class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Telefone</label>
+              <input type="text" id="form-escola-telefone" class="form-control">
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; margin-bottom:24px; padding:16px; background:rgba(6,182,212,0.05); border:1px solid rgba(6,182,212,0.2); border-radius:8px;">
+            <div class="form-group">
+              <label style="color:#22d3ee;">Total de Matrículas</label>
+              <input type="number" id="form-escola-matriculas" class="form-control" min="0">
+            </div>
+            <div class="form-group">
+              <label style="color:#22d3ee;">Salas de Aula Utilizadas</label>
+              <input type="number" id="form-escola-salas" class="form-control" min="0">
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:12px; padding-top:16px; border-top:1px solid var(--border);">
+            <button type="button" class="btn btn-ghost" onclick="fecharModalFormEscola()">Cancelar</button>
+            <button type="submit" class="btn btn-primary" id="btn-salvar-escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none;">Salvar Escola</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= MODAL DETALHES ESCOLA ============= -->
+  <div class="modal-overlay" id="modal-escola-overlay" onclick="if(event.target===this)fecharModalEscola()">
+    <div class="modal" style="max-width:680px; width:95%;">
+      <div class="modal-header">
+        <h3 style="display:flex; align-items:center; gap:8px;"><span>🏫</span> Detalhes da Escola</h3>
+        <button class="modal-close" onclick="fecharModalEscola()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-escola-content" style="padding:0;">
+        <!-- Preenchido via JS -->
+      </div>
+    </div>
+  </div>
+
   <!-- ============= MODAL DETALHE ============= -->
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
@@ -886,9 +1139,10 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=2.1.0"></script>
-  <script src="js/app.js?v=2.1.0"></script>
-  <script src="js/auth-sap.js?v=1.0.9"></script>
+  <script src="js/dados.js?v=2.2.1"></script>
+  <script src="js/app.js?v=2.2.6"></script>
+  <script src="js/auth-sap.js?v=2.2.1"></script>
+  <script src="js/escolas.js?v=3.0.1"></script>
 
   <script>
     // Detector de erros para depuração visual
