@@ -290,7 +290,12 @@ const defaultHeaders = [
   "DATA/HORA EDIÇAO",
   "marca",
   "CATEGORIA",
-  "TIPO"
+  "TIPO",
+  "CAM",
+  "GAB",
+  "CC",
+  "ANO",
+  "AGRUPAMENTO"
 ];
 
 async function getAllRows() {
@@ -419,6 +424,8 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     else if ((hLow === 'marca' || hLow.includes('marcado')) && data.marca !== undefined) val = data.marca;
     else if (hLow === 'categoria') val = data.categoria;
     else if (hLow === 'tipo') val = data.tipo;
+    else if (hLow === 'ano') val = data.ano;
+    else if (hLow.includes('agrupamento')) val = data.agrupamento;
     if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
         val = data.contatos.map(c => {

@@ -121,6 +121,11 @@ const mapToApp = (row) => {
     tipo: row['TIPO'] || row['tipo'] || '',
     ultimaEdicao: row['ULTIMA EDICAO'] || row['ultima edicao'] || row['última edição'] || row['ÚLTIMA EDIÇÃO'] || '',
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || row['DATA/HORA EDIÇÃO'] || '',
+    ano: row['ANO'] || row['ano'] || '',
+    agrupamento: row['AGRUPAMENTO'] || row['agrupamento'] || row['Agrupamento'] || '',
+    CAM: row['CAM'] || '',
+    GAB: row['GAB'] || '',
+    CC: row['CC'] || '',
     alerta: String(alertaStr || '').trim(),
     apontamento: apontamentoStr || '',
     contatos: contatosParsed
@@ -149,6 +154,11 @@ const mapToSheet = (dados) => {
     'Marca': dados.marca || '',
     'CATEGORIA': dados.categoria || '',
     'TIPO': dados.tipo || '',
+    'ANO': dados.ano || '',
+    'AGRUPAMENTO': dados.agrupamento || '',
+    'CAM': dados.CAM || '',
+    'GAB': dados.GAB || '',
+    'CC': dados.CC || '',
     'ULTIMA EDICAO': dados.ultimaEdicao || '',
     'DATA/HORA EDICAO': dados.dataHoraEdicao || ''
   };

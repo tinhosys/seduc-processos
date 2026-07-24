@@ -428,7 +428,7 @@ tbody tr.linha-alerta:hover td {
 
 .search-box input {
   width: 100%;
-  padding: 9px 12px 9px 36px;
+  padding: 9px 36px 9px 12px;
   background: rgba(255,255,255,0.05);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -444,7 +444,8 @@ tbody tr.linha-alerta:hover td {
 
 .search-icon {
   position: absolute;
-  left: 11px;
+  right: 11px;
+  left: auto;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);

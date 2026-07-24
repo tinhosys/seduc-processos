@@ -700,7 +700,7 @@ async function renderChartAcessosDashboard() {
 // ---- LISTA DE PROCESSOS ----
 function getFiltrados() {
   let lista = carregarProcessos();
-  const { busca, status, localizacao, municipio, objeto, prefixo, alerta, marca, categoria, tipo } = state.filtros;
+  const { busca, status, localizacao, municipio, objeto, prefixo, alerta, marca, categoria, tipo, ano } = state.filtros;
 
   if (alerta === 'sim') {
     lista = lista.filter(p => String(p.alerta || '').trim() === '1');
@@ -725,7 +725,9 @@ function getFiltrados() {
       normalizar(p.anotacao).includes(q) ||
       normalizar(p.prefixo).includes(q) ||
       normalizar(p.status).includes(q) ||
-      normalizar(p.localizacao).includes(q)
+      normalizar(p.localizacao).includes(q) ||
+      normalizar(p.agrupamento).includes(q) ||
+      String(p.ano || '').includes(q)
     );
   }
   if (status)      lista = lista.filter(p => normalizar(p.status)      === normalizar(status));
@@ -734,6 +736,8 @@ function getFiltrados() {
   if (objeto)      lista = lista.filter(p => normalizar(p.objeto)      === normalizar(objeto));
   if (categoria)   lista = lista.filter(p => normalizar(p.categoria)   === normalizar(categoria));
   if (tipo)        lista = lista.filter(p => normalizar(p.tipo)        === normalizar(tipo));
+  if (ano)         lista = lista.filter(p => String(p.ano)             === String(ano));
+  if (state.filtros.agrupamento) lista = lista.filter(p => normalizar(p.agrupamento) === normalizar(state.filtros.agrupamento));
   if (state.filtros.prefixo) lista = lista.filter(p => normalizar(p.prefixo).includes(normalizar(state.filtros.prefixo)));
 
   // Filtros individuais de autorização
@@ -768,6 +772,8 @@ function renderProcessos() {
   const pagina = filtrados.slice(inicio, inicio + state.itensPorPagina);
 
   // Preencher filtros dinâmicos
+  preencherSelectFiltro('filtro-ano',         [...new Set(carregarProcessos().map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
+  preencherSelectFiltro('filtro-agrupamento', [...new Set(carregarProcessos().map(p => p.agrupamento).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-status',      [...new Set(carregarProcessos().map(p => p.status).filter(s => s && s !== '.'))].sort());
   preencherSelectFiltro('filtro-localizacao', [...new Set(carregarProcessos().map(p => p.localizacao).filter(l => l && l !== '.'))].sort());
   preencherSelectFiltro('filtro-municipio',   [...new Set(carregarProcessos().map(p => p.municipio).filter(Boolean))].sort());
@@ -791,6 +797,7 @@ function renderProcessos() {
   preencherDatalist('list-prefixos', 'prefixo');
   preencherDatalist('list-interessados', 'interessado');
   preencherDatalist('list-objetos', 'objeto');
+  preencherDatalist('list-agrupamentos', 'agrupamento');
 
   // Tabela
   const tbody = document.getElementById('table-processos');
@@ -798,14 +805,28 @@ function renderProcessos() {
 
   tbody.innerHTML = pagina.map(p => `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
-      <td>
-        ${p.prefixo ? `<span class="badge-prefixo">${p.prefixo}</span>` : '<span style="color:var(--text-muted);font-size:11px">—</span>'}
-        ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:14px;">📌</span>' : ''}
-        ${getCategoryBadge(p.categoria)}
-        ${getTypeBadge(p.tipo)}
+      <td class="col-prefixo" title="${p.prefixo}">
+        <div style="display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'}" style="flex-shrink: 0;">
+              ${p.prefixo || '—'}
+            </span>
+            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:2px; font-size:14px; flex-shrink: 0;">📌</span>' : ''}
+            ${getCategoryBadge(p.categoria)}
+            ${getTypeBadge(p.tipo)}
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center; margin-top: 2px;">
+            <div style="width: 11px; height: 11px; border-radius: 50%; background-color: ${p.CAM === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 4px rgba(0,0,0,0.3);" title="CAM"></div>
+            <div style="width: 11px; height: 11px; border-radius: 50%; background-color: ${p.GAB === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 4px rgba(0,0,0,0.3);" title="GABINETE"></div>
+            <div style="width: 11px; height: 11px; border-radius: 50%; background-color: ${p.CC === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 4px rgba(0,0,0,0.3);" title="CASA CIVIL"></div>
+          </div>
+        </div>
       </td>
       <td class="col-municipio">${hl(p.municipio, busca)}</td>
-      <td class="col-numero">${hl(p.numero, busca) || '—'}</td>
+      <td class="col-numero">
+        ${hl(p.numero, busca) || '—'}
+        ${p.ano ? `<span style="margin-left: 4px; padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 10px; color: #cbd5e1;">${p.ano}</span>` : ''}
+      </td>
       <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || '—'}</td>
       <td class="col-objeto" title="${p.objeto}">${p.objeto || '—'}</td>
       <td><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
@@ -861,6 +882,7 @@ function preencherSelectFiltro(id, opcoes) {
   else if (id === 'filtro-localizacao') placeholder = 'Localização';
   else if (id === 'filtro-municipio') placeholder = 'Município';
   else if (id === 'filtro-objeto') placeholder = 'Objeto';
+  else if (id === 'filtro-ano') placeholder = 'Ano';
 
   sel.innerHTML = `<option value="">${placeholder}</option>` + opcoes.map(o => `<option value="${o}" ${o === atual ? 'selected' : ''}>${o}</option>`).join('');
 }
@@ -948,9 +970,16 @@ function renderFormulario() {
 
   fillSelect('form-status',      STATUS_LIST,      p.status      || '');
   fillSelect('form-localizacao', LOCALIZACAO_LIST, p.localizacao || '');
+  
+  const anos_list = [...new Set(carregarProcessos().map(x => String(x.ano || '')).filter(Boolean))].sort((a,b)=>b-a);
+  fillSelect('list-anos', anos_list, '');
+  const agrupamentos_list = [...new Set(carregarProcessos().map(x => String(x.agrupamento || '')).filter(Boolean))].sort();
+  fillSelect('list-agrupamentos', agrupamentos_list, '');
 
   if (processo) {
-    document.getElementById('form-prefixo').value    = p.prefixo      || '';
+    document.getElementById('form-ano').value         = p.ano          || '';
+    document.getElementById('form-agrupamento').value = p.agrupamento  || '';
+    document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
     document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
 
@@ -1029,6 +1058,8 @@ function renderFormulario() {
       if (txt) txt.textContent = 'OFF';
     });
     document.getElementById('form-marca').checked = false;
+    document.getElementById('form-ano').value = '';
+    document.getElementById('form-agrupamento').value = '';
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
     updateSegmentControl('categoria', '');
@@ -1147,6 +1178,8 @@ function salvarFormulario(e) {
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
     marca:       document.getElementById('form-marca').checked ? '1' : '',
+    ano:         document.getElementById('form-ano').value,
+    agrupamento: document.getElementById('form-agrupamento').value.trim(),
     categoria:   document.getElementById('form-categoria').value,
     tipo:        document.getElementById('form-tipo').value,
     CAM:         document.getElementById('form-cam')?.checked ? '1' : '',
@@ -1642,6 +1675,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filtro-objeto').addEventListener('change', e => aplicarFiltro('objeto', e.target.value));
   document.getElementById('filtro-categoria').addEventListener('change', e => aplicarFiltro('categoria', e.target.value));
   document.getElementById('filtro-tipo').addEventListener('change', e => aplicarFiltro('tipo', e.target.value));
+  const filtroAnoEl = document.getElementById('filtro-ano');
+  if (filtroAnoEl) {
+    filtroAnoEl.addEventListener('change', e => aplicarFiltro('ano', e.target.value));
+  }
+  const filtroAgrupEl = document.getElementById('filtro-agrupamento');
+  if (filtroAgrupEl) {
+    filtroAgrupEl.addEventListener('change', e => aplicarFiltro('agrupamento', e.target.value));
+  }
 
   const filtroAlertaEl = document.getElementById('filtro-alerta');
   if (filtroAlertaEl) {
@@ -1653,10 +1694,8 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroMarcaEl.addEventListener('change', e => aplicarFiltro('marca', e.target.value));
   }
 
-  document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', alerta: '', marca: '', categoria: '', tipo: '',
-    autorizacao: ''
-  };
+    document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
+    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', alerta: '', marca: '', categoria: '', tipo: '', autorizacao: '', ano: '', agrupamento: '' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
     document.getElementById('filtro-status').value = '';
@@ -1666,6 +1705,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('filtro-categoria').value = '';
     document.getElementById('filtro-tipo').value = '';
     document.getElementById('filtro-prefixo').value = '';
+    const fAno = document.getElementById('filtro-ano');
+    if (fAno) fAno.value = '';
+    const fAgr = document.getElementById('filtro-agrupamento');
+    if (fAgr) fAgr.value = '';
     const fa = document.getElementById('filtro-alerta');
     if (fa) fa.value = '';
     const fm = document.getElementById('filtro-marca');
@@ -3080,214 +3123,6 @@ window.updateSegmentControl = updateSegmentControl;
 window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
 
-function inserirDataHoje() {
-  const dateInput = document.getElementById('form-data');
-  if (dateInput) {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    dateInput.value = `${yyyy}-${mm}-${dd}`;
-  }
-}
-window.inserirDataHoje = inserirDataHoje;
-
-
-// ============================================================
-// MÓDULO: ESCOLAS (ADM ONLY)
-// ============================================================
-
-var _escolasCache = [];         // Todos os dados carregados
-var _escolasFiltradas = [];     // Dados após filtros
-var _escolasPaginaAtual = 1;
-var _escolasItensPorPagina = 50;
-
-// Inicializa a página
-function iniciarPaginaEscolas() {
-  if (_escolasCache.length > 0) {
-    _escolasAtualizarUI();
-    return;
-  }
-  buscarEscolasSheet(true);
-}
-
-// Recarrega forçando nova busca
-function recarregarEscolas() {
-  _escolasCache = [];
-  _escolasFiltradas = [];
-  buscarEscolasSheet(false);
-}
-
-// Busca dados da aba "escolas" via API Backend
-async function buscarEscolasSheet(silencioso) {
-  const emptyEl = document.getElementById('escolas-empty');
-  const tableWrap = document.getElementById('escolas-table-wrap');
-  
-  if (!silencioso) showToast("Buscando dados das escolas...", "info");
-  
-  try {
-    const res = await fetch(API_BASE + '/api/escolas', { headers: getHeaders() });
-    if (!res.ok) throw new Error('Status ' + res.status);
-    const data = await res.json();
-
-    _escolasCache = data.rows || [];
-    
-    if (!silencioso) showToast(_escolasCache.length + " escolas carregadas!", "success");
-
-    _escolasPopularFiltros();
-    _escolasFiltradas = [..._escolasCache];
-    _escolasPaginaAtual = 1;
-    _escolasAtualizarUI();
-  } catch (err) {
-    console.error('[Escolas]', err);
-    showToast("Erro ao buscar escolas: " + err.message, "error");
-    _escolasEsconderTabela();
-  }
-}
-
-// Parser CSV com suporte a campos entre aspas
-function _parseCsvEscolas(text) {
-  const rows = [];
-  const lines = text.split(/\r?\n/);
-  for (const line of lines) {
-    if (!line.trim()) continue;
-    const fields = [];
-    let cur = '', inQuote = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') {
-        if (inQuote && line[i + 1] === '"') { cur += '"'; i++; }
-        else { inQuote = !inQuote; }
-      } else if (ch === ',' && !inQuote) {
-        fields.push(cur); cur = '';
-      } else { cur += ch; }
-    }
-    fields.push(cur);
-    rows.push(fields);
-  }
-  return rows;
-}
-
-// Popula selects de filtro
-function _escolasPopularFiltros() {
-  const selMun = document.getElementById('escolas-filtro-municipio');
-  const selLoc = document.getElementById('escolas-filtro-localizacao');
-  if (!selMun || !selLoc) return;
-  const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
-  const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
-  selMun.innerHTML = '<option value="">Município</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-  selLoc.innerHTML = '<option value="">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
-}
-
-// Aplica filtros
-function filtrarEscolas() {
-  const busca = normalizar(document.getElementById('escolas-busca')?.value || '');
-  const mun   = document.getElementById('escolas-filtro-municipio')?.value || '';
-  const loc   = document.getElementById('escolas-filtro-localizacao')?.value || '';
-  _escolasFiltradas = _escolasCache.filter(e => {
-    if (mun && e.municipio !== mun) return false;
-    if (loc && e.localizacao !== loc) return false;
-    if (busca) {
-      const texto = normalizar([e.nome, e.municipio, e.codigoInep, e.super, e.bairro].join(' '));
-      if (!texto.includes(busca)) return false;
-    }
-    return true;
-  });
-  _escolasPaginaAtual = 1;
-  _escolasRenderTabela();
-  _escolasRenderPaginacao();
-}
-
-// Limpa filtros
-function limparFiltrosEscolas() {
-  ['escolas-busca', 'escolas-filtro-municipio', 'escolas-filtro-localizacao'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  _escolasFiltradas = [..._escolasCache];
-  _escolasPaginaAtual = 1;
-  _escolasRenderTabela();
-  _escolasRenderPaginacao();
-}
-
-// Atualiza toda a UI
-function _escolasAtualizarUI() {
-  const temDados  = _escolasCache.length > 0;
-  const filtrosEl = document.getElementById('escolas-filtros');
-  const tableWrap = document.getElementById('escolas-table-wrap');
-  const pagination = document.getElementById('escolas-pagination');
-  const badgeEl   = document.getElementById('escolas-badge');
-  const emptyEl   = document.getElementById('escolas-empty');
-
-  if (filtrosEl) filtrosEl.style.display  = temDados ? 'flex' : 'none';
-  if (tableWrap) tableWrap.style.display  = temDados ? '' : 'none';
-  if (pagination) pagination.style.display = temDados ? '' : 'none';
-  if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
-
-  if (!temDados) return;
-  if (badgeEl) badgeEl.textContent = '🏫 ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
-  if (_escolasFiltradas.length === 0) _escolasFiltradas = [..._escolasCache];
-  _escolasRenderTabela();
-  _escolasRenderPaginacao();
-  if (!categoria) return '';
-  const char = String(categoria).trim().toUpperCase()[0];
-  if (char === 'F') {
-    return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
-  }
-  if (char === 'C') {
-    return `<span class="badge-cat badge-cat-c" title="Categoria: Convênio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
-  }
-  if (char === 'O') {
-    return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
-  }
-  if (char === 'T') {
-    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
-  }
-  return '';
-}
-
-function getTypeBadge(tipo) {
-  if (!tipo) return '';
-  const char = String(tipo).trim().toUpperCase();
-  if (char === 'OB') {
-    return `<span class="badge-tipo badge-tipo-ob" title="Tipo: Obras" style="margin-left: 4px; padding: 2px 6px; background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OB</span>`;
-  }
-  if (char === 'MP') {
-    return `<span class="badge-tipo badge-tipo-mp" title="Tipo: Material Permanente" style="margin-left: 4px; padding: 2px 6px; background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MP</span>`;
-  }
-  if (char === 'MC') {
-    return `<span class="badge-tipo badge-tipo-mc" title="Tipo: Material de Consumo" style="margin-left: 4px; padding: 2px 6px; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MC</span>`;
-  }
-  if (char === 'SI') {
-    return `<span class="badge-tipo badge-tipo-si" title="Tipo: Sistema" style="margin-left: 4px; padding: 2px 6px; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">SI</span>`;
-  }
-  if (char === 'TR') {
-    return `<span class="badge-tipo badge-tipo-tr" title="Tipo: Treinamento" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">TR</span>`;
-  }
-  if (char === 'OUT' || char === 'OU') {
-    return `<span class="badge-tipo badge-tipo-out" title="Tipo: Outros" style="margin-left: 4px; padding: 2px 6px; background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OUT</span>`;
-  }
-  return '';
-}
-
-window.selectSegment = selectSegment;
-window.updateSegmentControl = updateSegmentControl;
-window.getCategoryBadge = getCategoryBadge;
-window.getTypeBadge = getTypeBadge;
-
-function inserirDataHoje() {
-  const dateInput = document.getElementById('form-data');
-  if (dateInput) {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    dateInput.value = `${yyyy}-${mm}-${dd}`;
-  }
-}
-window.inserirDataHoje = inserirDataHoje;
-
-
 // ============================================================
 // MÓDULO: ESCOLAS (ADM ONLY)
 // ============================================================
@@ -3425,302 +3260,14 @@ function _escolasAtualizarUI() {
   _escolasRenderTabela();
   _escolasRenderPaginacao();
 }
-
-function _escolasEsconderTabela() {
-  const tableWrap  = document.getElementById('escolas-table-wrap');
-  const pagination = document.getElementById('escolas-pagination');
-  const filtrosEl  = document.getElementById('escolas-filtros');
-  if (tableWrap) tableWrap.style.display = 'none';
-  if (pagination) pagination.style.display = 'none';
-}
-
-// Renderiza linhas da página atual
-function _escolasRenderTabela() {
-  const tbody    = document.getElementById('table-escolas');
-  const emptyEl  = document.getElementById('escolas-empty');
-  const tableWrap = document.getElementById('escolas-table-wrap');
-  if (!tbody) return;
-
-  if (_escolasFiltradas.length === 0) {
-    tbody.innerHTML = '';
-    if (emptyEl) emptyEl.style.display = 'block';
-    if (tableWrap) tableWrap.style.display = 'none';
-    return;
-  }
-  if (emptyEl) emptyEl.style.display = 'none';
-  if (tableWrap) tableWrap.style.display = '';
-
-  const start = (_escolasPaginaAtual - 1) * _escolasItensPorPagina;
-  const slice = _escolasFiltradas.slice(start, start + _escolasItensPorPagina);
-
-  tbody.innerHTML = slice.map((e, i) => {
-    const gi = start + i;
-    const locBadge = e.localizacao
-      ? '<span style="padding:2px 7px;border-radius:4px;font-size:11px;font-weight:700;background:rgba(6,182,212,0.15);color:#22d3ee;border:1px solid rgba(6,182,212,0.3);">' + e.localizacao + '</span>'
-      : '—';
-    const end = [e.endereco, e.numero].filter(Boolean).join(', ') || '—';
-    return '<tr style="cursor:pointer" onmouseover="this.style.background=\'rgba(139,92,246,0.07)\'" onmouseout="this.style.background=\'\'" onclick="abrirModalEscola(' + gi + ')">' +
-      '<td style="font-family:monospace;font-size:12px;color:#a78bfa">' + (e.codigoSuper || '—') + '</td>' +
-      '<td style="font-size:12px;color:var(--text-secondary)">' + (e.super || '—') + '</td>' +
-      '<td style="font-weight:600">' + (e.municipio || '—') + '</td>' +
-      '<td style="font-family:monospace;font-size:12px;color:var(--text-muted)">' + (e.codigoInep || '—') + '</td>' +
-      '<td style="font-weight:600;color:#f0f4ff;white-space:normal;line-height:1.4">' + (e.nome || '—') + '</td>' +
-      '<td>' + locBadge + '</td>' +
-      '<td style="font-size:12px;white-space:normal">' + end + '</td>' +
-      '<td style="font-size:12px;color:var(--text-secondary)">' + (e.complemento || '—') + '</td>' +
-      '<td style="font-size:12px">' + (e.bairro || '—') + '</td>' +
-      '<td style="font-size:12px;font-family:monospace;color:var(--text-muted)">' + (e.cep || '—') + '</td>' +
-      '<td style="font-size:12px">' + (e.telefone || '—') + '</td>' +
-      '<td style="text-align:right;font-weight:700;color:#34d399">' + (e.totalMatricula > 0 ? e.totalMatricula.toLocaleString('pt-BR') : '—') + '</td>' +
-      '<td style="text-align:right;font-weight:700;color:#60a5fa">' + (e.salas > 0 ? e.salas : '—') + '</td>' +
-      '<td style="text-align:center;" onclick="event.stopPropagation()">' +
-        '<div class="action-btn-group role-adm">' +
-          '<button class="action-btn" onclick="abrirModalEditarEscola(' + gi + ')" title="Editar escola"><span class="icon">✏️</span></button>' +
-          '<button class="action-btn action-btn-danger" onclick="excluirEscola(\'' + e.id + '\')" title="Excluir escola"><span class="icon">🗑️</span></button>' +
-        '</div>' +
-      '</td>' +
-      '</tr>';
-  }).join('');
-}
-
-// Renderiza paginação
-function _escolasRenderPaginacao() {
-  const infoEl  = document.getElementById('escolas-pg-info');
-  const ctrlEl  = document.getElementById('escolas-pg-controls');
-  const pagEl   = document.getElementById('escolas-pagination');
-  if (!infoEl || !ctrlEl) return;
-
-  const total  = _escolasFiltradas.length;
-  const totPag = Math.max(1, Math.ceil(total / _escolasItensPorPagina));
-  const start  = (_escolasPaginaAtual - 1) * _escolasItensPorPagina + 1;
-  const end    = Math.min(_escolasPaginaAtual * _escolasItensPorPagina, total);
-
-  if (pagEl) pagEl.style.display = total > 0 ? '' : 'none';
-  infoEl.textContent = total > 0
-    ? 'Mostrando ' + start + '–' + end + ' de ' + total.toLocaleString('pt-BR') + ' escolas'
-    : 'Nenhuma escola encontrada';
-
-  // Gera range de páginas compacto
-  const range = [];
-  if (totPag <= 7) {
-    for (let p = 1; p <= totPag; p++) range.push(p);
-  } else if (_escolasPaginaAtual <= 4) {
-    for (let p = 1; p <= 5; p++) range.push(p);
-    range.push('...'); range.push(totPag);
-  } else if (_escolasPaginaAtual >= totPag - 3) {
-    range.push(1); range.push('...');
-    for (let p = totPag - 4; p <= totPag; p++) range.push(p);
-  } else {
-    range.push(1); range.push('...');
-    for (let p = _escolasPaginaAtual - 1; p <= _escolasPaginaAtual + 1; p++) range.push(p);
-    range.push('...'); range.push(totPag);
-  }
-
-  let btns = '<button class="page-btn" ' + (_escolasPaginaAtual === 1 ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual - 1) + ')">‹</button>';
-  range.forEach(p => {
-    if (p === '...') btns += '<span style="padding:0 6px;color:var(--text-muted)">…</span>';
-    else btns += '<button class="page-btn ' + (p === _escolasPaginaAtual ? 'active' : '') + '" onclick="navegarEscolas(' + p + ')">' + p + '</button>';
-  });
-  btns += '<button class="page-btn" ' + (_escolasPaginaAtual === totPag ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual + 1) + ')">›</button>';
-  ctrlEl.innerHTML = btns;
-}
-
-function navegarEscolas(pag) {
-  const total = Math.max(1, Math.ceil(_escolasFiltradas.length / _escolasItensPorPagina));
-  if (pag < 1 || pag > total) return;
-  _escolasPaginaAtual = pag;
-  _escolasRenderTabela();
-  _escolasRenderPaginacao();
-  const tw = document.getElementById('escolas-table-wrap');
-  if (tw) tw.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-// Abre modal com detalhes da escola
-function abrirModalEscola(idx) {
-  const escola = _escolasFiltradas[idx];
-  if (!escola) return;
-  const content = document.getElementById('modal-escola-content');
-  if (!content) return;
-
-  const rowHtml = (label, valor, cor) => {
-    if (!valor && valor !== 0) valor = '—';
-    return '<div style="display:flex;flex-direction:column;padding:12px 0;border-bottom:1px solid var(--border)">' +
-      '<span style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">' + label + '</span>' +
-      '<span style="font-size:14px;font-weight:600;color:' + (cor || 'var(--text-primary)') + '">' + valor + '</span>' +
-      '</div>';
-  };
-
-  const locBadge = escola.localizacao
-    ? '<span style="padding:3px 10px;border-radius:6px;font-size:12px;font-weight:700;background:rgba(6,182,212,0.15);color:#22d3ee;border:1px solid rgba(6,182,212,0.3)">' + escola.localizacao + '</span>'
-    : '—';
-  const endCompleto = [escola.endereco, escola.numero, escola.complemento].filter(Boolean).join(', ') || '—';
-
-  content.innerHTML = '<div style="padding:20px 24px">' +
-    '<div style="background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.1));border:1px solid rgba(139,92,246,.3);border-radius:12px;padding:20px;margin-bottom:20px">' +
-      '<div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Nome da Escola</div>' +
-      '<div style="font-size:20px;font-weight:800;color:#f0f4ff;line-height:1.3;margin-bottom:12px">' + (escola.nome || '—') + '</div>' +
-      '<div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">' +
-        '<span style="font-size:13px;font-weight:600;color:#94a3b8">📍 ' + (escola.municipio || '—') + '</span>' +
-        (escola.codigoInep ? '<span style="font-family:monospace;font-size:12px;padding:2px 8px;background:rgba(255,255,255,.05);border-radius:4px;color:#94a3b8">INEP: ' + escola.codigoInep + '</span>' : '') +
-        locBadge +
-      '</div>' +
-    '</div>' +
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 24px">' +
-      '<div>' +
-        rowHtml('Código Super', escola.codigoSuper, '#a78bfa') +
-        rowHtml('Super', escola.super) +
-        rowHtml('Município', escola.municipio, '#f0f4ff') +
-        rowHtml('Código INEP', escola.codigoInep, '#a78bfa') +
-        rowHtml('Localização', escola.localizacao, '#22d3ee') +
-        rowHtml('Nº de Telefone', escola.telefone, '#60a5fa') +
-      '</div>' +
-      '<div>' +
-        rowHtml('Endereço / Nº', endCompleto) +
-        rowHtml('Complemento', escola.complemento) +
-        rowHtml('Bairro', escola.bairro) +
-        rowHtml('CEP', escola.cep) +
-        rowHtml('Total de Matrículas', escola.totalMatricula > 0 ? escola.totalMatricula.toLocaleString('pt-BR') : '—', '#34d399') +
-        rowHtml('Salas de Aula Utilizadas', escola.salas > 0 ? escola.salas : '—', '#60a5fa') +
-      '</div>' +
-    '</div>' +
-  '</div>';
-
-  const overlay = document.getElementById('modal-escola-overlay');
-  if (overlay) overlay.style.display = 'flex';
-}
-
-function fecharModalEscola() {
-  const overlay = document.getElementById('modal-escola-overlay');
-  if (overlay) overlay.style.display = 'none';
-}
-
-// ==== CRUD VIA API ====
-
-function abrirModalFormEscola() {
-  const overlay = document.getElementById('modal-form-escola');
-  if (!overlay) return;
-  document.getElementById('form-escola-data').reset();
-  document.getElementById('form-escola-id').value = '';
-  document.getElementById('form-escola-titulo').innerHTML = '🏫 Nova Escola';
-  document.getElementById('btn-salvar-escola').innerHTML = 'Salvar Escola';
-  overlay.style.display = 'flex';
-}
-
-function abrirModalEditarEscola(idx) {
-  const escola = _escolasFiltradas[idx];
-  if (!escola) return;
-  
-  const overlay = document.getElementById('modal-form-escola');
-  if (!overlay) return;
-
-  document.getElementById('form-escola-id').value = escola.id || '';
-  document.getElementById('form-escola-nome').value = escola.nome || '';
-  document.getElementById('form-escola-municipio').value = escola.municipio || '';
-  document.getElementById('form-escola-localizacao').value = escola.localizacao || '';
-  document.getElementById('form-escola-inep').value = escola.codigoInep || '';
-  document.getElementById('form-escola-codigoSuper').value = escola.codigoSuper || '';
-  document.getElementById('form-escola-super').value = escola.super || '';
-  document.getElementById('form-escola-endereco').value = escola.endereco || '';
-  document.getElementById('form-escola-complemento').value = escola.complemento || '';
-  document.getElementById('form-escola-bairro').value = escola.bairro || '';
-  document.getElementById('form-escola-cep').value = escola.cep || '';
-  document.getElementById('form-escola-telefone').value = escola.telefone || '';
-  document.getElementById('form-escola-matriculas').value = escola.totalMatricula > 0 ? escola.totalMatricula : '';
-  document.getElementById('form-escola-salas').value = escola.salas > 0 ? escola.salas : '';
-
-  document.getElementById('form-escola-titulo').innerHTML = '✏️ Editar Escola';
-  document.getElementById('btn-salvar-escola').innerHTML = 'Salvar Alterações';
-  
-  overlay.style.display = 'flex';
-}
-
-function fecharModalFormEscola() {
-  const overlay = document.getElementById('modal-form-escola');
-  if (overlay) overlay.style.display = 'none';
-}
-
-async function salvarEscola(e) {
-  e.preventDefault();
-  
-  const id = document.getElementById('form-escola-id').value;
-  const method = id ? 'PUT' : 'POST';
-  const url = API_BASE + (id ? `/api/escolas/${id}` : '/api/escolas');
-
-  const data = {
-    nome: document.getElementById('form-escola-nome').value,
-    municipio: document.getElementById('form-escola-municipio').value,
-    localizacao: document.getElementById('form-escola-localizacao').value,
-    codigoInep: document.getElementById('form-escola-inep').value,
-    codigoSuper: document.getElementById('form-escola-codigoSuper').value,
-    super: document.getElementById('form-escola-super').value,
-    endereco: document.getElementById('form-escola-endereco').value,
-    complemento: document.getElementById('form-escola-complemento').value,
-    bairro: document.getElementById('form-escola-bairro').value,
-    cep: document.getElementById('form-escola-cep').value,
-    telefone: document.getElementById('form-escola-telefone').value,
-    totalMatricula: document.getElementById('form-escola-matriculas').value,
-    salas: document.getElementById('form-escola-salas').value
-  };
-
-  const btn = document.getElementById('btn-salvar-escola');
-  btn.disabled = true;
-  btn.textContent = 'Salvando...';
-
-  try {
-    const res = await fetch(url, {
-      method,
-      headers: getHeaders(),
-      body: JSON.stringify(data)
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.erro || 'Erro ao salvar escola');
-    }
-
-    toast("Escola salva com sucesso!", "success");
-    fecharModalFormEscola();
-    recarregarEscolas();
-  } catch (err) {
-    console.error(err);
-    toast(err.message, "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Salvar Escola';
+function inserirDataHoje() {
+  const dateInput = document.getElementById('form-data');
+  if (dateInput) {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    dateInput.value = `${yyyy}-${mm}-${dd}`;
   }
 }
-
-async function excluirEscola(id) {
-  if (!confirm("Tem certeza que deseja excluir esta escola? A ação não pode ser desfeita.")) return;
-  
-  try {
-    const res = await fetch(`${API_BASE}/api/escolas/${id}`, {
-      method: 'DELETE',
-      headers: getHeaders()
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.erro || "Erro ao excluir escola");
-    }
-    toast("Escola excluída com sucesso!", "success");
-    recarregarEscolas();
-  } catch (err) {
-    console.error(err);
-    toast(err.message, "error");
-  }
-}
-
-// Expõe funções globais
-window.buscarEscolasSheet   = buscarEscolasSheet;
-window.recarregarEscolas    = recarregarEscolas;
-window.filtrarEscolas       = filtrarEscolas;
-window.limparFiltrosEscolas = limparFiltrosEscolas;
-window.navegarEscolas       = navegarEscolas;
-window.abrirModalEscola     = abrirModalEscola;
-window.fecharModalEscola    = fecharModalEscola;
-window.iniciarPaginaEscolas = iniciarPaginaEscolas;
-window.abrirModalFormEscola = abrirModalFormEscola;
-window.abrirModalEditarEscola = abrirModalEditarEscola;
-window.fecharModalFormEscola = fecharModalFormEscola;
-window.salvarEscola = salvarEscola;
-window.excluirEscola = excluirEscola;
+window.inserirDataHoje = inserirDataHoje;

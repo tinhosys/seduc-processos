@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1784778162022.2.0">
+  <link rel="stylesheet" href="css/style.css?v=1784847496692.2.0">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -426,7 +426,7 @@
           <div class="search-box" style="min-width:160px;max-width:200px">
             <span class="search-icon" style="font-size:12px">🏷️</span>
             <input type="text" id="filtro-prefixo" placeholder="Prefixo..." list="list-filtro-prefixos"
-              autocomplete="off" style="padding-left:30px">
+              autocomplete="off" style="padding-right:30px; padding-left:12px;">
             <datalist id="list-filtro-prefixos"></datalist>
           </div>
           <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
@@ -484,6 +484,12 @@
             <option value="sim">⭐ Apenas Marcados</option>
             <option value="nao">⚪ Não Marcados</option>
           </select>
+          <select id="filtro-ano" style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
+            <option value="">AAAA</option>
+          </select>
+          <select id="filtro-agrupamento" style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
+            <option value="">Agrupamento</option>
+          </select>
           <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">&times; Limpar</button>
         </div>
 
@@ -492,11 +498,11 @@
           <table style="table-layout: fixed; width: 100%; min-width: 1200px;">
             <thead>
               <tr>
-                <th data-sort="prefixo" style="width: 7.5%;">Prefixo</th>
+                <th data-sort="prefixo" style="width: 10%;">Prefixo</th>
                 <th data-sort="municipio" style="width: 11%;">Município</th>
                 <th data-sort="numero" style="width: 13.5%;">Nº Processo</th>
                 <th data-sort="interessado" style="width: 17.5%;">Interessado</th>
-                <th data-sort="objeto" style="width: 20%;">Objeto</th>
+                <th data-sort="objeto" style="width: 17.5%;">Objeto</th>
                 <th data-sort="status" style="width: 8%;">Status</th>
                 <th data-sort="localizacao" style="width: 6.5%;">Localização</th>
                 <th data-sort="valorOf" style="text-align:right; width: 8.5%;">Valor Oficial</th>
@@ -570,7 +576,64 @@
             <input type="hidden" id="form-categoria" name="categoria" value="">
             <input type="hidden" id="form-tipo" name="tipo" value="">
 
+            <div class="form-actions-top" style="display:flex; justify-content:flex-end; align-items:center; width:100%; margin-bottom: 12px;">
+              <div style="display:flex; gap:8px;">
+                <button type="button" class="btn btn-ghost" id="btn-cancelar-form">Cancelar</button>
+                <button type="submit" class="btn btn-success">💾 Salvar Processo</button>
+                <button type="button" class="btn btn-danger" id="btn-excluir-form" style="display:none;" onclick="confirmarExcluirForm()">🗑️ Excluir</button>
+              </div>
+            </div>
+
+            <!-- Autorizações -->
+            <div class="form-group full" style="margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border);">
+              <label style="margin-bottom: 12px; display: block; text-align: center; color: var(--text-primary); font-size: 14px;">Autorizações</label>
+              <div class="autorizacao-toggles" id="form-autorizacoes-container" style="display: flex; justify-content: space-evenly; width: 100%;">
+                <div class="toggle-item">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="form-cam">
+                    <span class="slider"></span>
+                  </label>
+                  <span class="toggle-label">CAM</span>
+                </div>
+                <div class="toggle-item">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="form-gab">
+                    <span class="slider"></span>
+                  </label>
+                  <span class="toggle-label">GABINETE SEDUC</span>
+                </div>
+                <div class="toggle-item">
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="form-cc">
+                    <span class="slider"></span>
+                  </label>
+                  <span class="toggle-label">CASA CIVIL</span>
+                </div>
+              </div>
+            </div>
+
             <div class="form-grid">
+
+              <div class="form-group">
+                <label for="form-prefixo">Prefixo</label>
+                <input type="text" id="form-prefixo" placeholder="Digite ou selecione..." maxlength="20"
+                  list="list-prefixos" autocomplete="off">
+                <datalist id="list-prefixos"></datalist>
+              </div>
+
+              <div class="form-group">
+                <label for="form-ano">Ano</label>
+                <input type="text" id="form-ano" placeholder="AAAA" maxlength="4" list="list-anos" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
+                <datalist id="list-anos"></datalist>
+              </div>
+
+              <div class="form-group" style="display:flex; flex-direction:column; justify-content: flex-end; height: 100%;">
+                <label style="visibility: hidden; margin-bottom: 6px;">Marcação</label>
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; color:var(--text-primary); user-select:none; margin:0; padding: 11px 0;">
+                  <input type="checkbox" id="form-marca" style="width:18px; height:18px; cursor:pointer; accent-color:#3b82f6;">
+                  <span>📌 Marcar Processo (Chamar Atenção)</span>
+                </label>
+              </div>
 
               <div class="form-group">
                 <label for="form-municipio">Município *</label>
@@ -592,18 +655,9 @@
               </div>
 
               <div class="form-group">
-                <label for="form-prefixo">Prefixo</label>
-                <input type="text" id="form-prefixo" placeholder="Digite ou selecione..." maxlength="20"
-                  list="list-prefixos" autocomplete="off">
-                <datalist id="list-prefixos"></datalist>
-              </div>
-
-              <div class="form-group" style="display:flex; flex-direction:column; justify-content: flex-end; height: 100%;">
-                <label style="visibility: hidden; margin-bottom: 6px;">Marcação</label>
-                <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; color:var(--text-primary); user-select:none; margin:0; padding: 11px 0;">
-                  <input type="checkbox" id="form-marca" style="width:18px; height:18px; cursor:pointer; accent-color:#3b82f6;">
-                  <span>📌 Marcar Processo (Chamar Atenção)</span>
-                </label>
+                <label for="form-agrupamento">Agrupamento</label>
+                <input type="text" id="form-agrupamento" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
+                <datalist id="list-agrupamentos"></datalist>
               </div>
 
               <div class="form-group" id="legend-ultima-edicao" style="display:none;">
@@ -647,33 +701,7 @@
                 <select id="form-localizacao"></select>
               </div>
 
-              <!-- Autorizações -->
-              <div class="form-group full">
-                <label style="margin-bottom: 0;">Autorizações</label>
-                <div class="autorizacao-toggles" id="form-autorizacoes-container">
-                  <div class="toggle-item">
-                    <label class="toggle-switch">
-                      <input type="checkbox" id="form-cam">
-                      <span class="slider"></span>
-                    </label>
-                    <span class="toggle-label">CAM</span>
-                  </div>
-                  <div class="toggle-item">
-                    <label class="toggle-switch">
-                      <input type="checkbox" id="form-gab">
-                      <span class="slider"></span>
-                    </label>
-                    <span class="toggle-label">GABINETE SEDUC</span>
-                  </div>
-                  <div class="toggle-item">
-                    <label class="toggle-switch">
-                      <input type="checkbox" id="form-cc">
-                      <span class="slider"></span>
-                    </label>
-                    <span class="toggle-label">CASA CIVIL</span>
-                  </div>
-                </div>
-              </div>
+
 
               <div class="form-group">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -742,14 +770,6 @@
                 </div>
               </div>
 
-            </div>
-
-            <div class="form-actions" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-              <div style="display:flex; gap:8px;">
-                <button type="button" class="btn btn-ghost" id="btn-cancelar-form">Cancelar</button>
-                <button type="submit" class="btn btn-success">💾 Salvar Processo</button>
-              </div>
-              <button type="button" class="btn btn-danger" id="btn-excluir-form" style="display:none;" onclick="confirmarExcluirForm()">🗑️ Excluir Processo</button>
             </div>
 
           </form>
@@ -1140,7 +1160,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=2.2.1"></script>
-  <script src="js/app.js?v=2.2.6"></script>
+  <script src="js/app.js?v=1784862549233.2.6"></script>
   <script src="js/auth-sap.js?v=2.2.1"></script>
   <script src="js/escolas.js?v=3.0.1"></script>
 
