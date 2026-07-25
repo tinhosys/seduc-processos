@@ -1,3 +1,46 @@
+
+function alternarGuiaFormulario(guia) {
+  const btnObjeto = document.getElementById('btn-guia-objeto');
+  const btnObjetivo = document.getElementById('btn-guia-objetivo');
+  const tabObjeto = document.getElementById('tab-content-objeto');
+  const tabObjetivo = document.getElementById('tab-content-objetivo');
+
+  if (!tabObjeto || !tabObjetivo) return;
+
+  if (guia === 'objetivo') {
+    tabObjeto.style.display = 'none';
+    tabObjetivo.style.display = 'block';
+    if (btnObjeto) {
+      btnObjeto.style.background = 'none';
+      btnObjeto.style.color = 'var(--text-secondary)';
+      btnObjeto.style.border = '1px solid transparent';
+      btnObjeto.style.boxShadow = 'none';
+    }
+    if (btnObjetivo) {
+      btnObjetivo.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+      btnObjetivo.style.color = '#ffffff';
+      btnObjetivo.style.border = '1px solid #34d399';
+      btnObjetivo.style.boxShadow = '0 3px 12px rgba(16,185,129,0.3)';
+    }
+  } else {
+    tabObjeto.style.display = 'block';
+    tabObjetivo.style.display = 'none';
+    if (btnObjeto) {
+      btnObjeto.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+      btnObjeto.style.color = '#ffffff';
+      btnObjeto.style.border = '1px solid #34d399';
+      btnObjeto.style.boxShadow = '0 3px 12px rgba(16,185,129,0.3)';
+    }
+    if (btnObjetivo) {
+      btnObjetivo.style.background = 'none';
+      btnObjetivo.style.color = 'var(--text-secondary)';
+      btnObjetivo.style.border = '1px solid transparent';
+      btnObjetivo.style.boxShadow = 'none';
+    }
+  }
+}
+window.alternarGuiaFormulario = alternarGuiaFormulario;
+
 // ============================================================
 // SEDUC — App Principal (Router + UI)
 // ============================================================
@@ -1057,6 +1100,19 @@ function renderFormulario() {
     updateSegmentControl('categoria', p.categoria || '');
     updateSegmentControl('tipo', p.tipo || '');
     contatosTemporarios = p.contatos ? JSON.parse(JSON.stringify(p.contatos)) : [];
+
+    const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+    setVal('form-qtdeSala', p.qtdeSala);
+    setVal('form-tipoSala', p.tipoSala);
+    setVal('form-auditorio', p.auditorio);
+    setVal('form-tipoAuditorio', p.tipoAuditorio);
+    setVal('form-quadra', p.quadra);
+    setVal('form-patio', p.patio);
+    setVal('form-refeitorio', p.refeitorio);
+    setVal('form-banheiros', p.banheiros);
+    setVal('form-demaisObservacoes', p.demaisObservacoes);
+    if (typeof alternarGuiaFormulario === 'function') alternarGuiaFormulario('objeto');
+
     renderizarContatosForm();
   } else {
     document.getElementById('form-processo').reset();
@@ -1186,6 +1242,16 @@ function salvarFormulario(e) {
     data:        document.getElementById('form-data').value,
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
+
+    qtdeSala:          document.getElementById('form-qtdeSala')?.value.trim() || '',
+    tipoSala:          document.getElementById('form-tipoSala')?.value.trim() || '',
+    auditorio:         document.getElementById('form-auditorio')?.value.trim() || '',
+    tipoAuditorio:     document.getElementById('form-tipoAuditorio')?.value.trim() || '',
+    quadra:            document.getElementById('form-quadra')?.value.trim() || '',
+    patio:             document.getElementById('form-patio')?.value.trim() || '',
+    refeitorio:        document.getElementById('form-refeitorio')?.value.trim() || '',
+    banheiros:         document.getElementById('form-banheiros')?.value.trim() || '',
+    demaisObservacoes: document.getElementById('form-demaisObservacoes')?.value.trim() || '',
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),

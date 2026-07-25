@@ -219,7 +219,7 @@ function _escolasRenderTabela() {
     const mat  = e.totalMatricula > 0 ? Number(e.totalMatricula).toLocaleString('pt-BR') : '—';
     const sal  = e.salas > 0 ? e.salas : '—';
 
-    return '<tr style="cursor:pointer;" onclick="abrirModalEscola(' + gi + ')"' +
+    return '<tr style="cursor:pointer;" onclick="abrirModalEscola(' + gi + ')" ondblclick="abrirModalEditarEscola(' + gi + ')" title="Clique para ver detalhes | Duplo clique para editar"' +
       ' onmouseover="this.style.background=\'rgba(139,92,246,0.07)\'"' +
       ' onmouseout="this.style.background=\'\'">' +
       '<td style="font-family:monospace;font-size:12px;color:#a78bfa;font-weight:600">' + (e.codigoSuper || '—') + '</td>' +
