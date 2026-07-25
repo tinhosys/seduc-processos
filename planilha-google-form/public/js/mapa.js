@@ -511,7 +511,7 @@ function _mapaRenderizarPinos() {
           <a href="${gmapsUrl}" target="_blank" rel="noopener" style="flex:1; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none; padding: 8px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; box-shadow: 0 3px 8px rgba(16,185,129,0.3);">
             📍 Google Maps
           </a>
-          <button onclick="if(typeof abrirFormEscolaById==='function'){ abrirFormEscolaById('${escola.id}'); } else if(typeof abrirModalEditarEscolaById==='function'){ abrirModalEditarEscolaById('${escola.id}'); }" style="flex:1; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #8b5cf6, #6366f1); color: white; border: none; padding: 8px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 8px rgba(139,92,246,0.3);">
+          <button type="button" class="btn-editar-mapa-escola" style="flex:1; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #8b5cf6, #6366f1); color: white; border: none; padding: 8px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 8px rgba(139,92,246,0.3);">
             ✏️ Editar Dados
           </button>
         </div>
@@ -519,6 +519,23 @@ function _mapaRenderizarPinos() {
     `;
 
     const marker = L.marker([lat, lng], { title: escola.nome || 'Escola' }).bindPopup(popupHtml);
+    const targetId = escola.id || escola.codigoInep || escola.nome || '';
+    marker.on('popupopen', (e) => {
+      setTimeout(() => {
+        const popupEl = e.popup.getElement();
+        if (popupEl) {
+          const btn = popupEl.querySelector('.btn-editar-mapa-escola');
+          if (btn) {
+            btn.onclick = (evt) => {
+              if (evt) evt.preventDefault();
+              if (typeof window.abrirFormEscolaByInepOrId === 'function') {
+                window.abrirFormEscolaByInepOrId(targetId);
+              }
+            };
+          }
+        }
+      }, 50);
+    });
     _mapaMarkersGroup.addLayer(marker);
   });
 }

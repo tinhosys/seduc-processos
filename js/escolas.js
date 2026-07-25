@@ -698,3 +698,42 @@ window.abrirProcessoFormEscola = abrirProcessoFormEscola;
 window.excluirEscola             = excluirEscola;
 
 window.abrirModalEditarEscolaById = abrirFormEscolaById;
+
+
+function abrirFormEscolaByInepOrId(identifier) {
+  if (!identifier) return;
+  const targetStr = String(identifier).trim().toLowerCase();
+  
+  const pool = [
+    ...(Array.isArray(_escolasCache) ? _escolasCache : []),
+    ...(typeof _mapaCacheEscolas !== 'undefined' && Array.isArray(_mapaCacheEscolas) ? _mapaCacheEscolas : []),
+    ...(typeof _mapaEscolasFiltradas !== 'undefined' && Array.isArray(_mapaEscolasFiltradas) ? _mapaEscolasFiltradas : [])
+  ];
+
+  let escola = pool.find(e => e && (
+    String(e.id || '').trim().toLowerCase() === targetStr ||
+    String(e.codigoInep || '').trim().toLowerCase() === targetStr
+  ));
+
+  if (!escola) {
+    escola = pool.find(e => e && e.nome && e.nome.toLowerCase().trim() === targetStr);
+  }
+
+  if (!escola) {
+    escola = pool.find(e => e && e.nome && e.nome.toLowerCase().includes(targetStr));
+  }
+
+  if (!escola) {
+    if (typeof toast === 'function') toast('Escola não encontrada para edição', 'error');
+    return;
+  }
+
+  // Garantir que _escolasCache contenha os dados se estava vazio
+  if ((!_escolasCache || _escolasCache.length === 0) && pool.length > 0) {
+    _escolasCache = [...pool];
+  }
+
+  _preencherFormEscolaPage(escola);
+}
+window.abrirFormEscolaByInepOrId = abrirFormEscolaByInepOrId;
+window.abrirModalEditarEscolaById = abrirFormEscolaByInepOrId;
