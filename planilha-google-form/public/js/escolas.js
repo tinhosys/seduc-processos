@@ -237,8 +237,9 @@ function _escolasRenderTabela() {
       '<td style="text-align:right;font-weight:700;color:#60a5fa">' + sal + '</td>' +
       '<td style="text-align:center;" onclick="event.stopPropagation()">' +
         '<div style="display:flex;gap:4px;justify-content:center;">' +
-          '<button onclick="abrirModalEditarEscola(' + gi + ')" title="Editar Escola" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(99,102,241,0.2));border:1px solid rgba(139,92,246,0.4);border-radius:6px;color:#a78bfa;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:4px;">✏️ Editar</button>' +
-        '</div>' +
+  '<button onclick="abrirProcessoFormEscola(' + gi + ')" title="Editar/Criar Processo na Planilha GDSM" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(5,150,105,0.2));border:1px solid rgba(16,185,129,0.4);border-radius:6px;color:#34d399;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">✏️ Editar</button>' +
+  '<button onclick="abrirModalEditarEscola(' + gi + ')" title="Editar Dados da Escola" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);padding:6px 8px;cursor:pointer;font-size:12px;">🏫 Dados</button>' +
+'</div>' +
       '</td>' +
       '</tr>';
   }).join('');
@@ -294,6 +295,49 @@ function navegarEscolas(pag) {
   const tw = document.getElementById('escolas-table-wrap');
   if (tw) tw.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+
+// ---- ABRIR FORMULÁRIO DE PROCESSO (PLANILHA DE CONTROLE GDSM) ----
+function abrirProcessoFormEscola(idx) {
+  const escola = _escolasFiltradas[idx];
+  if (!escola) return;
+
+  const todosProcessos = (typeof carregarProcessos === 'function') ? carregarProcessos() : [];
+  const nomeNorm = (escola.nome || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  const inep = (escola.codigoInep || '').toString().trim();
+
+  // Buscar processo existente correspondente à escola (por nome ou INEP no campo interessado/obs)
+  let pEncontrado = todosProcessos.find(p => {
+    const inter = (p.interessado || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const obs = ((p.obs || '') + ' ' + (p.anotacao || '')).toLowerCase();
+    if (inep && inep.length >= 5 && obs.includes(inep)) return true;
+    if (nomeNorm && (inter.includes(nomeNorm) || nomeNorm.includes(inter))) return true;
+    return false;
+  });
+
+  if (pEncontrado && typeof editarProcesso === 'function') {
+    editarProcesso(pEncontrado.id);
+    if (typeof toast === 'function') toast('Processo carregado para a escola: ' + (escola.nome || ''), 'success');
+  } else {
+    // Se não houver processo existente, abre o formulário de novo processo pré-preenchido
+    if (typeof novoProcesso === 'function') {
+      novoProcesso();
+    } else if (typeof navegar === 'function') {
+      if (typeof state !== 'undefined') state.editandoId = null;
+      navegar('novo');
+    }
+    setTimeout(() => {
+      const inpInter = document.getElementById('form-interessado');
+      const inpMun   = document.getElementById('form-municipio');
+      const inpAno   = document.getElementById('form-ano');
+      if (inpInter) inpInter.value = escola.nome || '';
+      if (inpMun)   inpMun.value   = escola.municipio || '';
+      if (inpAno && !inpAno.value) inpAno.value = new Date().getFullYear();
+      if (typeof toast === 'function') toast('Novo processo iniciado para: ' + (escola.nome || ''), 'info');
+    }, 100);
+  }
+}
+
 
 // ---- MODAL DETALHES ----
 function abrirModalEscola(idx) {
@@ -353,7 +397,8 @@ function abrirModalEscola(idx) {
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px">' +
         '<a href="' + gmapsUrl + '" target="_blank" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(16,185,129,0.3)">📍 Ver no Google Maps</a>' +
         '<div style="display:flex;gap:10px">' +
-          '<button onclick="fecharModalEscola();abrirModalEditarEscolaById(\'' + (escola.id || '') + '\')" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;color:#fff;padding:8px 18px;border-radius:8px;font-weight:700;cursor:pointer;">✏️ Editar</button>' +
+          '<button onclick="fecharModalEscola();abrirProcessoFormEscola(' + _escolasFiltradas.indexOf(escola) + ')" style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;padding:8px 18px;border-radius:8px;font-weight:700;cursor:pointer;">✏️ Editar Processo (GDSM)</button>' +
+  '<button onclick="fecharModalEscola();abrirModalEditarEscolaById(\'' + (escola.id || '') + '\')" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-secondary);padding:8px 18px;border-radius:8px;cursor:pointer;">🏫 Dados da Escola</button>' +
           '<button onclick="fecharModalEscola()" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-secondary);padding:8px 18px;border-radius:8px;cursor:pointer;">Fechar</button>' +
         '</div>' +
       '</div>' +
@@ -522,4 +567,5 @@ window.abrirModalEditarEscola    = abrirModalEditarEscola;
 window.abrirModalEditarEscolaById = abrirModalEditarEscolaById;
 window.fecharModalFormEscola     = fecharModalFormEscola;
 window.salvarEscola              = salvarEscola;
+window.abrirProcessoFormEscola = abrirProcessoFormEscola;
 window.excluirEscola             = excluirEscola;
