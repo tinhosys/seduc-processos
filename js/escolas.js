@@ -236,11 +236,10 @@ function _escolasRenderTabela() {
       '<td style="text-align:right;font-weight:700;color:#34d399">' + mat + '</td>' +
       '<td style="text-align:right;font-weight:700;color:#60a5fa">' + sal + '</td>' +
       '<td style="text-align:center;" onclick="event.stopPropagation()">' +
-        '<div style="display:flex;gap:4px;justify-content:center;">' +
-  '<button onclick="abrirProcessoFormEscola(' + gi + ')" title="Editar/Criar Processo na Planilha GDSM" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(5,150,105,0.2));border:1px solid rgba(16,185,129,0.4);border-radius:6px;color:#34d399;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;">✏️ Editar</button>' +
-  '<button onclick="abrirModalEditarEscola(' + gi + ')" title="Editar Dados da Escola" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:6px;color:var(--text-secondary);padding:6px 8px;cursor:pointer;font-size:12px;">🏫 Dados</button>' +
-'</div>' +
-      '</td>' +
+  '<div style="display:flex;gap:6px;justify-content:center;">' +
+    '<button onclick="abrirModalEditarEscola(' + gi + ')" title="Editar Dados da Escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;border-radius:6px;color:#ffffff;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(139,92,246,0.3);">✏️ Editar</button>' +
+  '</div>' +
+'</td>' +
       '</tr>';
   }).join('');
 }
