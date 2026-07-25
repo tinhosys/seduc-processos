@@ -696,3 +696,5 @@ window.fecharModalFormEscola     = fecharModalFormEscola;
 window.salvarEscola              = salvarEscola;
 window.abrirProcessoFormEscola = abrirProcessoFormEscola;
 window.excluirEscola             = excluirEscola;
+
+window.abrirModalEditarEscolaById = abrirFormEscolaById;
