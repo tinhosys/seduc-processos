@@ -827,6 +827,9 @@ function renderProcessos() {
   const el = document.getElementById('valor-filtrado');
   if (el) el.textContent = `Total: ${formatCurrency(valorTotal)}`;
 
+  const elQtd = document.getElementById('qtd-registros-filtrados');
+  if (elQtd) elQtd.textContent = `${total.toLocaleString('pt-BR')} ${total === 1 ? 'registro' : 'registros'}`;
+
   // Botão exportar
   const btnExportar = document.getElementById('btn-exportar');
   if (btnExportar) {

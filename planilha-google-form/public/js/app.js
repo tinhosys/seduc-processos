@@ -82,6 +82,7 @@ function navegar(pagina) {
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
     escolas: '🏫 Escolas',
+    'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -95,6 +96,11 @@ function navegar(pagina) {
   }
   if (pagina === 'repetidos') renderProcessosRepetidos();
   if (pagina === 'escolas') iniciarPaginaEscolas();
+  if (pagina === 'mapa-escolas') {
+    if (typeof iniciarMapaEscolas === 'function') {
+      setTimeout(() => iniciarMapaEscolas(), 50);
+    }
+  }
 }
 
 // ---- TOAST ----
@@ -859,6 +865,9 @@ function renderProcessos() {
   const valorTotal = filtrados.reduce((a, p) => a + (p.valorOf || 0), 0);
   const el = document.getElementById('valor-filtrado');
   if (el) el.textContent = `Total: ${formatCurrency(valorTotal)}`;
+
+  const elQtd = document.getElementById('qtd-registros-filtrados');
+  if (elQtd) elQtd.textContent = `${total.toLocaleString('pt-BR')} ${total === 1 ? 'registro' : 'registros'}`;
 
   // Botão exportar
   const btnExportar = document.getElementById('btn-exportar');

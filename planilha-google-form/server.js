@@ -834,7 +834,8 @@ app.delete("/api/acessos/:row", adminOnly, async (req, res) => {
 const defaultEscolasHeaders = [
   "Código Super", "Super", "MUNICIPIO", "CÓDIGO INEP", "NOME DA ESCOLA",
   "LOCALIZAÇÃO", "Endereço - Nº", "Complemento", "BAIRRO", "CEP",
-  "Nº DE TELEFONE", "TOTAL MATRÍCULA", "SALAS DE AULA ULTILIZADAS NA ESCOLA"
+  "Nº DE TELEFONE", "TOTAL MATRÍCULA", "SALAS DE AULA ULTILIZADAS NA ESCOLA",
+  "Diretor", "Contato do Diretor"
 ];
 
 function normalizarStr(str) {
@@ -858,6 +859,8 @@ function mapDataToEscolaRow(data, headers, originalRow = [], user = null) {
     else if (hLow.includes('complement')) val = data.complemento;
     else if (hLow.includes('bairro')) val = data.bairro;
     else if (hLow === 'cep') val = data.cep;
+    else if (hLow.includes('contato') || hLow.includes('celular')) val = data.contatoDiretor;
+    else if (hLow.includes('diretor') || hLow.includes('gestor')) val = data.diretor;
     else if (hLow.includes('telefone') || hLow.includes('fone')) val = data.telefone;
     else if (hLow.includes('total matricula') || hLow.includes('matricula')) val = data.totalMatricula;
     else if (hLow.includes('sala')) val = data.salas;
@@ -869,8 +872,19 @@ function mapDataToEscolaRow(data, headers, originalRow = [], user = null) {
 
 function mapRowToEscolaObj(headers, row) {
   const get = (termos) => {
+    // 1. Tenta correspondência EXATA de header primeiro
     for (const t of termos) {
-      const idx = headers.findIndex(h => normalizarStr(h).includes(normalizarStr(t)));
+      const idx = headers.findIndex(h => normalizarStr(h) === normalizarStr(t));
+      if (idx >= 0) return String(row[idx] || '').trim();
+    }
+    // 2. Tenta correspondência parcial (includes), ignorando 'codigo' quando busca por 'super'
+    for (const t of termos) {
+      const idx = headers.findIndex(h => {
+        const normH = normalizarStr(h);
+        const normT = normalizarStr(t);
+        if (normT === 'super' && normH.includes('codigo')) return false;
+        return normH.includes(normT);
+      });
       if (idx >= 0) return String(row[idx] || '').trim();
     }
     return '';
@@ -881,23 +895,25 @@ function mapRowToEscolaObj(headers, row) {
     return isNaN(n) ? 0 : n;
   };
   return {
-    codigoSuper: get(['codigo super', 'cod super']),
-    super: get(['super']),
-    municipio: get(['municipio']),
-    codigoInep: get(['inep']),
+    codigoSuper: get(['codigo super', 'cod super', 'cd super']),
+    super: get(['super', 'superintendencia', 'superintendência', 'nome super', 'nome da super', 'cre']),
+    municipio: get(['municipio', 'município']),
+    codigoInep: get(['inep', 'codigo inep', 'código inep']),
     nome: get(['nome da escola', 'escola']),
-    localizacao: get(['localiza']),
-    endereco: get(['endere', 'logradouro', 'nº']),
-    complemento: get(['complement']),
+    localizacao: get(['localização', 'localizacao', 'localiza']),
+    endereco: get(['endereço - nº', 'endereço', 'endereco', 'logradouro', 'nº']),
+    complemento: get(['complemento', 'complement']),
     bairro: get(['bairro']),
     cep: get(['cep']),
-    telefone: get(['telefone', 'fone']),
-    totalMatricula: getNum(['total matricula', 'matricula']),
-    salas: getNum(['sala'])
+    telefone: get(['nº de telefone', 'telefone', 'fone']),
+    totalMatricula: getNum(['total matrícula', 'total matricula', 'matricula']),
+    salas: getNum(['salas de aula ultilizadas na escola', 'salas de aula', 'sala']),
+    diretor: get(['diretor', 'gestor', 'nome diretor', 'nome do diretor']),
+    contatoDiretor: get(['contato diretor', 'telefone diretor', 'celular diretor', 'contato'])
   };
 }
 
-app.get("/api/escolas", authMiddleware, async (req, res) => {
+app.get("/api/escolas", async (req, res) => {
   try {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,

@@ -63,42 +63,91 @@ async function carregarEscolasAPI(silencioso) {
 function _escolasPopularFiltros() {
   const selMun = document.getElementById('escolas-filtro-municipio');
   const selLoc = document.getElementById('escolas-filtro-localizacao');
-  if (!selMun || !selLoc) return;
-  const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
-  const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
-  selMun.innerHTML = '<option value="">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-  selLoc.innerHTML = '<option value="">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
+  const selSup = document.getElementById('escolas-filtro-super');
+  const selSupTopo = document.getElementById('escolas-filtro-super-topo');
+
+  if (selMun && selLoc) {
+    const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
+    const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
+    selMun.innerHTML = '<option value="">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+    selLoc.innerHTML = '<option value="">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
+  }
+
+  const superSet = new Set();
+  _escolasCache.forEach(e => {
+    const val = (e.super || e.codigoSuper || '').toString().trim();
+    if (val) superSet.add(val);
+  });
+  const supers = [...superSet].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  const superHtml = '<option value="">Todas as SUPER\'s</option>' + supers.map(s => {
+    const label = s.toUpperCase().startsWith('SUPER') ? s : 'SUPER ' + s;
+    return '<option value="' + s + '">' + label + '</option>';
+  }).join('');
+
+  if (selSup) selSup.innerHTML = superHtml;
+  if (selSupTopo) selSupTopo.innerHTML = superHtml;
+}
+
+function sincronizarFiltroSuper(val) {
+  const selTopo = document.getElementById('escolas-filtro-super-topo');
+  const selFiltro = document.getElementById('escolas-filtro-super');
+  if (selTopo && selTopo.value !== val) selTopo.value = val;
+  if (selFiltro && selFiltro.value !== val) selFiltro.value = val;
+  filtrarEscolas();
+}
+
+function _escolasAtualizarBadges() {
+  const badgeEscolas = document.getElementById('escolas-badge');
+  const badgeAlunos  = document.getElementById('escolas-alunos-badge');
+  const badgeSalas   = document.getElementById('escolas-salas-badge');
+
+  const totalEscolas = _escolasFiltradas.length;
+  const totalAlunos  = _escolasFiltradas.reduce((acc, e) => acc + (Number(e.totalMatricula) || 0), 0);
+  const totalSalas   = _escolasFiltradas.reduce((acc, e) => acc + (Number(e.salas) || 0), 0);
+
+  if (badgeEscolas) badgeEscolas.textContent = '🏫 ' + totalEscolas.toLocaleString('pt-BR') + ' Escolas';
+  if (badgeAlunos)  badgeAlunos.textContent  = '🎓 ' + totalAlunos.toLocaleString('pt-BR') + ' Alunos';
+  if (badgeSalas)   badgeSalas.textContent   = '🚪 ' + totalSalas.toLocaleString('pt-BR') + ' Salas';
 }
 
 function filtrarEscolas() {
   const buscaEl = document.getElementById('escolas-busca');
   const munEl   = document.getElementById('escolas-filtro-municipio');
   const locEl   = document.getElementById('escolas-filtro-localizacao');
+  const supEl   = document.getElementById('escolas-filtro-super-topo') || document.getElementById('escolas-filtro-super');
+
   const busca = (buscaEl ? buscaEl.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') : '');
   const mun   = munEl ? munEl.value : '';
   const loc   = locEl ? locEl.value : '';
+  const sup   = supEl ? supEl.value : '';
 
   _escolasFiltradas = _escolasCache.filter(e => {
     if (mun && e.municipio !== mun) return false;
     if (loc && e.localizacao !== loc) return false;
+    if (sup) {
+      const eSup = (e.super || e.codigoSuper || '').toString().trim();
+      if (eSup !== sup) return false;
+    }
     if (busca) {
-      const texto = [e.nome, e.municipio, e.codigoInep, e.bairro, e.super].join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+      const texto = [e.nome, e.municipio, e.codigoInep, e.bairro, e.super, e.codigoSuper].join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
       if (!texto.includes(busca)) return false;
     }
     return true;
   });
   _escolasPaginaAtual = 1;
+  _escolasAtualizarBadges();
   _escolasRenderTabela();
   _escolasRenderPaginacao();
 }
 
 function limparFiltrosEscolas() {
-  ['escolas-busca','escolas-filtro-municipio','escolas-filtro-localizacao'].forEach(id => {
+  ['escolas-busca','escolas-filtro-municipio','escolas-filtro-localizacao','escolas-filtro-super','escolas-filtro-super-topo'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   _escolasFiltradas = [..._escolasCache];
   _escolasPaginaAtual = 1;
+  _escolasAtualizarBadges();
   _escolasRenderTabela();
   _escolasRenderPaginacao();
 }
@@ -109,7 +158,6 @@ function _escolasAtualizarUI() {
   const filtrosEl  = document.getElementById('escolas-filtros');
   const tableWrap  = document.getElementById('escolas-table-wrap');
   const pagination = document.getElementById('escolas-pagination');
-  const badgeEl    = document.getElementById('escolas-badge');
   const emptyEl    = document.getElementById('escolas-empty');
 
   if (filtrosEl) filtrosEl.style.display  = temDados ? 'flex' : 'none';
@@ -118,11 +166,16 @@ function _escolasAtualizarUI() {
   if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
 
   if (temDados) {
-    if (badgeEl) badgeEl.textContent = '🏫 ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
+    _escolasAtualizarBadges();
     _escolasRenderTabela();
     _escolasRenderPaginacao();
   } else {
-    if (badgeEl) badgeEl.textContent = '🏫 Escolas';
+    const badgeEscolas = document.getElementById('escolas-badge');
+    const badgeAlunos  = document.getElementById('escolas-alunos-badge');
+    const badgeSalas   = document.getElementById('escolas-salas-badge');
+    if (badgeEscolas) badgeEscolas.textContent = '🏫 Escolas';
+    if (badgeAlunos)  badgeAlunos.textContent  = '🎓 Alunos';
+    if (badgeSalas)   badgeSalas.textContent   = '🚪 Salas';
   }
 }
 
@@ -184,8 +237,7 @@ function _escolasRenderTabela() {
       '<td style="text-align:right;font-weight:700;color:#60a5fa">' + sal + '</td>' +
       '<td style="text-align:center;" onclick="event.stopPropagation()">' +
         '<div style="display:flex;gap:4px;justify-content:center;">' +
-          '<button onclick="abrirModalEditarEscola(' + gi + ')" title="Editar" style="background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);border-radius:6px;color:#a78bfa;padding:4px 8px;cursor:pointer;font-size:13px;">✏️</button>' +
-          '<button onclick="excluirEscola(\'' + e.id + '\')" title="Excluir" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#f87171;padding:4px 8px;cursor:pointer;font-size:13px;">🗑️</button>' +
+          '<button onclick="abrirModalEditarEscola(' + gi + ')" title="Editar Escola" style="background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(99,102,241,0.2));border:1px solid rgba(139,92,246,0.4);border-radius:6px;color:#a78bfa;padding:6px 12px;cursor:pointer;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:4px;">✏️ Editar</button>' +
         '</div>' +
       '</td>' +
       '</tr>';
@@ -258,10 +310,19 @@ function abrirModalEscola(idx) {
       '</div>';
   };
 
+  const gmapsQuery = encodeURIComponent(`${escola.nome || ''} ${escola.municipio || ''} Rondônia`);
+  const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${gmapsQuery}`;
+  const superLabel = escola.super ? (escola.super.toUpperCase().startsWith('SUPER') ? escola.super : 'SUPER ' + escola.super) : 'Escola';
+
+  const contatoVal = escola.contatoDiretor || escola.telefone;
+  const numDigits = String(contatoVal || '').replace(/\D/g, '');
+  const waUrl = (numDigits.length >= 8) ? ('https://wa.me/' + (numDigits.startsWith('55') ? numDigits : '55' + numDigits)) : '';
+  const waBtn = waUrl ? (' <a href="' + waUrl + '" target="whatsapp" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#ffffff;text-decoration:none;padding:2px 8px;border-radius:12px;font-weight:700;font-size:11px;margin-left:6px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="white"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.2.321-1.155 4.218 4.319-1.133.379.261z"/></svg>WhatsApp</a>') : '';
+
   content.innerHTML =
     '<div style="padding:24px">' +
       '<div style="background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(99,102,241,.1));border:1px solid rgba(139,92,246,.35);border-radius:12px;padding:20px;margin-bottom:20px">' +
-        '<div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Nome da Escola</div>' +
+        '<div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">' + superLabel + '</div>' +
         '<div style="font-size:20px;font-weight:800;color:#f0f4ff;line-height:1.3;margin-bottom:10px">' + (escola.nome || '—') + '</div>' +
         '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
           '<span style="font-size:13px;color:#94a3b8">📍 ' + (escola.municipio || '—') + '</span>' +
@@ -276,20 +337,25 @@ function abrirModalEscola(idx) {
           field('Município', escola.municipio, '#f0f4ff') +
           field('Código INEP', escola.codigoInep, '#60a5fa') +
           field('Localização', escola.localizacao, '#22d3ee') +
-          field('Telefone', escola.telefone, '#60a5fa') +
+          field('Nome do Diretor', escola.diretor || 'Não informado', '#38bdf8') +
+          field('Contato do Diretor', (escola.contatoDiretor || escola.telefone || 'Não informado') + waBtn, '#38bdf8') +
         '</div>' +
         '<div>' +
           field('Endereço / Nº', escola.endereco) +
           field('Complemento', escola.complemento) +
           field('Bairro', escola.bairro) +
           field('CEP', escola.cep) +
+          field('Telefone da Escola', escola.telefone, '#60a5fa') +
           field('Total de Matrículas', escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '—', '#34d399') +
           field('Salas de Aula Utilizadas', escola.salas > 0 ? escola.salas : '—', '#60a5fa') +
         '</div>' +
       '</div>' +
-      '<div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">' +
-        '<button onclick="fecharModalEscola();abrirModalEditarEscolaById(\'' + (escola.id || '') + '\')" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;color:#fff;padding:8px 18px;border-radius:8px;font-weight:700;cursor:pointer;">✏️ Editar</button>' +
-        '<button onclick="fecharModalEscola()" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-secondary);padding:8px 18px;border-radius:8px;cursor:pointer;">Fechar</button>' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px">' +
+        '<a href="' + gmapsUrl + '" target="_blank" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(16,185,129,0.3)">📍 Ver no Google Maps</a>' +
+        '<div style="display:flex;gap:10px">' +
+          '<button onclick="fecharModalEscola();abrirModalEditarEscolaById(\'' + (escola.id || '') + '\')" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;color:#fff;padding:8px 18px;border-radius:8px;font-weight:700;cursor:pointer;">✏️ Editar</button>' +
+          '<button onclick="fecharModalEscola()" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-secondary);padding:8px 18px;border-radius:8px;cursor:pointer;">Fechar</button>' +
+        '</div>' +
       '</div>' +
     '</div>';
 
@@ -323,8 +389,14 @@ function abrirModalEditarEscola(idx) {
 }
 
 function abrirModalEditarEscolaById(id) {
-  const escola = _escolasCache.find(e => e.id === id);
-  if (!escola) return;
+  let escola = _escolasCache.find(e => e.id === id);
+  if (!escola && typeof _mapaCacheEscolas !== 'undefined' && Array.isArray(_mapaCacheEscolas)) {
+    escola = _mapaCacheEscolas.find(e => e.id === id);
+  }
+  if (!escola) {
+    toast('Escola não encontrada para edição', 'error');
+    return;
+  }
   _preencherFormEscola(escola);
 }
 
@@ -347,9 +419,15 @@ function _preencherFormEscola(escola) {
   set('form-escola-telefone', escola.telefone);
   set('form-escola-matriculas', escola.totalMatricula > 0 ? escola.totalMatricula : '');
   set('form-escola-salas', escola.salas > 0 ? escola.salas : '');
+  set('form-escola-diretor', escola.diretor);
+  set('form-escola-contatoDiretor', escola.contatoDiretor || escola.telefone);
 
   const titulo = document.getElementById('form-escola-titulo');
-  if (titulo) titulo.innerHTML = '✏️ Editar Escola';
+  if (titulo) titulo.innerHTML = '✏️ Editar Dados da Escola';
+  
+  const sub = document.getElementById('form-escola-subtitulo');
+  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' — ' + escola.municipio : '');
+
   const btn = document.getElementById('btn-salvar-escola');
   if (btn) btn.textContent = '💾 Salvar Alterações';
 
@@ -383,7 +461,9 @@ async function salvarEscola(evt) {
     cep:            g('form-escola-cep'),
     telefone:       g('form-escola-telefone'),
     totalMatricula: g('form-escola-matriculas'),
-    salas:          g('form-escola-salas')
+    salas:          g('form-escola-salas'),
+    diretor:        g('form-escola-diretor'),
+    contatoDiretor: g('form-escola-contatoDiretor') || g('form-escola-telefone')
   };
 
   const btn = document.getElementById('btn-salvar-escola');
@@ -397,13 +477,18 @@ async function salvarEscola(evt) {
     if (!res.ok) { const e = await res.json(); throw new Error(e.erro || 'Erro ao salvar'); }
     toast('Escola salva com sucesso!', 'success');
     fecharModalFormEscola();
+    
+    // Atualiza caches e recarrega dados
     _escolasCache = [];
     carregarEscolasAPI(true);
+    if (typeof carregarMapaEscolasAPI === 'function') {
+      carregarMapaEscolasAPI();
+    }
   } catch (err) {
     console.error(err);
     toast(err.message, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Escola'; }
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alterações'; }
   }
 }
 
