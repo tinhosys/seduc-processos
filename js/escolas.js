@@ -1,3 +1,131 @@
+
+// ============================================================
+// SEDUC — Formulário Individualizado de Escola (Página & Modal)
+// ============================================================
+
+var _escolaEditandoId = null;
+
+function abrirFormEscola(idx) {
+  const escola = _escolasFiltradas[idx];
+  if (!escola) return;
+  _preencherFormEscolaPage(escola);
+}
+
+function abrirFormEscolaById(id) {
+  let escola = _escolasCache.find(e => e.id === id);
+  if (!escola && typeof _mapaCacheEscolas !== 'undefined' && Array.isArray(_mapaCacheEscolas)) {
+    escola = _mapaCacheEscolas.find(e => e.id === id);
+  }
+  if (!escola) {
+    if (typeof toast === 'function') toast('Escola não encontrada para edição', 'error');
+    return;
+  }
+  _preencherFormEscolaPage(escola);
+}
+
+function novaEscolaForm() {
+  _escolaEditandoId = null;
+  const form = document.getElementById('form-escola-page-data');
+  if (form) form.reset();
+  const idEl = document.getElementById('page-escola-id');
+  if (idEl) idEl.value = '';
+
+  const titulo = document.getElementById('form-escola-page-titulo');
+  if (titulo) titulo.innerHTML = '🏫 Nova Escola';
+  const sub = document.getElementById('form-escola-page-subtitulo');
+  if (sub) sub.textContent = 'Preencha os dados da nova unidade escolar a ser cadastrada';
+  const btn = document.getElementById('btn-salvar-escola-page');
+  if (btn) btn.textContent = '💾 Salvar Nova Escola';
+
+  if (typeof navegar === 'function') navegar('form-escola');
+}
+
+function _preencherFormEscolaPage(escola) {
+  _escolaEditandoId = escola.id || null;
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+
+  set('page-escola-id', escola.id);
+  set('page-escola-nome', escola.nome);
+  set('page-escola-municipio', escola.municipio);
+  set('page-escola-localizacao', escola.localizacao);
+  set('page-escola-inep', escola.codigoInep);
+  set('page-escola-codigoSuper', escola.codigoSuper);
+  set('page-escola-super', escola.super);
+  set('page-escola-diretor', escola.diretor);
+  set('page-escola-contatoDiretor', escola.contatoDiretor || escola.telefone);
+  set('page-escola-telefone', escola.telefone);
+  set('page-escola-endereco', escola.endereco);
+  set('page-escola-bairro', escola.bairro);
+  set('page-escola-complemento', escola.complemento);
+  set('page-escola-cep', escola.cep);
+  set('page-escola-matriculas', escola.totalMatricula > 0 ? escola.totalMatricula : '');
+  set('page-escola-salas', escola.salas > 0 ? escola.salas : '');
+  set('page-escola-obs', escola.obs || escola.observacao || '');
+
+  // Atualizar modal também para sincronia
+  if (typeof _preencherFormEscola === 'function') _preencherFormEscola(escola);
+
+  const titulo = document.getElementById('form-escola-page-titulo');
+  if (titulo) titulo.innerHTML = '✏️ Editar Cadastro da Escola';
+  const sub = document.getElementById('form-escola-page-subtitulo');
+  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' — ' + escola.municipio : '');
+  const btn = document.getElementById('btn-salvar-escola-page');
+  if (btn) btn.textContent = '💾 Salvar Alterações';
+
+  if (typeof navegar === 'function') navegar('form-escola');
+}
+
+async function salvarFormularioEscolaPage(evt) {
+  if (evt) evt.preventDefault();
+  const id = (document.getElementById('page-escola-id') || {}).value || '';
+  const method = id ? 'PUT' : 'POST';
+  const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+  const url = base + (id ? '/api/escolas/' + id : '/api/escolas');
+
+  const g = (sel) => { const el = document.getElementById(sel); return el ? el.value.trim() : ''; };
+  const data = {
+    nome:           g('page-escola-nome'),
+    municipio:      g('page-escola-municipio'),
+    localizacao:    g('page-escola-localizacao'),
+    codigoInep:     g('page-escola-inep'),
+    codigoSuper:    g('page-escola-codigoSuper'),
+    super:          g('page-escola-super'),
+    diretor:        g('page-escola-diretor'),
+    contatoDiretor: g('page-escola-contatoDiretor'),
+    telefone:       g('page-escola-telefone'),
+    endereco:       g('page-escola-endereco'),
+    bairro:         g('page-escola-bairro'),
+    complemento:    g('page-escola-complemento'),
+    cep:            g('page-escola-cep'),
+    totalMatricula: g('page-escola-matriculas'),
+    salas:          g('page-escola-salas'),
+    obs:            g('page-escola-obs')
+  };
+
+  const btn = document.getElementById('btn-salvar-escola-page');
+  if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+
+  const token = (typeof getSessionToken === 'function') ? getSessionToken() : sessionStorage.getItem('sap_session_token');
+  const headers = { 'Content-Type': 'application/json', ...(token ? { 'Authorization': 'Bearer ' + token } : {}) };
+
+  try {
+    const res = await fetch(url, { method, headers, body: JSON.stringify(data) });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.erro || 'Erro ao salvar escola'); }
+    if (typeof toast === 'function') toast('Dados da escola salvos com sucesso!', 'success');
+    
+    _escolasCache = [];
+    carregarEscolasAPI(true);
+    if (typeof carregarMapaEscolasAPI === 'function') carregarMapaEscolasAPI();
+
+    if (typeof navegar === 'function') navegar('escolas');
+  } catch (err) {
+    console.error(err);
+    if (typeof toast === 'function') toast(err.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alterações'; }
+  }
+}
+
 // ============================================================
 // SEDUC — Módulo de Escolas (ADM ONLY) - v3.0
 // ============================================================
@@ -219,7 +347,7 @@ function _escolasRenderTabela() {
     const mat  = e.totalMatricula > 0 ? Number(e.totalMatricula).toLocaleString('pt-BR') : '—';
     const sal  = e.salas > 0 ? e.salas : '—';
 
-    return '<tr style="cursor:pointer;" onclick="abrirModalEscola(' + gi + ')" ondblclick="abrirModalEditarEscola(' + gi + ')" title="Clique para ver detalhes | Duplo clique para editar"' +
+    return '<tr style="cursor:pointer;" onclick="abrirModalEscola(' + gi + ')" ondblclick="abrirFormEscola(' + gi + ')" title="Clique para ver detalhes | Duplo clique para editar"' +
       ' onmouseover="this.style.background=\'rgba(139,92,246,0.07)\'"' +
       ' onmouseout="this.style.background=\'\'">' +
       '<td style="font-family:monospace;font-size:12px;color:#a78bfa;font-weight:600">' + (e.codigoSuper || '—') + '</td>' +
@@ -237,7 +365,7 @@ function _escolasRenderTabela() {
       '<td style="text-align:right;font-weight:700;color:#60a5fa">' + sal + '</td>' +
       '<td style="text-align:center;" onclick="event.stopPropagation()">' +
   '<div style="display:flex;gap:6px;justify-content:center;">' +
-    '<button onclick="abrirModalEditarEscola(' + gi + ')" title="Editar Dados da Escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;border-radius:6px;color:#ffffff;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(139,92,246,0.3);">✏️ Editar</button>' +
+    '<button onclick="abrirFormEscola(' + gi + ')" title="Editar Dados da Escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;border-radius:6px;color:#ffffff;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(139,92,246,0.3);">✏️ Editar</button>' +
   '</div>' +
 '</td>' +
       '</tr>';
@@ -397,7 +525,7 @@ function abrirModalEscola(idx) {
         '<a href="' + gmapsUrl + '" target="_blank" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 10px rgba(16,185,129,0.3)">📍 Ver no Google Maps</a>' +
         '<div style="display:flex;gap:10px">' +
           '<button onclick="fecharModalEscola();abrirProcessoFormEscola(' + _escolasFiltradas.indexOf(escola) + ')" style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:#fff;padding:8px 18px;border-radius:8px;font-weight:700;cursor:pointer;">✏️ Editar Processo (GDSM)</button>' +
-  '<button onclick="fecharModalEscola();abrirModalEditarEscolaById(\'' + (escola.id || '') + '\')" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-secondary);padding:8px 18px;border-radius:8px;cursor:pointer;">🏫 Dados da Escola</button>' +
+  '<button onclick="fecharModalEscola();abrirFormEscolaById(\'' + (escola.id || '') + '\')" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-secondary);padding:8px 18px;border-radius:8px;cursor:pointer;">🏫 Dados da Escola</button>' +
           '<button onclick="fecharModalEscola()" style="background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text-secondary);padding:8px 18px;border-radius:8px;cursor:pointer;">Fechar</button>' +
         '</div>' +
       '</div>' +
@@ -412,7 +540,7 @@ function fecharModalEscola() {
 }
 
 // ---- FORMULÁRIO DE CADASTRO/EDIÇÃO ----
-function abrirModalFormEscola() {
+function novaEscolaForm() {
   const overlay = document.getElementById('modal-form-escola');
   if (!overlay) return;
   const form = document.getElementById('form-escola-data');
@@ -432,7 +560,7 @@ function abrirModalEditarEscola(idx) {
   _preencherFormEscola(escola);
 }
 
-function abrirModalEditarEscolaById(id) {
+function abrirFormEscolaById(id) {
   let escola = _escolasCache.find(e => e.id === id);
   if (!escola && typeof _mapaCacheEscolas !== 'undefined' && Array.isArray(_mapaCacheEscolas)) {
     escola = _mapaCacheEscolas.find(e => e.id === id);
@@ -563,7 +691,7 @@ window.abrirModalEscola          = abrirModalEscola;
 window.fecharModalEscola         = fecharModalEscola;
 window.abrirModalFormEscola      = abrirModalFormEscola;
 window.abrirModalEditarEscola    = abrirModalEditarEscola;
-window.abrirModalEditarEscolaById = abrirModalEditarEscolaById;
+window.abrirFormEscolaById = abrirFormEscolaById;
 window.fecharModalFormEscola     = fecharModalFormEscola;
 window.salvarEscola              = salvarEscola;
 window.abrirProcessoFormEscola = abrirProcessoFormEscola;
