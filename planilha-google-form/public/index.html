@@ -957,7 +957,7 @@
             <span id="escolas-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <button onclick="recarregarEscolas()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">🔄 Recarregar</button>
+            <button onclick="abrirModalFormEscola()" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(5,150,105,0.2));border:1px solid rgba(16,185,129,0.4);color:#34d399;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;">➕ Nova Escola</button> <button onclick="recarregarEscolas()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">🔄 Recarregar</button>
           </div>
         </div>
 
@@ -1102,21 +1102,21 @@
           <!-- BLOCO SECUNDÁRIO: DADOS INSTITUCIONAIS BLOQUEADOS -->
           <div style="padding:16px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:10px; margin-bottom:20px;">
             <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
-              🔒 Dados Institucionais (Somente Leitura - Não Editável)
+              🏫 Dados Institucionais da Escola (Editável)
             </div>
 
             <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:14px; margin-bottom:12px;">
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">Nome da Escola</label>
-                <input type="text" id="form-escola-nome" class="form-control" readonly style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <input type="text" id="form-escola-nome" class="form-control" placeholder="Nome da Escola" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">Município</label>
-                <input type="text" id="form-escola-municipio" class="form-control" readonly style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <input type="text" id="form-escola-municipio" class="form-control" placeholder="Município" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">Localização</label>
-                <select id="form-escola-localizacao" class="form-control" disabled style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <select id="form-escola-localizacao" class="form-control" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
                   <option value="">Selecione...</option>
                   <option value="Urbana">Urbana</option>
                   <option value="Rural">Rural</option>
@@ -1129,27 +1129,27 @@
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:14px;">
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">Código INEP</label>
-                <input type="text" id="form-escola-inep" class="form-control" readonly style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <input type="text" id="form-escola-inep" class="form-control" placeholder="Código INEP" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">Código Super</label>
-                <input type="text" id="form-escola-codigoSuper" class="form-control" readonly style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <input type="text" id="form-escola-codigoSuper" class="form-control" placeholder="Cod. Super" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">SUPER</label>
-                <input type="text" id="form-escola-super" class="form-control" readonly style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <input type="text" id="form-escola-super" class="form-control" placeholder="Supervisão" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">CEP</label>
-                <input type="text" id="form-escola-cep" class="form-control" readonly style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <input type="text" id="form-escola-cep" class="form-control" placeholder="Ex: 76800-000" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">Total Matrículas</label>
-                <input type="number" id="form-escola-matriculas" class="form-control" readonly style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <input type="number" id="form-escola-matriculas" class="form-control" placeholder="0" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
                 <label style="font-size:12px; color:var(--text-muted);">Salas Utilizadas</label>
-                <input type="number" id="form-escola-salas" class="form-control" readonly style="opacity:0.7; cursor:not-allowed; background:rgba(255,255,255,0.03);">
+                <input type="number" id="form-escola-salas" class="form-control" placeholder="0" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
             </div>
           </div>
