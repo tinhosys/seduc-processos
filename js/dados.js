@@ -154,6 +154,16 @@ function getHeaders(extraHeaders = {}) {
 }
 
 
+// Helper para incluir cabeçalho de autenticação
+function getHeaders(extraHeaders = {}) {
+  const token = sessionStorage.getItem('sap_session_token');
+  return {
+    ...extraHeaders,
+    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
+  };
+}
+
+
 var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://localhost:3001'
   : 'https://seduc-backend.onrender.com';
@@ -318,6 +328,10 @@ async function inicializarDados() {
   try {
     const res = await fetch(API_BASE + '/api/registros', { headers: getHeaders() });
 
+    if (res.status === 401 || res.status === 403) {
+      fazerLogout();
+      return;
+    }
     if (res.status === 401 || res.status === 403) {
       fazerLogout();
       return;
