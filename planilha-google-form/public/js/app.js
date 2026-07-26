@@ -3437,8 +3437,15 @@ Porto Velho - RO, ${dataAtualExtenso}.`;
 
 function gerarEExibirManifestoTCEAtual() {
   const g = (id) => (document.getElementById(id) || {}).value || '';
+  
+  const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  const numeroProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || g('form-numero') || 'Sem número';
+
+  const valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : ((typeof parseMoney === 'function') ? parseMoney(g('form-valorPlan')) : 0);
+  const valOf = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf')) : ((typeof parseMoney === 'function') ? parseMoney(g('form-valorOf')) : 0);
+
   const p = {
-    numero: g('form-numero'),
+    numero: numeroProc,
     municipio: g('form-municipio'),
     interessado: g('form-interessado'),
     objeto: g('form-objeto'),
@@ -3453,9 +3460,25 @@ function gerarEExibirManifestoTCEAtual() {
     quadra: g('form-quadra'),
     refeitorio: g('form-refeitorio'),
     banheiros: g('form-banheiros'),
-    valorPlan: (typeof parseMoney === 'function') ? parseMoney(g('form-valorPlan')) : 0,
-    valorOf: (typeof parseMoney === 'function') ? parseMoney(g('form-valorOf')) : 0
+    valorPlan: valPlan,
+    valorOf: valOf
   };
+
+  if (typeof state !== 'undefined' && state.editandoId) {
+    const editando = (state.processos || []).find(item => item.id === state.editandoId);
+    if (editando) {
+      if (!p.numero || p.numero === 'Sem número') p.numero = editando.numero;
+      if (!p.municipio) p.municipio = editando.municipio;
+      if (!p.interessado) p.interessado = editando.interessado;
+      if (!p.objeto) p.objeto = editando.objeto;
+      if (!p.valorPlan) p.valorPlan = editando.valorPlan;
+      if (!p.valorOf) p.valorOf = editando.valorOf;
+      if (!p.oficioNumero) p.oficioNumero = editando.oficioNumero;
+      if (!p.metragemM2) p.metragemM2 = editando.metragemM2;
+      if (!p.detalhamentoItens) p.detalhamentoItens = editando.detalhamentoItens;
+    }
+  }
+
   abrirModalManifestoTCE(p);
 }
 
