@@ -3358,6 +3358,13 @@ window.inserirDataHoje = inserirDataHoje;
 // SEDUC — Gerador de Manifestação Técnica & Relatório Sintético TCE-RO
 // ============================================================
 
+
+// ============================================================
+// SEDUC — Gerador de Manifestação Técnica & Relatório A4/PDF (TCE-RO)
+// ============================================================
+
+window._manifestoProcessoAtual = null;
+
 function gerarTextoManifestoTCE(p) {
   p = p || {};
 
@@ -3445,7 +3452,9 @@ function gerarEExibirManifestoTCEAtual() {
     tipoAuditorio: g('form-tipoAuditorio'),
     quadra: g('form-quadra'),
     refeitorio: g('form-refeitorio'),
-    banheiros: g('form-banheiros')
+    banheiros: g('form-banheiros'),
+    valorPlan: (typeof parseMoney === 'function') ? parseMoney(g('form-valorPlan')) : 0,
+    valorOf: (typeof parseMoney === 'function') ? parseMoney(g('form-valorOf')) : 0
   };
   abrirModalManifestoTCE(p);
 }
@@ -3460,6 +3469,7 @@ function abrirModalManifestoTCEById(id) {
 }
 
 function abrirModalManifestoTCE(p) {
+  window._manifestoProcessoAtual = p || {};
   const texto = gerarTextoManifestoTCE(p);
   const preview = document.getElementById('manifesto-tce-texto-preview');
   if (preview) preview.textContent = texto;
@@ -3484,25 +3494,189 @@ function copiarManifestoTCE() {
 }
 
 function imprimirManifestoTCE() {
-  const preview = document.getElementById('manifesto-tce-texto-preview');
-  if (!preview) return;
+  const p = window._manifestoProcessoAtual || {};
+  const textoLegal = gerarTextoManifestoTCE(p);
+
+  const municipio = p.municipio || 'NÃO INFORMADO';
+  const escola = p.interessado || 'UNIDADE ESCOLAR';
+  const numeroProc = p.numero || 'S/N';
+  const oficioNum = p.oficioNumero || 'NÃO INFORMADO';
+  const tipoDesc = (p.tipo || 'INVESTIMENTO').toUpperCase();
+  const valor = (p.valorPlan || p.valorOf || 0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const dataHoje = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+
+  const htmlDoc = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Manifestação Técnica ${numeroProc} - SEDUC-RO</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 25mm 20mm 20mm 25mm;
+    }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 12pt;
+      line-height: 1.5;
+      color: #000000;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+    }
+    .page-container {
+      width: 100%;
+      max-width: 210mm;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    .header-timbre {
+      text-align: center;
+      margin-bottom: 22px;
+      border-bottom: 2px solid #000000;
+      padding-bottom: 12px;
+    }
+    .header-timbre h1 {
+      font-size: 12pt;
+      font-weight: bold;
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .header-timbre h2 {
+      font-size: 11pt;
+      font-weight: bold;
+      margin: 3px 0;
+      text-transform: uppercase;
+    }
+    .header-timbre p {
+      font-size: 9.5pt;
+      margin: 2px 0 0 0;
+    }
+    .doc-title {
+      text-align: center;
+      font-size: 13pt;
+      font-weight: bold;
+      margin: 18px 0 14px 0;
+      text-transform: uppercase;
+    }
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 10pt;
+    }
+    .meta-table td, .meta-table th {
+      border: 1px solid #000000;
+      padding: 5px 8px;
+    }
+    .meta-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      text-align: left;
+      width: 28%;
+    }
+    .paragrafo {
+      text-align: justify;
+      text-indent: 1.25cm;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .assinatura-box {
+      margin-top: 45px;
+      text-align: center;
+      page-break-inside: avoid;
+    }
+    .linha-assinatura {
+      width: 280px;
+      margin: 0 auto 6px auto;
+      border-top: 1px solid #000000;
+    }
+    .rodape {
+      margin-top: 35px;
+      font-size: 8pt;
+      text-align: center;
+      color: #444;
+      border-top: 1px solid #ddd;
+      padding-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    
+    <!-- BANNER TIMBRE OFICIAL -->
+    <div class="header-timbre">
+      <h1>Governo do Estado de Rondônia</h1>
+      <h2>Secretaria de Estado da Educação — SEDUC</h2>
+      <p>Coordenadoria de Articulação com os Municípios — CAM / GDSM</p>
+    </div>
+
+    <!-- TÍTULO DA MANIFESTAÇÃO -->
+    <div class="doc-title">
+      MANIFESTAÇÃO TÉCNICA Nº ${numeroProc.replace(/[^0-9\/]/g,'') || '2026'}/SEDUC-CAM
+    </div>
+
+    <!-- RESUMO DE DADOS DO PROCESSO / PRESTAÇÃO DE CONTAS TCE-RO -->
+    <table class="meta-table">
+      <tr>
+        <th>PROCESSO Nº:</th>
+        <td>${numeroProc}</td>
+        <th>MUNICÍPIO:</th>
+        <td>${municipio}</td>
+      </tr>
+      <tr>
+        <th>INTERESSADO / ESCOLA:</th>
+        <td colspan="3">${escola}</td>
+      </tr>
+      <tr>
+        <th>Nº OFÍCIO DA ESCOLA:</th>
+        <td>${oficioNum}</td>
+        <th>CATEGORIA / TIPO:</th>
+        <td>${tipoDesc}</td>
+      </tr>
+      <tr>
+        <th>VALOR PLANILHA:</th>
+        <td>R$ ${valor}</td>
+        <th>DATA DE EMISSÃO:</th>
+        <td>${dataHoje}</td>
+      </tr>
+    </table>
+
+    <!-- CONTEÚDO LEGAL JUSTIFICADO DO MANIFESTO -->
+    <div style="font-size: 11pt; line-height: 1.5;">
+      ${textoLegal.split('\n\n').map(p => {
+        if (p.startsWith('MANIFESTAÇÃO')) return '';
+        return '<p class="paragrafo">' + p.trim() + '</p>';
+      }).join('')}
+    </div>
+
+    <!-- ASSINATURA -->
+    <div class="assinatura-box">
+      <div class="linha-assinatura"></div>
+      <div style="font-weight: bold; font-size: 11pt;">Coordenadoria de Articulação com os Municípios (CAM)</div>
+      <div style="font-size: 10pt; color: #333;">SEDUC / Governo do Estado de Rondônia</div>
+    </div>
+
+    <!-- RODAPÉ -->
+    <div class="rodape">
+      Documento Oficial de Prestação de Contas — Aplicação do Percentual Constitucional de 25% na Educação (TCE-RO / Lei Est. 5.735/2024)
+    </div>
+
+  </div>
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.print();
+      }, 300);
+    };
+  </script>
+</body>
+</html>`;
+
   const win = window.open('', '_blank');
-  win.document.write(`
-    <html>
-      <head>
-        <title>Manifestação Técnica TCE-RO</title>
-        <style>
-          body { font-family: 'Times New Roman', serif; font-size: 14pt; line-height: 1.6; margin: 40px; color: #000; }
-          .title { font-weight: bold; text-align: center; font-size: 16pt; margin-bottom: 30px; }
-          .content { white-space: pre-wrap; text-align: justify; text-justify: inter-word; }
-        </style>
-      </head>
-      <body>
-        <div class="content">${preview.textContent}</div>
-        <script>window.print();</script>
-      </body>
-    </html>
-  `);
+  win.document.write(htmlDoc);
   win.document.close();
 }
 
