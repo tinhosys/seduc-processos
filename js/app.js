@@ -855,19 +855,24 @@ function renderProcessos() {
   tbody.innerHTML = pagina.map(p => `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
       <td class="col-prefixo" title="${p.prefixo}">
-        <div style="display: flex; flex-direction: column; gap: 6px;">
-          <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-            <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'}" style="flex-shrink: 0;">
+        <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+          <!-- Linha 1: PREFIXO -->
+          <div style="display: flex; align-items: center; white-space: nowrap;">
+            <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'}" style="flex-shrink: 0; font-size: 11px; padding: 2px 6px;">
               ${p.prefixo || '—'}
             </span>
-            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:2px; font-size:14px; flex-shrink: 0;">📌</span>' : ''}
+          </div>
+          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÃO -->
+          <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
+            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">📌</span>' : ''}
           </div>
-          <div style="display: flex; gap: 6px; align-items: center; margin-top: 2px;">
-            <div style="width: 11px; height: 11px; border-radius: 50%; background-color: ${p.CAM === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 4px rgba(0,0,0,0.3);" title="CAM"></div>
-            <div style="width: 11px; height: 11px; border-radius: 50%; background-color: ${p.GAB === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 4px rgba(0,0,0,0.3);" title="GABINETE"></div>
-            <div style="width: 11px; height: 11px; border-radius: 50%; background-color: ${p.CC === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 4px rgba(0,0,0,0.3);" title="CASA CIVIL"></div>
+          <!-- Linha 3: CAM; GAB; CC -->
+          <div style="display: flex; gap: 6px; align-items: center; margin-top: 1px;">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: ${p.CAM === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 3px rgba(0,0,0,0.3);" title="CAM"></div>
+            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: ${p.GAB === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 3px rgba(0,0,0,0.3);" title="GABINETE"></div>
+            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: ${p.CC === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 3px rgba(0,0,0,0.3);" title="CASA CIVIL"></div>
           </div>
         </div>
       </td>

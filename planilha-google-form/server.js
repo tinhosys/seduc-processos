@@ -443,6 +443,9 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     else if (hLow === 'tipo') val = data.tipo;
     else if (hLow === 'ano') val = data.ano;
     else if (hLow.includes('agrupamento')) val = data.agrupamento;
+    else if (hLow === 'cam') val = data.CAM !== undefined ? ((data.CAM === '1' || data.CAM === 1) ? '1' : '0') : undefined;
+    else if (hLow === 'gab') val = data.GAB !== undefined ? ((data.GAB === '1' || data.GAB === 1) ? '1' : '0') : undefined;
+    else if (hLow === 'cc') val = data.CC !== undefined ? ((data.CC === '1' || data.CC === 1) ? '1' : '0') : undefined;
     if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
         val = data.contatos.map(c => {
