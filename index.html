@@ -585,9 +585,15 @@
           <form id="form-processo">
             
             <!-- GUIAS DE NAVEGAÇÃO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
-            <div style="display:flex; gap:12px; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; align-items:center;">
-              <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; font-size:14px; padding:10px 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; gap:8px; transition:all 0.2s;">📦 OBJETO</button>
-              <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; font-size:14px; padding:10px 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all 0.2s;">🎯 OBJETIVO</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; width:100%;">
+              <div style="display:flex; gap:12px; align-items:center;">
+                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; font-size:14px; padding:10px 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; gap:8px; transition:all 0.2s;">📦 OBJETO</button>
+                <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; font-size:14px; padding:10px 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all 0.2s;">🎯 OBJETIVO</button>
+              </div>
+              <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
+                <button type="button" class="btn btn-ghost" id="btn-cancelar-form">Cancelar</button>
+                <button type="submit" class="btn btn-success">💾 Salvar Processo</button>
+              </div>
             </div>
   
             <!-- GUIA 1: OBJETO -->
@@ -595,13 +601,6 @@
               
             <input type="hidden" id="form-categoria" name="categoria" value="">
             <input type="hidden" id="form-tipo" name="tipo" value="">
-
-            <div class="form-actions-top" style="display:flex; justify-content:flex-end; align-items:center; width:100%; margin-bottom: 12px;">
-              <div style="display:flex; gap:8px;">
-                <button type="button" class="btn btn-ghost" id="btn-cancelar-form">Cancelar</button>
-                <button type="submit" class="btn btn-success">💾 Salvar Processo</button>
-              </div>
-            </div>
 
             <!-- Autorizações -->
             <div class="form-group full" style="margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border);">
