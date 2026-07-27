@@ -3557,6 +3557,7 @@ function imprimirManifestoTCE() {
   var isOn = function(v) { return v===true||v===1||v==='1'||v==='true'; };
 
   var today = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  var todayLong = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
 
   var numero    = ff(p.numero)      || 'S/N';
   var municipio = ff(p.municipio)   || '&mdash;';
@@ -3568,31 +3569,25 @@ function imprimirManifestoTCE() {
   var valorOf   = fv(p.valorOf);
   var valorPlan = fv(p.valorPlan);
 
-  var categMap = {F:'Fomento',C:'ConvÃªnio',TC:'Termo de CooperaÃ§Ã£o'};
+  var categMap = {F:'Fomento',C:'Conv&ecirc;nio',TC:'Termo de Coopera&ccedil;&atilde;o'};
   var tipoMap  = {OB:'Obras',MP:'Mat. Permanente',MC:'Mat. Consumo',SI:'Sistema',TR:'Treinamento',OU:'Outros'};
   var categ = categMap[ff(p.categoria)] || ff(p.categoria) || '&mdash;';
   var tipo  = tipoMap[(ff(p.tipo)||'').toUpperCase()] || ff(p.tipo) || '&mdash;';
 
-  var simNao = function(v) {
-    return isOn(v)
-      ? '<span style="color:#15803d;font-weight:700">&#10004; Sim</span>'
-      : '<span style="color:#dc2626;font-weight:700">&#10008; NÃ£o</span>';
-  };
-
-  // Build the dynamic paragraph based on "Objetivo"
-  var dynText = "O investimento contemplarÃ¡ <b>" + (ff(p.objeto) || 'aÃ§Ãµes de melhoria') + "</b> na unidade escolar <b>" + (ff(p.interessado) || 'especificada') + "</b>, localizada no municÃ­pio de <b>" + (ff(p.municipio) || 'RondÃ´nia') + "</b>. ";
+  // Build the dynamic paragraph based on "Objetivo" (100% HTML entities)
+  var dynText = "O investimento contemplar&aacute; <b>" + (ff(p.objeto) || 'a&ccedil;&otilde;es de melhoria') + "</b> na unidade escolar <b>" + (ff(p.interessado) || 'especificada') + "</b>, localizada no munic&iacute;pio de <b>" + (ff(p.municipio) || 'Rond&ocirc;nia') + "</b>. ";
   
   var itens = [];
-  if (ff(p.qtdeSala))   itens.push("construÃ§Ã£o/adequaÃ§Ã£o de " + ff(p.qtdeSala) + " sala(s) (" + (ff(p.tipoSala) || "padrÃ£o") + ")");
-  if (ff(p.auditorio))  itens.push("auditÃ³rio " + ff(p.auditorio) + (ff(p.tipoAuditorio) ? " (" + ff(p.tipoAuditorio) + ")" : ""));
+  if (ff(p.qtdeSala))   itens.push("constru&ccedil;&atilde;o/adequa&ccedil;&atilde;o de " + ff(p.qtdeSala) + " sala(s) (" + (ff(p.tipoSala) || "padr&atilde;o") + ")");
+  if (ff(p.auditorio))  itens.push("audit&oacute;rio " + ff(p.auditorio) + (ff(p.tipoAuditorio) ? " (" + ff(p.tipoAuditorio) + ")" : ""));
   if (ff(p.quadra))     itens.push("quadra poliesportiva " + ff(p.quadra));
-  if (ff(p.patio))      itens.push("pÃ¡tio " + ff(p.patio));
-  if (ff(p.refeitorio)) itens.push("refeitÃ³rio " + ff(p.refeitorio));
+  if (ff(p.patio))      itens.push("p&aacute;tio " + ff(p.patio));
+  if (ff(p.refeitorio)) itens.push("refeit&oacute;rio " + ff(p.refeitorio));
   if (ff(p.banheiros))  itens.push("banheiros " + ff(p.banheiros));
 
   if (itens.length > 0) {
-    dynText += "O projeto envolverÃ¡ a " + itens.join(", ").replace(/,([^,]*)$/, ' e$1') + "";
-    if (ff(p.metragemM2)) dynText += ", totalizando uma intervenÃ§Ã£o de aproximadamente " + ff(p.metragemM2) + " m&sup2;.";
+    dynText += "O projeto envolver&aacute; a " + itens.join(", ").replace(/,([^,]*)$/, ' e$1') + "";
+    if (ff(p.metragemM2)) dynText += ", totalizando uma interven&ccedil;&atilde;o de aproximadamente " + ff(p.metragemM2) + " m&sup2;.";
     else dynText += ". ";
   }
 
@@ -3600,18 +3595,25 @@ function imprimirManifestoTCE() {
     dynText += " Inclui-se no escopo o detalhamento: " + ff(p.detalhamentoItens).replace(/\n/g, ', ') + ". ";
   }
 
-  dynText += "Essa iniciativa fortalecerÃ¡ a capacidade de atendimento da instituiÃ§Ã£o, aprimorando substancialmente as condiÃ§Ãµes de ensino-aprendizagem. O investimento proporcionarÃ¡ um ambiente mais acolhedor e adequado Ã s diretrizes pedagÃ³gicas, contribuindo de forma direta para a elevaÃ§Ã£o dos Ã­ndices educacionais e garantindo maior bem-estar para toda a comunidade escolar.";
+  dynText += "Essa iniciativa fortalecer&aacute; a capacidade de atendimento da institui&ccedil;&atilde;o, aprimorando substancialmente as condi&ccedil;&otilde;es de ensino-aprendizagem. O investimento proporcionar&aacute; um ambiente mais acolhedor e adequado &agrave;s diretrizes pedag&oacute;gicas, contribuindo de forma direta para a eleva&ccedil;&atilde;o dos &iacute;ndices educacionais e garantindo maior bem-estar para toda a comunidade escolar.";
+
+  var fundebText = "A Lei n&ordm; 14.113/2020, que regulamenta o FUNDEB, condiciona o recebimento de complementa&ccedil;&atilde;o de recursos federais &agrave; exist&ecirc;ncia de regime de colabora&ccedil;&atilde;o formalizado entre Estado e Munic&iacute;pios (Art. 14, &sect;1&ordm;, IV). No &acirc;mbito local, a Constitui&ccedil;&atilde;o do Estado de Rond&ocirc;nia (Arts. 187 e 188) reitera os princ&iacute;pios de igualdade de acesso e a coopera&ccedil;&atilde;o interfederativa.<br><br>Ademais, a Lei Estadual n&ordm; 5.735/2024, que institui o Programa de Alfabetiza&ccedil;&atilde;o do Estado de Rond&ocirc;nia (Proalfa Rond&ocirc;nia), estabelece o dever do Estado em prestar coopera&ccedil;&atilde;o t&eacute;cnica e financeira para o fortalecimento das pol&iacute;ticas educacionais municipais. O Eixo 2 do referido programa foca especificamente na melhoria da infraestrutura f&iacute;sica e pedag&oacute;gica das unidades escolares.";
+
+  var conclusaoText = "Diante do exposto, e em atendimento &agrave; solicita&ccedil;&atilde;o do Chefe do Executivo Municipal, esta Ger&ecirc;ncia manifesta-se <strong>FAVORAVELMENTE</strong> ao pleito do Munic&iacute;pio de <strong>" + municipio + "</strong>, fundamentado na Lei Estadual n&ordm; 5.735/2024.<br><br>Submetemos os presentes autos &agrave; aprecia&ccedil;&atilde;o superior para delibera&ccedil;&atilde;o quanto &agrave; oportunidade, conveni&ecirc;ncia administrativa e viabilidade de celebra&ccedil;&atilde;o do regime de colabora&ccedil;&atilde;o.";
+
 
   var css =
-    '@page{size:A4 portrait;margin:15mm 20mm 15mm 20mm}*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Arial",sans-serif;font-size:10pt;color:#111;background:#fff;line-height:1.5}' +
-    '.hdr{display:flex;align-items:flex-start;gap:15px;border-bottom:2px solid #1a3a6b;padding-bottom:10px;margin-bottom:15px}.logo{width:50px;height:50px;min-width:50px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#0d265c);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:12pt}.hdr-txt{flex:1}.hdr-gov{font-size:8pt;color:#555;text-transform:uppercase;letter-spacing:.5px}.hdr-sec{font-size:12pt;font-weight:800;color:#1a3a6b;text-transform:uppercase}.hdr-dep{font-size:9pt;color:#666}' +
-    '.auth-box{min-width:140px;background:#f8faff;border:1px solid #c7d2fe;border-radius:6px;padding:6px 12px;font-size:9pt}.auth-box .auth-title{font-weight:800;color:#1a3a6b;font-size:8pt;text-transform:uppercase;border-bottom:1px solid #c7d2fe;padding-bottom:4px;margin-bottom:6px;letter-spacing:.5px;text-align:center}.auth-row{display:flex;justify-content:space-between;gap:10px;margin-bottom:3px}.auth-row span:first-child{color:#444;font-weight:600}' +
-    '.tbar{background:#1a3a6b;color:#fff;text-align:center;padding:8px 15px;border-radius:4px;margin-bottom:15px;font-size:12pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px}' +
-    '.sec-title{font-size:11pt;font-weight:bold;color:#1a3a6b;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px;margin:20px 0 10px 0}' +
-    '.info-table{width:100%;border-collapse:collapse;margin-bottom:15px;font-size:10pt}.info-table td{padding:4px 0;vertical-align:top}.info-table .lbl{font-weight:bold;color:#444;width:15%;padding-right:5px}.info-table .val{width:35%;border-bottom:1px solid #f0f0f0}' +
-    '.obs-block{background:#fdfdfd;border-left:4px solid #f59e0b;padding:10px 15px;font-size:9.5pt;white-space:pre-wrap;line-height:1.5;background:#fffaf0;margin-bottom:15px}' +
-    '.legal-text{font-size:10pt;line-height:1.6;text-align:justify;text-indent:2em;margin-bottom:10px;color:#222}' +
-    '.ft{margin-top:30px;border-top:1px solid #1a3a6b;padding-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:8pt;color:#777}.ft-logo{font-weight:bold;color:#1a3a6b}' +
+    '@page{size:A4 portrait;margin:12mm 15mm 12mm 15mm}*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Arial",sans-serif;font-size:9.5pt;color:#111;background:#fff;line-height:1.4;position:relative}' +
+    '.hdr{display:flex;align-items:center;gap:15px;border-bottom:2px solid #1a3a6b;padding-bottom:10px;margin-bottom:12px}.logo{width:46px;height:46px;min-width:46px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#0d265c);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11pt}.hdr-txt{flex:1}.hdr-gov{font-size:7.5pt;color:#555;text-transform:uppercase;letter-spacing:.5px}.hdr-sec{font-size:11pt;font-weight:800;color:#1a3a6b;text-transform:uppercase}.hdr-dep{font-size:8.5pt;color:#666}' +
+    '.tbar{background:#1a3a6b;color:#fff;text-align:center;padding:6px 15px;border-radius:4px;margin-bottom:12px;font-size:11pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px}' +
+    '.sec-title{font-size:10pt;font-weight:bold;color:#1a3a6b;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:2px;margin:12px 0 6px 0}' +
+    '.info-table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:9.5pt}.info-table td{padding:3px 0;vertical-align:top}.info-table .lbl{font-weight:bold;color:#444;width:15%;padding-right:5px}.info-table .val{width:35%;border-bottom:1px solid #f0f0f0}' +
+    '.obs-block{background:#fffaf0;border-left:4px solid #f59e0b;padding:8px 12px;font-size:9pt;white-space:pre-wrap;line-height:1.4;margin-bottom:10px}' +
+    '.legal-text{font-size:9.5pt;line-height:1.45;text-align:justify;text-indent:2em;margin-bottom:6px;color:#222}' +
+    '.bottom-container{position:fixed;bottom:0;left:0;right:0;background:#fff;padding-top:10px;}' +
+    '.sig-container{display:flex;flex-direction:column;align-items:center;margin-bottom:15px;}.sig-city{font-size:9.5pt;color:#333;margin-bottom:25px;text-align:center;}.sig-line{width:280px;border-top:1px solid #222;margin-bottom:5px;}.sig-name{font-size:9.5pt;font-weight:bold;color:#111;text-align:center;}.sig-role{font-size:8.5pt;color:#555;text-align:center;}' +
+    '.ft{border-top:1px solid #1a3a6b;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:#777}.ft-logo{font-weight:bold;color:#1a3a6b}' +
+    'body{padding-bottom:120px;}' + // Add padding so content doesn't overlap the fixed bottom-container
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
 
   var h = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n<meta charset="UTF-8">\n' +
@@ -3620,11 +3622,7 @@ function imprimirManifestoTCE() {
     '<div class="hdr"><div class="logo">RO</div><div class="hdr-txt">' +
     '<div class="hdr-gov">Governo do Estado de Rond&ocirc;nia</div>' +
     '<div class="hdr-sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>' +
-    '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div></div>' +
-    '<div class="auth-box"><div class="auth-title">Autoriza&ccedil;&atilde;o</div>' +
-    '<div class="auth-row"><span>CAM:</span>' + simNao(p.cam) + '</div>' +
-    '<div class="auth-row"><span>Gabinete:</span>' + simNao(p.gab) + '</div>' +
-    '<div class="auth-row"><span>Casa Civil:</span>' + simNao(p.cc) + '</div></div></div>' +
+    '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div></div></div>' +
     '<div class="tbar">RELAT&Oacute;RIO DE MONITORAMENTO</div>' +
     '<table class="info-table">' +
     '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>' +
@@ -3632,6 +3630,7 @@ function imprimirManifestoTCE() {
     '<tr><td class="lbl">Objeto:</td><td class="val" colspan="3">' + objeto + '</td></tr>' +
     '<tr><td class="lbl">Ano:</td><td class="val">' + ano + '</td><td class="lbl">Categoria:</td><td class="val">' + categ + '</td></tr>' +
     '<tr><td class="lbl">Tipo:</td><td class="val">' + tipo + '</td><td class="lbl">Valores:</td><td class="val">';
+  
   if (valorOf || valorPlan) {
       if (valorOf) h += 'Oficial: <strong>' + valorOf + '</strong>';
       if (valorOf && valorPlan) h += ' &nbsp;|&nbsp; ';
@@ -3642,12 +3641,29 @@ function imprimirManifestoTCE() {
   h += '</td></tr></table>';
 
   var obsAll = [obs, demaisObs].filter(Boolean).join('\n\n');
-  if (obsAll) { h += '<div class="sec-title">Observa&ccedil;&otilde;es Espec&iacute;ficas</div><div class="obs-block">' + obsAll + '</div>'; }
+  if (obsAll) { h += '<div class="sec-title">OBSERVA&Ccedil;&Otilde;ES ESPEC&Iacute;FICAS</div><div class="obs-block">' + obsAll + '</div>'; }
 
-  h += '<div class="sec-title">Impacto e Objetivo do Investimento</div>' +
-       '<p class="legal-text">' + dynText + '</p>' +
+  h += '<div class="sec-title">1. IMPACTO E OBJETIVO DO INVESTIMENTO</div>' +
+       '<p class="legal-text">' + dynText + '</p>';
+
+  h += '<div class="sec-title">2. FORTALECIMENTO PELO FUNDEB E LEGISLA&Ccedil;&Atilde;O ESTADUAL</div>' +
+       '<p class="legal-text">' + fundebText + '</p>';
+
+  h += '<div class="sec-title">3. CONCLUS&Atilde;O E MANIFESTA&Ccedil;&Atilde;O</div>' +
+       '<p class="legal-text">' + conclusaoText + '</p>';
+
+  // Bottom Fixed Container
+  h += '<div class="bottom-container">' +
+       '<div class="sig-container">' +
+       '<div class="sig-city">Porto Velho &ndash; RO, ' + todayLong + '</div>' +
+       '<div class="sig-line"></div>' +
+       '<div class="sig-name">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios (CAM)</div>' +
+       '<div class="sig-role">SEDUC-RO / Governo do Estado de Rond&ocirc;nia</div>' +
+       '</div>' +
        '<div class="ft"><span class="ft-logo">SEDUC-RO / CAM</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
-       '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
+       '</div>'; // end bottom-container
+
+  h += '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
 
   var win = window.open('', '_blank');
   if (!win) { alert('Permita popups para gerar o relat\u00f3rio.'); return; }
