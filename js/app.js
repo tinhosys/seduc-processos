@@ -3557,7 +3557,6 @@ function imprimirManifestoTCE() {
   var isOn = function(v) { return v===true||v===1||v==='1'||v==='true'; };
 
   var today = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
-  var todayLong = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
 
   var numero    = ff(p.numero)      || 'S/N';
   var municipio = ff(p.municipio)   || '&mdash;';
@@ -3565,12 +3564,11 @@ function imprimirManifestoTCE() {
   var objeto    = ff(p.objeto)      || '&mdash;';
   var ano       = ff(p.ano)         || '&mdash;';
   var obs       = ff(p.obs);
-  var detItens  = ff(p.detalhamentoItens);
   var demaisObs = ff(p.demaisObservacoes);
   var valorOf   = fv(p.valorOf);
   var valorPlan = fv(p.valorPlan);
 
-  var categMap = {FO:'Fomento',CV:'Conv&ecirc;nio',TC:'Termo de Coopera&ccedil;&atilde;o'};
+  var categMap = {F:'Fomento',C:'ConvÃªnio',TC:'Termo de CooperaÃ§Ã£o'};
   var tipoMap  = {OB:'Obras',MP:'Mat. Permanente',MC:'Mat. Consumo',SI:'Sistema',TR:'Treinamento',OU:'Outros'};
   var categ = categMap[ff(p.categoria)] || ff(p.categoria) || '&mdash;';
   var tipo  = tipoMap[(ff(p.tipo)||'').toUpperCase()] || ff(p.tipo) || '&mdash;';
@@ -3578,25 +3576,31 @@ function imprimirManifestoTCE() {
   var simNao = function(v) {
     return isOn(v)
       ? '<span style="color:#15803d;font-weight:700">&#10004; Sim</span>'
-      : '<span style="color:#dc2626;font-weight:700">&#10008; N&atilde;o</span>';
+      : '<span style="color:#dc2626;font-weight:700">&#10008; NÃ£o</span>';
   };
 
-  // Infraestrutura
-  var infraRows = [];
-  if (ff(p.qtdeSala))   infraRows.push('<tr><td class="lbl">Salas:</td><td><b>'+ff(p.qtdeSala)+'</b> ('+(ff(p.tipoSala)||'padr&atilde;o')+')</td></tr>');
-  if (ff(p.auditorio))  infraRows.push('<tr><td class="lbl">Audit&oacute;rio:</td><td>'+ff(p.auditorio)+(ff(p.tipoAuditorio)?' ('+ff(p.tipoAuditorio)+')':'')+'</td></tr>');
-  if (ff(p.quadra))     infraRows.push('<tr><td class="lbl">Quadra:</td><td>'+ff(p.quadra)+'</td></tr>');
-  if (ff(p.patio))      infraRows.push('<tr><td class="lbl">P&aacute;tio:</td><td>'+ff(p.patio)+'</td></tr>');
-  if (ff(p.refeitorio)) infraRows.push('<tr><td class="lbl">Refeit&oacute;rio:</td><td>'+ff(p.refeitorio)+'</td></tr>');
-  if (ff(p.banheiros))  infraRows.push('<tr><td class="lbl">Banheiros:</td><td>'+ff(p.banheiros)+'</td></tr>');
-  if (ff(p.metragemM2)) infraRows.push('<tr><td class="lbl">Metragem:</td><td><b>'+ff(p.metragemM2)+'</b></td></tr>');
-  var infraTable = infraRows.length > 0 ? '<table class="infra-table">' + infraRows.join('') + '</table>' : '';
+  // Build the dynamic paragraph based on "Objetivo"
+  var dynText = "O investimento contemplarÃ¡ <b>" + (ff(p.objeto) || 'aÃ§Ãµes de melhoria') + "</b> na unidade escolar <b>" + (ff(p.interessado) || 'especificada') + "</b>, localizada no municÃ­pio de <b>" + (ff(p.municipio) || 'RondÃ´nia') + "</b>. ";
+  
+  var itens = [];
+  if (ff(p.qtdeSala))   itens.push("construÃ§Ã£o/adequaÃ§Ã£o de " + ff(p.qtdeSala) + " sala(s) (" + (ff(p.tipoSala) || "padrÃ£o") + ")");
+  if (ff(p.auditorio))  itens.push("auditÃ³rio " + ff(p.auditorio) + (ff(p.tipoAuditorio) ? " (" + ff(p.tipoAuditorio) + ")" : ""));
+  if (ff(p.quadra))     itens.push("quadra poliesportiva " + ff(p.quadra));
+  if (ff(p.patio))      itens.push("pÃ¡tio " + ff(p.patio));
+  if (ff(p.refeitorio)) itens.push("refeitÃ³rio " + ff(p.refeitorio));
+  if (ff(p.banheiros))  itens.push("banheiros " + ff(p.banheiros));
 
-  // Texto legal simplificado
-  var textoLegal =
-    'A legisla&ccedil;&atilde;o brasileira, em especial a Constitui&ccedil;&atilde;o Federal (arts.&nbsp;205 e 211), a Lei de Diretrizes e Bases da Educa&ccedil;&atilde;o (Lei n&ordm;&nbsp;9.394/1996) e a Lei do Fundeb (Lei n&ordm;&nbsp;14.113/2020), consagram o regime de colabora&ccedil;&atilde;o entre os entes federados para a garantia do direito &agrave; educa&ccedil;&atilde;o de qualidade. No &acirc;mbito estadual, a Lei n&ordm;&nbsp;5.735/2024 institui o Programa de Alfabetiza&ccedil;&atilde;o de Rond&ocirc;nia em coopera&ccedil;&atilde;o com os munic&iacute;pios, contemplando o Eixo 2 de infraestrutura f&iacute;sica e pedag&oacute;gica.' +
-    '<br><br>' +
-    'Compulsando os autos, verifica-se que o objeto proposto &mdash; <em>'+objeto+'</em> &mdash;, destinado &agrave; unidade escolar <strong>'+escola+'</strong>, munic&iacute;pio de <strong>'+municipio+'</strong>, visa aprimorar as condi&ccedil;&otilde;es pedag&oacute;gicas e estruturais, em conformidade com o regime de colabora&ccedil;&atilde;o regulamentado pela Lei Estadual n&ordm;&nbsp;5.735/2024. Diante do exposto, manifestamo-nos <strong>favoravelmente</strong> &agrave; solicita&ccedil;&atilde;o, submetendo os autos &agrave; aprecia&ccedil;&atilde;o superior para delibera&ccedil;&atilde;o acerca da oportunidade e conveni&ecirc;ncia administrativa.';
+  if (itens.length > 0) {
+    dynText += "O projeto envolverÃ¡ a " + itens.join(", ").replace(/,([^,]*)$/, ' e$1') + "";
+    if (ff(p.metragemM2)) dynText += ", totalizando uma intervenÃ§Ã£o de aproximadamente " + ff(p.metragemM2) + " m&sup2;.";
+    else dynText += ". ";
+  }
+
+  if (ff(p.detalhamentoItens)) {
+    dynText += " Inclui-se no escopo o detalhamento: " + ff(p.detalhamentoItens).replace(/\n/g, ', ') + ". ";
+  }
+
+  dynText += "Essa iniciativa fortalecerÃ¡ a capacidade de atendimento da instituiÃ§Ã£o, aprimorando substancialmente as condiÃ§Ãµes de ensino-aprendizagem. O investimento proporcionarÃ¡ um ambiente mais acolhedor e adequado Ã s diretrizes pedagÃ³gicas, contribuindo de forma direta para a elevaÃ§Ã£o dos Ã­ndices educacionais e garantindo maior bem-estar para toda a comunidade escolar.";
 
   var css =
     '@page{size:A4 portrait;margin:15mm 20mm 15mm 20mm}*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Arial",sans-serif;font-size:10pt;color:#111;background:#fff;line-height:1.5}' +
@@ -3604,11 +3608,9 @@ function imprimirManifestoTCE() {
     '.auth-box{min-width:140px;background:#f8faff;border:1px solid #c7d2fe;border-radius:6px;padding:6px 12px;font-size:9pt}.auth-box .auth-title{font-weight:800;color:#1a3a6b;font-size:8pt;text-transform:uppercase;border-bottom:1px solid #c7d2fe;padding-bottom:4px;margin-bottom:6px;letter-spacing:.5px;text-align:center}.auth-row{display:flex;justify-content:space-between;gap:10px;margin-bottom:3px}.auth-row span:first-child{color:#444;font-weight:600}' +
     '.tbar{background:#1a3a6b;color:#fff;text-align:center;padding:8px 15px;border-radius:4px;margin-bottom:15px;font-size:12pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px}' +
     '.sec-title{font-size:11pt;font-weight:bold;color:#1a3a6b;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px;margin:20px 0 10px 0}' +
-    '.info-table{width:100%;border-collapse:collapse;margin-bottom:15px;font-size:10pt}.info-table td{padding:6px 0;vertical-align:top}.info-table .lbl{font-weight:bold;color:#444;width:20%;padding-right:10px}.info-table .val{width:80%;border-bottom:1px solid #f0f0f0}' +
-    '.infra-table{width:100%;border-collapse:collapse;background:#f8f9fa;border:1px solid #e9ecef;border-radius:4px;font-size:9.5pt}.infra-table td{padding:5px 10px;border-bottom:1px solid #e9ecef}.infra-table .lbl{font-weight:bold;color:#555;width:20%}' +
-    '.text-block{background:#fdfbf7;border:1px solid #f2e6d9;padding:10px;font-size:10pt;white-space:pre-wrap;line-height:1.5;border-radius:4px;margin-bottom:15px}.obs-block{background:#fdfdfd;border-left:4px solid #f59e0b;padding:10px 15px;font-size:9.5pt;white-space:pre-wrap;line-height:1.5;background:#fffaf0;margin-bottom:15px}' +
+    '.info-table{width:100%;border-collapse:collapse;margin-bottom:15px;font-size:10pt}.info-table td{padding:4px 0;vertical-align:top}.info-table .lbl{font-weight:bold;color:#444;width:15%;padding-right:5px}.info-table .val{width:35%;border-bottom:1px solid #f0f0f0}' +
+    '.obs-block{background:#fdfdfd;border-left:4px solid #f59e0b;padding:10px 15px;font-size:9.5pt;white-space:pre-wrap;line-height:1.5;background:#fffaf0;margin-bottom:15px}' +
     '.legal-text{font-size:10pt;line-height:1.6;text-align:justify;text-indent:2em;margin-bottom:10px;color:#222}' +
-    '.sig-container{margin-top:40px;display:flex;flex-direction:column;align-items:center}.sig-city{font-size:10pt;color:#333;margin-bottom:30px}.sig-line{width:300px;border-top:1px solid #222;margin-bottom:8px}.sig-name{font-size:10pt;font-weight:bold;color:#111;text-align:center}.sig-role{font-size:9pt;color:#555;text-align:center}' +
     '.ft{margin-top:30px;border-top:1px solid #1a3a6b;padding-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:8pt;color:#777}.ft-logo{font-weight:bold;color:#1a3a6b}' +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
 
@@ -3625,33 +3627,25 @@ function imprimirManifestoTCE() {
     '<div class="auth-row"><span>Casa Civil:</span>' + simNao(p.cc) + '</div></div></div>' +
     '<div class="tbar">RELAT&Oacute;RIO DE MONITORAMENTO</div>' +
     '<table class="info-table">' +
-    '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td></tr>' +
-    '<tr><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>' +
-    '<tr><td class="lbl">Escola:</td><td class="val">' + escola + '</td></tr>' +
-    '<tr><td class="lbl">Objeto:</td><td class="val">' + objeto + '</td></tr>' +
-    '<tr><td class="lbl">Ano:</td><td class="val">' + ano + '</td></tr>' +
-    '<tr><td class="lbl">Categoria:</td><td class="val">' + categ + '</td></tr>' +
-    '<tr><td class="lbl">Tipo:</td><td class="val">' + tipo + '</td></tr>';
+    '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>' +
+    '<tr><td class="lbl">Escola:</td><td class="val" colspan="3">' + escola + '</td></tr>' +
+    '<tr><td class="lbl">Objeto:</td><td class="val" colspan="3">' + objeto + '</td></tr>' +
+    '<tr><td class="lbl">Ano:</td><td class="val">' + ano + '</td><td class="lbl">Categoria:</td><td class="val">' + categ + '</td></tr>' +
+    '<tr><td class="lbl">Tipo:</td><td class="val">' + tipo + '</td><td class="lbl">Valores:</td><td class="val">';
   if (valorOf || valorPlan) {
-      h += '<tr><td class="lbl">Valores:</td><td class="val">';
       if (valorOf) h += 'Oficial: <strong>' + valorOf + '</strong>';
       if (valorOf && valorPlan) h += ' &nbsp;|&nbsp; ';
       if (valorPlan) h += 'Planilha: <strong>' + valorPlan + '</strong>';
-      h += '</td></tr>';
+  } else {
+      h += '&mdash;';
   }
-  h += '</table>';
-
-  if (infraTable) { h += '<div class="sec-title">Detalhes da Infraestrutura</div>' + infraTable; }
-  if (detItens) { h += '<div class="sec-title">Itens Solicitados (Quantitativo)</div><div class="text-block">' + detItens + '</div>'; }
+  h += '</td></tr></table>';
 
   var obsAll = [obs, demaisObs].filter(Boolean).join('\n\n');
   if (obsAll) { h += '<div class="sec-title">Observa&ccedil;&otilde;es Espec&iacute;ficas</div><div class="obs-block">' + obsAll + '</div>'; }
 
-  h += '<div class="sec-title">Fundamenta&ccedil;&atilde;o e Manifesta&ccedil;&atilde;o</div>' +
-       '<p class="legal-text">' + textoLegal + '</p>' +
-       '<div class="sig-container"><div class="sig-city">Porto Velho &ndash; RO, ' + todayLong + '</div>' +
-       '<div class="sig-line"></div><div class="sig-name">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios (CAM)</div>' +
-       '<div class="sig-role">SEDUC-RO / Governo do Estado de Rond&ocirc;nia</div></div>' +
+  h += '<div class="sec-title">Impacto e Objetivo do Investimento</div>' +
+       '<p class="legal-text">' + dynText + '</p>' +
        '<div class="ft"><span class="ft-logo">SEDUC-RO / CAM</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
        '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
 
