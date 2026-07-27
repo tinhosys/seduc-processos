@@ -3557,7 +3557,6 @@ function imprimirManifestoTCE() {
   var isOn = function(v) { return v===true||v===1||v==='1'||v==='true'; };
 
   var today = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
-  var todayLong = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
 
   var numero    = ff(p.numero)      || 'S/N';
   var municipio = ff(p.municipio)   || '&mdash;';
@@ -3574,7 +3573,7 @@ function imprimirManifestoTCE() {
   var categ = categMap[ff(p.categoria)] || ff(p.categoria) || '&mdash;';
   var tipo  = tipoMap[(ff(p.tipo)||'').toUpperCase()] || ff(p.tipo) || '&mdash;';
 
-  // Build the dynamic paragraph based on "Objetivo" (100% HTML entities)
+  // Build the dynamic paragraph based on "Objetivo"
   var dynText = "O investimento contemplar&aacute; <b>" + (ff(p.objeto) || 'a&ccedil;&otilde;es de melhoria') + "</b> na unidade escolar <b>" + (ff(p.interessado) || 'especificada') + "</b>, localizada no munic&iacute;pio de <b>" + (ff(p.municipio) || 'Rond&ocirc;nia') + "</b>. ";
   
   var itens = [];
@@ -3604,22 +3603,21 @@ function imprimirManifestoTCE() {
 
   var css =
     '@page{size:A4 portrait;margin:12mm 15mm 12mm 15mm}*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Arial",sans-serif;font-size:9.5pt;color:#111;background:#fff;line-height:1.4;position:relative}' +
-    '.hdr{display:flex;align-items:center;gap:15px;border-bottom:2px solid #1a3a6b;padding-bottom:10px;margin-bottom:12px}.logo{width:46px;height:46px;min-width:46px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#0d265c);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:11pt}.hdr-txt{flex:1}.hdr-gov{font-size:7.5pt;color:#555;text-transform:uppercase;letter-spacing:.5px}.hdr-sec{font-size:11pt;font-weight:800;color:#1a3a6b;text-transform:uppercase}.hdr-dep{font-size:8.5pt;color:#666}' +
+    '.hdr{display:flex;align-items:center;gap:15px;border-bottom:2px solid #1a3a6b;padding-bottom:10px;margin-bottom:12px}.hdr-txt{flex:1}.hdr-gov{font-size:7.5pt;color:#555;text-transform:uppercase;letter-spacing:.5px}.hdr-sec{font-size:11pt;font-weight:800;color:#1a3a6b;text-transform:uppercase}.hdr-dep{font-size:8.5pt;color:#666}' +
     '.tbar{background:#1a3a6b;color:#fff;text-align:center;padding:6px 15px;border-radius:4px;margin-bottom:12px;font-size:11pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px}' +
     '.sec-title{font-size:10pt;font-weight:bold;color:#1a3a6b;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:2px;margin:12px 0 6px 0}' +
     '.info-table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:9.5pt}.info-table td{padding:3px 0;vertical-align:top}.info-table .lbl{font-weight:bold;color:#444;width:15%;padding-right:5px}.info-table .val{width:35%;border-bottom:1px solid #f0f0f0}' +
     '.obs-block{background:#fffaf0;border-left:4px solid #f59e0b;padding:8px 12px;font-size:9pt;white-space:pre-wrap;line-height:1.4;margin-bottom:10px}' +
     '.legal-text{font-size:9.5pt;line-height:1.45;text-align:justify;text-indent:2em;margin-bottom:6px;color:#222}' +
     '.bottom-container{position:fixed;bottom:0;left:0;right:0;background:#fff;padding-top:10px;}' +
-    '.sig-container{display:flex;flex-direction:column;align-items:center;margin-bottom:15px;}.sig-city{font-size:9.5pt;color:#333;margin-bottom:25px;text-align:center;}.sig-line{width:280px;border-top:1px solid #222;margin-bottom:5px;}.sig-name{font-size:9.5pt;font-weight:bold;color:#111;text-align:center;}.sig-role{font-size:8.5pt;color:#555;text-align:center;}' +
     '.ft{border-top:1px solid #1a3a6b;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:#777}.ft-logo{font-weight:bold;color:#1a3a6b}' +
-    'body{padding-bottom:120px;}' + // Add padding so content doesn't overlap the fixed bottom-container
+    'body{padding-bottom:50px;}' +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
 
   var h = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n<meta charset="UTF-8">\n' +
     '<title>Relat&oacute;rio de Monitoramento &mdash; ' + numero + '</title>\n' +
     '<style>' + css + '</style>\n</head>\n<body>\n' +
-    '<div class="hdr"><div class="logo">RO</div><div class="hdr-txt">' +
+    '<div class="hdr"><div class="hdr-txt">' +
     '<div class="hdr-gov">Governo do Estado de Rond&ocirc;nia</div>' +
     '<div class="hdr-sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>' +
     '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div></div></div>' +
@@ -3654,12 +3652,6 @@ function imprimirManifestoTCE() {
 
   // Bottom Fixed Container
   h += '<div class="bottom-container">' +
-       '<div class="sig-container">' +
-       '<div class="sig-city">Porto Velho &ndash; RO, ' + todayLong + '</div>' +
-       '<div class="sig-line"></div>' +
-       '<div class="sig-name">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios (CAM)</div>' +
-       '<div class="sig-role">SEDUC-RO / Governo do Estado de Rond&ocirc;nia</div>' +
-       '</div>' +
        '<div class="ft"><span class="ft-logo">SEDUC-RO / CAM</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
        '</div>'; // end bottom-container
 
