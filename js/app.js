@@ -3562,17 +3562,14 @@ function imprimirManifestoTCE() {
   };
   var isOn = function(v) { return v===true||v===1||v==='1'||v==='true'; };
 
-  var today     = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
+  var today = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
   var todayLong = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'long',year:'numeric'});
 
   var numero    = ff(p.numero)      || 'S/N';
   var municipio = ff(p.municipio)   || '&mdash;';
   var escola    = ff(p.interessado) || '&mdash;';
   var objeto    = ff(p.objeto)      || '&mdash;';
-  var ano       = ff(p.ano);
-  var agrup     = ff(p.agrupamento);
-  var dataProc  = ff(p.data) ? new Date(p.data+'T12:00:00').toLocaleDateString('pt-BR') : '';
-  var status    = ff(p.status);
+  var ano       = ff(p.ano)         || '&mdash;';
   var obs       = ff(p.obs);
   var detItens  = ff(p.detalhamentoItens);
   var demaisObs = ff(p.demaisObservacoes);
@@ -3590,28 +3587,18 @@ function imprimirManifestoTCE() {
       : '<span style="color:#dc2626;font-weight:700">&#10008; N&atilde;o</span>';
   };
 
-  // Infraestrutura em linha
-  var infra = [];
-  if (ff(p.qtdeSala))   infra.push('<b>'+ff(p.qtdeSala)+'</b> sala(s) &ndash; '+( ff(p.tipoSala)||'padr&atilde;o'));
-  if (ff(p.auditorio))  infra.push('Audit&oacute;rio: '+ff(p.auditorio)+(ff(p.tipoAuditorio)?' ('+ff(p.tipoAuditorio)+')':''));
-  if (ff(p.quadra))     infra.push('Quadra: '+ff(p.quadra));
-  if (ff(p.patio))      infra.push('P&aacute;tio: '+ff(p.patio));
-  if (ff(p.refeitorio)) infra.push('Refeit&oacute;rio: '+ff(p.refeitorio));
-  if (ff(p.banheiros))  infra.push('Banheiros: '+ff(p.banheiros));
-  if (ff(p.metragemM2)) infra.push('Metragem: <b>'+ff(p.metragemM2)+'</b>');
-  var infraTxt = infra.join(' &nbsp;&bull;&nbsp; ');
+  // Infraestrutura (Objetivo)
+  var infraRows = [];
+  if (ff(p.qtdeSala))   infraRows.push('<tr><td class="lbl">Salas:</td><td><b>'+ff(p.qtdeSala)+'</b> ('+(ff(p.tipoSala)||'padr&atilde;o')+')</td></tr>');
+  if (ff(p.auditorio))  infraRows.push('<tr><td class="lbl">Audit&oacute;rio:</td><td>'+ff(p.auditorio)+(ff(p.tipoAuditorio)?' ('+ff(p.tipoAuditorio)+')':'')+'</td></tr>');
+  if (ff(p.quadra))     infraRows.push('<tr><td class="lbl">Quadra:</td><td>'+ff(p.quadra)+'</td></tr>');
+  if (ff(p.patio))      infraRows.push('<tr><td class="lbl">P&aacute;tio:</td><td>'+ff(p.patio)+'</td></tr>');
+  if (ff(p.refeitorio)) infraRows.push('<tr><td class="lbl">Refeit&oacute;rio:</td><td>'+ff(p.refeitorio)+'</td></tr>');
+  if (ff(p.banheiros))  infraRows.push('<tr><td class="lbl">Banheiros:</td><td>'+ff(p.banheiros)+'</td></tr>');
+  if (ff(p.metragemM2)) infraRows.push('<tr><td class="lbl">Metragem:</td><td><b>'+ff(p.metragemM2)+'</b></td></tr>');
+  var infraTable = infraRows.length > 0 ? '<table class="infra-table">' + infraRows.join('') + '</table>' : '';
 
-  // Diretor
-  var diretor = '';
-  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
-    var esc = _escolasCache.find(function(e){
-      return (e.nome&&p.interessado&&e.nome.toLowerCase().includes(p.interessado.toLowerCase()))||
-             (e.municipio&&p.municipio&&e.municipio.toLowerCase()===p.municipio.toLowerCase());
-    });
-    if (esc && esc.diretor) diretor = esc.diretor;
-  }
-
-  // Texto legal simplificado (construÃ­do com entidades HTML para evitar encoding)
+  // Texto legal simplificado
   var textoLegal =
     'A legisla&ccedil;&atilde;o brasileira, em especial a Constitui&ccedil;&atilde;o Federal (arts.&nbsp;205 e 211), a Lei de Diretrizes e Bases da Educa&ccedil;&atilde;o (Lei n&ordm;&nbsp;9.394/1996) e a Lei do Fundeb (Lei n&ordm;&nbsp;14.113/2020), consagram o regime de colabora&ccedil;&atilde;o entre os entes federados para a garantia do direito &agrave; educa&ccedil;&atilde;o de qualidade. No &acirc;mbito estadual, a Lei n&ordm;&nbsp;5.735/2024 institui o Programa de Alfabetiza&ccedil;&atilde;o de Rond&ocirc;nia em coopera&ccedil;&atilde;o com os munic&iacute;pios, contemplando o Eixo 2 de infraestrutura f&iacute;sica e pedag&oacute;gica.' +
     '<br><br>' +
@@ -3619,54 +3606,48 @@ function imprimirManifestoTCE() {
 
   // â”€â”€ HTML FINAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var css =
-    '@page{size:A4 portrait;margin:12mm 14mm 12mm 16mm}' +
+    '@page{size:A4 portrait;margin:15mm 20mm 15mm 20mm}' + // Margem padrÃ£o (aprox 1.5 a 2cm)
     '*{box-sizing:border-box;margin:0;padding:0}' +
-    'body{font-family:"Times New Roman",Times,serif;font-size:9pt;color:#1a1a1a;background:#fff;line-height:1.4}' +
+    'body{font-family:"Arial",sans-serif;font-size:10pt;color:#111;background:#fff;line-height:1.5}' +
     // Header
-    '.hdr{display:flex;align-items:flex-start;gap:10px;border-bottom:3px solid #1a3a6b;padding-bottom:8px;margin-bottom:10px}' +
-    '.logo{width:40px;height:40px;min-width:40px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#0d265c);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:10pt;font-family:Arial,sans-serif}' +
+    '.hdr{display:flex;align-items:flex-start;gap:15px;border-bottom:2px solid #1a3a6b;padding-bottom:10px;margin-bottom:15px}' +
+    '.logo{width:50px;height:50px;min-width:50px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#0d265c);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:12pt}' +
     '.hdr-txt{flex:1}' +
-    '.hdr-gov{font-size:6.5pt;color:#555;text-transform:uppercase;letter-spacing:.5px;font-family:Arial,sans-serif}' +
-    '.hdr-sec{font-size:10pt;font-weight:800;color:#1a3a6b;text-transform:uppercase;font-family:Arial,sans-serif}' +
-    '.hdr-dep{font-size:7pt;color:#666;font-family:Arial,sans-serif}' +
+    '.hdr-gov{font-size:8pt;color:#555;text-transform:uppercase;letter-spacing:.5px}' +
+    '.hdr-sec{font-size:12pt;font-weight:800;color:#1a3a6b;text-transform:uppercase}' +
+    '.hdr-dep{font-size:9pt;color:#666}' +
     // Auth box (top right)
-    '.auth-box{min-width:130px;background:#f8faff;border:1px solid #c7d2fe;border-radius:5px;padding:5px 10px;font-family:Arial,sans-serif;font-size:7.5pt}' +
-    '.auth-box .auth-title{font-weight:800;color:#1a3a6b;font-size:7pt;text-transform:uppercase;border-bottom:1px solid #c7d2fe;padding-bottom:3px;margin-bottom:4px;letter-spacing:.4px}' +
-    '.auth-row{display:flex;justify-content:space-between;gap:6px;margin-bottom:2px}' +
+    '.auth-box{min-width:140px;background:#f8faff;border:1px solid #c7d2fe;border-radius:6px;padding:6px 12px;font-size:9pt}' +
+    '.auth-box .auth-title{font-weight:800;color:#1a3a6b;font-size:8pt;text-transform:uppercase;border-bottom:1px solid #c7d2fe;padding-bottom:4px;margin-bottom:6px;letter-spacing:.5px;text-align:center}' +
+    '.auth-row{display:flex;justify-content:space-between;gap:10px;margin-bottom:3px}' +
     '.auth-row span:first-child{color:#444;font-weight:600}' +
     // Title bar
-    '.tbar{background:linear-gradient(135deg,#1a3a6b,#0d265c);color:#fff;text-align:center;padding:6px 12px;border-radius:4px;margin-bottom:8px;font-size:9.5pt;font-weight:800;text-transform:uppercase;letter-spacing:.6px;font-family:Arial,sans-serif}' +
-    // Proc info strip
-    '.proc-strip{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;font-size:7.5pt;font-family:Arial,sans-serif;color:#333;border-bottom:1px solid #ddd;padding-bottom:6px}' +
-    '.ps-item{display:flex;gap:4px;align-items:center}' +
-    '.ps-label{font-weight:700;color:#1a3a6b}' +
+    '.tbar{background:#1a3a6b;color:#fff;text-align:center;padding:8px 15px;border-radius:4px;margin-bottom:15px;font-size:12pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px}' +
     // Section
-    '.sec-title{font-size:8pt;font-weight:800;color:#1a3a6b;text-transform:uppercase;letter-spacing:.5px;border-left:3px solid #1a3a6b;padding-left:6px;margin:9px 0 4px;font-family:Arial,sans-serif}' +
-    // Table
-    '.dt{width:100%;border-collapse:collapse;font-size:8.5pt}' +
-    '.dt th,.dt td{border:1px solid #c8d3e8;padding:3.5px 8px;vertical-align:top}' +
-    '.dt th{background:#eef2ff;font-weight:700;color:#1a3a6b;width:30%;white-space:nowrap;font-family:Arial,sans-serif;font-size:8pt}' +
-    '.dt tr:nth-child(even) td{background:#f8faff}' +
-    // Valor
-    '.vbox{display:inline-block;background:#f0f9ff;border:1px solid #93c5fd;border-radius:3px;padding:1px 7px;font-weight:700;color:#0c4a6e;font-family:Arial,sans-serif;font-size:8.5pt}' +
-    // Infra pill
-    '.infra{background:#f0fdf4;border:1px solid #86efac;border-radius:3px;padding:5px 8px;font-size:8pt;color:#1a3a1a;line-height:1.6;font-family:Arial,sans-serif}' +
+    '.sec-title{font-size:11pt;font-weight:bold;color:#1a3a6b;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px;margin:20px 0 10px 0}' +
+    // Info Table
+    '.info-table{width:100%;border-collapse:collapse;margin-bottom:15px;font-size:10pt}' +
+    '.info-table td{padding:6px 0;vertical-align:top}' +
+    '.info-table .lbl{font-weight:bold;color:#444;width:20%;padding-right:10px}' +
+    '.info-table .val{width:80%;border-bottom:1px solid #f0f0f0}' +
+    // Infra Table
+    '.infra-table{width:100%;border-collapse:collapse;background:#f8f9fa;border:1px solid #e9ecef;border-radius:4px;font-size:9.5pt}' +
+    '.infra-table td{padding:5px 10px;border-bottom:1px solid #e9ecef}' +
+    '.infra-table .lbl{font-weight:bold;color:#555;width:20%}' +
     // Det / Obs
-    '.det{background:#fffbf0;border-left:3px solid #f59e0b;padding:5px 8px;font-size:8.5pt;white-space:pre-wrap;line-height:1.4;margin-bottom:4px}' +
-    '.obs-b{background:#f0fdf4;border-left:3px solid #16a34a;padding:5px 8px;font-size:8.5pt;white-space:pre-wrap;line-height:1.4;margin-bottom:4px}' +
+    '.text-block{background:#fdfbf7;border:1px solid #f2e6d9;padding:10px;font-size:10pt;white-space:pre-wrap;line-height:1.5;border-radius:4px;margin-bottom:15px}' +
+    '.obs-block{background:#fdfdfd;border-left:4px solid #f59e0b;padding:10px 15px;font-size:9.5pt;white-space:pre-wrap;line-height:1.5;background:#fffaf0;margin-bottom:15px}' +
     // Legal text
-    '.legal{font-size:9pt;line-height:1.55;text-align:justify;text-indent:1.2cm;margin-bottom:4px;color:#1a1a1a}' +
-    '.legal-box{border-top:1px solid #ccc;padding-top:7px;margin-top:9px}' +
+    '.legal-text{font-size:10pt;line-height:1.6;text-align:justify;text-indent:2em;margin-bottom:10px;color:#222}' +
     // Signature
-    '.sig{margin-top:12px;display:flex;justify-content:space-between;align-items:flex-end;font-family:Arial,sans-serif}' +
-    '.sig-city{font-size:8pt;color:#333}' +
-    '.sig-box{text-align:center;min-width:230px}' +
-    '.sig-line{border-top:1px solid #333;margin:0 16px 4px}' +
-    '.sig-name{font-size:8pt;font-weight:700;color:#1a1a1a}' +
-    '.sig-role{font-size:7pt;color:#555}' +
+    '.sig-container{margin-top:40px;display:flex;flex-direction:column;align-items:center}' +
+    '.sig-city{font-size:10pt;color:#333;margin-bottom:30px}' +
+    '.sig-line{width:300px;border-top:1px solid #222;margin-bottom:8px}' +
+    '.sig-name{font-size:10pt;font-weight:bold;color:#111;text-align:center}' +
+    '.sig-role{font-size:9pt;color:#555;text-align:center}' +
     // Footer
-    '.ft{margin-top:9px;border-top:2px solid #1a3a6b;padding-top:4px;display:flex;justify-content:space-between;align-items:center;font-size:6.5pt;color:#666;font-family:Arial,sans-serif}' +
-    '.ft-logo{font-weight:800;color:#1a3a6b;font-size:7.5pt}' +
+    '.ft{margin-top:30px;border-top:1px solid #1a3a6b;padding-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:8pt;color:#777}' +
+    '.ft-logo{font-weight:bold;color:#1a3a6b}' +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
 
   var h = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n<meta charset="UTF-8">\n' +
@@ -3679,12 +3660,12 @@ function imprimirManifestoTCE() {
   h += '<div class="hdr-txt">';
   h += '<div class="hdr-gov">Governo do Estado de Rond&ocirc;nia</div>';
   h += '<div class="hdr-sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>';
-  h += '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM / GDSM</div>';
+  h += '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div>';
   h += '</div>';
 
   // AUTH BOX â€” top right
   h += '<div class="auth-box">';
-  h += '<div class="auth-title">&#128274; Autoriza&ccedil;&atilde;o</div>';
+  h += '<div class="auth-title">Autoriza&ccedil;&atilde;o</div>';
   h += '<div class="auth-row"><span>CAM:</span>' + simNao(p.cam) + '</div>';
   h += '<div class="auth-row"><span>Gabinete:</span>' + simNao(p.gab) + '</div>';
   h += '<div class="auth-row"><span>Casa Civil:</span>' + simNao(p.cc) + '</div>';
@@ -3692,77 +3673,65 @@ function imprimirManifestoTCE() {
   h += '</div>'; // end hdr
 
   // â”€â”€ TITLE BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="tbar">&#128202; Relat&oacute;rio de Monitoramento &mdash; SEDUC / CAM</div>';
-
-  // â”€â”€ PROCESS STRIP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="proc-strip">';
-  h += '<div class="ps-item"><span class="ps-label">Proc.&nbsp;N&ordm;</span><strong>' + numero + '</strong></div>';
-  h += '<div class="ps-item"><span class="ps-label">Munic&iacute;pio:</span>' + municipio + '</div>';
-  h += '<div class="ps-item"><span class="ps-label">Categoria:</span>' + categ + '</div>';
-  h += '<div class="ps-item"><span class="ps-label">Tipo:</span>' + tipo + '</div>';
-  if (status) h += '<div class="ps-item"><span class="ps-label">Status:</span>' + status + '</div>';
-  if (ano)    h += '<div class="ps-item"><span class="ps-label">Ano:</span>' + ano + '</div>';
-  if (agrup)  h += '<div class="ps-item"><span class="ps-label">Agrup.:</span>' + agrup + '</div>';
-  if (dataProc) h += '<div class="ps-item"><span class="ps-label">Data:</span>' + dataProc + '</div>';
-  h += '<div class="ps-item"><span class="ps-label">Emiss&atilde;o:</span>' + today + '</div>';
-  h += '</div>';
+  h += '<div class="tbar">RELAT&Oacute;RIO DE MONITORAMENTO</div>';
 
   // â”€â”€ IDENTIFICATION TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="sec-title">&#128194; Identifica&ccedil;&atilde;o do Processo</div>';
-  h += '<table class="dt">';
-  h += '<tr><th>Entidade / Escola</th><td><strong>' + escola + '</strong></td></tr>';
-  if (diretor) h += '<tr><th>Diretor(a)</th><td>' + diretor + '</td></tr>';
-  h += '<tr><th>Objeto</th><td>' + objeto + '</td></tr>';
+  h += '<table class="info-table">';
+  h += '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td></tr>';
+  h += '<tr><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>';
+  h += '<tr><td class="lbl">Escola:</td><td class="val">' + escola + '</td></tr>';
+  h += '<tr><td class="lbl">Objeto:</td><td class="val">' + objeto + '</td></tr>';
+  h += '<tr><td class="lbl">Ano:</td><td class="val">' + ano + '</td></tr>';
+  h += '<tr><td class="lbl">Categoria:</td><td class="val">' + categ + '</td></tr>';
+  h += '<tr><td class="lbl">Tipo:</td><td class="val">' + tipo + '</td></tr>';
   if (valorOf || valorPlan) {
-    h += '<tr><th>Valores</th><td>';
-    if (valorOf)   h += 'Oficial: <span class="vbox">' + valorOf + '</span>';
-    if (valorOf && valorPlan) h += ' &nbsp;&nbsp; ';
-    if (valorPlan) h += 'Planilha: <span class="vbox">' + valorPlan + '</span>';
-    h += '</td></tr>';
+      h += '<tr><td class="lbl">Valores:</td><td class="val">';
+      if (valorOf) h += 'Oficial: <strong>' + valorOf + '</strong>';
+      if (valorOf && valorPlan) h += ' &nbsp;|&nbsp; ';
+      if (valorPlan) h += 'Planilha: <strong>' + valorPlan + '</strong>';
+      h += '</td></tr>';
   }
   h += '</table>';
 
-  // â”€â”€ INFRAESTRUTURA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  if (infraTxt) {
-    h += '<div class="sec-title">&#127979; Infraestrutura</div>';
-    h += '<div class="infra">' + infraTxt + '</div>';
+  // â”€â”€ INFRAESTRUTURA (OBJETIVO) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  if (infraTable) {
+    h += '<div class="sec-title">Detalhes da Infraestrutura</div>';
+    h += infraTable;
   }
 
   // â”€â”€ ITENS SOLICITADOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   if (detItens) {
-    h += '<div class="sec-title">&#128230; Itens Solicitados</div>';
-    h += '<div class="det">' + detItens + '</div>';
+    h += '<div class="sec-title">Itens Solicitados (Quantitativo)</div>';
+    h += '<div class="text-block">' + detItens + '</div>';
   }
 
   // â”€â”€ OBSERVAÃ‡Ã•ES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  var obsAll = [obs, demaisObs].filter(Boolean).join('\n');
+  var obsAll = [obs, demaisObs].filter(Boolean).join('\n\n');
   if (obsAll) {
-    h += '<div class="sec-title">&#128221; Observa&ccedil;&otilde;es</div>';
-    h += '<div class="obs-b">' + obsAll + '</div>';
+    h += '<div class="sec-title">Observa&ccedil;&otilde;es Espec&iacute;ficas</div>';
+    h += '<div class="obs-block">' + obsAll + '</div>';
   }
 
   // â”€â”€ TEXTO LEGAL SIMPLIFICADO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="legal-box">';
-  h += '<div class="sec-title">&#9878;&#65039; Manifesta&ccedil;&atilde;o Fundamentada</div>';
-  h += '<p class="legal">' + textoLegal + '</p>';
-  h += '</div>';
+  h += '<div class="sec-title">Fundamenta&ccedil;&atilde;o e Manifesta&ccedil;&atilde;o</div>';
+  h += '<p class="legal-text">' + textoLegal + '</p>';
 
   // â”€â”€ ASSINATURA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="sig">';
+  h += '<div class="sig-container">';
   h += '<div class="sig-city">Porto Velho &ndash; RO, ' + todayLong + '</div>';
-  h += '<div class="sig-box"><div class="sig-line"></div>';
+  h += '<div class="sig-line"></div>';
   h += '<div class="sig-name">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios (CAM)</div>';
   h += '<div class="sig-role">SEDUC-RO / Governo do Estado de Rond&ocirc;nia</div>';
-  h += '</div></div>';
+  h += '</div>';
 
   // â”€â”€ RODAPÃ‰ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   h += '<div class="ft">';
-  h += '<span class="ft-logo">SEDUC-RO &middot; CAM</span>';
-  h += '<span>Relat&oacute;rio Gerencial de Monitoramento &mdash; Lei Est. n&ordm;&nbsp;5.735/2024 &mdash; Regime de Colabora&ccedil;&atilde;o</span>';
-  h += '<span>' + today + '</span>';
+  h += '<span class="ft-logo">SEDUC-RO / CAM</span>';
+  h += '<span>Relat&oacute;rio Gerencial de Monitoramento</span>';
+  h += '<span>Emitido em: ' + today + '</span>';
   h += '</div>';
 
-  h += '</body></html>';
+  h += '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
 
   var win = window.open('', '_blank');
   if (!win) { alert('Permita popups para gerar o relat\u00f3rio.'); return; }
