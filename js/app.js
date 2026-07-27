@@ -1,4 +1,4 @@
-
+﻿
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
@@ -42,7 +42,7 @@ function alternarGuiaFormulario(guia) {
 window.alternarGuiaFormulario = alternarGuiaFormulario;
 
 // ============================================================
-// SEDUC — App Principal (Router + UI)
+// SEDUC â€” App Principal (Router + UI)
 // ============================================================
 
 // ---- Estado global ----
@@ -94,7 +94,7 @@ function checkAlertasADM(processos) {
     const overlay = document.getElementById('modal-alertas-overlay');
     if (!content || !overlay) { console.warn('[ALERTA] modal-alertas-overlay nao encontrado no DOM'); return; }
     content.innerHTML = `
-      <p style="color: #f0f4ff; margin-bottom: 16px; font-size: 14px;">Você tem <strong>${comAlerta.length}</strong> processo(s) com apontamento pendente:</p>
+      <p style="color: #f0f4ff; margin-bottom: 16px; font-size: 14px;">VocÃª tem <strong>${comAlerta.length}</strong> processo(s) com apontamento pendente:</p>
       <div style="max-height: 300px; overflow-y: auto; padding-right: 4px;">
         ${listHtml}
       </div>
@@ -107,7 +107,7 @@ window.fecharModalAlertas = () => {
   if (m) m.style.display = 'none';
 };
 
-// ---- NAVEGAÇÃO ----
+// ---- NAVEGAÃ‡ÃƒO ----
 function navegar(pagina) {
   state.page = pagina;
   document.querySelectorAll('.nav-item').forEach(el => {
@@ -124,12 +124,12 @@ function navegar(pagina) {
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
-    escolas: '🏫 Escolas',
-    'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia'
+    escolas: 'ðŸ« Escolas',
+    'mapa-escolas': 'ðŸ—ºï¸ Mapa de Escolas de RondÃ´nia'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
-  // Atualizar conteúdo
+  // Atualizar conteÃºdo
   if (pagina === 'dashboard') renderDashboard();
   if (pagina === 'processos') renderProcessos();
   if (pagina === 'novo') renderFormulario();
@@ -148,7 +148,7 @@ function navegar(pagina) {
 
 // ---- TOAST ----
 function toast(msg, tipo = 'info') {
-  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  const icons = { success: 'âœ…', error: 'âŒ', info: 'â„¹ï¸' };
   const div = document.createElement('div');
   div.className = `toast ${tipo}`;
   div.innerHTML = `<span>${icons[tipo]}</span> ${msg}`;
@@ -206,8 +206,8 @@ function renderDashboard() {
   let datasValidas = [];
   
   processos.forEach(p => {
-    // Apenas considerar processos não encerrados/concluídos para o alerta de data antiga
-    const isEncerrado = ['pago', 'encerrado', 'concluído', 'cancelado', 'duplicado'].includes(normalizar(p.status));
+    // Apenas considerar processos nÃ£o encerrados/concluÃ­dos para o alerta de data antiga
+    const isEncerrado = ['pago', 'encerrado', 'concluÃ­do', 'cancelado', 'duplicado'].includes(normalizar(p.status));
     
     if (!p.data || String(p.data).trim() === '') {
       if (!isEncerrado) processosSemData++;
@@ -236,16 +236,16 @@ function renderDashboard() {
     
     if (elDataAntigaList) {
       elDataAntigaList.innerHTML = oldestProcesses.map(d => {
-        // Link que abre a tela de processos filtrando pelo número
+        // Link que abre a tela de processos filtrando pelo nÃºmero
         const encodedNum = encodeURIComponent(d.num || '');
         return `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:1px solid rgba(255,255,255,0.06); padding:5px 0;">
           <span style="color:#94a3b8; min-width:90px;">${d.original}</span>
-          <span style="color:#f8fafc; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.municipio || 'S/ Município'}</span>
+          <span style="color:#f8fafc; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.municipio || 'S/ MunicÃ­pio'}</span>
           <span style="color:#60a5fa; font-weight:700; min-width:60px; text-align:center;">${d.prefixo || '-'}</span>
           <a href="#" onclick="event.preventDefault(); state.filtros.busca='${(d.num||'').replace(/'/g,'')}'; navegar('processos');" 
              style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:2px 10px; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap; transition:background 0.2s;" 
              onmouseover="this.style.background='rgba(59,130,246,0.35)'" 
-             onmouseout="this.style.background='rgba(59,130,246,0.15)'">🔗 VER</a>
+             onmouseout="this.style.background='rgba(59,130,246,0.15)'">ðŸ”— VER</a>
         </div>`;
       }).join('');
     }
@@ -254,10 +254,10 @@ function renderDashboard() {
     if (elDataAntigaList) elDataAntigaList.innerHTML = '';
   }
 
-  // --- Gráfico de Acessos ---
+  // --- GrÃ¡fico de Acessos ---
   renderChartAcessosDashboard();
 
-  // Gráfico: Status
+  // GrÃ¡fico: Status
   const statusCounts = {};
   processos.forEach(p => {
     const s = p.status || 'Sem status';
@@ -334,16 +334,16 @@ function renderDashboard() {
     }
   });
 
-  // Gráfico: Categoria
+  // GrÃ¡fico: Categoria
   const catCounts = {};
   processos.forEach(p => {
     let c = String(p.categoria || '').trim().toUpperCase();
     if (!c) {
-      c = 'NÃO INFORMADO';
+      c = 'NÃƒO INFORMADO';
     } else {
       if (c === 'F') c = 'FOMENTO';
-      else if (c === 'C') c = 'CONVÊNIO';
-      else if (c === 'T') c = 'TERMO DE COOPERAÇÃO';
+      else if (c === 'C') c = 'CONVÃŠNIO';
+      else if (c === 'T') c = 'TERMO DE COOPERAÃ‡ÃƒO';
       else if (c === 'O') c = 'OUTRO';
     }
     catCounts[c] = (catCounts[c] || 0) + 1;
@@ -354,10 +354,10 @@ function renderDashboard() {
 
   const colorsCatMap = {
     'FOMENTO': '#3b82f6',
-    'CONVÊNIO': '#10b981',
-    'TERMO DE COOPERAÇÃO': '#8b5cf6',
+    'CONVÃŠNIO': '#10b981',
+    'TERMO DE COOPERAÃ‡ÃƒO': '#8b5cf6',
     'OUTRO': '#06b6d4',
-    'NÃO INFORMADO': '#64748b'
+    'NÃƒO INFORMADO': '#64748b'
   };
   const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
 
@@ -424,12 +424,12 @@ function renderDashboard() {
     }
   });
 
-  // Gráfico: Tipo
+  // GrÃ¡fico: Tipo
   const tipoCounts = {};
   processos.forEach(p => {
     let t = String(p.tipo || '').trim().toUpperCase();
     if (!t) {
-      t = 'NÃO INFORMADO';
+      t = 'NÃƒO INFORMADO';
     } else {
       if (t === 'OB') t = 'OBRAS';
       else if (t === 'MP') t = 'MATERIAL PERMANENTE';
@@ -451,7 +451,7 @@ function renderDashboard() {
     'SISTEMA': '#a855f7',
     'TREINAMENTO': '#10b981',
     'OUTROS': '#f43f5e',
-    'NÃO INFORMADO': '#64748b'
+    'NÃƒO INFORMADO': '#64748b'
   };
   const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
 
@@ -518,7 +518,7 @@ function renderDashboard() {
     }
   });
 
-  // Gráfico: Todos Municípios por valor
+  // GrÃ¡fico: Todos MunicÃ­pios por valor
   const munValor = {};
   processos.forEach(p => {
     if (p.municipio) munValor[p.municipio] = (munValor[p.municipio] || 0) + (p.valorOf || 0);
@@ -536,7 +536,7 @@ function renderDashboard() {
   chartMunicipio = new Chart(ctxMun, {
     type: 'bar',
     data: {
-      labels: allMun.map(([m]) => m.length > 18 ? m.slice(0,18)+'…' : m),
+      labels: allMun.map(([m]) => m.length > 18 ? m.slice(0,18)+'â€¦' : m),
       datasets: [{
         label: 'Valor (R$)',
         data: allMun.map(([,v]) => v),
@@ -557,7 +557,7 @@ function renderDashboard() {
     }
   });
 
-  // Gráfico: Prefixo (LT, Cgoi, IeCH, ClJs...)
+  // GrÃ¡fico: Prefixo (LT, Cgoi, IeCH, ClJs...)
     const prefixoCounts = {};
     processos.forEach(p => {
       const pr = (p.prefixo || 'OUTROS').trim().toUpperCase();
@@ -601,7 +601,7 @@ function renderDashboard() {
       });
     }
 
-    // Localização
+    // LocalizaÃ§Ã£o
   const locCount = {};
   processos.forEach(p => {
     if (p.localizacao && p.localizacao !== '.') locCount[p.localizacao] = (locCount[p.localizacao] || 0) + 1;
@@ -625,7 +625,7 @@ function renderDashboard() {
 }
 
 async function renderChartAcessosDashboard() {
-  // Pizza removida — apenas gráfico de barras proporcional
+  // Pizza removida â€” apenas grÃ¡fico de barras proporcional
   if (chartAcessos) { chartAcessos.destroy(); chartAcessos = null; }
 
   try {
@@ -642,7 +642,7 @@ async function renderChartAcessosDashboard() {
     console.log('[ACESSOS] Dados brutos da API:', JSON.stringify(acessos.map(a => ({nome: a.nome, nivel: a.nivel, contagem: a.contagem}))));
 
     // ---- Usar o campo 'contagem' real da planilha (CONTAGEM ACESSO) ----
-    // Parsing robusto: trata string vazia, ponto, vírgula decimal
+    // Parsing robusto: trata string vazia, ponto, vÃ­rgula decimal
     const parseContagem = (val) => {
       if (!val && val !== 0) return 0;
       const str = String(val).trim().replace(/\./g, '').replace(',', '.');
@@ -659,19 +659,19 @@ async function renderChartAcessosDashboard() {
       }))
       .sort((a, b) => b.contagem - a.contagem);
 
-    console.log('[ACESSOS] Usuários processados:', usuarios);
+    console.log('[ACESSOS] UsuÃ¡rios processados:', usuarios);
 
     // Totais por categoria (contagem real)
     const totalAcessos = usuarios.reduce((s, u) => s + u.contagem, 0) || 1;
     const totalEditor  = usuarios.filter(u => u.nivel === 'editor').reduce((s, u) => s + u.contagem, 0);
     const totalLeitor  = usuarios.filter(u => u.nivel === 'leitor').reduce((s, u) => s + u.contagem, 0);
 
-    // ---- Limpar lista de badges (não usada) ----
+    // ---- Limpar lista de badges (nÃ£o usada) ----
     const elNomes = document.getElementById('lista-nomes-acessos');
     if (elNomes) elNomes.innerHTML = '';
 
-    // ---- Gráfico de barras VERTICAL proporcional (100% = total) ----
-    // Cada barra tem altura proporcional à sua participação no total de acessos
+    // ---- GrÃ¡fico de barras VERTICAL proporcional (100% = total) ----
+    // Cada barra tem altura proporcional Ã  sua participaÃ§Ã£o no total de acessos
     const barLabels = usuarios.map(u => u.nome);
     const barData   = usuarios.map(u => parseFloat(((u.contagem / totalAcessos) * 100).toFixed(2)));
     const barColors = usuarios.map(u => u.nivel === 'editor' ? '#10b981' : '#f59e0b');
@@ -709,7 +709,7 @@ async function renderChartAcessosDashboard() {
             },
             // Exibir o % em cima de cada barra
             datalabels: {
-              display: false // usa plugin chartjs-plugin-datalabels se disponível
+              display: false // usa plugin chartjs-plugin-datalabels se disponÃ­vel
             }
           },
           scales: {
@@ -789,13 +789,13 @@ function getFiltrados() {
   if (state.filtros.agrupamento) lista = lista.filter(p => normalizar(p.agrupamento) === normalizar(state.filtros.agrupamento));
   if (state.filtros.prefixo) lista = lista.filter(p => normalizar(p.prefixo).includes(normalizar(state.filtros.prefixo)));
 
-  // Filtros individuais de autorização
+  // Filtros individuais de autorizaÃ§Ã£o
   if (state.filtros.cam) lista = lista.filter(p => p.CAM === '1');
   if (state.filtros.gab) lista = lista.filter(p => p.GAB === '1');
   if (state.filtros.cc)  lista = lista.filter(p => p.CC  === '1');
 
 
-  // Ordenação
+  // OrdenaÃ§Ã£o
   if (state.sortCol) {
     lista.sort((a, b) => {
       let va = a[state.sortCol] || '';
@@ -820,7 +820,7 @@ function renderProcessos() {
   const inicio = (state.paginaAtual - 1) * state.itensPorPagina;
   const pagina = filtrados.slice(inicio, inicio + state.itensPorPagina);
 
-  // Preencher filtros dinâmicos
+  // Preencher filtros dinÃ¢micos
   preencherSelectFiltro('filtro-ano',         [...new Set(carregarProcessos().map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(carregarProcessos().map(p => p.agrupamento).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-status',      [...new Set(carregarProcessos().map(p => p.status).filter(s => s && s !== '.'))].sort());
@@ -835,7 +835,7 @@ function renderProcessos() {
     dlFiltroPfx.innerHTML = pfxs.map(v => `<option value="${v}">`).join('');
   }
 
-  // Preencher datalists do formulário
+  // Preencher datalists do formulÃ¡rio
   const preencherDatalist = (id, prop) => {
     const dl = document.getElementById(id);
     if (dl) {
@@ -859,14 +859,14 @@ function renderProcessos() {
           <!-- Linha 1: PREFIXO -->
           <div style="display: flex; align-items: center; white-space: nowrap;">
             <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'}" style="flex-shrink: 0; font-size: 11px; padding: 2px 6px;">
-              ${p.prefixo || '—'}
+              ${p.prefixo || 'â€”'}
             </span>
           </div>
-          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÃO -->
+          <!-- Linha 2: CATEGORIA; TIPO; MARCAÃ‡ÃƒO -->
           <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
-            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">📌</span>' : ''}
+            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver ObservaÃ§Ãµes" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">ðŸ“Œ</span>' : ''}
           </div>
           <!-- Linha 3: CAM; GAB; CC -->
           <div style="display: flex; gap: 6px; align-items: center; margin-top: 1px;">
@@ -878,35 +878,35 @@ function renderProcessos() {
       </td>
       <td class="col-municipio">${hl(p.municipio, busca)}</td>
       <td class="col-numero">
-        ${hl(p.numero, busca) || '—'}
+        ${hl(p.numero, busca) || 'â€”'}
         ${p.ano ? `<span style="margin-left: 4px; padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 10px; color: #cbd5e1;">${p.ano}</span>` : ''}
       </td>
-      <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || '—'}</td>
-      <td class="col-objeto" title="${p.objeto}">${p.objeto || '—'}</td>
-      <td><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
-      <td>${p.localizacao || '—'}</td>
+      <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || 'â€”'}</td>
+      <td class="col-objeto" title="${p.objeto}">${p.objeto || 'â€”'}</td>
+      <td><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'â€”'}</span></td>
+      <td>${p.localizacao || 'â€”'}</td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
       <td>${formatDate(p.data)}</td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
-        <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">✏️</button>
-        <button class="btn btn-ghost btn-sm" onclick="confirmarExcluir('${p.id}')" title="Excluir" style="color: var(--red); margin-left: 4px;">🗑️</button>
+        <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">âœï¸</button>
+        <button class="btn btn-ghost btn-sm" onclick="confirmarExcluir('${p.id}')" title="Excluir" style="color: var(--red); margin-left: 4px;">ðŸ—‘ï¸</button>
       </td>
     </tr>
   `).join('') || `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9">
       <div class="empty-state">
-        <div class="empty-icon">🔍</div>
+        <div class="empty-icon">ðŸ”</div>
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente ajustar os filtros</p>
       </div>
     </tr>`;
 
-  // Info paginação
+  // Info paginaÃ§Ã£o
   document.getElementById('pg-info').textContent = total === 0
     ? 'Nenhum resultado'
-    : `Exibindo ${inicio + 1}–${Math.min(inicio + state.itensPorPagina, total)} de ${total} processos`;
+    : `Exibindo ${inicio + 1}â€“${Math.min(inicio + state.itensPorPagina, total)} de ${total} processos`;
 
-  // Controles paginação
+  // Controles paginaÃ§Ã£o
   renderPaginacao(totalPags);
 
   // Total valor filtrado
@@ -917,7 +917,7 @@ function renderProcessos() {
   const elQtd = document.getElementById('qtd-registros-filtrados');
   if (elQtd) elQtd.textContent = `${total.toLocaleString('pt-BR')} ${total === 1 ? 'registro' : 'registros'}`;
 
-  // Botão exportar
+  // BotÃ£o exportar
   const btnExportar = document.getElementById('btn-exportar');
   if (btnExportar) {
     btnExportar.onclick = () => exportarExcel(filtrados);
@@ -936,8 +936,8 @@ function preencherSelectFiltro(id, opcoes) {
   const atual = sel.value;
   let placeholder = 'Todos';
   if (id === 'filtro-status') placeholder = 'Status';
-  else if (id === 'filtro-localizacao') placeholder = 'Localização';
-  else if (id === 'filtro-municipio') placeholder = 'Município';
+  else if (id === 'filtro-localizacao') placeholder = 'LocalizaÃ§Ã£o';
+  else if (id === 'filtro-municipio') placeholder = 'MunicÃ­pio';
   else if (id === 'filtro-objeto') placeholder = 'Objeto';
   else if (id === 'filtro-ano') placeholder = 'Ano';
 
@@ -957,7 +957,7 @@ function renderPaginacao(totalPags) {
     container.appendChild(btn);
   };
 
-  addBtn('‹', state.paginaAtual - 1, state.paginaAtual === 1);
+  addBtn('â€¹', state.paginaAtual - 1, state.paginaAtual === 1);
 
   let start = Math.max(1, state.paginaAtual - 2);
   let end   = Math.min(totalPags, start + 4);
@@ -965,10 +965,10 @@ function renderPaginacao(totalPags) {
 
   for (let i = start; i <= end; i++) addBtn(i, i, false, i === state.paginaAtual);
 
-  addBtn('›', state.paginaAtual + 1, state.paginaAtual === totalPags || totalPags === 0);
+  addBtn('â€º', state.paginaAtual + 1, state.paginaAtual === totalPags || totalPags === 0);
 }
 
-// ---- FORMULÁRIO / MÁSCARAS ----
+// ---- FORMULÃRIO / MÃSCARAS ----
 function maskProcesso(v) {
   v = v.replace(/\D/g, "");
   if (v.length > 16) v = v.substring(0, 16);
@@ -1013,12 +1013,12 @@ function adicionarCampoNumero(val = '') {
   container.appendChild(div);
 }
 
-// ---- FORMULÁRIO ----
+// ---- FORMULÃRIO ----
 function renderFormulario() {
   const processo = state.editandoId ? buscarProcessoPorId(state.editandoId) : null;
   const p = processo || {};
 
-  // Preencher selects do formulário
+  // Preencher selects do formulÃ¡rio
   const fillSelect = (id, lista, val) => {
     const s = document.getElementById(id);
     if (!s) return;
@@ -1061,7 +1061,7 @@ function renderFormulario() {
       }
     }
 
-    // Processar array de números
+    // Processar array de nÃºmeros
     const containerNum = document.getElementById('container-numeros');
     containerNum.innerHTML = '';
     const numeros = p.numero ? p.numero.split(',').map(s => s.trim()).filter(Boolean) : [];
@@ -1072,7 +1072,7 @@ function renderFormulario() {
         containerNum.innerHTML = `
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;" value="${num}">
-            <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar número">+</button>
+            <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar nÃºmero">+</button>
           </div>
         `;
       } else {
@@ -1140,7 +1140,7 @@ function renderFormulario() {
     document.getElementById('container-numeros').innerHTML = `
       <div style="display:flex;gap:8px;align-items:center;">
         <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;">
-        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar número">+</button>
+        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar nÃºmero">+</button>
       </div>
     `;
     contatosTemporarios = [];
@@ -1164,7 +1164,7 @@ function renderFormulario() {
 
   document.getElementById('form-title').textContent = processo ? 'Editar Processo' : 'Novo Processo';
 
-  // Lógica de Apontamento e Histórico
+  // LÃ³gica de Apontamento e HistÃ³rico
   const currentSessao = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
   const userNivel = currentSessao ? currentSessao.nivel : 'leitor';
 
@@ -1178,11 +1178,11 @@ function renderFormulario() {
     const dataEdicao = p.dataHoraEdicao || '';
     
     if (nomeEdicao || dataEdicao) {
-      if (nomeDiv) nomeDiv.innerHTML = `👤 ${nomeEdicao}`;
-      if (dataDiv) dataDiv.innerHTML = `📅 ${dataEdicao}`;
+      if (nomeDiv) nomeDiv.innerHTML = `ðŸ‘¤ ${nomeEdicao}`;
+      if (dataDiv) dataDiv.innerHTML = `ðŸ“… ${dataEdicao}`;
     } else {
       if (nomeDiv) nomeDiv.innerHTML = `<span style="font-style: italic; color: var(--text-muted);">Sem registros</span>`;
-      if (dataDiv) dataDiv.innerHTML = '—';
+      if (dataDiv) dataDiv.innerHTML = 'â€”';
     }
   } else {
     if (legendDiv) legendDiv.style.display = 'none';
@@ -1211,11 +1211,11 @@ function updateFormToggleColors() {
 function salvarFormulario(e) {
   e.preventDefault();
   
-  // Obter todos os números preenchidos
+  // Obter todos os nÃºmeros preenchidos
   const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
   const numerosJoined = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ');
 
-  // Capturar contato digitado mas não adicionado (sem clicar no '+')
+  // Capturar contato digitado mas nÃ£o adicionado (sem clicar no '+')
   const zapEl = document.getElementById('form-contato-whatsapp');
   const detEl = document.getElementById('form-contato-detalhes');
   if (zapEl && detEl) {
@@ -1288,7 +1288,7 @@ function salvarFormulario(e) {
   }
 
   if (!dados.interessado && !dados.numero) {
-    toast('Informe ao menos o Nº do Processo ou o Interessado.', 'error');
+    toast('Informe ao menos o NÂº do Processo ou o Interessado.', 'error');
     return;
   }
 
@@ -1321,7 +1321,7 @@ function abrirDetalhe(id) {
   if (p.contatos && p.contatos.length > 0) {
     contatosHtml = `
       <div class="card" style="margin-bottom:16px">
-        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">📞 Contatos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">ðŸ“ž Contatos</h4>
         <div style="display:flex;flex-direction:column;gap:8px">
           ${p.contatos.map(c => {
             const numeroLimpo = c.whatsapp.replace(/\D/g, '');
@@ -1348,7 +1348,7 @@ function abrirDetalhe(id) {
   if (userNivel === 'leitor') {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">📝 Novo Apontamento</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">ðŸ“ Novo Apontamento</h4>
         <textarea id="modal-apontamento-texto" placeholder="Digite seu apontamento..." style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:12px;"></textarea>
         <button onclick="salvarApontamentoModal('${p.id}')" id="btn-salvar-apont" style="width:100%; padding:10px; border-radius:6px; border:none; background:#22c55e; color:#fff; font-weight:bold; cursor:pointer;">Salvar Apontamento</button>
       </div>
@@ -1356,7 +1356,7 @@ function abrirDetalhe(id) {
   } else if (userNivel === 'adm' && p.apontamento) {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">📝 Histórico de Apontamentos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">ðŸ“ HistÃ³rico de Apontamentos</h4>
         <div style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; white-space:pre-wrap; min-height:60px;">${p.apontamento}</div>
       </div>
     `;
@@ -1367,7 +1367,7 @@ function abrirDetalhe(id) {
     <div class="detail-header" style="display:flex; flex-direction:column; gap:20px;">
       <div style="display:flex; gap:12px; width:100%;">
         ${p.numero ? `
-        <button style="flex:1; padding:12px; font-size:16px; display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; background:#3b82f6; color:#ffffff; cursor:pointer;" onclick="copiarProcessoSelecionado()" title="Copiar Número">
+        <button style="flex:1; padding:12px; font-size:16px; display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; background:#3b82f6; color:#ffffff; cursor:pointer;" onclick="copiarProcessoSelecionado()" title="Copiar NÃºmero">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar
         </button>
         <a href="https://sei.sistemas.ro.gov.br/sip/login.php?sigla_orgao_sistema=RO&sigla_sistema=SEI" target="_blank" class="btn btn-ghost" style="flex:1; padding:12px; display:flex; align-items:center; justify-content:center; background:white; border:1px solid var(--border); border-radius:6px;" title="Acessar SEI">
@@ -1379,7 +1379,7 @@ function abrirDetalhe(id) {
         </button>
       </div>
 
-      <!-- Indicadores de Autorização (Estilo Moderno) -->
+      <!-- Indicadores de AutorizaÃ§Ã£o (Estilo Moderno) -->
       <div style="display:flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-top: 4px; margin-bottom: 4px;">
         <div style="display:flex; align-items: center; gap: 8px;">
           <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${p.CAM === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 8px ${p.CAM === '1' ? '#10b981' : '#ef4444'};"></div>
@@ -1412,25 +1412,25 @@ function abrirDetalhe(id) {
                 `).join('')}
               </div>`;
             }
-            return '<span style="font-size:14px;font-weight:600">Sem número</span>';
+            return '<span style="font-size:14px;font-weight:600">Sem nÃºmero</span>';
           })()}
         </div>
-        <div class="detail-nome" style="font-size:18px; margin-bottom:8px;">${p.interessado || '—'}</div>
+        <div class="detail-nome" style="font-size:18px; margin-bottom:8px;">${p.interessado || 'â€”'}</div>
         <div>
-          <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span>
+          <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'â€”'}</span>
         </div>
       </div>
     </div>
     <div class="info-grid">
-      <div class="info-item"><label>Município</label><p>${p.municipio || '—'}</p></div>
-      <div class="info-item"><label>Objeto</label><p>${p.objeto || '—'}</p></div>
-      <div class="info-item"><label>Localização</label><p>${p.localizacao || '—'}</p></div>
+      <div class="info-item"><label>MunicÃ­pio</label><p>${p.municipio || 'â€”'}</p></div>
+      <div class="info-item"><label>Objeto</label><p>${p.objeto || 'â€”'}</p></div>
+      <div class="info-item"><label>LocalizaÃ§Ã£o</label><p>${p.localizacao || 'â€”'}</p></div>
       <div class="info-item"><label>Data</label><p>${formatDate(p.data)}</p></div>
     </div>
 
 
     <div class="card" style="margin-bottom:16px">
-      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">💰 Execução Financeira</h4>
+      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">ðŸ’° ExecuÃ§Ã£o Financeira</h4>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
         <div>
           <div style="font-size:11px;color:var(--text-muted)">Valor Oficial</div>
@@ -1441,7 +1441,7 @@ function abrirDetalhe(id) {
           <div style="font-size:18px;font-weight:700;color:var(--green)">${formatCurrency(p.valorPlan)}</div>
         </div>
         <div>
-          <div style="font-size:11px;color:var(--text-muted)">Diferença</div>
+          <div style="font-size:11px;color:var(--text-muted)">DiferenÃ§a</div>
           <div style="font-size:18px;font-weight:700;color:${(p.diferenca||0) < 0 ? 'var(--red)' : 'var(--yellow)'}">${formatCurrency(p.diferenca)}</div>
         </div>
       </div>
@@ -1449,21 +1449,21 @@ function abrirDetalhe(id) {
 
     ${p.marca === '1' || p.marca === 'SIM' ? `
       <div class="card" style="margin-bottom:16px; border: 2px solid var(--blue); background: rgba(59, 130, 246, 0.08); display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(59,130,246,0.15);">
-        <span style="font-size: 24px;">📌</span>
+        <span style="font-size: 24px;">ðŸ“Œ</span>
         <div>
-          <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para Atenção!</strong>
-          <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observações abaixo.</p>
+          <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para AtenÃ§Ã£o!</strong>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observaÃ§Ãµes abaixo.</p>
         </div>
       </div>
     ` : ''}
 
     ${p.obs ? `
       <div class="card" style="margin-bottom:16px; ${p.marca === '1' || p.marca === 'SIM' ? 'border: 1px solid var(--blue); background: rgba(59, 130, 246, 0.03);' : ''}">
-        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">📝 Observações</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">ðŸ“ ObservaÃ§Ãµes</h4>
         <p style="color:var(--text-secondary);font-size:14px">${p.obs}</p>
       </div>
     ` : ''}
-    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">🗒️ Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
+    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">ðŸ—’ï¸ AnotaÃ§Ã£o</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
     ${apontamentoHtml}
@@ -1498,7 +1498,7 @@ window.salvarApontamentoModal = function(id) {
   }).catch(err => {
       console.error(err);
       if (btn) { btn.disabled = false; btn.textContent = 'Salvar Apontamento'; }
-      toast('Erro de conexão.', 'error');
+      toast('Erro de conexÃ£o.', 'error');
   });
 };
 
@@ -1522,7 +1522,7 @@ window.gravarApontamentoImediato = function() {
   const btn = document.getElementById('btn-gravar-apontamento-edicao');
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<span>⏳</span> Gravando...';
+    btn.innerHTML = '<span>â³</span> Gravando...';
   }
 
   fetch(API_BASE + `/api/registros/${id}/apontamento`, {
@@ -1534,7 +1534,7 @@ window.gravarApontamentoImediato = function() {
   .then(resData => {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>💾</span> Gravar';
+      btn.innerHTML = '<span>ðŸ’¾</span> Gravar';
     }
     
     if (resData.sucesso) {
@@ -1566,14 +1566,14 @@ window.gravarApontamentoImediato = function() {
     console.error(err);
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>💾</span> Gravar';
+      btn.innerHTML = '<span>ðŸ’¾</span> Gravar';
     }
-    toast('Erro de conexão ao gravar apontamento.', 'error');
+    toast('Erro de conexÃ£o ao gravar apontamento.', 'error');
   });
 };
 
 window.limparApontamentoEdicao = function() {
-  if (confirm('Tem certeza de que deseja limpar todo o histórico de apontamentos deste processo?')) {
+  if (confirm('Tem certeza de que deseja limpar todo o histÃ³rico de apontamentos deste processo?')) {
     const txtHistorico = document.getElementById('form-historico-acumulado-texto');
     if (txtHistorico) {
       txtHistorico.value = '';
@@ -1582,7 +1582,7 @@ window.limparApontamentoEdicao = function() {
     const chk = document.getElementById('form-alerta-toggle');
     if (chk) chk.checked = false;
 
-    toast('Histórico limpo localmente. Clique em Salvar Processo para confirmar a limpeza na planilha.', 'info');
+    toast('HistÃ³rico limpo localmente. Clique em Salvar Processo para confirmar a limpeza na planilha.', 'info');
   }
 };
 
@@ -1604,17 +1604,17 @@ function novoProcesso() {
 function confirmarExcluir(id) {
   const p = buscarProcessoPorId(id);
   if (!p) return;
-  const ident = p.numero || p.interessado || 'Sem Identificação';
+  const ident = p.numero || p.interessado || 'Sem IdentificaÃ§Ã£o';
   if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excluído permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
+    if (confirm(`âš ï¸ ATENÃ‡ÃƒO: ISSO Ã‰ IRREVERSÃVEL!\n\nEste registro serÃ¡ excluÃ­do permanentemente da planilha do Google e nÃ£o poderÃ¡ ser recuperado. Deseja realmente prosseguir?`)) {
       excluirProcesso(id);
-      toast('Processo excluído com sucesso.', 'info');
+      toast('Processo excluÃ­do com sucesso.', 'info');
       navegar('processos');
     }
   }
 }
 
-// ---- IMPORTAÇÃO ----
+// ---- IMPORTAÃ‡ÃƒO ----
 function setupImportacao() {
   const zone = document.getElementById('import-zone');
   const input = document.getElementById('import-input');
@@ -1648,19 +1648,19 @@ async function processarArquivo(file) {
     const result = await importarExcel(file);
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
-        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação concluída!</h3>
+        <h3 style="color:var(--green);margin-bottom:12px">âœ… ImportaÃ§Ã£o concluÃ­da!</h3>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:14px">
           <div><span style="color:var(--text-muted)">Total na planilha:</span><br><strong>${result.total}</strong></div>
           <div><span style="color:var(--text-muted)">Novos importados:</span><br><strong style="color:var(--green)">${result.novos}</strong></div>
           <div><span style="color:var(--text-muted)">Duplicados ignorados:</span><br><strong style="color:var(--yellow)">${result.duplicados}</strong></div>
         </div>
-        <button class="btn btn-primary" style="margin-top:16px" onclick="navegar('processos')">Ver Processos →</button>
+        <button class="btn btn-primary" style="margin-top:16px" onclick="navegar('processos')">Ver Processos â†’</button>
       </div>`;
     toast(`${result.novos} processos importados!`, 'success');
   } catch (err) {
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(239,68,68,0.3)">
-        <h3 style="color:var(--red)">❌ Erro na importação</h3>
+        <h3 style="color:var(--red)">âŒ Erro na importaÃ§Ã£o</h3>
         <p style="color:var(--text-muted);margin-top:8px">${err.message}</p>
       </div>`;
     toast('Erro ao importar arquivo.', 'error');
@@ -1682,28 +1682,28 @@ async function processarLinkGoogleSheets() {
     const result = await importarGoogleSheets(url);
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
-        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação do GSheets concluída!</h3>
+        <h3 style="color:var(--green);margin-bottom:12px">âœ… ImportaÃ§Ã£o do GSheets concluÃ­da!</h3>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:14px">
           <div><span style="color:var(--text-muted)">Total lidos:</span><br><strong>${result.total}</strong></div>
           <div><span style="color:var(--text-muted)">Novos importados:</span><br><strong style="color:var(--green)">${result.novos}</strong></div>
           <div><span style="color:var(--text-muted)">Duplicados ignorados:</span><br><strong style="color:var(--yellow)">${result.duplicados}</strong></div>
         </div>
-        <button class="btn btn-primary" style="margin-top:16px" onclick="navegar('processos')">Ver Processos →</button>
+        <button class="btn btn-primary" style="margin-top:16px" onclick="navegar('processos')">Ver Processos â†’</button>
       </div>`;
     toast(`${result.novos} processos importados do GSheets!`, 'success');
   } catch (err) {
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(239,68,68,0.3)">
-        <h3 style="color:var(--red)">❌ Erro no Google Sheets</h3>
+        <h3 style="color:var(--red)">âŒ Erro no Google Sheets</h3>
         <p style="color:var(--text-muted);margin-top:8px">${err.message}</p>
       </div>`;
     toast('Erro ao importar Google Sheets.', 'error');
   }
 }
 
-// ---- INICIALIZAÇÃO ----
+// ---- INICIALIZAÃ‡ÃƒO ----
 document.addEventListener('DOMContentLoaded', () => {
-  // Navegação
+  // NavegaÃ§Ã£o
   document.querySelectorAll('[data-page]').forEach(el => {
     el.addEventListener('click', () => {
       if (el.dataset.page === 'novo') novoProcesso();
@@ -1711,9 +1711,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Formulário
+  // FormulÃ¡rio
   
-  // Listeners filtros autorização individuais
+  // Listeners filtros autorizaÃ§Ã£o individuais
   const setupFiltroToggle = (elId, campo) => {
     const el = document.getElementById(elId);
     if (!el) return;
@@ -1805,10 +1805,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProcessos();
   });
 
-  // Filtro prefixo — input em tempo real
+  // Filtro prefixo â€” input em tempo real
   document.getElementById('filtro-prefixo').addEventListener('input', e => aplicarFiltro('prefixo', e.target.value.trim()));
 
-  // Ordenação por coluna
+  // OrdenaÃ§Ã£o por coluna
   document.querySelectorAll('th[data-sort]').forEach(th => {
     th.addEventListener('click', () => {
       const col = th.dataset.sort;
@@ -1818,16 +1818,16 @@ document.addEventListener('DOMContentLoaded', () => {
         state.sortCol = col;
         state.sortDir = 'asc';
       }
-      document.querySelectorAll('th[data-sort]').forEach(t => t.textContent = t.textContent.replace(/ [▲▼]$/,''));
-      th.textContent += state.sortDir === 'asc' ? ' ▲' : ' ▼';
+      document.querySelectorAll('th[data-sort]').forEach(t => t.textContent = t.textContent.replace(/ [â–²â–¼]$/,''));
+      th.textContent += state.sortDir === 'asc' ? ' â–²' : ' â–¼';
       renderProcessos();
     });
   });
 
-  // Importação
+  // ImportaÃ§Ã£o
   setupImportacao();
 
-  // Preencher selects de filtro com status e localização
+  // Preencher selects de filtro com status e localizaÃ§Ã£o
   const fillSelectFiltro = (id, lista) => {
     const s = document.getElementById(id);
     if (!s) return;
@@ -1836,7 +1836,7 @@ document.addEventListener('DOMContentLoaded', () => {
   fillSelectFiltro('filtro-status',      STATUS_LIST.filter(s => s !== '.'));
   fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
 
-  // Máscara de Celular (WhatsApp)
+  // MÃ¡scara de Celular (WhatsApp)
   const shareNum = document.getElementById("share-whatsapp-number");
   if (shareNum) {
     shareNum.addEventListener("input", (e) => {
@@ -1861,11 +1861,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Página inicial
+  // PÃ¡gina inicial
   navegar('dashboard');
 });
 
-// ---- EXPORTAÇÃO ----
+// ---- EXPORTAÃ‡ÃƒO ----
 function exportarExcel() {
   const filtrados = getFiltrados();
   if (filtrados.length === 0) {
@@ -1875,12 +1875,12 @@ function exportarExcel() {
 
   const data = filtrados.map(p => ({
     "Prefixo": p.prefixo || '',
-    "Município": p.municipio || '',
-    "Nº Processo": p.numero || '',
+    "MunicÃ­pio": p.municipio || '',
+    "NÂº Processo": p.numero || '',
     "Interessado": p.interessado || '',
     "Objeto": p.objeto || '',
     "Status": p.status || '',
-    "Localização": p.localizacao || '',
+    "LocalizaÃ§Ã£o": p.localizacao || '',
     "Valor Oficial": p.valorOf || 0,
     "Valor Planilha": p.valorPlan || 0,
     "Data": p.data ? formatDate(p.data) : ''
@@ -1907,9 +1907,9 @@ function exportarPDF() {
   const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const userElement = document.getElementById('user-name');
   const userName = userElement ? userElement.textContent : 'Admin';
-  const dateTimeStr = "Impresso em: " + dateStr + " às " + timeStr + " | Usuário: " + userName;
+  const dateTimeStr = "Impresso em: " + dateStr + " Ã s " + timeStr + " | UsuÃ¡rio: " + userName;
 
-  const tableColumn = ["Prefixo", "Município", "Nº Processo", "Interessado", "Objeto", "Status", "Localização", "Valor Oficial", "Data"];
+  const tableColumn = ["Prefixo", "MunicÃ­pio", "NÂº Processo", "Interessado", "Objeto", "Status", "LocalizaÃ§Ã£o", "Valor Oficial", "Data"];
   
   const tableRows = filtrados.map(p => {
     const num = p.numero ? p.numero.replace(/, /g, '\n') : '';
@@ -1938,9 +1938,9 @@ function exportarPDF() {
     didDrawPage: function (data) {
       doc.setFontSize(12);
       doc.setTextColor(40);
-      doc.text("CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
+      doc.text("CAM - COORDENADORIA DE ARTICULAÃ‡ÃƒO COM OS MUNICÃPIOS | SEDUC - RO", 14, 20);
       
-      const str = "Página " + data.pageNumber + " de " + totalPagesExp;
+      const str = "PÃ¡gina " + data.pageNumber + " de " + totalPagesExp;
       doc.setFontSize(8);
       doc.setTextColor(100);
       
@@ -1971,7 +1971,7 @@ window.addEventListener('beforeprint', () => {
   const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const el = document.getElementById('print-date-time');
   if (el) {
-    el.innerHTML = "Emitido em: " + dateStr + ", às " + timeStr;
+    el.innerHTML = "Emitido em: " + dateStr + ", Ã s " + timeStr;
   }
 });
 
@@ -1993,7 +1993,7 @@ function adicionarContato() {
   const det = detEl.value.trim();
   
   if (!zap) {
-    toast('Preencha o número do WhatsApp', 'error');
+    toast('Preencha o nÃºmero do WhatsApp', 'error');
     return;
   }
   
@@ -2021,10 +2021,10 @@ function renderizarContatosForm() {
     const whatsappFormatado = maskCelular(numeroLimpo);
     
     div.innerHTML = "<div style=\"display:flex; flex-direction:column; gap:2px;\">" +
-      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">📞 " + whatsappFormatado + "</span>" +
+      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">ðŸ“ž " + whatsappFormatado + "</span>" +
       (c.detalhes ? "<span style=\"color:var(--text-secondary); font-size:12px;\">" + c.detalhes + "</span>" : "") +
       "</div>" +
-      "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">❌</button>";
+      "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">âŒ</button>";
       
     container.appendChild(div);
   });
@@ -2033,20 +2033,20 @@ function renderizarContatosForm() {
 
 
 
-// ---- FUN��O PARA COPIAR PROCESSO SELECIONADO ----
+// ---- FUNï¿½ï¿½O PARA COPIAR PROCESSO SELECIONADO ----
 window.copiarProcessoSelecionado = function() {
   const radio = document.querySelector('input[name="modal_processo_radio"]:checked');
   if (radio) {
     navigator.clipboard.writeText(radio.value);
-    toast('N�mero copiado!', 'success');
+    toast('Nï¿½mero copiado!', 'success');
   } else {
-    toast('Nenhum n�mero selecionado', 'error');
+    toast('Nenhum nï¿½mero selecionado', 'error');
   }
 };
 
 
 
-// ==================== IMPRESSÕES ====================
+// ==================== IMPRESSÃ•ES ====================
 
 
 function getFormattedDateForTitle() {
@@ -2064,7 +2064,7 @@ function getCommonHeader(subtitle) {
   return `
     <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left;">
-        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
+        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÃ‡ÃƒO COM OS MUNICÃPIOS | SEDUC - RO</h2>
       </div>
       <div style="text-align:right;">
         <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>
@@ -2167,9 +2167,9 @@ window.imprimirPadrao = function() {
               </colgroup>
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">NÂº</th>
                   <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÃPIO</th>
                   <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
                   <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
                   <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
@@ -2253,7 +2253,7 @@ window.imprimirDetalhado = function() {
       <div style="flex:1; border:2px solid #000; background:#f8fafc; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">VALOR TOTAL CONSOLIDADO</div>
         <div style="font-size:14px; font-weight:bold; color:#000; margin:5px 0;">${formatCurrency(total)}</div>
-        <div style="font-size:7px; color:#000;">${filtrados.length} processos únicos</div>
+        <div style="font-size:7px; color:#000;">${filtrados.length} processos Ãºnicos</div>
       </div>
       <div style="flex:1; border:2px solid #000; background:#f0fdf4; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">PROCESSOS AUTORIZADOS</div>
@@ -2315,9 +2315,9 @@ window.imprimirDetalhado = function() {
   
             <thead>
             <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">NÂº</th>
               <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÃPIO</th>
               <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
               <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
               <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
@@ -2369,16 +2369,16 @@ window.imprimirDetalhado = function() {
       </div>
       <div style="flex:1; font-size:11px; line-height:1.5;">
         <strong>Leitura executiva:</strong><br>
-        • ${(valAutorizados / (total||1) * 100).toFixed(1)}% do valor consolidado já consta como AUTORIZADO.<br>
-        • ${qtdReabertos > 0 ? 'Reabertos: ' + formatCurrency(valReabertos) + '.' : 'Não há processos reabertos nesta seleção.'}<br>
-        • ${qtdOutros > 0 ? 'Existem ' + qtdOutros + ' processos em outras situações.' : 'Todos os processos estão resolvidos.'}
+        â€¢ ${(valAutorizados / (total||1) * 100).toFixed(1)}% do valor consolidado jÃ¡ consta como AUTORIZADO.<br>
+        â€¢ ${qtdReabertos > 0 ? 'Reabertos: ' + formatCurrency(valReabertos) + '.' : 'NÃ£o hÃ¡ processos reabertos nesta seleÃ§Ã£o.'}<br>
+        â€¢ ${qtdOutros > 0 ? 'Existem ' + qtdOutros + ' processos em outras situaÃ§Ãµes.' : 'Todos os processos estÃ£o resolvidos.'}
       </div>
     </div>
   `;
 
   const html = `
     <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
-      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('RELATÓRIO DETALHADO DE PROCESSOS')}</td></tr></thead>
+      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('RELATÃ“RIO DETALHADO DE PROCESSOS')}</td></tr></thead>
       <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
         <div style="margin-top: 5mm;">
           ${cardsHtml}
@@ -2421,9 +2421,9 @@ window.imprimirAnalise = function() {
   let filtrosAplicados = [];
   if (fGeral) filtrosAplicados.push("Busca: '" + fGeral + "'");
   if (fStatus && fStatus !== 'Todos') filtrosAplicados.push("Status: " + fStatus);
-  if (fLocalizacao && fLocalizacao !== 'Todos') filtrosAplicados.push("Localização: " + fLocalizacao);
+  if (fLocalizacao && fLocalizacao !== 'Todos') filtrosAplicados.push("LocalizaÃ§Ã£o: " + fLocalizacao);
   if (fPrefixo && fPrefixo !== 'Todos') filtrosAplicados.push("Prefixo: " + fPrefixo);
-  if (fMunicipio && fMunicipio !== 'Todos') filtrosAplicados.push("Município: " + fMunicipio);
+  if (fMunicipio && fMunicipio !== 'Todos') filtrosAplicados.push("MunicÃ­pio: " + fMunicipio);
   
   const filtrosTexto = filtrosAplicados.length > 0 
     ? "Filtros aplicados (" + filtrosAplicados.join(', ') + ")" 
@@ -2472,13 +2472,13 @@ window.imprimirAnalise = function() {
 
   const html = `
     <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
-      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('ANÁLISE GERENCIAL')}</td></tr></thead>
+      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('ANÃLISE GERENCIAL')}</td></tr></thead>
       <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
         
         <div class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; margin-bottom:20px; font-size:12px; text-align:justify; line-height:1.6; padding:10px; border:1px solid #ccc;">
-          <strong>SÍNTESE ANALÍTICA:</strong> Parâmetros buscados: <em>${filtrosTexto}</em>.<br>O presente cenário totaliza <strong>${formatCurrency(total)}</strong> distribuídos em <strong>${filtrados.length}</strong> processos. 
-          Abaixo detalhamos a concentração de recursos por status, cruzando com a localização, 
-          permitindo identificar os principais setores responsáveis pela retenção de processos.
+          <strong>SÃNTESE ANALÃTICA:</strong> ParÃ¢metros buscados: <em>${filtrosTexto}</em>.<br>O presente cenÃ¡rio totaliza <strong>${formatCurrency(total)}</strong> distribuÃ­dos em <strong>${filtrados.length}</strong> processos. 
+          Abaixo detalhamos a concentraÃ§Ã£o de recursos por status, cruzando com a localizaÃ§Ã£o, 
+          permitindo identificar os principais setores responsÃ¡veis pela retenÃ§Ã£o de processos.
         </div>
 
         ${conteudoStatus}
@@ -2527,7 +2527,7 @@ function abrirModalAcesso(index = null) {
 
   if (index !== null) {
     const user = listaAcessos[index];
-    title.innerHTML = '<span>✏️</span> Editar Registro de Acesso';
+    title.innerHTML = '<span>âœï¸</span> Editar Registro de Acesso';
     rowInput.value = user._rowNumber;
     nomeInput.value = user.nome;
     whatsappInput.value = user.whatsapp || '';
@@ -2536,7 +2536,7 @@ function abrirModalAcesso(index = null) {
 
     // Habilitar campos
     nomeInput.disabled = false;
-    whatsappInput.disabled = true; // WhatsApp não pode ser alterado na edição
+    whatsappInput.disabled = true; // WhatsApp nÃ£o pode ser alterado na ediÃ§Ã£o
     nivelInput.disabled = false;
     senhaInput.disabled = false;
 
@@ -2562,7 +2562,7 @@ function cancelarEdicaoAcesso() {
 
   if (form) form.reset();
   if (rowInput) rowInput.value = '';
-  if (title) title.innerHTML = '<span>👤</span> Registro de Acesso';
+  if (title) title.innerHTML = '<span>ðŸ‘¤</span> Registro de Acesso';
 
   // Limpar e Desabilitar campos
   if (nomeInput) { nomeInput.value = ''; nomeInput.disabled = true; }
@@ -2585,7 +2585,7 @@ window.novoAcessoForm = function() {
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
   const btnSalvar = document.getElementById('btn-salvar-acesso');
 
-  if (title) title.innerHTML = '<span>➕</span> Novo Registro de Acesso';
+  if (title) title.innerHTML = '<span>âž•</span> Novo Registro de Acesso';
 
   // Habilitar campos
   if (nomeInput) nomeInput.disabled = false;
@@ -2608,7 +2608,7 @@ function renderListaAcessosUI() {
   if (!tbody) return;
 
   if (listaAcessos.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--text-muted);">Nenhum usuário cadastrado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--text-muted);">Nenhum usuÃ¡rio cadastrado.</td></tr>`;
     return;
   }
 
@@ -2634,10 +2634,10 @@ function renderListaAcessosUI() {
       `
     }[user.nivel] || `<span style="font-size:12px; font-weight:600; color:var(--text-primary);">${user.nivel}</span>`;
 
-    const whatsappDisplay = user.whatsapp || '—';
-    const senhaDisplay = user.senha || '—';
+    const whatsappDisplay = user.whatsapp || 'â€”';
+    const senhaDisplay = user.senha || 'â€”';
     const contagemDisplay = user.contagem || '0';
-    const dataDisplay = user.data || '—';
+    const dataDisplay = user.data || 'â€”';
 
     return `
       <tr style="border-bottom:1px solid var(--border);">
@@ -2685,7 +2685,7 @@ async function toggleStatusAcesso(rowNumber, isChecked) {
   renderListaAcessosUI();
 
   try {
-    if (!user) throw new Error('Usuário não encontrado.');
+    if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado.');
 
     const payload = {
       nome: user.nome,
@@ -2709,7 +2709,7 @@ async function toggleStatusAcesso(rowNumber, isChecked) {
       throw new Error(err.erro || 'Erro ao alterar status.');
     }
 
-    toast(`Acesso do usuário ${user.nome} foi ${status === 'liberado' ? 'ativado' : 'inativado'}!`, 'info');
+    toast(`Acesso do usuÃ¡rio ${user.nome} foi ${status === 'liberado' ? 'ativado' : 'inativado'}!`, 'info');
   } catch (error) {
     console.error(error);
     toast(error.message, 'error');
@@ -2787,7 +2787,7 @@ async function salvarAcessoForm(event) {
       throw new Error(err.erro || 'Erro ao salvar acesso.');
     }
 
-    toast(row ? 'Usuário atualizado!' : 'Usuário cadastrado!', 'success');
+    toast(row ? 'UsuÃ¡rio atualizado!' : 'UsuÃ¡rio cadastrado!', 'success');
     cancelarEdicaoAcesso();
     carregarAcessos();
   } catch (error) {
@@ -2797,7 +2797,7 @@ async function salvarAcessoForm(event) {
 }
 
 async function deletarAcesso(rowNumber, whatsapp) {
-  if (!confirm(`Deseja realmente excluir o acesso do usuário ${whatsapp}?`)) {
+  if (!confirm(`Deseja realmente excluir o acesso do usuÃ¡rio ${whatsapp}?`)) {
     return;
   }
 
@@ -2813,7 +2813,7 @@ async function deletarAcesso(rowNumber, whatsapp) {
       throw new Error(err.erro || 'Erro ao deletar acesso.');
     }
 
-    toast('Usuário removido com sucesso!', 'info');
+    toast('UsuÃ¡rio removido com sucesso!', 'info');
     carregarAcessos();
   } catch (error) {
     console.error(error);
@@ -2821,7 +2821,7 @@ async function deletarAcesso(rowNumber, whatsapp) {
   }
 }
 
-// ---- MÁSCARA E ENVIAR WHATSAPP ----
+// ---- MÃSCARA E ENVIAR WHATSAPP ----
 
 function maskCelular(v) {
   v = v.replace(/\D/g, "");
@@ -2844,12 +2844,12 @@ function enviarLinkWhatsApp() {
   const digits = inputVal.replace(/\D/g, "");
 
   if (digits.length < 10) {
-    toast('Por favor, informe um número de celular válido com DDD.', 'error');
+    toast('Por favor, informe um nÃºmero de celular vÃ¡lido com DDD.', 'error');
     return;
   }
 
   const phoneFormatted = digits.startsWith('55') ? digits : '55' + digits;
-  const textMsg = encodeURIComponent("Olá! Segue o link de acesso ao sistema de Acompanhamento de Processos da SEDUC-RO:\n\nhttps://tinhosys.github.io/seduc-processos/");
+  const textMsg = encodeURIComponent("OlÃ¡! Segue o link de acesso ao sistema de Acompanhamento de Processos da SEDUC-RO:\n\nhttps://tinhosys.github.io/seduc-processos/");
 
   const url = `https://web.whatsapp.com/send?phone=${phoneFormatted}&text=${textMsg}`;
   window.open(url, 'whatsapp_tab');
@@ -2863,20 +2863,20 @@ function renderProcessosRepetidos() {
 
   const processos = carregarProcessos();
 
-  // Agrupar processos pelo número
+  // Agrupar processos pelo nÃºmero
   const grupos = {};
   processos.forEach(p => {
     if (!p.numero) return;
     const numClean = p.numero.trim();
     
-    // Ignorar processos sem número ou com marcações genéricas de vazio
+    // Ignorar processos sem nÃºmero ou com marcaÃ§Ãµes genÃ©ricas de vazio
     if (
       numClean === "" || 
       numClean === "-" || 
-      numClean === "—" || 
+      numClean === "â€”" || 
       numClean.toLowerCase() === "s/n" || 
-      numClean.toLowerCase() === "s/nº" ||
-      numClean.toLowerCase() === "s/n°"
+      numClean.toLowerCase() === "s/nÂº" ||
+      numClean.toLowerCase() === "s/nÂ°"
     ) {
       return;
     }
@@ -2894,15 +2894,15 @@ function renderProcessosRepetidos() {
     }));
 
   if (badge) {
-    badge.textContent = `${repetidos.length} Números com Ocorrências Repetidas`;
+    badge.textContent = `${repetidos.length} NÃºmeros com OcorrÃªncias Repetidas`;
   }
 
   if (repetidos.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
-          <h3>🎉 Nenhum processo repetido encontrado!</h3>
-          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são únicos.</p>
+          <h3>ðŸŽ‰ Nenhum processo repetido encontrado!</h3>
+          <p style="margin-top: 6px;">Todos os nÃºmeros de processos vÃ¡lidos na planilha sÃ£o Ãºnicos.</p>
         </td>
       </tr>
     `;
@@ -2914,15 +2914,15 @@ function renderProcessosRepetidos() {
     const totalOcorrencias = grp.itens.length;
     const safeNumClass = grp.numero.replace(/[^a-zA-Z0-9]/g, '_');
     
-    // 1. Linha Pai: Exibe apenas o botão de expansão e o número do processo
+    // 1. Linha Pai: Exibe apenas o botÃ£o de expansÃ£o e o nÃºmero do processo
     html += `
       <tr style="background: rgba(30, 41, 59, 0.85); border-bottom: 1px solid var(--border);">
         <td style="padding: 12px; text-align: center; cursor: pointer; user-select: none; font-size: 14px; font-weight: 900; color: var(--blue);" onclick="toggleGrupoRepetidoTabela('${grp.numero}', this)">
-          ➕
+          âž•
         </td>
         <td colspan="6" style="padding: 12px; font-weight: 700; font-family: monospace; color: var(--text-primary); font-size: 14px;">
-          Nº PROCESSO: <span style="color: #60a5fa; letter-spacing: 0.5px;">${grp.numero}</span>
-          <span style="font-size: 11px; font-weight: 700; margin-left: 12px; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalOcorrencias} Ocorrências</span>
+          NÂº PROCESSO: <span style="color: #60a5fa; letter-spacing: 0.5px;">${grp.numero}</span>
+          <span style="font-size: 11px; font-weight: 700; margin-left: 12px; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalOcorrencias} OcorrÃªncias</span>
         </td>
       </tr>
     `;
@@ -2932,18 +2932,18 @@ function renderProcessosRepetidos() {
       html += `
         <tr class="filha-repetido-${safeNumClass}" style="display: none; background: rgba(0, 0, 0, 0.15); border-bottom: 1px solid rgba(255, 255, 255, 0.03); cursor: pointer; transition: background 0.15s;" onclick="editarProcesso('${p.id}')" title="Clique para editar este processo">
           <td style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 11px; font-weight: bold;">
-            —
+            â€”
           </td>
-          <td style="padding: 12px; font-weight: 600; color: var(--text-primary);">${p.prefixo || '—'}</td>
-          <td style="padding: 12px; color: var(--text-primary);">${p.municipio || '—'}</td>
+          <td style="padding: 12px; font-weight: 600; color: var(--text-primary);">${p.prefixo || 'â€”'}</td>
+          <td style="padding: 12px; color: var(--text-primary);">${p.municipio || 'â€”'}</td>
           <td style="padding: 12px; color: var(--text-primary); font-weight: 500;" title="${p.interessado || ''}">
-            ${p.interessado ? (p.interessado.length > 40 ? p.interessado.substring(0, 37) + '...' : p.interessado) : '—'}
+            ${p.interessado ? (p.interessado.length > 40 ? p.interessado.substring(0, 37) + '...' : p.interessado) : 'â€”'}
           </td>
           <td style="padding: 12px; color: var(--text-secondary);" title="${p.objeto || ''}">
-            ${p.objeto ? (p.objeto.length > 55 ? p.objeto.substring(0, 52) + '...' : p.objeto) : '—'}
+            ${p.objeto ? (p.objeto.length > 55 ? p.objeto.substring(0, 52) + '...' : p.objeto) : 'â€”'}
           </td>
           <td style="padding: 12px;">
-            <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span>
+            <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'â€”'}</span>
           </td>
           <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; padding-right: 16px;">
             R$ ${formatCurrency(p.valorOf)}
@@ -2968,14 +2968,14 @@ function toggleGrupoRepetidoTabela(numeroProcesso, btnElement) {
     linha.style.display = estaOculto ? 'table-row' : 'none';
   });
   
-  btnElement.textContent = estaOculto ? '➖' : '➕';
+  btnElement.textContent = estaOculto ? 'âž–' : 'âž•';
 }
 
 async function excluirProcessoDireto(id) {
-  if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta ação não pode ser desfeita e removerá o registro na planilha.")) {
+  if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta aÃ§Ã£o nÃ£o pode ser desfeita e removerÃ¡ o registro na planilha.")) {
     try {
       await excluirProcesso(id);
-      toast("Processo excluído com sucesso!", "success");
+      toast("Processo excluÃ­do com sucesso!", "success");
       if (typeof inicializarDados === 'function') {
         await inicializarDados();
       }
@@ -2997,7 +2997,7 @@ setTimeout(() => {
   document.getElementById('print-layout-analise').style.display = 'none';
 }, 1000);
 
-// ---- CONTROLE DE OCULTAR/MOSTRAR FILTROS E FORMULÁRIOS (PIN/ALFINETE) ----
+// ---- CONTROLE DE OCULTAR/MOSTRAR FILTROS E FORMULÃRIOS (PIN/ALFINETE) ----
 function toggleFiltros() {
   const bar = document.querySelector('#page-processos .filters-bar');
   const btn = document.getElementById('btn-toggle-filtros');
@@ -3005,12 +3005,12 @@ function toggleFiltros() {
   const isCollapsed = bar.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '📌 <span class="btn-text">Mostrar Filtros</span>';
+    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar Filtros</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('filters_collapsed', '1');
   } else {
-    btn.innerHTML = '📌 <span class="btn-text">Ocultar Filtros</span>';
+    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Ocultar Filtros</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('filters_collapsed');
@@ -3024,12 +3024,12 @@ function toggleFormAcesso() {
   const isCollapsed = card.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '📌 <span class="btn-text">Mostrar</span>';
+    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('form_acesso_collapsed', '1');
   } else {
-    btn.innerHTML = '📌 <span class="btn-text">Ocultar</span>';
+    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Ocultar</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('form_acesso_collapsed');
@@ -3043,11 +3043,11 @@ function toggleFormProcesso() {
   const isCollapsed = card.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '📌 <span class="btn-text">Mostrar Formulário</span>';
+    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar FormulÃ¡rio</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
   } else {
-    btn.innerHTML = '📌 <span class="btn-text">Ocultar Formulário</span>';
+    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Ocultar FormulÃ¡rio</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
   }
@@ -3073,7 +3073,7 @@ async function recarregarDadosGlobais() {
   }
 }
 
-// Inicialização dos estados colapsados de acordo com tela (mobile ou localStorage)
+// InicializaÃ§Ã£o dos estados colapsados de acordo com tela (mobile ou localStorage)
 function inicializarEstadosColapsaveis() {
   const isMobile = window.innerWidth <= 768;
   
@@ -3084,27 +3084,27 @@ function inicializarEstadosColapsaveis() {
   if (bar && btnFilters) {
     if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
       bar.classList.add('collapsed');
-      btnFilters.innerHTML = '📌 <span class="btn-text">Mostrar Filtros</span>';
+      btnFilters.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar Filtros</span>';
       btnFilters.style.borderColor = 'var(--blue)';
       btnFilters.style.color = 'var(--blue)';
     }
   }
   
-  // 2. Formulário Acessos
+  // 2. FormulÃ¡rio Acessos
   const savedAcessosCollapse = localStorage.getItem('form_acesso_collapsed');
   const cardAcessos = document.getElementById('card-form-acesso');
   const btnAcessos = document.getElementById('btn-toggle-form-acesso');
   if (cardAcessos && btnAcessos) {
     if (savedAcessosCollapse === '1' || (savedAcessosCollapse === null && isMobile)) {
       cardAcessos.classList.add('collapsed');
-      btnAcessos.innerHTML = '📌 <span class="btn-text">Mostrar</span>';
+      btnAcessos.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar</span>';
       btnAcessos.style.borderColor = 'var(--blue)';
       btnAcessos.style.color = 'var(--blue)';
     }
   }
 }
 
-// Chamar inicialização no DOMContentLoaded
+// Chamar inicializaÃ§Ã£o no DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   inicializarEstadosColapsaveis();
 });
@@ -3148,8 +3148,8 @@ function updateSegmentControl(group, activeValue) {
 function getActiveBgColor(group, val) {
   if (group === 'categoria') {
     if (val === 'F') return '#3b82f6'; // Fomento - Solid Blue
-    if (val === 'C') return '#10b981'; // Convênio - Solid Green
-    if (val === 'O' || val === 'T') return '#8b5cf6'; // Termo de Cooperação - Solid Purple
+    if (val === 'C') return '#10b981'; // ConvÃªnio - Solid Green
+    if (val === 'O' || val === 'T') return '#8b5cf6'; // Termo de CooperaÃ§Ã£o - Solid Purple
   } else if (group === 'tipo') {
     if (val === 'OB') return '#06b6d4'; // Obras - Solid Cyan
     if (val === 'MP') return '#f97316'; // Mat. Permanente - Solid Orange
@@ -3172,13 +3172,13 @@ function getCategoryBadge(categoria) {
     return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
   }
   if (char === 'C') {
-    return `<span class="badge-cat badge-cat-c" title="Categoria: Convênio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
+    return `<span class="badge-cat badge-cat-c" title="Categoria: ConvÃªnio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
   }
   if (char === 'O') {
     return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
   }
   if (char === 'T') {
-    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
+    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de CooperaÃ§Ã£o" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
   }
   return '';
 }
@@ -3213,15 +3213,15 @@ window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
 
 // ============================================================
-// MÓDULO: ESCOLAS (ADM ONLY)
+// MÃ“DULO: ESCOLAS (ADM ONLY)
 // ============================================================
 
 var _escolasCache = [];         // Todos os dados carregados
-var _escolasFiltradas = [];     // Dados após filtros
+var _escolasFiltradas = [];     // Dados apÃ³s filtros
 var _escolasPaginaAtual = 1;
 var _escolasItensPorPagina = 50;
 
-// Inicializa a página
+// Inicializa a pÃ¡gina
 function iniciarPaginaEscolas() {
   if (_escolasCache.length > 0) {
     _escolasAtualizarUI();
@@ -3230,7 +3230,7 @@ function iniciarPaginaEscolas() {
   buscarEscolasSheet(true);
 }
 
-// Recarrega forçando nova busca
+// Recarrega forÃ§ando nova busca
 function recarregarEscolas() {
   _escolasCache = [];
   _escolasFiltradas = [];
@@ -3294,8 +3294,8 @@ function _escolasPopularFiltros() {
   if (!selMun || !selLoc) return;
   const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
   const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
-  selMun.innerHTML = '<option value="">Município</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-  selLoc.innerHTML = '<option value="">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
+  selMun.innerHTML = '<option value="">MunicÃ­pio</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+  selLoc.innerHTML = '<option value="">LocalizaÃ§Ã£o</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
 }
 
 // Aplica filtros
@@ -3344,7 +3344,7 @@ function _escolasAtualizarUI() {
   if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
 
   if (!temDados) return;
-  if (badgeEl) badgeEl.textContent = '🏫 ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
+  if (badgeEl) badgeEl.textContent = 'ðŸ« ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
   if (_escolasFiltradas.length === 0) _escolasFiltradas = [..._escolasCache];
   _escolasRenderTabela();
   _escolasRenderPaginacao();
@@ -3363,12 +3363,12 @@ window.inserirDataHoje = inserirDataHoje;
 
 
 // ============================================================
-// SEDUC — Gerador de Manifestação Técnica & Relatório Sintético TCE-RO
+// SEDUC â€” Gerador de ManifestaÃ§Ã£o TÃ©cnica & RelatÃ³rio SintÃ©tico TCE-RO
 // ============================================================
 
 
 // ============================================================
-// SEDUC — Gerador de Manifestação Técnica & Relatório A4/PDF (TCE-RO)
+// SEDUC â€” Gerador de ManifestaÃ§Ã£o TÃ©cnica & RelatÃ³rio A4/PDF (TCE-RO)
 // ============================================================
 
 window._manifestoProcessoAtual = null;
@@ -3376,9 +3376,9 @@ window._manifestoProcessoAtual = null;
 function gerarTextoManifestoTCE(p) {
   p = p || {};
 
-  const municipio = p.municipio || 'Município não informado';
+  const municipio = p.municipio || 'MunicÃ­pio nÃ£o informado';
   const interessado = p.interessado || 'Unidade Escolar / Conselho Escolar';
-  const numeroProcesso = p.numero || 'Sem número';
+  const numeroProcesso = p.numero || 'Sem nÃºmero';
   const oficioNum = p.oficioNumero || 'XX - XXX';
   
   let diretorNome = 'XXX';
@@ -3392,11 +3392,11 @@ function gerarTextoManifestoTCE(p) {
 
   const tipoCod = (p.tipo || '').toUpperCase();
   const tipoDesc = {
-    'OB': 'Obras e Infraestrutura Física',
-    'MP': 'Aquisição de Material Permanente',
-    'MC': 'Aquisição de Material de Consumo',
-    'SI': 'Sistemas e Tecnologias da Informação',
-    'TR': 'Treinamento e Capacitação',
+    'OB': 'Obras e Infraestrutura FÃ­sica',
+    'MP': 'AquisiÃ§Ã£o de Material Permanente',
+    'MC': 'AquisiÃ§Ã£o de Material de Consumo',
+    'SI': 'Sistemas e Tecnologias da InformaÃ§Ã£o',
+    'TR': 'Treinamento e CapacitaÃ§Ã£o',
     'OU': 'Outros Investimentos'
   }[tipoCod] || p.tipo || 'Investimento em Infraestrutura/Material';
 
@@ -3406,39 +3406,39 @@ function gerarTextoManifestoTCE(p) {
   } else {
     let partes = [];
     if (p.objeto) partes.push(p.objeto);
-    if (p.metragemM2) partes.push('metragem aproximada de ' + p.metragemM2 + ' m²');
+    if (p.metragemM2) partes.push('metragem aproximada de ' + p.metragemM2 + ' mÂ²');
     if (p.qtdeSala) partes.push(p.qtdeSala + ' salas de aula');
-    if (p.auditorio) partes.push('auditório (' + (p.tipoAuditorio || 'padrão') + ')');
+    if (p.auditorio) partes.push('auditÃ³rio (' + (p.tipoAuditorio || 'padrÃ£o') + ')');
     if (p.quadra) partes.push('quadra (' + p.quadra + ')');
-    if (p.refeitorio) partes.push('refeitório (' + p.refeitorio + ')');
-    if (p.banheiros) partes.push('instalações sanitárias (' + p.banheiros + ')');
-    detalheObj = partes.length > 0 ? partes.join(', ') : (tipoDesc.toLowerCase() + ', compreendendo mobiliários, equipamentos e adequações necessárias');
+    if (p.refeitorio) partes.push('refeitÃ³rio (' + p.refeitorio + ')');
+    if (p.banheiros) partes.push('instalaÃ§Ãµes sanitÃ¡rias (' + p.banheiros + ')');
+    detalheObj = partes.length > 0 ? partes.join(', ') : (tipoDesc.toLowerCase() + ', compreendendo mobiliÃ¡rios, equipamentos e adequaÃ§Ãµes necessÃ¡rias');
   }
 
   let textoObjetoConstruido = '';
   if (tipoCod === 'OB' && p.metragemM2) {
-    textoObjetoConstruido = 'a execução de obras/serviços de engenharia com metragem total de ' + p.metragemM2 + ' m², abrangendo ' + detalheObj;
+    textoObjetoConstruido = 'a execuÃ§Ã£o de obras/serviÃ§os de engenharia com metragem total de ' + p.metragemM2 + ' mÂ², abrangendo ' + detalheObj;
   } else {
-    textoObjetoConstruido = (p.objeto ? p.objeto.toLowerCase() : 'aquisição e instalação de materiais') + ', compreendendo ' + detalheObj;
+    textoObjetoConstruido = (p.objeto ? p.objeto.toLowerCase() : 'aquisiÃ§Ã£o e instalaÃ§Ã£o de materiais') + ', compreendendo ' + detalheObj;
   }
 
   const dataAtualExtenso = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
 
-  return `Manifestação
+  return `ManifestaÃ§Ã£o
 
-A legislação educacional brasileira, em seus diversos níveis, estabelece um complexo de deveres e colaborações para a garantia do direito à educação. A Constituição Federal, em seu artigo 205, consagra a educação como um direito de todos e um dever do Estado e da família, a ser promovida com a colaboração da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualificação para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos municípios a competência para manter, com a cooperação técnica e financeira da União e do Estado, programas de educação infantil e de ensino fundamental. O regime de colaboração entre os entes federados é reforçado pelo artigo 211, § 4º, que determina a definição de formas de colaboração entre União, Estados, Distrito Federal e Municípios para assegurar a universalização do ensino obrigatório.
+A legislaÃ§Ã£o educacional brasileira, em seus diversos nÃ­veis, estabelece um complexo de deveres e colaboraÃ§Ãµes para a garantia do direito Ã  educaÃ§Ã£o. A ConstituiÃ§Ã£o Federal, em seu artigo 205, consagra a educaÃ§Ã£o como um direito de todos e um dever do Estado e da famÃ­lia, a ser promovida com a colaboraÃ§Ã£o da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualificaÃ§Ã£o para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos municÃ­pios a competÃªncia para manter, com a cooperaÃ§Ã£o tÃ©cnica e financeira da UniÃ£o e do Estado, programas de educaÃ§Ã£o infantil e de ensino fundamental. O regime de colaboraÃ§Ã£o entre os entes federados Ã© reforÃ§ado pelo artigo 211, Â§ 4Âº, que determina a definiÃ§Ã£o de formas de colaboraÃ§Ã£o entre UniÃ£o, Estados, Distrito Federal e MunicÃ­pios para assegurar a universalizaÃ§Ã£o do ensino obrigatÃ³rio.
 
-A Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996) reitera e detalha essa estrutura colaborativa, estabelecendo em seu artigo 8º que a União, os Estados, o Distrito Federal e os Municípios organizarão, em regime de colaboração, seus respectivos sistemas de ensino. O artigo 10 da mesma lei incumbe os Estados de organizar, manter e desenvolver os órgãos e instituições oficiais de seus sistemas de ensino, definindo, com os Municípios, formas de colaboração na oferta do ensino fundamental (inciso II), e de baixar normas complementares para seu sistema de ensino (inciso VI).
+A Lei de Diretrizes e Bases da EducaÃ§Ã£o Nacional (Lei nÂº 9.394/1996) reitera e detalha essa estrutura colaborativa, estabelecendo em seu artigo 8Âº que a UniÃ£o, os Estados, o Distrito Federal e os MunicÃ­pios organizarÃ£o, em regime de colaboraÃ§Ã£o, seus respectivos sistemas de ensino. O artigo 10 da mesma lei incumbe os Estados de organizar, manter e desenvolver os Ã³rgÃ£os e instituiÃ§Ãµes oficiais de seus sistemas de ensino, definindo, com os MunicÃ­pios, formas de colaboraÃ§Ã£o na oferta do ensino fundamental (inciso II), e de baixar normas complementares para seu sistema de ensino (inciso VI).
 
-A Lei nº 14.113/2020, que regulamenta o Fundeb, fortalece a cooperação entre os entes federativos. O artigo 14, § 1º, inciso IV, condiciona o recebimento de complementação de recursos federais à existência de um regime de colaboração entre Estado e Municípios formalizado na legislação estadual. Ademais, o artigo 50, em seu parágrafo único, estabelece que a União, os Estados e o Distrito Federal desenvolverão, em regime de colaboração, programas de apoio para a conclusão da educação básica por alunos matriculados no sistema público.
+A Lei nÂº 14.113/2020, que regulamenta o Fundeb, fortalece a cooperaÃ§Ã£o entre os entes federativos. O artigo 14, Â§ 1Âº, inciso IV, condiciona o recebimento de complementaÃ§Ã£o de recursos federais Ã  existÃªncia de um regime de colaboraÃ§Ã£o entre Estado e MunicÃ­pios formalizado na legislaÃ§Ã£o estadual. Ademais, o artigo 50, em seu parÃ¡grafo Ãºnico, estabelece que a UniÃ£o, os Estados e o Distrito Federal desenvolverÃ£o, em regime de colaboraÃ§Ã£o, programas de apoio para a conclusÃ£o da educaÃ§Ã£o bÃ¡sica por alunos matriculados no sistema pÃºblico.
 
-No âmbito estadual, a Constituição do Estado de Rondônia, em seus artigos 187 e 188, detalha as responsabilidades do poder público com a educação, estabelecendo que o ensino será ministrado com base em princípios como a igualdade de condições para o acesso e permanência na escola e a gestão democrática do ensino público, e define as atribuições do sistema estadual de ensino.
+No Ã¢mbito estadual, a ConstituiÃ§Ã£o do Estado de RondÃ´nia, em seus artigos 187 e 188, detalha as responsabilidades do poder pÃºblico com a educaÃ§Ã£o, estabelecendo que o ensino serÃ¡ ministrado com base em princÃ­pios como a igualdade de condiÃ§Ãµes para o acesso e permanÃªncia na escola e a gestÃ£o democrÃ¡tica do ensino pÃºblico, e define as atribuiÃ§Ãµes do sistema estadual de ensino.
 
-Ainda no âmbito estadual, a Lei nº. 5.735/2024 institui o Programa de Alfabetização do Estado de Rondônia, em regime de colaboração com os municípios, cabendo ao Estado prestar cooperação técnica e financeira aos municípios. Dentre os eixos do programa, há o Eixo 2 que trata da infraestrutura física e pedagógica. Desta feita, compulsando o Ofício ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados à organização, equipagem e melhoria dos espaços pedagógicos da unidade escolar, visando aprimorar as condições de trabalho dos profissionais da educação e qualificar os espaços escolares, por meio da disponibilização de mobiliário e equipamentos adequados, contribuindo para o fortalecimento das práticas pedagógicas e assegurando maior organização, conforto, segurança e funcionalidade aos ambientes educacionais.
+Ainda no Ã¢mbito estadual, a Lei nÂº. 5.735/2024 institui o Programa de AlfabetizaÃ§Ã£o do Estado de RondÃ´nia, em regime de colaboraÃ§Ã£o com os municÃ­pios, cabendo ao Estado prestar cooperaÃ§Ã£o tÃ©cnica e financeira aos municÃ­pios. Dentre os eixos do programa, hÃ¡ o Eixo 2 que trata da infraestrutura fÃ­sica e pedagÃ³gica. Desta feita, compulsando o OfÃ­cio ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados Ã  organizaÃ§Ã£o, equipagem e melhoria dos espaÃ§os pedagÃ³gicos da unidade escolar, visando aprimorar as condiÃ§Ãµes de trabalho dos profissionais da educaÃ§Ã£o e qualificar os espaÃ§os escolares, por meio da disponibilizaÃ§Ã£o de mobiliÃ¡rio e equipamentos adequados, contribuindo para o fortalecimento das prÃ¡ticas pedagÃ³gicas e assegurando maior organizaÃ§Ã£o, conforto, seguranÃ§a e funcionalidade aos ambientes educacionais.
 
-Em atendimento à solicitação do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do Ofício ${oficioNum}, manifestamo-nos favoravelmente à solicitação do município, no que tange ao regime de colaboração regulamentado pela Lei Estadual nº. 5.735/2024.
+Em atendimento Ã  solicitaÃ§Ã£o do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do OfÃ­cio ${oficioNum}, manifestamo-nos favoravelmente Ã  solicitaÃ§Ã£o do municÃ­pio, no que tange ao regime de colaboraÃ§Ã£o regulamentado pela Lei Estadual nÂº. 5.735/2024.
 
-Nestes termos, submeto os autos à apreciação superior, para deliberação acerca da oportunidade e conveniência administrativa.
+Nestes termos, submeto os autos Ã  apreciaÃ§Ã£o superior, para deliberaÃ§Ã£o acerca da oportunidade e conveniÃªncia administrativa.
 
 Porto Velho - RO, ${dataAtualExtenso}.`;
 }
@@ -3447,7 +3447,7 @@ function gerarEExibirManifestoTCEAtual() {
   const g = (id) => (document.getElementById(id) || {}).value || '';
   
   const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
-  const numeroProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || g('form-numero') || 'Sem número';
+  const numeroProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || g('form-numero') || 'Sem nÃºmero';
 
   const valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : ((typeof parseMoney === 'function') ? parseMoney(g('form-valorPlan')) : 0);
   const valOf = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf')) : ((typeof parseMoney === 'function') ? parseMoney(g('form-valorOf')) : 0);
@@ -3475,7 +3475,7 @@ function gerarEExibirManifestoTCEAtual() {
   if (typeof state !== 'undefined' && state.editandoId) {
     const editando = (state.processos || []).find(item => item.id === state.editandoId);
     if (editando) {
-      if (!p.numero || p.numero === 'Sem número') p.numero = editando.numero;
+      if (!p.numero || p.numero === 'Sem nÃºmero') p.numero = editando.numero;
       if (!p.municipio) p.municipio = editando.municipio;
       if (!p.interessado) p.interessado = editando.interessado;
       if (!p.objeto) p.objeto = editando.objeto;
@@ -3493,7 +3493,7 @@ function gerarEExibirManifestoTCEAtual() {
 function abrirModalManifestoTCEById(id) {
   const p = (state.processos || []).find(item => item.id === id);
   if (!p) {
-    if (typeof toast === 'function') toast('Processo não encontrado para gerar manifesto', 'error');
+    if (typeof toast === 'function') toast('Processo nÃ£o encontrado para gerar manifesto', 'error');
     return;
   }
   abrirModalManifestoTCE(p);
@@ -3518,195 +3518,288 @@ function copiarManifestoTCE() {
   const preview = document.getElementById('manifesto-tce-texto-preview');
   if (!preview) return;
   navigator.clipboard.writeText(preview.textContent).then(() => {
-    if (typeof toast === 'function') toast('Texto da Manifestação TCE-RO copiado para a área de transferência!', 'success');
+    if (typeof toast === 'function') toast('Texto da ManifestaÃ§Ã£o TCE-RO copiado para a Ã¡rea de transferÃªncia!', 'success');
   }).catch(() => {
     if (typeof toast === 'function') toast('Erro ao copiar texto', 'error');
   });
 }
 
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// RELATÃ“RIO PDF COMPLETO â€” SEDUC-RO / CAM
+// Substitui a funÃ§Ã£o imprimirManifestoTCE em js/app.js (linhas 3527-3712)
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
 function imprimirManifestoTCE() {
   const p = window._manifestoProcessoAtual || {};
   const textoLegal = gerarTextoManifestoTCE(p);
 
-  const municipio = p.municipio || 'NÃO INFORMADO';
-  const escola = p.interessado || 'UNIDADE ESCOLAR';
-  const numeroProc = p.numero || 'S/N';
-  const oficioNum = p.oficioNumero || 'NÃO INFORMADO';
-  const tipoDesc = (p.tipo || 'INVESTIMENTO').toUpperCase();
-  const valor = (p.valorPlan || p.valorOf || 0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
-  const dataHoje = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+  // â”€â”€ IdentificaÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const municipio   = p.municipio    || 'â€”';
+  const escola      = p.interessado  || 'â€”';
+  const numeroProc  = p.numero       || 'S/N';
+  const oficioNum   = p.oficioNumero || 'â€”';
+  const objeto      = p.objeto       || 'â€”';
+  const status      = p.status       || 'â€”';
+  const localizacao = p.localizacao  || 'â€”';
+  const prefixo     = p.prefixo      || 'â€”';
+  const ano         = p.ano          || 'â€”';
+  const agrupamento = p.agrupamento  || 'â€”';
+  const dataProc    = p.data ? new Date(p.data + 'T12:00:00').toLocaleDateString('pt-BR') : 'â€”';
+  const dataHoje    = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
+  // â”€â”€ Valores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const fmtVal = (v) => (v && Number(v) > 0)
+    ? 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : 'â€”';
+  const valorOf   = fmtVal(p.valorOf);
+  const valorPlan = fmtVal(p.valorPlan);
+
+  // â”€â”€ Categoria / Tipo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const categDesc = { FO: 'Fomento', CV: 'ConvÃªnio', TC: 'Termo de CooperaÃ§Ã£o' }[p.categoria] || p.categoria || 'â€”';
+  const tipoDesc  = {
+    OB: 'Obras', MP: 'Material Permanente', MC: 'Material de Consumo',
+    SI: 'Sistema', TR: 'Treinamento', OU: 'Outros'
+  }[(p.tipo || '').toUpperCase()] || p.tipo || 'â€”';
+
+  // â”€â”€ AutorizaÃ§Ãµes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const isOn    = (v) => v === true || v === 1 || v === '1' || v === 'true';
+  const authCAM = isOn(p.cam) ? '&#10004; SIM' : '&#10008; NÃƒO';
+  const authGAB = isOn(p.gab) ? '&#10004; SIM' : '&#10008; NÃƒO';
+  const authCC  = isOn(p.cc)  ? '&#10004; SIM' : '&#10008; NÃƒO';
+  const cssCAM  = isOn(p.cam) ? 'auth-yes' : 'auth-no';
+  const cssGAB  = isOn(p.gab) ? 'auth-yes' : 'auth-no';
+  const cssCC   = isOn(p.cc)  ? 'auth-yes' : 'auth-no';
+
+  // â”€â”€ Infraestrutura (Aba Objetivo) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const ff = (v) => (v && String(v).trim()) ? String(v).trim() : 'â€”';
+  const qtdeSala      = ff(p.qtdeSala);
+  const tipoSala      = ff(p.tipoSala);
+  const auditorio     = ff(p.auditorio);
+  const tipoAuditorio = ff(p.tipoAuditorio);
+  const quadra        = ff(p.quadra);
+  const patio         = ff(p.patio);
+  const refeitorio    = ff(p.refeitorio);
+  const banheiros     = ff(p.banheiros);
+  const metragemM2    = ff(p.metragemM2);
+  const detItens      = ff(p.detalhamentoItens);
+  const demaisObs     = ff(p.demaisObservacoes);
+  const obs           = ff(p.obs);
+
+  // â”€â”€ Diretor da escola â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  let diretorNome = '';
+  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
+    const esc = _escolasCache.find(e =>
+      (e.nome && p.interessado && e.nome.toLowerCase().includes(p.interessado.toLowerCase())) ||
+      (e.municipio && p.municipio && e.municipio.toLowerCase() === p.municipio.toLowerCase())
+    );
+    if (esc && esc.diretor) diretorNome = esc.diretor;
+  }
+
+  // â”€â”€ Helpers HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  const row = (label, value, icon = '') =>
+    value !== 'â€”' ? `<tr><th>${icon ? icon + ' ' : ''}${label}</th><td>${value}</td></tr>` : '';
+
+  const hasInfra = [qtdeSala, tipoSala, auditorio, quadra, patio, refeitorio, banheiros].some(v => v !== 'â€”');
+
+  const infraSection = hasInfra ? `
+    <div class="section-title">&#127979; Infraestrutura da Unidade Escolar</div>
+    <table class="data-table">
+      ${row('Quantidade de Salas de Aula', qtdeSala, '&#128682;')}
+      ${row('Tipo de Sala', tipoSala, '&#128208;')}
+      ${row('AuditÃ³rio', auditorio, '&#127917;')}
+      ${row('Tipo de AuditÃ³rio', tipoAuditorio, '&#128203;')}
+      ${row('Quadra Esportiva', quadra, '&#127936;')}
+      ${row('PÃ¡tio', patio, '&#127795;')}
+      ${row('RefeitÃ³rio', refeitorio, '&#127373;')}
+      ${row('Banheiros', banheiros, '&#128699;')}
+    </table>` : '';
+
+  // â”€â”€ DOCUMENTO HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const htmlDoc = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Manifestação Técnica ${numeroProc} - SEDUC-RO</title>
-  <style>
-    @page {
-      size: A4 portrait;
-      margin: 25mm 20mm 20mm 25mm;
-    }
-    body {
-      font-family: 'Times New Roman', Times, serif;
-      font-size: 12pt;
-      line-height: 1.5;
-      color: #000000;
-      margin: 0;
-      padding: 0;
-      background: #ffffff;
-    }
-    .page-container {
-      width: 100%;
-      max-width: 210mm;
-      margin: 0 auto;
-      box-sizing: border-box;
-    }
-    .header-timbre {
-      text-align: center;
-      margin-bottom: 22px;
-      border-bottom: 2px solid #000000;
-      padding-bottom: 12px;
-    }
-    .header-timbre h1 {
-      font-size: 12pt;
-      font-weight: bold;
-      margin: 0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .header-timbre h2 {
-      font-size: 11pt;
-      font-weight: bold;
-      margin: 3px 0;
-      text-transform: uppercase;
-    }
-    .header-timbre p {
-      font-size: 9.5pt;
-      margin: 2px 0 0 0;
-    }
-    .doc-title {
-      text-align: center;
-      font-size: 13pt;
-      font-weight: bold;
-      margin: 18px 0 14px 0;
-      text-transform: uppercase;
-    }
-    .meta-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-      font-size: 10pt;
-    }
-    .meta-table td, .meta-table th {
-      border: 1px solid #000000;
-      padding: 5px 8px;
-    }
-    .meta-table th {
-      background-color: #f2f2f2;
-      font-weight: bold;
-      text-align: left;
-      width: 28%;
-    }
-    .paragrafo {
-      text-align: justify;
-      text-indent: 1.25cm;
-      margin-bottom: 12px;
-      line-height: 1.5;
-    }
-    .assinatura-box {
-      margin-top: 45px;
-      text-align: center;
-      page-break-inside: avoid;
-    }
-    .linha-assinatura {
-      width: 280px;
-      margin: 0 auto 6px auto;
-      border-top: 1px solid #000000;
-    }
-    .rodape {
-      margin-top: 35px;
-      font-size: 8pt;
-      text-align: center;
-      color: #444;
-      border-top: 1px solid #ddd;
-      padding-top: 6px;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>RelatÃ³rio â€” ${numeroProc} â€” SEDUC-RO</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@page { size:A4 portrait; margin:18mm 16mm 18mm 20mm; }
+*{box-sizing:border-box;}
+body{font-family:'Inter',Arial,sans-serif;font-size:9.5pt;line-height:1.45;color:#1a1a2e;margin:0;padding:0;background:#fff;}
+/* HEADER */
+.hdr{display:flex;align-items:center;gap:12px;border-bottom:3px solid #1a56a0;padding-bottom:10px;margin-bottom:14px;}
+.hdr-logo{width:48px;height:48px;min-width:48px;border-radius:50%;background:linear-gradient(135deg,#1a56a0,#0d3270);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13pt;box-shadow:0 2px 8px rgba(26,86,160,.3);}
+.hdr-txt{flex:1;}
+.hdr-txt .gov{font-size:7.5pt;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.6px;}
+.hdr-txt .sec{font-size:11pt;font-weight:800;color:#1a56a0;text-transform:uppercase;}
+.hdr-txt .dep{font-size:7.5pt;color:#666;}
+.hdr-meta{text-align:right;font-size:7.5pt;color:#777;line-height:1.6;}
+.hdr-meta .num{font-size:9pt;font-weight:800;color:#1a56a0;}
+/* TITLE BAR */
+.doc-title{background:linear-gradient(135deg,#1a56a0,#0d3270);color:#fff;text-align:center;padding:8px 16px;border-radius:6px;margin-bottom:12px;font-size:10.5pt;font-weight:800;letter-spacing:.6px;text-transform:uppercase;box-shadow:0 3px 10px rgba(26,86,160,.25);}
+/* BADGES */
+.badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:7.5pt;font-weight:700;text-transform:uppercase;}
+.b-blue{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe;}
+.b-green{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
+.b-purple{background:#ede9fe;color:#5b21b6;border:1px solid #ddd6fe;}
+.b-orange{background:#ffedd5;color:#9a3412;border:1px solid #fed7aa;}
+.b-gray{background:#f3f4f6;color:#374151;border:1px solid #d1d5db;}
+/* SECTION TITLES */
+.section-title{font-size:8.5pt;font-weight:800;color:#1a56a0;text-transform:uppercase;letter-spacing:.7px;border-left:3px solid #1a56a0;padding-left:8px;margin:14px 0 6px 0;page-break-after:avoid;}
+/* TABLES */
+.data-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:8.8pt;page-break-inside:avoid;}
+.data-table th,.data-table td{border:1px solid #d1d5db;padding:5px 9px;vertical-align:top;}
+.data-table th{background:#f0f4ff;font-weight:700;color:#1e3a5f;width:32%;white-space:nowrap;}
+.data-table td{color:#1a1a2e;background:#fff;}
+.data-table tr:nth-child(even) td{background:#fafbff;}
+/* AUTH TABLE */
+.auth-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:8.8pt;}
+.auth-table th{background:#1a56a0;color:#fff;font-weight:700;padding:5px 12px;text-align:center;text-transform:uppercase;border:1px solid #1a56a0;}
+.auth-table td{border:1px solid #d1d5db;padding:6px 12px;text-align:center;font-weight:700;font-size:9pt;background:#fff;}
+.auth-yes{color:#065f46;}
+.auth-no{color:#991b1b;}
+/* VALOR BOX */
+.vbox{display:inline-block;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;padding:4px 12px;font-weight:800;font-size:10pt;color:#0c4a6e;}
+/* LEGAL */
+.legal-block{border:1px solid #d1d5db;border-left:4px solid #1a56a0;border-radius:4px;padding:10px 14px;background:#fafbff;margin-bottom:10px;page-break-inside:avoid;}
+.par{text-align:justify;text-indent:1.2cm;margin:0 0 8px 0;font-size:9pt;line-height:1.5;color:#222;}
+.par:last-child{margin-bottom:0;}
+/* DETALHE / OBS */
+.det-box{background:#fffbf0;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:4px;padding:9px 12px;font-size:8.8pt;color:#1a1a2e;margin-bottom:10px;white-space:pre-wrap;line-height:1.5;}
+.obs-box{background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:4px;padding:9px 12px;font-size:8.8pt;color:#1a1a2e;margin-bottom:10px;white-space:pre-wrap;line-height:1.5;}
+/* ASSINATURA */
+.assin-section{margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;page-break-inside:avoid;}
+.assin-box{flex:1;text-align:center;}
+.assin-line{border-top:1px solid #333;margin:0 20px 5px 20px;}
+.assin-nome{font-size:8.5pt;font-weight:700;}
+.assin-cargo{font-size:7.5pt;color:#555;}
+.assin-data{font-size:8pt;color:#333;text-align:right;margin-bottom:4px;}
+/* RODAPÃ‰ */
+.rodape{margin-top:18px;border-top:2px solid #1a56a0;padding-top:6px;display:flex;justify-content:space-between;align-items:center;font-size:7pt;color:#555;page-break-inside:avoid;}
+.rodape-logo{font-weight:800;color:#1a56a0;font-size:8pt;}
+@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+</style>
 </head>
 <body>
-  <div class="page-container">
-    
-    <!-- BANNER TIMBRE OFICIAL -->
-    <div class="header-timbre">
-      <h1>Governo do Estado de Rondônia</h1>
-      <h2>Secretaria de Estado da Educação — SEDUC</h2>
-      <p>Coordenadoria de Articulação com os Municípios — CAM / GDSM</p>
-    </div>
 
-    <!-- TÍTULO DA MANIFESTAÇÃO -->
-    <div class="doc-title">
-      MANIFESTAÇÃO TÉCNICA Nº ${numeroProc.replace(/[^0-9\/]/g,'') || '2026'}/SEDUC-CAM
-    </div>
-
-    <!-- RESUMO DE DADOS DO PROCESSO / PRESTAÇÃO DE CONTAS TCE-RO -->
-    <table class="meta-table">
-      <tr>
-        <th>PROCESSO Nº:</th>
-        <td>${numeroProc}</td>
-        <th>MUNICÍPIO:</th>
-        <td>${municipio}</td>
-      </tr>
-      <tr>
-        <th>INTERESSADO / ESCOLA:</th>
-        <td colspan="3">${escola}</td>
-      </tr>
-      <tr>
-        <th>Nº OFÍCIO DA ESCOLA:</th>
-        <td>${oficioNum}</td>
-        <th>CATEGORIA / TIPO:</th>
-        <td>${tipoDesc}</td>
-      </tr>
-      <tr>
-        <th>VALOR PLANILHA:</th>
-        <td>R$ ${valor}</td>
-        <th>DATA DE EMISSÃO:</th>
-        <td>${dataHoje}</td>
-      </tr>
-    </table>
-
-    <!-- CONTEÚDO LEGAL JUSTIFICADO DO MANIFESTO -->
-    <div style="font-size: 11pt; line-height: 1.5;">
-      ${textoLegal.split('\n\n').map(p => {
-        if (p.startsWith('MANIFESTAÇÃO')) return '';
-        return '<p class="paragrafo">' + p.trim() + '</p>';
-      }).join('')}
-    </div>
-
-    <!-- ASSINATURA -->
-    <div class="assinatura-box">
-      <div class="linha-assinatura"></div>
-      <div style="font-weight: bold; font-size: 11pt;">Coordenadoria de Articulação com os Municípios (CAM)</div>
-      <div style="font-size: 10pt; color: #333;">SEDUC / Governo do Estado de Rondônia</div>
-    </div>
-
-    <!-- RODAPÉ -->
-    <div class="rodape">
-      Documento Oficial de Prestação de Contas — Aplicação do Percentual Constitucional de 25% na Educação (TCE-RO / Lei Est. 5.735/2024)
-    </div>
-
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-logo">RO</div>
+  <div class="hdr-txt">
+    <div class="gov">Governo do Estado de RondÃ´nia</div>
+    <div class="sec">Secretaria de Estado da EducaÃ§Ã£o â€” SEDUC-RO</div>
+    <div class="dep">Coordenadoria de ArticulaÃ§Ã£o com os MunicÃ­pios â€” CAM / GDSM</div>
   </div>
+  <div class="hdr-meta">
+    <div class="num">Proc. NÂº ${numeroProc}</div>
+    <div>EmissÃ£o: ${dataHoje}</div>
+    <div>MANIFESTO TCE-RO</div>
+  </div>
+</div>
 
-  <script>
-    window.onload = function() {
-      setTimeout(function() {
-        window.print();
-      }, 300);
-    };
-  </script>
+<!-- TITLE BAR -->
+<div class="doc-title">&#128203; ManifestaÃ§Ã£o TÃ©cnica â€” RelatÃ³rio de Processo â€” SEDUC / CAM</div>
+
+<!-- BADGES -->
+<div class="badges">
+  <span class="badge b-blue">&#128193; ${categDesc}</span>
+  <span class="badge b-purple">&#9881; ${tipoDesc}</span>
+  ${status !== 'â€”' ? `<span class="badge b-orange">&#128204; ${status}</span>` : ''}
+  ${localizacao !== 'â€”' ? `<span class="badge b-gray">&#128205; ${localizacao}</span>` : ''}
+  ${prefixo !== 'â€”' ? `<span class="badge b-green">&#128278; ${prefixo}</span>` : ''}
+  ${ano !== 'â€”' ? `<span class="badge b-gray">&#128197; ${ano}</span>` : ''}
+</div>
+
+<!-- IDENTIFICAÃ‡ÃƒO -->
+<div class="section-title">&#128194; IdentificaÃ§Ã£o do Processo</div>
+<table class="data-table">
+  <tr><th>NÂº do Processo</th><td>${numeroProc}</td></tr>
+  <tr><th>MunicÃ­pio</th><td>${municipio}</td></tr>
+  <tr><th>Entidade / Escola</th><td>${escola}</td></tr>
+  ${diretorNome ? `<tr><th>Diretor(a)</th><td>${diretorNome}</td></tr>` : ''}
+  <tr><th>Objeto</th><td>${objeto}</td></tr>
+  <tr><th>Categoria</th><td>${categDesc}</td></tr>
+  <tr><th>Tipo</th><td>${tipoDesc}</td></tr>
+  ${agrupamento !== 'â€”' ? `<tr><th>Agrupamento</th><td>${agrupamento}</td></tr>` : ''}
+  ${dataProc !== 'â€”' ? `<tr><th>Data do Processo</th><td>${dataProc}</td></tr>` : ''}
+</table>
+
+<!-- VALORES -->
+<div class="section-title">&#128176; Valores Financeiros</div>
+<table class="data-table">
+  <tr><th>Valor Oficial (OfÃ­cio)</th><td><span class="vbox">${valorOf}</span></td></tr>
+  <tr><th>Valor Planilha</th><td><span class="vbox">${valorPlan}</span></td></tr>
+  <tr><th>NÂº OfÃ­cio da Escola</th><td>${oficioNum}</td></tr>
+</table>
+
+<!-- AUTORIZAÃ‡Ã•ES -->
+<div class="section-title">&#128274; AutorizaÃ§Ãµes</div>
+<table class="auth-table">
+  <tr><th>CAM</th><th>GABINETE SEDUC</th><th>CASA CIVIL</th></tr>
+  <tr>
+    <td class="${cssCAM}">${authCAM}</td>
+    <td class="${cssGAB}">${authGAB}</td>
+    <td class="${cssCC}">${authCC}</td>
+  </tr>
+</table>
+
+<!-- INFRAESTRUTURA -->
+${infraSection}
+
+<!-- METRAGEM -->
+${metragemM2 !== 'â€”' ? `
+<div class="section-title">&#128208; Metragem (Obras / Reforma)</div>
+<table class="data-table">
+  <tr><th>Metragem mÂ²</th><td>${metragemM2}</td></tr>
+</table>` : ''}
+
+<!-- DETALHAMENTO ITENS -->
+${detItens !== 'â€”' ? `
+<div class="section-title">&#128230; Detalhamento dos Itens Solicitados</div>
+<div class="det-box">${detItens}</div>` : ''}
+
+<!-- OBS -->
+${obs !== 'â€”' ? `
+<div class="section-title">&#128221; ObservaÃ§Ãµes do Processo</div>
+<div class="obs-box">${obs}</div>` : ''}
+
+<!-- DEMAIS OBS -->
+${demaisObs !== 'â€”' ? `
+<div class="section-title">&#128203; Demais ObservaÃ§Ãµes (Guia Objetivo)</div>
+<div class="obs-box">${demaisObs}</div>` : ''}
+
+<!-- MANIFESTAÃ‡ÃƒO LEGAL -->
+<div class="section-title">&#9878; ManifestaÃ§Ã£o TÃ©cnica â€” FundamentaÃ§Ã£o Legal (TCE-RO)</div>
+<div class="legal-block">
+  ${textoLegal.split('\n\n').map(function(par) {
+    if (par.startsWith('ManifestaÃ§Ã£o') || par.trim() === '') return '';
+    return '<p class="par">' + par.trim().replace(/\n/g, ' ') + '</p>';
+  }).join('')}
+</div>
+
+<!-- ASSINATURA -->
+<div class="assin-section">
+  <div style="flex:1"><div class="assin-data">Porto Velho â€“ RO, ${dataHoje}</div></div>
+  <div class="assin-box">
+    <div class="assin-line"></div>
+    <div class="assin-nome">Coordenadoria de ArticulaÃ§Ã£o com os MunicÃ­pios (CAM)</div>
+    <div class="assin-cargo">SEDUC-RO / Governo do Estado de RondÃ´nia</div>
+  </div>
+</div>
+
+<!-- RODAPÃ‰ -->
+<div class="rodape">
+  <span class="rodape-logo">SEDUC-RO Â· CAM</span>
+  <span>Documento Oficial â€” Lei Est. 5.735/2024 Â· TCE-RO Â· 25% Constitucional</span>
+  <span>Emitido: ${dataHoje}</span>
+</div>
+
+<script>window.onload=function(){setTimeout(function(){window.print();},400);};</script>
 </body>
 </html>`;
 
   const win = window.open('', '_blank');
+  if (!win) { alert('Por favor, permita popups para gerar o relatÃ³rio PDF.'); return; }
   win.document.write(htmlDoc);
   win.document.close();
 }
