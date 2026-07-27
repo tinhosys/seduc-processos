@@ -1,4 +1,4 @@
-﻿
+
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
@@ -3610,7 +3610,7 @@ function imprimirManifestoTCE() {
 
   var fundebText = "A Lei n&ordm; 14.113/2020, que regulamenta o FUNDEB, condiciona o recebimento de complementa&ccedil;&atilde;o de recursos federais &agrave; exist&ecirc;ncia de regime de colabora&ccedil;&atilde;o formalizado entre Estado e Munic&iacute;pios (Art. 14, &sect;1&ordm;, IV). No &acirc;mbito local, a Constitui&ccedil;&atilde;o do Estado de Rond&ocirc;nia (Arts. 187 e 188) reitera os princ&iacute;pios de igualdade de acesso e a coopera&ccedil;&atilde;o interfederativa.<br><br>Ademais, a Lei Estadual n&ordm; 5.735/2024, que institui o Programa de Alfabetiza&ccedil;&atilde;o do Estado de Rond&ocirc;nia (Proalfa Rond&ocirc;nia), estabelece o dever do Estado em prestar coopera&ccedil;&atilde;o t&eacute;cnica e financeira para o fortalecimento das pol&iacute;ticas educacionais municipais. O Eixo 2 do referido programa foca especificamente na melhoria da infraestrutura f&iacute;sica e pedag&oacute;gica das unidades escolares.";
 
-  var conclusaoText = "Diante do exposto, e em atendimento &agrave; solicita&ccedil;&atilde;o do Chefe do Executivo Municipal, esta Ger&ecirc;ncia manifesta-se <strong>FAVORAVELMENTE</strong> ao pleito do Munic&iacute;pio de <strong>" + municipio + "</strong>, fundamentado na Lei Estadual n&ordm; 5.735/2024.<br><br>Submetemos os presentes autos &agrave; aprecia&ccedil;&atilde;o superior para delibera&ccedil;&atilde;o quanto &agrave; oportunidade, conveni&ecirc;ncia administrativa e viabilidade de celebra&ccedil;&atilde;o do regime de colabora&ccedil;&atilde;o.";
+  var conclusaoText = "Diante do exposto, e em atendimento &agrave; solicita&ccedil;&atilde;o do Requerente, esta Ger&ecirc;ncia manifesta-se <strong>FAVORAVELMENTE</strong> ao pleito do Munic&iacute;pio de <strong>" + municipio + "</strong>, fundamentado na Lei Estadual n&ordm; 5.735/2024.<br><br>Submetemos os presentes autos &agrave; aprecia&ccedil;&atilde;o superior para delibera&ccedil;&atilde;o quanto &agrave; oportunidade, conveni&ecirc;ncia administrativa e viabilidade de celebra&ccedil;&atilde;o do regime de colabora&ccedil;&atilde;o.";
 
 
   var css =
