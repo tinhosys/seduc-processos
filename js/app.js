@@ -1,4 +1,4 @@
-﻿
+
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
@@ -3443,53 +3443,81 @@ Nestes termos, submeto os autos Ã  apreciaÃ§Ã£o superior, para deliberaÃ�
 Porto Velho - RO, ${dataAtualExtenso}.`;
 }
 
-function gerarEExibirManifestoTCEAtual() {
-  const g = (id) => (document.getElementById(id) || {}).value || '';
-  
-  const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
-  const numeroProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || g('form-numero') || 'Sem nÃºmero';
+function gerarRelatorioMonitoramento() {
+  var g  = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
+  var gb = function(id) { var el = document.getElementById(id); return el ? el.checked : false; };
 
-  const valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : ((typeof parseMoney === 'function') ? parseMoney(g('form-valorPlan')) : 0);
-  const valOf = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf')) : ((typeof parseMoney === 'function') ? parseMoney(g('form-valorOf')) : 0);
+  // NÃºmeros do processo (campo mÃºltiplo)
+  var inputsNum  = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  var numeroProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || 'Sem nÃºmero';
 
-  const p = {
-    numero: numeroProc,
-    municipio: g('form-municipio'),
-    interessado: g('form-interessado'),
-    objeto: g('form-objeto'),
-    tipo: (document.querySelector('#control-tipo .segment-btn.active') || {}).dataset?.value || g('form-tipo'),
-    oficioNumero: g('form-oficioNumero'),
-    metragemM2: g('form-metragemM2'),
+  // Valores financeiros
+  var parseMon = function(v) {
+    if (!v) return 0;
+    var s = String(v).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');
+    return parseFloat(s) || 0;
+  };
+  var valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : parseMon(g('form-valorPlan'));
+  var valOf   = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf'))   : parseMon(g('form-valorOf'));
+
+  // Categoria / Tipo (segment buttons)
+  var catEl  = document.querySelector('#control-categoria .segment-btn.active') || {};
+  var tipoEl = document.querySelector('#control-tipo .segment-btn.active')      || {};
+
+  // Montar objeto com TODOS os campos das duas abas
+  var p = {
+    numero:            numeroProc,
+    municipio:         g('form-municipio'),
+    interessado:       g('form-interessado'),
+    objeto:            g('form-objeto'),
+    prefixo:           g('form-prefixo'),
+    ano:               g('form-ano'),
+    agrupamento:       g('form-agrupamento'),
+    data:              g('form-data'),
+    status:            g('form-status'),
+    localizacao:       g('form-localizacao'),
+    obs:               g('form-obs'),
+    categoria:         (catEl.dataset  && catEl.dataset.value)  || g('form-categoria'),
+    tipo:              (tipoEl.dataset && tipoEl.dataset.value) || g('form-tipo'),
+    cam:               gb('form-cam')  ? 1 : 0,
+    gab:               gb('form-gab')  ? 1 : 0,
+    cc:                gb('form-cc')   ? 1 : 0,
+    valorPlan:         valPlan,
+    valorOf:           valOf,
+    qtdeSala:          g('form-qtdeSala'),
+    tipoSala:          g('form-tipoSala'),
+    auditorio:         g('form-auditorio'),
+    tipoAuditorio:     g('form-tipoAuditorio'),
+    quadra:            g('form-quadra'),
+    patio:             g('form-patio'),
+    refeitorio:        g('form-refeitorio'),
+    banheiros:         g('form-banheiros'),
+    metragemM2:        g('form-metragemM2'),
     detalhamentoItens: g('form-detalhamentoItens'),
-    qtdeSala: g('form-qtdeSala'),
-    tipoSala: g('form-tipoSala'),
-    auditorio: g('form-auditorio'),
-    tipoAuditorio: g('form-tipoAuditorio'),
-    quadra: g('form-quadra'),
-    refeitorio: g('form-refeitorio'),
-    banheiros: g('form-banheiros'),
-    valorPlan: valPlan,
-    valorOf: valOf
+    demaisObservacoes: g('form-demaisObservacoes')
   };
 
+  // Complementar com dados jÃ¡ salvos se estiver editando
   if (typeof state !== 'undefined' && state.editandoId) {
-    const editando = (state.processos || []).find(item => item.id === state.editandoId);
-    if (editando) {
-      if (!p.numero || p.numero === 'Sem nÃºmero') p.numero = editando.numero;
-      if (!p.municipio) p.municipio = editando.municipio;
-      if (!p.interessado) p.interessado = editando.interessado;
-      if (!p.objeto) p.objeto = editando.objeto;
-      if (!p.valorPlan) p.valorPlan = editando.valorPlan;
-      if (!p.valorOf) p.valorOf = editando.valorOf;
-      if (!p.oficioNumero) p.oficioNumero = editando.oficioNumero;
-      if (!p.metragemM2) p.metragemM2 = editando.metragemM2;
-      if (!p.detalhamentoItens) p.detalhamentoItens = editando.detalhamentoItens;
+    var saved = (state.processos || []).find(function(item){ return item.id === state.editandoId; });
+    if (saved) {
+      Object.keys(p).forEach(function(k) {
+        if (p[k] === '' || p[k] === 0 || p[k] === null || p[k] === undefined) {
+          if (saved[k] !== undefined && saved[k] !== null && saved[k] !== '') p[k] = saved[k];
+        }
+      });
     }
   }
 
-  abrirModalManifestoTCE(p);
+  // Gerar PDF diretamente (sem modal intermediÃ¡rio)
+  window._manifestoProcessoAtual = p;
+  imprimirManifestoTCE();
 }
 
+// Compatibilidade com referÃªncias antigas
+function gerarEExibirManifestoTCEAtual() {
+  gerarRelatorioMonitoramento();
+}
 function abrirModalManifestoTCEById(id) {
   const p = (state.processos || []).find(item => item.id === id);
   if (!p) {
@@ -3619,7 +3647,7 @@ function imprimirManifestoTCE() {
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>RelatÃ³rio â€” ${numeroProc} â€” SEDUC-RO</title>
+<title>Relat&#243;rio de Monitoramento &mdash; SEDUC-RO</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @page { size:A4 portrait; margin:18mm 16mm 18mm 20mm; }
@@ -3698,7 +3726,7 @@ body{font-family:'Inter',Arial,sans-serif;font-size:9.5pt;line-height:1.45;color
 </div>
 
 <!-- TITLE BAR -->
-<div class="doc-title">&#128203; ManifestaÃ§Ã£o TÃ©cnica â€” RelatÃ³rio de Processo â€” SEDUC / CAM</div>
+<div class="doc-title">&#128202; Relat&#243;rio de Monitoramento &mdash; SEDUC / CAM</div>
 
 <!-- BADGES -->
 <div class="badges">
@@ -3790,7 +3818,7 @@ ${demaisObs !== 'â€”' ? `
 <!-- RODAPÃ‰ -->
 <div class="rodape">
   <span class="rodape-logo">SEDUC-RO Â· CAM</span>
-  <span>Documento Oficial â€” Lei Est. 5.735/2024 Â· TCE-RO Â· 25% Constitucional</span>
+  <span>Documento Gerencial de Monitoramento &mdash; SEDUC-RO / CAM &mdash; Lei Est. 5.735/2024</span>
   <span>Emitido: ${dataHoje}</span>
 </div>
 
@@ -3806,8 +3834,10 @@ ${demaisObs !== 'â€”' ? `
 
 window.gerarTextoManifestoTCE         = gerarTextoManifestoTCE;
 window.gerarEExibirManifestoTCEAtual  = gerarEExibirManifestoTCEAtual;
+window.gerarRelatorioMonitoramento    = gerarRelatorioMonitoramento;
 window.abrirModalManifestoTCEById     = abrirModalManifestoTCEById;
 window.abrirModalManifestoTCE         = abrirModalManifestoTCE;
 window.fecharModalManifestoTCE        = fecharModalManifestoTCE;
 window.copiarManifestoTCE             = copiarManifestoTCE;
 window.imprimirManifestoTCE           = imprimirManifestoTCE;
+
