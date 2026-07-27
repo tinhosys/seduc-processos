@@ -1188,9 +1188,9 @@ function renderFormulario() {
     if (legendDiv) legendDiv.style.display = 'none';
   }
 
-  const btnExcluir = document.getElementById('btn-excluir-form');
-  if (btnExcluir) {
-    btnExcluir.style.display = processo ? 'block' : 'none';
+  const containerExcluir = document.getElementById('container-excluir-form');
+  if (containerExcluir) {
+    containerExcluir.style.display = processo ? 'flex' : 'none';
   }
 }
 
@@ -1604,10 +1604,13 @@ function novoProcesso() {
 function confirmarExcluir(id) {
   const p = buscarProcessoPorId(id);
   if (!p) return;
-  if (confirm(`Excluir o processo "${p.numero || p.interessado}"?\nEssa ação não pode ser desfeita.`)) {
-    excluirProcesso(id);
-    toast('Processo excluído.', 'info');
-    navegar('processos');
+  const ident = p.numero || p.interessado || 'Sem Identificação';
+  if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
+    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excluído permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
+      excluirProcesso(id);
+      toast('Processo excluído com sucesso.', 'info');
+      navegar('processos');
+    }
   }
 }
 
