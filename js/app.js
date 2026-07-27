@@ -42,7 +42,7 @@ function alternarGuiaFormulario(guia) {
 window.alternarGuiaFormulario = alternarGuiaFormulario;
 
 // ============================================================
-// SEDUC â€” App Principal (Router + UI)
+// SEDUC ÔÇö App Principal (Router + UI)
 // ============================================================
 
 // ---- Estado global ----
@@ -94,7 +94,7 @@ function checkAlertasADM(processos) {
     const overlay = document.getElementById('modal-alertas-overlay');
     if (!content || !overlay) { console.warn('[ALERTA] modal-alertas-overlay nao encontrado no DOM'); return; }
     content.innerHTML = `
-      <p style="color: #f0f4ff; margin-bottom: 16px; font-size: 14px;">VocÃª tem <strong>${comAlerta.length}</strong> processo(s) com apontamento pendente:</p>
+      <p style="color: #f0f4ff; margin-bottom: 16px; font-size: 14px;">Voc├¬ tem <strong>${comAlerta.length}</strong> processo(s) com apontamento pendente:</p>
       <div style="max-height: 300px; overflow-y: auto; padding-right: 4px;">
         ${listHtml}
       </div>
@@ -107,7 +107,7 @@ window.fecharModalAlertas = () => {
   if (m) m.style.display = 'none';
 };
 
-// ---- NAVEGAÃ‡ÃƒO ----
+// ---- NAVEGA├ç├âO ----
 function navegar(pagina) {
   state.page = pagina;
   document.querySelectorAll('.nav-item').forEach(el => {
@@ -124,12 +124,12 @@ function navegar(pagina) {
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
-    escolas: 'ðŸ« Escolas',
-    'mapa-escolas': 'ðŸ—ºï¸ Mapa de Escolas de RondÃ´nia'
+    escolas: '­ƒÅ½ Escolas',
+    'mapa-escolas': '­ƒù║´©Å Mapa de Escolas de Rond├┤nia'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
-  // Atualizar conteÃºdo
+  // Atualizar conte├║do
   if (pagina === 'dashboard') renderDashboard();
   if (pagina === 'processos') renderProcessos();
   if (pagina === 'novo') renderFormulario();
@@ -148,7 +148,7 @@ function navegar(pagina) {
 
 // ---- TOAST ----
 function toast(msg, tipo = 'info') {
-  const icons = { success: 'âœ…', error: 'âŒ', info: 'â„¹ï¸' };
+  const icons = { success: 'Ô£à', error: 'ÔØî', info: 'Ôä╣´©Å' };
   const div = document.createElement('div');
   div.className = `toast ${tipo}`;
   div.innerHTML = `<span>${icons[tipo]}</span> ${msg}`;
@@ -206,8 +206,8 @@ function renderDashboard() {
   let datasValidas = [];
   
   processos.forEach(p => {
-    // Apenas considerar processos nÃ£o encerrados/concluÃ­dos para o alerta de data antiga
-    const isEncerrado = ['pago', 'encerrado', 'concluÃ­do', 'cancelado', 'duplicado'].includes(normalizar(p.status));
+    // Apenas considerar processos n├úo encerrados/conclu├¡dos para o alerta de data antiga
+    const isEncerrado = ['pago', 'encerrado', 'conclu├¡do', 'cancelado', 'duplicado'].includes(normalizar(p.status));
     
     if (!p.data || String(p.data).trim() === '') {
       if (!isEncerrado) processosSemData++;
@@ -236,16 +236,16 @@ function renderDashboard() {
     
     if (elDataAntigaList) {
       elDataAntigaList.innerHTML = oldestProcesses.map(d => {
-        // Link que abre a tela de processos filtrando pelo nÃºmero
+        // Link que abre a tela de processos filtrando pelo n├║mero
         const encodedNum = encodeURIComponent(d.num || '');
         return `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:1px solid rgba(255,255,255,0.06); padding:5px 0;">
           <span style="color:#94a3b8; min-width:90px;">${d.original}</span>
-          <span style="color:#f8fafc; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.municipio || 'S/ MunicÃ­pio'}</span>
+          <span style="color:#f8fafc; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${d.municipio || 'S/ Munic├¡pio'}</span>
           <span style="color:#60a5fa; font-weight:700; min-width:60px; text-align:center;">${d.prefixo || '-'}</span>
           <a href="#" onclick="event.preventDefault(); state.filtros.busca='${(d.num||'').replace(/'/g,'')}'; navegar('processos');" 
              style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:2px 10px; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap; transition:background 0.2s;" 
              onmouseover="this.style.background='rgba(59,130,246,0.35)'" 
-             onmouseout="this.style.background='rgba(59,130,246,0.15)'">ðŸ”— VER</a>
+             onmouseout="this.style.background='rgba(59,130,246,0.15)'">­ƒöù VER</a>
         </div>`;
       }).join('');
     }
@@ -254,10 +254,10 @@ function renderDashboard() {
     if (elDataAntigaList) elDataAntigaList.innerHTML = '';
   }
 
-  // --- GrÃ¡fico de Acessos ---
+  // --- Gr├ífico de Acessos ---
   renderChartAcessosDashboard();
 
-  // GrÃ¡fico: Status
+  // Gr├ífico: Status
   const statusCounts = {};
   processos.forEach(p => {
     const s = p.status || 'Sem status';
@@ -334,16 +334,16 @@ function renderDashboard() {
     }
   });
 
-  // GrÃ¡fico: Categoria
+  // Gr├ífico: Categoria
   const catCounts = {};
   processos.forEach(p => {
     let c = String(p.categoria || '').trim().toUpperCase();
     if (!c) {
-      c = 'NÃƒO INFORMADO';
+      c = 'N├âO INFORMADO';
     } else {
       if (c === 'F') c = 'FOMENTO';
-      else if (c === 'C') c = 'CONVÃŠNIO';
-      else if (c === 'T') c = 'TERMO DE COOPERAÃ‡ÃƒO';
+      else if (c === 'C') c = 'CONV├èNIO';
+      else if (c === 'T') c = 'TERMO DE COOPERA├ç├âO';
       else if (c === 'O') c = 'OUTRO';
     }
     catCounts[c] = (catCounts[c] || 0) + 1;
@@ -354,10 +354,10 @@ function renderDashboard() {
 
   const colorsCatMap = {
     'FOMENTO': '#3b82f6',
-    'CONVÃŠNIO': '#10b981',
-    'TERMO DE COOPERAÃ‡ÃƒO': '#8b5cf6',
+    'CONV├èNIO': '#10b981',
+    'TERMO DE COOPERA├ç├âO': '#8b5cf6',
     'OUTRO': '#06b6d4',
-    'NÃƒO INFORMADO': '#64748b'
+    'N├âO INFORMADO': '#64748b'
   };
   const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
 
@@ -424,12 +424,12 @@ function renderDashboard() {
     }
   });
 
-  // GrÃ¡fico: Tipo
+  // Gr├ífico: Tipo
   const tipoCounts = {};
   processos.forEach(p => {
     let t = String(p.tipo || '').trim().toUpperCase();
     if (!t) {
-      t = 'NÃƒO INFORMADO';
+      t = 'N├âO INFORMADO';
     } else {
       if (t === 'OB') t = 'OBRAS';
       else if (t === 'MP') t = 'MATERIAL PERMANENTE';
@@ -451,7 +451,7 @@ function renderDashboard() {
     'SISTEMA': '#a855f7',
     'TREINAMENTO': '#10b981',
     'OUTROS': '#f43f5e',
-    'NÃƒO INFORMADO': '#64748b'
+    'N├âO INFORMADO': '#64748b'
   };
   const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
 
@@ -518,7 +518,7 @@ function renderDashboard() {
     }
   });
 
-  // GrÃ¡fico: Todos MunicÃ­pios por valor
+  // Gr├ífico: Todos Munic├¡pios por valor
   const munValor = {};
   processos.forEach(p => {
     if (p.municipio) munValor[p.municipio] = (munValor[p.municipio] || 0) + (p.valorOf || 0);
@@ -536,7 +536,7 @@ function renderDashboard() {
   chartMunicipio = new Chart(ctxMun, {
     type: 'bar',
     data: {
-      labels: allMun.map(([m]) => m.length > 18 ? m.slice(0,18)+'â€¦' : m),
+      labels: allMun.map(([m]) => m.length > 18 ? m.slice(0,18)+'ÔÇª' : m),
       datasets: [{
         label: 'Valor (R$)',
         data: allMun.map(([,v]) => v),
@@ -557,7 +557,7 @@ function renderDashboard() {
     }
   });
 
-  // GrÃ¡fico: Prefixo (LT, Cgoi, IeCH, ClJs...)
+  // Gr├ífico: Prefixo (LT, Cgoi, IeCH, ClJs...)
     const prefixoCounts = {};
     processos.forEach(p => {
       const pr = (p.prefixo || 'OUTROS').trim().toUpperCase();
@@ -601,7 +601,7 @@ function renderDashboard() {
       });
     }
 
-    // LocalizaÃ§Ã£o
+    // Localiza├º├úo
   const locCount = {};
   processos.forEach(p => {
     if (p.localizacao && p.localizacao !== '.') locCount[p.localizacao] = (locCount[p.localizacao] || 0) + 1;
@@ -625,7 +625,7 @@ function renderDashboard() {
 }
 
 async function renderChartAcessosDashboard() {
-  // Pizza removida â€” apenas grÃ¡fico de barras proporcional
+  // Pizza removida ÔÇö apenas gr├ífico de barras proporcional
   if (chartAcessos) { chartAcessos.destroy(); chartAcessos = null; }
 
   try {
@@ -642,7 +642,7 @@ async function renderChartAcessosDashboard() {
     console.log('[ACESSOS] Dados brutos da API:', JSON.stringify(acessos.map(a => ({nome: a.nome, nivel: a.nivel, contagem: a.contagem}))));
 
     // ---- Usar o campo 'contagem' real da planilha (CONTAGEM ACESSO) ----
-    // Parsing robusto: trata string vazia, ponto, vÃ­rgula decimal
+    // Parsing robusto: trata string vazia, ponto, v├¡rgula decimal
     const parseContagem = (val) => {
       if (!val && val !== 0) return 0;
       const str = String(val).trim().replace(/\./g, '').replace(',', '.');
@@ -659,19 +659,19 @@ async function renderChartAcessosDashboard() {
       }))
       .sort((a, b) => b.contagem - a.contagem);
 
-    console.log('[ACESSOS] UsuÃ¡rios processados:', usuarios);
+    console.log('[ACESSOS] Usu├írios processados:', usuarios);
 
     // Totais por categoria (contagem real)
     const totalAcessos = usuarios.reduce((s, u) => s + u.contagem, 0) || 1;
     const totalEditor  = usuarios.filter(u => u.nivel === 'editor').reduce((s, u) => s + u.contagem, 0);
     const totalLeitor  = usuarios.filter(u => u.nivel === 'leitor').reduce((s, u) => s + u.contagem, 0);
 
-    // ---- Limpar lista de badges (nÃ£o usada) ----
+    // ---- Limpar lista de badges (n├úo usada) ----
     const elNomes = document.getElementById('lista-nomes-acessos');
     if (elNomes) elNomes.innerHTML = '';
 
-    // ---- GrÃ¡fico de barras VERTICAL proporcional (100% = total) ----
-    // Cada barra tem altura proporcional Ã  sua participaÃ§Ã£o no total de acessos
+    // ---- Gr├ífico de barras VERTICAL proporcional (100% = total) ----
+    // Cada barra tem altura proporcional ├á sua participa├º├úo no total de acessos
     const barLabels = usuarios.map(u => u.nome);
     const barData   = usuarios.map(u => parseFloat(((u.contagem / totalAcessos) * 100).toFixed(2)));
     const barColors = usuarios.map(u => u.nivel === 'editor' ? '#10b981' : '#f59e0b');
@@ -709,7 +709,7 @@ async function renderChartAcessosDashboard() {
             },
             // Exibir o % em cima de cada barra
             datalabels: {
-              display: false // usa plugin chartjs-plugin-datalabels se disponÃ­vel
+              display: false // usa plugin chartjs-plugin-datalabels se dispon├¡vel
             }
           },
           scales: {
@@ -789,13 +789,13 @@ function getFiltrados() {
   if (state.filtros.agrupamento) lista = lista.filter(p => normalizar(p.agrupamento) === normalizar(state.filtros.agrupamento));
   if (state.filtros.prefixo) lista = lista.filter(p => normalizar(p.prefixo).includes(normalizar(state.filtros.prefixo)));
 
-  // Filtros individuais de autorizaÃ§Ã£o
+  // Filtros individuais de autoriza├º├úo
   if (state.filtros.cam) lista = lista.filter(p => p.CAM === '1');
   if (state.filtros.gab) lista = lista.filter(p => p.GAB === '1');
   if (state.filtros.cc)  lista = lista.filter(p => p.CC  === '1');
 
 
-  // OrdenaÃ§Ã£o
+  // Ordena├º├úo
   if (state.sortCol) {
     lista.sort((a, b) => {
       let va = a[state.sortCol] || '';
@@ -820,7 +820,7 @@ function renderProcessos() {
   const inicio = (state.paginaAtual - 1) * state.itensPorPagina;
   const pagina = filtrados.slice(inicio, inicio + state.itensPorPagina);
 
-  // Preencher filtros dinÃ¢micos
+  // Preencher filtros din├ómicos
   preencherSelectFiltro('filtro-ano',         [...new Set(carregarProcessos().map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(carregarProcessos().map(p => p.agrupamento).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-status',      [...new Set(carregarProcessos().map(p => p.status).filter(s => s && s !== '.'))].sort());
@@ -835,7 +835,7 @@ function renderProcessos() {
     dlFiltroPfx.innerHTML = pfxs.map(v => `<option value="${v}">`).join('');
   }
 
-  // Preencher datalists do formulÃ¡rio
+  // Preencher datalists do formul├írio
   const preencherDatalist = (id, prop) => {
     const dl = document.getElementById(id);
     if (dl) {
@@ -859,14 +859,14 @@ function renderProcessos() {
           <!-- Linha 1: PREFIXO -->
           <div style="display: flex; align-items: center; white-space: nowrap;">
             <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'}" style="flex-shrink: 0; font-size: 11px; padding: 2px 6px;">
-              ${p.prefixo || 'â€”'}
+              ${p.prefixo || 'ÔÇö'}
             </span>
           </div>
-          <!-- Linha 2: CATEGORIA; TIPO; MARCAÃ‡ÃƒO -->
+          <!-- Linha 2: CATEGORIA; TIPO; MARCA├ç├âO -->
           <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
-            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver ObservaÃ§Ãµes" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">ðŸ“Œ</span>' : ''}
+            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observa├º├Áes" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">­ƒôî</span>' : ''}
           </div>
           <!-- Linha 3: CAM; GAB; CC -->
           <div style="display: flex; gap: 6px; align-items: center; margin-top: 1px;">
@@ -878,35 +878,35 @@ function renderProcessos() {
       </td>
       <td class="col-municipio">${hl(p.municipio, busca)}</td>
       <td class="col-numero">
-        ${hl(p.numero, busca) || 'â€”'}
+        ${hl(p.numero, busca) || 'ÔÇö'}
         ${p.ano ? `<span style="margin-left: 4px; padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 10px; color: #cbd5e1;">${p.ano}</span>` : ''}
       </td>
-      <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || 'â€”'}</td>
-      <td class="col-objeto" title="${p.objeto}">${p.objeto || 'â€”'}</td>
-      <td><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'â€”'}</span></td>
-      <td>${p.localizacao || 'â€”'}</td>
+      <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || 'ÔÇö'}</td>
+      <td class="col-objeto" title="${p.objeto}">${p.objeto || 'ÔÇö'}</td>
+      <td><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'ÔÇö'}</span></td>
+      <td>${p.localizacao || 'ÔÇö'}</td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
       <td>${formatDate(p.data)}</td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
-        <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">âœï¸</button>
-        <button class="btn btn-ghost btn-sm" onclick="confirmarExcluir('${p.id}')" title="Excluir" style="color: var(--red); margin-left: 4px;">ðŸ—‘ï¸</button>
+        <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">Ô£Å´©Å</button>
+        <button class="btn btn-ghost btn-sm" onclick="confirmarExcluir('${p.id}')" title="Excluir" style="color: var(--red); margin-left: 4px;">­ƒùæ´©Å</button>
       </td>
     </tr>
   `).join('') || `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9">
       <div class="empty-state">
-        <div class="empty-icon">ðŸ”</div>
+        <div class="empty-icon">­ƒöì</div>
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente ajustar os filtros</p>
       </div>
     </tr>`;
 
-  // Info paginaÃ§Ã£o
+  // Info pagina├º├úo
   document.getElementById('pg-info').textContent = total === 0
     ? 'Nenhum resultado'
-    : `Exibindo ${inicio + 1}â€“${Math.min(inicio + state.itensPorPagina, total)} de ${total} processos`;
+    : `Exibindo ${inicio + 1}ÔÇô${Math.min(inicio + state.itensPorPagina, total)} de ${total} processos`;
 
-  // Controles paginaÃ§Ã£o
+  // Controles pagina├º├úo
   renderPaginacao(totalPags);
 
   // Total valor filtrado
@@ -917,7 +917,7 @@ function renderProcessos() {
   const elQtd = document.getElementById('qtd-registros-filtrados');
   if (elQtd) elQtd.textContent = `${total.toLocaleString('pt-BR')} ${total === 1 ? 'registro' : 'registros'}`;
 
-  // BotÃ£o exportar
+  // Bot├úo exportar
   const btnExportar = document.getElementById('btn-exportar');
   if (btnExportar) {
     btnExportar.onclick = () => exportarExcel(filtrados);
@@ -936,8 +936,8 @@ function preencherSelectFiltro(id, opcoes) {
   const atual = sel.value;
   let placeholder = 'Todos';
   if (id === 'filtro-status') placeholder = 'Status';
-  else if (id === 'filtro-localizacao') placeholder = 'LocalizaÃ§Ã£o';
-  else if (id === 'filtro-municipio') placeholder = 'MunicÃ­pio';
+  else if (id === 'filtro-localizacao') placeholder = 'Localiza├º├úo';
+  else if (id === 'filtro-municipio') placeholder = 'Munic├¡pio';
   else if (id === 'filtro-objeto') placeholder = 'Objeto';
   else if (id === 'filtro-ano') placeholder = 'Ano';
 
@@ -957,7 +957,7 @@ function renderPaginacao(totalPags) {
     container.appendChild(btn);
   };
 
-  addBtn('â€¹', state.paginaAtual - 1, state.paginaAtual === 1);
+  addBtn('ÔÇ╣', state.paginaAtual - 1, state.paginaAtual === 1);
 
   let start = Math.max(1, state.paginaAtual - 2);
   let end   = Math.min(totalPags, start + 4);
@@ -965,10 +965,10 @@ function renderPaginacao(totalPags) {
 
   for (let i = start; i <= end; i++) addBtn(i, i, false, i === state.paginaAtual);
 
-  addBtn('â€º', state.paginaAtual + 1, state.paginaAtual === totalPags || totalPags === 0);
+  addBtn('ÔÇ║', state.paginaAtual + 1, state.paginaAtual === totalPags || totalPags === 0);
 }
 
-// ---- FORMULÃRIO / MÃSCARAS ----
+// ---- FORMUL├üRIO / M├üSCARAS ----
 function maskProcesso(v) {
   v = v.replace(/\D/g, "");
   if (v.length > 16) v = v.substring(0, 16);
@@ -1013,12 +1013,12 @@ function adicionarCampoNumero(val = '') {
   container.appendChild(div);
 }
 
-// ---- FORMULÃRIO ----
+// ---- FORMUL├üRIO ----
 function renderFormulario() {
   const processo = state.editandoId ? buscarProcessoPorId(state.editandoId) : null;
   const p = processo || {};
 
-  // Preencher selects do formulÃ¡rio
+  // Preencher selects do formul├írio
   const fillSelect = (id, lista, val) => {
     const s = document.getElementById(id);
     if (!s) return;
@@ -1061,7 +1061,7 @@ function renderFormulario() {
       }
     }
 
-    // Processar array de nÃºmeros
+    // Processar array de n├║meros
     const containerNum = document.getElementById('container-numeros');
     containerNum.innerHTML = '';
     const numeros = p.numero ? p.numero.split(',').map(s => s.trim()).filter(Boolean) : [];
@@ -1072,7 +1072,7 @@ function renderFormulario() {
         containerNum.innerHTML = `
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;" value="${num}">
-            <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar nÃºmero">+</button>
+            <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar n├║mero">+</button>
           </div>
         `;
       } else {
@@ -1140,7 +1140,7 @@ function renderFormulario() {
     document.getElementById('container-numeros').innerHTML = `
       <div style="display:flex;gap:8px;align-items:center;">
         <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;">
-        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar nÃºmero">+</button>
+        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar n├║mero">+</button>
       </div>
     `;
     contatosTemporarios = [];
@@ -1164,7 +1164,7 @@ function renderFormulario() {
 
   document.getElementById('form-title').textContent = processo ? 'Editar Processo' : 'Novo Processo';
 
-  // LÃ³gica de Apontamento e HistÃ³rico
+  // L├│gica de Apontamento e Hist├│rico
   const currentSessao = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
   const userNivel = currentSessao ? currentSessao.nivel : 'leitor';
 
@@ -1178,11 +1178,11 @@ function renderFormulario() {
     const dataEdicao = p.dataHoraEdicao || '';
     
     if (nomeEdicao || dataEdicao) {
-      if (nomeDiv) nomeDiv.innerHTML = `ðŸ‘¤ ${nomeEdicao}`;
-      if (dataDiv) dataDiv.innerHTML = `ðŸ“… ${dataEdicao}`;
+      if (nomeDiv) nomeDiv.innerHTML = `­ƒæñ ${nomeEdicao}`;
+      if (dataDiv) dataDiv.innerHTML = `­ƒôà ${dataEdicao}`;
     } else {
       if (nomeDiv) nomeDiv.innerHTML = `<span style="font-style: italic; color: var(--text-muted);">Sem registros</span>`;
-      if (dataDiv) dataDiv.innerHTML = 'â€”';
+      if (dataDiv) dataDiv.innerHTML = 'ÔÇö';
     }
   } else {
     if (legendDiv) legendDiv.style.display = 'none';
@@ -1211,11 +1211,11 @@ function updateFormToggleColors() {
 function salvarFormulario(e) {
   e.preventDefault();
   
-  // Obter todos os nÃºmeros preenchidos
+  // Obter todos os n├║meros preenchidos
   const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
   const numerosJoined = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ');
 
-  // Capturar contato digitado mas nÃ£o adicionado (sem clicar no '+')
+  // Capturar contato digitado mas n├úo adicionado (sem clicar no '+')
   const zapEl = document.getElementById('form-contato-whatsapp');
   const detEl = document.getElementById('form-contato-detalhes');
   if (zapEl && detEl) {
@@ -1288,7 +1288,7 @@ function salvarFormulario(e) {
   }
 
   if (!dados.interessado && !dados.numero) {
-    toast('Informe ao menos o NÂº do Processo ou o Interessado.', 'error');
+    toast('Informe ao menos o N┬║ do Processo ou o Interessado.', 'error');
     return;
   }
 
@@ -1321,7 +1321,7 @@ function abrirDetalhe(id) {
   if (p.contatos && p.contatos.length > 0) {
     contatosHtml = `
       <div class="card" style="margin-bottom:16px">
-        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">ðŸ“ž Contatos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">­ƒô× Contatos</h4>
         <div style="display:flex;flex-direction:column;gap:8px">
           ${p.contatos.map(c => {
             const numeroLimpo = c.whatsapp.replace(/\D/g, '');
@@ -1348,7 +1348,7 @@ function abrirDetalhe(id) {
   if (userNivel === 'leitor') {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">ðŸ“ Novo Apontamento</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">­ƒôØ Novo Apontamento</h4>
         <textarea id="modal-apontamento-texto" placeholder="Digite seu apontamento..." style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:12px;"></textarea>
         <button onclick="salvarApontamentoModal('${p.id}')" id="btn-salvar-apont" style="width:100%; padding:10px; border-radius:6px; border:none; background:#22c55e; color:#fff; font-weight:bold; cursor:pointer;">Salvar Apontamento</button>
       </div>
@@ -1356,7 +1356,7 @@ function abrirDetalhe(id) {
   } else if (userNivel === 'adm' && p.apontamento) {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">ðŸ“ HistÃ³rico de Apontamentos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">­ƒôØ Hist├│rico de Apontamentos</h4>
         <div style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; white-space:pre-wrap; min-height:60px;">${p.apontamento}</div>
       </div>
     `;
@@ -1367,7 +1367,7 @@ function abrirDetalhe(id) {
     <div class="detail-header" style="display:flex; flex-direction:column; gap:20px;">
       <div style="display:flex; gap:12px; width:100%;">
         ${p.numero ? `
-        <button style="flex:1; padding:12px; font-size:16px; display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; background:#3b82f6; color:#ffffff; cursor:pointer;" onclick="copiarProcessoSelecionado()" title="Copiar NÃºmero">
+        <button style="flex:1; padding:12px; font-size:16px; display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; background:#3b82f6; color:#ffffff; cursor:pointer;" onclick="copiarProcessoSelecionado()" title="Copiar N├║mero">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar
         </button>
         <a href="https://sei.sistemas.ro.gov.br/sip/login.php?sigla_orgao_sistema=RO&sigla_sistema=SEI" target="_blank" class="btn btn-ghost" style="flex:1; padding:12px; display:flex; align-items:center; justify-content:center; background:white; border:1px solid var(--border); border-radius:6px;" title="Acessar SEI">
@@ -1379,7 +1379,7 @@ function abrirDetalhe(id) {
         </button>
       </div>
 
-      <!-- Indicadores de AutorizaÃ§Ã£o (Estilo Moderno) -->
+      <!-- Indicadores de Autoriza├º├úo (Estilo Moderno) -->
       <div style="display:flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-top: 4px; margin-bottom: 4px;">
         <div style="display:flex; align-items: center; gap: 8px;">
           <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${p.CAM === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 8px ${p.CAM === '1' ? '#10b981' : '#ef4444'};"></div>
@@ -1412,25 +1412,25 @@ function abrirDetalhe(id) {
                 `).join('')}
               </div>`;
             }
-            return '<span style="font-size:14px;font-weight:600">Sem nÃºmero</span>';
+            return '<span style="font-size:14px;font-weight:600">Sem n├║mero</span>';
           })()}
         </div>
-        <div class="detail-nome" style="font-size:18px; margin-bottom:8px;">${p.interessado || 'â€”'}</div>
+        <div class="detail-nome" style="font-size:18px; margin-bottom:8px;">${p.interessado || 'ÔÇö'}</div>
         <div>
-          <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'â€”'}</span>
+          <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'ÔÇö'}</span>
         </div>
       </div>
     </div>
     <div class="info-grid">
-      <div class="info-item"><label>MunicÃ­pio</label><p>${p.municipio || 'â€”'}</p></div>
-      <div class="info-item"><label>Objeto</label><p>${p.objeto || 'â€”'}</p></div>
-      <div class="info-item"><label>LocalizaÃ§Ã£o</label><p>${p.localizacao || 'â€”'}</p></div>
+      <div class="info-item"><label>Munic├¡pio</label><p>${p.municipio || 'ÔÇö'}</p></div>
+      <div class="info-item"><label>Objeto</label><p>${p.objeto || 'ÔÇö'}</p></div>
+      <div class="info-item"><label>Localiza├º├úo</label><p>${p.localizacao || 'ÔÇö'}</p></div>
       <div class="info-item"><label>Data</label><p>${formatDate(p.data)}</p></div>
     </div>
 
 
     <div class="card" style="margin-bottom:16px">
-      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">ðŸ’° ExecuÃ§Ã£o Financeira</h4>
+      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">­ƒÆ░ Execu├º├úo Financeira</h4>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
         <div>
           <div style="font-size:11px;color:var(--text-muted)">Valor Oficial</div>
@@ -1441,7 +1441,7 @@ function abrirDetalhe(id) {
           <div style="font-size:18px;font-weight:700;color:var(--green)">${formatCurrency(p.valorPlan)}</div>
         </div>
         <div>
-          <div style="font-size:11px;color:var(--text-muted)">DiferenÃ§a</div>
+          <div style="font-size:11px;color:var(--text-muted)">Diferen├ºa</div>
           <div style="font-size:18px;font-weight:700;color:${(p.diferenca||0) < 0 ? 'var(--red)' : 'var(--yellow)'}">${formatCurrency(p.diferenca)}</div>
         </div>
       </div>
@@ -1449,21 +1449,21 @@ function abrirDetalhe(id) {
 
     ${p.marca === '1' || p.marca === 'SIM' ? `
       <div class="card" style="margin-bottom:16px; border: 2px solid var(--blue); background: rgba(59, 130, 246, 0.08); display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(59,130,246,0.15);">
-        <span style="font-size: 24px;">ðŸ“Œ</span>
+        <span style="font-size: 24px;">­ƒôî</span>
         <div>
-          <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para AtenÃ§Ã£o!</strong>
-          <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observaÃ§Ãµes abaixo.</p>
+          <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para Aten├º├úo!</strong>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observa├º├Áes abaixo.</p>
         </div>
       </div>
     ` : ''}
 
     ${p.obs ? `
       <div class="card" style="margin-bottom:16px; ${p.marca === '1' || p.marca === 'SIM' ? 'border: 1px solid var(--blue); background: rgba(59, 130, 246, 0.03);' : ''}">
-        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">ðŸ“ ObservaÃ§Ãµes</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">­ƒôØ Observa├º├Áes</h4>
         <p style="color:var(--text-secondary);font-size:14px">${p.obs}</p>
       </div>
     ` : ''}
-    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">ðŸ—’ï¸ AnotaÃ§Ã£o</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
+    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">­ƒùÆ´©Å Anota├º├úo</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
     ${apontamentoHtml}
@@ -1498,7 +1498,7 @@ window.salvarApontamentoModal = function(id) {
   }).catch(err => {
       console.error(err);
       if (btn) { btn.disabled = false; btn.textContent = 'Salvar Apontamento'; }
-      toast('Erro de conexÃ£o.', 'error');
+      toast('Erro de conex├úo.', 'error');
   });
 };
 
@@ -1522,7 +1522,7 @@ window.gravarApontamentoImediato = function() {
   const btn = document.getElementById('btn-gravar-apontamento-edicao');
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<span>â³</span> Gravando...';
+    btn.innerHTML = '<span>ÔÅ│</span> Gravando...';
   }
 
   fetch(API_BASE + `/api/registros/${id}/apontamento`, {
@@ -1534,7 +1534,7 @@ window.gravarApontamentoImediato = function() {
   .then(resData => {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>ðŸ’¾</span> Gravar';
+      btn.innerHTML = '<span>­ƒÆ¥</span> Gravar';
     }
     
     if (resData.sucesso) {
@@ -1566,14 +1566,14 @@ window.gravarApontamentoImediato = function() {
     console.error(err);
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>ðŸ’¾</span> Gravar';
+      btn.innerHTML = '<span>­ƒÆ¥</span> Gravar';
     }
-    toast('Erro de conexÃ£o ao gravar apontamento.', 'error');
+    toast('Erro de conex├úo ao gravar apontamento.', 'error');
   });
 };
 
 window.limparApontamentoEdicao = function() {
-  if (confirm('Tem certeza de que deseja limpar todo o histÃ³rico de apontamentos deste processo?')) {
+  if (confirm('Tem certeza de que deseja limpar todo o hist├│rico de apontamentos deste processo?')) {
     const txtHistorico = document.getElementById('form-historico-acumulado-texto');
     if (txtHistorico) {
       txtHistorico.value = '';
@@ -1582,7 +1582,7 @@ window.limparApontamentoEdicao = function() {
     const chk = document.getElementById('form-alerta-toggle');
     if (chk) chk.checked = false;
 
-    toast('HistÃ³rico limpo localmente. Clique em Salvar Processo para confirmar a limpeza na planilha.', 'info');
+    toast('Hist├│rico limpo localmente. Clique em Salvar Processo para confirmar a limpeza na planilha.', 'info');
   }
 };
 
@@ -1604,17 +1604,17 @@ function novoProcesso() {
 function confirmarExcluir(id) {
   const p = buscarProcessoPorId(id);
   if (!p) return;
-  const ident = p.numero || p.interessado || 'Sem IdentificaÃ§Ã£o';
+  const ident = p.numero || p.interessado || 'Sem Identifica├º├úo';
   if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`âš ï¸ ATENÃ‡ÃƒO: ISSO Ã‰ IRREVERSÃVEL!\n\nEste registro serÃ¡ excluÃ­do permanentemente da planilha do Google e nÃ£o poderÃ¡ ser recuperado. Deseja realmente prosseguir?`)) {
+    if (confirm(`ÔÜá´©Å ATEN├ç├âO: ISSO ├ë IRREVERS├ìVEL!\n\nEste registro ser├í exclu├¡do permanentemente da planilha do Google e n├úo poder├í ser recuperado. Deseja realmente prosseguir?`)) {
       excluirProcesso(id);
-      toast('Processo excluÃ­do com sucesso.', 'info');
+      toast('Processo exclu├¡do com sucesso.', 'info');
       navegar('processos');
     }
   }
 }
 
-// ---- IMPORTAÃ‡ÃƒO ----
+// ---- IMPORTA├ç├âO ----
 function setupImportacao() {
   const zone = document.getElementById('import-zone');
   const input = document.getElementById('import-input');
@@ -1648,19 +1648,19 @@ async function processarArquivo(file) {
     const result = await importarExcel(file);
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
-        <h3 style="color:var(--green);margin-bottom:12px">âœ… ImportaÃ§Ã£o concluÃ­da!</h3>
+        <h3 style="color:var(--green);margin-bottom:12px">Ô£à Importa├º├úo conclu├¡da!</h3>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:14px">
           <div><span style="color:var(--text-muted)">Total na planilha:</span><br><strong>${result.total}</strong></div>
           <div><span style="color:var(--text-muted)">Novos importados:</span><br><strong style="color:var(--green)">${result.novos}</strong></div>
           <div><span style="color:var(--text-muted)">Duplicados ignorados:</span><br><strong style="color:var(--yellow)">${result.duplicados}</strong></div>
         </div>
-        <button class="btn btn-primary" style="margin-top:16px" onclick="navegar('processos')">Ver Processos â†’</button>
+        <button class="btn btn-primary" style="margin-top:16px" onclick="navegar('processos')">Ver Processos ÔåÆ</button>
       </div>`;
     toast(`${result.novos} processos importados!`, 'success');
   } catch (err) {
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(239,68,68,0.3)">
-        <h3 style="color:var(--red)">âŒ Erro na importaÃ§Ã£o</h3>
+        <h3 style="color:var(--red)">ÔØî Erro na importa├º├úo</h3>
         <p style="color:var(--text-muted);margin-top:8px">${err.message}</p>
       </div>`;
     toast('Erro ao importar arquivo.', 'error');
@@ -1682,28 +1682,28 @@ async function processarLinkGoogleSheets() {
     const result = await importarGoogleSheets(url);
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
-        <h3 style="color:var(--green);margin-bottom:12px">âœ… ImportaÃ§Ã£o do GSheets concluÃ­da!</h3>
+        <h3 style="color:var(--green);margin-bottom:12px">Ô£à Importa├º├úo do GSheets conclu├¡da!</h3>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:14px">
           <div><span style="color:var(--text-muted)">Total lidos:</span><br><strong>${result.total}</strong></div>
           <div><span style="color:var(--text-muted)">Novos importados:</span><br><strong style="color:var(--green)">${result.novos}</strong></div>
           <div><span style="color:var(--text-muted)">Duplicados ignorados:</span><br><strong style="color:var(--yellow)">${result.duplicados}</strong></div>
         </div>
-        <button class="btn btn-primary" style="margin-top:16px" onclick="navegar('processos')">Ver Processos â†’</button>
+        <button class="btn btn-primary" style="margin-top:16px" onclick="navegar('processos')">Ver Processos ÔåÆ</button>
       </div>`;
     toast(`${result.novos} processos importados do GSheets!`, 'success');
   } catch (err) {
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(239,68,68,0.3)">
-        <h3 style="color:var(--red)">âŒ Erro no Google Sheets</h3>
+        <h3 style="color:var(--red)">ÔØî Erro no Google Sheets</h3>
         <p style="color:var(--text-muted);margin-top:8px">${err.message}</p>
       </div>`;
     toast('Erro ao importar Google Sheets.', 'error');
   }
 }
 
-// ---- INICIALIZAÃ‡ÃƒO ----
+// ---- INICIALIZA├ç├âO ----
 document.addEventListener('DOMContentLoaded', () => {
-  // NavegaÃ§Ã£o
+  // Navega├º├úo
   document.querySelectorAll('[data-page]').forEach(el => {
     el.addEventListener('click', () => {
       if (el.dataset.page === 'novo') novoProcesso();
@@ -1711,9 +1711,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // FormulÃ¡rio
+  // Formul├írio
   
-  // Listeners filtros autorizaÃ§Ã£o individuais
+  // Listeners filtros autoriza├º├úo individuais
   const setupFiltroToggle = (elId, campo) => {
     const el = document.getElementById(elId);
     if (!el) return;
@@ -1805,10 +1805,10 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProcessos();
   });
 
-  // Filtro prefixo â€” input em tempo real
+  // Filtro prefixo ÔÇö input em tempo real
   document.getElementById('filtro-prefixo').addEventListener('input', e => aplicarFiltro('prefixo', e.target.value.trim()));
 
-  // OrdenaÃ§Ã£o por coluna
+  // Ordena├º├úo por coluna
   document.querySelectorAll('th[data-sort]').forEach(th => {
     th.addEventListener('click', () => {
       const col = th.dataset.sort;
@@ -1818,16 +1818,16 @@ document.addEventListener('DOMContentLoaded', () => {
         state.sortCol = col;
         state.sortDir = 'asc';
       }
-      document.querySelectorAll('th[data-sort]').forEach(t => t.textContent = t.textContent.replace(/ [â–²â–¼]$/,''));
-      th.textContent += state.sortDir === 'asc' ? ' â–²' : ' â–¼';
+      document.querySelectorAll('th[data-sort]').forEach(t => t.textContent = t.textContent.replace(/ [Ôû▓Ôû╝]$/,''));
+      th.textContent += state.sortDir === 'asc' ? ' Ôû▓' : ' Ôû╝';
       renderProcessos();
     });
   });
 
-  // ImportaÃ§Ã£o
+  // Importa├º├úo
   setupImportacao();
 
-  // Preencher selects de filtro com status e localizaÃ§Ã£o
+  // Preencher selects de filtro com status e localiza├º├úo
   const fillSelectFiltro = (id, lista) => {
     const s = document.getElementById(id);
     if (!s) return;
@@ -1836,7 +1836,7 @@ document.addEventListener('DOMContentLoaded', () => {
   fillSelectFiltro('filtro-status',      STATUS_LIST.filter(s => s !== '.'));
   fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
 
-  // MÃ¡scara de Celular (WhatsApp)
+  // M├íscara de Celular (WhatsApp)
   const shareNum = document.getElementById("share-whatsapp-number");
   if (shareNum) {
     shareNum.addEventListener("input", (e) => {
@@ -1861,11 +1861,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // PÃ¡gina inicial
+  // P├ígina inicial
   navegar('dashboard');
 });
 
-// ---- EXPORTAÃ‡ÃƒO ----
+// ---- EXPORTA├ç├âO ----
 function exportarExcel() {
   const filtrados = getFiltrados();
   if (filtrados.length === 0) {
@@ -1875,12 +1875,12 @@ function exportarExcel() {
 
   const data = filtrados.map(p => ({
     "Prefixo": p.prefixo || '',
-    "MunicÃ­pio": p.municipio || '',
-    "NÂº Processo": p.numero || '',
+    "Munic├¡pio": p.municipio || '',
+    "N┬║ Processo": p.numero || '',
     "Interessado": p.interessado || '',
     "Objeto": p.objeto || '',
     "Status": p.status || '',
-    "LocalizaÃ§Ã£o": p.localizacao || '',
+    "Localiza├º├úo": p.localizacao || '',
     "Valor Oficial": p.valorOf || 0,
     "Valor Planilha": p.valorPlan || 0,
     "Data": p.data ? formatDate(p.data) : ''
@@ -1907,9 +1907,9 @@ function exportarPDF() {
   const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const userElement = document.getElementById('user-name');
   const userName = userElement ? userElement.textContent : 'Admin';
-  const dateTimeStr = "Impresso em: " + dateStr + " Ã s " + timeStr + " | UsuÃ¡rio: " + userName;
+  const dateTimeStr = "Impresso em: " + dateStr + " ├ás " + timeStr + " | Usu├írio: " + userName;
 
-  const tableColumn = ["Prefixo", "MunicÃ­pio", "NÂº Processo", "Interessado", "Objeto", "Status", "LocalizaÃ§Ã£o", "Valor Oficial", "Data"];
+  const tableColumn = ["Prefixo", "Munic├¡pio", "N┬║ Processo", "Interessado", "Objeto", "Status", "Localiza├º├úo", "Valor Oficial", "Data"];
   
   const tableRows = filtrados.map(p => {
     const num = p.numero ? p.numero.replace(/, /g, '\n') : '';
@@ -1938,9 +1938,9 @@ function exportarPDF() {
     didDrawPage: function (data) {
       doc.setFontSize(12);
       doc.setTextColor(40);
-      doc.text("CAM - COORDENADORIA DE ARTICULAÃ‡ÃƒO COM OS MUNICÃPIOS | SEDUC - RO", 14, 20);
+      doc.text("CAM - COORDENADORIA DE ARTICULA├ç├âO COM OS MUNIC├ìPIOS | SEDUC - RO", 14, 20);
       
-      const str = "PÃ¡gina " + data.pageNumber + " de " + totalPagesExp;
+      const str = "P├ígina " + data.pageNumber + " de " + totalPagesExp;
       doc.setFontSize(8);
       doc.setTextColor(100);
       
@@ -1971,7 +1971,7 @@ window.addEventListener('beforeprint', () => {
   const timeStr = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const el = document.getElementById('print-date-time');
   if (el) {
-    el.innerHTML = "Emitido em: " + dateStr + ", Ã s " + timeStr;
+    el.innerHTML = "Emitido em: " + dateStr + ", ├ás " + timeStr;
   }
 });
 
@@ -1993,7 +1993,7 @@ function adicionarContato() {
   const det = detEl.value.trim();
   
   if (!zap) {
-    toast('Preencha o nÃºmero do WhatsApp', 'error');
+    toast('Preencha o n├║mero do WhatsApp', 'error');
     return;
   }
   
@@ -2021,10 +2021,10 @@ function renderizarContatosForm() {
     const whatsappFormatado = maskCelular(numeroLimpo);
     
     div.innerHTML = "<div style=\"display:flex; flex-direction:column; gap:2px;\">" +
-      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">ðŸ“ž " + whatsappFormatado + "</span>" +
+      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">­ƒô× " + whatsappFormatado + "</span>" +
       (c.detalhes ? "<span style=\"color:var(--text-secondary); font-size:12px;\">" + c.detalhes + "</span>" : "") +
       "</div>" +
-      "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">âŒ</button>";
+      "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">ÔØî</button>";
       
     container.appendChild(div);
   });
@@ -2033,20 +2033,20 @@ function renderizarContatosForm() {
 
 
 
-// ---- FUNï¿½ï¿½O PARA COPIAR PROCESSO SELECIONADO ----
+// ---- FUN´┐¢´┐¢O PARA COPIAR PROCESSO SELECIONADO ----
 window.copiarProcessoSelecionado = function() {
   const radio = document.querySelector('input[name="modal_processo_radio"]:checked');
   if (radio) {
     navigator.clipboard.writeText(radio.value);
-    toast('Nï¿½mero copiado!', 'success');
+    toast('N´┐¢mero copiado!', 'success');
   } else {
-    toast('Nenhum nï¿½mero selecionado', 'error');
+    toast('Nenhum n´┐¢mero selecionado', 'error');
   }
 };
 
 
 
-// ==================== IMPRESSÃ•ES ====================
+// ==================== IMPRESS├òES ====================
 
 
 function getFormattedDateForTitle() {
@@ -2064,7 +2064,7 @@ function getCommonHeader(subtitle) {
   return `
     <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left;">
-        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÃ‡ÃƒO COM OS MUNICÃPIOS | SEDUC - RO</h2>
+        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULA├ç├âO COM OS MUNIC├ìPIOS | SEDUC - RO</h2>
       </div>
       <div style="text-align:right;">
         <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>
@@ -2167,9 +2167,9 @@ window.imprimirPadrao = function() {
               </colgroup>
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">NÂº</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">N┬║</th>
                   <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÃPIO</th>
+                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNIC├ìPIO</th>
                   <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
                   <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
                   <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
@@ -2253,7 +2253,7 @@ window.imprimirDetalhado = function() {
       <div style="flex:1; border:2px solid #000; background:#f8fafc; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">VALOR TOTAL CONSOLIDADO</div>
         <div style="font-size:14px; font-weight:bold; color:#000; margin:5px 0;">${formatCurrency(total)}</div>
-        <div style="font-size:7px; color:#000;">${filtrados.length} processos Ãºnicos</div>
+        <div style="font-size:7px; color:#000;">${filtrados.length} processos ├║nicos</div>
       </div>
       <div style="flex:1; border:2px solid #000; background:#f0fdf4; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">PROCESSOS AUTORIZADOS</div>
@@ -2315,9 +2315,9 @@ window.imprimirDetalhado = function() {
   
             <thead>
             <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">NÂº</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">N┬║</th>
               <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÃPIO</th>
+              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNIC├ìPIO</th>
               <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
               <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
               <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
@@ -2369,16 +2369,16 @@ window.imprimirDetalhado = function() {
       </div>
       <div style="flex:1; font-size:11px; line-height:1.5;">
         <strong>Leitura executiva:</strong><br>
-        â€¢ ${(valAutorizados / (total||1) * 100).toFixed(1)}% do valor consolidado jÃ¡ consta como AUTORIZADO.<br>
-        â€¢ ${qtdReabertos > 0 ? 'Reabertos: ' + formatCurrency(valReabertos) + '.' : 'NÃ£o hÃ¡ processos reabertos nesta seleÃ§Ã£o.'}<br>
-        â€¢ ${qtdOutros > 0 ? 'Existem ' + qtdOutros + ' processos em outras situaÃ§Ãµes.' : 'Todos os processos estÃ£o resolvidos.'}
+        ÔÇó ${(valAutorizados / (total||1) * 100).toFixed(1)}% do valor consolidado j├í consta como AUTORIZADO.<br>
+        ÔÇó ${qtdReabertos > 0 ? 'Reabertos: ' + formatCurrency(valReabertos) + '.' : 'N├úo h├í processos reabertos nesta sele├º├úo.'}<br>
+        ÔÇó ${qtdOutros > 0 ? 'Existem ' + qtdOutros + ' processos em outras situa├º├Áes.' : 'Todos os processos est├úo resolvidos.'}
       </div>
     </div>
   `;
 
   const html = `
     <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
-      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('RELATÃ“RIO DETALHADO DE PROCESSOS')}</td></tr></thead>
+      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('RELAT├ôRIO DETALHADO DE PROCESSOS')}</td></tr></thead>
       <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
         <div style="margin-top: 5mm;">
           ${cardsHtml}
@@ -2421,9 +2421,9 @@ window.imprimirAnalise = function() {
   let filtrosAplicados = [];
   if (fGeral) filtrosAplicados.push("Busca: '" + fGeral + "'");
   if (fStatus && fStatus !== 'Todos') filtrosAplicados.push("Status: " + fStatus);
-  if (fLocalizacao && fLocalizacao !== 'Todos') filtrosAplicados.push("LocalizaÃ§Ã£o: " + fLocalizacao);
+  if (fLocalizacao && fLocalizacao !== 'Todos') filtrosAplicados.push("Localiza├º├úo: " + fLocalizacao);
   if (fPrefixo && fPrefixo !== 'Todos') filtrosAplicados.push("Prefixo: " + fPrefixo);
-  if (fMunicipio && fMunicipio !== 'Todos') filtrosAplicados.push("MunicÃ­pio: " + fMunicipio);
+  if (fMunicipio && fMunicipio !== 'Todos') filtrosAplicados.push("Munic├¡pio: " + fMunicipio);
   
   const filtrosTexto = filtrosAplicados.length > 0 
     ? "Filtros aplicados (" + filtrosAplicados.join(', ') + ")" 
@@ -2472,13 +2472,13 @@ window.imprimirAnalise = function() {
 
   const html = `
     <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
-      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('ANÃLISE GERENCIAL')}</td></tr></thead>
+      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('AN├üLISE GERENCIAL')}</td></tr></thead>
       <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
         
         <div class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; margin-bottom:20px; font-size:12px; text-align:justify; line-height:1.6; padding:10px; border:1px solid #ccc;">
-          <strong>SÃNTESE ANALÃTICA:</strong> ParÃ¢metros buscados: <em>${filtrosTexto}</em>.<br>O presente cenÃ¡rio totaliza <strong>${formatCurrency(total)}</strong> distribuÃ­dos em <strong>${filtrados.length}</strong> processos. 
-          Abaixo detalhamos a concentraÃ§Ã£o de recursos por status, cruzando com a localizaÃ§Ã£o, 
-          permitindo identificar os principais setores responsÃ¡veis pela retenÃ§Ã£o de processos.
+          <strong>S├ìNTESE ANAL├ìTICA:</strong> Par├ómetros buscados: <em>${filtrosTexto}</em>.<br>O presente cen├írio totaliza <strong>${formatCurrency(total)}</strong> distribu├¡dos em <strong>${filtrados.length}</strong> processos. 
+          Abaixo detalhamos a concentra├º├úo de recursos por status, cruzando com a localiza├º├úo, 
+          permitindo identificar os principais setores respons├íveis pela reten├º├úo de processos.
         </div>
 
         ${conteudoStatus}
@@ -2527,7 +2527,7 @@ function abrirModalAcesso(index = null) {
 
   if (index !== null) {
     const user = listaAcessos[index];
-    title.innerHTML = '<span>âœï¸</span> Editar Registro de Acesso';
+    title.innerHTML = '<span>Ô£Å´©Å</span> Editar Registro de Acesso';
     rowInput.value = user._rowNumber;
     nomeInput.value = user.nome;
     whatsappInput.value = user.whatsapp || '';
@@ -2536,7 +2536,7 @@ function abrirModalAcesso(index = null) {
 
     // Habilitar campos
     nomeInput.disabled = false;
-    whatsappInput.disabled = true; // WhatsApp nÃ£o pode ser alterado na ediÃ§Ã£o
+    whatsappInput.disabled = true; // WhatsApp n├úo pode ser alterado na edi├º├úo
     nivelInput.disabled = false;
     senhaInput.disabled = false;
 
@@ -2562,7 +2562,7 @@ function cancelarEdicaoAcesso() {
 
   if (form) form.reset();
   if (rowInput) rowInput.value = '';
-  if (title) title.innerHTML = '<span>ðŸ‘¤</span> Registro de Acesso';
+  if (title) title.innerHTML = '<span>­ƒæñ</span> Registro de Acesso';
 
   // Limpar e Desabilitar campos
   if (nomeInput) { nomeInput.value = ''; nomeInput.disabled = true; }
@@ -2585,7 +2585,7 @@ window.novoAcessoForm = function() {
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
   const btnSalvar = document.getElementById('btn-salvar-acesso');
 
-  if (title) title.innerHTML = '<span>âž•</span> Novo Registro de Acesso';
+  if (title) title.innerHTML = '<span>Ô×ò</span> Novo Registro de Acesso';
 
   // Habilitar campos
   if (nomeInput) nomeInput.disabled = false;
@@ -2608,7 +2608,7 @@ function renderListaAcessosUI() {
   if (!tbody) return;
 
   if (listaAcessos.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--text-muted);">Nenhum usuÃ¡rio cadastrado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--text-muted);">Nenhum usu├írio cadastrado.</td></tr>`;
     return;
   }
 
@@ -2634,10 +2634,10 @@ function renderListaAcessosUI() {
       `
     }[user.nivel] || `<span style="font-size:12px; font-weight:600; color:var(--text-primary);">${user.nivel}</span>`;
 
-    const whatsappDisplay = user.whatsapp || 'â€”';
-    const senhaDisplay = user.senha || 'â€”';
+    const whatsappDisplay = user.whatsapp || 'ÔÇö';
+    const senhaDisplay = user.senha || 'ÔÇö';
     const contagemDisplay = user.contagem || '0';
-    const dataDisplay = user.data || 'â€”';
+    const dataDisplay = user.data || 'ÔÇö';
 
     return `
       <tr style="border-bottom:1px solid var(--border);">
@@ -2685,7 +2685,7 @@ async function toggleStatusAcesso(rowNumber, isChecked) {
   renderListaAcessosUI();
 
   try {
-    if (!user) throw new Error('UsuÃ¡rio nÃ£o encontrado.');
+    if (!user) throw new Error('Usu├írio n├úo encontrado.');
 
     const payload = {
       nome: user.nome,
@@ -2709,7 +2709,7 @@ async function toggleStatusAcesso(rowNumber, isChecked) {
       throw new Error(err.erro || 'Erro ao alterar status.');
     }
 
-    toast(`Acesso do usuÃ¡rio ${user.nome} foi ${status === 'liberado' ? 'ativado' : 'inativado'}!`, 'info');
+    toast(`Acesso do usu├írio ${user.nome} foi ${status === 'liberado' ? 'ativado' : 'inativado'}!`, 'info');
   } catch (error) {
     console.error(error);
     toast(error.message, 'error');
@@ -2787,7 +2787,7 @@ async function salvarAcessoForm(event) {
       throw new Error(err.erro || 'Erro ao salvar acesso.');
     }
 
-    toast(row ? 'UsuÃ¡rio atualizado!' : 'UsuÃ¡rio cadastrado!', 'success');
+    toast(row ? 'Usu├írio atualizado!' : 'Usu├írio cadastrado!', 'success');
     cancelarEdicaoAcesso();
     carregarAcessos();
   } catch (error) {
@@ -2797,7 +2797,7 @@ async function salvarAcessoForm(event) {
 }
 
 async function deletarAcesso(rowNumber, whatsapp) {
-  if (!confirm(`Deseja realmente excluir o acesso do usuÃ¡rio ${whatsapp}?`)) {
+  if (!confirm(`Deseja realmente excluir o acesso do usu├írio ${whatsapp}?`)) {
     return;
   }
 
@@ -2813,7 +2813,7 @@ async function deletarAcesso(rowNumber, whatsapp) {
       throw new Error(err.erro || 'Erro ao deletar acesso.');
     }
 
-    toast('UsuÃ¡rio removido com sucesso!', 'info');
+    toast('Usu├írio removido com sucesso!', 'info');
     carregarAcessos();
   } catch (error) {
     console.error(error);
@@ -2821,7 +2821,7 @@ async function deletarAcesso(rowNumber, whatsapp) {
   }
 }
 
-// ---- MÃSCARA E ENVIAR WHATSAPP ----
+// ---- M├üSCARA E ENVIAR WHATSAPP ----
 
 function maskCelular(v) {
   v = v.replace(/\D/g, "");
@@ -2844,12 +2844,12 @@ function enviarLinkWhatsApp() {
   const digits = inputVal.replace(/\D/g, "");
 
   if (digits.length < 10) {
-    toast('Por favor, informe um nÃºmero de celular vÃ¡lido com DDD.', 'error');
+    toast('Por favor, informe um n├║mero de celular v├ílido com DDD.', 'error');
     return;
   }
 
   const phoneFormatted = digits.startsWith('55') ? digits : '55' + digits;
-  const textMsg = encodeURIComponent("OlÃ¡! Segue o link de acesso ao sistema de Acompanhamento de Processos da SEDUC-RO:\n\nhttps://tinhosys.github.io/seduc-processos/");
+  const textMsg = encodeURIComponent("Ol├í! Segue o link de acesso ao sistema de Acompanhamento de Processos da SEDUC-RO:\n\nhttps://tinhosys.github.io/seduc-processos/");
 
   const url = `https://web.whatsapp.com/send?phone=${phoneFormatted}&text=${textMsg}`;
   window.open(url, 'whatsapp_tab');
@@ -2863,20 +2863,20 @@ function renderProcessosRepetidos() {
 
   const processos = carregarProcessos();
 
-  // Agrupar processos pelo nÃºmero
+  // Agrupar processos pelo n├║mero
   const grupos = {};
   processos.forEach(p => {
     if (!p.numero) return;
     const numClean = p.numero.trim();
     
-    // Ignorar processos sem nÃºmero ou com marcaÃ§Ãµes genÃ©ricas de vazio
+    // Ignorar processos sem n├║mero ou com marca├º├Áes gen├®ricas de vazio
     if (
       numClean === "" || 
       numClean === "-" || 
-      numClean === "â€”" || 
+      numClean === "ÔÇö" || 
       numClean.toLowerCase() === "s/n" || 
-      numClean.toLowerCase() === "s/nÂº" ||
-      numClean.toLowerCase() === "s/nÂ°"
+      numClean.toLowerCase() === "s/n┬║" ||
+      numClean.toLowerCase() === "s/n┬░"
     ) {
       return;
     }
@@ -2894,15 +2894,15 @@ function renderProcessosRepetidos() {
     }));
 
   if (badge) {
-    badge.textContent = `${repetidos.length} NÃºmeros com OcorrÃªncias Repetidas`;
+    badge.textContent = `${repetidos.length} N├║meros com Ocorr├¬ncias Repetidas`;
   }
 
   if (repetidos.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
-          <h3>ðŸŽ‰ Nenhum processo repetido encontrado!</h3>
-          <p style="margin-top: 6px;">Todos os nÃºmeros de processos vÃ¡lidos na planilha sÃ£o Ãºnicos.</p>
+          <h3>­ƒÄë Nenhum processo repetido encontrado!</h3>
+          <p style="margin-top: 6px;">Todos os n├║meros de processos v├ílidos na planilha s├úo ├║nicos.</p>
         </td>
       </tr>
     `;
@@ -2914,15 +2914,15 @@ function renderProcessosRepetidos() {
     const totalOcorrencias = grp.itens.length;
     const safeNumClass = grp.numero.replace(/[^a-zA-Z0-9]/g, '_');
     
-    // 1. Linha Pai: Exibe apenas o botÃ£o de expansÃ£o e o nÃºmero do processo
+    // 1. Linha Pai: Exibe apenas o bot├úo de expans├úo e o n├║mero do processo
     html += `
       <tr style="background: rgba(30, 41, 59, 0.85); border-bottom: 1px solid var(--border);">
         <td style="padding: 12px; text-align: center; cursor: pointer; user-select: none; font-size: 14px; font-weight: 900; color: var(--blue);" onclick="toggleGrupoRepetidoTabela('${grp.numero}', this)">
-          âž•
+          Ô×ò
         </td>
         <td colspan="6" style="padding: 12px; font-weight: 700; font-family: monospace; color: var(--text-primary); font-size: 14px;">
-          NÂº PROCESSO: <span style="color: #60a5fa; letter-spacing: 0.5px;">${grp.numero}</span>
-          <span style="font-size: 11px; font-weight: 700; margin-left: 12px; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalOcorrencias} OcorrÃªncias</span>
+          N┬║ PROCESSO: <span style="color: #60a5fa; letter-spacing: 0.5px;">${grp.numero}</span>
+          <span style="font-size: 11px; font-weight: 700; margin-left: 12px; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalOcorrencias} Ocorr├¬ncias</span>
         </td>
       </tr>
     `;
@@ -2932,18 +2932,18 @@ function renderProcessosRepetidos() {
       html += `
         <tr class="filha-repetido-${safeNumClass}" style="display: none; background: rgba(0, 0, 0, 0.15); border-bottom: 1px solid rgba(255, 255, 255, 0.03); cursor: pointer; transition: background 0.15s;" onclick="editarProcesso('${p.id}')" title="Clique para editar este processo">
           <td style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 11px; font-weight: bold;">
-            â€”
+            ÔÇö
           </td>
-          <td style="padding: 12px; font-weight: 600; color: var(--text-primary);">${p.prefixo || 'â€”'}</td>
-          <td style="padding: 12px; color: var(--text-primary);">${p.municipio || 'â€”'}</td>
+          <td style="padding: 12px; font-weight: 600; color: var(--text-primary);">${p.prefixo || 'ÔÇö'}</td>
+          <td style="padding: 12px; color: var(--text-primary);">${p.municipio || 'ÔÇö'}</td>
           <td style="padding: 12px; color: var(--text-primary); font-weight: 500;" title="${p.interessado || ''}">
-            ${p.interessado ? (p.interessado.length > 40 ? p.interessado.substring(0, 37) + '...' : p.interessado) : 'â€”'}
+            ${p.interessado ? (p.interessado.length > 40 ? p.interessado.substring(0, 37) + '...' : p.interessado) : 'ÔÇö'}
           </td>
           <td style="padding: 12px; color: var(--text-secondary);" title="${p.objeto || ''}">
-            ${p.objeto ? (p.objeto.length > 55 ? p.objeto.substring(0, 52) + '...' : p.objeto) : 'â€”'}
+            ${p.objeto ? (p.objeto.length > 55 ? p.objeto.substring(0, 52) + '...' : p.objeto) : 'ÔÇö'}
           </td>
           <td style="padding: 12px;">
-            <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'â€”'}</span>
+            <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || 'ÔÇö'}</span>
           </td>
           <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; padding-right: 16px;">
             R$ ${formatCurrency(p.valorOf)}
@@ -2968,14 +2968,14 @@ function toggleGrupoRepetidoTabela(numeroProcesso, btnElement) {
     linha.style.display = estaOculto ? 'table-row' : 'none';
   });
   
-  btnElement.textContent = estaOculto ? 'âž–' : 'âž•';
+  btnElement.textContent = estaOculto ? 'Ô×û' : 'Ô×ò';
 }
 
 async function excluirProcessoDireto(id) {
-  if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta aÃ§Ã£o nÃ£o pode ser desfeita e removerÃ¡ o registro na planilha.")) {
+  if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta a├º├úo n├úo pode ser desfeita e remover├í o registro na planilha.")) {
     try {
       await excluirProcesso(id);
-      toast("Processo excluÃ­do com sucesso!", "success");
+      toast("Processo exclu├¡do com sucesso!", "success");
       if (typeof inicializarDados === 'function') {
         await inicializarDados();
       }
@@ -2997,7 +2997,7 @@ setTimeout(() => {
   document.getElementById('print-layout-analise').style.display = 'none';
 }, 1000);
 
-// ---- CONTROLE DE OCULTAR/MOSTRAR FILTROS E FORMULÃRIOS (PIN/ALFINETE) ----
+// ---- CONTROLE DE OCULTAR/MOSTRAR FILTROS E FORMUL├üRIOS (PIN/ALFINETE) ----
 function toggleFiltros() {
   const bar = document.querySelector('#page-processos .filters-bar');
   const btn = document.getElementById('btn-toggle-filtros');
@@ -3005,12 +3005,12 @@ function toggleFiltros() {
   const isCollapsed = bar.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar Filtros</span>';
+    btn.innerHTML = '­ƒôî <span class="btn-text">Mostrar Filtros</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('filters_collapsed', '1');
   } else {
-    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Ocultar Filtros</span>';
+    btn.innerHTML = '­ƒôî <span class="btn-text">Ocultar Filtros</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('filters_collapsed');
@@ -3024,12 +3024,12 @@ function toggleFormAcesso() {
   const isCollapsed = card.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar</span>';
+    btn.innerHTML = '­ƒôî <span class="btn-text">Mostrar</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('form_acesso_collapsed', '1');
   } else {
-    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Ocultar</span>';
+    btn.innerHTML = '­ƒôî <span class="btn-text">Ocultar</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('form_acesso_collapsed');
@@ -3043,11 +3043,11 @@ function toggleFormProcesso() {
   const isCollapsed = card.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar FormulÃ¡rio</span>';
+    btn.innerHTML = '­ƒôî <span class="btn-text">Mostrar Formul├írio</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
   } else {
-    btn.innerHTML = 'ðŸ“Œ <span class="btn-text">Ocultar FormulÃ¡rio</span>';
+    btn.innerHTML = '­ƒôî <span class="btn-text">Ocultar Formul├írio</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
   }
@@ -3073,7 +3073,7 @@ async function recarregarDadosGlobais() {
   }
 }
 
-// InicializaÃ§Ã£o dos estados colapsados de acordo com tela (mobile ou localStorage)
+// Inicializa├º├úo dos estados colapsados de acordo com tela (mobile ou localStorage)
 function inicializarEstadosColapsaveis() {
   const isMobile = window.innerWidth <= 768;
   
@@ -3084,27 +3084,27 @@ function inicializarEstadosColapsaveis() {
   if (bar && btnFilters) {
     if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
       bar.classList.add('collapsed');
-      btnFilters.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar Filtros</span>';
+      btnFilters.innerHTML = '­ƒôî <span class="btn-text">Mostrar Filtros</span>';
       btnFilters.style.borderColor = 'var(--blue)';
       btnFilters.style.color = 'var(--blue)';
     }
   }
   
-  // 2. FormulÃ¡rio Acessos
+  // 2. Formul├írio Acessos
   const savedAcessosCollapse = localStorage.getItem('form_acesso_collapsed');
   const cardAcessos = document.getElementById('card-form-acesso');
   const btnAcessos = document.getElementById('btn-toggle-form-acesso');
   if (cardAcessos && btnAcessos) {
     if (savedAcessosCollapse === '1' || (savedAcessosCollapse === null && isMobile)) {
       cardAcessos.classList.add('collapsed');
-      btnAcessos.innerHTML = 'ðŸ“Œ <span class="btn-text">Mostrar</span>';
+      btnAcessos.innerHTML = '­ƒôî <span class="btn-text">Mostrar</span>';
       btnAcessos.style.borderColor = 'var(--blue)';
       btnAcessos.style.color = 'var(--blue)';
     }
   }
 }
 
-// Chamar inicializaÃ§Ã£o no DOMContentLoaded
+// Chamar inicializa├º├úo no DOMContentLoaded
 document.addEventListener('DOMContentLoaded', () => {
   inicializarEstadosColapsaveis();
 });
@@ -3148,8 +3148,8 @@ function updateSegmentControl(group, activeValue) {
 function getActiveBgColor(group, val) {
   if (group === 'categoria') {
     if (val === 'F') return '#3b82f6'; // Fomento - Solid Blue
-    if (val === 'C') return '#10b981'; // ConvÃªnio - Solid Green
-    if (val === 'O' || val === 'T') return '#8b5cf6'; // Termo de CooperaÃ§Ã£o - Solid Purple
+    if (val === 'C') return '#10b981'; // Conv├¬nio - Solid Green
+    if (val === 'O' || val === 'T') return '#8b5cf6'; // Termo de Coopera├º├úo - Solid Purple
   } else if (group === 'tipo') {
     if (val === 'OB') return '#06b6d4'; // Obras - Solid Cyan
     if (val === 'MP') return '#f97316'; // Mat. Permanente - Solid Orange
@@ -3172,13 +3172,13 @@ function getCategoryBadge(categoria) {
     return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
   }
   if (char === 'C') {
-    return `<span class="badge-cat badge-cat-c" title="Categoria: ConvÃªnio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
+    return `<span class="badge-cat badge-cat-c" title="Categoria: Conv├¬nio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
   }
   if (char === 'O') {
     return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
   }
   if (char === 'T') {
-    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de CooperaÃ§Ã£o" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
+    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Coopera├º├úo" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
   }
   return '';
 }
@@ -3213,15 +3213,15 @@ window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
 
 // ============================================================
-// MÃ“DULO: ESCOLAS (ADM ONLY)
+// M├ôDULO: ESCOLAS (ADM ONLY)
 // ============================================================
 
 var _escolasCache = [];         // Todos os dados carregados
-var _escolasFiltradas = [];     // Dados apÃ³s filtros
+var _escolasFiltradas = [];     // Dados ap├│s filtros
 var _escolasPaginaAtual = 1;
 var _escolasItensPorPagina = 50;
 
-// Inicializa a pÃ¡gina
+// Inicializa a p├ígina
 function iniciarPaginaEscolas() {
   if (_escolasCache.length > 0) {
     _escolasAtualizarUI();
@@ -3230,7 +3230,7 @@ function iniciarPaginaEscolas() {
   buscarEscolasSheet(true);
 }
 
-// Recarrega forÃ§ando nova busca
+// Recarrega for├ºando nova busca
 function recarregarEscolas() {
   _escolasCache = [];
   _escolasFiltradas = [];
@@ -3294,8 +3294,8 @@ function _escolasPopularFiltros() {
   if (!selMun || !selLoc) return;
   const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
   const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
-  selMun.innerHTML = '<option value="">MunicÃ­pio</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-  selLoc.innerHTML = '<option value="">LocalizaÃ§Ã£o</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
+  selMun.innerHTML = '<option value="">Munic├¡pio</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+  selLoc.innerHTML = '<option value="">Localiza├º├úo</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
 }
 
 // Aplica filtros
@@ -3344,7 +3344,7 @@ function _escolasAtualizarUI() {
   if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
 
   if (!temDados) return;
-  if (badgeEl) badgeEl.textContent = 'ðŸ« ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
+  if (badgeEl) badgeEl.textContent = '­ƒÅ½ ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
   if (_escolasFiltradas.length === 0) _escolasFiltradas = [..._escolasCache];
   _escolasRenderTabela();
   _escolasRenderPaginacao();
@@ -3363,12 +3363,12 @@ window.inserirDataHoje = inserirDataHoje;
 
 
 // ============================================================
-// SEDUC â€” Gerador de ManifestaÃ§Ã£o TÃ©cnica & RelatÃ³rio SintÃ©tico TCE-RO
+// SEDUC ÔÇö Gerador de Manifesta├º├úo T├®cnica & Relat├│rio Sint├®tico TCE-RO
 // ============================================================
 
 
 // ============================================================
-// SEDUC â€” Gerador de ManifestaÃ§Ã£o TÃ©cnica & RelatÃ³rio A4/PDF (TCE-RO)
+// SEDUC ÔÇö Gerador de Manifesta├º├úo T├®cnica & Relat├│rio A4/PDF (TCE-RO)
 // ============================================================
 
 window._manifestoProcessoAtual = null;
@@ -3376,9 +3376,9 @@ window._manifestoProcessoAtual = null;
 function gerarTextoManifestoTCE(p) {
   p = p || {};
 
-  const municipio = p.municipio || 'MunicÃ­pio nÃ£o informado';
+  const municipio = p.municipio || 'Munic├¡pio n├úo informado';
   const interessado = p.interessado || 'Unidade Escolar / Conselho Escolar';
-  const numeroProcesso = p.numero || 'Sem nÃºmero';
+  const numeroProcesso = p.numero || 'Sem n├║mero';
   const oficioNum = p.oficioNumero || 'XX - XXX';
   
   let diretorNome = 'XXX';
@@ -3392,11 +3392,11 @@ function gerarTextoManifestoTCE(p) {
 
   const tipoCod = (p.tipo || '').toUpperCase();
   const tipoDesc = {
-    'OB': 'Obras e Infraestrutura FÃ­sica',
-    'MP': 'AquisiÃ§Ã£o de Material Permanente',
-    'MC': 'AquisiÃ§Ã£o de Material de Consumo',
-    'SI': 'Sistemas e Tecnologias da InformaÃ§Ã£o',
-    'TR': 'Treinamento e CapacitaÃ§Ã£o',
+    'OB': 'Obras e Infraestrutura F├¡sica',
+    'MP': 'Aquisi├º├úo de Material Permanente',
+    'MC': 'Aquisi├º├úo de Material de Consumo',
+    'SI': 'Sistemas e Tecnologias da Informa├º├úo',
+    'TR': 'Treinamento e Capacita├º├úo',
     'OU': 'Outros Investimentos'
   }[tipoCod] || p.tipo || 'Investimento em Infraestrutura/Material';
 
@@ -3406,39 +3406,39 @@ function gerarTextoManifestoTCE(p) {
   } else {
     let partes = [];
     if (p.objeto) partes.push(p.objeto);
-    if (p.metragemM2) partes.push('metragem aproximada de ' + p.metragemM2 + ' mÂ²');
+    if (p.metragemM2) partes.push('metragem aproximada de ' + p.metragemM2 + ' m┬▓');
     if (p.qtdeSala) partes.push(p.qtdeSala + ' salas de aula');
-    if (p.auditorio) partes.push('auditÃ³rio (' + (p.tipoAuditorio || 'padrÃ£o') + ')');
+    if (p.auditorio) partes.push('audit├│rio (' + (p.tipoAuditorio || 'padr├úo') + ')');
     if (p.quadra) partes.push('quadra (' + p.quadra + ')');
-    if (p.refeitorio) partes.push('refeitÃ³rio (' + p.refeitorio + ')');
-    if (p.banheiros) partes.push('instalaÃ§Ãµes sanitÃ¡rias (' + p.banheiros + ')');
-    detalheObj = partes.length > 0 ? partes.join(', ') : (tipoDesc.toLowerCase() + ', compreendendo mobiliÃ¡rios, equipamentos e adequaÃ§Ãµes necessÃ¡rias');
+    if (p.refeitorio) partes.push('refeit├│rio (' + p.refeitorio + ')');
+    if (p.banheiros) partes.push('instala├º├Áes sanit├írias (' + p.banheiros + ')');
+    detalheObj = partes.length > 0 ? partes.join(', ') : (tipoDesc.toLowerCase() + ', compreendendo mobili├írios, equipamentos e adequa├º├Áes necess├írias');
   }
 
   let textoObjetoConstruido = '';
   if (tipoCod === 'OB' && p.metragemM2) {
-    textoObjetoConstruido = 'a execuÃ§Ã£o de obras/serviÃ§os de engenharia com metragem total de ' + p.metragemM2 + ' mÂ², abrangendo ' + detalheObj;
+    textoObjetoConstruido = 'a execu├º├úo de obras/servi├ºos de engenharia com metragem total de ' + p.metragemM2 + ' m┬▓, abrangendo ' + detalheObj;
   } else {
-    textoObjetoConstruido = (p.objeto ? p.objeto.toLowerCase() : 'aquisiÃ§Ã£o e instalaÃ§Ã£o de materiais') + ', compreendendo ' + detalheObj;
+    textoObjetoConstruido = (p.objeto ? p.objeto.toLowerCase() : 'aquisi├º├úo e instala├º├úo de materiais') + ', compreendendo ' + detalheObj;
   }
 
   const dataAtualExtenso = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
 
-  return `ManifestaÃ§Ã£o
+  return `Manifesta├º├úo
 
-A legislaÃ§Ã£o educacional brasileira, em seus diversos nÃ­veis, estabelece um complexo de deveres e colaboraÃ§Ãµes para a garantia do direito Ã  educaÃ§Ã£o. A ConstituiÃ§Ã£o Federal, em seu artigo 205, consagra a educaÃ§Ã£o como um direito de todos e um dever do Estado e da famÃ­lia, a ser promovida com a colaboraÃ§Ã£o da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualificaÃ§Ã£o para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos municÃ­pios a competÃªncia para manter, com a cooperaÃ§Ã£o tÃ©cnica e financeira da UniÃ£o e do Estado, programas de educaÃ§Ã£o infantil e de ensino fundamental. O regime de colaboraÃ§Ã£o entre os entes federados Ã© reforÃ§ado pelo artigo 211, Â§ 4Âº, que determina a definiÃ§Ã£o de formas de colaboraÃ§Ã£o entre UniÃ£o, Estados, Distrito Federal e MunicÃ­pios para assegurar a universalizaÃ§Ã£o do ensino obrigatÃ³rio.
+A legisla├º├úo educacional brasileira, em seus diversos n├¡veis, estabelece um complexo de deveres e colabora├º├Áes para a garantia do direito ├á educa├º├úo. A Constitui├º├úo Federal, em seu artigo 205, consagra a educa├º├úo como um direito de todos e um dever do Estado e da fam├¡lia, a ser promovida com a colabora├º├úo da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualifica├º├úo para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos munic├¡pios a compet├¬ncia para manter, com a coopera├º├úo t├®cnica e financeira da Uni├úo e do Estado, programas de educa├º├úo infantil e de ensino fundamental. O regime de colabora├º├úo entre os entes federados ├® refor├ºado pelo artigo 211, ┬º 4┬║, que determina a defini├º├úo de formas de colabora├º├úo entre Uni├úo, Estados, Distrito Federal e Munic├¡pios para assegurar a universaliza├º├úo do ensino obrigat├│rio.
 
-A Lei de Diretrizes e Bases da EducaÃ§Ã£o Nacional (Lei nÂº 9.394/1996) reitera e detalha essa estrutura colaborativa, estabelecendo em seu artigo 8Âº que a UniÃ£o, os Estados, o Distrito Federal e os MunicÃ­pios organizarÃ£o, em regime de colaboraÃ§Ã£o, seus respectivos sistemas de ensino. O artigo 10 da mesma lei incumbe os Estados de organizar, manter e desenvolver os Ã³rgÃ£os e instituiÃ§Ãµes oficiais de seus sistemas de ensino, definindo, com os MunicÃ­pios, formas de colaboraÃ§Ã£o na oferta do ensino fundamental (inciso II), e de baixar normas complementares para seu sistema de ensino (inciso VI).
+A Lei de Diretrizes e Bases da Educa├º├úo Nacional (Lei n┬║ 9.394/1996) reitera e detalha essa estrutura colaborativa, estabelecendo em seu artigo 8┬║ que a Uni├úo, os Estados, o Distrito Federal e os Munic├¡pios organizar├úo, em regime de colabora├º├úo, seus respectivos sistemas de ensino. O artigo 10 da mesma lei incumbe os Estados de organizar, manter e desenvolver os ├│rg├úos e institui├º├Áes oficiais de seus sistemas de ensino, definindo, com os Munic├¡pios, formas de colabora├º├úo na oferta do ensino fundamental (inciso II), e de baixar normas complementares para seu sistema de ensino (inciso VI).
 
-A Lei nÂº 14.113/2020, que regulamenta o Fundeb, fortalece a cooperaÃ§Ã£o entre os entes federativos. O artigo 14, Â§ 1Âº, inciso IV, condiciona o recebimento de complementaÃ§Ã£o de recursos federais Ã  existÃªncia de um regime de colaboraÃ§Ã£o entre Estado e MunicÃ­pios formalizado na legislaÃ§Ã£o estadual. Ademais, o artigo 50, em seu parÃ¡grafo Ãºnico, estabelece que a UniÃ£o, os Estados e o Distrito Federal desenvolverÃ£o, em regime de colaboraÃ§Ã£o, programas de apoio para a conclusÃ£o da educaÃ§Ã£o bÃ¡sica por alunos matriculados no sistema pÃºblico.
+A Lei n┬║ 14.113/2020, que regulamenta o Fundeb, fortalece a coopera├º├úo entre os entes federativos. O artigo 14, ┬º 1┬║, inciso IV, condiciona o recebimento de complementa├º├úo de recursos federais ├á exist├¬ncia de um regime de colabora├º├úo entre Estado e Munic├¡pios formalizado na legisla├º├úo estadual. Ademais, o artigo 50, em seu par├ígrafo ├║nico, estabelece que a Uni├úo, os Estados e o Distrito Federal desenvolver├úo, em regime de colabora├º├úo, programas de apoio para a conclus├úo da educa├º├úo b├ísica por alunos matriculados no sistema p├║blico.
 
-No Ã¢mbito estadual, a ConstituiÃ§Ã£o do Estado de RondÃ´nia, em seus artigos 187 e 188, detalha as responsabilidades do poder pÃºblico com a educaÃ§Ã£o, estabelecendo que o ensino serÃ¡ ministrado com base em princÃ­pios como a igualdade de condiÃ§Ãµes para o acesso e permanÃªncia na escola e a gestÃ£o democrÃ¡tica do ensino pÃºblico, e define as atribuiÃ§Ãµes do sistema estadual de ensino.
+No ├ómbito estadual, a Constitui├º├úo do Estado de Rond├┤nia, em seus artigos 187 e 188, detalha as responsabilidades do poder p├║blico com a educa├º├úo, estabelecendo que o ensino ser├í ministrado com base em princ├¡pios como a igualdade de condi├º├Áes para o acesso e perman├¬ncia na escola e a gest├úo democr├ítica do ensino p├║blico, e define as atribui├º├Áes do sistema estadual de ensino.
 
-Ainda no Ã¢mbito estadual, a Lei nÂº. 5.735/2024 institui o Programa de AlfabetizaÃ§Ã£o do Estado de RondÃ´nia, em regime de colaboraÃ§Ã£o com os municÃ­pios, cabendo ao Estado prestar cooperaÃ§Ã£o tÃ©cnica e financeira aos municÃ­pios. Dentre os eixos do programa, hÃ¡ o Eixo 2 que trata da infraestrutura fÃ­sica e pedagÃ³gica. Desta feita, compulsando o OfÃ­cio ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados Ã  organizaÃ§Ã£o, equipagem e melhoria dos espaÃ§os pedagÃ³gicos da unidade escolar, visando aprimorar as condiÃ§Ãµes de trabalho dos profissionais da educaÃ§Ã£o e qualificar os espaÃ§os escolares, por meio da disponibilizaÃ§Ã£o de mobiliÃ¡rio e equipamentos adequados, contribuindo para o fortalecimento das prÃ¡ticas pedagÃ³gicas e assegurando maior organizaÃ§Ã£o, conforto, seguranÃ§a e funcionalidade aos ambientes educacionais.
+Ainda no ├ómbito estadual, a Lei n┬║. 5.735/2024 institui o Programa de Alfabetiza├º├úo do Estado de Rond├┤nia, em regime de colabora├º├úo com os munic├¡pios, cabendo ao Estado prestar coopera├º├úo t├®cnica e financeira aos munic├¡pios. Dentre os eixos do programa, h├í o Eixo 2 que trata da infraestrutura f├¡sica e pedag├│gica. Desta feita, compulsando o Of├¡cio ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados ├á organiza├º├úo, equipagem e melhoria dos espa├ºos pedag├│gicos da unidade escolar, visando aprimorar as condi├º├Áes de trabalho dos profissionais da educa├º├úo e qualificar os espa├ºos escolares, por meio da disponibiliza├º├úo de mobili├írio e equipamentos adequados, contribuindo para o fortalecimento das pr├íticas pedag├│gicas e assegurando maior organiza├º├úo, conforto, seguran├ºa e funcionalidade aos ambientes educacionais.
 
-Em atendimento Ã  solicitaÃ§Ã£o do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do OfÃ­cio ${oficioNum}, manifestamo-nos favoravelmente Ã  solicitaÃ§Ã£o do municÃ­pio, no que tange ao regime de colaboraÃ§Ã£o regulamentado pela Lei Estadual nÂº. 5.735/2024.
+Em atendimento ├á solicita├º├úo do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do Of├¡cio ${oficioNum}, manifestamo-nos favoravelmente ├á solicita├º├úo do munic├¡pio, no que tange ao regime de colabora├º├úo regulamentado pela Lei Estadual n┬║. 5.735/2024.
 
-Nestes termos, submeto os autos Ã  apreciaÃ§Ã£o superior, para deliberaÃ§Ã£o acerca da oportunidade e conveniÃªncia administrativa.
+Nestes termos, submeto os autos ├á aprecia├º├úo superior, para delibera├º├úo acerca da oportunidade e conveni├¬ncia administrativa.
 
 Porto Velho - RO, ${dataAtualExtenso}.`;
 }
@@ -3447,11 +3447,9 @@ function gerarRelatorioMonitoramento() {
   var g  = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
   var gb = function(id) { var el = document.getElementById(id); return el ? el.checked : false; };
 
-  // NÃºmeros do processo (campo mÃºltiplo)
   var inputsNum  = Array.from(document.querySelectorAll('input[name="numero[]"]'));
   var numeroProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || 'Sem nÃºmero';
 
-  // Valores financeiros
   var parseMon = function(v) {
     if (!v) return 0;
     var s = String(v).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');
@@ -3460,11 +3458,9 @@ function gerarRelatorioMonitoramento() {
   var valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : parseMon(g('form-valorPlan'));
   var valOf   = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf'))   : parseMon(g('form-valorOf'));
 
-  // Categoria / Tipo (segment buttons)
   var catEl  = document.querySelector('#control-categoria .segment-btn.active') || {};
   var tipoEl = document.querySelector('#control-tipo .segment-btn.active')      || {};
 
-  // Montar objeto com TODOS os campos das duas abas
   var p = {
     numero:            numeroProc,
     municipio:         g('form-municipio'),
@@ -3497,7 +3493,6 @@ function gerarRelatorioMonitoramento() {
     demaisObservacoes: g('form-demaisObservacoes')
   };
 
-  // Complementar com dados jÃ¡ salvos se estiver editando
   if (typeof state !== 'undefined' && state.editandoId) {
     var saved = (state.processos || []).find(function(item){ return item.id === state.editandoId; });
     if (saved) {
@@ -3509,15 +3504,14 @@ function gerarRelatorioMonitoramento() {
     }
   }
 
-  // Gerar PDF diretamente (sem modal intermediÃ¡rio)
   window._manifestoProcessoAtual = p;
   imprimirManifestoTCE();
 }
 
-// Compatibilidade com referÃªncias antigas
 function gerarEExibirManifestoTCEAtual() {
   gerarRelatorioMonitoramento();
 }
+
 function abrirModalManifestoTCEById(id) {
   const p = (state.processos || []).find(item => item.id === id);
   if (!p) {
@@ -3543,12 +3537,12 @@ function fecharModalManifestoTCE() {
 }
 
 function copiarManifestoTCE() {
-  const preview = document.getElementById('manifesto-tce-texto-preview');
-  if (!preview) return;
-  navigator.clipboard.writeText(preview.textContent).then(() => {
-    if (typeof toast === 'function') toast('Texto da ManifestaÃ§Ã£o TCE-RO copiado para a Ã¡rea de transferÃªncia!', 'success');
-  }).catch(() => {
-    if (typeof toast === 'function') toast('Erro ao copiar texto', 'error');
+  const texto = document.getElementById('manifesto-tce-texto-preview').textContent;
+  navigator.clipboard.writeText(texto).then(() => {
+    if (typeof toast === 'function') toast('Manifesto copiado para a Ã¡rea de transferÃªncia', 'success');
+  }).catch(err => {
+    console.error('Erro ao copiar:', err);
+    alert('Erro ao copiar manifesto');
   });
 }
 
@@ -3587,7 +3581,7 @@ function imprimirManifestoTCE() {
       : '<span style="color:#dc2626;font-weight:700">&#10008; N&atilde;o</span>';
   };
 
-  // Infraestrutura (Objetivo)
+  // Infraestrutura
   var infraRows = [];
   if (ff(p.qtdeSala))   infraRows.push('<tr><td class="lbl">Salas:</td><td><b>'+ff(p.qtdeSala)+'</b> ('+(ff(p.tipoSala)||'padr&atilde;o')+')</td></tr>');
   if (ff(p.auditorio))  infraRows.push('<tr><td class="lbl">Audit&oacute;rio:</td><td>'+ff(p.auditorio)+(ff(p.tipoAuditorio)?' ('+ff(p.tipoAuditorio)+')':'')+'</td></tr>');
@@ -3604,86 +3598,40 @@ function imprimirManifestoTCE() {
     '<br><br>' +
     'Compulsando os autos, verifica-se que o objeto proposto &mdash; <em>'+objeto+'</em> &mdash;, destinado &agrave; unidade escolar <strong>'+escola+'</strong>, munic&iacute;pio de <strong>'+municipio+'</strong>, visa aprimorar as condi&ccedil;&otilde;es pedag&oacute;gicas e estruturais, em conformidade com o regime de colabora&ccedil;&atilde;o regulamentado pela Lei Estadual n&ordm;&nbsp;5.735/2024. Diante do exposto, manifestamo-nos <strong>favoravelmente</strong> &agrave; solicita&ccedil;&atilde;o, submetendo os autos &agrave; aprecia&ccedil;&atilde;o superior para delibera&ccedil;&atilde;o acerca da oportunidade e conveni&ecirc;ncia administrativa.';
 
-  // â”€â”€ HTML FINAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var css =
-    '@page{size:A4 portrait;margin:15mm 20mm 15mm 20mm}' + // Margem padrÃ£o (aprox 1.5 a 2cm)
-    '*{box-sizing:border-box;margin:0;padding:0}' +
-    'body{font-family:"Arial",sans-serif;font-size:10pt;color:#111;background:#fff;line-height:1.5}' +
-    // Header
-    '.hdr{display:flex;align-items:flex-start;gap:15px;border-bottom:2px solid #1a3a6b;padding-bottom:10px;margin-bottom:15px}' +
-    '.logo{width:50px;height:50px;min-width:50px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#0d265c);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:12pt}' +
-    '.hdr-txt{flex:1}' +
-    '.hdr-gov{font-size:8pt;color:#555;text-transform:uppercase;letter-spacing:.5px}' +
-    '.hdr-sec{font-size:12pt;font-weight:800;color:#1a3a6b;text-transform:uppercase}' +
-    '.hdr-dep{font-size:9pt;color:#666}' +
-    // Auth box (top right)
-    '.auth-box{min-width:140px;background:#f8faff;border:1px solid #c7d2fe;border-radius:6px;padding:6px 12px;font-size:9pt}' +
-    '.auth-box .auth-title{font-weight:800;color:#1a3a6b;font-size:8pt;text-transform:uppercase;border-bottom:1px solid #c7d2fe;padding-bottom:4px;margin-bottom:6px;letter-spacing:.5px;text-align:center}' +
-    '.auth-row{display:flex;justify-content:space-between;gap:10px;margin-bottom:3px}' +
-    '.auth-row span:first-child{color:#444;font-weight:600}' +
-    // Title bar
+    '@page{size:A4 portrait;margin:15mm 20mm 15mm 20mm}*{box-sizing:border-box;margin:0;padding:0}body{font-family:"Arial",sans-serif;font-size:10pt;color:#111;background:#fff;line-height:1.5}' +
+    '.hdr{display:flex;align-items:flex-start;gap:15px;border-bottom:2px solid #1a3a6b;padding-bottom:10px;margin-bottom:15px}.logo{width:50px;height:50px;min-width:50px;border-radius:50%;background:linear-gradient(135deg,#1a3a6b,#0d265c);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:12pt}.hdr-txt{flex:1}.hdr-gov{font-size:8pt;color:#555;text-transform:uppercase;letter-spacing:.5px}.hdr-sec{font-size:12pt;font-weight:800;color:#1a3a6b;text-transform:uppercase}.hdr-dep{font-size:9pt;color:#666}' +
+    '.auth-box{min-width:140px;background:#f8faff;border:1px solid #c7d2fe;border-radius:6px;padding:6px 12px;font-size:9pt}.auth-box .auth-title{font-weight:800;color:#1a3a6b;font-size:8pt;text-transform:uppercase;border-bottom:1px solid #c7d2fe;padding-bottom:4px;margin-bottom:6px;letter-spacing:.5px;text-align:center}.auth-row{display:flex;justify-content:space-between;gap:10px;margin-bottom:3px}.auth-row span:first-child{color:#444;font-weight:600}' +
     '.tbar{background:#1a3a6b;color:#fff;text-align:center;padding:8px 15px;border-radius:4px;margin-bottom:15px;font-size:12pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px}' +
-    // Section
     '.sec-title{font-size:11pt;font-weight:bold;color:#1a3a6b;text-transform:uppercase;border-bottom:1px solid #ddd;padding-bottom:4px;margin:20px 0 10px 0}' +
-    // Info Table
-    '.info-table{width:100%;border-collapse:collapse;margin-bottom:15px;font-size:10pt}' +
-    '.info-table td{padding:6px 0;vertical-align:top}' +
-    '.info-table .lbl{font-weight:bold;color:#444;width:20%;padding-right:10px}' +
-    '.info-table .val{width:80%;border-bottom:1px solid #f0f0f0}' +
-    // Infra Table
-    '.infra-table{width:100%;border-collapse:collapse;background:#f8f9fa;border:1px solid #e9ecef;border-radius:4px;font-size:9.5pt}' +
-    '.infra-table td{padding:5px 10px;border-bottom:1px solid #e9ecef}' +
-    '.infra-table .lbl{font-weight:bold;color:#555;width:20%}' +
-    // Det / Obs
-    '.text-block{background:#fdfbf7;border:1px solid #f2e6d9;padding:10px;font-size:10pt;white-space:pre-wrap;line-height:1.5;border-radius:4px;margin-bottom:15px}' +
-    '.obs-block{background:#fdfdfd;border-left:4px solid #f59e0b;padding:10px 15px;font-size:9.5pt;white-space:pre-wrap;line-height:1.5;background:#fffaf0;margin-bottom:15px}' +
-    // Legal text
+    '.info-table{width:100%;border-collapse:collapse;margin-bottom:15px;font-size:10pt}.info-table td{padding:6px 0;vertical-align:top}.info-table .lbl{font-weight:bold;color:#444;width:20%;padding-right:10px}.info-table .val{width:80%;border-bottom:1px solid #f0f0f0}' +
+    '.infra-table{width:100%;border-collapse:collapse;background:#f8f9fa;border:1px solid #e9ecef;border-radius:4px;font-size:9.5pt}.infra-table td{padding:5px 10px;border-bottom:1px solid #e9ecef}.infra-table .lbl{font-weight:bold;color:#555;width:20%}' +
+    '.text-block{background:#fdfbf7;border:1px solid #f2e6d9;padding:10px;font-size:10pt;white-space:pre-wrap;line-height:1.5;border-radius:4px;margin-bottom:15px}.obs-block{background:#fdfdfd;border-left:4px solid #f59e0b;padding:10px 15px;font-size:9.5pt;white-space:pre-wrap;line-height:1.5;background:#fffaf0;margin-bottom:15px}' +
     '.legal-text{font-size:10pt;line-height:1.6;text-align:justify;text-indent:2em;margin-bottom:10px;color:#222}' +
-    // Signature
-    '.sig-container{margin-top:40px;display:flex;flex-direction:column;align-items:center}' +
-    '.sig-city{font-size:10pt;color:#333;margin-bottom:30px}' +
-    '.sig-line{width:300px;border-top:1px solid #222;margin-bottom:8px}' +
-    '.sig-name{font-size:10pt;font-weight:bold;color:#111;text-align:center}' +
-    '.sig-role{font-size:9pt;color:#555;text-align:center}' +
-    // Footer
-    '.ft{margin-top:30px;border-top:1px solid #1a3a6b;padding-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:8pt;color:#777}' +
-    '.ft-logo{font-weight:bold;color:#1a3a6b}' +
+    '.sig-container{margin-top:40px;display:flex;flex-direction:column;align-items:center}.sig-city{font-size:10pt;color:#333;margin-bottom:30px}.sig-line{width:300px;border-top:1px solid #222;margin-bottom:8px}.sig-name{font-size:10pt;font-weight:bold;color:#111;text-align:center}.sig-role{font-size:9pt;color:#555;text-align:center}' +
+    '.ft{margin-top:30px;border-top:1px solid #1a3a6b;padding-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:8pt;color:#777}.ft-logo{font-weight:bold;color:#1a3a6b}' +
     '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
 
   var h = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n<meta charset="UTF-8">\n' +
     '<title>Relat&oacute;rio de Monitoramento &mdash; ' + numero + '</title>\n' +
-    '<style>' + css + '</style>\n</head>\n<body>\n';
-
-  // â”€â”€ HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="hdr">';
-  h += '<div class="logo">RO</div>';
-  h += '<div class="hdr-txt">';
-  h += '<div class="hdr-gov">Governo do Estado de Rond&ocirc;nia</div>';
-  h += '<div class="hdr-sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>';
-  h += '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div>';
-  h += '</div>';
-
-  // AUTH BOX â€” top right
-  h += '<div class="auth-box">';
-  h += '<div class="auth-title">Autoriza&ccedil;&atilde;o</div>';
-  h += '<div class="auth-row"><span>CAM:</span>' + simNao(p.cam) + '</div>';
-  h += '<div class="auth-row"><span>Gabinete:</span>' + simNao(p.gab) + '</div>';
-  h += '<div class="auth-row"><span>Casa Civil:</span>' + simNao(p.cc) + '</div>';
-  h += '</div>';
-  h += '</div>'; // end hdr
-
-  // â”€â”€ TITLE BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="tbar">RELAT&Oacute;RIO DE MONITORAMENTO</div>';
-
-  // â”€â”€ IDENTIFICATION TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<table class="info-table">';
-  h += '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td></tr>';
-  h += '<tr><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>';
-  h += '<tr><td class="lbl">Escola:</td><td class="val">' + escola + '</td></tr>';
-  h += '<tr><td class="lbl">Objeto:</td><td class="val">' + objeto + '</td></tr>';
-  h += '<tr><td class="lbl">Ano:</td><td class="val">' + ano + '</td></tr>';
-  h += '<tr><td class="lbl">Categoria:</td><td class="val">' + categ + '</td></tr>';
-  h += '<tr><td class="lbl">Tipo:</td><td class="val">' + tipo + '</td></tr>';
+    '<style>' + css + '</style>\n</head>\n<body>\n' +
+    '<div class="hdr"><div class="logo">RO</div><div class="hdr-txt">' +
+    '<div class="hdr-gov">Governo do Estado de Rond&ocirc;nia</div>' +
+    '<div class="hdr-sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>' +
+    '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div></div>' +
+    '<div class="auth-box"><div class="auth-title">Autoriza&ccedil;&atilde;o</div>' +
+    '<div class="auth-row"><span>CAM:</span>' + simNao(p.cam) + '</div>' +
+    '<div class="auth-row"><span>Gabinete:</span>' + simNao(p.gab) + '</div>' +
+    '<div class="auth-row"><span>Casa Civil:</span>' + simNao(p.cc) + '</div></div></div>' +
+    '<div class="tbar">RELAT&Oacute;RIO DE MONITORAMENTO</div>' +
+    '<table class="info-table">' +
+    '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td></tr>' +
+    '<tr><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>' +
+    '<tr><td class="lbl">Escola:</td><td class="val">' + escola + '</td></tr>' +
+    '<tr><td class="lbl">Objeto:</td><td class="val">' + objeto + '</td></tr>' +
+    '<tr><td class="lbl">Ano:</td><td class="val">' + ano + '</td></tr>' +
+    '<tr><td class="lbl">Categoria:</td><td class="val">' + categ + '</td></tr>' +
+    '<tr><td class="lbl">Tipo:</td><td class="val">' + tipo + '</td></tr>';
   if (valorOf || valorPlan) {
       h += '<tr><td class="lbl">Valores:</td><td class="val">';
       if (valorOf) h += 'Oficial: <strong>' + valorOf + '</strong>';
@@ -3693,57 +3641,29 @@ function imprimirManifestoTCE() {
   }
   h += '</table>';
 
-  // â”€â”€ INFRAESTRUTURA (OBJETIVO) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  if (infraTable) {
-    h += '<div class="sec-title">Detalhes da Infraestrutura</div>';
-    h += infraTable;
-  }
+  if (infraTable) { h += '<div class="sec-title">Detalhes da Infraestrutura</div>' + infraTable; }
+  if (detItens) { h += '<div class="sec-title">Itens Solicitados (Quantitativo)</div><div class="text-block">' + detItens + '</div>'; }
 
-  // â”€â”€ ITENS SOLICITADOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  if (detItens) {
-    h += '<div class="sec-title">Itens Solicitados (Quantitativo)</div>';
-    h += '<div class="text-block">' + detItens + '</div>';
-  }
-
-  // â”€â”€ OBSERVAÃ‡Ã•ES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   var obsAll = [obs, demaisObs].filter(Boolean).join('\n\n');
-  if (obsAll) {
-    h += '<div class="sec-title">Observa&ccedil;&otilde;es Espec&iacute;ficas</div>';
-    h += '<div class="obs-block">' + obsAll + '</div>';
-  }
+  if (obsAll) { h += '<div class="sec-title">Observa&ccedil;&otilde;es Espec&iacute;ficas</div><div class="obs-block">' + obsAll + '</div>'; }
 
-  // â”€â”€ TEXTO LEGAL SIMPLIFICADO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="sec-title">Fundamenta&ccedil;&atilde;o e Manifesta&ccedil;&atilde;o</div>';
-  h += '<p class="legal-text">' + textoLegal + '</p>';
-
-  // â”€â”€ ASSINATURA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="sig-container">';
-  h += '<div class="sig-city">Porto Velho &ndash; RO, ' + todayLong + '</div>';
-  h += '<div class="sig-line"></div>';
-  h += '<div class="sig-name">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios (CAM)</div>';
-  h += '<div class="sig-role">SEDUC-RO / Governo do Estado de Rond&ocirc;nia</div>';
-  h += '</div>';
-
-  // â”€â”€ RODAPÃ‰ â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  h += '<div class="ft">';
-  h += '<span class="ft-logo">SEDUC-RO / CAM</span>';
-  h += '<span>Relat&oacute;rio Gerencial de Monitoramento</span>';
-  h += '<span>Emitido em: ' + today + '</span>';
-  h += '</div>';
-
-  h += '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
+  h += '<div class="sec-title">Fundamenta&ccedil;&atilde;o e Manifesta&ccedil;&atilde;o</div>' +
+       '<p class="legal-text">' + textoLegal + '</p>' +
+       '<div class="sig-container"><div class="sig-city">Porto Velho &ndash; RO, ' + todayLong + '</div>' +
+       '<div class="sig-line"></div><div class="sig-name">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios (CAM)</div>' +
+       '<div class="sig-role">SEDUC-RO / Governo do Estado de Rond&ocirc;nia</div></div>' +
+       '<div class="ft"><span class="ft-logo">SEDUC-RO / CAM</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
+       '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
 
   var win = window.open('', '_blank');
   if (!win) { alert('Permita popups para gerar o relat\u00f3rio.'); return; }
   win.document.write(h);
   win.document.close();
-}
+}window.gerarRelatorioMonitoramento = gerarRelatorioMonitoramento;
 window.gerarTextoManifestoTCE         = gerarTextoManifestoTCE;
 window.gerarEExibirManifestoTCEAtual  = gerarEExibirManifestoTCEAtual;
-window.gerarRelatorioMonitoramento    = gerarRelatorioMonitoramento;
 window.abrirModalManifestoTCEById     = abrirModalManifestoTCEById;
 window.abrirModalManifestoTCE         = abrirModalManifestoTCE;
 window.fecharModalManifestoTCE        = fecharModalManifestoTCE;
 window.copiarManifestoTCE             = copiarManifestoTCE;
 window.imprimirManifestoTCE           = imprimirManifestoTCE;
-
