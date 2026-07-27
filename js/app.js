@@ -1,4 +1,4 @@
-
+﻿
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
@@ -3552,286 +3552,234 @@ function copiarManifestoTCE() {
   });
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// RELATÃ“RIO PDF COMPLETO â€” SEDUC-RO / CAM
-// Substitui a funÃ§Ã£o imprimirManifestoTCE em js/app.js (linhas 3527-3712)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
 function imprimirManifestoTCE() {
-  const p = window._manifestoProcessoAtual || {};
-  const textoLegal = gerarTextoManifestoTCE(p);
+  var p = window._manifestoProcessoAtual || {};
 
-  // â”€â”€ IdentificaÃ§Ã£o â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const municipio   = p.municipio    || 'â€”';
-  const escola      = p.interessado  || 'â€”';
-  const numeroProc  = p.numero       || 'S/N';
-  const oficioNum   = p.oficioNumero || 'â€”';
-  const objeto      = p.objeto       || 'â€”';
-  const status      = p.status       || 'â€”';
-  const localizacao = p.localizacao  || 'â€”';
-  const prefixo     = p.prefixo      || 'â€”';
-  const ano         = p.ano          || 'â€”';
-  const agrupamento = p.agrupamento  || 'â€”';
-  const dataProc    = p.data ? new Date(p.data + 'T12:00:00').toLocaleDateString('pt-BR') : 'â€”';
-  const dataHoje    = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
+  // â”€â”€ helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  var ff = function(v) { return (v && String(v).trim()) ? String(v).trim() : ''; };
+  var fv = function(v) {
+    if (!v || Number(v) <= 0) return '';
+    return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  var isOn = function(v) { return v === true || v === 1 || v === '1' || v === 'true'; };
+  var today = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  var todayLong = new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' });
 
-  // â”€â”€ Valores â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const fmtVal = (v) => (v && Number(v) > 0)
-    ? 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    : 'â€”';
-  const valorOf   = fmtVal(p.valorOf);
-  const valorPlan = fmtVal(p.valorPlan);
+  // â”€â”€ campos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  var numero     = ff(p.numero)      || 'S/N';
+  var municipio  = ff(p.municipio)   || 'â€”';
+  var escola     = ff(p.interessado) || 'â€”';
+  var objeto     = ff(p.objeto)      || 'â€”';
+  var prefixo    = ff(p.prefixo);
+  var ano        = ff(p.ano);
+  var agrup      = ff(p.agrupamento);
+  var dataProc   = ff(p.data) ? new Date(p.data + 'T12:00:00').toLocaleDateString('pt-BR') : '';
+  var status     = ff(p.status);
+  var local_     = ff(p.localizacao);
+  var obs        = ff(p.obs);
+  var valorOf    = fv(p.valorOf);
+  var valorPlan  = fv(p.valorPlan);
+  var detItens   = ff(p.detalhamentoItens);
+  var demaisObs  = ff(p.demaisObservacoes);
 
-  // â”€â”€ Categoria / Tipo â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const categDesc = { FO: 'Fomento', CV: 'ConvÃªnio', TC: 'Termo de CooperaÃ§Ã£o' }[p.categoria] || p.categoria || 'â€”';
-  const tipoDesc  = {
-    OB: 'Obras', MP: 'Material Permanente', MC: 'Material de Consumo',
-    SI: 'Sistema', TR: 'Treinamento', OU: 'Outros'
-  }[(p.tipo || '').toUpperCase()] || p.tipo || 'â€”';
+  // Categoria / Tipo
+  var categMap = { FO: 'Fomento', CV: 'Conv\u00eanio', TC: 'Termo de Cooper\u00e7\u00e3o' };
+  var tipoMap  = { OB: 'Obras', MP: 'Mat. Permanente', MC: 'Mat. Consumo', SI: 'Sistema', TR: 'Treinamento', OU: 'Outros' };
+  var categ = categMap[ff(p.categoria)] || ff(p.categoria) || 'â€”';
+  var tipo  = tipoMap[(ff(p.tipo) || '').toUpperCase()] || ff(p.tipo) || 'â€”';
 
-  // â”€â”€ AutorizaÃ§Ãµes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const isOn    = (v) => v === true || v === 1 || v === '1' || v === 'true';
-  const authCAM = isOn(p.cam) ? '&#10004; SIM' : '&#10008; NÃƒO';
-  const authGAB = isOn(p.gab) ? '&#10004; SIM' : '&#10008; NÃƒO';
-  const authCC  = isOn(p.cc)  ? '&#10004; SIM' : '&#10008; NÃƒO';
-  const cssCAM  = isOn(p.cam) ? 'auth-yes' : 'auth-no';
-  const cssGAB  = isOn(p.gab) ? 'auth-yes' : 'auth-no';
-  const cssCC   = isOn(p.cc)  ? 'auth-yes' : 'auth-no';
+  // AutorizaÃ§Ãµes
+  var authCAM = isOn(p.cam) ? '<span style="color:#15803d;font-weight:700">&#10004; SIM</span>' : '<span style="color:#dc2626;font-weight:700">&#10008; N&Atilde;O</span>';
+  var authGAB = isOn(p.gab) ? '<span style="color:#15803d;font-weight:700">&#10004; SIM</span>' : '<span style="color:#dc2626;font-weight:700">&#10008; N&Atilde;O</span>';
+  var authCC  = isOn(p.cc)  ? '<span style="color:#15803d;font-weight:700">&#10004; SIM</span>' : '<span style="color:#dc2626;font-weight:700">&#10008; N&Atilde;O</span>';
 
-  // â”€â”€ Infraestrutura (Aba Objetivo) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const ff = (v) => (v && String(v).trim()) ? String(v).trim() : 'â€”';
-  const qtdeSala      = ff(p.qtdeSala);
-  const tipoSala      = ff(p.tipoSala);
-  const auditorio     = ff(p.auditorio);
-  const tipoAuditorio = ff(p.tipoAuditorio);
-  const quadra        = ff(p.quadra);
-  const patio         = ff(p.patio);
-  const refeitorio    = ff(p.refeitorio);
-  const banheiros     = ff(p.banheiros);
-  const metragemM2    = ff(p.metragemM2);
-  const detItens      = ff(p.detalhamentoItens);
-  const demaisObs     = ff(p.demaisObservacoes);
-  const obs           = ff(p.obs);
+  // Infraestrutura
+  var infra = [];
+  if (ff(p.qtdeSala))     infra.push('<b>' + ff(p.qtdeSala) + '</b> salas (' + (ff(p.tipoSala) || 'conv.') + ')');
+  if (ff(p.auditorio))    infra.push('Audit&oacute;rio: ' + ff(p.auditorio) + (ff(p.tipoAuditorio) ? ' (' + ff(p.tipoAuditorio) + ')' : ''));
+  if (ff(p.quadra))       infra.push('Quadra: ' + ff(p.quadra));
+  if (ff(p.patio))        infra.push('P&aacute;tio: ' + ff(p.patio));
+  if (ff(p.refeitorio))   infra.push('Refeit&oacute;rio: ' + ff(p.refeitorio));
+  if (ff(p.banheiros))    infra.push('Banheiros: ' + ff(p.banheiros));
+  if (ff(p.metragemM2))   infra.push('Metragem: <b>' + ff(p.metragemM2) + '</b>');
+  var infraTxt = infra.length > 0 ? infra.join(' &nbsp;|&nbsp; ') : '';
 
-  // â”€â”€ Diretor da escola â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  let diretorNome = '';
+  // Diretor
+  var diretor = '';
   if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
-    const esc = _escolasCache.find(e =>
-      (e.nome && p.interessado && e.nome.toLowerCase().includes(p.interessado.toLowerCase())) ||
-      (e.municipio && p.municipio && e.municipio.toLowerCase() === p.municipio.toLowerCase())
-    );
-    if (esc && esc.diretor) diretorNome = esc.diretor;
+    var esc = _escolasCache.find(function(e) {
+      return (e.nome && p.interessado && e.nome.toLowerCase().includes(p.interessado.toLowerCase())) ||
+             (e.municipio && p.municipio && e.municipio.toLowerCase() === p.municipio.toLowerCase());
+    });
+    if (esc && esc.diretor) diretor = esc.diretor;
   }
 
-  // â”€â”€ Helpers HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const row = (label, value, icon = '') =>
-    value !== 'â€”' ? `<tr><th>${icon ? icon + ' ' : ''}${label}</th><td>${value}</td></tr>` : '';
+  // â”€â”€ linha de info condicional â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  var rowIf = function(label, val) {
+    if (!val) return '';
+    return '<tr><th>' + label + '</th><td>' + val + '</td></tr>';
+  };
+  var tdIf = function(label, val) {
+    if (!val) return '';
+    return '<tr><th>' + label + '</th><td>' + val + '</td></tr>';
+  };
 
-  const hasInfra = [qtdeSala, tipoSala, auditorio, quadra, patio, refeitorio, banheiros].some(v => v !== 'â€”');
+  // â”€â”€ HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  var html = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n' +
+    '<meta charset="UTF-8">\n' +
+    '<title>Monitoramento ' + numero + ' - SEDUC-RO</title>\n' +
+    '<style>\n' +
+    '@page{size:A4 portrait;margin:10mm 12mm 10mm 14mm}\n' +
+    '*{box-sizing:border-box;margin:0;padding:0}\n' +
+    'body{font-family:Arial,sans-serif;font-size:8pt;color:#111;background:#fff;line-height:1.35}\n' +
+    /* HEADER */
+    '.hdr{display:flex;align-items:center;gap:10px;border-bottom:2.5px solid #1a56a0;padding-bottom:7px;margin-bottom:7px}\n' +
+    '.logo{width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,#1a56a0,#0d3270);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:9pt}\n' +
+    '.hdr-txt{flex:1}\n' +
+    '.gov{font-size:6.5pt;color:#666;text-transform:uppercase;letter-spacing:.4px}\n' +
+    '.sec{font-size:9pt;font-weight:800;color:#1a56a0;text-transform:uppercase}\n' +
+    '.dep{font-size:6.5pt;color:#777}\n' +
+    '.hdr-right{text-align:right;font-size:7pt;color:#555;line-height:1.5}\n' +
+    '.hdr-right strong{font-size:8.5pt;color:#1a56a0}\n' +
+    /* TITLE BAR */
+    '.tbar{background:linear-gradient(135deg,#1a56a0,#0d3270);color:#fff;text-align:center;padding:5px 10px;border-radius:4px;margin-bottom:7px;font-size:9pt;font-weight:800;text-transform:uppercase;letter-spacing:.5px}\n' +
+    /* BADGES */
+    '.badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px;align-items:center}\n' +
+    '.badge{padding:2px 8px;border-radius:20px;font-size:6.5pt;font-weight:700;text-transform:uppercase}\n' +
+    '.bb{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}\n' +
+    '.bg{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0}\n' +
+    '.bp{background:#ede9fe;color:#5b21b6;border:1px solid #ddd6fe}\n' +
+    '.bo{background:#ffedd5;color:#9a3412;border:1px solid #fed7aa}\n' +
+    '.bk{background:#f3f4f6;color:#374151;border:1px solid #d1d5db}\n' +
+    /* SECTION */
+    '.sec-title{font-size:7pt;font-weight:800;color:#1a56a0;text-transform:uppercase;letter-spacing:.5px;border-left:3px solid #1a56a0;padding-left:6px;margin:7px 0 4px 0}\n' +
+    /* MAIN GRID â€” 2 columns */
+    '.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}\n' +
+    /* TABLES */
+    '.dt{width:100%;border-collapse:collapse;font-size:7.5pt}\n' +
+    '.dt th,.dt td{border:1px solid #ccc;padding:3px 6px;vertical-align:top}\n' +
+    '.dt th{background:#edf2ff;font-weight:700;color:#1e3a5f;width:38%;white-space:nowrap}\n' +
+    '.dt td{color:#111}\n' +
+    '.dt tr:nth-child(even) td{background:#fafbff}\n' +
+    /* AUTH */
+    '.at{width:100%;border-collapse:collapse;font-size:7.5pt}\n' +
+    '.at th{background:#1a56a0;color:#fff;font-weight:700;padding:3px 6px;text-align:center;border:1px solid #1a56a0;text-transform:uppercase;font-size:6.5pt}\n' +
+    '.at td{border:1px solid #ccc;padding:4px 6px;text-align:center;background:#fff;font-size:8pt}\n' +
+    /* VALOR */
+    '.vbox{display:inline-block;background:#f0f9ff;border:1px solid #bae6fd;border-radius:4px;padding:2px 8px;font-weight:800;font-size:8.5pt;color:#0c4a6e}\n' +
+    /* DETALHE / OBS */
+    '.det{background:#fffbf0;border:1px solid #fde68a;border-left:3px solid #f59e0b;border-radius:3px;padding:5px 8px;font-size:7.5pt;white-space:pre-wrap;line-height:1.4}\n' +
+    '.obs-b{background:#f0fdf4;border:1px solid #86efac;border-left:3px solid #16a34a;border-radius:3px;padding:5px 8px;font-size:7.5pt;white-space:pre-wrap;line-height:1.4}\n' +
+    '.infra{background:#f8faff;border:1px solid #c7d2fe;border-radius:3px;padding:5px 8px;font-size:7.5pt;line-height:1.6;color:#1e3a5f}\n' +
+    /* SIGNATURE */
+    '.sig{margin-top:10px;display:flex;justify-content:space-between;align-items:flex-end}\n' +
+    '.sig-city{font-size:7.5pt;color:#333}\n' +
+    '.sig-box{text-align:center;min-width:220px}\n' +
+    '.sig-line{border-top:1px solid #333;margin:0 20px 4px 20px}\n' +
+    '.sig-name{font-size:7.5pt;font-weight:700}\n' +
+    '.sig-role{font-size:6.5pt;color:#555}\n' +
+    /* FOOTER */
+    '.ft{margin-top:8px;border-top:2px solid #1a56a0;padding-top:4px;display:flex;justify-content:space-between;font-size:6.5pt;color:#666}\n' +
+    '.ft-logo{font-weight:800;color:#1a56a0;font-size:7pt}\n' +
+    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}\n' +
+    '</style></head><body>\n';
 
-  const infraSection = hasInfra ? `
-    <div class="section-title">&#127979; Infraestrutura da Unidade Escolar</div>
-    <table class="data-table">
-      ${row('Quantidade de Salas de Aula', qtdeSala, '&#128682;')}
-      ${row('Tipo de Sala', tipoSala, '&#128208;')}
-      ${row('AuditÃ³rio', auditorio, '&#127917;')}
-      ${row('Tipo de AuditÃ³rio', tipoAuditorio, '&#128203;')}
-      ${row('Quadra Esportiva', quadra, '&#127936;')}
-      ${row('PÃ¡tio', patio, '&#127795;')}
-      ${row('RefeitÃ³rio', refeitorio, '&#127373;')}
-      ${row('Banheiros', banheiros, '&#128699;')}
-    </table>` : '';
+  // HEADER
+  html += '<div class="hdr">';
+  html += '<div class="logo">RO</div>';
+  html += '<div class="hdr-txt">';
+  html += '<div class="gov">Governo do Estado de Rond&ocirc;nia</div>';
+  html += '<div class="sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>';
+  html += '<div class="dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM / GDSM</div>';
+  html += '</div>';
+  html += '<div class="hdr-right"><strong>Proc. N&ordm; ' + numero + '</strong><br>Emiss&atilde;o: ' + today + '</div>';
+  html += '</div>';
 
-  // â”€â”€ DOCUMENTO HTML â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  const htmlDoc = `<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Relat&#243;rio de Monitoramento &mdash; SEDUC-RO</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-@page { size:A4 portrait; margin:18mm 16mm 18mm 20mm; }
-*{box-sizing:border-box;}
-body{font-family:'Inter',Arial,sans-serif;font-size:9.5pt;line-height:1.45;color:#1a1a2e;margin:0;padding:0;background:#fff;}
-/* HEADER */
-.hdr{display:flex;align-items:center;gap:12px;border-bottom:3px solid #1a56a0;padding-bottom:10px;margin-bottom:14px;}
-.hdr-logo{width:48px;height:48px;min-width:48px;border-radius:50%;background:linear-gradient(135deg,#1a56a0,#0d3270);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13pt;box-shadow:0 2px 8px rgba(26,86,160,.3);}
-.hdr-txt{flex:1;}
-.hdr-txt .gov{font-size:7.5pt;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.6px;}
-.hdr-txt .sec{font-size:11pt;font-weight:800;color:#1a56a0;text-transform:uppercase;}
-.hdr-txt .dep{font-size:7.5pt;color:#666;}
-.hdr-meta{text-align:right;font-size:7.5pt;color:#777;line-height:1.6;}
-.hdr-meta .num{font-size:9pt;font-weight:800;color:#1a56a0;}
-/* TITLE BAR */
-.doc-title{background:linear-gradient(135deg,#1a56a0,#0d3270);color:#fff;text-align:center;padding:8px 16px;border-radius:6px;margin-bottom:12px;font-size:10.5pt;font-weight:800;letter-spacing:.6px;text-transform:uppercase;box-shadow:0 3px 10px rgba(26,86,160,.25);}
-/* BADGES */
-.badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
-.badge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:20px;font-size:7.5pt;font-weight:700;text-transform:uppercase;}
-.b-blue{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe;}
-.b-green{background:#d1fae5;color:#065f46;border:1px solid #a7f3d0;}
-.b-purple{background:#ede9fe;color:#5b21b6;border:1px solid #ddd6fe;}
-.b-orange{background:#ffedd5;color:#9a3412;border:1px solid #fed7aa;}
-.b-gray{background:#f3f4f6;color:#374151;border:1px solid #d1d5db;}
-/* SECTION TITLES */
-.section-title{font-size:8.5pt;font-weight:800;color:#1a56a0;text-transform:uppercase;letter-spacing:.7px;border-left:3px solid #1a56a0;padding-left:8px;margin:14px 0 6px 0;page-break-after:avoid;}
-/* TABLES */
-.data-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:8.8pt;page-break-inside:avoid;}
-.data-table th,.data-table td{border:1px solid #d1d5db;padding:5px 9px;vertical-align:top;}
-.data-table th{background:#f0f4ff;font-weight:700;color:#1e3a5f;width:32%;white-space:nowrap;}
-.data-table td{color:#1a1a2e;background:#fff;}
-.data-table tr:nth-child(even) td{background:#fafbff;}
-/* AUTH TABLE */
-.auth-table{width:100%;border-collapse:collapse;margin-bottom:10px;font-size:8.8pt;}
-.auth-table th{background:#1a56a0;color:#fff;font-weight:700;padding:5px 12px;text-align:center;text-transform:uppercase;border:1px solid #1a56a0;}
-.auth-table td{border:1px solid #d1d5db;padding:6px 12px;text-align:center;font-weight:700;font-size:9pt;background:#fff;}
-.auth-yes{color:#065f46;}
-.auth-no{color:#991b1b;}
-/* VALOR BOX */
-.vbox{display:inline-block;background:#f0f9ff;border:1px solid #bae6fd;border-radius:6px;padding:4px 12px;font-weight:800;font-size:10pt;color:#0c4a6e;}
-/* LEGAL */
-.legal-block{border:1px solid #d1d5db;border-left:4px solid #1a56a0;border-radius:4px;padding:10px 14px;background:#fafbff;margin-bottom:10px;page-break-inside:avoid;}
-.par{text-align:justify;text-indent:1.2cm;margin:0 0 8px 0;font-size:9pt;line-height:1.5;color:#222;}
-.par:last-child{margin-bottom:0;}
-/* DETALHE / OBS */
-.det-box{background:#fffbf0;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:4px;padding:9px 12px;font-size:8.8pt;color:#1a1a2e;margin-bottom:10px;white-space:pre-wrap;line-height:1.5;}
-.obs-box{background:#f0fdf4;border:1px solid #86efac;border-left:4px solid #16a34a;border-radius:4px;padding:9px 12px;font-size:8.8pt;color:#1a1a2e;margin-bottom:10px;white-space:pre-wrap;line-height:1.5;}
-/* ASSINATURA */
-.assin-section{margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;page-break-inside:avoid;}
-.assin-box{flex:1;text-align:center;}
-.assin-line{border-top:1px solid #333;margin:0 20px 5px 20px;}
-.assin-nome{font-size:8.5pt;font-weight:700;}
-.assin-cargo{font-size:7.5pt;color:#555;}
-.assin-data{font-size:8pt;color:#333;text-align:right;margin-bottom:4px;}
-/* RODAPÃ‰ */
-.rodape{margin-top:18px;border-top:2px solid #1a56a0;padding-top:6px;display:flex;justify-content:space-between;align-items:center;font-size:7pt;color:#555;page-break-inside:avoid;}
-.rodape-logo{font-weight:800;color:#1a56a0;font-size:8pt;}
-@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
-</style>
-</head>
-<body>
+  // TITLE BAR
+  html += '<div class="tbar">&#128202; Relat&oacute;rio de Monitoramento &mdash; SEDUC / CAM</div>';
 
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-logo">RO</div>
-  <div class="hdr-txt">
-    <div class="gov">Governo do Estado de RondÃ´nia</div>
-    <div class="sec">Secretaria de Estado da EducaÃ§Ã£o â€” SEDUC-RO</div>
-    <div class="dep">Coordenadoria de ArticulaÃ§Ã£o com os MunicÃ­pios â€” CAM / GDSM</div>
-  </div>
-  <div class="hdr-meta">
-    <div class="num">Proc. NÂº ${numeroProc}</div>
-    <div>EmissÃ£o: ${dataHoje}</div>
-    <div>MANIFESTO TCE-RO</div>
-  </div>
-</div>
+  // BADGES
+  html += '<div class="badges">';
+  html += '<span class="badge bb">&#128193; ' + categ + '</span>';
+  html += '<span class="badge bp">&#9881; ' + tipo + '</span>';
+  if (status) html += '<span class="badge bo">&#128204; ' + status + '</span>';
+  if (local_) html += '<span class="badge bk">&#128205; ' + local_ + '</span>';
+  if (prefixo) html += '<span class="badge bg">&#128278; ' + prefixo + '</span>';
+  if (ano) html += '<span class="badge bk">&#128197; ' + ano + '</span>';
+  if (agrup) html += '<span class="badge bk">&#128101; ' + agrup + '</span>';
+  html += '</div>';
 
-<!-- TITLE BAR -->
-<div class="doc-title">&#128202; Relat&#243;rio de Monitoramento &mdash; SEDUC / CAM</div>
+  // MAIN 2-COLUMN GRID
+  html += '<div class="main-grid">';
 
-<!-- BADGES -->
-<div class="badges">
-  <span class="badge b-blue">&#128193; ${categDesc}</span>
-  <span class="badge b-purple">&#9881; ${tipoDesc}</span>
-  ${status !== 'â€”' ? `<span class="badge b-orange">&#128204; ${status}</span>` : ''}
-  ${localizacao !== 'â€”' ? `<span class="badge b-gray">&#128205; ${localizacao}</span>` : ''}
-  ${prefixo !== 'â€”' ? `<span class="badge b-green">&#128278; ${prefixo}</span>` : ''}
-  ${ano !== 'â€”' ? `<span class="badge b-gray">&#128197; ${ano}</span>` : ''}
-</div>
+  // COL 1: IdentificaÃ§Ã£o
+  html += '<div>';
+  html += '<div class="sec-title">&#128194; Identifica&ccedil;&atilde;o</div>';
+  html += '<table class="dt">';
+  html += '<tr><th>N&ordm; Processo</th><td><strong>' + numero + '</strong></td></tr>';
+  html += '<tr><th>Munic&iacute;pio</th><td>' + municipio + '</td></tr>';
+  html += '<tr><th>Entidade / Escola</th><td>' + escola + '</td></tr>';
+  if (diretor) html += '<tr><th>Diretor(a)</th><td>' + diretor + '</td></tr>';
+  html += '<tr><th>Objeto</th><td>' + objeto + '</td></tr>';
+  if (dataProc) html += '<tr><th>Data</th><td>' + dataProc + '</td></tr>';
+  html += '</table></div>';
 
-<!-- IDENTIFICAÃ‡ÃƒO -->
-<div class="section-title">&#128194; IdentificaÃ§Ã£o do Processo</div>
-<table class="data-table">
-  <tr><th>NÂº do Processo</th><td>${numeroProc}</td></tr>
-  <tr><th>MunicÃ­pio</th><td>${municipio}</td></tr>
-  <tr><th>Entidade / Escola</th><td>${escola}</td></tr>
-  ${diretorNome ? `<tr><th>Diretor(a)</th><td>${diretorNome}</td></tr>` : ''}
-  <tr><th>Objeto</th><td>${objeto}</td></tr>
-  <tr><th>Categoria</th><td>${categDesc}</td></tr>
-  <tr><th>Tipo</th><td>${tipoDesc}</td></tr>
-  ${agrupamento !== 'â€”' ? `<tr><th>Agrupamento</th><td>${agrupamento}</td></tr>` : ''}
-  ${dataProc !== 'â€”' ? `<tr><th>Data do Processo</th><td>${dataProc}</td></tr>` : ''}
-</table>
+  // COL 2: Financeiro + AutorizaÃ§Ãµes
+  html += '<div>';
+  html += '<div class="sec-title">&#128176; Valores &amp; Autoriza&ccedil;&otilde;es</div>';
+  html += '<table class="dt">';
+  if (valorOf)   html += '<tr><th>Valor Oficial</th><td><span class="vbox">' + valorOf + '</span></td></tr>';
+  if (valorPlan) html += '<tr><th>Valor Planilha</th><td><span class="vbox">' + valorPlan + '</span></td></tr>';
+  html += '</table>';
 
-<!-- VALORES -->
-<div class="section-title">&#128176; Valores Financeiros</div>
-<table class="data-table">
-  <tr><th>Valor Oficial (OfÃ­cio)</th><td><span class="vbox">${valorOf}</span></td></tr>
-  <tr><th>Valor Planilha</th><td><span class="vbox">${valorPlan}</span></td></tr>
-  <tr><th>NÂº OfÃ­cio da Escola</th><td>${oficioNum}</td></tr>
-</table>
+  html += '<div class="sec-title" style="margin-top:5px">&#128274; Autoriza&ccedil;&otilde;es</div>';
+  html += '<table class="at"><tr><th>CAM</th><th>GABINETE SEDUC</th><th>CASA CIVIL</th></tr>';
+  html += '<tr><td>' + authCAM + '</td><td>' + authGAB + '</td><td>' + authCC + '</td></tr>';
+  html += '</table></div>';
 
-<!-- AUTORIZAÃ‡Ã•ES -->
-<div class="section-title">&#128274; AutorizaÃ§Ãµes</div>
-<table class="auth-table">
-  <tr><th>CAM</th><th>GABINETE SEDUC</th><th>CASA CIVIL</th></tr>
-  <tr>
-    <td class="${cssCAM}">${authCAM}</td>
-    <td class="${cssGAB}">${authGAB}</td>
-    <td class="${cssCC}">${authCC}</td>
-  </tr>
-</table>
+  html += '</div>'; // end main-grid
 
-<!-- INFRAESTRUTURA -->
-${infraSection}
+  // INFRAESTRUTURA (full width, only if any data)
+  if (infraTxt) {
+    html += '<div class="sec-title">&#127979; Infraestrutura da Unidade</div>';
+    html += '<div class="infra">' + infraTxt + '</div>';
+  }
 
-<!-- METRAGEM -->
-${metragemM2 !== 'â€”' ? `
-<div class="section-title">&#128208; Metragem (Obras / Reforma)</div>
-<table class="data-table">
-  <tr><th>Metragem mÂ²</th><td>${metragemM2}</td></tr>
-</table>` : ''}
+  // DETALHAMENTO ITENS
+  if (detItens) {
+    html += '<div class="sec-title">&#128230; Itens Solicitados</div>';
+    html += '<div class="det">' + detItens + '</div>';
+  }
 
-<!-- DETALHAMENTO ITENS -->
-${detItens !== 'â€”' ? `
-<div class="section-title">&#128230; Detalhamento dos Itens Solicitados</div>
-<div class="det-box">${detItens}</div>` : ''}
+  // OBS / DEMAIS OBS
+  var obsAll = [obs, demaisObs].filter(Boolean).join('\n');
+  if (obsAll) {
+    html += '<div class="sec-title">&#128221; Observa&ccedil;&otilde;es</div>';
+    html += '<div class="obs-b">' + obsAll + '</div>';
+  }
 
-<!-- OBS -->
-${obs !== 'â€”' ? `
-<div class="section-title">&#128221; ObservaÃ§Ãµes do Processo</div>
-<div class="obs-box">${obs}</div>` : ''}
+  // ASSINATURA
+  html += '<div class="sig">';
+  html += '<div class="sig-city">Porto Velho &ndash; RO, ' + todayLong + '</div>';
+  html += '<div class="sig-box"><div class="sig-line"></div>';
+  html += '<div class="sig-name">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios (CAM)</div>';
+  html += '<div class="sig-role">SEDUC-RO / Governo do Estado de Rond&ocirc;nia</div>';
+  html += '</div></div>';
 
-<!-- DEMAIS OBS -->
-${demaisObs !== 'â€”' ? `
-<div class="section-title">&#128203; Demais ObservaÃ§Ãµes (Guia Objetivo)</div>
-<div class="obs-box">${demaisObs}</div>` : ''}
+  // RODAPÃ‰
+  html += '<div class="ft">';
+  html += '<span class="ft-logo">SEDUC-RO &middot; CAM</span>';
+  html += '<span>Relat&oacute;rio Gerencial de Monitoramento &mdash; Lei Est. 5.735/2024</span>';
+  html += '<span>Emitido: ' + today + '</span>';
+  html += '</div>';
 
-<!-- MANIFESTAÃ‡ÃƒO LEGAL -->
-<div class="section-title">&#9878; ManifestaÃ§Ã£o TÃ©cnica â€” FundamentaÃ§Ã£o Legal (TCE-RO)</div>
-<div class="legal-block">
-  ${textoLegal.split('\n\n').map(function(par) {
-    if (par.startsWith('ManifestaÃ§Ã£o') || par.trim() === '') return '';
-    return '<p class="par">' + par.trim().replace(/\n/g, ' ') + '</p>';
-  }).join('')}
-</div>
+  html += '</body></html>';
 
-<!-- ASSINATURA -->
-<div class="assin-section">
-  <div style="flex:1"><div class="assin-data">Porto Velho â€“ RO, ${dataHoje}</div></div>
-  <div class="assin-box">
-    <div class="assin-line"></div>
-    <div class="assin-nome">Coordenadoria de ArticulaÃ§Ã£o com os MunicÃ­pios (CAM)</div>
-    <div class="assin-cargo">SEDUC-RO / Governo do Estado de RondÃ´nia</div>
-  </div>
-</div>
-
-<!-- RODAPÃ‰ -->
-<div class="rodape">
-  <span class="rodape-logo">SEDUC-RO Â· CAM</span>
-  <span>Documento Gerencial de Monitoramento &mdash; SEDUC-RO / CAM &mdash; Lei Est. 5.735/2024</span>
-  <span>Emitido: ${dataHoje}</span>
-</div>
-
-<script>window.onload=function(){setTimeout(function(){window.print();},400);};</script>
-</body>
-</html>`;
-
-  const win = window.open('', '_blank');
-  if (!win) { alert('Por favor, permita popups para gerar o relatÃ³rio PDF.'); return; }
-  win.document.write(htmlDoc);
+  var win = window.open('', '_blank');
+  if (!win) { alert('Por favor, permita popups para gerar o relat\u00f3rio PDF.'); return; }
+  win.document.write(html);
   win.document.close();
 }
-
 window.gerarTextoManifestoTCE         = gerarTextoManifestoTCE;
 window.gerarEExibirManifestoTCEAtual  = gerarEExibirManifestoTCEAtual;
 window.gerarRelatorioMonitoramento    = gerarRelatorioMonitoramento;
