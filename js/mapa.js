@@ -1,5 +1,5 @@
 // ============================================================
-// SEDUC — Módulo do Mapa Interativo de Escolas de Rondônia (v3.1)
+// SEDUC - Módulo do Mapa Interativo de Escolas de Rondônia (v3.1)
 // ============================================================
 
 var _mapaInstancia = null;
@@ -27,7 +27,7 @@ const ESCOLAS_EXACT_COORDS = {
   "11001097": [-8.7800, -63.9080]  // FRANKLIN DELANO ROOSEVELT (Triângulo)
 };
 
-// Calibração geográfica por bairros — coordenadas obtidas via Google Maps / GeoPortal PVH
+// Calibração geográfica por bairros - coordenadas obtidas via Google Maps / GeoPortal PVH
 // Porto Velho: todos os bairros verificados individualmente
 const BAIRROS_RO_COORDS = {
   "portovelho": {
@@ -136,7 +136,7 @@ const BAIRROS_RO_COORDS = {
 // Coordenadas geográficas de todos os 52 municípios de Rondônia (Lat, Lng)
 // Nomes no formato exato retornado pela API (D'Oeste com D maiúsculo)
 const MUNICIPIOS_RO_COORDS = {
-  // Porto Velho: centro urbano — área do Bairro São Cristóvão / Caiari (evita o Igarapé do Tanque)
+  // Porto Velho: centro urbano - área do Bairro São Cristóvão / Caiari (evita o Igarapé do Tanque)
   "Porto Velho": [-8.7540, -63.8860],
   "Ji-Paraná": [-10.8828, -61.9519],
   "Ariquemes": [-9.9133, -63.0408],
@@ -215,7 +215,7 @@ function criarBotaoWhatsApp(telefoneStr) {
     formatted = '55' + formatted;
   }
 
-  // wa.me é a URL canônica oficial do WhatsApp — abre direto no app/web já logado
+  // wa.me é a URL canônica oficial do WhatsApp - abre direto no app/web já logado
   // target="whatsapp" reutiliza a MESMA aba em vez de abrir uma nova a cada clique
   const url = `https://wa.me/${formatted}`;
   return `<a href="${url}" target="whatsapp" rel="noopener" title="Abrir no WhatsApp (reutiliza a aba aberta)" style="display:inline-flex;align-items:center;gap:4px;background:#25D366;color:#ffffff;text-decoration:none;padding:3px 10px;border-radius:20px;font-weight:700;font-size:11px;box-shadow:0 2px 6px rgba(37,211,102,0.4);margin-left:6px;">
@@ -281,7 +281,7 @@ function iniciarMapaEscolas() {
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 18,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · SEDUC-RO'
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> - SEDUC-RO'
       }).addTo(_mapaInstancia);
 
       _mapaMarkersGroup = L.layerGroup().addTo(_mapaInstancia);
@@ -292,7 +292,7 @@ function iniciarMapaEscolas() {
     }
   }
 
-  // 3. invalidateSize em múltiplos momentos para garantir renderização
+  // 3. invalidateSize em m²ltiplos momentos para garantir renderização
   [50, 200, 500, 1000, 2000].forEach(delay => {
     setTimeout(() => {
       if (_mapaInstancia) _mapaInstancia.invalidateSize(true);
@@ -352,7 +352,7 @@ function _mapaPopularFiltros() {
 
   if (selMun) {
     const municipios = [...new Set(_mapaCacheEscolas.map(e => e.municipio).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
-    selMun.innerHTML = '<option value="">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+    selMun.innerHTML = '<option value="****">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
   }
 
   if (selSup) {
@@ -362,7 +362,7 @@ function _mapaPopularFiltros() {
       if (val) superSet.add(val);
     });
     const supers = [...superSet].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
-    selSup.innerHTML = '<option value="">Todas as SUPER\'s</option>' + supers.map(s => {
+    selSup.innerHTML = '<option value="****">Todas as SUPER\'s</option>' + supers.map(s => {
       const label = s.toUpperCase().startsWith('SUPER') ? s : 'SUPER ' + s;
       return '<option value="' + s + '">' + label + '</option>';
     }).join('');
@@ -423,8 +423,8 @@ function _mapaRenderizarPinos() {
     groupCounts[groupKey] = (groupCounts[groupKey] || 0) + 1;
     const count = groupCounts[groupKey];
 
-    // Dispersão espiral áurea (ângulo ~137.5° = golden angle) — pequena e controlada
-    // Passo: ~70m | Máximo: ~550m — evita que pinos caiam em rios ou áreas não-urbanas
+    // Dispersão espiral áurea (ângulo ~137.5º = golden angle) é pequena e controlada
+    // Passo: ~70m | Máximo: ~550m - evita que pinos caiam em rios ou áreas não-urbanas
     const angle  = (count * 137.508) * (Math.PI / 180);
     const radius = Math.min(0.0006 * Math.sqrt(count), 0.005);
     const lat = coordsBase[0] + (radius * Math.cos(angle));
@@ -442,8 +442,8 @@ function _mapaRenderizarPinos() {
     const bairroPartes = [escola.bairro, escola.cep ? 'CEP ' + escola.cep : null].filter(Boolean).join(' - ');
     const enderecoCompleto = [endPartes, bairroPartes].filter(Boolean).join(' | ') || 'Endereço não cadastrado';
 
-    const mat = escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '—';
-    const sal = escola.salas > 0 ? escola.salas : '—';
+    const mat = escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '-';
+    const sal = escola.salas > 0 ? escola.salas : '-';
 
     const locBadge = escola.localizacao
       ? `<span style="padding:2px 7px; border-radius:4px; font-size:10px; font-weight:700; background:rgba(6,182,212,0.12); color:#0891b2; border:1px solid rgba(6,182,212,0.25);">${escola.localizacao}</span>`

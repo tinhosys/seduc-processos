@@ -1,5 +1,5 @@
 // ============================================================
-// SEDUC — Módulo de Dados e Estado Global
+// SEDUC - Módulo de Dados e Estado Global
 // ============================================================
 
 const DB_KEY = 'seduc_processos_v1';
@@ -307,7 +307,7 @@ const mapToApp = (row) => {
     marca: String(row['Marca'] || row['marca'] || row['Marcado'] || '').trim(),
     categoria: row['CATEGORIA'] || row['categoria'] || '',
     tipo: row['TIPO'] || row['tipo'] || '',
-    ultimaEdicao: row['ULTIMA EDICAO'] || row['ultima edicao'] || row['última edição'] || row['ÚLTIMA EDIÇÃO'] || '',
+    ultimaEdicao: row['ULTIMA EDICAO'] || row['ultima edicao'] || row['Última edição'] || row['ÚLTIMA EDIÇÃO'] || '',
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || row['DATA/HORA EDIÇÃO'] || '',
     ano: row['ANO'] || row['ano'] || '',
     agrupamento: row['AGRUPAMENTO'] || row['agrupamento'] || row['Agrupamento'] || '',
@@ -322,7 +322,7 @@ const mapToApp = (row) => {
 
 const mapToSheet = (dados) => {
   const formatMoney = (val) => {
-    if (!val && val !== 0) return "";
+    if (!val && val !== 0) return "****";
     return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   return {
@@ -542,7 +542,7 @@ async function importarExcel(file) {
           "Apontamento",
           "ALERTA",
           "ULTIMA EDICAO LOGIN",
-          "DATA/HORA EDIÇAO",
+          "DATA/HORA EDIÇÃO",
           "marca",
           "CATEGORIA",
           "TIPO"
@@ -690,7 +690,7 @@ function formatCurrency(val) {
 }
 
 function formatDate(str) {
-  if (!str) return '—';
+  if (!str) return '-';
   const d = new Date(str + 'T00:00:00');
   if (isNaN(d)) return str;
   return d.toLocaleDateString('pt-BR');

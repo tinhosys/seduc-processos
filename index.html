@@ -70,7 +70,7 @@
 
     <div style="text-align:left; margin-bottom:16px;">
       <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">SENHA (4 DÍGITOS)</label>
-      <input type="password" id="login-senha" placeholder="••••" maxlength="4" pattern="[0-9]*" inputmode="numeric" autocomplete="new-password"
+      <input type="password" id="login-senha" placeholder="****" maxlength="4" pattern="[0-9]*" inputmode="numeric" autocomplete="new-password"
         style="
           width:100%; padding:12px 16px; border-radius:10px;
           background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
@@ -161,7 +161,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        GBZ · v1.0<br>
+        GBZ - v1.0.3<br>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -183,7 +183,7 @@
           <div class="user-profile"
             style="display:flex;align-items:center;gap:8px;margin-left:16px;padding-left:16px;border-left:1px solid var(--border)">
             <div style="text-align:right">
-              <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-primary)">—</div>
+              <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-primary)">-</div>
               <div id="user-role" style="font-size:11px;color:var(--text-muted)">Carregando...</div>
             </div>
             <button onclick="navegar('senha')" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; padding:4px;" title="Trocar Senha">
@@ -397,15 +397,15 @@
       <!-- ============= PAGE: PROCESSOS ============= -->
       <section class="page" id="page-processos">
 
-        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px;">
-          <div style="flex: 1; display: flex; align-items: center; gap: 8px; min-width: 250px; flex-wrap: wrap;">
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap: wrap; gap: 12px;">
+          <div style="flex: 1; display: flex; align-items: stretch; gap: 8px; min-width: 250px; flex-wrap: wrap;">
             <span id="valor-filtrado" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 8px; font-size: 17px; font-weight: 700; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-family: monospace; letter-spacing: 0.5px;">Carregando...</span>
             <span id="qtd-registros-filtrados" style="display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 700; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); white-space: nowrap; font-family: monospace;">0 registros</span>
             <button type="button" id="btn-toggle-filtros" onclick="toggleFiltros()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 8px 12px; height: 38px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;" title="Mostrar/Ocultar Filtros">
               📌 <span class="btn-text">Ocultar Filtros</span>
             </button>
           </div>
-          <div class="header-buttons" style="display:flex;align-items:center;gap:12px; flex: 2; min-width: 300px;">
+          <div class="header-buttons" style="display:flex;align-items:stretch;gap:12px; flex: 2; min-width: 300px;">
             <button class="btn action-adm" onclick="imprimirAnalise()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#9333ea; color:white; cursor:pointer; font-weight:600;" title="Análise Gerencial">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">Análise</span>
             </button>
@@ -428,10 +428,10 @@
             <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, município...">
           </div>
           <select id="filtro-status">
-            <option value="">Status</option>
+            <option value="****">Status</option>
           </select>
           <select id="filtro-localizacao">
-            <option value="">Localização</option>
+            <option value="****">Localização</option>
           </select>
           <div class="search-box" style="min-width:160px;max-width:200px">
             <span class="search-icon" style="font-size:12px">🏷️</span>
@@ -464,19 +464,19 @@
             </div>
           </div>
           <select id="filtro-municipio">
-            <option value="">Município</option>
+            <option value="****">Município</option>
           </select>
           <select id="filtro-objeto">
-            <option value="">Objeto</option>
+            <option value="****">Objeto</option>
           </select>
           <select id="filtro-categoria">
-            <option value="">Categoria</option>
+            <option value="****">Categoria</option>
             <option value="F">Fomento (F)</option>
             <option value="C">Convênio (C)</option>
             <option value="T">Termo de Cooperação (T)</option>
           </select>
           <select id="filtro-tipo">
-            <option value="">Tipo</option>
+            <option value="****">Tipo</option>
             <option value="OB">Obras (OB)</option>
             <option value="MP">Material Permanente (MP)</option>
             <option value="MC">Material de Consumo (MC)</option>
@@ -485,20 +485,20 @@
             <option value="OUT">Outros (OUT)</option>
           </select>
           <select id="filtro-alerta" class="action-adm" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
-            <option value="">&#9888; Alerta</option>
+            <option value="****">&#9888; Alerta</option>
             <option value="sim">&#128308; Com Alerta</option>
             <option value="nao">&#128994; Sem Alerta</option>
           </select>
           <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
-            <option value="">📌 Marcação</option>
+            <option value="****">📌 Marcação</option>
             <option value="sim">⭐ Apenas Marcados</option>
             <option value="nao">⚪ Não Marcados</option>
           </select>
           <select id="filtro-ano" style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
-            <option value="">AAAA</option>
+            <option value="****">AAAA</option>
           </select>
           <select id="filtro-agrupamento" style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
-            <option value="">Agrupamento</option>
+            <option value="****">Agrupamento</option>
           </select>
           <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">&times; Limpar</button>
         </div>
@@ -508,9 +508,9 @@
           <table style="table-layout: fixed; width: 100%; min-width: 1200px;">
             <thead>
               <tr>
-                <th data-sort="prefixo" style="width: 80px;">Prefixo</th>
+                <th data-sort="prefixo" style="width: 140px; min-width: 140px;">Prefixo</th>
                 <th data-sort="municipio" style="width: 120px;">Município</th>
-                <th data-sort="numero" style="width: 160px;">Nº Processo</th>
+                <th data-sort="numero" style="width: 165px; min-width: 165px;">Nº Processo</th>
                 <th data-sort="interessado" style="width: 25%;">Interessado</th>
                 <th data-sort="objeto" style="width: 25%;">Objeto</th>
                 <th data-sort="status" style="width: 110px;">Status</th>
@@ -587,20 +587,21 @@
             <!-- GUIAS DE NAVEGAÇÃO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; width:100%;">
               <div style="display:flex; gap:12px; align-items:center;">
-                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; font-size:14px; padding:10px 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; gap:8px; transition:all 0.2s;">📦 OBJETO</button>
-                <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; font-size:14px; padding:10px 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; transition:all 0.2s;">🎯 OBJETIVO</button>
+                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📦 OBJETO</button>
+                <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">🎯 OBJETIVO</button>
               </div>
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
-                <button type="button" class="btn btn-ghost" id="btn-cancelar-form">Cancelar</button>
-                <button type="submit" class="btn btn-success">💾 Salvar Processo</button>
+                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">📊 Gerar Relatório</button>
+                <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">Cancelar</button>
+                <button type="submit" class="btn btn-success" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">💾 Salvar Processo</button>
               </div>
             </div>
   
             <!-- GUIA 1: OBJETO -->
             <div id="tab-content-objeto">
               
-            <input type="hidden" id="form-categoria" name="categoria" value="">
-            <input type="hidden" id="form-tipo" name="tipo" value="">
+            <input type="hidden" id="form-categoria" name="categoria" value="****">
+            <input type="hidden" id="form-tipo" name="tipo" value="****">
 
             <!-- Autorizações -->
             <div class="form-group full" style="margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border);">
@@ -681,8 +682,8 @@
               <div class="form-group" id="legend-ultima-edicao" style="display:none;">
                 <label>Última atualização</label>
                 <div style="padding: 10px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: var(--radius-sm); font-size: 14px; color: var(--text-secondary); min-height: 42px; display: flex; flex-direction: column; justify-content: center; gap: 4px;">
-                  <span id="ultima-edicao-nome" style="font-weight: 600; color: var(--text-primary); font-size: 13.5px;">—</span>
-                  <span id="ultima-edicao-data" style="font-size: 11.5px; color: var(--text-muted);">—</span>
+                  <span id="ultima-edicao-nome" style="font-weight: 600; color: var(--text-primary); font-size: 13.5px;">-</span>
+                  <span id="ultima-edicao-data" style="font-size: 11.5px; color: var(--text-muted);">-</span>
                 </div>
               </div>
 
@@ -843,33 +844,24 @@
                 </div>
               </div>
 
-              
               <!-- SEÇÃO: DETALHAMENTO DO PEDIDO & MONITORAMENTO -->
               <div style="margin-top:24px; padding:20px; background:linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.05)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; margin-bottom:20px;">
                 <div style="font-size:13px; font-weight:800; color:#60a5fa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
                   <div style="display:flex; align-items:center; gap:8px;">
-                    <span>📊</span> <span>Detalhamento do Pedido — Relatório de Monitoramento</span>
+                    <span>📊</span> <span>Detalhamento do Pedido - Relatório de Monitoramento</span>
                   </div>
-                  <button type="button" onclick="gerarRelatorioMonitoramento()" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; font-size:12px; font-weight:700; padding:8px 16px; border-radius:6px; cursor:pointer; box-shadow:0 3px 10px rgba(59,130,246,0.35); display:inline-flex; align-items:center; gap:6px;">📊 GERAR RELATÓRIO</button>
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:14px;">
-                  <div class="form-group">
-                    <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📩 Nº do Ofício / Solicitação da Escola</label>
-                    <input type="text" id="form-oficioNumero" class="form-control" placeholder="Ex: OF-123/2026 - EEEFM Anísio Teixeira" style="border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
-                  </div>
-
-                  <div class="form-group">
-                    <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📐 Metragem m² (Obras / Ampliação / Reforma)</label>
-                    <input type="text" id="form-metragemM2" class="form-control" placeholder="Ex: 450 m²" style="border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
-                  </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📐 Metragem m² (Obras / Ampliação / Reforma)</label>
+                  <input type="text" id="form-metragemM2" class="form-control" placeholder="Ex: 450 m²" style="border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
                   <label style="color:#f0f4ff; font-weight:700; font-size:13px; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
                     <span>📦</span> <span>Detalhamento dos Itens & Quantidades Pedidas (Móveis, Equipamentos, Obras...)</span>
                   </label>
-                  <textarea id="form-detalhamentoItens" class="form-control" rows="3" placeholder="Ex: 10 mesas para sala de aula, 2 caixas de som, 4 armários, 5 poltronas para sala dos professores..." style="width:100%; border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:500; padding:10px 12px; border-radius:8px; line-height:1.4; box-sizing:border-box;"></textarea>
+                  <textarea id="form-detalhamentoItens" class="form-control" rows="3" placeholder="Ex: 10 mesas para sala de aula, 2 caixas de som, 4 arm²rios, 5 poltronas para sala dos professores..." style="width:100%; border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:500; padding:10px 12px; border-radius:8px; line-height:1.4; box-sizing:border-box;"></textarea>
                 </div>
               </div>
 
@@ -1019,7 +1011,7 @@
               </tr>
             </thead>
             <tbody id="table-acessos">
-              <!-- Usuários carregados dinamicamente -->
+              <!-- Usuários carregados dinamicamentente -->
             </tbody>
           </table>
         </div>
@@ -1073,15 +1065,15 @@
         <div id="escolas-filtros" style="display:none; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;">
           <select id="escolas-filtro-super" onchange="filtrarEscolas()"
             style="min-width:200px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
-            <option value="">Todas as SUPER's</option>
+            <option value="****">Todas as SUPER's</option>
           </select>
           <select id="escolas-filtro-municipio" onchange="filtrarEscolas()"
             style="min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-            <option value="">Todos os Municípios</option>
+            <option value="****">Todos os Municípios</option>
           </select>
           <select id="escolas-filtro-localizacao" onchange="filtrarEscolas()"
             style="min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-            <option value="">Localização</option>
+            <option value="****">Localização</option>
           </select>
           <div style="position:relative; flex:2; min-width:220px;">
             <input type="text" id="escolas-busca"
@@ -1092,7 +1084,7 @@
           </div>
           <button onclick="limparFiltrosEscolas()"
             style="padding:10px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-muted);cursor:pointer;font-size:13px;white-space:nowrap;">
-            × Limpar Filtros
+            ✗ Limpar Filtros
           </button>
         </div>
 
@@ -1183,7 +1175,7 @@
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:700; font-size:14px; margin-bottom:6px; display:block;">Localização</label>
               <select id="page-escola-localizacao" class="form-control" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.4); color:#fff; font-weight:600; padding:12px 14px;">
-                <option value="">Selecione a localização...</option>
+                <option value="****">Selecione a localização...</option>
                 <option value="Urbana">Urbana</option>
                 <option value="Rural">Rural</option>
                 <option value="Indígena">Indígena</option>
@@ -1301,7 +1293,7 @@
       <div style="background:linear-gradient(135deg,#1e1b4b,#0f172a); padding:20px 24px; border-bottom:1px solid rgba(139,92,246,0.25); display:flex; justify-content:space-between; align-items:center;">
         <div>
           <h3 id="form-escola-titulo" style="margin:0; font-size:18px; color:#f0f4ff; display:flex; align-items:center; gap:8px;">✏️ Editar Dados da Escola</h3>
-          <span id="form-escola-subtitulo" style="font-size:13px; color:#a78bfa; font-weight:600;">Atualize as informações institucionais, contatos e gestão da unidade escolar</span>
+          <span id="form-escola-subtitulo" style="font-size:13px; color:#a78bfa; font-weight:600;">Atualize as informações institucionais, contatos e gestáo da unidade escolar</span>
         </div>
         <button class="modal-close" onclick="fecharModalFormEscola()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">✕</button>
       </div>
@@ -1329,7 +1321,7 @@
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">Localização</label>
                 <select id="form-escola-localizacao" class="form-control" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
-                  <option value="">Selecione...</option>
+                  <option value="****">Selecione...</option>
                   <option value="Urbana">Urbana</option>
                   <option value="Rural">Rural</option>
                   <option value="Indígena">Indígena</option>
@@ -1419,7 +1411,7 @@
           <!-- Buttons -->
           <div style="display:flex; justify-content:flex-end; gap:12px; padding-top:16px; border-top:1px solid var(--border);">
             <button type="button" class="btn btn-ghost" onclick="fecharModalFormEscola()" style="padding:10px 20px;">Cancelar</button>
-            <button type="submit" class="btn btn-primary" id="btn-salvar-escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:10px 26px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">💾 Salvar Alterações</button>
+            <button type="submit" class="btn btn-primary" id="btn-salvar-escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:10px 26px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">💾 Salvar Alteraçōes</button>
           </div>
         </form>
       </div>
@@ -1442,11 +1434,11 @@
     <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;">
       <select id="mapa-filtro-super" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
         style="min-width:200px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
-        <option value="">Todas as SUPER's</option>
+        <option value="****">Todas as SUPER's</option>
       </select>
       <select id="mapa-filtro-municipio" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
         style="min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-        <option value="">Todos os Municípios</option>
+        <option value="****">Todos os Municípios</option>
       </select>
       <div style="position:relative; flex:2; min-width:220px;">
         <input type="text" id="mapa-busca"
@@ -1457,7 +1449,7 @@
       </div>
       <button onclick="if(typeof limparFiltrosMapa==='function') limparFiltrosMapa()"
         style="padding:10px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-muted);cursor:pointer;font-size:13px;white-space:nowrap;">
-        × Limpar Filtros
+        ✗ Limpar Filtros
       </button>
     </div>
 
@@ -1555,7 +1547,7 @@
       }
     }
 
-    // Preencher datalist municípios dinamicamente
+    // Preencher datalist municípios dinamicamentente
     document.addEventListener('DOMContentLoaded', () => {
       const dl = document.getElementById('list-municipios');
       if (dl) {

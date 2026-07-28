@@ -1,6 +1,6 @@
 
 // ============================================================
-// SEDUC — Formulário Individualizado de Escola (Página & Modal)
+// SEDUC - Formulário Individualizado de Escola (Página & Modal)
 // ============================================================
 
 var _escolaEditandoId = null;
@@ -68,9 +68,9 @@ function _preencherFormEscolaPage(escola) {
   const titulo = document.getElementById('form-escola-page-titulo');
   if (titulo) titulo.innerHTML = '✏️ Editar Cadastro da Escola';
   const sub = document.getElementById('form-escola-page-subtitulo');
-  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' — ' + escola.municipio : '');
+  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' - ' + escola.municipio : '');
   const btn = document.getElementById('btn-salvar-escola-page');
-  if (btn) btn.textContent = '💾 Salvar Alterações';
+  if (btn) btn.textContent = '💾 Salvar Alteraçōes';
 
   if (typeof navegar === 'function') navegar('form-escola');
 }
@@ -122,12 +122,12 @@ async function salvarFormularioEscolaPage(evt) {
     console.error(err);
     if (typeof toast === 'function') toast(err.message, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alterações'; }
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alteraçōes'; }
   }
 }
 
 // ============================================================
-// SEDUC — Módulo de Escolas (ADM ONLY) - v3.0
+// SEDUC - Módulo de Escolas (ADM ONLY) - v3.0
 // ============================================================
 
 var _escolasCache = [];
@@ -197,8 +197,8 @@ function _escolasPopularFiltros() {
   if (selMun && selLoc) {
     const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
     const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
-    selMun.innerHTML = '<option value="">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-    selLoc.innerHTML = '<option value="">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
+    selMun.innerHTML = '<option value="****">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+    selLoc.innerHTML = '<option value="****">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
   }
 
   const superSet = new Set();
@@ -207,7 +207,7 @@ function _escolasPopularFiltros() {
     if (val) superSet.add(val);
   });
   const supers = [...superSet].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-  const superHtml = '<option value="">Todas as SUPER\'s</option>' + supers.map(s => {
+  const superHtml = '<option value="****">Todas as SUPER\'s</option>' + supers.map(s => {
     const label = s.toUpperCase().startsWith('SUPER') ? s : 'SUPER ' + s;
     return '<option value="' + s + '">' + label + '</option>';
   }).join('');
@@ -337,24 +337,24 @@ function _escolasRenderTabela() {
     const lc = locColor[e.localizacao] || { bg: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', border: 'rgba(255,255,255,0.1)' };
     const locBadge = e.localizacao
       ? '<span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;background:' + lc.bg + ';color:' + lc.color + ';border:1px solid ' + lc.border + '">' + e.localizacao + '</span>'
-      : '<span style="color:var(--text-muted)">—</span>';
+      : '<span style="color:var(--text-muted)">-</span>';
 
-    const tel  = e.telefone  || '—';
-    const cep  = e.cep       || '—';
-    const bairro = e.bairro  || '—';
-    const comp = e.complemento || '—';
-    const end  = [e.endereco].filter(Boolean).join(', ') || '—';
-    const mat  = e.totalMatricula > 0 ? Number(e.totalMatricula).toLocaleString('pt-BR') : '—';
-    const sal  = e.salas > 0 ? e.salas : '—';
+    const tel  = e.telefone  || '-';
+    const cep  = e.cep       || '-';
+    const bairro = e.bairro  || '-';
+    const comp = e.complemento || '-';
+    const end  = [e.endereco].filter(Boolean).join(', ') || '-';
+    const mat  = e.totalMatricula > 0 ? Number(e.totalMatricula).toLocaleString('pt-BR') : '-';
+    const sal  = e.salas > 0 ? e.salas : '-';
 
     return '<tr style="cursor:pointer;" onclick="abrirModalEscola(' + gi + ')" ondblclick="abrirFormEscola(' + gi + ')" title="Clique para ver detalhes | Duplo clique para editar"' +
       ' onmouseover="this.style.background=\'rgba(139,92,246,0.07)\'"' +
       ' onmouseout="this.style.background=\'\'">' +
-      '<td style="font-family:monospace;font-size:12px;color:#a78bfa;font-weight:600">' + (e.codigoSuper || '—') + '</td>' +
-      '<td style="font-size:12px;color:var(--text-secondary)">' + (e.super || '—') + '</td>' +
-      '<td style="font-weight:600;color:var(--text-primary)">' + (e.municipio || '—') + '</td>' +
-      '<td style="font-family:monospace;font-size:12px;color:#60a5fa">' + (e.codigoInep || '—') + '</td>' +
-      '<td style="font-weight:600;color:#f0f4ff;white-space:normal;line-height:1.4;max-width:220px">' + (e.nome || '—') + '</td>' +
+      '<td style="font-family:monospace;font-size:12px;color:#a78bfa;font-weight:600">' + (e.codigoSuper || '-') + '</td>' +
+      '<td style="font-size:12px;color:var(--text-secondary)">' + (e.super || '-') + '</td>' +
+      '<td style="font-weight:600;color:var(--text-primary)">' + (e.municipio || '-') + '</td>' +
+      '<td style="font-family:monospace;font-size:12px;color:#60a5fa">' + (e.codigoInep || '-') + '</td>' +
+      '<td style="font-weight:600;color:#f0f4ff;white-space:normal;line-height:1.4;max-width:220px">' + (e.nome || '-') + '</td>' +
       '<td>' + locBadge + '</td>' +
       '<td style="font-size:12px">' + end + '</td>' +
       '<td style="font-size:12px;color:var(--text-secondary)">' + comp + '</td>' +
@@ -386,7 +386,7 @@ function _escolasRenderPaginacao() {
 
   if (pagEl) pagEl.style.display = total > 0 ? '' : 'none';
   infoEl.textContent = total > 0
-    ? 'Mostrando ' + start + '–' + end + ' de ' + total.toLocaleString('pt-BR') + ' escolas'
+    ? 'Mostrando ' + start + '-' + end + ' de ' + total.toLocaleString('pt-BR') + ' escolas'
     : 'Nenhuma escola';
 
   const range = [];
@@ -404,12 +404,12 @@ function _escolasRenderPaginacao() {
     range.push('...'); range.push(totPag);
   }
 
-  let btns = '<button class="page-btn" ' + (_escolasPaginaAtual === 1 ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual - 1) + ')">‹</button>';
+  let btns = '<button class="page-btn" ' + (_escolasPaginaAtual === 1 ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual - 1) + ')">»</button>';
   range.forEach(p => {
-    if (p === '...') btns += '<span style="padding:0 6px;color:var(--text-muted)">…</span>';
+    if (p === '...') btns += '<span style="padding:0 6px;color:var(--text-muted)">-</span>';
     else btns += '<button class="page-btn ' + (p === _escolasPaginaAtual ? 'active' : '') + '" onclick="navegarEscolas(' + p + ')">' + p + '</button>';
   });
-  btns += '<button class="page-btn" ' + (_escolasPaginaAtual === totPag ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual + 1) + ')">›</button>';
+  btns += '<button class="page-btn" ' + (_escolasPaginaAtual === totPag ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual + 1) + ')">»</button>';
   ctrlEl.innerHTML = btns;
 }
 
@@ -477,7 +477,7 @@ function abrirModalEscola(idx) {
   const field = (label, valor, cor) => {
     return '<div style="display:flex;flex-direction:column;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)">' +
       '<span style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">' + label + '</span>' +
-      '<span style="font-size:14px;font-weight:600;color:' + (cor || 'var(--text-primary)') + '">' + (valor || '—') + '</span>' +
+      '<span style="font-size:14px;font-weight:600;color:' + (cor || 'var(--text-primary)') + '">' + (valor || '-') + '</span>' +
       '</div>';
   };
 
@@ -494,9 +494,9 @@ function abrirModalEscola(idx) {
     '<div style="padding:24px">' +
       '<div style="background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(99,102,241,.1));border:1px solid rgba(139,92,246,.35);border-radius:12px;padding:20px;margin-bottom:20px">' +
         '<div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">' + superLabel + '</div>' +
-        '<div style="font-size:20px;font-weight:800;color:#f0f4ff;line-height:1.3;margin-bottom:10px">' + (escola.nome || '—') + '</div>' +
+        '<div style="font-size:20px;font-weight:800;color:#f0f4ff;line-height:1.3;margin-bottom:10px">' + (escola.nome || '-') + '</div>' +
         '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
-          '<span style="font-size:13px;color:#94a3b8">📍 ' + (escola.municipio || '—') + '</span>' +
+          '<span style="font-size:13px;color:#94a3b8">📍 ' + (escola.municipio || '-') + '</span>' +
           (escola.codigoInep ? '<span style="font-family:monospace;font-size:12px;padding:2px 8px;background:rgba(255,255,255,.06);border-radius:4px;color:#60a5fa">INEP: ' + escola.codigoInep + '</span>' : '') +
           (escola.localizacao ? '<span style="padding:2px 10px;border-radius:5px;font-size:12px;font-weight:700;background:rgba(6,182,212,.15);color:#22d3ee;border:1px solid rgba(6,182,212,.3)">' + escola.localizacao + '</span>' : '') +
         '</div>' +
@@ -517,8 +517,8 @@ function abrirModalEscola(idx) {
           field('Bairro', escola.bairro) +
           field('CEP', escola.cep) +
           field('Telefone da Escola', escola.telefone, '#60a5fa') +
-          field('Total de Matrículas', escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '—', '#34d399') +
-          field('Salas de Aula Utilizadas', escola.salas > 0 ? escola.salas : '—', '#60a5fa') +
+          field('Total de Matrículas', escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '-', '#34d399') +
+          field('Salas de Aula Utilizadas', escola.salas > 0 ? escola.salas : '-', '#60a5fa') +
         '</div>' +
       '</div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px">' +
@@ -598,10 +598,10 @@ function _preencherFormEscola(escola) {
   if (titulo) titulo.innerHTML = '✏️ Editar Dados da Escola';
   
   const sub = document.getElementById('form-escola-subtitulo');
-  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' — ' + escola.municipio : '');
+  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' - ' + escola.municipio : '');
 
   const btn = document.getElementById('btn-salvar-escola');
-  if (btn) btn.textContent = '💾 Salvar Alterações';
+  if (btn) btn.textContent = '💾 Salvar Alteraçōes';
 
   overlay.style.display = 'flex';
 }
@@ -660,7 +660,7 @@ async function salvarEscola(evt) {
     console.error(err);
     toast(err.message, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alterações'; }
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alteraçōes'; }
   }
 }
 

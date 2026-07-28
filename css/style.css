@@ -163,7 +163,7 @@ body {
   text-align: center;
 }
 
-/* CONTEÃšDO PRINCIPAL */
+/* CONTEÚDO PRINCIPAL */
 .main-content {
   margin-left: var(--sidebar-w);
   flex: 1;
@@ -473,7 +473,7 @@ select:focus { border-color: var(--blue); }
 select option { background: #1e293b; }
 
 /* ============================================
-   BOTÃ•ES
+   BOTÕES
    ============================================ */
 .btn {
   display: inline-flex;
@@ -520,7 +520,7 @@ select option { background: #1e293b; }
 .btn-sm { padding: 6px 12px; font-size: 12px; }
 
 /* ============================================
-   FORMULÃRIO
+   FORMULÁRIO
    ============================================ */
 .form-grid {
   display: grid;
@@ -759,7 +759,7 @@ textarea { resize: vertical; min-height: 80px; }
 .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ============================================
-   SEÃ‡ÃƒO DE IMPORTAÃ‡ÃƒO
+   SEÇÃO DE IMPORTAÇÃO
    ============================================ */
 .import-zone {
   border: 2px dashed var(--border);
@@ -778,7 +778,7 @@ textarea { resize: vertical; min-height: 80px; }
 .import-zone p { color: var(--text-muted); font-size: 13px; }
 
 /* ============================================
-   NOTIFICAÃ‡ÃƒO TOAST
+   NOTIFICAÇÃO TOAST
    ============================================ */
 #toast-container {
   position: fixed;
@@ -866,7 +866,7 @@ textarea { resize: vertical; min-height: 80px; }
 }
 
 /* ============================================
-   ANIMAÃ‡Ã•ES
+   ANIMAÇÕES
    ============================================ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
@@ -899,7 +899,7 @@ textarea { resize: vertical; min-height: 80px; }
 .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state h3 { font-size: 16px; color: var(--text-secondary); margin-bottom: 6px; }
 
-/* HEADER SEÃ‡ÃƒO */
+/* HEADER SEÇÃO */
 .section-header {
   display: flex;
   align-items: center;
@@ -961,7 +961,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* PREFIXO â€” badge de cÃ³digo de prioridade */
+/* PREFIXO — badge de código de prioridade */
 .badge-prefixo {
   display: inline-flex;
   align-items: center;
@@ -977,7 +977,7 @@ textarea { resize: vertical; min-height: 80px; }
   white-space: nowrap;
 }
 
-/* INDICAÃ‡ÃƒO â€” discreto, quase invisÃ­vel */
+/* INDICAÇÃO — discreto, quase invisível */
 .indicado-txt {
   font-size: 11px;
   color: var(--text-muted);
@@ -1069,7 +1069,7 @@ mark {
 @media print {
   .page-number::after {
     counter-increment: page;
-    content: "Página " counter(page);
+    content: "P�gina " counter(page);
   }
 }
 
@@ -1466,7 +1466,7 @@ input:checked + .slider:before {
   margin-bottom: 12px;
 }
 
-/* Responsive Prefixo & Localização Grid */
+/* Responsive Prefixo & Localiza��o Grid */
 .prefixo-loc-grid {
   display: grid;
   grid-template-columns: 1fr 320px;
@@ -1624,10 +1624,10 @@ input:checked + .slider:before {
 }
 
 /* ============================================================
-   RESPONSIVIDADE E BOTÕES HEADER NO CELULAR
+   RESPONSIVIDADE E BOT�ES HEADER NO CELULAR
    ============================================================ */
 @media (max-width: 768px) {
-  /* Altera comportamento do flex da seção de header no celular */
+  /* Altera comportamento do flex da se��o de header no celular */
   .section-header {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -1640,7 +1640,7 @@ input:checked + .slider:before {
     flex: none !important;
   }
 
-  /* Faz os botões dividirem o espaço em grid de 2x2 no celular */
+  /* Faz os bot�es dividirem o espa�o em grid de 2x2 no celular */
   .header-buttons, 
   .section-header .header-buttons {
     display: grid !important;
@@ -1650,7 +1650,7 @@ input:checked + .slider:before {
     flex: none !important;
   }
 
-  /* Diminui fonte e padding dos botões de ação no celular */
+  /* Diminui fonte e padding dos bot�es de a��o no celular */
   .header-buttons .btn {
     padding: 8px 6px !important;
     font-size: 11px !important;
@@ -1658,7 +1658,7 @@ input:checked + .slider:before {
     justify-content: center !important;
   }
 
-  /* Oculta os textos dos botões se a tela for muito estreita, mantendo apenas ícones/emojis */
+  /* Oculta os textos dos bot�es se a tela for muito estreita, mantendo apenas �cones/emojis */
   @media (max-width: 480px) {
     .btn-text {
       display: none !important;
@@ -1692,7 +1692,7 @@ tr.linha-marcada:hover {
 }
 
 /* ============================================================
-   DESTAQUE DO CALENDÁRIO
+   DESTAQUE DO CALEND�RIO
    ============================================================ */
 #form-data::-webkit-calendar-picker-indicator {
   cursor: pointer;
@@ -1771,7 +1771,7 @@ tr.linha-marcada:hover {
 }
 
 input:checked + .slider {
-  background-color: #ef4444; /* Vermelho por padrão quando ligado (pendente) */
+  background-color: #ef4444; /* Vermelho por padr�o quando ligado (pendente) */
 }
 
 input:focus + .slider {
@@ -1779,7 +1779,7 @@ input:focus + .slider {
 }
 
 .autorizacao-toggles.all-on input:checked + .slider {
-  background-color: #10b981; /* Verde APENAS quando todos estão ON */
+  background-color: #10b981; /* Verde APENAS quando todos est�o ON */
 }
 
 .autorizacao-toggles.all-on input:focus + .slider {
@@ -1823,3 +1823,25 @@ input:checked ~ .toggle-text {
   border-left: 4px solid #ef4444 !important;
 }
 
+
+/* Congelar coluna Prefixo */
+.table-wrap th[data-sort="prefixo"] {
+  position: sticky;
+  left: 0;
+  z-index: 30 !important;
+  background-color: var(--surface);
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+.table-wrap td.col-prefixo {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background-color: var(--surface);
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+.process-row:hover td.col-prefixo {
+  background-color: var(--surface); filter: brightness(1.2);
+}
+thead th {
+  z-index: 20;
+}
