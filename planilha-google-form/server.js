@@ -873,17 +873,35 @@ function mapDataToEscolaRow(data, headers, originalRow = [], user = null) {
     else if (hLow === 'super') val = data.super;
     else if (hLow.includes('munic')) val = data.municipio;
     else if (hLow.includes('inep')) val = data.codigoInep;
-    else if (hLow.includes('nome da escola') || hLow.includes('escola')) val = data.nome;
+    else if (hLow === 'cep') val = data.cep;
+    
+    else if (hLow.includes('sala')) val = data.salas;
+    else if (hLow.includes('email') || hLow.includes('e-mail')) val = data.email;
+    else if (hLow.includes('rede') || hLow.includes('instagram') || hLow.includes('facebook') || hLow.includes('instagran')) val = data.redesSociais;
+    else if (hLow.includes('secretario')) {
+      if (hLow.includes('contato') || hLow.includes('telefone') || hLow.includes('celular') || hLow.includes('whats')) {
+        val = data.contatoSecretario;
+      } else {
+        val = data.secretario;
+      }
+    }
+    else if (hLow.includes('diretor') || hLow.includes('gestor')) {
+      if (hLow.includes('contato') || hLow.includes('telefone') || hLow.includes('celular') || hLow.includes('whats')) {
+        val = data.contatoDiretor;
+      } else {
+        val = data.diretor;
+      }
+    }
+    else if (hLow.includes('contato') || hLow.includes('celular')) val = data.contatoDiretor;
+    else if (hLow.includes('telefone') || hLow.includes('fone')) val = data.telefone;
+    else if (hLow.includes('total matricula') || hLow.includes('matricula')) val = data.totalMatricula;
+    
     else if (hLow.includes('localiza')) val = data.localizacao;
     else if (hLow.includes('endere')) val = data.endereco;
     else if (hLow.includes('complement')) val = data.complemento;
     else if (hLow.includes('bairro')) val = data.bairro;
-    else if (hLow === 'cep') val = data.cep;
-    else if (hLow.includes('contato') || hLow.includes('celular')) val = data.contatoDiretor;
-    else if (hLow.includes('diretor') || hLow.includes('gestor')) val = data.diretor;
-    else if (hLow.includes('telefone') || hLow.includes('fone')) val = data.telefone;
-    else if (hLow.includes('total matricula') || hLow.includes('matricula')) val = data.totalMatricula;
-    else if (hLow.includes('sala')) val = data.salas;
+    
+    else if (hLow.includes('nome da escola') || hLow.includes('escola')) val = data.nome;
 
     if (val !== undefined) return val;
     return originalRow[i] ?? "";
@@ -929,7 +947,11 @@ function mapRowToEscolaObj(headers, row) {
     totalMatricula: getNum(['total matrícula', 'total matricula', 'matricula']),
     salas: getNum(['salas de aula ultilizadas na escola', 'salas de aula', 'sala']),
     diretor: get(['diretor', 'gestor', 'nome diretor', 'nome do diretor']),
-    contatoDiretor: get(['contato diretor', 'telefone diretor', 'celular diretor', 'contato'])
+    contatoDiretor: get(['contato diretor', 'telefone diretor', 'celular diretor', 'contato']),
+    secretario: get(['secretario', 'secretário', 'nome secretario', 'nome do secretário']),
+    contatoSecretario: get(['contato secretario', 'telefone secretario', 'celular secretario', 'whats secretario']),
+    email: get(['email', 'e-mail']),
+    redesSociais: get(['redes sociais', 'instagram', 'facebook', 'instagran', 'redes'])
   };
 }
 

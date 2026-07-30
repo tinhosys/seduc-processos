@@ -161,7 +161,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        GBZ - v1.0.3<br>
+        GBZ - v1.0.4<br>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1093,7 +1093,7 @@
           <table style="table-layout:fixed; width:100%; min-width:1300px; border-collapse:separate; border-spacing:0; font-size:13px;">
             <thead>
               <tr style="background:var(--bg-secondary);">
-                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Cód.Super</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Competência</th>
                 <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Super</th>
                 <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Município</th>
                 <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">INEP</th>
@@ -1180,6 +1180,7 @@
                 <option value="Rural">Rural</option>
                 <option value="Indígena">Indígena</option>
                 <option value="Quilombola">Quilombola</option>
+                <option value="Distrital">Distrital</option>
               </select>
             </div>
           </div>
@@ -1190,8 +1191,13 @@
               <input type="text" id="page-escola-inep" class="form-control" placeholder="Ex: 11000000" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#60a5fa; font-family:monospace; font-weight:700; padding:10px 12px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">Código Super</label>
-              <input type="text" id="page-escola-codigoSuper" class="form-control" placeholder="Ex: 1" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#a78bfa; font-family:monospace; font-weight:700; padding:10px 12px;">
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">Competência</label>
+              <select id="page-escola-codigoSuper" class="form-control" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#a78bfa; font-weight:700; padding:10px 12px;">
+                <option value="">Selecione...</option>
+                <option value="Municipal">Municipal</option>
+                <option value="Estadual">Estadual</option>
+                <option value="Federal">Federal</option>
+              </select>
             </div>
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:600; font-size:13px;">SUPER / Regional</label>
@@ -1213,14 +1219,50 @@
             <input type="text" id="page-escola-diretor" class="form-control" placeholder="Digite o nome completo do diretor(a) responsável" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:16px; padding:12px 14px;">
           </div>
 
-          <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px;">
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Diretor (WhatsApp / Celular)</label>
-              <input type="text" id="page-escola-contatoDiretor" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="page-escola-contatoDiretor" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
+                <button type="button" onclick="const v=document.getElementById('page-escola-contatoDiretor').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
+              </div>
             </div>
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:600; font-size:13px;">☎️ Telefone Geral da Escola / Secretaria</label>
-              <input type="text" id="page-escola-telefone" class="form-control" placeholder="Ex: (69) 3222-0000" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="page-escola-telefone" class="form-control" placeholder="Ex: (69) 3222-0000" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
+                <button type="button" onclick="const v=document.getElementById('page-escola-telefone').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
+              </div>
+            </div>
+          </div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px;">
+            <div class="form-group">
+              <label style="color:#f0f4ff; font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+                <span>👤</span> <span>Nome do Secretário(a)</span>
+              </label>
+              <input type="text" id="page-escola-secretario" class="form-control" placeholder="Digite o nome completo do secretário(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:16px; padding:12px 14px;">
+            </div>
+            <div class="form-group">
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Secretário(a) (WhatsApp)</label>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="page-escola-contatoSecretario" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
+                <button type="button" onclick="const v=document.getElementById('page-escola-contatoSecretario').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
+            <div class="form-group">
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📧 E-mail da Escola</label>
+              <input type="email" id="page-escola-email" class="form-control" placeholder="Ex: contato@escola.com.br" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
+            </div>
+            <div class="form-group">
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌐 Redes Sociais (Instagram/Facebook)</label>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="page-escola-redesSociais" class="form-control" placeholder="Ex: @escola ou link do perfil" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
+                <button type="button" onclick="const v=document.getElementById('page-escola-redesSociais').value; if(v){ const url=v.startsWith('@') ? 'https://instagram.com/'+v.substring(1) : (v.startsWith('http') ? v : 'https://'+v); window.open(url, '_blank'); }" style="background:#db2777; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Abrir Rede Social">📱</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1234,7 +1276,10 @@
           <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:18px; margin-bottom:18px;">
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📍 Endereço e Nº</label>
-              <input type="text" id="page-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="page-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
+                <button type="button" onclick="const end=document.getElementById('page-escola-endereco').value; const mun=document.getElementById('page-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📍</button>
+              </div>
             </div>
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏙️ Bairro</label>
@@ -1326,6 +1371,7 @@
                   <option value="Rural">Rural</option>
                   <option value="Indígena">Indígena</option>
                   <option value="Quilombola">Quilombola</option>
+                  <option value="Distrital">Distrital</option>
                 </select>
               </div>
             </div>
@@ -1336,8 +1382,13 @@
                 <input type="text" id="form-escola-inep" class="form-control" placeholder="Ex: 11000000" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#60a5fa; font-family:monospace; font-weight:600;">
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">Código Super</label>
-                <input type="text" id="form-escola-codigoSuper" class="form-control" placeholder="Ex: 1" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#a78bfa; font-family:monospace; font-weight:600;">
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">Competência</label>
+                <select id="form-escola-codigoSuper" class="form-control" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#a78bfa; font-weight:600; padding:10px 12px;">
+                  <option value="">Selecione...</option>
+                  <option value="Municipal">Municipal</option>
+                  <option value="Estadual">Estadual</option>
+                  <option value="Federal">Federal</option>
+                </select>
               </div>
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">SUPER / Regional</label>
@@ -1359,14 +1410,50 @@
               <input type="text" id="form-escola-diretor" class="form-control" placeholder="Digite o nome completo do diretor(a) ou gestor(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:15px; padding:12px 14px;">
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Diretor (WhatsApp)</label>
-                <input type="text" id="form-escola-contatoDiretor" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="form-escola-contatoDiretor" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
+                  <button type="button" onclick="const v=document.getElementById('form-escola-contatoDiretor').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
+                </div>
               </div>
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">☎️ Telefone Geral da Escola</label>
-                <input type="text" id="form-escola-telefone" class="form-control" placeholder="Ex: (69) 3222-0000" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="form-escola-telefone" class="form-control" placeholder="Ex: (69) 3222-0000" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
+                  <button type="button" onclick="const v=document.getElementById('form-escola-telefone').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
+              <div class="form-group">
+                <label style="color:#f0f4ff; font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px;">
+                  <span>👤</span> <span>Nome do Secretário(a)</span>
+                </label>
+                <input type="text" id="form-escola-secretario" class="form-control" placeholder="Digite o nome completo do secretário(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:15px; padding:12px 14px;">
+              </div>
+              <div class="form-group">
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Secretário(a) (WhatsApp)</label>
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="form-escola-contatoSecretario" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
+                  <button type="button" onclick="const v=document.getElementById('form-escola-contatoSecretario').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+              <div class="form-group">
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📧 E-mail da Escola</label>
+                <input type="email" id="form-escola-email" class="form-control" placeholder="Ex: contato@escola.com.br" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
+              </div>
+              <div class="form-group">
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌐 Redes Sociais (Instagram/Facebook)</label>
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="form-escola-redesSociais" class="form-control" placeholder="Ex: @escola ou link do perfil" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
+                  <button type="button" onclick="const v=document.getElementById('form-escola-redesSociais').value; if(v){ const url=v.startsWith('@') ? 'https://instagram.com/'+v.substring(1) : (v.startsWith('http') ? v : 'https://'+v); window.open(url, '_blank'); }" style="background:#db2777; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Abrir Rede Social">📱</button>
+                </div>
               </div>
             </div>
           </div>
@@ -1380,7 +1467,10 @@
             <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:14px; margin-bottom:14px;">
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📍 Endereço e Nº</label>
-                <input type="text" id="form-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="form-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
+                  <button type="button" onclick="const end=document.getElementById('form-escola-endereco').value; const mun=document.getElementById('form-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📍</button>
+                </div>
               </div>
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏙️ Bairro</label>
@@ -1502,11 +1592,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=3.2.0"></script>
-  <script src="js/app.js?v=3.2.0"></script>
-  <script src="js/auth-sap.js?v=3.2.0"></script>
-  <script src="js/escolas.js?v=3.4.0"></script>
-  <script src="js/mapa.js?v=3.6.0"></script>
+  <script src="js/dados.js?v=3.2.1"></script>
+  <script src="js/app.js?v=3.2.2"></script>
+  <script src="js/auth-sap.js?v=3.2.1"></script>
+  <script src="js/escolas.js?v=3.4.5"></script>
+  <script src="js/mapa.js?v=3.6.1"></script>
 
   <script>
     // Detector de erros para depuração visual

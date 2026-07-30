@@ -53,6 +53,10 @@ function _preencherFormEscolaPage(escola) {
   set('page-escola-super', escola.super);
   set('page-escola-diretor', escola.diretor);
   set('page-escola-contatoDiretor', escola.contatoDiretor || escola.telefone);
+  set('page-escola-secretario', escola.secretario || '');
+  set('page-escola-contatoSecretario', escola.contatoSecretario || '');
+  set('page-escola-email', escola.email || '');
+  set('page-escola-redesSociais', escola.redesSociais || escola.instagram || escola.facebook || '');
   set('page-escola-telefone', escola.telefone);
   set('page-escola-endereco', escola.endereco);
   set('page-escola-bairro', escola.bairro);
@@ -79,7 +83,7 @@ async function salvarFormularioEscolaPage(evt) {
   if (evt) evt.preventDefault();
   const id = (document.getElementById('page-escola-id') || {}).value || '';
   const method = id ? 'PUT' : 'POST';
-  const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+  const base = 'https://seduc-backend.onrender.com';
   const url = base + (id ? '/api/escolas/' + id : '/api/escolas');
 
   const g = (sel) => { const el = document.getElementById(sel); return el ? el.value.trim() : ''; };
@@ -92,6 +96,10 @@ async function salvarFormularioEscolaPage(evt) {
     super:          g('page-escola-super'),
     diretor:        g('page-escola-diretor'),
     contatoDiretor: g('page-escola-contatoDiretor'),
+    secretario:     g('page-escola-secretario'),
+    contatoSecretario: g('page-escola-contatoSecretario'),
+    email:          g('page-escola-email'),
+    redesSociais:   g('page-escola-redesSociais'),
     telefone:       g('page-escola-telefone'),
     endereco:       g('page-escola-endereco'),
     bairro:         g('page-escola-bairro'),
@@ -163,7 +171,7 @@ async function carregarEscolasAPI(silencioso) {
   try {
     const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token') || 'active_dev_token');
     const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
-    const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+    const base = 'https://seduc-backend.onrender.com';
 
     const res = await fetch(base + '/api/escolas', { headers });
     if (!res.ok) throw new Error('Erro HTTP ' + res.status);
@@ -172,9 +180,25 @@ async function carregarEscolasAPI(silencioso) {
 
     if (!silencioso) toast('Dados de escolas carregados: ' + _escolasCache.length, 'success');
 
+    const selMun = document.getElementById('escolas-filtro-municipio');
+    const selLoc = document.getElementById('escolas-filtro-localizacao');
+    const selSup = document.getElementById('escolas-filtro-super');
+    const selSupTopo = document.getElementById('escolas-filtro-super-topo');
+    const currentMun = selMun ? selMun.value : null;
+    const currentLoc = selLoc ? selLoc.value : null;
+    const currentSup = selSup ? selSup.value : null;
+    const currentSupTopo = selSupTopo ? selSupTopo.value : null;
+    const currentPage = _escolasPaginaAtual;
+
     _escolasPopularFiltros();
-    _escolasFiltradas = [..._escolasCache];
-    _escolasPaginaAtual = 1;
+    
+    if (selMun && currentMun !== null) selMun.value = currentMun;
+    if (selLoc && currentLoc !== null) selLoc.value = currentLoc;
+    if (selSup && currentSup !== null) selSup.value = currentSup;
+    if (selSupTopo && currentSupTopo !== null) selSupTopo.value = currentSupTopo;
+
+    filtrarEscolas(true);
+    _escolasPaginaAtual = currentPage;
     _escolasAtualizarUI();
 
   } catch (err) {
@@ -238,16 +262,16 @@ function _escolasAtualizarBadges() {
   if (badgeSalas)   badgeSalas.textContent   = '🚪 ' + totalSalas.toLocaleString('pt-BR') + ' Salas';
 }
 
-function filtrarEscolas() {
+function filtrarEscolas(manterPagina = false) {
   const buscaEl = document.getElementById('escolas-busca');
   const munEl   = document.getElementById('escolas-filtro-municipio');
   const locEl   = document.getElementById('escolas-filtro-localizacao');
   const supEl   = document.getElementById('escolas-filtro-super-topo') || document.getElementById('escolas-filtro-super');
 
   const busca = (buscaEl ? buscaEl.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') : '');
-  const mun   = munEl ? munEl.value : '';
-  const loc   = locEl ? locEl.value : '';
-  const sup   = supEl ? supEl.value : '';
+  const mun   = (munEl && !munEl.value.includes('***')) ? munEl.value : '';
+  const loc   = (locEl && !locEl.value.includes('***')) ? locEl.value : '';
+  const sup   = (supEl && !supEl.value.includes('***')) ? supEl.value : '';
 
   _escolasFiltradas = _escolasCache.filter(e => {
     if (mun && e.municipio !== mun) return false;
@@ -262,7 +286,7 @@ function filtrarEscolas() {
     }
     return true;
   });
-  _escolasPaginaAtual = 1;
+  if (!manterPagina) _escolasPaginaAtual = 1;
   _escolasAtualizarBadges();
   _escolasRenderTabela();
   _escolasRenderPaginacao();
@@ -271,7 +295,7 @@ function filtrarEscolas() {
 function limparFiltrosEscolas() {
   ['escolas-busca','escolas-filtro-municipio','escolas-filtro-localizacao','escolas-filtro-super','escolas-filtro-super-topo'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.value = '';
+    if (el) el.value = el.tagName === 'SELECT' ? '****' : '';
   });
   _escolasFiltradas = [..._escolasCache];
   _escolasPaginaAtual = 1;
@@ -503,7 +527,7 @@ function abrirModalEscola(idx) {
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px">' +
         '<div>' +
-          field('Código Super', escola.codigoSuper, '#a78bfa') +
+          field('Competência', escola.codigoSuper, '#a78bfa') +
           field('Super', escola.super) +
           field('Município', escola.municipio, '#f0f4ff') +
           field('Código INEP', escola.codigoInep, '#60a5fa') +
@@ -593,6 +617,10 @@ function _preencherFormEscola(escola) {
   set('form-escola-salas', escola.salas > 0 ? escola.salas : '');
   set('form-escola-diretor', escola.diretor);
   set('form-escola-contatoDiretor', escola.contatoDiretor || escola.telefone);
+  set('form-escola-secretario', escola.secretario || '');
+  set('form-escola-contatoSecretario', escola.contatoSecretario || '');
+  set('form-escola-email', escola.email || '');
+  set('form-escola-redesSociais', escola.redesSociais || escola.instagram || escola.facebook || '');
 
   const titulo = document.getElementById('form-escola-titulo');
   if (titulo) titulo.innerHTML = '✏️ Editar Dados da Escola';
@@ -616,7 +644,7 @@ async function salvarEscola(evt) {
   evt.preventDefault();
   const id = (document.getElementById('form-escola-id') || {}).value || '';
   const method = id ? 'PUT' : 'POST';
-  const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+  const base = 'https://seduc-backend.onrender.com';
   const url = base + (id ? '/api/escolas/' + id : '/api/escolas');
 
   const g = (sel) => { const el = document.getElementById(sel); return el ? el.value.trim() : ''; };
@@ -635,7 +663,11 @@ async function salvarEscola(evt) {
     totalMatricula: g('form-escola-matriculas'),
     salas:          g('form-escola-salas'),
     diretor:        g('form-escola-diretor'),
-    contatoDiretor: g('form-escola-contatoDiretor') || g('form-escola-telefone')
+    contatoDiretor: g('form-escola-contatoDiretor') || g('form-escola-telefone'),
+    secretario:     g('form-escola-secretario'),
+    contatoSecretario: g('form-escola-contatoSecretario'),
+    email:          g('form-escola-email'),
+    redesSociais:   g('form-escola-redesSociais')
   };
 
   const btn = document.getElementById('btn-salvar-escola');
@@ -666,7 +698,7 @@ async function salvarEscola(evt) {
 
 async function excluirEscola(id) {
   if (!confirm('Tem certeza que deseja excluir esta escola? Esta ação não pode ser desfeita.')) return;
-  const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+  const base = 'https://seduc-backend.onrender.com';
   const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token') || 'active_dev_token');
   const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
   try {

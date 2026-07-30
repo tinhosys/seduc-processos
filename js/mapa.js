@@ -375,8 +375,10 @@ function _mapaPopularFiltros() {
 }
 
 function filtrarMapaEscolas() {
-  const mun = (document.getElementById('mapa-filtro-municipio') || {}).value || '';
-  const sup = (document.getElementById('mapa-filtro-super') || {}).value || '';
+  let mun = (document.getElementById('mapa-filtro-municipio') || {}).value || '';
+  if (mun.includes('***')) mun = '';
+  let sup = (document.getElementById('mapa-filtro-super') || {}).value || '';
+  if (sup.includes('***')) sup = '';
   const busca = _mapaNormalizarStr((document.getElementById('mapa-busca') || {}).value || '');
 
   _mapaEscolasFiltradas = _mapaCacheEscolas.filter(e => {
@@ -398,7 +400,7 @@ function filtrarMapaEscolas() {
 function limparFiltrosMapa() {
   ['mapa-filtro-municipio', 'mapa-filtro-super', 'mapa-busca'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.value = '';
+    if (el) el.value = el.tagName === 'SELECT' ? '****' : '';
   });
   _mapaEscolasFiltradas = [..._mapaCacheEscolas];
   _mapaRenderizarPinos();

@@ -1,6 +1,6 @@
 
 // ============================================================
-// SEDUC — Formulário Individualizado de Escola (Página & Modal)
+// SEDUC - Formulário Individualizado de Escola (Página & Modal)
 // ============================================================
 
 var _escolaEditandoId = null;
@@ -53,6 +53,10 @@ function _preencherFormEscolaPage(escola) {
   set('page-escola-super', escola.super);
   set('page-escola-diretor', escola.diretor);
   set('page-escola-contatoDiretor', escola.contatoDiretor || escola.telefone);
+  set('page-escola-secretario', escola.secretario || '');
+  set('page-escola-contatoSecretario', escola.contatoSecretario || '');
+  set('page-escola-email', escola.email || '');
+  set('page-escola-redesSociais', escola.redesSociais || escola.instagram || escola.facebook || '');
   set('page-escola-telefone', escola.telefone);
   set('page-escola-endereco', escola.endereco);
   set('page-escola-bairro', escola.bairro);
@@ -68,9 +72,9 @@ function _preencherFormEscolaPage(escola) {
   const titulo = document.getElementById('form-escola-page-titulo');
   if (titulo) titulo.innerHTML = '✏️ Editar Cadastro da Escola';
   const sub = document.getElementById('form-escola-page-subtitulo');
-  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' — ' + escola.municipio : '');
+  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' - ' + escola.municipio : '');
   const btn = document.getElementById('btn-salvar-escola-page');
-  if (btn) btn.textContent = '💾 Salvar Alterações';
+  if (btn) btn.textContent = '💾 Salvar Alteraçōes';
 
   if (typeof navegar === 'function') navegar('form-escola');
 }
@@ -79,7 +83,7 @@ async function salvarFormularioEscolaPage(evt) {
   if (evt) evt.preventDefault();
   const id = (document.getElementById('page-escola-id') || {}).value || '';
   const method = id ? 'PUT' : 'POST';
-  const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+  const base = 'https://seduc-backend.onrender.com';
   const url = base + (id ? '/api/escolas/' + id : '/api/escolas');
 
   const g = (sel) => { const el = document.getElementById(sel); return el ? el.value.trim() : ''; };
@@ -92,6 +96,10 @@ async function salvarFormularioEscolaPage(evt) {
     super:          g('page-escola-super'),
     diretor:        g('page-escola-diretor'),
     contatoDiretor: g('page-escola-contatoDiretor'),
+    secretario:     g('page-escola-secretario'),
+    contatoSecretario: g('page-escola-contatoSecretario'),
+    email:          g('page-escola-email'),
+    redesSociais:   g('page-escola-redesSociais'),
     telefone:       g('page-escola-telefone'),
     endereco:       g('page-escola-endereco'),
     bairro:         g('page-escola-bairro'),
@@ -122,12 +130,12 @@ async function salvarFormularioEscolaPage(evt) {
     console.error(err);
     if (typeof toast === 'function') toast(err.message, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alterações'; }
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alteraçōes'; }
   }
 }
 
 // ============================================================
-// SEDUC — Módulo de Escolas (ADM ONLY) - v3.0
+// SEDUC - Módulo de Escolas (ADM ONLY) - v3.0
 // ============================================================
 
 var _escolasCache = [];
@@ -163,7 +171,7 @@ async function carregarEscolasAPI(silencioso) {
   try {
     const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token') || 'active_dev_token');
     const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
-    const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+    const base = 'https://seduc-backend.onrender.com';
 
     const res = await fetch(base + '/api/escolas', { headers });
     if (!res.ok) throw new Error('Erro HTTP ' + res.status);
@@ -172,9 +180,25 @@ async function carregarEscolasAPI(silencioso) {
 
     if (!silencioso) toast('Dados de escolas carregados: ' + _escolasCache.length, 'success');
 
+    const selMun = document.getElementById('escolas-filtro-municipio');
+    const selLoc = document.getElementById('escolas-filtro-localizacao');
+    const selSup = document.getElementById('escolas-filtro-super');
+    const selSupTopo = document.getElementById('escolas-filtro-super-topo');
+    const currentMun = selMun ? selMun.value : null;
+    const currentLoc = selLoc ? selLoc.value : null;
+    const currentSup = selSup ? selSup.value : null;
+    const currentSupTopo = selSupTopo ? selSupTopo.value : null;
+    const currentPage = _escolasPaginaAtual;
+
     _escolasPopularFiltros();
-    _escolasFiltradas = [..._escolasCache];
-    _escolasPaginaAtual = 1;
+    
+    if (selMun && currentMun !== null) selMun.value = currentMun;
+    if (selLoc && currentLoc !== null) selLoc.value = currentLoc;
+    if (selSup && currentSup !== null) selSup.value = currentSup;
+    if (selSupTopo && currentSupTopo !== null) selSupTopo.value = currentSupTopo;
+
+    filtrarEscolas(true);
+    _escolasPaginaAtual = currentPage;
     _escolasAtualizarUI();
 
   } catch (err) {
@@ -197,8 +221,8 @@ function _escolasPopularFiltros() {
   if (selMun && selLoc) {
     const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
     const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
-    selMun.innerHTML = '<option value="">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-    selLoc.innerHTML = '<option value="">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
+    selMun.innerHTML = '<option value="****">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+    selLoc.innerHTML = '<option value="****">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
   }
 
   const superSet = new Set();
@@ -207,7 +231,7 @@ function _escolasPopularFiltros() {
     if (val) superSet.add(val);
   });
   const supers = [...superSet].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-  const superHtml = '<option value="">Todas as SUPER\'s</option>' + supers.map(s => {
+  const superHtml = '<option value="****">Todas as SUPER\'s</option>' + supers.map(s => {
     const label = s.toUpperCase().startsWith('SUPER') ? s : 'SUPER ' + s;
     return '<option value="' + s + '">' + label + '</option>';
   }).join('');
@@ -238,16 +262,16 @@ function _escolasAtualizarBadges() {
   if (badgeSalas)   badgeSalas.textContent   = '🚪 ' + totalSalas.toLocaleString('pt-BR') + ' Salas';
 }
 
-function filtrarEscolas() {
+function filtrarEscolas(manterPagina = false) {
   const buscaEl = document.getElementById('escolas-busca');
   const munEl   = document.getElementById('escolas-filtro-municipio');
   const locEl   = document.getElementById('escolas-filtro-localizacao');
   const supEl   = document.getElementById('escolas-filtro-super-topo') || document.getElementById('escolas-filtro-super');
 
   const busca = (buscaEl ? buscaEl.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'') : '');
-  const mun   = munEl ? munEl.value : '';
-  const loc   = locEl ? locEl.value : '';
-  const sup   = supEl ? supEl.value : '';
+  const mun   = (munEl && !munEl.value.includes('***')) ? munEl.value : '';
+  const loc   = (locEl && !locEl.value.includes('***')) ? locEl.value : '';
+  const sup   = (supEl && !supEl.value.includes('***')) ? supEl.value : '';
 
   _escolasFiltradas = _escolasCache.filter(e => {
     if (mun && e.municipio !== mun) return false;
@@ -262,7 +286,7 @@ function filtrarEscolas() {
     }
     return true;
   });
-  _escolasPaginaAtual = 1;
+  if (!manterPagina) _escolasPaginaAtual = 1;
   _escolasAtualizarBadges();
   _escolasRenderTabela();
   _escolasRenderPaginacao();
@@ -271,7 +295,7 @@ function filtrarEscolas() {
 function limparFiltrosEscolas() {
   ['escolas-busca','escolas-filtro-municipio','escolas-filtro-localizacao','escolas-filtro-super','escolas-filtro-super-topo'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.value = '';
+    if (el) el.value = el.tagName === 'SELECT' ? '****' : '';
   });
   _escolasFiltradas = [..._escolasCache];
   _escolasPaginaAtual = 1;
@@ -337,24 +361,24 @@ function _escolasRenderTabela() {
     const lc = locColor[e.localizacao] || { bg: 'rgba(255,255,255,0.06)', color: 'var(--text-secondary)', border: 'rgba(255,255,255,0.1)' };
     const locBadge = e.localizacao
       ? '<span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;background:' + lc.bg + ';color:' + lc.color + ';border:1px solid ' + lc.border + '">' + e.localizacao + '</span>'
-      : '<span style="color:var(--text-muted)">—</span>';
+      : '<span style="color:var(--text-muted)">-</span>';
 
-    const tel  = e.telefone  || '—';
-    const cep  = e.cep       || '—';
-    const bairro = e.bairro  || '—';
-    const comp = e.complemento || '—';
-    const end  = [e.endereco].filter(Boolean).join(', ') || '—';
-    const mat  = e.totalMatricula > 0 ? Number(e.totalMatricula).toLocaleString('pt-BR') : '—';
-    const sal  = e.salas > 0 ? e.salas : '—';
+    const tel  = e.telefone  || '-';
+    const cep  = e.cep       || '-';
+    const bairro = e.bairro  || '-';
+    const comp = e.complemento || '-';
+    const end  = [e.endereco].filter(Boolean).join(', ') || '-';
+    const mat  = e.totalMatricula > 0 ? Number(e.totalMatricula).toLocaleString('pt-BR') : '-';
+    const sal  = e.salas > 0 ? e.salas : '-';
 
     return '<tr style="cursor:pointer;" onclick="abrirModalEscola(' + gi + ')" ondblclick="abrirFormEscola(' + gi + ')" title="Clique para ver detalhes | Duplo clique para editar"' +
       ' onmouseover="this.style.background=\'rgba(139,92,246,0.07)\'"' +
       ' onmouseout="this.style.background=\'\'">' +
-      '<td style="font-family:monospace;font-size:12px;color:#a78bfa;font-weight:600">' + (e.codigoSuper || '—') + '</td>' +
-      '<td style="font-size:12px;color:var(--text-secondary)">' + (e.super || '—') + '</td>' +
-      '<td style="font-weight:600;color:var(--text-primary)">' + (e.municipio || '—') + '</td>' +
-      '<td style="font-family:monospace;font-size:12px;color:#60a5fa">' + (e.codigoInep || '—') + '</td>' +
-      '<td style="font-weight:600;color:#f0f4ff;white-space:normal;line-height:1.4;max-width:220px">' + (e.nome || '—') + '</td>' +
+      '<td style="font-family:monospace;font-size:12px;color:#a78bfa;font-weight:600">' + (e.codigoSuper || '-') + '</td>' +
+      '<td style="font-size:12px;color:var(--text-secondary)">' + (e.super || '-') + '</td>' +
+      '<td style="font-weight:600;color:var(--text-primary)">' + (e.municipio || '-') + '</td>' +
+      '<td style="font-family:monospace;font-size:12px;color:#60a5fa">' + (e.codigoInep || '-') + '</td>' +
+      '<td style="font-weight:600;color:#f0f4ff;white-space:normal;line-height:1.4;max-width:220px">' + (e.nome || '-') + '</td>' +
       '<td>' + locBadge + '</td>' +
       '<td style="font-size:12px">' + end + '</td>' +
       '<td style="font-size:12px;color:var(--text-secondary)">' + comp + '</td>' +
@@ -386,7 +410,7 @@ function _escolasRenderPaginacao() {
 
   if (pagEl) pagEl.style.display = total > 0 ? '' : 'none';
   infoEl.textContent = total > 0
-    ? 'Mostrando ' + start + '–' + end + ' de ' + total.toLocaleString('pt-BR') + ' escolas'
+    ? 'Mostrando ' + start + '-' + end + ' de ' + total.toLocaleString('pt-BR') + ' escolas'
     : 'Nenhuma escola';
 
   const range = [];
@@ -404,12 +428,12 @@ function _escolasRenderPaginacao() {
     range.push('...'); range.push(totPag);
   }
 
-  let btns = '<button class="page-btn" ' + (_escolasPaginaAtual === 1 ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual - 1) + ')">‹</button>';
+  let btns = '<button class="page-btn" ' + (_escolasPaginaAtual === 1 ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual - 1) + ')">»</button>';
   range.forEach(p => {
-    if (p === '...') btns += '<span style="padding:0 6px;color:var(--text-muted)">…</span>';
+    if (p === '...') btns += '<span style="padding:0 6px;color:var(--text-muted)">-</span>';
     else btns += '<button class="page-btn ' + (p === _escolasPaginaAtual ? 'active' : '') + '" onclick="navegarEscolas(' + p + ')">' + p + '</button>';
   });
-  btns += '<button class="page-btn" ' + (_escolasPaginaAtual === totPag ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual + 1) + ')">›</button>';
+  btns += '<button class="page-btn" ' + (_escolasPaginaAtual === totPag ? 'disabled' : '') + ' onclick="navegarEscolas(' + (_escolasPaginaAtual + 1) + ')">»</button>';
   ctrlEl.innerHTML = btns;
 }
 
@@ -477,7 +501,7 @@ function abrirModalEscola(idx) {
   const field = (label, valor, cor) => {
     return '<div style="display:flex;flex-direction:column;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06)">' +
       '<span style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px">' + label + '</span>' +
-      '<span style="font-size:14px;font-weight:600;color:' + (cor || 'var(--text-primary)') + '">' + (valor || '—') + '</span>' +
+      '<span style="font-size:14px;font-weight:600;color:' + (cor || 'var(--text-primary)') + '">' + (valor || '-') + '</span>' +
       '</div>';
   };
 
@@ -494,16 +518,16 @@ function abrirModalEscola(idx) {
     '<div style="padding:24px">' +
       '<div style="background:linear-gradient(135deg,rgba(139,92,246,.18),rgba(99,102,241,.1));border:1px solid rgba(139,92,246,.35);border-radius:12px;padding:20px;margin-bottom:20px">' +
         '<div style="font-size:11px;font-weight:700;color:#a78bfa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">' + superLabel + '</div>' +
-        '<div style="font-size:20px;font-weight:800;color:#f0f4ff;line-height:1.3;margin-bottom:10px">' + (escola.nome || '—') + '</div>' +
+        '<div style="font-size:20px;font-weight:800;color:#f0f4ff;line-height:1.3;margin-bottom:10px">' + (escola.nome || '-') + '</div>' +
         '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">' +
-          '<span style="font-size:13px;color:#94a3b8">📍 ' + (escola.municipio || '—') + '</span>' +
+          '<span style="font-size:13px;color:#94a3b8">📍 ' + (escola.municipio || '-') + '</span>' +
           (escola.codigoInep ? '<span style="font-family:monospace;font-size:12px;padding:2px 8px;background:rgba(255,255,255,.06);border-radius:4px;color:#60a5fa">INEP: ' + escola.codigoInep + '</span>' : '') +
           (escola.localizacao ? '<span style="padding:2px 10px;border-radius:5px;font-size:12px;font-weight:700;background:rgba(6,182,212,.15);color:#22d3ee;border:1px solid rgba(6,182,212,.3)">' + escola.localizacao + '</span>' : '') +
         '</div>' +
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px">' +
         '<div>' +
-          field('Código Super', escola.codigoSuper, '#a78bfa') +
+          field('Competência', escola.codigoSuper, '#a78bfa') +
           field('Super', escola.super) +
           field('Município', escola.municipio, '#f0f4ff') +
           field('Código INEP', escola.codigoInep, '#60a5fa') +
@@ -517,8 +541,8 @@ function abrirModalEscola(idx) {
           field('Bairro', escola.bairro) +
           field('CEP', escola.cep) +
           field('Telefone da Escola', escola.telefone, '#60a5fa') +
-          field('Total de Matrículas', escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '—', '#34d399') +
-          field('Salas de Aula Utilizadas', escola.salas > 0 ? escola.salas : '—', '#60a5fa') +
+          field('Total de Matrículas', escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '-', '#34d399') +
+          field('Salas de Aula Utilizadas', escola.salas > 0 ? escola.salas : '-', '#60a5fa') +
         '</div>' +
       '</div>' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);flex-wrap:wrap;gap:10px">' +
@@ -593,15 +617,19 @@ function _preencherFormEscola(escola) {
   set('form-escola-salas', escola.salas > 0 ? escola.salas : '');
   set('form-escola-diretor', escola.diretor);
   set('form-escola-contatoDiretor', escola.contatoDiretor || escola.telefone);
+  set('form-escola-secretario', escola.secretario || '');
+  set('form-escola-contatoSecretario', escola.contatoSecretario || '');
+  set('form-escola-email', escola.email || '');
+  set('form-escola-redesSociais', escola.redesSociais || escola.instagram || escola.facebook || '');
 
   const titulo = document.getElementById('form-escola-titulo');
   if (titulo) titulo.innerHTML = '✏️ Editar Dados da Escola';
   
   const sub = document.getElementById('form-escola-subtitulo');
-  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' — ' + escola.municipio : '');
+  if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' - ' + escola.municipio : '');
 
   const btn = document.getElementById('btn-salvar-escola');
-  if (btn) btn.textContent = '💾 Salvar Alterações';
+  if (btn) btn.textContent = '💾 Salvar Alteraçōes';
 
   overlay.style.display = 'flex';
 }
@@ -616,7 +644,7 @@ async function salvarEscola(evt) {
   evt.preventDefault();
   const id = (document.getElementById('form-escola-id') || {}).value || '';
   const method = id ? 'PUT' : 'POST';
-  const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+  const base = 'https://seduc-backend.onrender.com';
   const url = base + (id ? '/api/escolas/' + id : '/api/escolas');
 
   const g = (sel) => { const el = document.getElementById(sel); return el ? el.value.trim() : ''; };
@@ -635,7 +663,11 @@ async function salvarEscola(evt) {
     totalMatricula: g('form-escola-matriculas'),
     salas:          g('form-escola-salas'),
     diretor:        g('form-escola-diretor'),
-    contatoDiretor: g('form-escola-contatoDiretor') || g('form-escola-telefone')
+    contatoDiretor: g('form-escola-contatoDiretor') || g('form-escola-telefone'),
+    secretario:     g('form-escola-secretario'),
+    contatoSecretario: g('form-escola-contatoSecretario'),
+    email:          g('form-escola-email'),
+    redesSociais:   g('form-escola-redesSociais')
   };
 
   const btn = document.getElementById('btn-salvar-escola');
@@ -660,13 +692,13 @@ async function salvarEscola(evt) {
     console.error(err);
     toast(err.message, 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alterações'; }
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alteraçōes'; }
   }
 }
 
 async function excluirEscola(id) {
   if (!confirm('Tem certeza que deseja excluir esta escola? Esta ação não pode ser desfeita.')) return;
-  const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com';
+  const base = 'https://seduc-backend.onrender.com';
   const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token') || 'active_dev_token');
   const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
   try {

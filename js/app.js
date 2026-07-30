@@ -3299,10 +3299,12 @@ function _escolasPopularFiltros() {
 }
 
 // Aplica filtros
-function filtrarEscolas() {
+function filtrarEscolas(manterPagina = false) {
   const busca = normalizar(document.getElementById('escolas-busca')?.value || '');
-  const mun   = document.getElementById('escolas-filtro-municipio')?.value || '';
-  const loc   = document.getElementById('escolas-filtro-localizacao')?.value || '';
+  let mun   = document.getElementById('escolas-filtro-municipio')?.value || '';
+  if (mun.includes('***')) mun = '';
+  let loc   = document.getElementById('escolas-filtro-localizacao')?.value || '';
+  if (loc.includes('***')) loc = '';
   _escolasFiltradas = _escolasCache.filter(e => {
     if (mun && e.municipio !== mun) return false;
     if (loc && e.localizacao !== loc) return false;
@@ -3312,7 +3314,7 @@ function filtrarEscolas() {
     }
     return true;
   });
-  _escolasPaginaAtual = 1;
+  if (!manterPagina) _escolasPaginaAtual = 1;
   _escolasRenderTabela();
   _escolasRenderPaginacao();
 }
@@ -3321,7 +3323,7 @@ function filtrarEscolas() {
 function limparFiltrosEscolas() {
   ['escolas-busca', 'escolas-filtro-municipio', 'escolas-filtro-localizacao'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.value = '';
+    if (el) el.value = el.tagName === 'SELECT' ? '****' : '';
   });
   _escolasFiltradas = [..._escolasCache];
   _escolasPaginaAtual = 1;
