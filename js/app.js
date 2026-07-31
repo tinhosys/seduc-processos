@@ -970,7 +970,7 @@ function renderPaginacao(totalPags) {
 
 // ---- FORMULÁRIO / MÁSCARAS ----
 function maskProcesso(v) {
-  v = v.replace(/\D/g, "****");
+  v = v.replace(/\D/g, "");
   if (v.length > 16) v = v.substring(0, 16);
   v = v.replace(/^(\d{4})(\d)/, "$1.$2");
   v = v.replace(/^(\d{4})\.(\d{6})(\d)/, "$1.$2/$3");
@@ -979,9 +979,9 @@ function maskProcesso(v) {
 }
 
 function maskCurrency(v) {
-  v = v.replace(/\D/g, "****");
-  if (!v) return "****";
-  v = (parseInt(v, 10) / 100).toFixed(2) + "****";
+  v = v.replace(/\D/g, "");
+  if (!v) return "";
+  v = (parseInt(v, 10) / 100).toFixed(2);
   v = v.replace(".", ",");
   v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
   return v;
@@ -2824,7 +2824,7 @@ async function deletarAcesso(rowNumber, whatsapp) {
 // ---- MÁSCARA E ENVIAR WHATSAPP ----
 
 function maskCelular(v) {
-  v = v.replace(/\D/g, "****");
+  v = v.replace(/\D/g, "");
   if (v.length > 11) v = v.substring(0, 11);
   
   if (v.length > 10) {
@@ -2841,7 +2841,7 @@ function maskCelular(v) {
 
 function enviarLinkWhatsApp() {
   const inputVal = document.getElementById('share-whatsapp-number').value;
-  const digits = inputVal.replace(/\D/g, "****");
+  const digits = inputVal.replace(/\D/g, "");
 
   if (digits.length < 10) {
     toast('Por favor, informe um número de celular válido com DDD.', 'error');

@@ -428,10 +428,10 @@
             <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, município...">
           </div>
           <select id="filtro-status">
-            <option value="****">Status</option>
+            <option value="">Status</option>
           </select>
           <select id="filtro-localizacao">
-            <option value="****">Localização</option>
+            <option value="">Localização</option>
           </select>
           <div class="search-box" style="min-width:160px;max-width:200px">
             <span class="search-icon" style="font-size:12px">🏷️</span>
@@ -464,19 +464,19 @@
             </div>
           </div>
           <select id="filtro-municipio">
-            <option value="****">Município</option>
+            <option value="">Município</option>
           </select>
           <select id="filtro-objeto">
-            <option value="****">Objeto</option>
+            <option value="">Objeto</option>
           </select>
           <select id="filtro-categoria">
-            <option value="****">Categoria</option>
+            <option value="">Categoria</option>
             <option value="F">Fomento (F)</option>
             <option value="C">Convênio (C)</option>
             <option value="T">Termo de Cooperação (T)</option>
           </select>
           <select id="filtro-tipo">
-            <option value="****">Tipo</option>
+            <option value="">Tipo</option>
             <option value="OB">Obras (OB)</option>
             <option value="MP">Material Permanente (MP)</option>
             <option value="MC">Material de Consumo (MC)</option>
@@ -485,20 +485,20 @@
             <option value="OUT">Outros (OUT)</option>
           </select>
           <select id="filtro-alerta" class="action-adm" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
-            <option value="****">&#9888; Alerta</option>
+            <option value="">&#9888; Alerta</option>
             <option value="sim">&#128308; Com Alerta</option>
             <option value="nao">&#128994; Sem Alerta</option>
           </select>
           <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
-            <option value="****">📌 Marcação</option>
+            <option value="">📌 Marcação</option>
             <option value="sim">⭐ Apenas Marcados</option>
             <option value="nao">⚪ Não Marcados</option>
           </select>
           <select id="filtro-ano" style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
-            <option value="****">AAAA</option>
+            <option value="">AAAA</option>
           </select>
           <select id="filtro-agrupamento" style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
-            <option value="****">Agrupamento</option>
+            <option value="">Agrupamento</option>
           </select>
           <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">&times; Limpar</button>
         </div>
@@ -600,8 +600,8 @@
             <!-- GUIA 1: OBJETO -->
             <div id="tab-content-objeto">
               
-            <input type="hidden" id="form-categoria" name="categoria" value="****">
-            <input type="hidden" id="form-tipo" name="tipo" value="****">
+            <input type="hidden" id="form-categoria" name="categoria" value="">
+            <input type="hidden" id="form-tipo" name="tipo" value="">
 
             <!-- Autorizações -->
             <div class="form-group full" style="margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border);">
@@ -1065,15 +1065,15 @@
         <div id="escolas-filtros" style="display:none; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;">
           <select id="escolas-filtro-super" onchange="filtrarEscolas()"
             style="min-width:200px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
-            <option value="****">Todas as SUPER's</option>
+            <option value="">Todas as SUPER's</option>
           </select>
           <select id="escolas-filtro-municipio" onchange="filtrarEscolas()"
             style="min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-            <option value="****">Todos os Municípios</option>
+            <option value="">Todos os Municípios</option>
           </select>
           <select id="escolas-filtro-localizacao" onchange="filtrarEscolas()"
             style="min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-            <option value="****">Localização</option>
+            <option value="">Localização</option>
           </select>
           <div style="position:relative; flex:2; min-width:220px;">
             <input type="text" id="escolas-busca"
@@ -1175,7 +1175,7 @@
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:700; font-size:14px; margin-bottom:6px; display:block;">Localização</label>
               <select id="page-escola-localizacao" class="form-control" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.4); color:#fff; font-weight:600; padding:12px 14px;">
-                <option value="****">Selecione a localização...</option>
+                <option value="">Selecione a localização...</option>
                 <option value="Urbana">Urbana</option>
                 <option value="Rural">Rural</option>
                 <option value="Indígena">Indígena</option>
@@ -1366,7 +1366,7 @@
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">Localização</label>
                 <select id="form-escola-localizacao" class="form-control" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
-                  <option value="****">Selecione...</option>
+                  <option value="">Selecione...</option>
                   <option value="Urbana">Urbana</option>
                   <option value="Rural">Rural</option>
                   <option value="Indígena">Indígena</option>
@@ -1524,11 +1524,11 @@
     <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;">
       <select id="mapa-filtro-super" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
         style="min-width:200px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
-        <option value="****">Todas as SUPER's</option>
+        <option value="">Todas as SUPER's</option>
       </select>
       <select id="mapa-filtro-municipio" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
         style="min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-        <option value="****">Todos os Municípios</option>
+        <option value="">Todos os Municípios</option>
       </select>
       <div style="position:relative; flex:2; min-width:220px;">
         <input type="text" id="mapa-busca"
