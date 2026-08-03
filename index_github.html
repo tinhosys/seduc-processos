@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -52,8 +52,7 @@
     text-align: center;
   ">
     <h2 style="color:#f0f4ff; font-size:15px; font-weight:800; margin-bottom:40px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">
-      CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS<br>
-      <span style="font-size: 22px;">SEDUC - RO</span>
+      CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO
     </h2>
     
     <div style="text-align:left; margin-bottom:16px;">
@@ -96,7 +95,6 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.45</div>
   </div>
 </div>
   
@@ -163,7 +161,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        GBZ - v1.0.45<br>
+        GBZ - v1.0.4<br>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -425,99 +423,84 @@
 
         <!-- Filtros -->
         <div class="filters-bar">
-          <!-- LINHA 1 -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <div class="search-box" style="flex:1; min-width:250px;">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, município...">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, município...">
+          </div>
+          <select id="filtro-status">
+            <option value="">Status</option>
+          </select>
+          <select id="filtro-localizacao">
+            <option value="">Localização</option>
+          </select>
+          <div class="search-box" style="min-width:160px;max-width:200px">
+            <span class="search-icon" style="font-size:12px">🏷️</span>
+            <input type="text" id="filtro-prefixo" placeholder="Prefixo..." list="list-filtro-prefixos"
+              autocomplete="off" style="padding-right:30px; padding-left:12px;">
+            <datalist id="list-filtro-prefixos"></datalist>
+          </div>
+          <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
+            <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÃO:</span>
+            <div class="toggle-item">
+              <label class="toggle-switch">
+                <input type="checkbox" id="filtro-cam">
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label" style="font-size:10px;">CAM</span>
             </div>
-            <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
-              <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÃO:</span>
-              <div class="toggle-item">
-                <label class="toggle-switch">
-                  <input type="checkbox" id="filtro-cam">
-                  <span class="slider"></span>
-                </label>
-                <span class="toggle-label" style="font-size:10px;">CAM</span>
-              </div>
-              <div class="toggle-item">
-                <label class="toggle-switch">
-                  <input type="checkbox" id="filtro-gab">
-                  <span class="slider"></span>
-                </label>
-                <span class="toggle-label" style="font-size:10px;">GABINETE SEDUC</span>
-              </div>
-              <div class="toggle-item">
-                <label class="toggle-switch">
-                  <input type="checkbox" id="filtro-cc">
-                  <span class="slider"></span>
-                </label>
-                <span class="toggle-label" style="font-size:10px;">CASA CIVIL</span>
-              </div>
+            <div class="toggle-item">
+              <label class="toggle-switch">
+                <input type="checkbox" id="filtro-gab">
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label" style="font-size:10px;">GABINETE SEDUC</span>
+            </div>
+            <div class="toggle-item">
+              <label class="toggle-switch">
+                <input type="checkbox" id="filtro-cc">
+                <span class="slider"></span>
+              </label>
+              <span class="toggle-label" style="font-size:10px;">CASA CIVIL</span>
             </div>
           </div>
-
-          <!-- LINHA 2 -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <select id="filtro-objeto" style="flex:1; min-width:200px;">
-              <option value="">OBJETO</option>
-            </select>
-          </div>
-
-          <!-- LINHA 3 -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <select id="filtro-municipio" multiple>
-              <option value="">MUNICÍPIO</option>
-            </select>
-            <select id="filtro-super" multiple>
-              <option value="">SUPER</option>
-            </select>
-            <select id="filtro-prefixo" multiple>
-              <option value="">PREFIXO</option>
-            </select>
-            <select id="filtro-localizacao" multiple>
-              <option value="">LOCALIZAÇÃO</option>
-            </select>
-            <select id="filtro-status" multiple>
-              <option value="">STATUS</option>
-            </select>
-          </div>
-
-          <!-- LINHA 4 -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <select id="filtro-categoria" multiple>
-              <option value="">CATEGORIA</option>
-            </select>
-            <select id="filtro-tipo" multiple>
-              <option value="">TIPO</option>
-            </select>
-            <select id="filtro-agrupamento" multiple style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
-              <option value="">AGRUPAMENTO</option>
-            </select>
-            <select id="filtro-ano" multiple style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
-              <option value="">ANO</option>
-            </select>
-            <select id="filtro-alerta" class="action-adm" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
-              <option value="">&#9888; ALERTA</option>
-              <option value="sim">&#128308; Com Alerta</option>
-              <option value="nao">&#128994; Sem Alerta</option>
-            </select>
-            <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
-              <option value="">📌 MARCAÇÃO</option>
-              <option value="sim">⭐ Apenas Marcados</option>
-              <option value="nao">⚪ Não Marcados</option>
-            </select>
-          </div>
-          
-          <!-- LINHA 5 -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center; margin-top: 5px;">
-            <button id="btn-limpar-filtros" 
-                    onmouseover="this.style.background='rgba(250, 204, 21, 0.3)'" 
-                    onmouseout="this.style.background='rgba(250, 204, 21, 0.15)'"
-                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:rgba(250, 204, 21, 0.15); color:#facc15; border:1px solid #facc15; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
-              <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
-            </button>
-          </div>
+          <select id="filtro-municipio">
+            <option value="">Município</option>
+          </select>
+          <select id="filtro-objeto">
+            <option value="">Objeto</option>
+          </select>
+          <select id="filtro-categoria">
+            <option value="">Categoria</option>
+            <option value="F">Fomento (F)</option>
+            <option value="C">Convênio (C)</option>
+            <option value="T">Termo de Cooperação (T)</option>
+          </select>
+          <select id="filtro-tipo">
+            <option value="">Tipo</option>
+            <option value="OB">Obras (OB)</option>
+            <option value="MP">Material Permanente (MP)</option>
+            <option value="MC">Material de Consumo (MC)</option>
+            <option value="SI">Sistema (SI)</option>
+            <option value="TR">Treinamento (TR)</option>
+            <option value="OUT">Outros (OUT)</option>
+          </select>
+          <select id="filtro-alerta" class="action-adm" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
+            <option value="">&#9888; Alerta</option>
+            <option value="sim">&#128308; Com Alerta</option>
+            <option value="nao">&#128994; Sem Alerta</option>
+          </select>
+          <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
+            <option value="">📌 Marcação</option>
+            <option value="sim">⭐ Apenas Marcados</option>
+            <option value="nao">⚪ Não Marcados</option>
+          </select>
+          <select id="filtro-ano" style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
+            <option value="">AAAA</option>
+          </select>
+          <select id="filtro-agrupamento" style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
+            <option value="">Agrupamento</option>
+          </select>
+          <button class="btn btn-ghost btn-sm" id="btn-limpar-filtros">&times; Limpar</button>
         </div>
 
         <!-- Tabela -->
@@ -1074,67 +1057,55 @@
             <span id="escolas-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
           </div>
           <div style="display:flex;align-items:center;gap:10px;">
-            <button class="btn action-adm" onclick="if(typeof imprimirRelatorioEscolas==='function') imprimirRelatorioEscolas()" style="padding:10px 16px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Relatório de Escolas">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÓRIO</span>
-            </button>
+            <button onclick="abrirModalFormEscola()" style="background:linear-gradient(135deg,rgba(16,185,129,0.2),rgba(5,150,105,0.2));border:1px solid rgba(16,185,129,0.4);color:#34d399;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;">➕ Nova Escola</button> <button onclick="recarregarEscolas()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">🔄 Recarregar</button>
           </div>
         </div>
 
         <!-- Filtros e Busca -->
-        <div id="escolas-filtros" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
-          <!-- Linha 1 -->
-          <div style="display:flex; width:100%;">
-            <div style="position:relative; flex:1;">
-              <input type="text" id="escolas-busca"
-                placeholder="Buscar por nome, município..."
-                oninput="filtrarEscolas()"
-                style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
-              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
-            </div>
+        <div id="escolas-filtros" style="display:none; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;">
+          <select id="escolas-filtro-super" onchange="filtrarEscolas()"
+            style="min-width:200px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
+            <option value="">Todas as SUPER's</option>
+          </select>
+          <select id="escolas-filtro-municipio" onchange="filtrarEscolas()"
+            style="min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+            <option value="">Todos os Municípios</option>
+          </select>
+          <select id="escolas-filtro-localizacao" onchange="filtrarEscolas()"
+            style="min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+            <option value="">Localização</option>
+          </select>
+          <div style="position:relative; flex:2; min-width:220px;">
+            <input type="text" id="escolas-busca"
+              placeholder="Buscar por nome, município, INEP, bairro..."
+              oninput="filtrarEscolas()"
+              style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
+            <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
           </div>
-          <!-- Linha 2 -->
-          <div style="display:flex; flex-wrap:wrap; gap:10px; width:100%;">
-            <select id="escolas-filtro-super" onchange="filtrarEscolas()"
-              style="flex:1; min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
-              <option value="">SUPER</option>
-            </select>
-            <select id="escolas-filtro-municipio" onchange="filtrarEscolas()"
-              style="flex:1; min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-              <option value="">MUNICÍPIO</option>
-            </select>
-            <select id="escolas-filtro-competencia" onchange="filtrarEscolas()"
-              style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-              <option value="">COMPETÊNCIA</option>
-            </select>
-            <select id="escolas-filtro-localizacao" onchange="filtrarEscolas()"
-              style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-              <option value="">LOCALIZAÇÃO</option>
-            </select>
-          </div>
-          <!-- Linha 3 -->
-          <div style="display:flex; width:100%; margin-top:5px;">
-            <button onclick="limparFiltrosEscolas()" 
-                    onmouseover="this.style.background='rgba(250, 204, 21, 0.3)'" 
-                    onmouseout="this.style.background='rgba(250, 204, 21, 0.15)'"
-                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:rgba(250, 204, 21, 0.15); color:#facc15; border:1px solid #facc15; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
-              <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
-            </button>
-          </div>
+          <button onclick="limparFiltrosEscolas()"
+            style="padding:10px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-muted);cursor:pointer;font-size:13px;white-space:nowrap;">
+            ✗ Limpar Filtros
+          </button>
         </div>
 
         <!-- Tabela -->
         <div class="table-wrap" id="escolas-table-wrap" style="display:none; overflow-x:auto;">
-          <table style="table-layout:fixed; width:100%; min-width:1000px; border-collapse:separate; border-spacing:0; font-size:13px;">
+          <table style="table-layout:fixed; width:100%; min-width:1300px; border-collapse:separate; border-spacing:0; font-size:13px;">
             <thead>
               <tr style="background:var(--bg-secondary);">
-                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Competência</th>
-                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Super</th>
-                <th style="width:12%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Município</th>
-                <th style="width:30%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Nome da Escola</th>
-                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Localização</th>
-                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Telefone</th>
-                <th style="width:7%;padding:12px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Matrículas</th>
-                <th style="width:5%;padding:12px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Salas</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Competência</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Super</th>
+                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Município</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">INEP</th>
+                <th style="width:20%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Nome da Escola</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Localização</th>
+                <th style="width:11%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Endereço</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Complemento</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Bairro</th>
+                <th style="width:5%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">CEP</th>
+                <th style="width:7%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Telefone</th>
+                <th style="width:5%;padding:12px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Matrículas</th>
+                <th style="width:4%;padding:12px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Salas</th>
                 <th style="width:6%;padding:12px 10px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Ações</th>
               </tr>
             </thead>
@@ -1542,9 +1513,7 @@
     <!-- Cabeçalho -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span id="mapa-escolas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">🏫 0 Escolas</span>
-        <span id="mapa-alunos-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
-        <span id="mapa-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
+        <span id="mapa-escolas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(20,184,166,0.15);color:#2dd4bf;border:1px solid rgba(20,184,166,0.3);font-family:monospace;letter-spacing:0.5px;">🗺️ 0 Escolas no Mapa</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
         <button onclick="if(typeof iniciarMapaEscolas==='function') iniciarMapaEscolas()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">🔄 Recarregar Mapa</button>
@@ -1552,53 +1521,26 @@
     </div>
 
     <!-- Filtros do Mapa -->
-    <div id="mapa-filtros" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
-      <!-- Linha 1 -->
-      <div style="display:flex; width:100%;">
-        <div style="position:relative; flex:1;">
-          <input type="text" id="mapa-busca"
-            placeholder="Buscar escola no mapa..."
-            oninput="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
-            style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
-          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
-        </div>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;">
+      <select id="mapa-filtro-super" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
+        style="min-width:200px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
+        <option value="">Todas as SUPER's</option>
+      </select>
+      <select id="mapa-filtro-municipio" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
+        style="min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+        <option value="">Todos os Municípios</option>
+      </select>
+      <div style="position:relative; flex:2; min-width:220px;">
+        <input type="text" id="mapa-busca"
+          placeholder="Buscar escola no mapa..."
+          oninput="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
+          style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
+        <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
       </div>
-      <!-- Linha 2 -->
-      <div style="display:flex; flex-wrap:wrap; gap:10px; width:100%;">
-        <select id="mapa-filtro-super" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
-          style="flex:1; min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
-          <option value="">SUPER</option>
-        </select>
-        <select id="mapa-filtro-municipio" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
-          style="flex:1; min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-          <option value="">MUNICÍPIO</option>
-        </select>
-        <select id="mapa-filtro-competencia" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
-          style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-          <option value="">COMPETÊNCIA</option>
-          <option value="Estadual" style="color: #3b82f6; font-weight: bold;">Estadual</option>
-          <option value="Municipal" style="color: #ef4444; font-weight: bold;">Municipal</option>
-          <option value="Federal" style="color: #10b981; font-weight: bold;">Federal</option>
-        </select>
-        <select id="mapa-filtro-localizacao" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
-          style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-          <option value="">LOCALIZAÇÃO</option>
-          <option value="Urbana">Urbana</option>
-          <option value="Rural">Rural</option>
-          <option value="Indígena">Indígena</option>
-          <option value="Quilombola">Quilombola</option>
-          <option value="Distrital">Distrital</option>
-        </select>
-      </div>
-      <!-- Linha 3 -->
-      <div style="display:flex; width:100%; margin-top:5px;">
-        <button onclick="if(typeof limparFiltrosMapa==='function') limparFiltrosMapa()" 
-                onmouseover="this.style.background='rgba(250, 204, 21, 0.3)'" 
-                onmouseout="this.style.background='rgba(250, 204, 21, 0.15)'"
-                style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:rgba(250, 204, 21, 0.15); color:#facc15; border:1px solid #facc15; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
-          <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
-        </button>
-      </div>
+      <button onclick="if(typeof limparFiltrosMapa==='function') limparFiltrosMapa()"
+        style="padding:10px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-muted);cursor:pointer;font-size:13px;white-space:nowrap;">
+        ✗ Limpar Filtros
+      </button>
     </div>
 
     <!-- Contêiner do Mapa -->
@@ -1651,10 +1593,10 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=3.2.1"></script>
-  <script src="js/app.js?v=639212790744855493.2.2"></script>
+  <script src="js/app.js?v=3.2.2"></script>
   <script src="js/auth-sap.js?v=3.2.1"></script>
-  <script src="js/escolas.js?v=3.4.7"></script>
-  <script src="js/mapa.js?v=3.6.2"></script>
+  <script src="js/escolas.js?v=3.4.5"></script>
+  <script src="js/mapa.js?v=3.6.1"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -1740,18 +1682,12 @@
     </div>
   </div>
 
-  <!-- ============= PRINT LAYOUT: PADRÃO ============= -->
-  <div id="print-layout-padrao" style="display:none; padding:20px; font-family:sans-serif; background:white;"></div>
-  
   <!-- ============= PRINT LAYOUT: DETALHADO ============= -->
   <div id="print-layout-detalhado" class="print-only-layout" style="display:none;"></div>
 
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=639212790744655179"></script>
-  <script>
-  </script>
 </body>
 </html>
 
@@ -1787,40 +1723,3 @@
 
     </div>
   </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

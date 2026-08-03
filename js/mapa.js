@@ -352,7 +352,7 @@ function _mapaPopularFiltros() {
 
   if (selMun) {
     const municipios = [...new Set(_mapaCacheEscolas.map(e => e.municipio).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
-    selMun.innerHTML = '<option value="****">Todos os Municípios</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+    selMun.innerHTML = '<option value="">MUNICÍPIO</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
   }
 
   if (selSup) {
@@ -362,7 +362,7 @@ function _mapaPopularFiltros() {
       if (val) superSet.add(val);
     });
     const supers = [...superSet].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
-    selSup.innerHTML = '<option value="****">Todas as SUPER\'s</option>' + supers.map(s => {
+    selSup.innerHTML = '<option value="">SUPER</option>' + supers.map(s => {
       const label = s.toUpperCase().startsWith('SUPER') ? s : 'SUPER ' + s;
       return '<option value="' + s + '">' + label + '</option>';
     }).join('');
@@ -370,7 +370,16 @@ function _mapaPopularFiltros() {
 
   const badgeEl = document.getElementById('mapa-escolas-badge');
   if (badgeEl && _mapaEscolasFiltradas.length > 0) {
-    badgeEl.textContent = '🏫 ' + _mapaEscolasFiltradas.length.toLocaleString('pt-BR') + ' Escolas no Mapa';
+    let tMat = 0, tSal = 0;
+    _mapaEscolasFiltradas.forEach(e => {
+      tMat += parseInt(e.totalMatricula || 0, 10);
+      tSal += parseInt(e.salas || 0, 10);
+    });
+    badgeEl.textContent = '🏫 ' + _mapaEscolasFiltradas.length.toLocaleString('pt-BR') + ' Escolas';
+    const bAl = document.getElementById('mapa-alunos-badge');
+    const bSa = document.getElementById('mapa-salas-badge');
+    if (bAl) bAl.textContent = '🎓 ' + tMat.toLocaleString('pt-BR') + ' Alunos';
+    if (bSa) bSa.textContent = '🚪 ' + tSal.toLocaleString('pt-BR') + ' Salas';
   }
 }
 
@@ -379,14 +388,44 @@ function filtrarMapaEscolas() {
   if (mun.includes('***')) mun = '';
   let sup = (document.getElementById('mapa-filtro-super') || {}).value || '';
   if (sup.includes('***')) sup = '';
+  let comp = (document.getElementById('mapa-filtro-competencia') || {}).value || '';
+  let loc = (document.getElementById('mapa-filtro-localizacao') || {}).value || '';
+  
   const busca = _mapaNormalizarStr((document.getElementById('mapa-busca') || {}).value || '');
 
+  // Determinar municípios da SUPER selecionada
+  let municipiosDaSuper = [];
+  if (sup) {
+    const supNorm = sup.trim();
+    _mapaCacheEscolas.forEach(e => {
+       const eSup = (e.super || '').toString().trim();
+       if (eSup === supNorm && e.municipio && !municipiosDaSuper.includes(e.municipio)) {
+           municipiosDaSuper.push(e.municipio);
+       }
+    });
+  }
+
   _mapaEscolasFiltradas = _mapaCacheEscolas.filter(e => {
+    // 1. Filtro de Município
     if (mun && e.municipio !== mun) return false;
+    
+    // 2. Filtro de SUPER (Geográfico)
     if (sup) {
-      const eSup = (e.super || e.codigoSuper || '').toString().trim();
-      if (eSup !== sup) return false;
+      if (!municipiosDaSuper.includes(e.municipio)) {
+          return false;
+      }
     }
+
+    // 3. Filtro de Competência
+    if (comp) {
+      const eComp = (e.codigoSuper || '').toLowerCase();
+      if (!eComp.includes(comp.toLowerCase())) return false;
+    }
+    
+    // 4. Filtro de Localização
+    if (loc && e.localizacao !== loc) return false;
+    
+    // 5. Busca em texto
     if (busca) {
       const texto = _mapaNormalizarStr([e.nome, e.municipio, e.codigoInep, e.bairro, e.super, e.codigoSuper, e.diretor].join(' '));
       if (!texto.includes(busca)) return false;
@@ -398,9 +437,9 @@ function filtrarMapaEscolas() {
 }
 
 function limparFiltrosMapa() {
-  ['mapa-filtro-municipio', 'mapa-filtro-super', 'mapa-busca'].forEach(id => {
+  ['mapa-filtro-municipio', 'mapa-filtro-super', 'mapa-filtro-competencia', 'mapa-filtro-localizacao', 'mapa-busca'].forEach(id => {
     const el = document.getElementById(id);
-    if (el) el.value = el.tagName === 'SELECT' ? '****' : '';
+    if (el) el.value = '';
   });
   _mapaEscolasFiltradas = [..._mapaCacheEscolas];
   _mapaRenderizarPinos();
@@ -408,7 +447,18 @@ function limparFiltrosMapa() {
 
 function _mapaRenderizarPinos() {
   const badgeEl = document.getElementById('mapa-escolas-badge');
-  if (badgeEl) badgeEl.textContent = '🏫 ' + _mapaEscolasFiltradas.length.toLocaleString('pt-BR') + ' Escolas no Mapa';
+  if (badgeEl) {
+    let tMat = 0, tSal = 0;
+    _mapaEscolasFiltradas.forEach(e => {
+      tMat += parseInt(e.totalMatricula || 0, 10);
+      tSal += parseInt(e.salas || 0, 10);
+    });
+    badgeEl.textContent = '🏫 ' + _mapaEscolasFiltradas.length.toLocaleString('pt-BR') + ' Escolas';
+    const bAl = document.getElementById('mapa-alunos-badge');
+    const bSa = document.getElementById('mapa-salas-badge');
+    if (bAl) bAl.textContent = '🎓 ' + tMat.toLocaleString('pt-BR') + ' Alunos';
+    if (bSa) bSa.textContent = '🚪 ' + tSal.toLocaleString('pt-BR') + ' Salas';
+  }
 
   if (!_mapaMarkersGroup || !_mapaInstancia) return;
   _mapaMarkersGroup.clearLayers();
@@ -520,7 +570,25 @@ function _mapaRenderizarPinos() {
       </div>
     `;
 
-    const marker = L.marker([lat, lng], { title: escola.nome || 'Escola' }).bindPopup(popupHtml);
+    let corPino = '#3b82f6'; // Azul padrão (Estadual)
+    const compStr = (escola.codigoSuper || '').toLowerCase();
+    if (compStr.includes('municipal')) {
+      corPino = '#ef4444'; // Vermelho
+    } else if (compStr.includes('federal')) {
+      corPino = '#10b981'; // Verde
+    }
+
+    const customIcon = L.divIcon({
+      className: 'custom-pin',
+      html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="28" height="42" style="filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.4));">
+               <path fill="${corPino}" d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z" stroke="#ffffff" stroke-width="20"/>
+             </svg>`,
+      iconSize: [28, 42],
+      iconAnchor: [14, 42],
+      popupAnchor: [0, -38]
+    });
+
+    const marker = L.marker([lat, lng], { title: escola.nome || 'Escola', icon: customIcon }).bindPopup(popupHtml);
     const targetId = escola.id || escola.codigoInep || escola.nome || '';
     marker.on('popupopen', (e) => {
       setTimeout(() => {

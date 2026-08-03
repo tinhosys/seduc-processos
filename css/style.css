@@ -1845,3 +1845,98 @@ input:checked ~ .toggle-text {
 thead th {
   z-index: 20;
 }
+
+/* Custom Multi-Select Checkbox Styles */
+.custom-multiselect {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  min-width: 140px;
+  max-width: 200px;
+}
+.custom-multiselect-btn {
+  background: rgba(15,23,42,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  min-height: 38px;
+}
+.custom-multiselect-btn.has-selection {
+  border-color: #3b82f6;
+  background: rgba(59,130,246,0.1);
+}
+.custom-multiselect-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.custom-multiselect-arrow {
+  margin-left: 8px;
+  color: #94a3b8;
+}
+.custom-multiselect-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 250px;
+  overflow-y: auto;
+  background: #1e293b;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  margin-top: 4px;
+  z-index: 1000;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  padding: 4px;
+}
+.custom-multiselect-item {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #e2e8f0;
+}
+.custom-multiselect-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+.custom-multiselect-item input[type="checkbox"] {
+  margin-right: 8px;
+  cursor: pointer;
+}
+.custom-multiselect-empty {
+  padding: 8px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.custom-multiselect-header {
+  padding: 8px 12px;
+  border-bottom: 1px solid #334155;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  background-color: #1e293b;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.custom-multiselect-action {
+  color: #38bdf8;
+  cursor: pointer;
+  user-select: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.custom-multiselect-action:hover {
+  color: #7dd3fc;
+  text-decoration: underline;
+}

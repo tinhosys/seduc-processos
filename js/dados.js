@@ -240,6 +240,41 @@ function gerarId() {
 // ----- CRUD REMOTO (Google Sheets) -----
 window.processosCache = [];
 
+const AGRUPAMENTOS_REGIONAIS = {
+  "Rolim de Moura": "Zona da Mata",
+  "Alta Floresta D'Oeste": "Zona da Mata",
+  "Alto Alegre dos Parecis": "Zona da Mata",
+  "Castanheiras": "Zona da Mata",
+  "Nova Brasilândia D'Oeste": "Zona da Mata",
+  "Novo Horizonte do Oeste": "Zona da Mata",
+  "Santa Luzia D'Oeste": "Zona da Mata",
+  "São Miguel do Guaporé": "Região da 429",
+  "Alvorada D'Oeste": "Região da 429",
+  "Seringueiras": "Região da 429",
+  "São Francisco do Guaporé": "Região da 429",
+  "Costa Marques": "Região da 429",
+  "Cacoal": "Região do Café",
+  "Espigão D'Oeste": "Região do Café",
+  "Ministro Andreazza": "Região do Café",
+  "Pimenta Bueno": "Região do Café",
+  "Primavera de Rondônia": "Região do Café",
+  "Jaru": "Bacia Leiteira",
+  "Governador Jorge Teixeira": "Bacia Leiteira",
+  "Machadinho D'Oeste": "Bacia Leiteira",
+  "Theobroma": "Bacia Leiteira",
+  "Vale do Anari": "Bacia Leiteira",
+  "Ariquemes": "Vale do Jamari",
+  "Alto Paraíso": "Vale do Jamari",
+  "Buritis": "Vale do Jamari",
+  "Cacaulândia": "Vale do Jamari",
+  "Campo Novo de Rondônia": "Vale do Jamari",
+  "Cujubim": "Vale do Jamari",
+  "Monte Negro": "Vale do Jamari",
+  "Rio Crespo": "Vale do Jamari",
+  "Guajará-Mirim": "Pérola do Mamoré",
+  "Nova Mamoré": "Pérola do Mamoré"
+};
+
 const mapToApp = (row) => {
   let contatosStr = '';
   let alertaStr = '';
@@ -289,8 +324,12 @@ const mapToApp = (row) => {
     const cleaned = String(val).replace(/[^\d,\.-]/g, '');
     return parseFloat(cleaned.replace(/\./g, '').replace(',', '.')) || 0;
   };
-  return {
-    id: `${row._tabName}__${row._rowNumber}`,
+      let mun = (row['Município'] || row.municipio || row['Municipio'] || '').trim();
+    let agrupamentoCalculado = AGRUPAMENTOS_REGIONAIS[mun] || mun;
+    
+    return {
+      id: `${row._tabName}__${row._rowNumber}`,
+      agrupamento: row.Agrupamento || row.agrupamento || agrupamentoCalculado,
     prefixo: row._tabName || row['Prefixo (codigo de prioridade)'] || row['Prefixo'] || '',
     municipio: row['MunicÃ­pio'] || row['Municipio'] || '',
     numero: row['Processo'] || row['NÂº Processo'] || '',
@@ -717,3 +756,6 @@ function getStatusBadgeClass(status) {
   };
   return 'badge-' + (map[s] || 'DEFAULT');
 }
+
+
+

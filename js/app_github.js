@@ -50,20 +50,17 @@ let state = {
   page: 'dashboard',
   filtros: {
     busca: '',
-    status: [],
-    localizacao: [],
-    municipio: [],
-    super: [],
-    objeto: [],
-    prefixo: [],
+    status: '',
+    localizacao: '',
+    municipio: '',
+    objeto: '',
+    prefixo: '',
     apontamento: false,
     alerta: '',
     marca: '',
-    categoria: [],
-    tipo: [],
+    categoria: '',
+    tipo: '',
     autorizacao: '',
-    ano: [],
-    agrupamento: [],
     cam: false,
     gab: false,
     cc: false
@@ -75,7 +72,6 @@ let state = {
   sortDir: 'asc',
   ordenacao: { coluna: '', asc: true }
 };
-
 
 let alertasExibidos = false;
 
@@ -750,111 +746,6 @@ async function renderChartAcessosDashboard() {
   }
 }
 
-const MAPA_MUNICIPIOS_SUPER = {
-  'alta floresta do oeste': 'ALTA FLORESTA',
-  'alta floresta d\'oeste': 'ALTA FLORESTA',
-  'alta floresta': 'ALTA FLORESTA',
-  'alto alegre dos parecis': 'ALTA FLORESTA',
-  'alto paraiso': 'ARIQUEMES',
-  'alvorada do oeste': 'JI-PARANA',
-  'ariquemes': 'ARIQUEMES',
-  'buritis': 'BURITIS',
-  'cabixi': 'CEREJEIRAS',
-  'cacoal': 'CACOAL',
-  'cacaulandia': 'ARIQUEMES',
-  'campo novo de ro': 'BURITIS',
-  'campo novo de rondonia': 'BURITIS',
-  'candeias do jamari': 'PORTO VELHO',
-  'castanheiras': 'ROLIM DE MOURA',
-  'cerejeiras': 'CEREJEIRAS',
-  'chupinguaia': 'VILHENA',
-  'colorado do oeste': 'CEREJEIRAS',
-  'corumbiara': 'CEREJEIRAS',
-  'costa marques': 'COSTA MARQUES',
-  'cujubim': 'ARIQUEMES',
-  'dist. de abuna': 'EXTREMA',
-  'distrito de abuna': 'EXTREMA',
-  'abuna': 'EXTREMA',
-  'dist. de surpresa': 'GUAJARA-MIRIM',
-  'surpresa': 'GUAJARA-MIRIM',
-  'dist. nova california': 'EXTREMA',
-  'nova california': 'EXTREMA',
-  'dist. vista alegre do abuna': 'EXTREMA',
-  'vista alegre do abuna': 'EXTREMA',
-  'espigao do oeste': 'ESPIGAO DO OESTE',
-  'espigao d\'oeste': 'ESPIGAO DO OESTE',
-  'gov. jorge teixeira': 'JARU',
-  'governador jorge teixeira': 'JARU',
-  'guajara-mirim': 'GUAJARA-MIRIM',
-  'guajara mirim': 'GUAJARA-MIRIM',
-  'itapua do oeste': 'PORTO VELHO',
-  'jaru': 'JARU',
-  'ji-parana': 'JI-PARANA',
-  'ji parana': 'JI-PARANA',
-  'machadinho do oeste': 'MACHADINHO DOESTE',
-  'machadinho d\'oeste': 'MACHADINHO DOESTE',
-  'machadinho d oeste': 'MACHADINHO DOESTE',
-  'ministro andreazza': 'CACOAL',
-  'mirante da serra': 'OURO PRETO DO OESTE',
-  'monte negro': 'ARIQUEMES',
-  'nova brasilandia': 'ROLIM DE MOURA',
-  'nova mamore': 'GUAJARA-MIRIM',
-  'nova uniao': 'OURO PRETO DO OESTE',
-  'novo horizonte': 'ROLIM DE MOURA',
-  'ouro preto': 'OURO PRETO DO OESTE',
-  'ouro preto do oeste': 'OURO PRETO DO OESTE',
-  'parecis': 'PIMENTA BUENO',
-  'pimenta bueno': 'PIMENTA BUENO',
-  'pimenteiras do oeste': 'CEREJEIRAS',
-  'porto velho': 'PORTO VELHO',
-  'presidente medici': 'JI-PARANA',
-  'primavera de rondonia': 'PIMENTA BUENO',
-  'rio crespo': 'ARIQUEMES',
-  'rolim de moura': 'ROLIM DE MOURA',
-  'santa luzia': 'ROLIM DE MOURA',
-  'sao felipe do oeste': 'PIMENTA BUENO',
-  'sao francisco do guapore': 'SAO FRANCISCO',
-  'sao francisco': 'SAO FRANCISCO',
-  'sao miguel do guapore': 'SAO FRANCISCO',
-  'sao miguel': 'SAO FRANCISCO',
-  'seringueiras': 'SAO FRANCISCO',
-  'teixeiropolis': 'OURO PRETO DO OESTE',
-  'theobroma': 'JARU',
-  'urupa': 'OURO PRETO DO OESTE',
-  'vale do anari': 'MACHADINHO DOESTE',
-  'vale do paraiso': 'OURO PRETO DO OESTE',
-  'vilhena': 'VILHENA'
-};
-
-function normalizarMunicipioParaSuper(mun) {
-  if (!mun) return '';
-  return mun.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-}
-
-function getSuperPorMunicipio(mun) {
-  if (!mun) return '';
-  const norm = normalizarMunicipioParaSuper(mun);
-  
-  for (const [key, value] of Object.entries(MAPA_MUNICIPIOS_SUPER)) {
-    if (norm === key || norm.includes(key)) {
-      return 'SUPER ' + value;
-    }
-  }
-  
-  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
-    const escola = _escolasCache.find(e => {
-       const emun = normalizarMunicipioParaSuper(e.municipio);
-       return emun === norm || emun.includes(norm) || norm.includes(emun);
-    });
-    if (escola && escola.super) {
-       let s = escola.super.toString().toUpperCase().trim();
-       return s.startsWith('SUPER') ? s : 'SUPER ' + s;
-    }
-  }
-  
-  return 'OUTRAS';
-}
-
 // ---- LISTA DE PROCESSOS ----
 function getFiltrados() {
   let lista = carregarProcessos();
@@ -888,38 +779,15 @@ function getFiltrados() {
       String(p.ano || '').includes(q)
     );
   }
-    const filterByMultiple = (campo, valor) => {
-    if (!valor || (Array.isArray(valor) && valor.length === 0)) return;
-    if (Array.isArray(valor)) {
-      lista = lista.filter(p => {
-        const valNorm = normalizar(p[campo]);
-        return valor.some(v => valNorm === normalizar(v));
-      });
-    } else {
-      lista = lista.filter(p => normalizar(p[campo]) === normalizar(valor));
-    }
-  };
-
-  const filterIncludesMultiple = (campo, valor) => {
-    if (!valor || (Array.isArray(valor) && valor.length === 0)) return;
-    if (Array.isArray(valor)) {
-      lista = lista.filter(p => {
-        const valNorm = normalizar(p[campo]);
-        return valor.some(v => valNorm.includes(normalizar(v)));
-      });
-    } else {
-      lista = lista.filter(p => normalizar(p[campo]).includes(normalizar(valor)));
-    }
-  };
-  filterByMultiple('status', status);
-  filterByMultiple('localizacao', localizacao);
-  filterByMultiple('municipio', municipio);
-  filterByMultiple('objeto', objeto);
-  filterByMultiple('categoria', categoria);
-  filterByMultiple('tipo', tipo);
-  filterByMultiple('ano', ano);
-  filterByMultiple('agrupamento', state.filtros.agrupamento);
-  filterIncludesMultiple('prefixo', state.filtros.prefixo);
+  if (status)      lista = lista.filter(p => normalizar(p.status)      === normalizar(status));
+  if (localizacao) lista = lista.filter(p => normalizar(p.localizacao) === normalizar(localizacao));
+  if (municipio)   lista = lista.filter(p => normalizar(p.municipio)   === normalizar(municipio));
+  if (objeto)      lista = lista.filter(p => normalizar(p.objeto)      === normalizar(objeto));
+  if (categoria)   lista = lista.filter(p => normalizar(p.categoria)   === normalizar(categoria));
+  if (tipo)        lista = lista.filter(p => normalizar(p.tipo)        === normalizar(tipo));
+  if (ano)         lista = lista.filter(p => String(p.ano)             === String(ano));
+  if (state.filtros.agrupamento) lista = lista.filter(p => normalizar(p.agrupamento) === normalizar(state.filtros.agrupamento));
+  if (state.filtros.prefixo) lista = lista.filter(p => normalizar(p.prefixo).includes(normalizar(state.filtros.prefixo)));
 
   // Filtros individuais de autorização
   if (state.filtros.cam) lista = lista.filter(p => p.CAM === '1');
@@ -952,36 +820,20 @@ function renderProcessos() {
   const inicio = (state.paginaAtual - 1) * state.itensPorPagina;
   const pagina = filtrados.slice(inicio, inicio + state.itensPorPagina);
 
-  // Preencher filtros dinâmicos (preencherSelectFiltro preserva seleções existentes)
-  const todosProcs = carregarProcessos();
-  preencherSelectFiltro('filtro-status',      [...new Set(todosProcs.map(p => p.status).filter(s => s && s !== '.'))].sort());
-  preencherSelectFiltro('filtro-localizacao', [...new Set(todosProcs.map(p => p.localizacao).filter(l => l && l !== '.'))].sort());
-  
-  const superList = [...new Set(todosProcs.map(p => getSuperPorMunicipio(p.municipio)).filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-  preencherSelectFiltro('filtro-super', superList);
+  // Preencher filtros dinâmicos
+  preencherSelectFiltro('filtro-ano',         [...new Set(carregarProcessos().map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
+  preencherSelectFiltro('filtro-agrupamento', [...new Set(carregarProcessos().map(p => p.agrupamento).filter(Boolean))].sort());
+  preencherSelectFiltro('filtro-status',      [...new Set(carregarProcessos().map(p => p.status).filter(s => s && s !== '.'))].sort());
+  preencherSelectFiltro('filtro-localizacao', [...new Set(carregarProcessos().map(p => p.localizacao).filter(l => l && l !== '.'))].sort());
+  preencherSelectFiltro('filtro-municipio',   [...new Set(carregarProcessos().map(p => p.municipio).filter(Boolean))].sort());
+  preencherSelectFiltro('filtro-objeto',      [...new Set(carregarProcessos().map(p => p.objeto).filter(Boolean))].sort());
 
-  preencherSelectFiltro('filtro-municipio',   [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-prefixo',     [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-objeto',      [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-ano',         [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
-  preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
-  // Mapeamento de categorias e tipos para exibição amigável
-  const MAPA_CATEGORIA = {
-    'C': 'C - Conv\u00eanio', 'F': 'F - Fomento', 'T': 'T - Termo de Coopera\u00e7\u00e3o',
-    'Convenio': 'C - Conv\u00eanio', 'Conv\u00eanio': 'C - Conv\u00eanio',
-    'Fomento': 'F - Fomento', 'Termo de Coopera\u00e7\u00e3o': 'T - Termo de Coopera\u00e7\u00e3o'
-  };
-  const MAPA_TIPO = {
-    'OB': 'OB - Obras', 'MP': 'MP - Mat. Permanente', 'MC': 'MC - Mat. Consumo',
-    'SI': 'SI - Sistema', 'TR': 'TR - Treinamento', 'OUT': 'OUT - Outros',
-    'Obras': 'OB - Obras', 'Material Permanente': 'MP - Mat. Permanente',
-    'Material de Consumo': 'MC - Mat. Consumo', 'Sistema': 'SI - Sistema',
-    'Treinamento': 'TR - Treinamento', 'Outros': 'OUT - Outros'
-  };
-  const categoriasRaw = [...new Set(todosProcs.map(p => p.categoria).filter(Boolean))].sort();
-  const tiposRaw      = [...new Set(todosProcs.map(p => p.tipo).filter(Boolean))].sort();
-  preencherSelectFiltroMapeado('filtro-categoria', categoriasRaw, MAPA_CATEGORIA);
-  preencherSelectFiltroMapeado('filtro-tipo',      tiposRaw,      MAPA_TIPO);
+  // Preencher datalist do filtro de prefixo
+  const dlFiltroPfx = document.getElementById('list-filtro-prefixos');
+  if (dlFiltroPfx) {
+    const pfxs = [...new Set(carregarProcessos().map(p => p.prefixo).filter(Boolean))].sort();
+    dlFiltroPfx.innerHTML = pfxs.map(v => `<option value="${v}">`).join('');
+  }
 
   // Preencher datalists do formulário
   const preencherDatalist = (id, prop) => {
@@ -1081,107 +933,15 @@ function hl(txt, busca) {
 function preencherSelectFiltro(id, opcoes) {
   const sel = document.getElementById(id);
   if (!sel) return;
+  const atual = sel.value;
+  let placeholder = 'Todos';
+  if (id === 'filtro-status') placeholder = 'Status';
+  else if (id === 'filtro-localizacao') placeholder = 'Localização';
+  else if (id === 'filtro-municipio') placeholder = 'Município';
+  else if (id === 'filtro-objeto') placeholder = 'Objeto';
+  else if (id === 'filtro-ano') placeholder = 'Ano';
 
-  let placeholder = 'TODOS';
-  if (id === 'filtro-status') placeholder = 'STATUS';
-  else if (id === 'filtro-localizacao') placeholder = 'LOCALIZAÇÃO';
-  else if (id === 'filtro-municipio') placeholder = 'MUNICÍPIO';
-  else if (id === 'filtro-objeto') placeholder = 'OBJETO';
-  else if (id === 'filtro-ano') placeholder = 'ANO';
-  else if (id === 'filtro-prefixo') placeholder = 'PREFIXO';
-  else if (id === 'filtro-agrupamento') placeholder = 'AGRUPAMENTO';
-  else if (id === 'filtro-categoria') placeholder = 'CATEGORIA';
-  else if (id === 'filtro-tipo') placeholder = 'TIPO';
-  else if (id === 'filtro-super') placeholder = 'SUPER';
-
-  // Pegar valores selecionados atualmente via state (não via DOM, que pode estar destruído)
-  const campo = id.replace('filtro-', '');
-  let selectedArr = state.filtros[campo] || [];
-  if (typeof selectedArr === 'string') selectedArr = selectedArr ? [selectedArr] : [];
-
-  // Verificar se as opções mudaram para decidir se reconstrói
-  const opcoesAtuais = Array.from(sel.options).map(o => o.value).filter(v => v !== '');
-  const opcoesNovas = opcoes.map(String);
-  const precisaReconstruir = opcoesAtuais.length !== opcoesNovas.length ||
-    opcoesNovas.some((o, i) => o !== opcoesAtuais[i]);
-
-  if (precisaReconstruir) {
-    // Reconstrói o HTML com as opções corretas
-    sel.innerHTML = `<option value="">${placeholder}</option>` +
-      opcoesNovas.map(o => {
-        const isSelected = selectedArr.includes(o);
-        return `<option value="${o}"${isSelected ? ' selected' : ''}>${o}</option>`;
-      }).join('');
-
-    // Inicializa ou reinicializa o multiselect
-    if (window.initMultiSelect && sel.multiple) {
-      window.initMultiSelect(id);
-    }
-  } else {
-    // Só atualiza o estado das checkboxes sem reconstruir
-    if (sel._multiSelectInstance) {
-      Array.from(sel.options).forEach(opt => {
-        if (opt.value) opt.selected = selectedArr.includes(opt.value);
-      });
-      const checkboxes = sel._multiSelectInstance.dropdown
-        ? sel._multiSelectInstance.dropdown.querySelectorAll('input[type="checkbox"]')
-        : [];
-      checkboxes.forEach(cb => { cb.checked = selectedArr.includes(cb.value); });
-      sel._multiSelectInstance.updateButtonText();
-    }
-  }
-}
-
-/**
- * Igual a preencherSelectFiltro, mas exibe um label amigável para cada value.
- * O value do <option> continua sendo o valor bruto para filtrar corretamente.
- * @param {string} id - ID do select
- * @param {string[]} valores - array de valores brutos vindos dos dados
- * @param {Object} mapa - dicionário { valorBruto: 'Label Amigavel' }
- */
-function preencherSelectFiltroMapeado(id, valores, mapa) {
-  const sel = document.getElementById(id);
-  if (!sel) return;
-
-  const campo = id.replace('filtro-', '');
-  let selectedArr = state.filtros[campo] || [];
-  if (typeof selectedArr === 'string') selectedArr = selectedArr ? [selectedArr] : [];
-
-  let placeholder = 'TODOS';
-  if (id === 'filtro-categoria') placeholder = 'CATEGORIA';
-  else if (id === 'filtro-tipo') placeholder = 'TIPO';
-
-  // Montar as opções com label amigável
-  const opcoesComLabel = valores.map(v => ({ value: v, label: mapa[v] || v }));
-
-  // Verificar se precisa reconstruir
-  const opcoesAtuais = Array.from(sel.options).map(o => o.value).filter(v => v !== '');
-  const opcoesNovas  = opcoesComLabel.map(o => o.value);
-  const precisaReconstruir = opcoesAtuais.length !== opcoesNovas.length ||
-    opcoesNovas.some((v, i) => v !== opcoesAtuais[i]);
-
-  if (precisaReconstruir) {
-    sel.innerHTML = `<option value="">${placeholder}</option>` +
-      opcoesComLabel.map(o => {
-        const isSelected = selectedArr.includes(o.value);
-        return `<option value="${o.value}"${isSelected ? ' selected' : ''}>${o.label}</option>`;
-      }).join('');
-
-    if (window.initMultiSelect && sel.multiple) {
-      window.initMultiSelect(id);
-    }
-  } else {
-    if (sel._multiSelectInstance) {
-      Array.from(sel.options).forEach(opt => {
-        if (opt.value) opt.selected = selectedArr.includes(opt.value);
-      });
-      const checkboxes = sel._multiSelectInstance.dropdown
-        ? sel._multiSelectInstance.dropdown.querySelectorAll('input[type="checkbox"]')
-        : [];
-      checkboxes.forEach(cb => { cb.checked = selectedArr.includes(cb.value); });
-      sel._multiSelectInstance.updateButtonText();
-    }
-  }
+  sel.innerHTML = `<option value="****">${placeholder}</option>` + opcoes.map(o => `<option value="${o}" ${o === atual ? 'selected' : ''}>${o}</option>`).join('');
 }
 
 function renderPaginacao(totalPags) {
@@ -1991,61 +1751,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Filtros
-    const aplicarFiltro = (campo, valor) => {
-    const el = document.getElementById('filtro-' + campo);
-    if (el && el.multiple) {
-      state.filtros[campo] = Array.from(el.selectedOptions).map(o => o.value).filter(v => v !== "");
-    } else if (el && valor === null) {
-      state.filtros[campo] = el.value;
-    } else {
-      state.filtros[campo] = valor;
-    }
-    
-    // Auto-select municipios when SUPER is selected
-    if (campo === 'super') {
-      const selectMun = document.getElementById('filtro-municipio');
-      if (selectMun && selectMun._multiSelectInstance) {
-        const supersSelecionadas = state.filtros.super || [];
-        if (supersSelecionadas.length > 0) {
-          Array.from(selectMun.options).forEach(opt => {
-            if (opt.value === "") return;
-            const supDaOption = getSuperPorMunicipio(opt.value);
-            opt.selected = supersSelecionadas.includes(supDaOption);
-          });
-        } else {
-          Array.from(selectMun.options).forEach(opt => {
-            opt.selected = false;
-          });
-        }
-        // update the multi-select UI
-        selectMun._multiSelectInstance.update();
-        // sync the state for municipio as well
-        state.filtros.municipio = Array.from(selectMun.selectedOptions).map(o => o.value).filter(v => v !== "");
-      }
-    }
-    
+  const aplicarFiltro = (campo, valor) => {
+    state.filtros[campo] = valor;
     state.paginaAtual = 1;
     renderProcessos();
   };
 
-  document.getElementById('filtro-prefixo').addEventListener('change', () => aplicarFiltro('prefixo', null));
-
   document.getElementById('filtro-busca').addEventListener('input', e => aplicarFiltro('busca', e.target.value));
-  document.getElementById('filtro-status').addEventListener('change', () => aplicarFiltro('status', null));
-  document.getElementById('filtro-localizacao').addEventListener('change', () => aplicarFiltro('localizacao', null));
-  document.getElementById('filtro-super')?.addEventListener('change', () => aplicarFiltro('super', null));
-  document.getElementById('filtro-municipio').addEventListener('change', () => aplicarFiltro('municipio', null));
-  document.getElementById('filtro-objeto').addEventListener('change', () => aplicarFiltro('objeto', null));
-  document.getElementById('filtro-categoria').addEventListener('change', () => aplicarFiltro('categoria', null));
-  document.getElementById('filtro-tipo').addEventListener('change', () => aplicarFiltro('tipo', null));
+  document.getElementById('filtro-status').addEventListener('change', e => aplicarFiltro('status', e.target.value));
+  document.getElementById('filtro-localizacao').addEventListener('change', e => aplicarFiltro('localizacao', e.target.value));
+  document.getElementById('filtro-municipio').addEventListener('change', e => aplicarFiltro('municipio', e.target.value));
+  document.getElementById('filtro-objeto').addEventListener('change', e => aplicarFiltro('objeto', e.target.value));
+  document.getElementById('filtro-categoria').addEventListener('change', e => aplicarFiltro('categoria', e.target.value));
+  document.getElementById('filtro-tipo').addEventListener('change', e => aplicarFiltro('tipo', e.target.value));
   const filtroAnoEl = document.getElementById('filtro-ano');
   if (filtroAnoEl) {
-    filtroAnoEl.addEventListener('change', () => aplicarFiltro('ano', null));
+    filtroAnoEl.addEventListener('change', e => aplicarFiltro('ano', e.target.value));
   }
   const filtroAgrupEl = document.getElementById('filtro-agrupamento');
   if (filtroAgrupEl) {
-    filtroAgrupEl.addEventListener('change', () => aplicarFiltro('agrupamento', null));
-
+    filtroAgrupEl.addEventListener('change', e => aplicarFiltro('agrupamento', e.target.value));
   }
 
   const filtroAlertaEl = document.getElementById('filtro-alerta');
@@ -2058,43 +1783,30 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroMarcaEl.addEventListener('change', e => aplicarFiltro('marca', e.target.value));
   }
 
-  document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [] };
+    document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
+    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', alerta: '', marca: '', categoria: '', tipo: '', autorizacao: '', ano: '', agrupamento: '' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
-
-    // Limpar autorizações (toggles)
-    ['filtro-cam', 'filtro-gab', 'filtro-cc'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.checked = false;
-    });
-
-    // Limpar todos os selects múltiplos e simples
-    ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto',
-     'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento'].forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      Array.from(el.options).forEach(opt => { opt.selected = false; });
-      if (el._multiSelectInstance) {
-        const cbs = el._multiSelectInstance.dropdown
-          ? el._multiSelectInstance.dropdown.querySelectorAll('input[type="checkbox"]')
-          : [];
-        cbs.forEach(cb => { cb.checked = false; });
-        el._multiSelectInstance.updateButtonText();
-      } else {
-        el.value = ''; // para selects normais
-      }
-    });
-
+    document.getElementById('filtro-status').value = '';
+    document.getElementById('filtro-localizacao').value = '';
+    document.getElementById('filtro-municipio').value = '';
+    document.getElementById('filtro-objeto').value = '';
+    document.getElementById('filtro-categoria').value = '';
+    document.getElementById('filtro-tipo').value = '';
+    document.getElementById('filtro-prefixo').value = '';
+    const fAno = document.getElementById('filtro-ano');
+    if (fAno) fAno.value = '';
+    const fAgr = document.getElementById('filtro-agrupamento');
+    if (fAgr) fAgr.value = '';
     const fa = document.getElementById('filtro-alerta');
     if (fa) fa.value = '';
     const fm = document.getElementById('filtro-marca');
     if (fm) fm.value = '';
-    
     renderProcessos();
   });
 
-  // Ordenação — o prefixo agora é multiselect, não text input (sem listener 'input')
+  // Filtro prefixo — input em tempo real
+  document.getElementById('filtro-prefixo').addEventListener('input', e => aplicarFiltro('prefixo', e.target.value.trim()));
 
   // Ordenação por coluna
   document.querySelectorAll('th[data-sort]').forEach(th => {
@@ -3584,7 +3296,6 @@ function _escolasPopularFiltros() {
   const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
   selMun.innerHTML = '<option value="****">Município</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
   selLoc.innerHTML = '<option value="****">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
-  if (selSup) selSup.innerHTML = '<option value="****">Supervisão</option>' + supers.map(s => '<option value="' + s + '">' + s + '</option>').join('');
 }
 
 // Aplica filtros
@@ -3594,19 +3305,9 @@ function filtrarEscolas(manterPagina = false) {
   if (mun.includes('***')) mun = '';
   let loc   = document.getElementById('escolas-filtro-localizacao')?.value || '';
   if (loc.includes('***')) loc = '';
-  let sup   = document.getElementById('escolas-filtro-super')?.value || '';
-  if (sup.includes('***')) sup = '';
-  
   _escolasFiltradas = _escolasCache.filter(e => {
     if (mun && e.municipio !== mun) return false;
     if (loc && e.localizacao !== loc) return false;
-    if (sup && e.super !== sup) return false;
-    if (state.filtros.municipio && state.filtros.municipio.length > 0) {
-      if (!state.filtros.municipio.includes(e.municipio)) return false;
-    }
-    if (state.filtros.super && state.filtros.super.length > 0) {
-      if (!state.filtros.super.includes(e.super)) return false;
-    }
     if (busca) {
       const texto = normalizar([e.nome, e.municipio, e.codigoInep, e.super, e.bairro].join(' '));
       if (!texto.includes(busca)) return false;

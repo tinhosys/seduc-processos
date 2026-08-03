@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Continue"
 
-$port = 3002
+$port = 3003
 $destPath = "C:\Users\ADM\.gemini\antigravity\scratch\seduc-processos"
 
 Write-Output "Checking for existing processes on port $port..."
@@ -48,7 +48,7 @@ try {
             $mimeType = switch ($ext) {
                 ".html" { "text/html; charset=utf-8" }
                 ".css"  { "text/css" }
-                ".js"   { "application/javascript" }
+                ".js"   { "application/javascript; charset=utf-8" }
                 ".png"  { "image/png" }
                 ".jpg"  { "image/jpeg" }
                 ".jpeg" { "image/jpeg" }
@@ -78,3 +78,4 @@ try {
         $listener.Close()
     }
 }
+
