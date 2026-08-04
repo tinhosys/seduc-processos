@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -96,7 +96,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.46</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.49</div>
   </div>
 </div>
   
@@ -160,10 +160,17 @@
           <span class="nav-icon">🗺️</span>
           Mapa de Escolas
         </button>
+
+        <button class="nav-item" data-page="todas-escolas">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          Todas Escolas
+        </button>
       </nav>
 
       <div class="sidebar-footer">
-        GBZ - v1.0.46<br>
+        GBZ - v1.0.49<br>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1127,17 +1134,16 @@
           <table style="table-layout:fixed; width:100%; min-width:1000px; border-collapse:separate; border-spacing:0; font-size:13px;">
             <thead>
               <tr style="background:var(--bg-secondary);">
-                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Competência</th>
-                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Super</th>
-                <th style="width:12%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Município</th>
-                <th style="width:30%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Nome da Escola</th>
-                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Localização</th>
-                <th style="width:10%;padding:12px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Telefone</th>
-                <th style="width:7%;padding:12px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Matrículas</th>
-                <th style="width:5%;padding:12px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Salas</th>
-                <th style="width:6%;padding:12px 10px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px;">Ações</th>
-              </tr>
-            </thead>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:60px;">Cód.</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Super</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Município</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:240px;">Nome da Escola</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Localização</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Telefone</th>
+                <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:80px;">Alunos</th>
+                <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:60px;">Salas</th>
+                <th style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:80px;">Ações</th>
+              </tr></thead>
             <tbody id="table-escolas">
               <tr><td colspan="14" style="text-align:center;padding:48px;color:var(--text-muted);">
                 <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
@@ -1608,6 +1614,125 @@
 
   </section>
 
+  <!-- ============= PAGE: TODAS ESCOLAS (Google Sheets) ============= -->
+  <section class="page" id="page-todas-escolas">
+
+    <!-- Cabeçalho -->
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <span id="te-badge-total" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.3);font-family:monospace;letter-spacing:0.5px;">👥 0 Escolas</span>
+        <span id="te-badge-alunos" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
+        <span id="te-badge-abas" style="display:none;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(139,92,246,0.12);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);letter-spacing:0.4px;">📁 0 planilhas</span>
+        <span id="te-badge-status" style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);letter-spacing:0.4px;">⏳ Aguardando carregamento</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button onclick="recarregarTodasEscolas()" title="Recarregar dados da planilha"
+          style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Recarregar
+        </button>
+        <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit?gid=1444558009#gid=1444558009"
+          target="_blank" rel="noopener"
+          style="background:linear-gradient(135deg,#1a73e8,#0d47a1);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(26,115,232,0.35);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Editar no Google Sheets
+        </a>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+      <!-- Linha 1: busca -->
+      <div style="display:flex; width:100%;">
+        <div style="position:relative; flex:1;">
+          <input type="text" id="te-busca"
+            placeholder="Buscar por nome, município, INEP, diretor, email..."
+            oninput="filtrarTodasEscolas()"
+            style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
+        </div>
+      </div>
+      <!-- Linha 2: selects -->
+      <div style="display:flex; flex-wrap:wrap; gap:10px; width:100%;">
+        <select id="te-filtro-municipio" onchange="filtrarTodasEscolas()"
+          style="flex:1; min-width:170px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+          <option value="">MUNICÍPIO</option>
+        </select>
+        <select id="te-filtro-super" onchange="filtrarTodasEscolas()"
+          style="flex:1; min-width:170px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
+          <option value="">SUPER / REGIONAL</option>
+        </select>
+        <select id="te-filtro-modalidade" onchange="filtrarTodasEscolas()"
+          style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+          <option value="">MODALIDADE</option>
+        </select>
+        <select id="te-filtro-localidade" onchange="filtrarTodasEscolas()"
+          style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+          <option value="">LOCALIDADE</option>
+        </select>
+        <select id="te-filtro-competencia" onchange="filtrarTodasEscolas()"
+          style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
+          <option value="">COMPETÊNCIA</option>
+          <option value="Estadual">Estadual</option>
+          <option value="Municipal">Municipal</option>
+          <option value="Federal">Federal</option>
+        </select>
+      </div>
+      <!-- Linha 3: limpar -->
+      <div style="display:flex; width:100%; margin-top:2px;">
+        <button onclick="limparFiltrosTodasEscolas()"
+          onmouseover="this.style.background='rgba(250,204,21,0.3)'"
+          onmouseout="this.style.background='rgba(250,204,21,0.15)'"
+          style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px;background:rgba(250,204,21,0.15);border:1px solid rgba(250,204,21,0.3);border-radius:8px;color:#facc15;font-size:13px;font-weight:700;cursor:pointer;width:100%;transition:all 0.2s;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Limpar Filtros
+        </button>
+      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-wrap" id="te-table-wrap" style="flex:1;overflow-y:auto;border:1px solid var(--border);border-radius:12px;background:rgba(15,23,42,0.6);">
+      <table style="table-layout:fixed; width:100%; min-width:1100px; border-collapse:separate; border-spacing:0; font-size:13px;">
+        <thead>
+          <tr style="background:var(--bg-secondary);">
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">Município</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:240px;">Nome da Escola</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">INEP</th>
+            <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:80px;">Alunos</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Modalidade</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Localidade</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">Diretor(a)</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Contato Dir.</th>
+            <th style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:60px;">Editar</th>
+          </tr>
+        </thead>
+        <tbody id="te-tbody">
+          <tr><td colspan="20" style="text-align:center;padding:48px;color:var(--text-muted);">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+              <div style="width:32px;height:32px;border:3px solid rgba(59,130,246,0.3);border-top-color:#60a5fa;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+              <span>Carregando dados da planilha...</span>
+            </div>
+          </td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Estado vazio -->
+    <div id="te-empty" style="display:none;text-align:center;padding:80px 20px;">
+      <div style="font-size:52px;margin-bottom:16px;">👥</div>
+      <div style="font-size:17px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">Nenhuma escola encontrada</div>
+      <div id="te-empty-msg" style="font-size:13px;color:var(--text-muted);">Verifique se a planilha está compartilhada publicamente e clique em "Recarregar".</div>
+      <button onclick="recarregarTodasEscolas()" style="margin-top:20px;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.4);color:#60a5fa;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;">🔄 Tentar novamente</button>
+    </div>
+
+    <!-- Paginação -->
+    <div class="pagination" id="te-pagination" style="display:none;margin-top:16px;">
+      <div class="pagination-info" id="te-pg-info"></div>
+      <div class="pagination-controls" id="te-pg-controls"></div>
+    </div>
+
+  </section>
+
   <!-- ============= MODAL DETALHES ESCOLA ============= -->
   <div class="modal-overlay" id="modal-escola-overlay" onclick="if(event.target===this)fecharModalEscola()">
     <div class="modal" style="max-width:680px; width:95%;">
@@ -1617,6 +1742,177 @@
       </div>
       <div class="modal-body" id="modal-escola-content" style="padding:0;">
         <!-- Preenchido via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= MODAL EDITAR ESCOLA (Todas Escolas) ============= -->
+  <div id="te-modal-overlay" onclick="if(event.target===this)fecharTeModal()"
+    style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9800;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(6px);">
+    <div id="te-modal" style="background:linear-gradient(145deg,#0f172a,#1e293b);border:1px solid rgba(99,102,241,0.3);border-radius:20px;width:100%;max-width:860px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,0.6);">
+      <!-- Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.07);">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:22px;">🏫</span>
+          <div>
+            <h3 id="te-modal-titulo" style="margin:0;font-size:16px;font-weight:700;color:#f0f4ff;">Editar Escola</h3>
+            <p id="te-modal-sub" style="margin:0;font-size:12px;color:var(--text-muted);">Alterações salvas localmente — edite no Google Sheets para persistir</p>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <a id="te-modal-sheets-link" href="#" target="_blank" rel="noopener"
+            style="display:inline-flex;align-items:center;gap:6px;background:rgba(26,115,232,0.2);border:1px solid rgba(26,115,232,0.4);color:#60a5fa;padding:7px 14px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700;transition:all 0.15s;"
+            onmouseover="this.style.background='rgba(26,115,232,0.4)'" onmouseout="this.style.background='rgba(26,115,232,0.2)'">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Google Sheets
+          </a>
+          <button onclick="fecharTeModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+      </div>
+      <!-- Body -->
+      <div style="overflow-y:auto;flex:1;padding:20px 24px;">
+        <input type="hidden" id="te-form-cache-idx"/>
+
+        <!-- SEÇÃO 1: Identificação -->
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <span style="background:rgba(99,102,241,0.2);color:#818cf8;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">1</span>
+            <span style="font-size:13px;font-weight:700;color:#c7d2fe;letter-spacing:0.5px;">IDENTIFICAÇÃO INSTITUCIONAL</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div style="grid-column:1/-1;">
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">NOME DA ESCOLA *</label>
+              <input id="te-form-nome" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">MUNICÍPIO</label>
+              <input id="te-form-municipio" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">INEP</label>
+              <input id="te-form-inep" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#60a5fa;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">Nº DE ALUNOS</label>
+              <input id="te-form-alunos" type="number" min="0" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#34d399;font-size:13px;font-weight:700;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">MODALIDADE</label>
+              <input id="te-form-modalidade" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">LOCALIDADE</label>
+              <select id="te-form-localidade" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'">
+                <option value="">Selecione...</option>
+                <option value="Urbana">Urbana</option>
+                <option value="Rural">Rural</option>
+                <option value="Indígena">Indígena</option>
+              </select>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">SUPER / REGIONAL</label>
+              <input id="te-form-super" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#a78bfa;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">COMPETÊNCIA</label>
+              <input id="te-form-competencia" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO 2: Gestão & Contatos -->
+        <div style="margin-bottom:20px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">
+            <span style="background:rgba(16,185,129,0.2);color:#34d399;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">2</span>
+            <span style="font-size:13px;font-weight:700;color:#6ee7b7;letter-spacing:0.5px;">GESTÃO & CONTATOS</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">DIRETOR(A)</label>
+              <input id="te-form-diretor" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">CONTATO DIRETOR(A)</label>
+              <input id="te-form-contato-diretor" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">TELEFONE ESCOLA</label>
+              <input id="te-form-telefone" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">EMAIL DA ESCOLA</label>
+              <input id="te-form-email" type="email" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+            </div>
+          </div>
+          <!-- Toggle campos secundários -->
+          <button id="te-form-toggle-btn" onclick="teToggleCampos()" style="margin-top:14px;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);color:var(--text-muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;width:100%;text-align:center;transition:all 0.15s;">
+            ▼ Mostrar campos adicionais (Secretário, Endereço, Infraestrutura)
+          </button>
+          <!-- Campos secundários (ocultos) -->
+          <div id="te-form-secundarios" style="display:none;margin-top:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div>
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">SECRETÁRIO(A) ESCOLAR</label>
+                <input id="te-form-secretario" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">CONTATO SECRETÁRIO(A)</label>
+                <input id="te-form-contato-sec" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">REDES SOCIAIS</label>
+                <input id="te-form-redes" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">CEP</label>
+                <input id="te-form-cep" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+              </div>
+              <div style="grid-column:1/-1;">
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">ENDEREÇO</label>
+                <input id="te-form-endereco" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">BAIRRO / DISTRITO</label>
+                <input id="te-form-bairro" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+              </div>
+              <div>
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">COMPLEMENTO</label>
+                <input id="te-form-complemento" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+              </div>
+            </div>
+            <!-- Infraestrutura -->
+            <div style="margin-top:14px;padding:14px;background:rgba(255,255,255,0.02);border-radius:10px;border:1px solid rgba(255,255,255,0.06);">
+              <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:10px;letter-spacing:0.6px;">INFRAESTRUTURA</div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">SALAS AULA</label><input id="te-form-salas-aula" type="number" min="0" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#60a5fa;font-size:13px;font-weight:700;text-align:center;outline:none;box-sizing:border-box;"/></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">SALAS ADM</label><input id="te-form-salas-adm" type="number" min="0" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#60a5fa;font-size:13px;text-align:center;outline:none;box-sizing:border-box;"/></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">BANHEIROS</label><input id="te-form-banheiros" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:13px;text-align:center;outline:none;box-sizing:border-box;"/></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">PÁTIO</label><input id="te-form-patio" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:13px;text-align:center;outline:none;box-sizing:border-box;"/></div>
+              </div>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px;">
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">SALA AEE</label>
+                  <select id="te-form-aee" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">QUADRA</label>
+                  <select id="te-form-quadra" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">REFEITÓRIO</label>
+                  <select id="te-form-refeitorio" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">AUDITÓRIO</label>
+                  <select id="te-form-auditorio" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Footer -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid rgba(255,255,255,0.07);gap:10px;flex-wrap:wrap;">
+        <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+          ⚠️ Salvar aqui atualiza apenas a <strong>visualização local</strong>. Use o Google Sheets para persistir.
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button onclick="fecharTeModal()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Cancelar</button>
+          <button onclick="salvarTeModal()" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none;color:white;padding:9px 24px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;box-shadow:0 4px 15px rgba(99,102,241,0.4);transition:all 0.15s;"
+            onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">💾 Salvar (local)</button>
+        </div>
       </div>
     </div>
   </div>

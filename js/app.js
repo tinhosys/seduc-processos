@@ -1,4 +1,4 @@
-
+﻿
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
@@ -128,8 +128,9 @@ function navegar(pagina) {
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
-    escolas: '🏫 Escolas',
-    'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia'
+    escolas: '�� Escolas',
+    'mapa-escolas': '��️ Mapa de Escolas de Rondônia',
+    'todas-escolas': '�� Todas as Escolas'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -148,6 +149,7 @@ function navegar(pagina) {
       setTimeout(() => iniciarMapaEscolas(), 50);
     }
   }
+  if (pagina === 'todas-escolas') iniciarPaginaTodasEscolas();
 }
 
 // ---- TOAST ----
@@ -210,8 +212,8 @@ function renderDashboard() {
   let datasValidas = [];
   
   processos.forEach(p => {
-    // Apenas considerar processos não encerrados/concluídos para o alerta de data antiga
-    const isEncerrado = ['pago', 'encerrado', 'concluído', 'cancelado', 'duplicado'].includes(normalizar(p.status));
+    // Apenas considerar processos não encerrados/concludos para o alerta de data antiga
+    const isEncerrado = ['pago', 'encerrado', 'concludo', 'cancelado', 'duplicado'].includes(normalizar(p.status));
     
     if (!p.data || String(p.data).trim() === '') {
       if (!isEncerrado) processosSemData++;
@@ -249,7 +251,7 @@ function renderDashboard() {
           <a href="#" onclick="event.preventDefault(); state.filtros.busca='${(d.num||'').replace(/'/g,'')}'; navegar('processos');" 
              style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:2px 10px; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap; transition:background 0.2s;" 
              onmouseover="this.style.background='rgba(59,130,246,0.35)'" 
-             onmouseout="this.style.background='rgba(59,130,246,0.15)'">🔗 VER</a>
+             onmouseout="this.style.background='rgba(59,130,246,0.15)'">�� VER</a>
         </div>`;
       }).join('');
     }
@@ -646,7 +648,7 @@ async function renderChartAcessosDashboard() {
     console.log('[ACESSOS] Dados brutos da API:', JSON.stringify(acessos.map(a => ({nome: a.nome, nivel: a.nivel, contagem: a.contagem}))));
 
     // ---- Usar o campo 'contagem' real da planilha (CONTAGEM ACESSO) ----
-    // Parsing robusto: trata string vazia, ponto, vírgula decimal
+    // Parsing robusto: trata string vazia, ponto, vrgula decimal
     const parseContagem = (val) => {
       if (!val && val !== 0) return 0;
       const str = String(val).trim().replace(/\./g, '').replace(',', '.');
@@ -713,7 +715,7 @@ async function renderChartAcessosDashboard() {
             },
             // Exibir o % em cima de cada barra
             datalabels: {
-              display: false // usa plugin chartjs-plugin-datalabels se disponível
+              display: false // usa plugin chartjs-plugin-datalabels se dispoNível
             }
           },
           scales: {
@@ -1015,7 +1017,7 @@ function renderProcessos() {
           <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
-            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">📌</span>' : ''}
+            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">��</span>' : ''}
           </div>
           <!-- Linha 3: CAM; GAB; CC -->
           <div style="display: flex; gap: 6px; align-items: center; margin-top: 1px;">
@@ -1043,7 +1045,7 @@ function renderProcessos() {
   `).join('') || `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9">
       <div class="empty-state">
-        <div class="empty-icon">🔍</div>
+        <div class="empty-icon">��</div>
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente ajustar os filtros</p>
       </div>
@@ -1094,7 +1096,7 @@ function preencherSelectFiltro(id, opcoes) {
   else if (id === 'filtro-tipo') placeholder = 'TIPO';
   else if (id === 'filtro-super') placeholder = 'SUPER';
 
-  // Pegar valores selecionados atualmente via state (não via DOM, que pode estar destruído)
+  // Pegar valores selecionados atualmente via state (não via DOM, que pode estar destrudo)
   const campo = id.replace('filtro-', '');
   let selectedArr = state.filtros[campo] || [];
   if (typeof selectedArr === 'string') selectedArr = selectedArr ? [selectedArr] : [];
@@ -1418,8 +1420,8 @@ function renderFormulario() {
     const dataEdicao = p.dataHoraEdicao || '';
     
     if (nomeEdicao || dataEdicao) {
-      if (nomeDiv) nomeDiv.innerHTML = `👤 ${nomeEdicao}`;
-      if (dataDiv) dataDiv.innerHTML = `📅 ${dataEdicao}`;
+      if (nomeDiv) nomeDiv.innerHTML = `�� ${nomeEdicao}`;
+      if (dataDiv) dataDiv.innerHTML = `�� ${dataEdicao}`;
     } else {
       if (nomeDiv) nomeDiv.innerHTML = `<span style="font-style: italic; color: var(--text-muted);">Sem registros</span>`;
       if (dataDiv) dataDiv.innerHTML = '—';
@@ -1561,7 +1563,7 @@ function abrirDetalhe(id) {
   if (p.contatos && p.contatos.length > 0) {
     contatosHtml = `
       <div class="card" style="margin-bottom:16px">
-        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">📞 Contatos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">�� Contatos</h4>
         <div style="display:flex;flex-direction:column;gap:8px">
           ${p.contatos.map(c => {
             const numeroLimpo = c.whatsapp.replace(/\D/g, '');
@@ -1588,7 +1590,7 @@ function abrirDetalhe(id) {
   if (userNivel === 'leitor') {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">📝 Novo Apontamento</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">�� Novo Apontamento</h4>
         <textarea id="modal-apontamento-texto" placeholder="Digite seu apontamento..." style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:12px;"></textarea>
         <button onclick="salvarApontamentoModal('${p.id}')" id="btn-salvar-apont" style="width:100%; padding:10px; border-radius:6px; border:none; background:#22c55e; color:#fff; font-weight:bold; cursor:pointer;">Salvar Apontamento</button>
       </div>
@@ -1596,7 +1598,7 @@ function abrirDetalhe(id) {
   } else if (userNivel === 'adm' && p.apontamento) {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">📝 Histórico de Apontamentos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">�� Histórico de Apontamentos</h4>
         <div style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; white-space:pre-wrap; min-height:60px;">${p.apontamento}</div>
       </div>
     `;
@@ -1670,7 +1672,7 @@ function abrirDetalhe(id) {
 
 
     <div class="card" style="margin-bottom:16px">
-      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">💰 Execução Financeira</h4>
+      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">�� Execução Financeira</h4>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
         <div>
           <div style="font-size:11px;color:var(--text-muted)">Valor Oficial</div>
@@ -1689,7 +1691,7 @@ function abrirDetalhe(id) {
 
     ${p.marca === '1' || p.marca === 'SIM' ? `
       <div class="card" style="margin-bottom:16px; border: 2px solid var(--blue); background: rgba(59, 130, 246, 0.08); display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(59,130,246,0.15);">
-        <span style="font-size: 24px;">📌</span>
+        <span style="font-size: 24px;">��</span>
         <div>
           <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para Atenção!</strong>
           <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observações abaixo.</p>
@@ -1699,11 +1701,11 @@ function abrirDetalhe(id) {
 
     ${p.obs ? `
       <div class="card" style="margin-bottom:16px; ${p.marca === '1' || p.marca === 'SIM' ? 'border: 1px solid var(--blue); background: rgba(59, 130, 246, 0.03);' : ''}">
-        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">📝 Observações</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">�� Observações</h4>
         <p style="color:var(--text-secondary);font-size:14px">${p.obs}</p>
       </div>
     ` : ''}
-    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">🗒️ Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
+    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">��️ Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
     ${apontamentoHtml}
@@ -1774,7 +1776,7 @@ window.gravarApontamentoImediato = function() {
   .then(resData => {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>💾</span> Gravar';
+      btn.innerHTML = '<span>��</span> Gravar';
     }
     
     if (resData.sucesso) {
@@ -1806,7 +1808,7 @@ window.gravarApontamentoImediato = function() {
     console.error(err);
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>💾</span> Gravar';
+      btn.innerHTML = '<span>��</span> Gravar';
     }
     toast('Erro de conexão ao gravar apontamento.', 'error');
   });
@@ -1846,9 +1848,9 @@ function confirmarExcluir(id) {
   if (!p) return;
   const ident = p.numero || p.interessado || 'Sem Identificação';
   if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excluído permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
+    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
       excluirProcesso(id);
-      toast('Processo excluído com sucesso.', 'info');
+      toast('Processo excludo com sucesso.', 'info');
       navegar('processos');
     }
   }
@@ -1888,7 +1890,7 @@ async function processarArquivo(file) {
     const result = await importarExcel(file);
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
-        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação concluída!</h3>
+        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação concluda!</h3>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:14px">
           <div><span style="color:var(--text-muted)">Total na planilha:</span><br><strong>${result.total}</strong></div>
           <div><span style="color:var(--text-muted)">Novos importados:</span><br><strong style="color:var(--green)">${result.novos}</strong></div>
@@ -1922,7 +1924,7 @@ async function processarLinkGoogleSheets() {
     const result = await importarGoogleSheets(url);
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
-        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação do GSheets concluída!</h3>
+        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação do GSheets concluda!</h3>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:14px">
           <div><span style="color:var(--text-muted)">Total lidos:</span><br><strong>${result.total}</strong></div>
           <div><span style="color:var(--text-muted)">Novos importados:</span><br><strong style="color:var(--green)">${result.novos}</strong></div>
@@ -2309,7 +2311,7 @@ function renderizarContatosForm() {
     const whatsappFormatado = maskCelular(numeroLimpo);
     
     div.innerHTML = "<div style=\"display:flex; flex-direction:column; gap:2px;\">" +
-      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">📞 " + whatsappFormatado + "</span>" +
+      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">�� " + whatsappFormatado + "</span>" +
       (c.detalhes ? "<span style=\"color:var(--text-secondary); font-size:12px;\">" + c.detalhes + "</span>" : "****") +
       "</div>" +
       "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">❌</button>";
@@ -2541,7 +2543,7 @@ window.imprimirDetalhado = function() {
       <div style="flex:1; border:2px solid #000; background:#f8fafc; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">VALOR TOTAL CONSOLIDADO</div>
         <div style="font-size:14px; font-weight:bold; color:#000; margin:5px 0;">${formatCurrency(total)}</div>
-        <div style="font-size:7px; color:#000;">${filtrados.length} processos únicos</div>
+        <div style="font-size:7px; color:#000;">${filtrados.length} processos úúnicos</div>
       </div>
       <div style="flex:1; border:2px solid #000; background:#f0fdf4; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">PROCESSOS AUTORIZADOS</div>
@@ -2764,7 +2766,7 @@ window.imprimirAnalise = function() {
       <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
         
         <div class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; margin-bottom:20px; font-size:12px; text-align:justify; line-height:1.6; padding:10px; border:1px solid #ccc;">
-          <strong>SÍNTESE ANALÍTICA:</strong> Parâmetros buscados: <em>${filtrosTexto}</em>.<br>O presente cenário totaliza <strong>${formatCurrency(total)}</strong> distribuídos em <strong>${filtrados.length}</strong> processos. 
+          <strong>SÍNTESE ANALÍTICA:</strong> Parâmetros buscados: <em>${filtrosTexto}</em>.<br>O presente cenário totaliza <strong>${formatCurrency(total)}</strong> distribudos em <strong>${filtrados.length}</strong> processos. 
           Abaixo detalhamos a concentração de recursos por status, cruzando com a localização, 
           permitindo identificar os principais setores responsáveis pela retenção de processos.
         </div>
@@ -2850,7 +2852,7 @@ function cancelarEdicaoAcesso() {
 
   if (form) form.reset();
   if (rowInput) rowInput.value = '';
-  if (title) title.innerHTML = '<span>👤</span> Registro de Acesso';
+  if (title) title.innerHTML = '<span>��</span> Registro de Acesso';
 
   // Limpar e Desabilitar campos
   if (nomeInput) { nomeInput.value = ''; nomeInput.disabled = true; }
@@ -3189,8 +3191,8 @@ function renderProcessosRepetidos() {
     tbody.innerHTML = `
       <tr>
         <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
-          <h3>🎉 Nenhum processo repetido encontrado!</h3>
-          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são únicos.</p>
+          <h3>�� Nenhum processo repetido encontrado!</h3>
+          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são úúnicos.</p>
         </td>
       </tr>
     `;
@@ -3263,7 +3265,7 @@ async function excluirProcessoDireto(id) {
   if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta ação não pode ser desfeita e removerá o registro na planilha.")) {
     try {
       await excluirProcesso(id);
-      toast("Processo excluído com sucesso!", "success");
+      toast("Processo excludo com sucesso!", "success");
       if (typeof inicializarDados === 'function') {
         await inicializarDados();
       }
@@ -3293,12 +3295,12 @@ function toggleFiltros() {
   const isCollapsed = bar.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '📌 <span class="btn-text">Mostrar Filtros</span>';
+    btn.innerHTML = '�� <span class="btn-text">Mostrar Filtros</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('filters_collapsed', '1');
   } else {
-    btn.innerHTML = '📌 <span class="btn-text">Ocultar Filtros</span>';
+    btn.innerHTML = '�� <span class="btn-text">Ocultar Filtros</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('filters_collapsed');
@@ -3312,12 +3314,12 @@ function toggleFormAcesso() {
   const isCollapsed = card.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '📌 <span class="btn-text">Mostrar</span>';
+    btn.innerHTML = '�� <span class="btn-text">Mostrar</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('form_acesso_collapsed', '1');
   } else {
-    btn.innerHTML = '📌 <span class="btn-text">Ocultar</span>';
+    btn.innerHTML = '�� <span class="btn-text">Ocultar</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('form_acesso_collapsed');
@@ -3331,11 +3333,11 @@ function toggleFormProcesso() {
   const isCollapsed = card.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '📌 <span class="btn-text">Mostrar Formulário</span>';
+    btn.innerHTML = '�� <span class="btn-text">Mostrar Formulário</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
   } else {
-    btn.innerHTML = '📌 <span class="btn-text">Ocultar Formulário</span>';
+    btn.innerHTML = '�� <span class="btn-text">Ocultar Formulário</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
   }
@@ -3372,7 +3374,7 @@ function inicializarEstadosColapsaveis() {
   if (bar && btnFilters) {
     if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
       bar.classList.add('collapsed');
-      btnFilters.innerHTML = '📌 <span class="btn-text">Mostrar Filtros</span>';
+      btnFilters.innerHTML = '�� <span class="btn-text">Mostrar Filtros</span>';
       btnFilters.style.borderColor = 'var(--blue)';
       btnFilters.style.color = 'var(--blue)';
     }
@@ -3385,7 +3387,7 @@ function inicializarEstadosColapsaveis() {
   if (cardAcessos && btnAcessos) {
     if (savedAcessosCollapse === '1' || (savedAcessosCollapse === null && isMobile)) {
       cardAcessos.classList.add('collapsed');
-      btnAcessos.innerHTML = '📌 <span class="btn-text">Mostrar</span>';
+      btnAcessos.innerHTML = '�� <span class="btn-text">Mostrar</span>';
       btnAcessos.style.borderColor = 'var(--blue)';
       btnAcessos.style.color = 'var(--blue)';
     }
@@ -3645,7 +3647,7 @@ function _escolasAtualizarUI() {
   if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
 
   if (!temDados) return;
-  if (badgeEl) badgeEl.textContent = '🏫 ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
+  if (badgeEl) badgeEl.textContent = '�� ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
   if (_escolasFiltradas.length === 0) _escolasFiltradas = [..._escolasCache];
   _escolasRenderTabela();
   _escolasRenderPaginacao();
@@ -3693,7 +3695,7 @@ function gerarTextoManifestoTCE(p) {
 
   const tipoCod = (p.tipo || '').toUpperCase();
   const tipoDesc = {
-    'OB': 'Obras e Infraestrutura Física',
+    'OB': 'Obras e Infraestrutura Fsica',
     'MP': 'Aquisição de Material Permanente',
     'MC': 'Aquisição de Material de Consumo',
     'SI': 'Sistemas e Tecnologias da Informação',
@@ -3727,17 +3729,17 @@ function gerarTextoManifestoTCE(p) {
 
   return `Manifestação
 
-A legislação educacional brasileira, em seus diversos níveis, estabelece um complexo de deveres e colaborações para a garantia do direito à educação. A Constituição Federal, em seu artigo 205, consagra a educação como um direito de todos e um dever do Estado e da família, a ser promovida com a colaboração da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualificação para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos municípios a competência para manter, com a cooperação técnica e financeira da União e do Estado, programas de educação infantil e de ensino fundamental. O regime de colaboração entre os entes federados é reforçado pelo artigo 211, § 4º, que determina a definição de formas de colaboração entre União, Estados, Distrito Federal e Municípios para assegurar a universalização do ensino obrigatório.
+A legislação educacional brasileira, em seus diversos nveis, estabelece um complexo de deveres e colaborações para a garantia do direito à educação. A Constituição Federal, em seu artigo 205, consagra a educação como um direito de todos e um dever do Estado e da famlia, a ser promovida com a colaboração da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualificação para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos Municípios a competência para manter, com a cooperação técnica e financeira da União e do Estado, programas de educação infantil e de ensino fundamental. O regime de colaboração entre os entes federados é reforçado pelo artigo 211, § 4º, que determina a definição de formas de colaboração entre União, Estados, Distrito Federal e Municípios para assegurar a universalização do ensino obrigatório.
 
 A Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996) reitera e detalha essa estrutura colaborativa, estabelecendo em seu artigo 8º que a União, os Estados, o Distrito Federal e os Municípios organizarão, em regime de colaboração, seus respectivos sistemas de ensino. O artigo 10 da mesma lei incumbe os Estados de organizar, manter e desenvolver os órgãos e instituições oficiais de seus sistemas de ensino, definindo, com os Municípios, formas de colaboração na oferta do ensino fundamental (inciso II), e de baixar normas complementares para seu sistema de ensino (inciso VI).
 
 A Lei nº 14.113/2020, que regulamenta o Fundeb, fortalece a cooperação entre os entes federativos. O artigo 14, § 1º, inciso IV, condiciona o recebimento de complementação de recursos federais à existência de um regime de colaboração entre Estado e Municípios formalizado na legislação estadual. Ademais, o artigo 50, em seu parágrafo único, estabelece que a União, os Estados e o Distrito Federal desenvolverão, em regime de colaboração, programas de apoio para a conclusão da educação básica por alunos matriculados no sistema público.
 
-No âmbito estadual, a Constituição do Estado de Rondônia, em seus artigos 187 e 188, detalha as responsabilidades do poder público com a educação, estabelecendo que o ensino será ministrado com base em princípios como a igualdade de condições para o acesso e permanência na escola e a gestão democrática do ensino público, e define as atribuições do sistema estadual de ensino.
+No âmbito estadual, a Constituição do Estado de Rondônia, em seus artigos 187 e 188, detalha as responsabilidades do poder público com a educação, estabelecendo que o ensino será ministrado com base em princpios como a igualdade de condições para o acesso e permanência na escola e a gestão democrática do ensino público, e define as atribuições do sistema estadual de ensino.
 
-Ainda no âmbito estadual, a Lei nº. 5.735/2024 institui o Programa de Alfabetização do Estado de Rondônia, em regime de colaboração com os municípios, cabendo ao Estado prestar cooperação técnica e financeira aos municípios. Dentre os eixos do programa, há o Eixo 2 que trata da infraestrutura física e pedagógica. Desta feita, compulsando o Ofício ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados à organização, equipagem e melhoria dos espaços pedagógicos da unidade escolar, visando aprimorar as condições de trabalho dos profissionais da educação e qualificar os espaços escolares, por meio da disponibilização de mobiliário e equipamentos adequados, contribuindo para o fortalecimento das práticas pedagógicas e assegurando maior organização, conforto, segurança e funcionalidade aos ambientes educacionais.
+Ainda no âmbito estadual, a Lei nº. 5.735/2024 institui o Programa de Alfabetização do Estado de Rondônia, em regime de colaboração com os Municípios, cabendo ao Estado prestar cooperação técnica e financeira aos Municípios. Dentre os eixos do programa, há o Eixo 2 que trata da infraestrutura fsica e pedagógica. Desta feita, compulsando o Ofcio ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados à organização, equipagem e melhoria dos espaços pedagógicos da unidade escolar, visando aprimorar as condições de trabalho dos profissionais da educação e qualificar os espaços escolares, por meio da disponibilização de mobiliário e equipamentos adequados, contribuindo para o fortalecimento das práticas pedagógicas e assegurando maior organização, conforto, segurança e funcionalidade aos ambientes educacionais.
 
-Em atendimento à solicitação do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do Ofício ${oficioNum}, manifestamo-nos favoravelmente à solicitação do município, no que tange ao regime de colaboração regulamentado pela Lei Estadual nº. 5.735/2024.
+Em atendimento à solicitação do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do Ofcio ${oficioNum}, manifestamo-nos favoravelmente à solicitação do Município, no que tange ao regime de colaboração regulamentado pela Lei Estadual nº. 5.735/2024.
 
 Nestes termos, submeto os autos à apreciação superior, para deliberação acerca da oportunidade e conveniência administrativa.
 
@@ -3948,8 +3950,6 @@ function imprimirManifestoTCE() {
   } else {
       h += '&mdash;';
   }
-  h += '</td></tr></table>';
-
   var obsAll = [obs, demaisObs].filter(Boolean).join('\n\n');
   if (obsAll) { h += '<div class="sec-title">OBSERVA&Ccedil;&Otilde;ES ESPEC&Iacute;FICAS</div><div class="obs-block">' + obsAll + '</div>'; }
 
@@ -3980,3 +3980,512 @@ window.fecharModalManifestoTCE        = fecharModalManifestoTCE;
 window.copiarManifestoTCE             = copiarManifestoTCE;
 window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
+
+
+// ============================================================
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.0.47)
+// Busca TODAS as planilhas por ndice numérico (paralelo)
+// ============================================================
+
+const TE_SHEET_ID  = '1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08';
+const TE_GID_MAIN  = '1444558009';
+const TE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID + '/edit?gid=' + TE_GID_MAIN + '#gid=' + TE_GID_MAIN;
+const TE_MAX_SHEETS = 50;   // máximo de abas a tentar
+const TE_BATCH_SIZE = 8;    // abas buscadas em paralelo por lote
+const TE_MAX_CONSEC_FAIL = 3; // para após N falhas consecutivas
+
+// Estado do módulo
+var _teCache       = [];
+var _teFiltrados   = [];
+var _tePagina      = 1;
+var _teItensPorPag = 50;
+var _teCarregado   = false;
+var _teAbas        = [];   // [{idx, nome, count}] - abas carregadas
+
+// Mapeamento das colunas (ndice → chave)
+// As abas com ?sheet=N retornam parsedNumHeaders:0, primeira linha é cabeçalho
+const TE_COLS = [
+  'municipio','nome','alunos','modalidade','inep','endereco','bairro',
+  'complemento','cep','competencia','super','redesSociais','telefone','email',
+  'diretor','contatoDiretor','secretario','contatoSecretario',
+  'salasAula','salasAdm','salaAEE','banheiros','patio','auditorio','refeitorio','quadra','localidade'
+];
+const TE_HEADER_KEYWORDS = ['municipio','Município','nome completo','inep','modalidade','telefone','endereço','endereco'];
+
+// Verifica se uma linha é cabeçalho
+function _teIsHeader(obj) {
+  const n = (obj.nome || '').toLowerCase();
+  const m = (obj.municipio || '').toLowerCase();
+  return TE_HEADER_KEYWORDS.some(k => n.includes(k) || m.includes(k));
+}
+
+// Verifica se uma linha é válida (tem pelo menos nome ou municipio)
+function _teIsValidRow(obj) {
+  return (obj.nome && obj.nome.trim().length > 2) || (obj.municipio && obj.municipio.trim().length > 2);
+}
+
+// Parse de uma resposta gviz JSON
+function _teParseGviz(text, sheetIdx) {
+  try {
+    const jsonStr = text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, '');
+    const data = JSON.parse(jsonStr);
+    if (!data || !data.table || data.status === 'error') return null;
+    if (!data.table.rows || data.table.rows.length === 0) return null;
+
+    const rows = [];
+    let lastMunicipio = '';
+
+    data.table.rows.forEach((row) => {
+      if (!row.c || row.c.length === 0) return;
+      const obj = { _aba: sheetIdx };
+      TE_COLS.forEach((key, ci) => {
+        const cell = row.c[ci];
+        obj[key] = (cell && cell.v !== null && cell.v !== undefined) ? String(cell.v).trim() : '';
+      });
+
+      // Pula cabeçalho
+      if (_teIsHeader(obj)) return;
+
+      // Propaga Município da linha anterior se a linha atual não tem
+      if (!obj.municipio && lastMunicipio) obj.municipio = lastMunicipio;
+      if (obj.municipio) lastMunicipio = obj.municipio;
+
+      // Só adiciona linhas com nome de escola
+      if (obj.nome && obj.nome.trim().length > 2) {
+        rows.push(obj);
+      }
+    });
+
+    return rows;
+  } catch(e) {
+    console.warn('[TE] Parse error sheet', sheetIdx, e.message);
+    return null;
+  }
+}
+
+// Entry point
+function iniciarPaginaTodasEscolas() {
+  if (_teCarregado && _teCache.length > 0) { _teAtualizarUI(); return; }
+  buscarTodasEscolasGSheet();
+}
+
+function recarregarTodasEscolas() {
+  _teCache = []; _teFiltrados = []; _teCarregado = false; _teAbas = [];
+  buscarTodasEscolasGSheet();
+}
+
+// Busca TODAS as abas em lotes paralelos
+async function buscarTodasEscolasGSheet() {
+  const tbody     = document.getElementById('te-tbody');
+  const wrap      = document.getElementById('te-table-wrap');
+  const emptyEl   = document.getElementById('te-empty');
+  const statusEl  = document.getElementById('te-badge-status');
+  const progressEl = document.getElementById('te-progress');
+
+  if (wrap)    wrap.style.display    = 'none';
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  const setBadge = (txt, color) => {
+    if (!statusEl) return;
+    statusEl.textContent = txt;
+    const colors = {
+      loading: ['rgba(251,191,36,0.12)','#fbbf24','rgba(251,191,36,0.3)'],
+      ok:      ['rgba(16,185,129,0.12)','#34d399','rgba(16,185,129,0.3)'],
+      error:   ['rgba(239,68,68,0.12)','#f87171','rgba(239,68,68,0.3)'],
+      info:    ['rgba(59,130,246,0.12)','#60a5fa','rgba(59,130,246,0.3)']
+    };
+    const [bg, col, border] = colors[color] || colors.loading;
+    statusEl.style.cssText = `display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:${bg};color:${col};border:1px solid ${border};letter-spacing:0.4px;`;
+  };
+
+  setBadge('⏳ Iniciando carregamento...', 'loading');
+  if (progressEl) progressEl.style.display = 'block';
+  if (tbody) tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:48px;color:var(--text-muted);">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+      <div style="width:36px;height:36px;border:3px solid rgba(59,130,246,0.3);border-top-color:#60a5fa;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+      <div id="te-load-msg" style="font-size:14px;font-weight:600;color:var(--text-secondary);">Buscando planilhas...</div>
+      <div id="te-load-sub" style="font-size:12px;color:var(--text-muted);">Carregando todas as abas do Google Sheets</div>
+    </div></td></tr>`;
+
+  const setLoadMsg = (msg, sub) => {
+    const el = document.getElementById('te-load-msg');
+    const sub2 = document.getElementById('te-load-sub');
+    if (el) el.textContent = msg;
+    if (sub2 && sub) sub2.textContent = sub;
+  };
+
+  _teCache = [];
+  _teAbas  = [];
+  let totalLoaded = 0;
+  
+  const MUNICIPIOS_RO = [
+    "Alta Floresta d'Oeste", "Alto Alegre dos Parecis", "Alto Paraíso", "Alvorada d'Oeste", "Ariquemes", 
+    "Buritis", "Cabixi", "Cacaulândia", "Cacoal", "Campo Novo de Rondônia", "Candeias do Jamari", 
+    "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste", "Corumbiara", "Costa Marques", 
+    "Cujubim", "Espigão d'Oeste", "Governador Jorge Teixeira", "Guajará-Mirim", "Itapuã do Oeste", 
+    "Jaru", "Ji-Paraná", "Machadinho d'Oeste", "Ministro Andreazza", "Mirante da Serra", "Monte Negro", 
+    "Nova Brasilândia d'Oeste", "Nova Mamoré", "Nova União", "Novo Horizonte do Oeste", "Ouro Preto do Oeste", 
+    "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente Médici", 
+    "Primavera de Rondônia", "Rio Crespo", "Rolim de Moura", "Santa Luzia d'Oeste", "São Felipe d'Oeste", 
+    "São Francisco do Guaporé", "São Miguel do Guaporé", "Seringueiras", "Teixeirópolis", "Theobroma", 
+    "Urupá", "Vale do Anari", "Vale do Paraíso", "Vilhena"
+  ];
+  
+  const sigsVistos = new Set();
+
+  try {
+    for (let batchStart = 0; batchStart < MUNICIPIOS_RO.length; batchStart += TE_BATCH_SIZE) {
+      const batchMuns = MUNICIPIOS_RO.slice(batchStart, batchStart + TE_BATCH_SIZE);
+
+      setBadge(`⏳ Lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1} / ${Math.ceil(MUNICIPIOS_RO.length/TE_BATCH_SIZE)}...`, 'loading');
+      setLoadMsg(
+        `Carregando lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1}...`,
+        `Buscando ${batchMuns.length} planilhas | ${totalLoaded} escolas encontradas`
+      );
+
+      // Busca paralela do lote usando o nome do Município como aba
+      const results = await Promise.allSettled(
+        batchMuns.map(mun => {
+          const url = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
+                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(mun) + '&nocache=' + Date.now();
+          return fetch(url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status));
+        })
+      );
+
+      results.forEach((res, i) => {
+        const mun = batchMuns[i];
+        if (res.status === 'rejected') return;
+        
+        const text = res.value;
+        const sigMatch = text.match(/"sig":"(\d+)"/);
+        const sig = sigMatch ? sigMatch[1] : null;
+        
+        // Se a aba não existir, a API retorna a aba padrão. O sig nos ajuda a ignorar duplicatas/fallbacks!
+        if (sig) {
+          if (sigsVistos.has(sig)) return; 
+          sigsVistos.add(sig);
+        }
+
+        const rows = _teParseGviz(text, mun);
+        if (!rows || rows.length === 0) return;
+        
+        totalLoaded += rows.length;
+
+        _teAbas.push({ nome: mun, count: rows.length });
+        _teCache.push(...rows);
+      });
+    }
+
+    if (_teCache.length === 0) throw new Error('Nenhum dado encontrado. Verifique se a planilha está compartilhada publicamente.');
+
+    _teCarregado = true;
+    _tePopularFiltros();
+    _teFiltrados = [..._teCache];
+    _tePagina = 1;
+    _teAtualizarUI();
+
+    const abasInfo = _teAbas.length + ' planilha(s) | ' + _teCache.length + ' escolas';
+    setBadge('✅ ' + abasInfo, 'ok');
+    if (typeof showToast === 'function') showToast('Carregadas ' + _teAbas.length + ' planilhas com ' + _teCache.length + ' escolas no total!', 'success');
+
+  } catch(err) {
+    console.error('[TodasEscolas]', err);
+    const msgEl = document.getElementById('te-empty-msg');
+    if (msgEl) msgEl.textContent = 'Erro: ' + err.message;
+    if (emptyEl) emptyEl.style.display = 'block';
+    if (tbody) tbody.innerHTML = '';
+    setBadge('❌ Erro ao carregar', 'error');
+    if (typeof showToast === 'function') showToast('Erro: ' + err.message, 'error');
+  }
+}
+// Popular filtros com valores úúnicos de TODOS os dados
+function _tePopularFiltros() {
+  const unique = (key) => [...new Set(_teCache.map(e => e[key]).filter(Boolean))].sort();
+  [['te-filtro-municipio','municipio','MUNICÍPIO'],
+   ['te-filtro-super','super','SUPER / REGIONAL'],
+   ['te-filtro-modalidade','modalidade','MODALIDADE'],
+   ['te-filtro-localidade','localidade','LOCALIDADE']
+  ].forEach(([id, key, label]) => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">' + label + '</option>' +
+      unique(key).map(v => '<option value="' + v + '">' + v + '</option>').join('');
+  });
+
+  // Popula badge de abas
+  const abasBadge = document.getElementById('te-badge-abas');
+  if (abasBadge) {
+    abasBadge.textContent = '�� ' + _teAbas.length + ' planilhas';
+    abasBadge.style.display = 'inline-flex';
+  }
+}
+
+// Filtrar
+function filtrarTodasEscolas() {
+  const busca       = (document.getElementById('te-busca')?.value || '').toLowerCase().trim();
+  const municipio   = document.getElementById('te-filtro-municipio')?.value || '';
+  const superVal    = document.getElementById('te-filtro-super')?.value || '';
+  const modalidade  = document.getElementById('te-filtro-modalidade')?.value || '';
+  const localidade  = document.getElementById('te-filtro-localidade')?.value || '';
+  const competencia = document.getElementById('te-filtro-competencia')?.value || '';
+
+  _teFiltrados = _teCache.filter(e => {
+    if (municipio  && e.municipio  !== municipio)  return false;
+    if (superVal   && e.super      !== superVal)   return false;
+    if (modalidade && e.modalidade !== modalidade) return false;
+    if (localidade && e.localidade !== localidade) return false;
+    if (competencia && e.competencia !== competencia) return false;
+    if (busca) {
+      const hay = [e.nome,e.municipio,e.inep,e.diretor,e.email,
+                   e.telefone,e.super,e.secretario,e.contatoDiretor,e.modalidade].join(' ').toLowerCase();
+      if (!hay.includes(busca)) return false;
+    }
+    return true;
+  });
+  _tePagina = 1;
+  _teAtualizarUI();
+}
+
+function limparFiltrosTodasEscolas() {
+  ['te-busca','te-filtro-municipio','te-filtro-super','te-filtro-modalidade',
+   'te-filtro-localidade','te-filtro-competencia'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  filtrarTodasEscolas();
+}
+
+// Renderiza UI completa
+function _teAtualizarUI() {
+  const wrap   = document.getElementById('te-table-wrap');
+  const emptyEl= document.getElementById('te-empty');
+  const tbody  = document.getElementById('te-tbody');
+  const total  = _teFiltrados.length;
+  const ini    = (_tePagina - 1) * _teItensPorPag;
+  const fim    = Math.min(ini + _teItensPorPag, total);
+  const pag    = _teFiltrados.slice(ini, fim);
+
+  // Badges
+  const totalAlunos = _teFiltrados.reduce((s,e) => s + (parseInt(e.alunos)||0), 0);
+  const badgeTotal  = document.getElementById('te-badge-total');
+  const badgeAlunos = document.getElementById('te-badge-alunos');
+  if (badgeTotal)  badgeTotal.textContent  = '�� ' + total.toLocaleString('pt-BR') + ' Escolas';
+  if (badgeAlunos) badgeAlunos.textContent = '�� ' + totalAlunos.toLocaleString('pt-BR') + ' Alunos';
+
+  if (total === 0) {
+    if (wrap)    wrap.style.display    = 'none';
+    if (emptyEl) {
+      emptyEl.style.display = 'block';
+      const msgEl = document.getElementById('te-empty-msg');
+      if (msgEl) msgEl.textContent = _teCache.length > 0
+        ? 'Nenhuma escola corresponde aos filtros.'
+        : 'Clique em "Recarregar" para buscar os dados.';
+    }
+    const pg = document.getElementById('te-pagination');
+    if (pg) pg.style.display = 'none';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+  if (wrap)    wrap.style.display    = 'block';
+
+  // Helpers
+  const esc = (s) => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const wa = (num) => {
+    if (!num) return '—';
+    const digits = num.replace(/\D/g,'');
+    const href = digits ? 'https://wa.me/55'+digits : '#';
+    return '<a href="' + href + '" target="_blank" rel="noopener" style="color:#25d366;text-decoration:none;white-space:nowrap;font-size:11px;"> ' + esc(num) + '</a>';
+  };
+  const localBadge = (loc) => {
+    if (!loc) return '—';
+    const l = loc.toLowerCase();
+    const isUrb = l.includes('urb');
+    const col = isUrb ? '#60a5fa' : (l.includes('ind') ? '#f59e0b' : '#34d399');
+    const bg  = isUrb ? 'rgba(59,130,246,0.2)' : (l.includes('ind') ? 'rgba(245,158,11,0.2)' : 'rgba(16,185,129,0.2)');
+    return '<span style="padding:2px 8px;border-radius:4px;font-weight:700;font-size:10px;background:' + bg + ';color:' + col + ';">' + esc(loc) + '</span>';
+  };
+
+  if (tbody) {
+    tbody.innerHTML = pag.map((e, idx) => {
+      const evenBg = idx%2===0 ? 'transparent' : 'rgba(255,255,255,0.015)';
+      const globalIdx = ini + idx;
+      return `<tr style="background:${evenBg};cursor:pointer;" 
+        ondblclick="abrirTeModal(${globalIdx})"
+        onmouseover="this.style.background='rgba(59,130,246,0.06)'" 
+        onmouseout="this.style.background='${evenBg}'">` +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-size:12px;">' + (esc(e.municipio)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-weight:600;font-size:12px;">' + (esc(e.nome)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#60a5fa;font-family:monospace;font-size:11px;white-space:nowrap;">' + (esc(e.inep)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#34d399;font-weight:700;text-align:right;font-size:12px;">' + (e.alunos ? parseInt(e.alunos).toLocaleString('pt-BR') : '-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:12px;">' + (esc(e.modalidade)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + localBadge(e.localidade) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-size:12px;">' + (esc(e.diretor)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + wa(e.contatoDiretor) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;">' +
+          '<a href="' + TE_SHEET_URL + '" target="_blank" rel="noopener" title="Editar no Google Sheets" ' +
+          'style="display:inline-flex;align-items:center;justify-content:center;background:rgba(26,115,232,0.2);border:1px solid rgba(26,115,232,0.4);color:#60a5fa;width:28px;height:28px;border-radius:6px;text-decoration:none;font-size:13px;" ' +
+          'onmouseover="this.style.background=\'rgba(26,115,232,0.4)\'" onmouseout="this.style.background=\'rgba(26,115,232,0.2)\'">✏️</a>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  _teRenderPaginacao(total, ini, fim);
+}
+
+function _teRenderPaginacao(total, ini, fim) {
+  const pgEl   = document.getElementById('te-pagination');
+  const infoEl = document.getElementById('te-pg-info');
+  const ctrlEl = document.getElementById('te-pg-controls');
+  if (!pgEl) return;
+  const totalPags = Math.ceil(total / _teItensPorPag);
+  if (totalPags <= 1) { pgEl.style.display = 'none'; return; }
+  pgEl.style.display = 'flex';
+  if (infoEl) infoEl.textContent = 'Mostrando ' + (ini+1) + '–' + fim + ' de ' + total.toLocaleString('pt-BR') + ' escolas';
+  if (ctrlEl) {
+    let html = '';
+    const btn = (lbl, p, dis, act) => '<button onclick="_teIrParaPagina(' + p + ')" style="padding:6px 12px;border-radius:6px;border:1px solid ' + (act?'#3b82f6':'var(--border)') + ';background:' + (act?'rgba(59,130,246,0.3)':'transparent') + ';color:' + (act?'#60a5fa':'var(--text-secondary)') + ';cursor:' + (dis?'default':'pointer') + ';opacity:' + (dis?'.4':'1') + ';font-size:13px;" ' + (dis?'disabled':'') + '>' + lbl + '</button>';
+    html += btn('‹', _tePagina-1, _tePagina===1, false);
+    const s = Math.max(1,_tePagina-2), en = Math.min(totalPags,_tePagina+2);
+    if (s>1) { html+=btn(1,1,false,false); if(s>2) html+='<span style="padding:0 4px;color:var(--text-muted);">…</span>'; }
+    for (let p=s;p<=en;p++) html+=btn(p,p,false,p===_tePagina);
+    if (en<totalPags) { if(en<totalPags-1) html+='<span style="padding:0 4px;color:var(--text-muted);">…</span>'; html+=btn(totalPags,totalPags,false,false); }
+    html += btn('›', _tePagina+1, _tePagina===totalPags, false);
+    ctrlEl.innerHTML = html;
+  }
+}
+
+function _teIrParaPagina(p) {
+  const tot = Math.ceil(_teFiltrados.length / _teItensPorPag);
+  if (p<1||p>tot) return;
+  _tePagina = p;
+  _teAtualizarUI();
+  const pg = document.getElementById('page-todas-escolas');
+  if (pg) pg.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.iniciarPaginaTodasEscolas  = iniciarPaginaTodasEscolas;
+window.recarregarTodasEscolas     = recarregarTodasEscolas;
+window.filtrarTodasEscolas        = filtrarTodasEscolas;
+window.limparFiltrosTodasEscolas  = limparFiltrosTodasEscolas;
+window._teIrParaPagina            = _teIrParaPagina;
+
+// -----------------------------------------------------
+// Lógica do Modal de Edição (Todas Escolas)
+// -----------------------------------------------------
+window.abrirTeModal = function(globalIdx) {
+  const e = _teFiltrados[globalIdx];
+  if (!e) return;
+  
+  document.getElementById('te-form-cache-idx').value = globalIdx;
+  document.getElementById('te-modal-titulo').textContent = `Editar: ${e.nome || 'Escola'}`;
+  
+  // Identificação
+  document.getElementById('te-form-nome').value = e.nome || '';
+  document.getElementById('te-form-municipio').value = e.municipio || '';
+  document.getElementById('te-form-inep').value = e.inep || '';
+  document.getElementById('te-form-alunos').value = e.alunos || '';
+  document.getElementById('te-form-modalidade').value = e.modalidade || '';
+  document.getElementById('te-form-localidade').value = e.localidade || '';
+  document.getElementById('te-form-super').value = e.super || '';
+  document.getElementById('te-form-competencia').value = e.competencia || '';
+  
+  // Gestão
+  document.getElementById('te-form-diretor').value = e.diretor || '';
+  document.getElementById('te-form-contato-diretor').value = e.contatoDiretor || '';
+  document.getElementById('te-form-telefone').value = e.telefone || '';
+  document.getElementById('te-form-email').value = e.email || '';
+  
+  // Secundários
+  document.getElementById('te-form-secretario').value = e.secretario || '';
+  document.getElementById('te-form-contato-sec').value = e.contatoSecretario || '';
+  document.getElementById('te-form-redes').value = e.redesSociais || '';
+  document.getElementById('te-form-cep').value = e.cep || '';
+  document.getElementById('te-form-endereco').value = e.endereco || '';
+  document.getElementById('te-form-bairro').value = e.bairro || '';
+  document.getElementById('te-form-complemento').value = e.complemento || '';
+  
+  // Infra
+  document.getElementById('te-form-salas-aula').value = e.salasAula || '';
+  document.getElementById('te-form-salas-adm').value = e.salasAdm || '';
+  document.getElementById('te-form-banheiros').value = e.banheiros || '';
+  document.getElementById('te-form-patio').value = e.patio || '';
+  document.getElementById('te-form-aee').value = e.salaAEE || '';
+  document.getElementById('te-form-quadra').value = e.quadra || '';
+  document.getElementById('te-form-refeitorio').value = e.refeitorio || '';
+  document.getElementById('te-form-auditorio').value = e.auditorio || '';
+  
+  // Link para o GSheets
+  document.getElementById('te-modal-sheets-link').href = TE_SHEET_URL;
+
+  // Reseta toggle
+  document.getElementById('te-form-secundarios').style.display = 'none';
+  document.getElementById('te-form-toggle-btn').innerHTML = '⬇️ Mostrar campos adicionais (Secretário, Endereço, Infraestrutura)';
+  
+  document.getElementById('te-modal-overlay').style.display = 'flex';
+};
+
+window.fecharTeModal = function() {
+  document.getElementById('te-modal-overlay').style.display = 'none';
+};
+
+window.teToggleCampos = function() {
+  const sec = document.getElementById('te-form-secundarios');
+  const btn = document.getElementById('te-form-toggle-btn');
+  if (sec.style.display === 'none') {
+    sec.style.display = 'block';
+    btn.innerHTML = '⬆️ Ocultar campos adicionais';
+  } else {
+    sec.style.display = 'none';
+    btn.innerHTML = '⬇️ Mostrar campos adicionais (Secretário, Endereço, Infraestrutura)';
+  }
+};
+
+window.salvarTeModal = function() {
+  const idx = parseInt(document.getElementById('te-form-cache-idx').value, 10);
+  if (isNaN(idx) || !_teFiltrados[idx]) return fecharTeModal();
+  
+  const e = _teFiltrados[idx];
+  
+  e.nome = document.getElementById('te-form-nome').value;
+  e.municipio = document.getElementById('te-form-municipio').value;
+  e.inep = document.getElementById('te-form-inep').value;
+  e.alunos = document.getElementById('te-form-alunos').value;
+  e.modalidade = document.getElementById('te-form-modalidade').value;
+  e.localidade = document.getElementById('te-form-localidade').value;
+  e.super = document.getElementById('te-form-super').value;
+  e.competencia = document.getElementById('te-form-competencia').value;
+  e.diretor = document.getElementById('te-form-diretor').value;
+  e.contatoDiretor = document.getElementById('te-form-contato-diretor').value;
+  e.telefone = document.getElementById('te-form-telefone').value;
+  e.email = document.getElementById('te-form-email').value;
+  e.secretario = document.getElementById('te-form-secretario').value;
+  e.contatoSecretario = document.getElementById('te-form-contato-sec').value;
+  e.redesSociais = document.getElementById('te-form-redes').value;
+  e.cep = document.getElementById('te-form-cep').value;
+  e.endereco = document.getElementById('te-form-endereco').value;
+  e.bairro = document.getElementById('te-form-bairro').value;
+  e.complemento = document.getElementById('te-form-complemento').value;
+  e.salasAula = document.getElementById('te-form-salas-aula').value;
+  e.salasAdm = document.getElementById('te-form-salas-adm').value;
+  e.banheiros = document.getElementById('te-form-banheiros').value;
+  e.patio = document.getElementById('te-form-patio').value;
+  e.salaAEE = document.getElementById('te-form-aee').value;
+  e.quadra = document.getElementById('te-form-quadra').value;
+  e.refeitorio = document.getElementById('te-form-refeitorio').value;
+  e.auditorio = document.getElementById('te-form-auditorio').value;
+  
+  _teAtualizarUI();
+  
+  if (typeof showToast === 'function') showToast('Alterações locais aplicadas!', 'success');
+  fecharTeModal();
+};
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const ov = document.getElementById('te-modal-overlay');
+    if (ov && ov.style.display === 'flex') {
+      fecharTeModal();
+    }
+  }
+});
