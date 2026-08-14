@@ -96,7 +96,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.49</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.52</div>
   </div>
 </div>
   
@@ -149,7 +149,7 @@
           Processos Repetidos
         </button>
 
-        <button class="nav-item" data-page="escolas">
+        <button class="nav-item" data-page="todas-escolas">
           <span class="nav-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </span>
@@ -160,17 +160,10 @@
           <span class="nav-icon">🗺️</span>
           Mapa de Escolas
         </button>
-
-        <button class="nav-item" data-page="todas-escolas">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-          </span>
-          Todas Escolas
-        </button>
       </nav>
 
       <div class="sidebar-footer">
-        GBZ - v1.0.49<br>
+        GBZ - v1.0.52<br>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -510,10 +503,14 @@
               <option value="nao">&#128994; Sem Alerta</option>
             </select>
             <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
-              <option value="">📌 MARCAÇÃO</option>
-              <option value="sim">⭐ Apenas Marcados</option>
-              <option value="nao">⚪ Não Marcados</option>
+              <option value="">&#128204; MARCA&Ccedil;&Atilde;O</option>
+              <option value="sim">&#11088; Apenas Marcados</option>
+              <option value="nao">&#9898; N&atilde;o Marcados</option>
             </select>
+            <button class="action-editor action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit', '_blank')" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981; padding: 0 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; height: 38px; transition: background 0.2s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.3)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.15)'" title="Acessar Planilha">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              PLANILHA
+            </button>
           </div>
           
           <!-- LINHA 5 -->
@@ -1582,9 +1579,9 @@
         <select id="mapa-filtro-competencia" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
           style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
           <option value="">COMPETÊNCIA</option>
-          <option value="Estadual" style="color: #3b82f6; font-weight: bold;">Estadual</option>
+          <option value="Estadual" style="color: #10b981; font-weight: bold;">Estadual</option>
           <option value="Municipal" style="color: #ef4444; font-weight: bold;">Municipal</option>
-          <option value="Federal" style="color: #10b981; font-weight: bold;">Federal</option>
+          <option value="Federal" style="color: #3b82f6; font-weight: bold;">Federal</option>
         </select>
         <select id="mapa-filtro-localizacao" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
           style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
@@ -1632,10 +1629,16 @@
           Recarregar
         </button>
         <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit?gid=1444558009#gid=1444558009"
-          target="_blank" rel="noopener"
+          target="_blank" rel="noopener" class="action-editor action-adm"
           style="background:linear-gradient(135deg,#1a73e8,#0d47a1);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(26,115,232,0.35);">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Editar no Google Sheets
+          Planilha Municipal
+        </a>
+        <a href="https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit"
+          target="_blank" rel="noopener" class="action-editor action-adm"
+          style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(16,185,129,0.35);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Planilha Estadual
         </a>
       </div>
     </div>
@@ -1672,7 +1675,7 @@
         </select>
         <select id="te-filtro-competencia" onchange="filtrarTodasEscolas()"
           style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-          <option value="">COMPETÊNCIA</option>
+          <option value="">COMPET&Ecirc;NCIA</option>
           <option value="Estadual">Estadual</option>
           <option value="Municipal">Municipal</option>
           <option value="Federal">Federal</option>

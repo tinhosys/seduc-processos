@@ -570,12 +570,12 @@ function _mapaRenderizarPinos() {
       </div>
     `;
 
-    let corPino = '#3b82f6'; // Azul padrão (Estadual)
-    const compStr = (escola.codigoSuper || '').toLowerCase();
+    let corPino = '#10b981'; // Verde padrão (Estadual)
+    const compStr = (escola.competencia || escola.codigoSuper || '').toLowerCase();
     if (compStr.includes('municipal')) {
       corPino = '#ef4444'; // Vermelho
     } else if (compStr.includes('federal')) {
-      corPino = '#10b981'; // Verde
+      corPino = '#3b82f6'; // Azul
     }
 
     const customIcon = L.divIcon({

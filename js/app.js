@@ -1,4 +1,4 @@
-﻿
+
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
@@ -4134,6 +4134,26 @@ async function buscarTodasEscolasGSheet() {
   const sigsVistos = new Set();
 
   try {
+    // Busca Estadual (1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E)
+    setBadge('⏳ Carregando Escolas Estaduais...', 'loading');
+    setLoadMsg('Carregando Escolas Estaduais', 'Buscando da planilha central');
+    try {
+      const urlEstadual = 'https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/gviz/tq?tqx=out:json&gid=0&nocache=' + Date.now();
+      const resEst = await fetch(urlEstadual);
+      if (resEst.ok) {
+        const textEst = await resEst.text();
+        const rowsEst = _teParseGviz(textEst, 'Estadual');
+        if (rowsEst && rowsEst.length > 0) {
+          rowsEst.forEach(r => { if (!r.competencia || r.competencia.trim() === '') r.competencia = 'Estadual'; });
+          totalLoaded += rowsEst.length;
+          _teAbas.push({ nome: 'Estadual', count: rowsEst.length });
+          _teCache.push(...rowsEst);
+        }
+      }
+    } catch(errEst) {
+      console.warn("Erro ao buscar estaduais", errEst);
+    }
+
     for (let batchStart = 0; batchStart < MUNICIPIOS_RO.length; batchStart += TE_BATCH_SIZE) {
       const batchMuns = MUNICIPIOS_RO.slice(batchStart, batchStart + TE_BATCH_SIZE);
 
