@@ -273,9 +273,10 @@ function _parseRowEstadual(row) {
   return {
     id: 'est_' + Math.random().toString(36).substr(2,9),
     competencia: 'Estadual',
+    codigoSuper: 'Estadual',
     super: val(1),
     municipio: val(2),
-    inep: val(3),
+    codigoInep: val(3),
     nome: val(4),
     localidade: val(5),
     endereco: val(6),
@@ -309,7 +310,7 @@ function _parseRowMunicipal(row) {
     nome: val(1),
     alunosModalidade: parseInt(val(2)) || 0,
     modalidadeStr: val(3),
-    inep: val(4),
+    codigoInep: val(4),
     endereco: val(5),
     bairro: val(6),
     complemento: val(7),
@@ -382,14 +383,15 @@ async function carregarEscolasAPI(silencioso) {
           const parsed = _parseRowMunicipal(r);
           if (!parsed) return;
           
-          const key = (parsed.inep && parsed.inep.length > 3) ? parsed.inep.trim() : parsed.nome.trim().toUpperCase();
+          const key = (parsed.codigoInep && parsed.codigoInep.length > 3) ? parsed.codigoInep.trim() : parsed.nome.trim().toUpperCase();
           if (!municipalMap.has(key)) {
              municipalMap.set(key, {
                id: 'mun_' + Math.random().toString(36).substr(2,9),
                competencia: 'Municipal',
+               codigoSuper: 'Municipal',
                municipio: parsed.municipio || batchMuns[i],
                nome: parsed.nome,
-               inep: parsed.inep,
+               codigoInep: parsed.codigoInep,
                endereco: parsed.endereco,
                bairro: parsed.bairro,
                complemento: parsed.complemento,
