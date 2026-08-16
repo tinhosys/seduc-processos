@@ -193,8 +193,8 @@ function _renderFormModalidadesGrid(containerId, mods) {
     var opts = _MODALIDADES_PADRAO.map(function(mp){ return '<option value="'+mp+'"'+(mp===m.modalidade?' selected':'')+'>'+mp+'</option>'; }).join('');
     return '<div class="mod-row" style="display:grid;grid-template-columns:1fr 90px 32px;gap:8px;align-items:center;margin-bottom:6px;">'
       +'<select class="mod-nome form-control" style="background:rgba(0,0,0,0.3);border-color:rgba(239,68,68,0.4);color:#f87171;font-weight:600;padding:7px 10px;">'+opts+'</select>'
-      +'<input type="number" class="mod-alunos form-control" value="'+(m.alunos||0)+'" min="0" style="background:rgba(0,0,0,0.3);border-color:rgba(52,211,153,0.4);color:#34d399;font-weight:700;text-align:right;" oninput="_recalcTotalModalidades(''+containerId+'')">'
-      +'<button type="button" onclick="this.closest('.mod-row').remove();_recalcTotalModalidades(''+containerId+'')" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#f87171;cursor:pointer;font-size:14px;width:32px;height:32px;">x</button>'
+      +'<input type="number" class="mod-alunos form-control" value="'+(m.alunos||0)+'" min="0" style="background:rgba(0,0,0,0.3);border-color:rgba(52,211,153,0.4);color:#34d399;font-weight:700;text-align:right;" oninput="_recalcTotalModalidades(\''+containerId+'\')">'
+      +'<button type="button" onclick="this.closest(\'.mod-row\').remove();_recalcTotalModalidades(\''+containerId+'\')" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#f87171;cursor:pointer;font-size:14px;width:32px;height:32px;">x</button>'
       +'</div>';
   }).join('');
   _recalcTotalModalidades(containerId);
@@ -215,8 +215,8 @@ function _adicionarModalidade(containerId) {
   row.style.cssText = 'display:grid;grid-template-columns:1fr 90px 32px;gap:8px;align-items:center;margin-bottom:6px;';
   var opts = _MODALIDADES_PADRAO.map(function(mp){ return '<option value="'+mp+'">'+mp+'</option>'; }).join('');
   row.innerHTML = '<select class="mod-nome form-control" style="background:rgba(0,0,0,0.3);border-color:rgba(239,68,68,0.4);color:#f87171;font-weight:600;padding:7px 10px;">'+opts+'</select>'
-    +'<input type="number" class="mod-alunos form-control" value="0" min="0" style="background:rgba(0,0,0,0.3);border-color:rgba(52,211,153,0.4);color:#34d399;font-weight:700;text-align:right;" oninput="_recalcTotalModalidades(''+containerId+'')">'
-    +'<button type="button" onclick="this.closest('.mod-row').remove();_recalcTotalModalidades(''+containerId+'')" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#f87171;cursor:pointer;font-size:14px;width:32px;height:32px;">x</button>';
+    +'<input type="number" class="mod-alunos form-control" value="0" min="0" style="background:rgba(0,0,0,0.3);border-color:rgba(52,211,153,0.4);color:#34d399;font-weight:700;text-align:right;" oninput="_recalcTotalModalidades(\''+containerId+'\')">'
+    +'<button type="button" onclick="this.closest(\'.mod-row\').remove();_recalcTotalModalidades(\''+containerId+'\')" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#f87171;cursor:pointer;font-size:14px;width:32px;height:32px;">x</button>';
   el.appendChild(row);
 }
 window._normalizarCompetencia  = _normalizarCompetencia;
