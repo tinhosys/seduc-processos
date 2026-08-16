@@ -96,7 +96,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.52</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.53</div>
   </div>
 </div>
   
@@ -163,7 +163,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        GBZ - v1.0.52<br>
+        GBZ - v1.0.53<br>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1131,15 +1131,16 @@
           <table style="table-layout:fixed; width:100%; min-width:1000px; border-collapse:separate; border-spacing:0; font-size:13px;">
             <thead>
               <tr style="background:var(--bg-secondary);">
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:60px;">Cód.</th>
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Super</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:110px;">Competência</th>
                 <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Município</th>
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:240px;">Nome da Escola</th>
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Localização</th>
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Telefone</th>
-                <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:80px;">Alunos</th>
-                <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:60px;">Salas</th>
-                <th style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:80px;">Ações</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:220px;">Nome da Escola</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:70px;">INEP</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:90px;">Localização</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:180px;">Super / Modalidades</th>
+                <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:70px;">Alunos</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:130px;">Diretor(a)</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Telefone</th>
+                <th style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:70px;">Ações</th>
               </tr></thead>
             <tbody id="table-escolas">
               <tr><td colspan="14" style="text-align:center;padding:48px;color:var(--text-muted);">
@@ -1530,11 +1531,36 @@
             </div>
           </div>
 
+          <!-- SEÇÃO MODALIDADES (só para Municipal) -->
+          <div id="secao-modalidades-modal" style="display:none; padding:18px; background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.03)); border:1px solid rgba(239,68,68,0.3); border-radius:12px; margin-bottom:18px;">
+            <div style="font-size:12px; font-weight:800; color:#f87171; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+              📚 <span>Modalidades e Matrículas (Municipal)</span>
+            </div>
+            <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
+              Informe a quantidade de alunos por modalidade de ensino desta escola municipal.
+            </div>
+
+            <!-- Grid de modalidades -->
+            <div id="modal-form-escola-modalidades" style="margin-bottom:10px;"></div>
+
+            <!-- Botão adicionar + total -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+              <button type="button" onclick="_adicionarModalidade('modal-form-escola-modalidades')"
+                style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.35); border-radius:8px; color:#f87171; padding:8px 16px; cursor:pointer; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:6px;">
+                + Adicionar Modalidade
+              </button>
+              <span id="modal-form-escola-modalidades-total" style="font-size:13px; font-weight:700; color:#34d399; background:rgba(52,211,153,0.1); border:1px solid rgba(52,211,153,0.3); border-radius:6px; padding:6px 12px;">
+                Total: 0 alunos
+              </span>
+            </div>
+          </div>
+
           <!-- Buttons -->
           <div style="display:flex; justify-content:flex-end; gap:12px; padding-top:16px; border-top:1px solid var(--border);">
             <button type="button" class="btn btn-ghost" onclick="fecharModalFormEscola()" style="padding:10px 20px;">Cancelar</button>
-            <button type="submit" class="btn btn-primary" id="btn-salvar-escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:10px 26px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">💾 Salvar Alteraçōes</button>
+            <button type="submit" class="btn btn-primary" id="btn-salvar-escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:10px 26px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">💾 Salvar Alterações</button>
           </div>
+
         </form>
       </div>
     </div>

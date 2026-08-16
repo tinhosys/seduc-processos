@@ -143,6 +143,88 @@ var _escolasFiltradas = [];
 var _escolasPaginaAtual = 1;
 var _escolasItensPorPagina = 50;
 
+// ---- HELPERS COMPETENCIA + MODALIDADES v1.0.53 ----
+function _normalizarCompetencia(v) {
+  if (!v) return '';
+  var s = String(v).trim().toLowerCase();
+  if (s === 'estadual') return 'Estadual';
+  if (s === 'municipal') return 'Municipal';
+  if (s === 'federal') return 'Federal';
+  return String(v).trim();
+}
+function _calcTotalAlunos(escola) {
+  if (Array.isArray(escola.modalidades) && escola.modalidades.length > 0)
+    return escola.modalidades.reduce(function(s,m){ return s+(Number(m.alunos)||0); }, 0);
+  if (typeof escola.modalidades === 'string' && escola.modalidades.trim().indexOf('[') === 0) {
+    try { var p=JSON.parse(escola.modalidades); if(Array.isArray(p)) return p.reduce(function(s,m){return s+(Number(m.alunos)||0);},0); } catch(e) {}
+  }
+  return Number(escola.totalMatricula) || 0;
+}
+function _getModalidades(escola) {
+  if (Array.isArray(escola.modalidades) && escola.modalidades.length > 0) return escola.modalidades;
+  if (typeof escola.modalidades === 'string' && escola.modalidades.trim().indexOf('[') === 0) {
+    try { return JSON.parse(escola.modalidades); } catch(e) {}
+  }
+  return [];
+}
+var _COMP_STYLES = {
+  'Estadual':  { bg:'rgba(16,185,129,0.15)',color:'#34d399',border:'rgba(16,185,129,0.35)' },
+  'Municipal': { bg:'rgba(239,68,68,0.15)', color:'#f87171',border:'rgba(239,68,68,0.35)' },
+  'Federal':   { bg:'rgba(59,130,246,0.15)',color:'#60a5fa',border:'rgba(59,130,246,0.35)' }
+};
+var _MODALIDADES_PADRAO = ['Creche','Educacao Infantil','Ensino Fundamental','Ensino Medio','EJA (Fund.)','EJA (Medio)','AEE','Educacao Profissional'];
+function _renderCompetenciaBadge(comp) {
+  var c = _normalizarCompetencia(comp);
+  var st = _COMP_STYLES[c] || {bg:'rgba(255,255,255,0.06)',color:'var(--text-muted)',border:'rgba(255,255,255,0.1)'};
+  return '<span style="display:inline-flex;align-items:center;padding:3px 9px;border-radius:5px;font-size:11px;font-weight:800;background:'+st.bg+';color:'+st.color+';border:1px solid '+st.border+';white-space:nowrap;">'+(c||comp||'-')+'</span>';
+}
+function _renderModalidadesGrid(escola) {
+  var mods = _getModalidades(escola);
+  if (!mods || mods.length === 0) return '<span style="color:var(--text-muted);font-size:11px;">-</span>';
+  return '<div style="display:flex;flex-wrap:wrap;gap:4px;">'+mods.map(function(m){
+    return '<span style="display:inline-flex;align-items:center;gap:3px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:4px;padding:2px 7px;font-size:10px;color:#fca5a5;white-space:nowrap;"><b style="color:#f0f4ff;">'+(Number(m.alunos)||0)+'</b> '+m.modalidade+'</span>';
+  }).join('')+'</div>';
+}
+function _renderFormModalidadesGrid(containerId, mods) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  if (!mods || mods.length === 0) mods = [];
+  el.innerHTML = mods.map(function(m,i){
+    var opts = _MODALIDADES_PADRAO.map(function(mp){ return '<option value="'+mp+'"'+(mp===m.modalidade?' selected':'')+'>'+mp+'</option>'; }).join('');
+    return '<div class="mod-row" style="display:grid;grid-template-columns:1fr 90px 32px;gap:8px;align-items:center;margin-bottom:6px;">'
+      +'<select class="mod-nome form-control" style="background:rgba(0,0,0,0.3);border-color:rgba(239,68,68,0.4);color:#f87171;font-weight:600;padding:7px 10px;">'+opts+'</select>'
+      +'<input type="number" class="mod-alunos form-control" value="'+(m.alunos||0)+'" min="0" style="background:rgba(0,0,0,0.3);border-color:rgba(52,211,153,0.4);color:#34d399;font-weight:700;text-align:right;" oninput="_recalcTotalModalidades(''+containerId+'')">'
+      +'<button type="button" onclick="this.closest('.mod-row').remove();_recalcTotalModalidades(''+containerId+'')" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#f87171;cursor:pointer;font-size:14px;width:32px;height:32px;">x</button>'
+      +'</div>';
+  }).join('');
+  _recalcTotalModalidades(containerId);
+}
+function _recalcTotalModalidades(containerId) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  var total = 0;
+  el.querySelectorAll('.mod-alunos').forEach(function(inp){ total += Number(inp.value)||0; });
+  var tot = document.getElementById(containerId+'-total');
+  if (tot) tot.textContent = 'Total: '+total.toLocaleString('pt-BR')+' alunos';
+}
+function _adicionarModalidade(containerId) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+  var row = document.createElement('div');
+  row.className = 'mod-row';
+  row.style.cssText = 'display:grid;grid-template-columns:1fr 90px 32px;gap:8px;align-items:center;margin-bottom:6px;';
+  var opts = _MODALIDADES_PADRAO.map(function(mp){ return '<option value="'+mp+'">'+mp+'</option>'; }).join('');
+  row.innerHTML = '<select class="mod-nome form-control" style="background:rgba(0,0,0,0.3);border-color:rgba(239,68,68,0.4);color:#f87171;font-weight:600;padding:7px 10px;">'+opts+'</select>'
+    +'<input type="number" class="mod-alunos form-control" value="0" min="0" style="background:rgba(0,0,0,0.3);border-color:rgba(52,211,153,0.4);color:#34d399;font-weight:700;text-align:right;" oninput="_recalcTotalModalidades(''+containerId+'')">'
+    +'<button type="button" onclick="this.closest('.mod-row').remove();_recalcTotalModalidades(''+containerId+'')" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.3);border-radius:6px;color:#f87171;cursor:pointer;font-size:14px;width:32px;height:32px;">x</button>';
+  el.appendChild(row);
+}
+window._normalizarCompetencia  = _normalizarCompetencia;
+window._calcTotalAlunos        = _calcTotalAlunos;
+window._adicionarModalidade    = _adicionarModalidade;
+window._recalcTotalModalidades = _recalcTotalModalidades;
+
+
 // ---- INICIALIZAR PÁGINA ----
 function iniciarPaginaEscolas() {
   if (_escolasCache.length > 0) {
@@ -219,7 +301,7 @@ function _escolasPopularFiltros() {
     if (!selMun || !selLoc) return;
     const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
     const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
-    const competencias = [...new Set(_escolasCache.map(e => e.codigoSuper).filter(Boolean))].sort();
+    const competencias = ['Estadual', 'Municipal', 'Federal'];
     
     selMun.innerHTML = '<option value="">MUNICÍPIO</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
     selLoc.innerHTML = '<option value="">LOCALIZAÇÃO</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
@@ -247,7 +329,7 @@ function _escolasAtualizarBadges() {
   const badgeSalas   = document.getElementById('escolas-salas-badge');
 
   const totalEscolas = _escolasFiltradas.length;
-  const totalAlunos  = _escolasFiltradas.reduce((acc, e) => acc + (Number(e.totalMatricula) || 0), 0);
+  const totalAlunos  = _escolasFiltradas.reduce((acc, e) => acc + _calcTotalAlunos(e), 0);
   const totalSalas   = _escolasFiltradas.reduce((acc, e) => acc + (Number(e.salas) || 0), 0);
 
   if (badgeEscolas) badgeEscolas.textContent = '🏫 ' + totalEscolas.toLocaleString('pt-BR') + ' Escolas';
@@ -272,13 +354,13 @@ function filtrarEscolas(manterPagina = false) {
     _escolasFiltradas = _escolasCache.filter(e => {
       if (mun && e.municipio !== mun) return false;
       if (loc && e.localizacao !== loc) return false;
-      if (comp && e.codigoSuper !== comp) return false;
+      if (comp && _normalizarCompetencia(e.codigoSuper) !== comp) return false;
       if (sup) {
         const eSup = (e.super || e.codigoSuper || '').toString().trim();
         if (eSup !== sup) return false;
       }
       if (busca) {
-        const texto = [e.nome, e.municipio, e.super, e.codigoSuper].join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+        const texto = [e.nome, e.municipio, e.super, _normalizarCompetencia(e.codigoSuper), e.codigoInep, e.diretor].join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
         if (!texto.includes(busca)) return false;
     }
     return true;
@@ -366,14 +448,16 @@ function _escolasRenderTabela() {
     const bairro = e.bairro  || '-';
     const comp = e.complemento || '-';
     const end  = [e.endereco].filter(Boolean).join(', ') || '-';
-    const mat  = e.totalMatricula > 0 ? Number(e.totalMatricula).toLocaleString('pt-BR') : '-';
+    const _eCompT = _normalizarCompetencia(e.codigoSuper);
+    const _totalA = _calcTotalAlunos(e);
+    const mat  = _totalA > 0 ? _totalA.toLocaleString('pt-BR') : '-';
     const sal  = e.salas > 0 ? e.salas : '-';
 
     return '<tr style="cursor:pointer;" onclick="abrirModalEscola(' + gi + ')" ondblclick="abrirFormEscola(' + gi + ')" title="Clique para ver detalhes | Duplo clique para editar"' +
       ' onmouseover="this.style.background=\'rgba(139,92,246,0.07)\'"' +
       ' onmouseout="this.style.background=\'\'">' +
-      '<td style="font-family:monospace;font-size:12px;color:#a78bfa;font-weight:600">' + (e.codigoSuper || '-') + '</td>' +
-      '<td style="font-size:12px;color:var(--text-secondary)">' + (e.super || '-') + '</td>' +
+      '<td>' + _renderCompetenciaBadge(e.codigoSuper) + '</td>' +
+      (_eCompT === 'Municipal' ? '<td style="max-width:220px;">' + _renderModalidadesGrid(e) + '</td>' : '<td style="font-size:12px;color:var(--text-secondary)">' + (e.super || '-') + '</td>') +
       '<td style="font-weight:600;color:var(--text-primary)">' + (e.municipio || '-') + '</td>' +
       '<td style="font-weight:600;color:#f0f4ff;white-space:normal;line-height:1.4;max-width:220px">' + (e.nome || '-') + '</td>' +
       '<td>' + locBadge + '</td>' +
@@ -520,7 +604,7 @@ function abrirModalEscola(idx) {
       '</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0 28px">' +
         '<div>' +
-          field('Competência', escola.codigoSuper, '#a78bfa') +
+          field('Competência', _normalizarCompetencia(escola.codigoSuper)||escola.codigoSuper, '#a78bfa') +
           field('Super', escola.super) +
           field('Município', escola.municipio, '#f0f4ff') +
           field('Código INEP', escola.codigoInep, '#60a5fa') +
@@ -534,7 +618,7 @@ function abrirModalEscola(idx) {
           field('Bairro', escola.bairro) +
           field('CEP', escola.cep) +
           field('Telefone da Escola', escola.telefone, '#60a5fa') +
-          field('Total de Matrículas', escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '-', '#34d399') +
+          field('Total de Matrículas', _calcTotalAlunos(escola) > 0 ? _calcTotalAlunos(escola).toLocaleString('pt-BR') : '-', '#34d399') +
           field('Salas de Aula Utilizadas', escola.salas > 0 ? escola.salas : '-', '#60a5fa') +
         '</div>' +
       '</div>' +
@@ -599,7 +683,7 @@ function _preencherFormEscola(escola) {
   set('form-escola-municipio', escola.municipio);
   set('form-escola-localizacao', escola.localizacao);
   set('form-escola-inep', escola.codigoInep);
-  set('form-escola-codigoSuper', escola.codigoSuper);
+  set('form-escola-codigoSuper', _normalizarCompetencia(escola.codigoSuper) || escola.codigoSuper);
   set('form-escola-super', escola.super);
   set('form-escola-endereco', escola.endereco);
   set('form-escola-complemento', escola.complemento);
@@ -614,6 +698,15 @@ function _preencherFormEscola(escola) {
   set('form-escola-contatoSecretario', escola.contatoSecretario || '');
   set('form-escola-email', escola.email || '');
   set('form-escola-redesSociais', escola.redesSociais || escola.instagram || escola.facebook || '');
+
+  // Modalidades grid (modal form)
+  if (typeof _renderFormModalidadesGrid === 'function') {
+    _renderFormModalidadesGrid('modal-form-escola-modalidades', _getModalidades(escola));
+    var _smModal = document.getElementById('secao-modalidades-modal');
+    if (_smModal) _smModal.style.display = _normalizarCompetencia(escola.codigoSuper) === 'Municipal' ? 'block' : 'none';
+    var _scModal = document.getElementById('form-escola-codigoSuper');
+    if (_scModal && !_scModal._modL) { _scModal._modL=true; _scModal.addEventListener('change',function(){ var sm=document.getElementById('secao-modalidades-modal'); if(sm) sm.style.display=_normalizarCompetencia(this.value)==='Municipal'?'block':'none'; }); }
+  }
 
   const titulo = document.getElementById('form-escola-titulo');
   if (titulo) titulo.innerHTML = '✏️ Editar Dados da Escola';
@@ -641,26 +734,38 @@ async function salvarEscola(evt) {
   const url = base + (id ? '/api/escolas/' + id : '/api/escolas');
 
   const g = (sel) => { const el = document.getElementById(sel); return el ? el.value.trim() : ''; };
+  // Coletar modalidades do grid
+  var _modsEls = document.querySelectorAll('#modal-form-escola-modalidades .mod-row');
+  var _modalidades = [];
+  _modsEls.forEach(function(row) {
+    var mod=(row.querySelector('.mod-nome')||{}).value; var al=(row.querySelector('.mod-alunos')||{}).value;
+    if(mod&&mod.trim()) _modalidades.push({modalidade:mod.trim(),alunos:Number(al)||0});
+  });
+  var _totalCalc = _modalidades.length>0
+    ? _modalidades.reduce(function(s,m){return s+m.alunos;},0)
+    : Number(g('form-escola-matriculas'))||0;
+
   const data = {
-    nome:           g('form-escola-nome'),
-    municipio:      g('form-escola-municipio'),
-    localizacao:    g('form-escola-localizacao'),
-    codigoInep:     g('form-escola-inep'),
-    codigoSuper:    g('form-escola-codigoSuper'),
-    super:          g('form-escola-super'),
-    endereco:       g('form-escola-endereco'),
-    complemento:    g('form-escola-complemento'),
-    bairro:         g('form-escola-bairro'),
-    cep:            g('form-escola-cep'),
-    telefone:       g('form-escola-telefone'),
-    totalMatricula: g('form-escola-matriculas'),
-    salas:          g('form-escola-salas'),
-    diretor:        g('form-escola-diretor'),
-    contatoDiretor: g('form-escola-contatoDiretor') || g('form-escola-telefone'),
-    secretario:     g('form-escola-secretario'),
+    nome:              g('form-escola-nome'),
+    municipio:         g('form-escola-municipio'),
+    localizacao:       g('form-escola-localizacao'),
+    codigoInep:        g('form-escola-inep'),
+    codigoSuper:       _normalizarCompetencia(g('form-escola-codigoSuper')) || g('form-escola-codigoSuper'),
+    super:             g('form-escola-super'),
+    endereco:          g('form-escola-endereco'),
+    complemento:       g('form-escola-complemento'),
+    bairro:            g('form-escola-bairro'),
+    cep:               g('form-escola-cep'),
+    telefone:          g('form-escola-telefone'),
+    totalMatricula:    _totalCalc,
+    salas:             g('form-escola-salas'),
+    diretor:           g('form-escola-diretor'),
+    contatoDiretor:    g('form-escola-contatoDiretor') || g('form-escola-telefone'),
+    secretario:        g('form-escola-secretario'),
     contatoSecretario: g('form-escola-contatoSecretario'),
-    email:          g('form-escola-email'),
-    redesSociais:   g('form-escola-redesSociais')
+    email:             g('form-escola-email'),
+    redesSociais:      g('form-escola-redesSociais'),
+    modalidades:       _modalidades.length>0 ? JSON.stringify(_modalidades) : ''
   };
 
   const btn = document.getElementById('btn-salvar-escola');
@@ -785,7 +890,7 @@ window.imprimirRelatorioEscolas = function() {
     
     let tMat = 0, tSal = 0;
     _escolasFiltradas.forEach(e => {
-      tMat += Number(e.totalMatricula) || 0;
+      tMat += _calcTotalAlunos(e);
       tSal += Number(e.salas) || 0;
     });
     
