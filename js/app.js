@@ -161,6 +161,7 @@ function toast(msg, tipo = 'info') {
   document.getElementById('toast-container').appendChild(div);
   setTimeout(() => div.remove(), 4000);
 }
+window.showToast = toast;
 
 // ---- DASHBOARD ----
 let chartStatus = null;
@@ -537,31 +538,34 @@ function renderDashboard() {
     munWrapper.style.height = requiredHeight + 'px';
   }
 
-  const ctxMun = document.getElementById('chart-municipio').getContext('2d');
-  if (chartMunicipio) chartMunicipio.destroy();
-  chartMunicipio = new Chart(ctxMun, {
-    type: 'bar',
-    data: {
-      labels: allMun.map(([m]) => m.length > 18 ? m.slice(0,18)+'…' : m),
-      datasets: [{
-        label: 'Valor (R$)',
-        data: allMun.map(([,v]) => v),
-        backgroundColor: 'rgba(59,130,246,0.7)',
-        borderRadius: 6,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      indexAxis: 'y',
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { color: '#64748b', callback: v => 'R$ ' + (v/1e6).toFixed(1)+'M' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+  const chartMunEl = document.getElementById('chart-municipio');
+  if (chartMunEl) {
+    const ctxMun = chartMunEl.getContext('2d');
+    if (chartMunicipio) chartMunicipio.destroy();
+    chartMunicipio = new Chart(ctxMun, {
+      type: 'bar',
+      data: {
+        labels: allMun.map(([m]) => m.length > 18 ? m.slice(0,18)+'…' : m),
+        datasets: [{
+          label: 'Valor (R$)',
+          data: allMun.map(([,v]) => v),
+          backgroundColor: 'rgba(59,130,246,0.7)',
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: '#64748b', callback: v => 'R$ ' + (v/1e6).toFixed(1)+'M' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+          y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+        }
       }
-    }
-  });
+    });
+  }
 
   // Gráfico: Prefixo (LT, Cgoi, IeCH, ClJs...)
     const prefixoCounts = {};
@@ -2030,16 +2034,15 @@ document.addEventListener('DOMContentLoaded', () => {
     renderProcessos();
   };
 
-  document.getElementById('filtro-prefixo').addEventListener('change', () => aplicarFiltro('prefixo', null));
-
-  document.getElementById('filtro-busca').addEventListener('input', e => aplicarFiltro('busca', e.target.value));
-  document.getElementById('filtro-status').addEventListener('change', () => aplicarFiltro('status', null));
-  document.getElementById('filtro-localizacao').addEventListener('change', () => aplicarFiltro('localizacao', null));
+  document.getElementById('filtro-prefixo')?.addEventListener('change', () => aplicarFiltro('prefixo', null));
+  document.getElementById('filtro-busca')?.addEventListener('input', e => aplicarFiltro('busca', e.target.value));
+  document.getElementById('filtro-status')?.addEventListener('change', () => aplicarFiltro('status', null));
+  document.getElementById('filtro-localizacao')?.addEventListener('change', () => aplicarFiltro('localizacao', null));
   document.getElementById('filtro-super')?.addEventListener('change', () => aplicarFiltro('super', null));
-  document.getElementById('filtro-municipio').addEventListener('change', () => aplicarFiltro('municipio', null));
-  document.getElementById('filtro-objeto').addEventListener('change', () => aplicarFiltro('objeto', null));
-  document.getElementById('filtro-categoria').addEventListener('change', () => aplicarFiltro('categoria', null));
-  document.getElementById('filtro-tipo').addEventListener('change', () => aplicarFiltro('tipo', null));
+  document.getElementById('filtro-municipio')?.addEventListener('change', () => aplicarFiltro('municipio', null));
+  document.getElementById('filtro-objeto')?.addEventListener('change', () => aplicarFiltro('objeto', null));
+  document.getElementById('filtro-categoria')?.addEventListener('change', () => aplicarFiltro('categoria', null));
+  document.getElementById('filtro-tipo')?.addEventListener('change', () => aplicarFiltro('tipo', null));
   const filtroAnoEl = document.getElementById('filtro-ano');
   if (filtroAnoEl) {
     filtroAnoEl.addEventListener('change', () => aplicarFiltro('ano', null));
@@ -3506,152 +3509,6 @@ window.getTypeBadge = getTypeBadge;
 // MÓDULO: ESCOLAS (ADM ONLY)
 // ============================================================
 
-var _escolasCache = [];         // Todos os dados carregados
-var _escolasFiltradas = [];     // Dados após filtros
-var _escolasPaginaAtual = 1;
-var _escolasItensPorPagina = 50;
-
-// Inicializa a página
-function iniciarPaginaEscolas() {
-  if (_escolasCache.length > 0) {
-    _escolasAtualizarUI();
-    return;
-  }
-  buscarEscolasSheet(true);
-}
-
-// Recarrega forçando nova busca
-function recarregarEscolas() {
-  _escolasCache = [];
-  _escolasFiltradas = [];
-  buscarEscolasSheet(false);
-}
-
-// Busca dados da aba "escolas" via API Backend
-async function buscarEscolasSheet(silencioso) {
-  const emptyEl = document.getElementById('escolas-empty');
-  const tableWrap = document.getElementById('escolas-table-wrap');
-  
-  if (!silencioso) showToast("Buscando dados das escolas...", "info");
-  
-  try {
-    const res = await fetch(API_BASE + '/api/escolas', { headers: getHeaders() });
-    if (!res.ok) throw new Error('Status ' + res.status);
-    const data = await res.json();
-
-    _escolasCache = data.rows || [];
-    
-    if (!silencioso) showToast(_escolasCache.length + " escolas carregadas!", "success");
-
-    _escolasPopularFiltros();
-    _escolasFiltradas = [..._escolasCache];
-    _escolasPaginaAtual = 1;
-    _escolasAtualizarUI();
-  } catch (err) {
-    console.error('[Escolas]', err);
-    showToast("Erro ao buscar escolas: " + err.message, "error");
-    _escolasEsconderTabela();
-  }
-}
-
-// Parser CSV com suporte a campos entre aspas
-function _parseCsvEscolas(text) {
-  const rows = [];
-  const lines = text.split(/\r?\n/);
-  for (const line of lines) {
-    if (!line.trim()) continue;
-    const fields = [];
-    let cur = '', inQuote = false;
-    for (let i = 0; i < line.length; i++) {
-      const ch = line[i];
-      if (ch === '"') {
-        if (inQuote && line[i + 1] === '"') { cur += '"'; i++; }
-        else { inQuote = !inQuote; }
-      } else if (ch === ',' && !inQuote) {
-        fields.push(cur); cur = '';
-      } else { cur += ch; }
-    }
-    fields.push(cur);
-    rows.push(fields);
-  }
-  return rows;
-}
-
-// Popula selects de filtro
-function _escolasPopularFiltros() {
-  const selMun = document.getElementById('escolas-filtro-municipio');
-  const selLoc = document.getElementById('escolas-filtro-localizacao');
-  if (!selMun || !selLoc) return;
-  const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
-  const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
-  selMun.innerHTML = '<option value="****">Município</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
-  selLoc.innerHTML = '<option value="****">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
-  if (selSup) selSup.innerHTML = '<option value="****">Supervisão</option>' + supers.map(s => '<option value="' + s + '">' + s + '</option>').join('');
-}
-
-// Aplica filtros
-function filtrarEscolas(manterPagina = false) {
-  const busca = normalizar(document.getElementById('escolas-busca')?.value || '');
-  let mun   = document.getElementById('escolas-filtro-municipio')?.value || '';
-  if (mun.includes('***')) mun = '';
-  let loc   = document.getElementById('escolas-filtro-localizacao')?.value || '';
-  if (loc.includes('***')) loc = '';
-  let sup   = document.getElementById('escolas-filtro-super')?.value || '';
-  if (sup.includes('***')) sup = '';
-  
-  _escolasFiltradas = _escolasCache.filter(e => {
-    if (mun && e.municipio !== mun) return false;
-    if (loc && e.localizacao !== loc) return false;
-    if (sup && e.super !== sup) return false;
-    if (state.filtros.municipio && state.filtros.municipio.length > 0) {
-      if (!state.filtros.municipio.includes(e.municipio)) return false;
-    }
-    if (state.filtros.super && state.filtros.super.length > 0) {
-      if (!state.filtros.super.includes(e.super)) return false;
-    }
-    if (busca) {
-      const texto = normalizar([e.nome, e.municipio, e.codigoInep, e.super, e.bairro].join(' '));
-      if (!texto.includes(busca)) return false;
-    }
-    return true;
-  });
-  if (!manterPagina) _escolasPaginaAtual = 1;
-  _escolasRenderTabela();
-  _escolasRenderPaginacao();
-}
-
-// Limpa filtros
-function limparFiltrosEscolas() {
-  ['escolas-busca', 'escolas-filtro-municipio', 'escolas-filtro-localizacao'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = el.tagName === 'SELECT' ? '****' : '';
-  });
-  _escolasFiltradas = [..._escolasCache];
-  _escolasPaginaAtual = 1;
-  _escolasRenderTabela();
-  _escolasRenderPaginacao();
-}
-
-// Atualiza toda a UI
-function _escolasAtualizarUI() {
-  const temDados  = _escolasCache.length > 0;
-  const filtrosEl = document.getElementById('escolas-filtros');
-  const tableWrap = document.getElementById('escolas-table-wrap');
-  const pagination = document.getElementById('escolas-pagination');
-  const badgeEl   = document.getElementById('escolas-badge');
-  const emptyEl   = document.getElementById('escolas-empty');
-
-  if (filtrosEl) filtrosEl.style.display  = temDados ? 'flex' : 'none';
-  if (tableWrap) tableWrap.style.display  = temDados ? '' : 'none';
-  if (pagination) pagination.style.display = temDados ? '' : 'none';
-  if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
-
-  if (!temDados) return;
-  if (badgeEl) badgeEl.textContent = '�� ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
-  if (_escolasFiltradas.length === 0) _escolasFiltradas = [..._escolasCache];
-  _escolasRenderTabela();
-  _escolasRenderPaginacao();
-}
 function inserirDataHoje() {
   const dateInput = document.getElementById('form-data');
   if (dateInput) {

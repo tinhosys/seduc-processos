@@ -96,7 +96,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.56</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.67</div>
   </div>
 </div>
   
@@ -163,7 +163,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        GBZ - v1.0.56<br>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.67</div>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -308,7 +308,7 @@
         <div class="prefixo-loc-grid">
           <div class="card" style="display: flex; flex-direction: column; height: 500px;">
             <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
-              🏙️ Municípios por Valor</h4>
+              🏙️ MUNICÍPIOs por Valor</h4>
             <div style="flex: 1; overflow-y: auto; height: 100%; min-height: 0; padding-right: 4px;">
               <div id="chart-municipio-wrapper" style="position: relative; height: 100%;">
                 <canvas id="chart-municipio"></canvas>
@@ -429,7 +429,7 @@
           <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
             <div class="search-box" style="flex:1; min-width:250px;">
               <span class="search-icon">🔍</span>
-              <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, município...">
+              <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, MUNICÍPIO...">
             </div>
             <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
               <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÃO:</span>
@@ -507,7 +507,7 @@
               <option value="sim">&#11088; Apenas Marcados</option>
               <option value="nao">&#9898; N&atilde;o Marcados</option>
             </select>
-            <button class="action-editor action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit', '_blank')" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981; padding: 0 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; height: 38px; transition: background 0.2s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.3)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.15)'" title="Acessar Planilha">
+            <button class="action-editor action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit', '_blank')" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981; padding: 0 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; height: 38px; transition: background 0.2s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.3)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.15)'" title="Acessar Planilha">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               PLANILHA
             </button>
@@ -530,7 +530,7 @@
             <thead>
               <tr>
                 <th data-sort="prefixo" style="width: 140px; min-width: 140px;">Prefixo</th>
-                <th data-sort="municipio" style="width: 120px;">Município</th>
+                <th data-sort="MUNICÍPIO" style="width: 120px;">MUNICÍPIO</th>
                 <th data-sort="numero" style="width: 165px; min-width: 165px;">Nº Processo</th>
                 <th data-sort="interessado" style="width: 25%;">Interessado</th>
                 <th data-sort="objeto" style="width: 25%;">Objeto</th>
@@ -676,7 +676,7 @@
               </div>
 
               <div class="form-group">
-                <label for="form-municipio">Município *</label>
+                <label for="form-municipio">MUNICÍPIO *</label>
                 <input type="text" id="form-municipio" placeholder="Ex: Porto Velho" required list="list-municipios">
                 <datalist id="list-municipios"></datalist>
               </div>
@@ -835,13 +835,13 @@
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🎭 AUDITÓRIO</label>
-                  <input type="text" id="form-auditorio" class="form-control" placeholder="Ex: Sim / Não" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🎭 Auditório</label>
+                  <input type="text" id="form-Auditório" class="form-control" placeholder="Ex: Sim / Não" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📋 TIPO AUDITÓRIO</label>
-                  <input type="text" id="form-tipoAuditorio" class="form-control" placeholder="Ex: Climatizado / Com Palco" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📋 TIPO Auditório</label>
+                  <input type="text" id="form-tipoAuditório" class="form-control" placeholder="Ex: Climatizado / Com Palco" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
@@ -850,13 +850,13 @@
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌳 PÁTIO</label>
-                  <input type="text" id="form-patio" class="form-control" placeholder="Ex: Coberto / Descoberto" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌳 Pátio</label>
+                  <input type="text" id="form-Pátio" class="form-control" placeholder="Ex: Coberto / Descoberto" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🍽️ REFEITÓRIO</label>
-                  <input type="text" id="form-refeitorio" class="form-control" placeholder="Ex: Completo / Cozinha" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🍽️ Refeitório</label>
+                  <input type="text" id="form-Refeitório" class="form-control" placeholder="Ex: Completo / Cozinha" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
@@ -922,7 +922,7 @@
           <h4 style="margin-bottom:12px;font-size:14px">📋 Colunas esperadas na planilha:</h4>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
             <div class="badge badge-AUTORIZADO">Prefixo</div>
-            <div class="badge badge-AUTORIZADO">Município</div>
+            <div class="badge badge-AUTORIZADO">MUNICÍPIO</div>
             <div class="badge badge-AUTORIZADO">Processo</div>
             <div class="badge badge-AUTORIZADO">Interessado</div>
             <div class="badge badge-AUTORIZADO">Objeto</div>
@@ -1053,7 +1053,7 @@
               <tr style="background: var(--bg-secondary); border-bottom: 1px solid var(--border);">
                 <th style="padding: 12px; width: 60px; text-align: center;">Expandir</th>
                 <th style="padding: 12px; width: 12%;">Prefixo</th>
-                <th style="padding: 12px; width: 15%;">Município</th>
+                <th style="padding: 12px; width: 15%;">MUNICÍPIO</th>
                 <th style="padding: 12px; width: 25%;">Entidade / Interessado</th>
                 <th style="padding: 12px; width: 28%;">Objeto</th>
                 <th style="padding: 12px; width: 10%;">Status</th>
@@ -1083,17 +1083,11 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
               Recarregar
             </button>
-            <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit?gid=1444558009#gid=1444558009"
-              target="_blank" rel="noopener" class="action-editor action-adm"
-              style="background:linear-gradient(135deg,#1a73e8,#0d47a1);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(26,115,232,0.35);">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Planilha Municipal
-            </a>
-            <a href="https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit"
+            <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit"
               target="_blank" rel="noopener" class="action-editor action-adm"
               style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(16,185,129,0.35);">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Planilha Estadual
+              Acessar Planilha
             </a>
             <button class="btn action-adm" onclick="if(typeof imprimirRelatorioEscolas==='function') imprimirRelatorioEscolas()" style="padding:10px 16px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Relatório de Escolas">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÓRIO</span>
@@ -1103,36 +1097,89 @@
 
         <!-- Filtros e Busca -->
         <div id="escolas-filtros" style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
-          <!-- Linha 1 -->
+          <!-- Linha 1: busca -->
           <div style="display:flex; width:100%;">
             <div style="position:relative; flex:1;">
               <input type="text" id="escolas-busca"
-                placeholder="Buscar por nome, município..."
+                placeholder="Buscar por nome, MUNICÍPIO, INEP, diretor..."
                 oninput="filtrarEscolas()"
                 style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
               <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
             </div>
           </div>
-          <!-- Linha 2 -->
+          <!-- Linha 2: checklist combos -->
           <div style="display:flex; flex-wrap:wrap; gap:10px; width:100%;">
-            <select id="escolas-filtro-super" onchange="filtrarEscolas()"
-              style="flex:1; min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;">
-              <option value="">SUPER</option>
-            </select>
-            <select id="escolas-filtro-municipio" onchange="filtrarEscolas()"
-              style="flex:1; min-width:180px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-              <option value="">MUNICÍPIO</option>
-            </select>
-            <select id="escolas-filtro-competencia" onchange="filtrarEscolas()"
-              style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-              <option value="">COMPETÊNCIA</option>
-            </select>
-            <select id="escolas-filtro-localizacao" onchange="filtrarEscolas()"
-              style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-              <option value="">LOCALIZAÇÃO</option>
-            </select>
+
+            <!-- SUPER -->
+            <div class="esc-chk-wrap" id="chk-wrap-super" style="position:relative;flex:1;min-width:170px;">
+              <button type="button" class="esc-chk-btn" id="chk-btn-super" onclick="_escolasToggleDropdown('super')"
+                style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;text-align:left;">
+                <span id="chk-label-super">SUPER</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
+              </button>
+              <div id="chk-drop-super" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:240px;max-width:340px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
+                <div style="padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                  <input type="text" placeholder="Buscar..." oninput="_escolasFiltrarOpcoes('super',this.value)"
+                    style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;">
+                </div>
+                <div id="chk-list-super" style="padding:4px 0;"></div>
+              </div>
+            </div>
+
+            <!-- MUNICÍPIO -->
+            <div class="esc-chk-wrap" id="chk-wrap-municipio" style="position:relative;flex:1;min-width:170px;">
+              <button type="button" class="esc-chk-btn" id="chk-btn-municipio" onclick="_escolasToggleDropdown('municipio')"
+                style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
+                <span id="chk-label-municipio">MUNICÍPIO</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
+              </button>
+              <div id="chk-drop-municipio" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:240px;max-width:340px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
+                <div style="padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                  <input type="text" placeholder="Buscar município..." oninput="_escolasFiltrarOpcoes('municipio',this.value)"
+                    style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:5px 8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;">
+                </div>
+                <div id="chk-list-municipio" style="padding:4px 0;"></div>
+              </div>
+            </div>
+
+            <!-- COMPETÊNCIA -->
+            <div class="esc-chk-wrap" id="chk-wrap-competencia" style="position:relative;flex:1;min-width:150px;">
+              <button type="button" class="esc-chk-btn" id="chk-btn-competencia" onclick="_escolasToggleDropdown('competencia')"
+                style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
+                <span id="chk-label-competencia">COMPETÊNCIA</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
+              </button>
+              <div id="chk-drop-competencia" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:200px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
+                <div id="chk-list-competencia" style="padding:4px 0;"></div>
+              </div>
+            </div>
+
+            <!-- LOCALIZAÇÃO -->
+            <div class="esc-chk-wrap" id="chk-wrap-localizacao" style="position:relative;flex:1;min-width:150px;">
+              <button type="button" class="esc-chk-btn" id="chk-btn-localizacao" onclick="_escolasToggleDropdown('localizacao')"
+                style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
+                <span id="chk-label-localizacao">LOCALIZAÇÃO</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
+              </button>
+              <div id="chk-drop-localizacao" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:200px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
+                <div id="chk-list-localizacao" style="padding:4px 0;"></div>
+              </div>
+            </div>
+
+            <!-- MODALIDADE -->
+            <div class="esc-chk-wrap" id="chk-wrap-modalidade" style="position:relative;flex:1;min-width:160px;">
+              <button type="button" class="esc-chk-btn" id="chk-btn-modalidade" onclick="_escolasToggleDropdown('modalidade')"
+                style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
+                <span id="chk-label-modalidade">MODALIDADE</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
+              </button>
+              <div id="chk-drop-modalidade" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:220px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
+                <div id="chk-list-modalidade" style="padding:4px 0;"></div>
+              </div>
+            </div>
+
           </div>
-          <!-- Linha 3 -->
+          <!-- Linha 3: limpar -->
           <div style="display:flex; width:100%; margin-top:5px;">
             <button onclick="limparFiltrosEscolas()" 
                     onmouseover="this.style.background='rgba(250, 204, 21, 0.3)'" 
@@ -1148,15 +1195,16 @@
           <table style="table-layout:fixed; width:100%; min-width:1000px; border-collapse:separate; border-spacing:0; font-size:13px;">
             <thead>
               <tr style="background:var(--bg-secondary);">
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:110px;">Competência</th>
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Município</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Competência</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">MUNICÍPIO</th>
                 <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:220px;">Nome da Escola</th>
                 <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:70px;">INEP</th>
                 <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:90px;">Localização</th>
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:180px;">Super / Modalidades</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">SUPER</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">Modalidades</th>
                 <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:70px;">Alunos</th>
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:130px;">Diretor(a)</th>
-                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Telefone</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Diretor(a)</th>
+                <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:90px;">Telefone</th>
                 <th style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:70px;">Ações</th>
               </tr></thead>
             <tbody id="table-escolas">
@@ -1219,7 +1267,7 @@
               <input type="text" id="page-escola-nome" class="form-control" required placeholder="Digite o nome oficial da escola" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.4); color:#fff; font-weight:700; font-size:15px; padding:12px 14px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:700; font-size:14px; margin-bottom:6px; display:block;">Município *</label>
+              <label style="color:#f0f4ff; font-weight:700; font-size:14px; margin-bottom:6px; display:block;">MUNICÍPIO *</label>
               <input type="text" id="page-escola-municipio" class="form-control" required placeholder="Ex: Porto Velho, Ariquemes..." style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.4); color:#fff; font-weight:600; padding:12px 14px;">
             </div>
             <div class="form-group">
@@ -1291,13 +1339,13 @@
               <label style="color:#f0f4ff; font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
                 <span>👤</span> <span>Nome do Secretário(a)</span>
               </label>
-              <input type="text" id="page-escola-secretario" class="form-control" placeholder="Digite o nome completo do secretário(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:16px; padding:12px 14px;">
+              <input type="text" id="page-escola-Secretário" class="form-control" placeholder="Digite o nome completo do Secretário(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:16px; padding:12px 14px;">
             </div>
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Secretário(a) (WhatsApp)</label>
               <div style="display:flex; gap:8px;">
-                <input type="text" id="page-escola-contatoSecretario" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
-                <button type="button" onclick="const v=document.getElementById('page-escola-contatoSecretario').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
+                <input type="text" id="page-escola-contatoSecretário" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
+                <button type="button" onclick="const v=document.getElementById('page-escola-contatoSecretário').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
               </div>
             </div>
           </div>
@@ -1410,8 +1458,8 @@
                 <input type="text" id="form-escola-nome" class="form-control" required placeholder="Digite o nome completo da escola" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">Município *</label>
-                <input type="text" id="form-escola-municipio" class="form-control" required placeholder="Município" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">MUNICÍPIO *</label>
+                <input type="text" id="form-escola-municipio" class="form-control" required placeholder="MUNICÍPIO" style="border-color:rgba(139,92,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
               </div>
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">Localização</label>
@@ -1482,13 +1530,13 @@
                 <label style="color:#f0f4ff; font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px;">
                   <span>👤</span> <span>Nome do Secretário(a)</span>
                 </label>
-                <input type="text" id="form-escola-secretario" class="form-control" placeholder="Digite o nome completo do secretário(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:15px; padding:12px 14px;">
+                <input type="text" id="form-escola-Secretário" class="form-control" placeholder="Digite o nome completo do Secretário(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:15px; padding:12px 14px;">
               </div>
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Secretário(a) (WhatsApp)</label>
                 <div style="display:flex; gap:8px;">
-                  <input type="text" id="form-escola-contatoSecretario" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
-                  <button type="button" onclick="const v=document.getElementById('form-escola-contatoSecretario').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
+                  <input type="text" id="form-escola-contatoSecretário" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
+                  <button type="button" onclick="const v=document.getElementById('form-escola-contatoSecretário').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
                 </div>
               </div>
             </div>
@@ -1621,7 +1669,7 @@
         </select>
         <select id="mapa-filtro-competencia" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
           style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-          <option value="">COMPETÊNCIA</option>
+          <option value="">Competência</option>
           <option value="Estadual" style="color: #10b981; font-weight: bold;">Estadual</option>
           <option value="Municipal" style="color: #ef4444; font-weight: bold;">Municipal</option>
           <option value="Federal" style="color: #3b82f6; font-weight: bold;">Federal</option>
@@ -1671,17 +1719,11 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           Recarregar
         </button>
-        <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit?gid=1444558009#gid=1444558009"
-          target="_blank" rel="noopener" class="action-editor action-adm"
-          style="background:linear-gradient(135deg,#1a73e8,#0d47a1);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(26,115,232,0.35);">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Planilha Municipal
-        </a>
-        <a href="https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit"
+        <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit"
           target="_blank" rel="noopener" class="action-editor action-adm"
           style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(16,185,129,0.35);">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Planilha Estadual
+          Acessar Planilha
         </a>
       </div>
     </div>
@@ -1692,7 +1734,7 @@
       <div style="display:flex; width:100%;">
         <div style="position:relative; flex:1;">
           <input type="text" id="te-busca"
-            placeholder="Buscar por nome, município, INEP, diretor, email..."
+            placeholder="Buscar por nome, MUNICÍPIO, INEP, diretor, email..."
             oninput="filtrarTodasEscolas()"
             style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
           <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
@@ -1741,7 +1783,7 @@
       <table style="table-layout:fixed; width:100%; min-width:1100px; border-collapse:separate; border-spacing:0; font-size:13px;">
         <thead>
           <tr style="background:var(--bg-secondary);">
-            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">Município</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">MUNICÍPIO</th>
             <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:240px;">Nome da Escola</th>
             <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">INEP</th>
             <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:80px;">Alunos</th>
@@ -1860,7 +1902,7 @@
               <input id="te-form-super" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#a78bfa;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">COMPETÊNCIA</label>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">Competência</label>
               <input id="te-form-competencia" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
             </div>
           </div>
@@ -1898,11 +1940,11 @@
           <div id="te-form-secundarios" style="display:none;margin-top:14px;">
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div>
-                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">SECRETÁRIO(A) ESCOLAR</label>
-                <input id="te-form-secretario" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">Secretário(A) ESCOLAR</label>
+                <input id="te-form-Secretário" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
               </div>
               <div>
-                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">CONTATO SECRETÁRIO(A)</label>
+                <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">CONTATO Secretário(A)</label>
                 <input id="te-form-contato-sec" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#f0f4ff;font-size:13px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
               </div>
               <div>
@@ -1933,17 +1975,17 @@
                 <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">SALAS AULA</label><input id="te-form-salas-aula" type="number" min="0" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#60a5fa;font-size:13px;font-weight:700;text-align:center;outline:none;box-sizing:border-box;"/></div>
                 <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">SALAS ADM</label><input id="te-form-salas-adm" type="number" min="0" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#60a5fa;font-size:13px;text-align:center;outline:none;box-sizing:border-box;"/></div>
                 <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">BANHEIROS</label><input id="te-form-banheiros" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:13px;text-align:center;outline:none;box-sizing:border-box;"/></div>
-                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">PÁTIO</label><input id="te-form-patio" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:13px;text-align:center;outline:none;box-sizing:border-box;"/></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">Pátio</label><input id="te-form-Pátio" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:13px;text-align:center;outline:none;box-sizing:border-box;"/></div>
               </div>
               <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:10px;">
                 <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">SALA AEE</label>
                   <select id="te-form-aee" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
                 <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">QUADRA</label>
                   <select id="te-form-quadra" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
-                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">REFEITÓRIO</label>
-                  <select id="te-form-refeitorio" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
-                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">AUDITÓRIO</label>
-                  <select id="te-form-auditorio" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">Refeitório</label>
+                  <select id="te-form-Refeitório" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
+                <div><label style="display:block;font-size:10px;color:var(--text-muted);margin-bottom:4px;">Auditório</label>
+                  <select id="te-form-Auditório" style="width:100%;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:8px;color:#f0f4ff;font-size:12px;outline:none;box-sizing:border-box;"><option value="">-</option><option value="S">S</option><option value="N">N</option></select></div>
               </div>
             </div>
           </div>
@@ -1993,10 +2035,12 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=3.2.1"></script>
-  <script src="js/app.js?v=639212790744855493.2.2"></script>
+  <script src="js/app.js?v=7.0.5"></script>
   <script src="js/auth-sap.js?v=3.2.1"></script>
-  <script src="js/escolas.js?v=3.4.8"></script>
-  <script src="js/mapa.js?v=3.6.2"></script>
+  <script src="js/escolas.js?v=7.0.7" charset="utf-8"></script>
+  <script src="js/open-location-code.js"></script>
+<script src="js/open-location-code.js"></script>
+<script src="js/mapa.js?v=3.12.0"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -2037,7 +2081,7 @@
       }
     }
 
-    // Preencher datalist municípios dinamicamentente
+    // Preencher datalist MUNICÍPIOs dinamicamentente
     document.addEventListener('DOMContentLoaded', () => {
       const dl = document.getElementById('list-municipios');
       if (dl) {
@@ -2129,6 +2173,7 @@
 
     </div>
   </div>
+
 
 
 

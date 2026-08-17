@@ -237,22 +237,86 @@ function getCoordsParaMunicipio(nomeMun) {
   return MUNICIPIOS_RO_COORDS["Porto Velho"];
 }
 
-function getCoordsParaEscola(escola) {
-  if (!escola) return MUNICIPIOS_RO_COORDS["Porto Velho"];
+// ============================================================
+// GEOCODER - Nominatim (OpenStreetMap) + cache em sessionStorage
+// Consulta pelo nome + município + UF="RO" para obter lat/lng reais
+// Respeita ToS do Nominatim: 1 req/seg máximo (usamos 1.1s)
+// ============================================================
+const _geocCache  = JSON.parse(sessionStorage.getItem('_seduc_geocache') || '{}');
+const _geocQueue  = [];          // fila de escolas aguardando geocode
+let   _geocRunning = false;      // flag de controle da fila
+const NOMINATIM_BASE = 'https://nominatim.openstreetmap.org/search';
 
-  // 1. Busca por INEP exato
-  if (escola.codigoInep && ESCOLAS_EXACT_COORDS[String(escola.codigoInep).trim()]) {
-    return ESCOLAS_EXACT_COORDS[String(escola.codigoInep).trim()];
+// Salva cache no sessionStorage
+function _geocSave() {
+  try { sessionStorage.setItem('_seduc_geocache', JSON.stringify(_geocCache)); } catch(e) {}
+}
+
+// Encaminha uma escola para geocodificação assíncrona
+function _geocEnqueue(escola, onDone) {
+  const key = escola.codigoInep || (escola.nome + '|' + escola.municipio);
+  if (_geocCache[key]) { onDone(_geocCache[key]); return; }
+  _geocQueue.push({ escola, key, onDone });
+  _geocDrain();
+}
+
+// Processa a fila a 1 req / 1.1s
+async function _geocDrain() {
+  if (_geocRunning || _geocQueue.length === 0) return;
+  _geocRunning = true;
+  while (_geocQueue.length > 0) {
+    const { escola, key, onDone } = _geocQueue.shift();
+    if (_geocCache[key]) { onDone(_geocCache[key]); continue; }
+    try {
+      const q = encodeURIComponent(
+        (escola.nome || '') + ' ' + (escola.municipio || '') + ' Rondônia'
+      );
+      const url = `${NOMINATIM_BASE}?q=${q}&format=json&limit=1&countrycodes=br`;
+      const res = await fetch(url, { headers: { 'User-Agent': 'SEDUC-RO-CAM/1.0' } });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const coord = [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+          _geocCache[key] = coord;
+          _geocSave();
+          onDone(coord);
+        } else {
+          onDone(null); // não encontrado, usa fallback
+        }
+      } else {
+        onDone(null);
+      }
+    } catch(e) {
+      console.warn('[Geocoder] erro:', e.message);
+      onDone(null);
+    }
+    await new Promise(r => setTimeout(r, 1100)); // respeita 1 req/s
   }
+  _geocRunning = false;
+}
 
-  // 2. Busca por Bairro calibrado no município
-  const munNorm = _mapaNormalizarStr(escola.municipio);
+// Resolve coordenada de uma escola (usa cache exato, bairro ou município) e,
+// em paralelo, tenta refinar via Nominatim na próxima oportunidade.
+function getCoordsParaEscola(escola) {
+  if (!escola) return MUNICIPIOS_RO_COORDS['Porto Velho'];
+
+  const inep = escola.codigoInep ? String(escola.codigoInep).trim() : null;
+  const cacheKey = inep || (escola.nome + '|' + escola.municipio);
+
+  // 1. Cache do Nominatim (coordenada geocodificada real)
+  if (_geocCache[cacheKey]) return _geocCache[cacheKey];
+
+  // 2. Lookup manual INEP (hardcoded para escolas conhecidas)
+  if (inep && ESCOLAS_EXACT_COORDS[inep]) return ESCOLAS_EXACT_COORDS[inep];
+
+  // 3. Bairro calibrado no município
+  const munNorm    = _mapaNormalizarStr(escola.municipio);
   const bairroNorm = _mapaNormalizarStr(escola.bairro);
   if (munNorm && bairroNorm && BAIRROS_RO_COORDS[munNorm] && BAIRROS_RO_COORDS[munNorm][bairroNorm]) {
     return BAIRROS_RO_COORDS[munNorm][bairroNorm];
   }
 
-  // 3. Fallback: Coordenada do município
+  // 4. Fallback: centro do município
   return getCoordsParaMunicipio(escola.municipio);
 }
 
@@ -463,133 +527,140 @@ function _mapaRenderizarPinos() {
   if (!_mapaMarkersGroup || !_mapaInstancia) return;
   _mapaMarkersGroup.clearLayers();
 
-  // Agrupa escolas pela coordenada-base para calcular deslocamento espiral por grupo
-  // Isso garante que escolas de bairros diferentes não compartilhem o mesmo contador
+  // Contadores de deslocamento espiral por grupo de coordenada-base
   const groupCounts = {};
 
   _mapaEscolasFiltradas.forEach((escola) => {
-    const coordsBase = getCoordsParaEscola(escola);
+    // --- Cores por competência ---
+    const compNorm = (escola.competencia || '').toLowerCase();
+    let corPino, compLabel, compBgColor, compTextColor, compBorderColor;
+    if (compNorm === 'estadual') {
+      corPino = '#10b981'; compLabel = 'Estadual';
+      compBgColor = '#d1fae5'; compTextColor = '#065f46'; compBorderColor = '#34d399';
+    } else if (compNorm === 'federal') {
+      corPino = '#3b82f6'; compLabel = 'Federal';
+      compBgColor = '#dbeafe'; compTextColor = '#1e40af'; compBorderColor = '#60a5fa';
+    } else {
+      corPino = '#ef4444'; compLabel = 'Municipal';
+      compBgColor = '#fee2e2'; compTextColor = '#991b1b'; compBorderColor = '#f87171';
+    }
 
-    // Chave do grupo: coordenada arredondada a 3 casas (raio ~100m)
+    // --- Coordenada inicial (fallback imediato) ---
+    const coordsBase = getCoordsParaEscola(escola);
     const groupKey = coordsBase[0].toFixed(3) + ',' + coordsBase[1].toFixed(3);
     groupCounts[groupKey] = (groupCounts[groupKey] || 0) + 1;
     const count = groupCounts[groupKey];
 
-    // Dispersão espiral áurea (ângulo ~137.5º = golden angle) é pequena e controlada
-    // Passo: ~70m | Máximo: ~550m - evita que pinos caiam em rios ou áreas não-urbanas
     const angle  = (count * 137.508) * (Math.PI / 180);
     const radius = Math.min(0.0006 * Math.sqrt(count), 0.005);
-    const lat = coordsBase[0] + (radius * Math.cos(angle));
-    const lng = coordsBase[1] + (radius * Math.sin(angle));
+    let lat = coordsBase[0] + (radius * Math.cos(angle));
+    let lng = coordsBase[1] + (radius * Math.sin(angle));
 
-    const gmapsQuery = encodeURIComponent(`${escola.nome || ''} ${escola.municipio || ''} Rondônia`);
-    const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${gmapsQuery}`;
-
-    const superLabel = escola.super ? (escola.super.toUpperCase().startsWith('SUPER') ? escola.super : 'SUPER ' + escola.super) : 'SEDUC - RO';
-    const diretor = escola.diretor || 'Não informado';
-    const contatoStr = escola.contatoDiretor || escola.telefone || 'Não informado';
-    const btnWa = criarBotaoWhatsApp(escola.contatoDiretor || escola.telefone);
-
-    const endPartes = [escola.endereco, escola.complemento].filter(Boolean).join(', ');
-    const bairroPartes = [escola.bairro, escola.cep ? 'CEP ' + escola.cep : null].filter(Boolean).join(' - ');
+    const plusCode = escola.plusCode || escola.codigoPlus || escola.plus_code || '';
+    const baseQuery = plusCode ? `${plusCode} INEP ${escola.codigoInep || ''}` : `${escola.codigoInep ? escola.codigoInep + ' ' : ''}${escola.nome || ''} ${escola.municipio || ''} Rondônia`;
+    const gmapsQ   = encodeURIComponent(baseQuery.trim());
+    const gmapsUrl = `https://www.google.com/maps/search/?api=1&query=${gmapsQ}`;
+    const superLabel   = escola.super ? (escola.super.toUpperCase().startsWith('SUPER') ? escola.super : 'SUPER ' + escola.super) : 'SEDUC - RO';
+    const diretor      = escola.diretor || 'Não informado';
+    const contatoStr   = escola.contatoDiretor || escola.telefone || 'Não informado';
+    const btnWa        = criarBotaoWhatsApp(escola.contatoDiretor || escola.telefone);
+    const endPartes    = [escola.endereco, escola.complemento].filter(Boolean).join(', ');
+    const bairroPartes = [escola.bairro, escola.cep ? 'CEP ' + escola.cep : null].filter(Boolean).join(' – ');
     const enderecoCompleto = [endPartes, bairroPartes].filter(Boolean).join(' | ') || 'Endereço não cadastrado';
-
     const mat = escola.totalMatricula > 0 ? Number(escola.totalMatricula).toLocaleString('pt-BR') : '-';
     const sal = escola.salas > 0 ? escola.salas : '-';
 
-    const locBadge = escola.localizacao
-      ? `<span style="padding:2px 7px; border-radius:4px; font-size:10px; font-weight:700; background:rgba(6,182,212,0.12); color:#0891b2; border:1px solid rgba(6,182,212,0.25);">${escola.localizacao}</span>`
+    const locBadge = escola.localidade || escola.localizacao
+      ? `<span style="padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:rgba(6,182,212,0.12);color:#0891b2;border:1px solid rgba(6,182,212,0.25);">${escola.localidade || escola.localizacao}</span>`
       : '';
 
     const popupHtml = `
-      <div style="font-family: system-ui, -apple-system, sans-serif; min-width: 285px; max-width: 320px; padding: 2px; color: #1e293b;">
-        <!-- Header / Badge SUPER -->
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+      <div style="font-family:system-ui,-apple-system,sans-serif;min-width:285px;max-width:320px;color:#1e293b;border-radius:10px;overflow:hidden;">
+
+        <!-- Header / Badge SUPER & Competência -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px; padding: 10px 12px; background: ${compBgColor}; border-bottom: 2px solid ${compBorderColor}; border-radius: 10px 10px 0 0;">
           <span style="font-size: 10px; font-weight: 800; background: linear-gradient(135deg, #7c3aed, #6366f1); color: #ffffff; padding: 3px 8px; border-radius: 12px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 2px 4px rgba(124,58,237,0.2);">
             ${superLabel}
           </span>
-          ${locBadge}
-        </div>
-
-        <!-- Nome da Escola -->
-        <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 8px; line-height: 1.35; letter-spacing: -0.2px;">
-          ${escola.nome || 'Escola Estadual'}
-        </div>
-
-        <!-- Badges INEP & Município -->
-        <div style="display:flex; flex-wrap:wrap; gap:6px; font-size: 11px; margin-bottom: 10px;">
-          <span style="background:#f1f5f9; color:#334155; padding: 2px 8px; border-radius: 6px; font-weight: 600;">
-            📍 ${escola.municipio || 'Rondônia'}
-          </span>
-          ${escola.codigoInep ? `<span style="background:#eff6ff; color:#2563eb; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-family: monospace;">INEP: ${escola.codigoInep}</span>` : ''}
-        </div>
-
-        <!-- Divisor sutil -->
-        <div style="height: 1px; background: #e2e8f0; margin: 8px 0;"></div>
-
-        <!-- Dados do Gestor & Contato -->
-        <div style="font-size: 12px; color: #475569; margin-bottom: 6px; display:flex; align-items:center; gap:6px;">
-          <span style="font-size:14px;">👤</span>
-          <div><strong>Diretor(a):</strong> ${diretor}</div>
-        </div>
-
-        <div style="font-size: 12px; color: #475569; margin-bottom: 8px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px;">
-          <div style="display:flex; align-items:center; gap:6px;">
-            <span style="font-size:14px;">📞</span>
-            <span><strong>Contato:</strong> ${contatoStr}</span>
-          </div>
-          ${btnWa}
-        </div>
-
-        <!-- Endereço Completo -->
-        <div style="font-size: 11px; color: #64748b; background: #f8fafc; padding: 6px 8px; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 10px; line-height: 1.4;">
-          <strong>🏠 Endereço:</strong> ${enderecoCompleto}
-        </div>
-
-        <!-- Mini Cards: Matrículas e Salas -->
-        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px;">
-          <div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); padding: 6px 8px; border-radius: 6px; text-align: center;">
-            <div style="font-size: 10px; font-weight: 700; color: #059669; text-transform: uppercase;">🎓 Alunos</div>
-            <div style="font-size: 13px; font-weight: 800; color: #047857;">${mat}</div>
-          </div>
-          <div style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); padding: 6px 8px; border-radius: 6px; text-align: center;">
-            <div style="font-size: 10px; font-weight: 700; color: #2563eb; text-transform: uppercase;">🚪 Salas</div>
-            <div style="font-size: 13px; font-weight: 800; color: #1d4ed8;">${sal}</div>
+          <div style="display:flex; gap: 4px; align-items: center;">
+            <span style="font-size: 10px; font-weight: 800; background: ${compBgColor}; color: ${compTextColor}; padding: 3px 8px; border-radius: 12px; border: 1px solid ${compBorderColor}; text-transform: uppercase; letter-spacing: 0.5px;">
+              ${escola.competencia || 'N/A'}
+            </span>
+            ${locBadge}
           </div>
         </div>
 
-        <!-- Botões de Ação -->
-        <div style="display:flex; gap:6px;">
-          <a href="${gmapsUrl}" target="_blank" rel="noopener" style="flex:1; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none; padding: 8px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; box-shadow: 0 3px 8px rgba(16,185,129,0.3);">
-            📍 Google Maps
-          </a>
-          <button type="button" class="btn-editar-mapa-escola" style="flex:1; display: flex; align-items: center; justify-content: center; gap: 4px; background: linear-gradient(135deg, #8b5cf6, #6366f1); color: white; border: none; padding: 8px 6px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 8px rgba(139,92,246,0.3);">
-            ✏️ Editar Dados
-          </button>
+        <!-- Corpo do popup -->
+        <div style="padding:10px 12px;">
+
+          <!-- Nome + localização -->
+          <div style="font-size:14px;font-weight:800;color:#0f172a;margin-bottom:6px;line-height:1.35;">${escola.nome || 'Escola'}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;font-size:11px;margin-bottom:10px;">
+            <span style="background:#f1f5f9;color:#334155;padding:2px 8px;border-radius:6px;font-weight:600;">📍 ${escola.municipio || 'Rondônia'}</span>
+            ${escola.codigoInep ? `<span style="background:#eff6ff;color:#2563eb;padding:2px 8px;border-radius:6px;font-weight:700;font-family:monospace;">INEP: ${escola.codigoInep}</span>` : ''}
+            ${locBadge}
+          </div>
+
+          <div style="height:1px;background:#e2e8f0;margin:8px 0;"></div>
+
+          <!-- Gestor & Contato -->
+          <div style="font-size:12px;color:#475569;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:14px;">👤</span>
+            <div><strong>Diretor(a):</strong> ${diretor}</div>
+          </div>
+          <div style="font-size:12px;color:#475569;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-size:14px;">📞</span>
+              <span><strong>Contato:</strong> ${contatoStr}</span>
+            </div>
+            ${btnWa}
+          </div>
+
+          <!-- Endereço -->
+          <div style="font-size:11px;color:#64748b;background:#f8fafc;padding:6px 8px;border-radius:6px;border:1px solid #e2e8f0;margin-bottom:10px;line-height:1.4;">
+            <strong>🏠 Endereço:</strong> ${enderecoCompleto}
+          </div>
+
+          <!-- Matrículas e Salas -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+            <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);padding:6px 8px;border-radius:6px;text-align:center;">
+              <div style="font-size:10px;font-weight:700;color:#059669;text-transform:uppercase;">🎓 Alunos</div>
+              <div style="font-size:14px;font-weight:800;color:#047857;">${mat}</div>
+            </div>
+            <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);padding:6px 8px;border-radius:6px;text-align:center;">
+              <div style="font-size:10px;font-weight:700;color:#2563eb;text-transform:uppercase;">🚪 Salas</div>
+              <div style="font-size:14px;font-weight:800;color:#1d4ed8;">${sal}</div>
+            </div>
+          </div>
+
+          <!-- Botões -->
+          <div style="display:flex;gap:6px;">
+            <a href="${gmapsUrl}" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:linear-gradient(135deg,#10b981,#059669);color:white;text-decoration:none;padding:8px 6px;border-radius:8px;font-size:11px;font-weight:700;box-shadow:0 3px 8px rgba(16,185,129,0.3);">
+              📍 Google Maps
+            </a>
+            <button type="button" class="btn-editar-mapa-escola" style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;background:linear-gradient(135deg,#8b5cf6,#6366f1);color:white;border:none;padding:8px 6px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;box-shadow:0 3px 8px rgba(139,92,246,0.3);">
+              ✏️ Editar Dados
+            </button>
+          </div>
+
         </div>
       </div>
     `;
 
-    let corPino = '#10b981'; // Verde padrão (Estadual)
-    const compStr = (escola.competencia || escola.codigoSuper || '').toLowerCase();
-    if (compStr.includes('municipal')) {
-      corPino = '#ef4444'; // Vermelho
-    } else if (compStr.includes('federal')) {
-      corPino = '#3b82f6'; // Azul
-    }
-
+    // --- Ícone SVG pino ---
     const customIcon = L.divIcon({
       className: 'custom-pin',
-      html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="28" height="42" style="filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.4));">
+      html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="28" height="42" style="filter:drop-shadow(0px 3px 3px rgba(0,0,0,0.4));">
                <path fill="${corPino}" d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z" stroke="#ffffff" stroke-width="20"/>
              </svg>`,
-      iconSize: [28, 42],
-      iconAnchor: [14, 42],
+      iconSize:    [28, 42],
+      iconAnchor:  [14, 42],
       popupAnchor: [0, -38]
     });
 
     const marker = L.marker([lat, lng], { title: escola.nome || 'Escola', icon: customIcon }).bindPopup(popupHtml);
     const targetId = escola.id || escola.codigoInep || escola.nome || '';
+
     marker.on('popupopen', (e) => {
       setTimeout(() => {
         const popupEl = e.popup.getElement();
@@ -606,11 +677,27 @@ function _mapaRenderizarPinos() {
         }
       }, 50);
     });
+
     _mapaMarkersGroup.addLayer(marker);
+
+    // --- Geocodificação assíncrona: quando Nominatim retornar, move o marcador ---
+    _geocEnqueue(escola, (realCoord) => {
+      if (!realCoord) return;
+      const [rlat, rlng] = realCoord;
+      // Só move se o ponto for diferente do fallback (evita reagrupamentos desnecessários)
+      if (Math.abs(rlat - lat) > 0.001 || Math.abs(rlng - lng) > 0.001) {
+        marker.setLatLng([rlat, rlng]);
+      }
+    });
   });
 }
+
 
 window.iniciarMapaEscolas   = iniciarMapaEscolas;
 window.filtrarMapaEscolas   = filtrarMapaEscolas;
 window.aplicarFiltrosMapa   = filtrarMapaEscolas;
 window.limparFiltrosMapa    = limparFiltrosMapa;
+
+
+
+
