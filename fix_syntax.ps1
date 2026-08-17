@@ -1,0 +1,23 @@
+$lines = Get-Content -Path .\js\escolas.js -Encoding UTF8
+$lines[19] = "    if (typeof toast === 'function') toast('Escola não encontrada para edição', 'error');"
+$lines[33] = "  if (titulo) titulo.innerHTML = '🏫 Nova Escola';"
+$lines[37] = "  if (btn) btn.textContent = '💾 Salvar Nova Escola';"
+$lines[72] = "  if (titulo) titulo.innerHTML = '✏️ Editar Cadastro da Escola';"
+$lines[76] = "  if (btn) btn.textContent = '💾 Salvar Alterações';"
+$lines[132] = "    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alterações'; }"
+$lines[339] = "  if (badgeEl) badgeEl.textContent = '🏫 Carregando...';"
+$lines[348] = "    if (badgeEl) badgeEl.textContent = '🏫 Carregando Estadual...';"
+$lines[370] = "      if (badgeEl) badgeEl.textContent = '🏫 Carregando Municipal (' + (batchStart+batchMuns.length) + '/' + MUNICIPIOS_RO.length + ')...';"
+$lines[469] = "    if (badgeEl) badgeEl.textContent = '❌ Erro ao carregar escolas';"
+$lines[484] = "    selMun.innerHTML = '<option value=\"\">MUNICÍPIO</option>' + municipios.map(m => '<option value=\"' + m + '\">' + m + '</option>').join('');"
+$lines[485] = "    selLoc.innerHTML = '<option value=\"\">LOCALIZAÇÃO</option>' + localizacoes.map(l => '<option value=\"' + l + '\">' + l + '</option>').join('');"
+$lines[486] = "    if (selComp) selComp.innerHTML = '<option value=\"\">COMPETÊNCIA</option>' + competencias.map(c => '<option value=\"' + c + '\">' + c + '</option>').join('');"
+$lines[513] = "  if (badgeEscolas) badgeEscolas.textContent = '🏫 ' + totalEscolas.toLocaleString('pt-BR') + ' Escolas';"
+$lines[586] = "    if (badgeEscolas) badgeEscolas.textContent = '🏫 Escolas';"
+$lines[832] = "  if (titulo) titulo.innerHTML = '🏫 Nova Escola';"
+$lines[834] = "  if (btn) btn.textContent = '💾 Salvar Escola';"
+$lines[892] = "  if (titulo) titulo.innerHTML = '✏️ Editar Dados da Escola';"
+$lines[898] = "  if (btn) btn.textContent = '💾 Salvar Alterações';"
+$lines[973] = "    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Alterações'; }"
+
+$lines | Set-Content -Path .\js\escolas.js -Encoding UTF8
