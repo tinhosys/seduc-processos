@@ -3991,49 +3991,36 @@ async function buscarTodasEscolasGSheet() {
   const sigsVistos = new Set();
 
   try {
-    // Busca Estadual (1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E)
-    setBadge('⏳ Carregando Escolas Estaduais...', 'loading');
-    setLoadMsg('Carregando Escolas Estaduais', 'Buscando da planilha central');
-    try {
-      const urlEstadual = 'https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/gviz/tq?tqx=out:json&gid=0&nocache=' + Date.now();
-      const resEst = await fetch(urlEstadual);
-      if (resEst.ok) {
-        const textEst = await resEst.text();
-        const rowsEst = _teParseGviz(textEst, 'Estadual');
-        if (rowsEst && rowsEst.length > 0) {
-          rowsEst.forEach(r => { if (!r.competencia || r.competencia.trim() === '') r.competencia = 'Estadual'; });
-          totalLoaded += rowsEst.length;
-          _teAbas.push({ nome: 'Estadual', count: rowsEst.length });
-          _teCache.push(...rowsEst);
-        }
-      }
-    } catch(errEst) {
-      console.warn("Erro ao buscar estaduais", errEst);
-    }
+    const TODAS_ABAS = [
+      { nome: 'estadual', comp: 'Estadual' },
+      { nome: 'federal', comp: 'Federal' },
+      ...MUNICIPIOS_RO.map(m => ({ nome: m, comp: 'Municipal' }))
+    ];
 
-    for (let batchStart = 0; batchStart < MUNICIPIOS_RO.length; batchStart += TE_BATCH_SIZE) {
-      const batchMuns = MUNICIPIOS_RO.slice(batchStart, batchStart + TE_BATCH_SIZE);
+    for (let batchStart = 0; batchStart < TODAS_ABAS.length; batchStart += TE_BATCH_SIZE) {
+      const batchAbas = TODAS_ABAS.slice(batchStart, batchStart + TE_BATCH_SIZE);
 
-      setBadge(`⏳ Lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1} / ${Math.ceil(MUNICIPIOS_RO.length/TE_BATCH_SIZE)}...`, 'loading');
+      setBadge(`⏳ Lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1} / ${Math.ceil(TODAS_ABAS.length/TE_BATCH_SIZE)}...`, 'loading');
       setLoadMsg(
         `Carregando lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1}...`,
-        `Buscando ${batchMuns.length} planilhas | ${totalLoaded} escolas encontradas`
+        `Buscando ${batchAbas.length} planilhas | ${totalLoaded} escolas encontradas`
       );
 
-      // Busca paralela do lote usando o nome do Município como aba
+      // Busca paralela do lote usando o nome da aba
       const results = await Promise.allSettled(
-        batchMuns.map(mun => {
+        batchAbas.map(aba => {
           const url = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
-                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(mun) + '&nocache=' + Date.now();
-          return fetch(url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status));
+                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(aba.nome) + '&nocache=' + Date.now();
+          return fetch(url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status)).then(text => ({ text, aba }));
         })
       );
 
       results.forEach((res, i) => {
-        const mun = batchMuns[i];
         if (res.status === 'rejected') return;
         
-        const text = res.value;
+        const text = res.value.text;
+        const aba = res.value.aba;
+        const mun = aba.nome;
         const sigMatch = text.match(/"sig":"(\d+)"/);
         const sig = sigMatch ? sigMatch[1] : null;
         
@@ -4046,6 +4033,13 @@ async function buscarTodasEscolasGSheet() {
         const rows = _teParseGviz(text, mun);
         if (!rows || rows.length === 0) return;
         
+        rows.forEach(r => {
+           if (!r.competencia || r.competencia.trim() === '') r.competencia = aba.comp;
+           if (aba.comp === 'Estadual') r.competencia = 'Estadual';
+           if (aba.comp === 'Municipal') r.competencia = 'Municipal';
+           if (aba.comp === 'Federal') r.competencia = 'Federal';
+        });
+
         totalLoaded += rows.length;
 
         _teAbas.push({ nome: mun, count: rows.length });
@@ -4190,6 +4184,7 @@ function _teAtualizarUI() {
         ondblclick="abrirTeModal(${globalIdx})"
         onmouseover="this.style.background='rgba(59,130,246,0.06)'" 
         onmouseout="this.style.background='${evenBg}'">` +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);">' + (window._renderCompetenciaBadge ? window._renderCompetenciaBadge(e.competencia) : '<span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1)">' + esc(e.competencia) + '</span>') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-size:12px;">' + (esc(e.municipio)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-weight:600;font-size:12px;">' + (esc(e.nome)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#60a5fa;font-family:monospace;font-size:11px;white-space:nowrap;">' + (esc(e.inep)||'-') + '</td>' +

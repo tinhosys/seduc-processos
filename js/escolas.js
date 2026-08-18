@@ -1,4 +1,4 @@
-
+﻿
 // ============================================================
 // SEDUC - Formulário Individualizado de Escola (Página & Modal)
 // ============================================================
@@ -228,6 +228,7 @@ function _adicionarModalidade(containerId) {
   el.appendChild(row);
 }
 window._normalizarCompetencia  = _normalizarCompetencia;
+window._renderCompetenciaBadge = _renderCompetenciaBadge;
 window._calcTotalAlunos        = _calcTotalAlunos;
 window._adicionarModalidade    = _adicionarModalidade;
 window._recalcTotalModalidades = _recalcTotalModalidades;
@@ -1083,6 +1084,7 @@ window.imprimirRelatorioEscolas = function() {
     alert('Erro ao gerar relatÃ³rio: ' + err.message);
   }
 };
+
 
 
 
