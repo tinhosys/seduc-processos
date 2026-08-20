@@ -23,7 +23,7 @@ async function carregarContatos(force = false) {
   }
   
   try {
-    const res = await fetch('/api/contatos' + (force ? '?t=' + Date.now() : ''));
+    const res = await fetch(API_BASE + '/api/contatos' + (force ? '?t=' + Date.now() : ''));
     if (!res.ok) throw new Error("Erro na API");
     contatosData = await res.json();
     
@@ -167,7 +167,7 @@ async function salvarContato(e) {
   btn.disabled = true;
   
   try {
-    const url = id ? `/api/contatos/${id}` : '/api/contatos';
+    const url = id ? API_BASE + `/api/contatos/${id}` : API_BASE + '/api/contatos';
     const method = id ? 'PUT' : 'POST';
     
     let token = "";
@@ -212,7 +212,7 @@ async function excluirContato() {
         token = sess.token;
       }
     }
-    const res = await fetch(`/api/contatos/${id}`, {
+    const res = await fetch(API_BASE + `/api/contatos/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': `Bearer ${token}` }
     });
@@ -226,4 +226,5 @@ async function excluirContato() {
 }
 
 document.addEventListener('DOMContentLoaded', initContatos);
+
 
