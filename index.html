@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -96,7 +96,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.70</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.78</div>
   </div>
 </div>
   
@@ -170,7 +170,7 @@
       </nav>
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.70</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.78</div>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1831,11 +1831,11 @@
 
   
   <!-- ============= ABA CONTATOS ============= -->
-  <section class="page" id="page-contatos" style="display:none;">
+  <section class="page" id="page-contatos">
     <div class="section-header" style="flex-wrap:wrap;gap:16px;">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <span id="contatos-badge-total" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">?? 0 Contatos</span>
-        <span id="contatos-badge-status" style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);letter-spacing:0.4px;">? Aguardando carregamento</span>
+        
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
         <button onclick="carregarContatos(true)" title="Recarregar dados"
@@ -1849,10 +1849,7 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           Acessar Planilha
         </a>
-        <button class="action-editor action-adm" onclick="abrirModalContato()"
-          style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.5);color:#60a5fa;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;">
-          ? Novo Contato
-        </button>
+        
       </div>
     </div>
     
@@ -1873,8 +1870,8 @@
         <thead>
           <tr>
             <th style="min-width:120px;">Município</th>
-            <th style="min-width:180px;">Prefeito</th>
-            <th style="min-width:180px;">Secretário</th>
+            <th style="min-width:250px;">Prefeito(a)</th>
+            <th style="min-width:250px;">Secretário(a)</th>
             <th style="min-width:120px;">E-mail</th>
             <th style="min-width:80px;text-align:center;">Escolas</th>
             <th style="min-width:80px;text-align:center;">Alunos</th>
@@ -2307,6 +2304,18 @@
 
     </div>
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
