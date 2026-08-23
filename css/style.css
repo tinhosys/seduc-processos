@@ -321,6 +321,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
+  table-layout: fixed;
 }
 
 thead { background: rgba(255,255,255,0.04); }
@@ -346,6 +347,9 @@ td {
   border-bottom: 1px solid rgba(255,255,255,0.04);
   color: var(--text-secondary);
   vertical-align: middle;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 tr:last-child td { border-bottom: none; }
@@ -372,11 +376,11 @@ tbody tr.linha-alerta:hover td {
   background: rgba(239, 68, 68, 0.2) !important;
 }
 
-.col-numero { font-family: monospace; font-size: 12px; color: var(--blue); min-width: 170px; white-space: nowrap; }
+.col-numero { font-family: monospace; font-size: 12px; color: var(--blue); min-width: 170px; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; word-break: normal; }
 .col-municipio { font-weight: 500; color: var(--text-primary); }
-.col-interessado { color: var(--text-primary); font-weight: 500; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.col-objeto { color: var(--text-secondary); min-width: 200px; white-space: normal; word-wrap: break-word; }
-.col-valor { font-family: monospace; font-weight: 600; color: var(--green); text-align: right; }
+.col-interessado { color: var(--text-primary); font-weight: 500; max-width: 220px; white-space: normal; word-wrap: break-word; overflow-wrap: break-word; word-break: normal; }
+.col-objeto { color: var(--text-secondary); min-width: 200px; word-wrap: break-word; overflow-wrap: break-word; word-break: normal; }
+.col-valor { font-family: monospace; font-weight: 600; color: var(--green); text-align: right; white-space: nowrap !important; }
 
 /* ============================================
    BADGES DE STATUS
@@ -1940,3 +1944,4 @@ thead th {
   color: #7dd3fc;
   text-decoration: underline;
 }
+

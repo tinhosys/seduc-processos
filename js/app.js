@@ -1037,10 +1037,10 @@ function renderProcessos() {
       </td>
       <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || '—'}</td>
       <td class="col-objeto" title="${p.objeto}">${p.objeto || '—'}</td>
-      <td><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
-      <td>${p.localizacao || '—'}</td>
+      <td style="text-align: center;"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
+      <td style="text-align: center;">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>') : '—'}</td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
-      <td>${formatDate(p.data)}</td>
+      <td style="text-align: center;">${formatDate(p.data)}</td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
         <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">✏️</button>
         
