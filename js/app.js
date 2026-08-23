@@ -2415,16 +2415,16 @@ window.imprimirPadrao = function() {
         
         
         
+        
         const prefixoFormatado = `
           <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
             <div style="font-weight: bold; margin-bottom: 2px;">${p.prefixo || '-'}</div>
-            <div style="display: flex; align-items: center; white-space: nowrap; gap: 3px; font-size: 8px;">
-              <span>${p.categoria || '-'}</span> <span style="color:#999;">|</span> 
-              <span>${p.tipo || '-'}</span> <span style="color:#999;">|</span> 
-              <div style="display: flex; gap: 0px; font-size: 16px; line-height: 1; color: #000; align-items: center;">
+            <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+              <span>${p.categoria || '-'}</span><span style="color:#999;">|</span><span>${p.tipo || '-'}</span><span style="color:#999;">|</span>
+              <div style="display: flex; font-size: 15px; line-height: 1; color: #000; align-items: center; margin-left: 1px;">
                 <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="GABINETE">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="CASA CIVIL">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+                <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+                <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
               </div>
             </div>
           </div>
@@ -2576,16 +2576,16 @@ window.imprimirDetalhado = function() {
     
         
         
+        
         const prefixoFormatado = `
           <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
             <div style="font-weight: bold; margin-bottom: 2px;">${p.prefixo || '-'}</div>
-            <div style="display: flex; align-items: center; white-space: nowrap; gap: 3px; font-size: 8px;">
-              <span>${p.categoria || '-'}</span> <span style="color:#999;">|</span> 
-              <span>${p.tipo || '-'}</span> <span style="color:#999;">|</span> 
-              <div style="display: flex; gap: 0px; font-size: 16px; line-height: 1; color: #000; align-items: center;">
+            <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+              <span>${p.categoria || '-'}</span><span style="color:#999;">|</span><span>${p.tipo || '-'}</span><span style="color:#999;">|</span>
+              <div style="display: flex; font-size: 15px; line-height: 1; color: #000; align-items: center; margin-left: 1px;">
                 <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="GABINETE">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="CASA CIVIL">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+                <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+                <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
               </div>
             </div>
           </div>
