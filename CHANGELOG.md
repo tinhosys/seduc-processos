@@ -5,7 +5,21 @@
 
 ---
 
-## [v1.0.53] — 2026-08-16 🟢 VERSÃO ATUAL
+## [v1.1.12] — 2026-08-24 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.1.12` · **Cache-buster:** `1787588267609`
+
+### 🔄 Recarregamento Geral de Assets
+
+- Cache busters atualizados para todos os arquivos JS e CSS:
+  - `js/dados.js`, `js/app.js`, `js/auth-sap.js`, `js/escolas.js`
+  - `js/mapa.js`, `js/multi-select.js`, `js/orcamento.js`
+  - `css/style.css`
+- Versão do rodapé confirmada: `GBZ - v1.1.12`
+
+---
+
+## [v1.0.53] — 2026-08-16
 
 **Tag:** `v1.0.53` · **Commit:** `957b674`
 
@@ -136,8 +150,10 @@
 
 | Tag | Commit | Data | Descrição |
 |---|---|---|---|
+| `v1.1.12` | — | 2026-08-24 | Recarregamento geral de assets (cache busters) |
 | `v1.0.53` | `957b674` | 2026-08-16 | Escolas: badges, modalidades, NaN fix |
 | `v1.0.52` | `4be54b2` | 2026-08-15 | Mesclagem escolas estaduais/municipais |
 | `v1.0.49` | `adf5a15` | 2026-08-14 | Fix Todas Escolas + erros de sintaxe JS |
 | `v1.0.46` | `8f9d7ef` | 2026-08-13 | Fix ReferenceError em escolas.js |
 | `v1.0.45` | `ca5815f` | 2026-08-13 | Fix impressão síncrona + login styling |
+
