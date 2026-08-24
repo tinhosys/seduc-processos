@@ -65,6 +65,7 @@ async function carregarContatos(force = false) {
     contatosData.sort((a, b) => (a.municipio || "").localeCompare(b.municipio || ""));
     
     contatosDataFiltrados = [...contatosData];
+    contatosPopulateMunicipioCombo();
     renderContatos();
     
     if (badgeStatus) {
@@ -73,7 +74,7 @@ async function carregarContatos(force = false) {
       badgeStatus.style.color = '#34d399';
     }
     const badgeTotal = document.getElementById('contatos-badge-total');
-    if (badgeTotal) badgeTotal.innerHTML = "👥 " + contatosData.length + " Contatos";
+    if (badgeTotal) badgeTotal.innerHTML = "👥 " + contatosData.length + " Municípios";
     
   } catch (err) {
     console.error(err);
@@ -87,16 +88,23 @@ async function carregarContatos(force = false) {
 
 function filtrarContatos() {
   const q = (document.getElementById('contatos-busca').value || "").toLowerCase();
-  if (!q) {
-    contatosDataFiltrados = [...contatosData];
-  } else {
-    contatosDataFiltrados = contatosData.filter(c => {
+  
+  contatosDataFiltrados = contatosData.filter(c => {
+    // Check combo
+    if (!contatosSelectedMunicipios.has(c.municipio)) {
+      return false;
+    }
+    
+    // Check search
+    if (q) {
       return (c.municipio || "").toLowerCase().includes(q) ||
              (c.nomePrefeito || "").toLowerCase().includes(q) ||
              (c.nomeSecretario || "").toLowerCase().includes(q) ||
              (c.email || "").toLowerCase().includes(q);
-    });
-  }
+    }
+    return true;
+  });
+  
   renderContatos();
 }
 
@@ -166,23 +174,29 @@ function renderContatos() {
   const tbody = document.querySelector('#contatos-table tbody');
   if (!tbody) return;
   
+  let grandTotalEscolas = 0;
+  let grandTotalAlunos = 0;
+  
   if (contatosDataFiltrados.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:48px;color:var(--text-muted);">Nenhum contato encontrado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:48px;color:var(--text-muted);">Nenhum contato encontrado.</td></tr>`;
     return;
   }
   
   let msgAgregando = "";
   if (typeof _escolasCache === 'undefined' || !_escolasCache || _escolasCache.length === 0) {
-     msgAgregando = `<tr style="background:rgba(251,191,36,0.05);"><td colspan="7" style="text-align:center;padding:8px;font-size:12px;color:#d97706;">Aguardando dados das escolas para calcular totais...</td></tr>`;
+     msgAgregando = `<tr style="background:rgba(251,191,36,0.05);"><td colspan="6" style="text-align:center;padding:8px;font-size:12px;color:#d97706;">Aguardando dados das escolas para calcular totais...</td></tr>`;
   }
   
   tbody.innerHTML = msgAgregando + contatosDataFiltrados.map(c => {
     const ag = calcularAgregados(c.municipio);
+    grandTotalEscolas += ag.escolas;
+    grandTotalAlunos += ag.alunos;
+    
     const htmlPrefeitoPhones = formatarTelefones(c.celularPrefeito);
     const htmlSecretarioPhones = formatarTelefones(c.celularSecretario);
     
     return `
-      <tr style="cursor:pointer;" onclick="abrirModalContato('${c.id}')">
+      <tr>
         <td style="font-weight:600;">${c.municipio || '-'}</td>
         <td style="vertical-align:top;">
           <div style="display:flex;flex-direction:column;gap:4px;">
@@ -203,14 +217,19 @@ function renderContatos() {
         <td style="vertical-align:top;">${c.email || '-'}</td>
         <td style="text-align:center;font-weight:bold;color:#3b82f6;vertical-align:top;font-size:16px;">${ag.escolas}</td>
         <td style="text-align:center;font-weight:bold;color:#10b981;vertical-align:top;font-size:16px;">${ag.alunos.toLocaleString('pt-BR')}</td>
-        <td style="text-align:center;vertical-align:top;" class="action-editor action-adm">
-          <button class="btn btn-outline" style="padding:6px 12px;font-size:13px;" onclick="event.stopPropagation(); abrirModalContato('${c.id}')">✏️ Editar</button>
-        </td>
       </tr>
     `;
   }).join('');
+  
+  const badgeTotal = document.getElementById('contatos-badge-total');
+  if (badgeTotal) badgeTotal.innerHTML = "👥 " + contatosDataFiltrados.length + " Municípios";
+  
+  const badgeEscolas = document.getElementById('contatos-badge-escolas');
+  if (badgeEscolas) badgeEscolas.innerHTML = "🏫 " + grandTotalEscolas + " Escolas";
+  
+  const badgeAlunos = document.getElementById('contatos-badge-alunos');
+  if (badgeAlunos) badgeAlunos.innerHTML = "🎓 " + grandTotalAlunos.toLocaleString('pt-BR') + " Alunos";
 }
-
 function fecharModalContato() {
   const modal = document.getElementById('modal-contato-overlay');
   if (modal) modal.style.display = 'none';
@@ -290,3 +309,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+
+let contatosAllMunicipios = [];
+let contatosSelectedMunicipios = new Set();
+
+function contatosPopulateMunicipioCombo() {
+  const muns = new Set();
+  contatosData.forEach(c => {
+    if (c.municipio) muns.add(c.municipio.trim());
+  });
+  contatosAllMunicipios = Array.from(muns).sort();
+  contatosSelectedMunicipios = new Set(contatosAllMunicipios);
+  contatosRenderMunicipioList(contatosAllMunicipios);
+  contatosUpdateMunicipioLabel();
+}
+
+function contatosRenderMunicipioList(list) {
+  const container = document.getElementById('contatos-municipio-list');
+  if (!container) return;
+  if (list.length === 0) {
+    container.innerHTML = '<div style="padding:8px 12px;color:#64748b;font-size:12px;">Nenhum município</div>';
+    return;
+  }
+  container.innerHTML = list.map(m => {
+    const isChecked = contatosSelectedMunicipios.has(m) ? 'checked' : '';
+    return `
+      <label style="display:flex;align-items:center;padding:6px 12px;cursor:pointer;font-size:13px;color:var(--text-secondary);">
+        <input type="checkbox" ${isChecked} value="${m}" onchange="contatosToggleMunicipio(this.value, this.checked)" style="margin-right:8px;cursor:pointer;">
+        ${m}
+      </label>
+    `;
+  }).join('');
+}
+
+function contatosToggleMunicipio(val, isChecked) {
+  if (isChecked) {
+    contatosSelectedMunicipios.add(val);
+  } else {
+    contatosSelectedMunicipios.delete(val);
+  }
+  contatosUpdateMunicipioLabel();
+  filtrarContatos();
+}
+
+function contatosFiltrarComboMunicipio(query) {
+  const q = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const filtered = contatosAllMunicipios.filter(m => {
+    return m.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(q);
+  });
+  contatosRenderMunicipioList(filtered);
+}
+
+function contatosToggleTodosMunicipios(checkAll) {
+  if (checkAll) {
+    contatosSelectedMunicipios = new Set(contatosAllMunicipios);
+  } else {
+    contatosSelectedMunicipios.clear();
+  }
+  // Re-render list to update checkboxes
+  const q = document.querySelector('#contatos-municipio-dropdown input[type="text"]').value;
+  contatosFiltrarComboMunicipio(q);
+  contatosUpdateMunicipioLabel();
+  filtrarContatos();
+}
+
+function contatosUpdateMunicipioLabel() {
+  const lbl = document.getElementById('contatos-municipio-label');
+  if (!lbl) return;
+  if (contatosSelectedMunicipios.size === contatosAllMunicipios.length) {
+    lbl.textContent = 'MUNICÍPIO (Todos)';
+  } else if (contatosSelectedMunicipios.size === 0) {
+    lbl.textContent = 'MUNICÍPIO (Nenhum)';
+  } else {
+    lbl.textContent = 'MUNICÍPIO (' + contatosSelectedMunicipios.size + ')';
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+  const drop = document.getElementById('contatos-municipio-dropdown');
+  const btn = drop ? drop.previousElementSibling : null;
+  if (drop && drop.style.display !== 'none') {
+    if (!drop.contains(e.target) && !btn.contains(e.target)) {
+      drop.style.display = 'none';
+    }
+  }
+});

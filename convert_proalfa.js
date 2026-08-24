@@ -1,0 +1,1 @@
+const xlsx = require('xlsx'); const fs = require('fs'); const wb = xlsx.readFile('C:/Users/ADM/.gemini/antigravity/scratch/seduc-processos/proalfa.xlsx'); const out = {}; wb.SheetNames.forEach(name => { const sheet = wb.Sheets[name]; const data = xlsx.utils.sheet_to_json(sheet, {header: 1}); out[name] = data; }); fs.writeFileSync('proalfa.json', JSON.stringify(out));

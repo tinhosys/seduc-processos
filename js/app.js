@@ -1066,10 +1066,10 @@ function renderProcessos() {
   // Total valor filtrado
   const valorTotal = filtrados.reduce((a, p) => a + (p.valorOf || 0), 0);
   const el = document.getElementById('valor-filtrado');
-  if (el) el.textContent = `Total: ${formatCurrency(valorTotal)}`;
+  if (el) el.innerHTML = `<span>R$</span> <span>${formatCurrency(valorTotal).replace('R$ ', '')}</span>`;
 
   const elQtd = document.getElementById('qtd-registros-filtrados');
-  if (elQtd) elQtd.textContent = `${total.toLocaleString('pt-BR')} ${total === 1 ? 'registro' : 'registros'}`;
+  if (elQtd) elQtd.innerHTML = `<span>${total === 1 ? 'Processo' : 'Processos'}</span> <span>${total.toLocaleString('pt-BR')}</span>`;
 
   // Botão exportar
   const btnExportar = document.getElementById('btn-exportar');
@@ -3318,12 +3318,12 @@ function toggleFiltros() {
   const isCollapsed = bar.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '�� <span class="btn-text">Mostrar Filtros</span>';
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg> <span class="btn-text">MOSTRAR FILTROS</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('filters_collapsed', '1');
   } else {
-    btn.innerHTML = '�� <span class="btn-text">Ocultar Filtros</span>';
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> <span class="btn-text">OCULTAR FILTROS</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('filters_collapsed');
@@ -3397,7 +3397,7 @@ function inicializarEstadosColapsaveis() {
   if (bar && btnFilters) {
     if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
       bar.classList.add('collapsed');
-      btnFilters.innerHTML = '�� <span class="btn-text">Mostrar Filtros</span>';
+      btnFilters.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg> <span class="btn-text">MOSTRAR FILTROS</span>';
       btnFilters.style.borderColor = 'var(--blue)';
       btnFilters.style.color = 'var(--blue)';
     }

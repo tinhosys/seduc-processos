@@ -1,0 +1,1 @@
+const xlsx = require('xlsx'); const wb = xlsx.readFile('C:/Users/ADM/.gemini/antigravity/scratch/seduc-processos/proalfa.xlsx'); console.log(wb.SheetNames); wb.SheetNames.forEach(name => { console.log('Sheet: ' + name); const data = xlsx.utils.sheet_to_json(wb.Sheets[name]); console.log(data.slice(0, 3)); });
