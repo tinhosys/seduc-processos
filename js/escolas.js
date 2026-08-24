@@ -657,6 +657,12 @@ function _escolasAtualizarUI() {
   if (pagination) pagination.style.display = temDados ? '' : 'none';
   if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
 
+  // Trigger update for other pages that depend on _escolasCache
+  if (typeof renderContatos === 'function') {
+    try { renderContatos(); } catch(e){}
+  }
+
+
   if (temDados) {
     _escolasAtualizarBadges();
     _escolasRenderTabela();
