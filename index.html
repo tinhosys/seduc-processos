@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -60,6 +60,102 @@
         width: 100% !important;
       }
     }
+  
+    /* CSS for infinite scroll tables and sticky headers */
+    .pagination { display: none !important; }
+    .page .table-wrap {
+      max-height: calc(100vh - 280px);
+      overflow-y: auto !important;
+      overflow-x: auto !important;
+    }
+    .page .table-wrap table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-secondary); /* ensure header has background */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .page .filters-bar.collapsed + .table-wrap {
+      max-height: calc(100vh - 180px);
+    }
+
+
+    /* ---- Controle Orcamentario Styles ---- */
+    .orc-summary-cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:14px; margin-bottom:20px; }
+    .orc-card { display:flex; align-items:center; gap:14px; padding:18px 20px; background:#1e293b; border-radius:12px; border:1px solid rgba(255,255,255,0.07); transition: box-shadow 0.2s; }
+    .orc-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .orc-card-wide { grid-column: span 2; }
+    @media (max-width:768px) { .orc-card-wide { grid-column: span 1; } }
+    .orc-card-icon { font-size:28px; min-width:36px; text-align:center; }
+    .orc-card-body { flex:1; min-width:0; }
+    .orc-card-label { font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; margin-bottom:4px; }
+    .orc-card-value { font-size:18px; font-weight:800; font-family:monospace; margin-bottom:2px; }
+    .orc-card-sub { font-size:10px; color:#475569; }
+    .orc-filters-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:16px; padding:16px; background:#1e293b; border-radius:12px; border:1px solid rgba(255,255,255,0.07); }
+    .orc-filters-bar select { flex:1; min-width:200px; padding:9px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:13px; font-weight:600; outline:none; cursor:pointer; }
+    .orc-filters-bar select:focus { border-color:#60a5fa; }
+    .orc-charts-row { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-top:20px; }
+    @media(max-width:900px) { .orc-charts-row { grid-template-columns:1fr; } }
+    .orc-chart-card { background:#1e293b; border-radius:12px; border:1px solid rgba(255,255,255,0.07); padding:20px; }
+    .orc-chart-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; margin-bottom:14px; }
+
+    
+    
+    /* === SIDEBAR RETRATIL === */
+    .sidebar { transition: width 0.3s ease; position: fixed; z-index: 100; }
+    .sidebar.collapsed { width: 70px; }
+    .sidebar.collapsed .sidebar-logo { padding: 10px 4px; margin: 16px 4px 24px; }
+    .sidebar.collapsed .sidebar-logo div { font-size: 14px !important; }
+    .sidebar.collapsed .sidebar-logo div:nth-child(2) { display: none; }
+    .sidebar.collapsed .nav-section-label { display: none; }
+    .sidebar.collapsed .nav-item { padding: 12px 0; justify-content: center; overflow: hidden; }
+    .sidebar.collapsed .nav-item .nav-icon { margin-right: 0; }
+    .sidebar.collapsed .nav-item span:not(.nav-icon) { display: none; }
+    .sidebar.collapsed .sidebar-footer { display: none; }
+    .sidebar.collapsed .submenu-indicator { display: none; }
+    
+    .main-content { transition: margin-left 0.3s ease; }
+    .app-layout:has(.sidebar.collapsed) .main-content {
+      margin-left: 70px !important;
+    }
+    .app-layout:has(.sidebar.collapsed) .topbar {
+      left: 70px !important;
+      width: calc(100% - 70px) !important;
+    }
+
+
+  
+    /* === IMPRIMIR ORCAMENTO === */
+    @media print {
+      body.print-mode-orcamento {
+        background: #0f172a !important; /* Keep dark background */
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color: white !important;
+      }
+      body.print-mode-orcamento > section:not(#page-orcamento) {
+        display: none !important;
+      }
+      body.print-mode-orcamento .sidebar,
+      body.print-mode-orcamento .topbar,
+      body.print-mode-orcamento .filters-bar { /* The filters bar has naturezas etc, hide it if we want clean report, but user said "COM OS ITENS EM TELA". We'll keep filters if they want? They probably don't want the filter dropdowns on the report. */
+        display: none !important;
+      }
+      body.print-mode-orcamento #page-orcamento {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      body.print-mode-orcamento .orc-buttons {
+        display: none !important; /* Hide export/planilha buttons */
+      }
+      /* Ensure flex containers don't wrap terribly if A4 is too narrow */
+      @page {
+        size: A4 landscape; /* Landscape is better for these cards and tables */
+        margin: 10mm;
+      }
+    }
+
   </style>
 </head>
 
@@ -122,7 +218,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.00</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.10</div>
   </div>
 </div>
   
@@ -130,7 +226,14 @@
   <div class="app-layout">
 
     <!-- ===================== SIDEBAR ===================== -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="app-sidebar">
+
+      <div style="position: absolute; top: 20px; right: -12px; z-index: 100;">
+        <button onclick="toggleDesktopSidebar()" style="background: #1e293b; border: 1px solid #334155; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94a3b8; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+          <svg id="sidebar-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+      </div>
+
       <div class="sidebar-logo" style="margin: 16px 12px 24px; padding: 20px 14px; text-align: center; background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid rgba(255, 255, 255, 0.15); border-bottom: 1px solid rgba(0, 0, 0, 0.4); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);">
         <div style="font-size: 34px; font-weight: 850; color: #f8fafc; letter-spacing: 2.5px; line-height: 1; font-family: 'Inter', sans-serif;">
           CAM
@@ -140,68 +243,66 @@
         </div>
       </div>
 
+      
       <nav class="sidebar-nav">
         <div class="nav-section-label">Menu Principal</div>
 
-        <button class="nav-item active" data-page="dashboard">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-          </span>
-          Dashboard
-        </button>
+        <a href="#" class="nav-item" data-page="dashboard" onclick="navegar('dashboard'); fecharSubmenus()">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span>
+          <span>Dashboard</span>
+        </a>
 
-        <button class="nav-item" data-page="processos">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </span>
-          Processos
-        </button>
-        <button class="nav-item" data-page="senha">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-          </span>
-          Trocar Senha
-        </button>
+        <a href="#" class="nav-item active" data-page="orcamento" onclick="navegar('orcamento'); fecharSubmenus()">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+          <span>Orçamento</span>
+        </a>
 
-        <button class="nav-item action-adm" data-page="acessos">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
-          </span>
-          Gerenciar Acessos
-        </button>
+        <!-- Menu Processos -->
+        <div class="nav-group">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-processos', this)">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
+            <span style="flex:1">Processos</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu" id="sub-processos" style="display: none; padding-left: 20px;">
+            <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
+            <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
+            <a href="#" class="nav-item sub-item" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
+          </div>
+        </div>
 
-        <button class="nav-item action-adm" data-page="repetidos">
-          <span class="nav-icon">🔁</span>
-          Processos Repetidos
-        </button>
+        <!-- Menu Escolas -->
+        <div class="nav-group">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-escolas', this)">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
+            <span style="flex:1">Escolas & Mapas</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu" id="sub-escolas" style="display: none; padding-left: 20px;">
+            <a href="#" class="nav-item sub-item" data-page="escolas" onclick="navegar('escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Lista de Escolas</span></a>
+            <a href="#" class="nav-item sub-item" data-page="mapa" onclick="navegar('mapa')" style="font-size: 13px; padding: 10px 16px;"><span>Mapa de Escolas</span></a>
+            <a href="#" class="nav-item sub-item" data-page="municipios" onclick="navegar('municipios')" style="font-size: 13px; padding: 10px 16px;"><span>Municípios</span></a>
+          </div>
+        </div>
 
-        <button class="nav-item" data-page="escolas">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </span>
-          Escolas
-        </button>
+        <!-- Menu Configurações -->
+        <div class="nav-group">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-config', this)">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+            <span style="flex:1">Configurações</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu" id="sub-config" style="display: none; padding-left: 20px;">
+            <a href="#" class="nav-item sub-item" data-page="acessos" onclick="navegar('acessos')" style="font-size: 13px; padding: 10px 16px;"><span>Gerenciar Acessos</span></a>
+            <a href="#" class="nav-item sub-item" data-page="senha" onclick="navegar('senha')" style="font-size: 13px; padding: 10px 16px;"><span>Trocar Senha</span></a>
+          </div>
+        </div>
 
-        <button class="nav-item" data-page="mapa-escolas">
-          <span class="nav-icon">🗺️</span>
-          Mapa de Escolas
-        </button>
-
-        
-        <button class="nav-item" data-page="proalfa">
-          <span class="nav-icon">📖</span>
-          PROALFA
-        </button>
-    <button class="nav-item" data-page="contatos">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          </span>
-          Contatos
-        </button>
       </nav>
 
+
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.00</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.10</div>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -217,7 +318,7 @@
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;">
 
-          <button class="btn btn-ghost btn-sm" onclick="navegar('processos')">📋 Processos</button>
+          <button class="btn btn-ghost btn-sm" data-page="processos" onclick="navegar('processos')">📋 Processos</button>
           <button class="btn btn-ghost btn-sm" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha">🔄 Recarregar</button>
 
           <div class="user-profile"
@@ -226,7 +327,7 @@
               <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-primary)">-</div>
               <div id="user-role" style="font-size:11px;color:var(--text-muted)">Carregando...</div>
             </div>
-            <button onclick="navegar('senha')" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; padding:4px;" title="Trocar Senha">
+            <button data-page="senha" onclick="navegar('senha')" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; padding:4px;" title="Trocar Senha">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </button>
             <button class="btn btn-danger btn-sm" onclick="fazerLogout()" title="Sair">Sair</button>
@@ -1294,13 +1395,13 @@
     <!-- Header / Nav bar -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>
-        <button type="button" onclick="navegar('escolas')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-secondary); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;">← Voltar para Lista de Escolas</button>
+        <button type="button" data-page="escolas" onclick="navegar('escolas')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-secondary); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;">← Voltar para Lista de Escolas</button>
         <h2 id="form-escola-page-titulo" style="margin:0; font-size:22px; color:#f0f4ff; display:flex; align-items:center; gap:10px;">🏫 Editar Cadastro da Escola</h2>
         <p id="form-escola-page-subtitulo" style="margin:4px 0 0 0; color:#a78bfa; font-weight:600; font-size:14px;">Preencha os dados individualizados da unidade escolar</p>
       </div>
 
       <div style="display:flex; gap:12px;">
-        <button type="button" onclick="navegar('escolas')" class="btn btn-ghost" style="padding:10px 20px;">Cancelar</button>
+        <button type="button" data-page="escolas" onclick="navegar('escolas')" class="btn btn-ghost" style="padding:10px 20px;">Cancelar</button>
         <button type="button" onclick="salvarFormularioEscolaPage(event)" class="btn btn-primary" id="btn-salvar-escola-page" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:12px 28px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">💾 Salvar Escola</button>
       </div>
     </div>
@@ -2299,7 +2400,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=3.2.1"></script>
-  <script src="js/app.js?v=1786974445.0.5"></script>
+  <script src="js/app.js?v=1787540303081"></script>
   <script src="js/auth-sap.js?v=3.2.1"></script>
   <script src="js/escolas.js?v=7.0.7" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
@@ -2356,6 +2457,54 @@
       atualizarContador();
     });
 
+    
+    
+    function toggleSubmenu(id, el) {
+      // expand sidebar if collapsed
+      const sidebar = document.getElementById('app-sidebar');
+      if (sidebar && sidebar.classList.contains('collapsed')) {
+        toggleDesktopSidebar();
+      }
+
+      const menu = document.getElementById(id);
+      const indicator = el.querySelector('.submenu-indicator');
+      if (menu.style.display === 'none') {
+        menu.style.display = 'block';
+        if (indicator) indicator.style.transform = 'rotate(180deg)';
+        el.classList.add('open');
+      } else {
+        menu.style.display = 'none';
+        if (indicator) indicator.style.transform = 'rotate(0deg)';
+        el.classList.remove('open');
+      }
+    }
+    
+    function fecharSubmenus() {
+      document.querySelectorAll('.nav-submenu').forEach(m => m.style.display = 'none');
+      document.querySelectorAll('.submenu-indicator').forEach(i => i.style.transform = 'rotate(0deg)');
+      document.querySelectorAll('.nav-group .nav-item').forEach(i => i.classList.remove('open'));
+    }
+    
+    // Add transition to indicator
+    document.head.insertAdjacentHTML('beforeend', '<style>.submenu-indicator { transition: transform 0.2s; }</style>');
+
+
+    function toggleDesktopSidebar() {
+      const sidebar = document.getElementById('app-sidebar');
+      const layout = document.querySelector('.app-layout');
+      const chevron = document.getElementById('sidebar-chevron');
+      
+      sidebar.classList.toggle('collapsed');
+      
+      
+      if (sidebar.classList.contains('collapsed')) {
+        chevron.innerHTML = '<polyline points="9 18 15 12 9 6"></polyline>'; // point right
+      } else {
+        chevron.innerHTML = '<polyline points="15 18 9 12 15 6"></polyline>'; // point left
+      }
+    }
+
+
     // Toggle Sidebar no Mobile
     function toggleSidebar() {
       const sidebar = document.querySelector('.sidebar');
@@ -2403,10 +2552,110 @@
   <script src="js/multi-select.js?v=639212790744655179"></script>
   <script>
   </script>
+  <script src="js/orcamento.js?v=1787540303081"></script>
   <script src="js/print-proalfa.js"></script>
   <script src="js/proalfa.js"></script>
 
-<!-- ============= MODAL: LOGADOS ============= -->
+
+  <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
+  <section class="page" id="page-orcamento">
+
+    <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+      <div>
+        <h2 style="margin:0 0 4px; font-size:20px; font-weight:800;">Controle Orcamentario</h2>
+        <p style="margin:0; font-size:13px; color:#64748b;">Execucao de Dotacao Orcamentaria - CAM SEDUC-RO</p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        
+        <button onclick="if(typeof imprimirOrcamento==='function') imprimirOrcamento(); else window.print();" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          RELATÓRIO
+        </button>
+
+        <button onclick="exportarOrcamentoExcel()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#16a34a; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
+          EXPORTAR CSV
+        </button>
+        <button onclick="window.open('https://docs.google.com/spreadsheets/d/1NQuN9icUm8RL08pqkPia3ZrgoC5zEka99mK43sUJm3o/edit?gid=325984433','_blank')" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#10b981; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+          PLANILHA
+        </button>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="orc-summary-cards" id="orc-cards"></div>
+
+    <!-- Filtros -->
+    <div class="orc-filters-bar">
+      <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px;">
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Programa de Acao (PA)</label>
+        <select id="orc-filtro-pa"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px;">
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Fonte de Recurso</label>
+        <select id="orc-filtro-fonte"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:240px;">
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Natureza da Despesa</label>
+        <select id="orc-filtro-despesa"></select>
+      </div>
+      <button onclick="limparFiltrosOrcamento()" style="height:40px;padding:0 16px;border-radius:8px;background:rgba(250,204,21,0.15);color:#facc15;border:1px solid #facc15;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;text-transform:uppercase;transition:background 0.2s;" onmouseover="this.style.background='rgba(250,204,21,0.3)'" onmouseout="this.style.background='rgba(250,204,21,0.15)'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        LIMPAR
+      </button>
+    </div>
+
+    <!-- Legenda das colunas de natureza da despesa – click to filter -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px 16px;background:#1e293b;border-radius:10px;border:1px solid rgba(255,255,255,0.05);">
+      <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;align-self:center;margin-right:4px;">Filtrar por Natureza:</span>
+      <button class="orc-badge-filter" data-code="339014" data-cor="#60a5fa" onclick="filtrarOrcamentoPorNatureza('339014')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);cursor:pointer;transition:all 0.2s;" title="Diárias Pessoal Civil">🏨 Diárias Pessoal</button>
+      <button class="orc-badge-filter" data-code="339030" data-cor="#fbbf24" onclick="filtrarOrcamentoPorNatureza('339030')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Consumo">📦 Material Consumo</button>
+      <button class="orc-badge-filter" data-code="339033" data-cor="#38bdf8" onclick="filtrarOrcamentoPorNatureza('339033')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);cursor:pointer;transition:all 0.2s;" title="Passagens e Locomoção">✈️ Passagens</button>
+      <button class="orc-badge-filter" data-code="339039" data-cor="#818cf8" onclick="filtrarOrcamentoPorNatureza('339039')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(129,140,248,0.12);color:#818cf8;border:1px solid rgba(129,140,248,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PJ">🏢 Serv. Terceiros PJ</button>
+      <button class="orc-badge-filter" data-code="339048" data-cor="#4ade80" onclick="filtrarOrcamentoPorNatureza('339048')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílio Financeiro a Pessoa Física">💳 Aux. Financeiro PF</button>
+      <button class="orc-badge-filter" data-code="335031" data-cor="#a78bfa" onclick="filtrarOrcamentoPorNatureza('335031')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílios / Premiação">🏆 Auxílios/Prêmio</button>
+      <button class="orc-badge-filter" data-code="339032" data-cor="#f472b6" onclick="filtrarOrcamentoPorNatureza('339032')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(244,114,182,0.12);color:#f472b6;border:1px solid rgba(244,114,182,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Distribuição Gratuita">🎁 Distrib. Gratuita</button>
+      <button class="orc-badge-filter" data-code="339036" data-cor="#fb923c" onclick="filtrarOrcamentoPorNatureza('339036')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,146,60,0.12);color:#fb923c;border:1px solid rgba(251,146,60,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PF">👤 Serv. Terceiros PF</button>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-wrap" style="overflow-x:auto; overflow-y:auto; max-height:calc(100vh - 380px); border-radius:12px; border:1px solid rgba(255,255,255,0.07);">
+      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+        <thead>
+          <tr style="background:#0f172a; position:sticky; top:0; z-index:10;">
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; min-width:140px; border-bottom:1px solid rgba(255,255,255,0.07);">PA</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; min-width:130px; border-bottom:1px solid rgba(255,255,255,0.07);">Fonte</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Cod.</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; border-bottom:1px solid rgba(255,255,255,0.07);">Natureza da Despesa</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#60a5fa; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Dotacao</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#f59e0b; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Empenhado</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#f87171; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Anulado</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#10b981; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Executado</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#a78bfa; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Saldo Liq.</th>
+            <th style="padding:12px 16px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; min-width:120px; border-bottom:1px solid rgba(255,255,255,0.07);">% Exec</th>
+          </tr>
+        </thead>
+        <tbody id="orc-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Graficos -->
+    <div class="orc-charts-row">
+      <div class="orc-chart-card">
+        <div class="orc-chart-title">Execucao por Natureza da Despesa</div>
+        <div style="height:240px;"><canvas id="orc-chart-bar"></canvas></div>
+      </div>
+      <div class="orc-chart-card">
+        <div class="orc-chart-title">Distribuicao da Dotacao por Programa</div>
+        <div style="height:240px;"><canvas id="orc-chart-donut"></canvas></div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ============= MODAL: LOGADOS ============= -->
 <div class="modal-overlay" id="modal-logados" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
   <div style="background:#0f172a; border:1px solid rgba(59,130,246,0.4); width:100%; max-width:600px; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.6); overflow:hidden;">
     <div style="padding:20px 24px; background:linear-gradient(135deg,#1e293b,#0f172a); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">

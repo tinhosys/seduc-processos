@@ -150,6 +150,7 @@ function navegar(pagina) {
     }
   }
   if (pagina === 'todas-escolas') iniciarPaginaTodasEscolas();
+  if (pagina === 'orcamento' && typeof carregarOrcamento === 'function') carregarOrcamento();
 }
 
 // ---- TOAST ----
@@ -956,7 +957,7 @@ function renderProcessos() {
   if (state.paginaAtual > totalPags) state.paginaAtual = Math.max(1, totalPags);
 
   const inicio = (state.paginaAtual - 1) * state.itensPorPagina;
-  const pagina = filtrados.slice(inicio, inicio + state.itensPorPagina);
+  const pagina = filtrados; // Pagination removed
 
   // Preencher filtros dinâmicos (preencherSelectFiltro preserva seleções existentes)
   const todosProcs = carregarProcessos();
@@ -1066,7 +1067,7 @@ function renderProcessos() {
   // Total valor filtrado
   const valorTotal = filtrados.reduce((a, p) => a + (p.valorOf || 0), 0);
   const el = document.getElementById('valor-filtrado');
-  if (el) el.innerHTML = `<span>R$</span> <span>${formatCurrency(valorTotal).replace('R$ ', '')}</span>`;
+  if (el) el.innerHTML = `<span>R$</span> <span>${formatCurrency(valorTotal).replace(/^R\$\s*/u, '')}</span>`;
 
   const elQtd = document.getElementById('qtd-registros-filtrados');
   if (elQtd) elQtd.innerHTML = `<span>${total === 1 ? 'Processo' : 'Processos'}</span> <span>${total.toLocaleString('pt-BR')}</span>`;
@@ -3259,7 +3260,7 @@ function renderProcessosRepetidos() {
             <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span>
           </td>
           <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; padding-right: 16px;">
-            R$ ${formatCurrency(p.valorOf)}
+            ${formatCurrency(p.valorOf)}
           </td>
         </tr>
       `;
@@ -4154,7 +4155,7 @@ function _teAtualizarUI() {
   const total  = _teFiltrados.length;
   const ini    = (_tePagina - 1) * _teItensPorPag;
   const fim    = Math.min(ini + _teItensPorPag, total);
-  const pag    = _teFiltrados.slice(ini, fim);
+  const pag = _teFiltrados; // Pagination removed
 
   // Badges
   const totalAlunos = _teFiltrados.reduce((s,e) => s + (parseInt(e.alunos)||0), 0);

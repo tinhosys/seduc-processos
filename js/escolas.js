@@ -696,7 +696,7 @@ function _escolasRenderTabela() {
   if (tableWrap) tableWrap.style.display = '';
 
   const start = (_escolasPaginaAtual - 1) * _escolasItensPorPagina;
-  const slice = _escolasFiltradas.slice(start, start + _escolasItensPorPagina);
+  const slice = _escolasFiltradas; // Pagination removed
 
   tbody.innerHTML = slice.map((e, i) => {
     const gi = start + i;

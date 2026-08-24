@@ -818,7 +818,7 @@ function renderProcessos() {
   if (state.paginaAtual > totalPags) state.paginaAtual = Math.max(1, totalPags);
 
   const inicio = (state.paginaAtual - 1) * state.itensPorPagina;
-  const pagina = filtrados.slice(inicio, inicio + state.itensPorPagina);
+  const pagina = filtrados; // Pagination removed
 
   // Preencher filtros dinâmicos
   preencherSelectFiltro('filtro-ano',         [...new Set(carregarProcessos().map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
