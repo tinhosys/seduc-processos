@@ -5,7 +5,37 @@
 
 ---
 
-## [v1.1.12] — 2026-08-24 🟢 VERSÃO ATUAL
+## [v1.1.13] — 2026-08-24 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.1.13` · **Cache-buster:** `1787625716691`
+
+### 🐛 Fix — Aba "Alunos Municipais" (Proalfa/CENSO)
+
+#### Correções de colunas e índices
+- **Removidas** colunas `E.F` e `A.I` da aba Matrículas (não existem na planilha)
+- **Corrigidos** índices de anos: `1º=r[9]`, `2º=r[10]`, `3º=r[11]`, `4º=r[12]`, `5º=r[13]`
+  - Antes: os valores estavam deslocados 1 coluna para a esquerda
+  - O `5º` aparecia sempre `0` porque apontava para `r[14]` (inexistente)
+- **Coluna TOTAL** calculada por soma dos 5 anos individuais (sem depender de `r[8]` da planilha)
+
+#### Nova coluna Localização
+- Adicionada coluna **LOCALIZAÇÃO** (`r[6]`: Urbana / Rural / Indígena / Quilombola)
+  - Visível em ambas as abas: Matrículas e Docentes
+  - Exibida com **badge colorido** (azul=Urbana, verde=Rural, âmbar=Indígena, roxo=Quilombola)
+- Novo combo de filtro **LOCALIZAÇÃO** adicionado ao painel de filtros
+  - Preenchido dinamicamente de acordo com a aba selecionada
+
+#### Totais da busca
+- Barra de totais corrigida para matrículas: mostra `TOTAL` + anos `1º` a `5º` (sem E.F/A.I)
+- Docentes mantém: `DOCENTES`, `E.F`, `A.I`, `1º` a `5º`
+
+#### Arquivos modificados
+- `js/proalfa.js` — reescrita das funções `renderTableProalfa`, `preencherCombosProalfa`, `filtrarProalfa`, `renderProalfaTabs`
+- `index.html` — adicionado combo `proalfa-localizacao` nos filtros
+
+---
+
+## [v1.1.12] — 2026-08-24
 
 **Tag:** `v1.1.12` · **Cache-buster:** `1787588267609`
 
