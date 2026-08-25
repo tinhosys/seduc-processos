@@ -13,8 +13,8 @@ const TAB_CONFIG = [
 // r[0] SUPER   r[1] Município  r[2] Distrito  r[3] INEP (numérico)  r[4] Escola
 // r[5] Dependência (Competência)   r[6] Localização   r[7] Loc.Diferenciada
 //
-// DOCENTES:   r[8]=Total Docentes  r[9]=EF Total  r[10]=AI Total
-//             r[11]=1º  r[12]=2º  r[13]=3º  r[14]=4º  r[15]=5º
+// DOCENTES MUNICIPAIS: r[8]=DOCENTES  r[9]=EF Total  r[10]=AI Total  r[11]=1º ...
+// DOCENTES ESTADUAIS:  r[8]=DOCENTES (EF)  r[9]=1º  r[10]=2º ... (A.I não existe)
 //
 // MATRÍCULAS: r[8]=TOTAL planilha (não usar — calcular)
 //             r[9]=1º  r[10]=2º  r[11]=3º  r[12]=4º  r[13]=5º
@@ -27,7 +27,7 @@ const TAB_CONFIG = [
 function _isValidDataRow(r) {
   if (!r || r.length <= 5 || !r[0]) return false;
   const inep = Number(r[3]);
-  if (!inep || isNaN(inep) || inep <= 0) return false; // exclui linhas Total/subtotal
+  if (!inep || isNaN(inep) || inep <= 0) return false;
   if (!r[4] || r[4] === '-') return false;
   return true;
 }
@@ -84,10 +84,9 @@ function renderProalfaTabs() {
 
     rows.forEach(r => {
       if (isDoc) {
-        // r[8] = Total Docentes Educação Básica (total geral da escola)
+        // Docentes (Municipal e Estadual) usam r[8] para o total principal (DOCENTES)
         sum += Number(r[8]) || 0;
       } else {
-        // soma dos 5 anos individuais (exclui linha Total da planilha via _isValidDataRow)
         sum += _somaMatriculas(r);
       }
     });
@@ -129,28 +128,32 @@ function preencherCombosProalfa() {
   const munSet   = new Set();
   const distSet  = new Set();
   const locSet   = new Set();   // r[6] Localização
+  const locDifSet = new Set();  // r[7] Localização Diferenciada
 
   data.forEach(r => {
     if (r[0]) superSet.add(r[0]);
     if (r[1]) munSet.add(r[1]);
     if (r[2]) distSet.add(r[2]);
     if (r[6]) locSet.add(r[6]);
+    if (r[7] && r[7] !== 'Não') locDifSet.add(r[7]);
   });
 
-  const fill = (id, set) => {
+  const fill = (id, set, includeNao = false) => {
     const el = document.getElementById(id);
     if (!el) return;
     const cur = el.value;
-    el.innerHTML = '<option value="">Todos</option>' +
-      [...set].sort().map(s => `<option value="${s}">${s}</option>`).join('');
-    if ([...set].includes(cur)) el.value = cur;
+    let opts = '<option value="">Todos</option>';
+    if (includeNao) opts += '<option value="Não">Não</option>';
+    opts += [...set].sort().map(s => `<option value="${s}">${s}</option>`).join('');
+    el.innerHTML = opts;
+    if ([...set, 'Não', ''].includes(cur)) el.value = cur;
   };
 
   fill('proalfa-super',       superSet);
   fill('proalfa-municipio',   munSet);
   fill('proalfa-distrito',    distSet);
   fill('proalfa-localizacao', locSet);
-  // COMPETÊNCIA removida: cada aba já é específica por rede (Municipal/Estadual)
+  fill('proalfa-loc-dif',     locDifSet, true); // Permite filtrar os que são "Não"
 }
 
 // ─── LIMPAR FILTROS ──────────────────────────────────────────────────────────
@@ -171,12 +174,14 @@ function filtrarProalfa() {
   const filterMun   = document.getElementById('proalfa-municipio')?.value || '';
   const filterDist  = document.getElementById('proalfa-distrito')?.value || '';
   const filterLoc   = document.getElementById('proalfa-localizacao')?.value || '';
+  const filterLocD  = document.getElementById('proalfa-loc-dif')?.value || '';
 
   const filtrados = (proalfaData[currentTabProalfa] || []).filter(r => {
     if (filterSuper && r[0] !== filterSuper) return false;
     if (filterMun   && r[1] !== filterMun)   return false;
     if (filterDist  && r[2] !== filterDist)  return false;
     if (filterLoc   && r[6] !== filterLoc)   return false;
+    if (filterLocD  && r[7] !== filterLocD)  return false;
     if (busca && !r.join(' ').toLowerCase().includes(busca)) return false;
     return true;
   });
@@ -191,14 +196,15 @@ function renderTableProalfa(dados, isDoc) {
   const tfoot   = document.getElementById('proalfa-tfoot');
   const countEl = document.getElementById('proalfa-count');
 
+  const isEstadual = currentTabProalfa.includes('Estadual') || currentTabProalfa.includes('Est.');
+
   if (countEl) countEl.innerHTML = `${dados.length} escolas listadas`;
 
   const thC = 'border-bottom:1px solid rgba(255,255,255,0.1); padding:10px; background:var(--bg-secondary); color:#9ca3af; font-weight:600; text-transform:uppercase; font-size:11px; letter-spacing:0.5px; text-align:center;';
   const thL = thC.replace('text-align:center', 'text-align:left');
 
   // ── CABEÇALHOS ─────────────────────────────────────────────────────────────
-  if (isDoc) {
-    thead.innerHTML = `
+  let headHtml = `
       <th style="width:4%;  ${thC}">Nº</th>
       <th style="width:11%; ${thL}">SUPER</th>
       <th style="width:9%;  ${thL}">MUNICÍPIO</th>
@@ -206,23 +212,23 @@ function renderTableProalfa(dados, isDoc) {
       <th style="width:7%;  ${thL}">INEP</th>
       <th style="width:14%; ${thL}">ESCOLA</th>
       <th style="width:7%;  ${thL}">LOCALIZAÇÃO</th>
-      <th style="width:6%;  ${thC}">DOCENTES</th>
-      <th style="width:5%;  ${thC}; color:#10b981;">TOTAL</th>
-      <th style="width:5%;  ${thC}; color:#10b981;">A.I</th>
+      <th style="width:7%;  ${thL}">LOC. DIF.</th>`;
+
+  if (isDoc) {
+    headHtml += `<th style="width:6%;  ${thC}">DOCENTES</th>`;
+    if (!isEstadual) {
+      // Municipal tem E.F e A.I
+      headHtml += `<th style="width:5%;  ${thC}">E.F</th>`;
+      headHtml += `<th style="width:5%;  ${thC}; color:#10b981;">A.I</th>`;
+    }
+    headHtml += `
       <th style="width:5%;  ${thC}">1º</th>
       <th style="width:5%;  ${thC}">2º</th>
       <th style="width:5%;  ${thC}">3º</th>
       <th style="width:5%;  ${thC}">4º</th>
       <th style="width:5%;  ${thC}">5º</th>`;
   } else {
-    thead.innerHTML = `
-      <th style="width:4%;  ${thC}">Nº</th>
-      <th style="width:12%; ${thL}">SUPER</th>
-      <th style="width:9%;  ${thL}">MUNICÍPIO</th>
-      <th style="width:9%;  ${thL}">DISTRITO</th>
-      <th style="width:7%;  ${thL}">INEP</th>
-      <th style="width:14%; ${thL}">ESCOLA</th>
-      <th style="width:7%;  ${thL}">LOCALIZAÇÃO</th>
+    headHtml += `
       <th style="width:7%;  ${thC}; color:#10b981;">TOTAL</th>
       <th style="width:6%;  ${thC}">1º</th>
       <th style="width:6%;  ${thC}">2º</th>
@@ -230,8 +236,9 @@ function renderTableProalfa(dados, isDoc) {
       <th style="width:6%;  ${thC}">4º</th>
       <th style="width:6%;  ${thC}">5º</th>`;
   }
+  thead.innerHTML = headHtml;
 
-  // ── BADGE DE LOCALIZAÇÃO ───────────────────────────────────────────────────
+  // ── BADGE DE LOCALIZAÇÃO E DIFERENCIADA ────────────────────────────────────
   const locPalette = {
     'Urbana':     { bg:'rgba(6,182,212,0.18)',  color:'#22d3ee', border:'rgba(6,182,212,0.35)'  },
     'Rural':      { bg:'rgba(16,185,129,0.18)', color:'#34d399', border:'rgba(16,185,129,0.35)' },
@@ -244,6 +251,11 @@ function renderTableProalfa(dados, isDoc) {
     if (!lc)  return `<span style="color:var(--text-secondary)">${val}</span>`;
     return `<span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;` +
            `background:${lc.bg};color:${lc.color};border:1px solid ${lc.border}">${val}</span>`;
+  };
+
+  const locDifBadge = val => {
+    if (!val || val.toLowerCase() === 'não') return '<span style="color:var(--text-muted)">Não</span>';
+    return `<span style="padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;background:rgba(236,72,153,0.15);color:#f472b6;border:1px solid rgba(236,72,153,0.3);white-space:nowrap;display:inline-block;max-width:90px;overflow:hidden;text-overflow:ellipsis;" title="${val}">${val}</span>`;
   };
 
   // ── ACUMULADORES ───────────────────────────────────────────────────────────
@@ -264,26 +276,50 @@ function renderTableProalfa(dados, isDoc) {
     tr += `<td style="${td}">${r[3] || '-'}</td>`;
     tr += `<td style="${td}">${r[4] || '-'}</td>`;
     tr += `<td style="${td}">${locBadge(r[6])}</td>`;
+    tr += `<td style="${td}">${locDifBadge(r[7])}</td>`;
 
     if (isDoc) {
-      const doc = Number(r[8])  || 0;
-      const ef  = Number(r[9])  || 0;
-      const ai  = Number(r[10]) || 0;
-      const a1  = Number(r[11]) || 0;
-      const a2  = Number(r[12]) || 0;
-      const a3  = Number(r[13]) || 0;
-      const a4  = Number(r[14]) || 0;
-      const a5  = Number(r[15]) || 0;
-      tr += `<td style="${tdc}">${doc}</td>`;
-      tr += `<td style="${tdc}">${ef}</td>`;
-      tr += `<td style="${tdc}font-weight:bold;color:#10b981;">${ai}</td>`;
-      tr += `<td style="${tdc}">${a1}</td>`;
-      tr += `<td style="${tdc}">${a2}</td>`;
-      tr += `<td style="${tdc}">${a3}</td>`;
-      tr += `<td style="${tdc}">${a4}</td>`;
-      tr += `<td style="${tdc}">${a5}</td>`;
-      sumDoc += doc; sumEF += ef; sumAI += ai;
-      sum1 += a1; sum2 += a2; sum3 += a3; sum4 += a4; sum5 += a5;
+      if (isEstadual) {
+        // Estadual: sem E.F/A.I -> pula r[9], os anos começam em r[9]
+        const doc = Number(r[8]) || 0;
+        const a1  = Number(r[9]) || 0;
+        const a2  = Number(r[10]) || 0;
+        const a3  = Number(r[11]) || 0;
+        const a4  = Number(r[12]) || 0;
+        const a5  = Number(r[13]) || 0;
+
+        tr += `<td style="${tdc}font-weight:bold;">${doc}</td>`;
+        tr += `<td style="${tdc}">${a1}</td>`;
+        tr += `<td style="${tdc}">${a2}</td>`;
+        tr += `<td style="${tdc}">${a3}</td>`;
+        tr += `<td style="${tdc}">${a4}</td>`;
+        tr += `<td style="${tdc}">${a5}</td>`;
+
+        sumDoc += doc;
+        sum1 += a1; sum2 += a2; sum3 += a3; sum4 += a4; sum5 += a5;
+      } else {
+        // Municipal: com E.F e A.I
+        const doc = Number(r[8])  || 0;
+        const ef  = Number(r[9])  || 0;
+        const ai  = Number(r[10]) || 0;
+        const a1  = Number(r[11]) || 0;
+        const a2  = Number(r[12]) || 0;
+        const a3  = Number(r[13]) || 0;
+        const a4  = Number(r[14]) || 0;
+        const a5  = Number(r[15]) || 0;
+        
+        tr += `<td style="${tdc}font-weight:bold;">${doc}</td>`;
+        tr += `<td style="${tdc}">${ef}</td>`;
+        tr += `<td style="${tdc}font-weight:bold;color:#10b981;">${ai}</td>`;
+        tr += `<td style="${tdc}">${a1}</td>`;
+        tr += `<td style="${tdc}">${a2}</td>`;
+        tr += `<td style="${tdc}">${a3}</td>`;
+        tr += `<td style="${tdc}">${a4}</td>`;
+        tr += `<td style="${tdc}">${a5}</td>`;
+
+        sumDoc += doc; sumEF += ef; sumAI += ai;
+        sum1 += a1; sum2 += a2; sum3 += a3; sum4 += a4; sum5 += a5;
+      }
     } else {
       // 1º=r[9]  2º=r[10]  3º=r[11]  4º=r[12]  5º=r[13]
       const a1  = Number(r[9])  || 0;
@@ -307,7 +343,7 @@ function renderTableProalfa(dados, isDoc) {
   });
 
   if (!dados.length) {
-    const cols = isDoc ? 15 : 13;
+    const cols = isDoc ? (isEstadual ? 14 : 16) : 14;
     html = `<tr><td colspan="${cols}" style="text-align:center;padding:20px;">Nenhum registro encontrado.</td></tr>`;
   }
   tbody.innerHTML = html;
@@ -317,15 +353,15 @@ function renderTableProalfa(dados, isDoc) {
     const tfStyle = 'padding:10px; background:rgba(255,255,255,0.04); color:#e2e8f0; font-weight:700; font-size:12px; border-top:2px solid rgba(255,255,255,0.15);';
     const tfC     = tfStyle + ' text-align:center; color:#10b981;';
 
-    // Colunas fixas: Nº, SUPER, MUNICÍPIO, DISTRITO, INEP, ESCOLA, LOCALIZAÇÃO
-    // "Total" fica right-aligned cobrindo até a coluna ESCOLA
     let tfRow = '<tr>';
-    tfRow += `<td style="${tfStyle} text-align:right; color:#9ca3af;" colspan="7">Total</td>`;
+    tfRow += `<td style="${tfStyle} text-align:right; color:#9ca3af;" colspan="8">Total</td>`;
 
     if (isDoc) {
       tfRow += `<td style="${tfC}">${sumDoc.toLocaleString('pt-BR')}</td>`;
-      tfRow += `<td style="${tfC}">${sumEF.toLocaleString('pt-BR')}</td>`;
-      tfRow += `<td style="${tfC}">${sumAI.toLocaleString('pt-BR')}</td>`;
+      if (!isEstadual) {
+        tfRow += `<td style="${tfC}">${sumEF.toLocaleString('pt-BR')}</td>`;
+        tfRow += `<td style="${tfC}">${sumAI.toLocaleString('pt-BR')}</td>`;
+      }
     } else {
       tfRow += `<td style="${tfC}">${sumTot.toLocaleString('pt-BR')}</td>`;
     }
@@ -354,9 +390,11 @@ function renderTableProalfa(dados, isDoc) {
     let topHtml = `<div style="color:#10b981;font-weight:bold;font-size:12px;display:flex;align-items:center;margin-right:10px;">TOTAIS DA BUSCA:</div>`;
 
     if (isDoc) {
-      topHtml += `<div style="${sS}"><span style="${lS}">DOCENTES</span><span style="${vS}">${sumDoc.toLocaleString('pt-BR')}</span></div>`;
-      topHtml += `<div style="${sS}"><span style="${lS}">TOTAL</span><span style="${vG}">${sumEF.toLocaleString('pt-BR')}</span></div>`;
-      topHtml += `<div style="${sS}"><span style="${lS}">A.I</span><span style="${vG}">${sumAI.toLocaleString('pt-BR')}</span></div>`;
+      topHtml += `<div style="${sS}"><span style="${lS}">DOCENTES</span><span style="${vG}">${sumDoc.toLocaleString('pt-BR')}</span></div>`;
+      if (!isEstadual) {
+        topHtml += `<div style="${sS}"><span style="${lS}">E.F</span><span style="${vS}">${sumEF.toLocaleString('pt-BR')}</span></div>`;
+        topHtml += `<div style="${sS}"><span style="${lS}">A.I</span><span style="${vG}">${sumAI.toLocaleString('pt-BR')}</span></div>`;
+      }
     } else {
       topHtml += `<div style="${sS}"><span style="${lS}">TOTAL</span><span style="${vG}">${sumTot.toLocaleString('pt-BR')}</span></div>`;
     }
