@@ -1,16 +1,18 @@
 
 function getFilteredProalfaData() {
-  const filterSuper = document.getElementById('proalfa-super').value;
-  const filterMun = document.getElementById('proalfa-municipio').value;
-  const filterDist = document.getElementById('proalfa-distrito').value;
-  const filterDep = document.getElementById('proalfa-dep').value;
-  const busca = document.getElementById('proalfa-busca').value.toLowerCase();
+  const filterSuper = document.getElementById('proalfa-super')?.value || '';
+  const filterMun   = document.getElementById('proalfa-municipio')?.value || '';
+  const filterDist  = document.getElementById('proalfa-distrito')?.value || '';
+  const filterLoc   = document.getElementById('proalfa-localizacao')?.value || '';
+  const filterLocD  = document.getElementById('proalfa-loc-dif')?.value || '';
+  const busca       = (document.getElementById('proalfa-busca')?.value || '').toLowerCase();
 
   const applyFilters = (row) => {
     if(filterSuper && row[0] !== filterSuper) return false;
-    if(filterMun && row[1] !== filterMun) return false;
-    if(filterDist && row[2] !== filterDist) return false;
-    if(filterDep && row[5] !== filterDep) return false;
+    if(filterMun   && row[1] !== filterMun)   return false;
+    if(filterDist  && row[2] !== filterDist)  return false;
+    if(filterLoc   && row[6] !== filterLoc)   return false;
+    if(filterLocD  && row[7] !== filterLocD)  return false;
     if(busca) {
       const text = row.join(' ').toLowerCase();
       if(!text.includes(busca)) return false;
