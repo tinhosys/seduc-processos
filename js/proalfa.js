@@ -218,8 +218,8 @@ function renderTableProalfa(dados, isDoc) {
     headHtml += `<th style="width:6%;  ${thC}">DOCENTES</th>`;
     if (!isEstadual) {
       // Municipal tem E.F e A.I
-      headHtml += `<th style="width:5%;  ${thC}">E.F</th>`;
-      headHtml += `<th style="width:5%;  ${thC}; color:#10b981;">A.I</th>`;
+      headHtml += `<th style="width:5%;  ${thC}">TOTAL</th>`;
+      headHtml += `<th style="width:5%;  ${thC}; color:#10b981;">TOTAL ANOS INICIAIS</th>`;
     }
     headHtml += `
       <th style="width:5%;  ${thC}">1º</th>
@@ -392,8 +392,8 @@ function renderTableProalfa(dados, isDoc) {
     if (isDoc) {
       topHtml += `<div style="${sS}"><span style="${lS}">DOCENTES</span><span style="${vG}">${sumDoc.toLocaleString('pt-BR')}</span></div>`;
       if (!isEstadual) {
-        topHtml += `<div style="${sS}"><span style="${lS}">E.F</span><span style="${vS}">${sumEF.toLocaleString('pt-BR')}</span></div>`;
-        topHtml += `<div style="${sS}"><span style="${lS}">A.I</span><span style="${vG}">${sumAI.toLocaleString('pt-BR')}</span></div>`;
+        topHtml += `<div style="${sS}"><span style="${lS}">TOTAL</span><span style="${vS}">${sumEF.toLocaleString('pt-BR')}</span></div>`;
+        topHtml += `<div style="${sS}"><span style="${lS}">TOTAL ANOS INICIAIS</span><span style="${vG}">${sumAI.toLocaleString('pt-BR')}</span></div>`;
       }
     } else {
       topHtml += `<div style="${sS}"><span style="${lS}">TOTAL</span><span style="${vG}">${sumTot.toLocaleString('pt-BR')}</span></div>`;
