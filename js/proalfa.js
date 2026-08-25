@@ -84,8 +84,8 @@ function renderProalfaTabs() {
 
     rows.forEach(r => {
       if (isDoc) {
-        // r[10] = AI Total (Anos Iniciais)
-        sum += Number(r[10]) || 0;
+        // r[8] = Total Docentes Educação Básica (total geral da escola)
+        sum += Number(r[8]) || 0;
       } else {
         // soma dos 5 anos individuais (exclui linha Total da planilha via _isValidDataRow)
         sum += _somaMatriculas(r);
@@ -207,7 +207,7 @@ function renderTableProalfa(dados, isDoc) {
       <th style="width:14%; ${thL}">ESCOLA</th>
       <th style="width:7%;  ${thL}">LOCALIZAÇÃO</th>
       <th style="width:6%;  ${thC}">DOCENTES</th>
-      <th style="width:5%;  ${thC}">E.F</th>
+      <th style="width:5%;  ${thC}; color:#10b981;">TOTAL</th>
       <th style="width:5%;  ${thC}; color:#10b981;">A.I</th>
       <th style="width:5%;  ${thC}">1º</th>
       <th style="width:5%;  ${thC}">2º</th>
@@ -355,7 +355,7 @@ function renderTableProalfa(dados, isDoc) {
 
     if (isDoc) {
       topHtml += `<div style="${sS}"><span style="${lS}">DOCENTES</span><span style="${vS}">${sumDoc.toLocaleString('pt-BR')}</span></div>`;
-      topHtml += `<div style="${sS}"><span style="${lS}">E.F</span><span style="${vS}">${sumEF.toLocaleString('pt-BR')}</span></div>`;
+      topHtml += `<div style="${sS}"><span style="${lS}">TOTAL</span><span style="${vG}">${sumEF.toLocaleString('pt-BR')}</span></div>`;
       topHtml += `<div style="${sS}"><span style="${lS}">A.I</span><span style="${vG}">${sumAI.toLocaleString('pt-BR')}</span></div>`;
     } else {
       topHtml += `<div style="${sS}"><span style="${lS}">TOTAL</span><span style="${vG}">${sumTot.toLocaleString('pt-BR')}</span></div>`;
