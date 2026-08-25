@@ -68,50 +68,55 @@ function imprimirCenso() {
   const data = getFilteredProalfaData();
   const allAlunos = [...data.aluMun, ...data.aluEst];
   
-  // Sort by Municipality, then School
+  // Ordenar por Município e depois Escola
   allAlunos.sort((a, b) => {
     if (a[1] !== b[1]) return (a[1] || '').localeCompare(b[1] || '');
     return (a[4] || '').localeCompare(b[4] || '');
   });
 
   let tableRows = '';
-  let grandTotalEsc = 0;
-  let grandTotalAlu = 0;
+  let sumT = 0, sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0, sum5 = 0;
   
-  contatosDataFiltrados.forEach(c => {
-    let esc = 0; let alu = 0;
-    if (typeof calcularAgregados === 'function') {
-      const ag = calcularAgregados(c.municipio);
-      esc = ag.escolas;
-      alu = ag.alunos;
-    }
-    grandTotalEsc += esc;
-    grandTotalAlu += alu;
+  allAlunos.forEach(r => {
+    const a1 = Number(r[9]) || 0;
+    const a2 = Number(r[10]) || 0;
+    const a3 = Number(r[11]) || 0;
+    const a4 = Number(r[12]) || 0;
+    const a5 = Number(r[13]) || 0;
+    const tot = a1 + a2 + a3 + a4 + a5;
     
+    sumT += tot;
+    sum1 += a1; sum2 += a2; sum3 += a3; sum4 += a4; sum5 += a5;
+
     tableRows += `
       <tr>
-        <td class="text-left" style="font-weight:bold;">${c.municipio || '-'}</td>
-        <td class="text-left">
-           <strong>${c.nomePrefeito || '-'}</strong><br>
-           <span style="color:#555;">${c.celularPrefeito || 'Não informado'}</span>
-        </td>
-        <td class="text-left">
-           <strong>${c.nomeSecretario || '-'}</strong><br>
-           <span style="color:#555;">${c.celularSecretario || 'Não informado'}</span>
-        </td>
-        <td class="text-left">${c.email || '-'}</td>
-        <td class="text-center">${esc}</td>
-        <td class="text-center">${alu.toLocaleString('pt-BR')}</td>
+        <td class="text-left">${r[0] || '-'}</td>
+        <td class="text-left">${r[1] || '-'}</td>
+        <td class="text-center">${r[5] || '-'}</td>
+        <td class="text-center">${r[6] || '-'}</td>
+        <td class="text-center">${r[3] || '-'}</td>
+        <td class="text-left">${r[4] || '-'}</td>
+        <td class="text-center">Alunos</td>
+        <td class="text-center" style="font-weight:bold;">${tot}</td>
+        <td class="text-center">${a1}</td>
+        <td class="text-center">${a2}</td>
+        <td class="text-center">${a3}</td>
+        <td class="text-center">${a4}</td>
+        <td class="text-center">${a5}</td>
       </tr>
     `;
   });
   
-  // Total Row
+  // Linha de Total Geral
   tableRows += `
-    <tr style="background:#e2e8f0; font-weight:bold; font-size:14px; border-top: 2px solid #cbd5e1;">
-      <td colspan="4" class="text-right" style="padding: 10px; text-transform: uppercase;">Total Geral:</td>
-      <td class="text-center" style="padding: 10px;">${grandTotalEsc}</td>
-      <td class="text-center" style="padding: 10px;">${grandTotalAlu.toLocaleString('pt-BR')}</td>
+    <tr style="background:#e2e8f0; font-weight:bold; border-top: 2px solid #cbd5e1;">
+      <td colspan="7" class="text-right" style="padding: 10px; text-transform: uppercase;">Total Geral:</td>
+      <td class="text-center" style="padding: 10px;">${sumT.toLocaleString('pt-BR')}</td>
+      <td class="text-center" style="padding: 10px;">${sum1.toLocaleString('pt-BR')}</td>
+      <td class="text-center" style="padding: 10px;">${sum2.toLocaleString('pt-BR')}</td>
+      <td class="text-center" style="padding: 10px;">${sum3.toLocaleString('pt-BR')}</td>
+      <td class="text-center" style="padding: 10px;">${sum4.toLocaleString('pt-BR')}</td>
+      <td class="text-center" style="padding: 10px;">${sum5.toLocaleString('pt-BR')}</td>
     </tr>
   `;
   
