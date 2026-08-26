@@ -951,7 +951,7 @@ function getFiltrados() {
 
 function renderProcessos() {
   const processos = carregarProcessos();
-  const filtrados = processosToPrint || getFiltrados();
+  const filtrados = getFiltrados();
   const total = filtrados.length;
   const totalPags = Math.ceil(total / state.itensPorPagina);
   if (state.paginaAtual > totalPags) state.paginaAtual = Math.max(1, totalPags);
@@ -1009,7 +1009,6 @@ function renderProcessos() {
 
   tbody.innerHTML = pagina.map(p => `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
-      <td onclick="event.stopPropagation()" style="text-align: center;"><input type="checkbox" class="check-processo" value="${p.id}" style="cursor:pointer; transform: scale(1.2);"></td>
       <td class="col-prefixo" title="${p.prefixo}">
         <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
           <!-- Linha 1: PREFIXO -->
@@ -1049,7 +1048,7 @@ function renderProcessos() {
       </td>
     </tr>
   `).join('') || `
-    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="10">
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="11">
       <div class="empty-state">
         <div class="empty-icon">��</div>
         <h3>Nenhum resultado encontrado</h3>
@@ -2408,10 +2407,9 @@ window.formatNumberOnly = function(valor) {
 
 function injectPrintHeader(subtitle) { /* disabled */ }
 
-window.imprimirPadrao = function(processosToPrint) {
+window.imprimirPadrao = function(filtrados = getFiltrados()) {
       updatePrintDateTime();
       updatePrintDateTime();
-      const filtrados = getFiltrados();
       
       let rowsHtml = filtrados.map((p, index) => {
         
