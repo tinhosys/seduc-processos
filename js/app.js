@@ -1009,6 +1009,7 @@ function renderProcessos() {
 
   tbody.innerHTML = pagina.map(p => `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
+      <td onclick="event.stopPropagation()" style="text-align: center;"><input type="checkbox" class="check-processo" value="${p.id}" style="cursor:pointer; transform: scale(1.2);"></td>
       <td class="col-prefixo" title="${p.prefixo}">
         <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
           <!-- Linha 1: PREFIXO -->
