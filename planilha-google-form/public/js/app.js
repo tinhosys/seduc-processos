@@ -150,6 +150,7 @@ function navegar(pagina) {
     }
   }
   if (pagina === 'todas-escolas') iniciarPaginaTodasEscolas();
+  if (pagina === 'orcamento' && typeof carregarOrcamento === 'function') carregarOrcamento();
 }
 
 // ---- TOAST ----
@@ -950,13 +951,13 @@ function getFiltrados() {
 
 function renderProcessos() {
   const processos = carregarProcessos();
-  const filtrados = getFiltrados();
+  const filtrados = processosToPrint || getFiltrados();
   const total = filtrados.length;
   const totalPags = Math.ceil(total / state.itensPorPagina);
   if (state.paginaAtual > totalPags) state.paginaAtual = Math.max(1, totalPags);
 
   const inicio = (state.paginaAtual - 1) * state.itensPorPagina;
-  const pagina = filtrados.slice(inicio, inicio + state.itensPorPagina);
+  const pagina = filtrados; // Pagination removed
 
   // Preencher filtros dinâmicos (preencherSelectFiltro preserva seleções existentes)
   const todosProcs = carregarProcessos();
@@ -1008,6 +1009,7 @@ function renderProcessos() {
 
   tbody.innerHTML = pagina.map(p => `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
+      <td onclick="event.stopPropagation()" style="text-align: center;"><input type="checkbox" class="check-processo" value="${p.id}" style="cursor:pointer; transform: scale(1.2);"></td>
       <td class="col-prefixo" title="${p.prefixo}">
         <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
           <!-- Linha 1: PREFIXO -->
@@ -1037,17 +1039,17 @@ function renderProcessos() {
       </td>
       <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || '—'}</td>
       <td class="col-objeto" title="${p.objeto}">${p.objeto || '—'}</td>
-      <td><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
-      <td>${p.localizacao || '—'}</td>
+      <td style="text-align: center;"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
+      <td style="text-align: center;">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>') : '—'}</td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
-      <td>${formatDate(p.data)}</td>
+      <td style="text-align: center;">${formatDate(p.data)}</td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
         <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">✏️</button>
         
       </td>
     </tr>
   `).join('') || `
-    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9">
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="10">
       <div class="empty-state">
         <div class="empty-icon">��</div>
         <h3>Nenhum resultado encontrado</h3>
@@ -1066,10 +1068,10 @@ function renderProcessos() {
   // Total valor filtrado
   const valorTotal = filtrados.reduce((a, p) => a + (p.valorOf || 0), 0);
   const el = document.getElementById('valor-filtrado');
-  if (el) el.textContent = `Total: ${formatCurrency(valorTotal)}`;
+  if (el) el.innerHTML = `<span>R$</span> <span>${formatCurrency(valorTotal).replace(/^R\$\s*/u, '')}</span>`;
 
   const elQtd = document.getElementById('qtd-registros-filtrados');
-  if (elQtd) elQtd.textContent = `${total.toLocaleString('pt-BR')} ${total === 1 ? 'registro' : 'registros'}`;
+  if (elQtd) elQtd.innerHTML = `<span>${total === 1 ? 'Processo' : 'Processos'}</span> <span>${total.toLocaleString('pt-BR')}</span>`;
 
   // Botão exportar
   const btnExportar = document.getElementById('btn-exportar');
@@ -2406,17 +2408,27 @@ window.formatNumberOnly = function(valor) {
 
 function injectPrintHeader(subtitle) { /* disabled */ }
 
-window.imprimirPadrao = function() {
+window.imprimirPadrao = function(processosToPrint) {
       updatePrintDateTime();
       updatePrintDateTime();
       const filtrados = getFiltrados();
       
       let rowsHtml = filtrados.map((p, index) => {
+        
+        
+        
+        
         const prefixoFormatado = `
-          <div style="font-family: monospace, Courier, sans-serif; white-space: nowrap; font-size: 9px;">
-            <span style="display:inline-block; width:34px; text-align:left;">${p.prefixo || '-'}</span> | 
-            <span style="display:inline-block; width:10px; text-align:center;">${p.categoria || '-'}</span> | 
-            <span style="display:inline-block; width:16px; text-align:center;">${p.tipo || '-'}</span>
+          <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
+            <div style="font-weight: bold; margin-bottom: 2px;">${p.prefixo || '-'}</div>
+            <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+              <span>${p.categoria || '-'}</span><span style="color:#999;">|</span><span>${p.tipo || '-'}</span><span style="color:#999;">|</span>
+              <div style="display: flex; font-size: 15px; line-height: 1; color: #000; align-items: center; margin-left: 1px;">
+                <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
+                <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+                <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+              </div>
+            </div>
           </div>
         `;
         return `
@@ -2563,13 +2575,23 @@ window.imprimirDetalhado = function() {
 
   let tableRows = '';
   filtrados.forEach((p, i) => {
-    const prefixoFormatado = `
-      <div style="font-family: monospace, Courier, sans-serif; white-space: nowrap; font-size: 9px;">
-        <span style="display:inline-block; width:34px; text-align:left;">${p.prefixo || '-'}</span> | 
-        <span style="display:inline-block; width:10px; text-align:center;">${p.categoria || '-'}</span> | 
-        <span style="display:inline-block; width:16px; text-align:center;">${p.tipo || '-'}</span>
-      </div>
-    `;
+    
+        
+        
+        
+        const prefixoFormatado = `
+          <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
+            <div style="font-weight: bold; margin-bottom: 2px;">${p.prefixo || '-'}</div>
+            <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+              <span>${p.categoria || '-'}</span><span style="color:#999;">|</span><span>${p.tipo || '-'}</span><span style="color:#999;">|</span>
+              <div style="display: flex; font-size: 15px; line-height: 1; color: #000; align-items: center; margin-left: 1px;">
+                <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
+                <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+                <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+              </div>
+            </div>
+          </div>
+        `;
     tableRows += `
       <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
         <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${i + 1}</td>
@@ -3239,7 +3261,7 @@ function renderProcessosRepetidos() {
             <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span>
           </td>
           <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; padding-right: 16px;">
-            R$ ${formatCurrency(p.valorOf)}
+            ${formatCurrency(p.valorOf)}
           </td>
         </tr>
       `;
@@ -3298,12 +3320,12 @@ function toggleFiltros() {
   const isCollapsed = bar.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '�� <span class="btn-text">Mostrar Filtros</span>';
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg> <span class="btn-text">MOSTRAR FILTROS</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('filters_collapsed', '1');
   } else {
-    btn.innerHTML = '�� <span class="btn-text">Ocultar Filtros</span>';
+    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> <span class="btn-text">OCULTAR FILTROS</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('filters_collapsed');
@@ -3377,7 +3399,7 @@ function inicializarEstadosColapsaveis() {
   if (bar && btnFilters) {
     if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
       bar.classList.add('collapsed');
-      btnFilters.innerHTML = '�� <span class="btn-text">Mostrar Filtros</span>';
+      btnFilters.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg> <span class="btn-text">MOSTRAR FILTROS</span>';
       btnFilters.style.borderColor = 'var(--blue)';
       btnFilters.style.color = 'var(--blue)';
     }
@@ -3991,49 +4013,36 @@ async function buscarTodasEscolasGSheet() {
   const sigsVistos = new Set();
 
   try {
-    // Busca Estadual (1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E)
-    setBadge('⏳ Carregando Escolas Estaduais...', 'loading');
-    setLoadMsg('Carregando Escolas Estaduais', 'Buscando da planilha central');
-    try {
-      const urlEstadual = 'https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/gviz/tq?tqx=out:json&gid=0&nocache=' + Date.now();
-      const resEst = await fetch(urlEstadual);
-      if (resEst.ok) {
-        const textEst = await resEst.text();
-        const rowsEst = _teParseGviz(textEst, 'Estadual');
-        if (rowsEst && rowsEst.length > 0) {
-          rowsEst.forEach(r => { if (!r.competencia || r.competencia.trim() === '') r.competencia = 'Estadual'; });
-          totalLoaded += rowsEst.length;
-          _teAbas.push({ nome: 'Estadual', count: rowsEst.length });
-          _teCache.push(...rowsEst);
-        }
-      }
-    } catch(errEst) {
-      console.warn("Erro ao buscar estaduais", errEst);
-    }
+    const TODAS_ABAS = [
+      { nome: 'estadual', comp: 'Estadual' },
+      { nome: 'federal', comp: 'Federal' },
+      ...MUNICIPIOS_RO.map(m => ({ nome: m, comp: 'Municipal' }))
+    ];
 
-    for (let batchStart = 0; batchStart < MUNICIPIOS_RO.length; batchStart += TE_BATCH_SIZE) {
-      const batchMuns = MUNICIPIOS_RO.slice(batchStart, batchStart + TE_BATCH_SIZE);
+    for (let batchStart = 0; batchStart < TODAS_ABAS.length; batchStart += TE_BATCH_SIZE) {
+      const batchAbas = TODAS_ABAS.slice(batchStart, batchStart + TE_BATCH_SIZE);
 
-      setBadge(`⏳ Lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1} / ${Math.ceil(MUNICIPIOS_RO.length/TE_BATCH_SIZE)}...`, 'loading');
+      setBadge(`⏳ Lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1} / ${Math.ceil(TODAS_ABAS.length/TE_BATCH_SIZE)}...`, 'loading');
       setLoadMsg(
         `Carregando lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1}...`,
-        `Buscando ${batchMuns.length} planilhas | ${totalLoaded} escolas encontradas`
+        `Buscando ${batchAbas.length} planilhas | ${totalLoaded} escolas encontradas`
       );
 
-      // Busca paralela do lote usando o nome do Município como aba
+      // Busca paralela do lote usando o nome da aba
       const results = await Promise.allSettled(
-        batchMuns.map(mun => {
+        batchAbas.map(aba => {
           const url = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
-                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(mun) + '&nocache=' + Date.now();
-          return fetch(url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status));
+                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(aba.nome) + '&nocache=' + Date.now();
+          return fetch(url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status)).then(text => ({ text, aba }));
         })
       );
 
       results.forEach((res, i) => {
-        const mun = batchMuns[i];
         if (res.status === 'rejected') return;
         
-        const text = res.value;
+        const text = res.value.text;
+        const aba = res.value.aba;
+        const mun = aba.nome;
         const sigMatch = text.match(/"sig":"(\d+)"/);
         const sig = sigMatch ? sigMatch[1] : null;
         
@@ -4046,6 +4055,13 @@ async function buscarTodasEscolasGSheet() {
         const rows = _teParseGviz(text, mun);
         if (!rows || rows.length === 0) return;
         
+        rows.forEach(r => {
+           if (!r.competencia || r.competencia.trim() === '') r.competencia = aba.comp;
+           if (aba.comp === 'Estadual') r.competencia = 'Estadual';
+           if (aba.comp === 'Municipal') r.competencia = 'Municipal';
+           if (aba.comp === 'Federal') r.competencia = 'Federal';
+        });
+
         totalLoaded += rows.length;
 
         _teAbas.push({ nome: mun, count: rows.length });
@@ -4140,7 +4156,7 @@ function _teAtualizarUI() {
   const total  = _teFiltrados.length;
   const ini    = (_tePagina - 1) * _teItensPorPag;
   const fim    = Math.min(ini + _teItensPorPag, total);
-  const pag    = _teFiltrados.slice(ini, fim);
+  const pag = _teFiltrados; // Pagination removed
 
   // Badges
   const totalAlunos = _teFiltrados.reduce((s,e) => s + (parseInt(e.alunos)||0), 0);
@@ -4190,6 +4206,7 @@ function _teAtualizarUI() {
         ondblclick="abrirTeModal(${globalIdx})"
         onmouseover="this.style.background='rgba(59,130,246,0.06)'" 
         onmouseout="this.style.background='${evenBg}'">` +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);">' + (window._renderCompetenciaBadge ? window._renderCompetenciaBadge(e.competencia) : '<span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1)">' + esc(e.competencia) + '</span>') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-size:12px;">' + (esc(e.municipio)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-weight:600;font-size:12px;">' + (esc(e.nome)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#60a5fa;font-family:monospace;font-size:11px;white-space:nowrap;">' + (esc(e.inep)||'-') + '</td>' +
@@ -4366,3 +4383,19 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+
+window.imprimirPadraoSelecionado = function() {
+    const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
+    if (idsSelecionados.length === 0) {
+        alert('Nenhum processo selecionado.');
+        return;
+    }
+    const filtrados = getFiltrados().filter(p => idsSelecionados.includes(p.id));
+    imprimirPadrao(filtrados);
+};
+
+window.toggleAllProcessos = function(el) {
+    const checkboxes = document.querySelectorAll('.check-processo');
+    checkboxes.forEach(cb => cb.checked = el.checked);
+};

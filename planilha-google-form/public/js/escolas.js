@@ -1,4 +1,4 @@
-
+﻿
 // ============================================================
 // SEDUC - Formulário Individualizado de Escola (Página & Modal)
 // ============================================================
@@ -228,6 +228,7 @@ function _adicionarModalidade(containerId) {
   el.appendChild(row);
 }
 window._normalizarCompetencia  = _normalizarCompetencia;
+window._renderCompetenciaBadge = _renderCompetenciaBadge;
 window._calcTotalAlunos        = _calcTotalAlunos;
 window._adicionarModalidade    = _adicionarModalidade;
 window._recalcTotalModalidades = _recalcTotalModalidades;
@@ -656,6 +657,12 @@ function _escolasAtualizarUI() {
   if (pagination) pagination.style.display = temDados ? '' : 'none';
   if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
 
+  // Trigger update for other pages that depend on _escolasCache
+  if (typeof renderContatos === 'function') {
+    try { renderContatos(); } catch(e){}
+  }
+
+
   if (temDados) {
     _escolasAtualizarBadges();
     _escolasRenderTabela();
@@ -695,7 +702,7 @@ function _escolasRenderTabela() {
   if (tableWrap) tableWrap.style.display = '';
 
   const start = (_escolasPaginaAtual - 1) * _escolasItensPorPagina;
-  const slice = _escolasFiltradas.slice(start, start + _escolasItensPorPagina);
+  const slice = _escolasFiltradas; // Pagination removed
 
   tbody.innerHTML = slice.map((e, i) => {
     const gi = start + i;
@@ -1083,6 +1090,7 @@ window.imprimirRelatorioEscolas = function() {
     alert('Erro ao gerar relatÃ³rio: ' + err.message);
   }
 };
+
 
 
 

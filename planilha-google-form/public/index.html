@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1786974445.2.0">
+  <link rel="stylesheet" href="css/style.css?v=1787588267609">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -35,6 +35,128 @@
   <!-- Leaflet.js (Mapa Interativo) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    @media (max-width: 768px) {
+      .modal-content {
+        width: 95% !important;
+        max-width: 95% !important;
+        max-height: 90vh !important;
+        overflow-y: auto !important;
+        padding: 16px !important;
+        margin: 10px auto !important;
+      }
+      .section-header {
+        flex-direction: column !important;
+      }
+      .section-header > div {
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .section-header .header-buttons, .section-header > div > div {
+        justify-content: center !important;
+      }
+      .filters-bar select, .filters-bar input {
+        width: 100% !important;
+      }
+    }
+  
+    /* CSS for infinite scroll tables and sticky headers */
+    .pagination { display: none !important; }
+    .page .table-wrap {
+      max-height: calc(100vh - 280px);
+      overflow-y: auto !important;
+      overflow-x: auto !important;
+    }
+    .page .table-wrap table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-secondary); /* ensure header has background */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .page .filters-bar.collapsed + .table-wrap {
+      max-height: calc(100vh - 180px);
+    }
+
+
+    /* ---- Controle Orcamentario Styles ---- */
+    .orc-summary-cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:14px; margin-bottom:20px; }
+    .orc-card { display:flex; align-items:center; gap:14px; padding:18px 20px; background:#1e293b; border-radius:12px; border:1px solid rgba(255,255,255,0.07); transition: box-shadow 0.2s; }
+    .orc-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+    .orc-card-wide { grid-column: span 2; }
+    @media (max-width:768px) { .orc-card-wide { grid-column: span 1; } }
+    .orc-card-icon { font-size:28px; min-width:36px; text-align:center; }
+    .orc-card-body { flex:1; min-width:0; }
+    .orc-card-label { font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; margin-bottom:4px; }
+    .orc-card-value { font-size:18px; font-weight:800; font-family:monospace; margin-bottom:2px; }
+    .orc-card-sub { font-size:10px; color:#475569; }
+    .orc-filters-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:flex-end; margin-bottom:16px; padding:16px; background:#1e293b; border-radius:12px; border:1px solid rgba(255,255,255,0.07); }
+    .orc-filters-bar select { flex:1; min-width:200px; padding:9px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:13px; font-weight:600; outline:none; cursor:pointer; }
+    .orc-filters-bar select:focus { border-color:#60a5fa; }
+    .orc-charts-row { display:grid; grid-template-columns:2fr 1fr; gap:16px; margin-top:20px; }
+    @media(max-width:900px) { .orc-charts-row { grid-template-columns:1fr; } }
+    .orc-chart-card { background:#1e293b; border-radius:12px; border:1px solid rgba(255,255,255,0.07); padding:20px; }
+    .orc-chart-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#64748b; margin-bottom:14px; }
+
+    
+    
+    /* === SIDEBAR RETRATIL === */
+    .sidebar { transition: width 0.3s ease; position: fixed; z-index: 100; }
+    .sidebar.collapsed { width: 70px; }
+    .sidebar.collapsed .sidebar-logo { padding: 10px 4px; margin: 16px 4px 24px; }
+    .sidebar.collapsed .sidebar-logo div { font-size: 14px !important; }
+    .sidebar.collapsed .sidebar-logo div:nth-child(2) { display: none; }
+    .sidebar.collapsed .nav-section-label { display: none; }
+    .sidebar.collapsed .nav-item { padding: 12px 0; justify-content: center; overflow: hidden; }
+    .sidebar.collapsed .nav-item .nav-icon { margin-right: 0; }
+    .sidebar.collapsed .nav-item span:not(.nav-icon) { display: none; }
+    .sidebar.collapsed .sidebar-footer { display: none; }
+    .sidebar.collapsed .submenu-indicator { display: none; }
+    
+    .main-content { transition: margin-left 0.3s ease; }
+    .app-layout:has(.sidebar.collapsed) .main-content {
+      margin-left: 70px !important;
+    }
+    .app-layout:has(.sidebar.collapsed) .topbar {
+      left: 70px !important;
+      width: calc(100% - 70px) !important;
+    }
+
+
+  
+    /* === IMPRIMIR ORCAMENTO === */
+    @media print {
+      body.print-mode-orcamento {
+        background: #0f172a !important; /* Keep dark background */
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color: white !important;
+      }
+      body.print-mode-orcamento > section:not(#page-orcamento) {
+        display: none !important;
+      }
+      body.print-mode-orcamento .sidebar,
+      body.print-mode-orcamento .topbar,
+      body.print-mode-orcamento .filters-bar { /* The filters bar has naturezas etc, hide it if we want clean report, but user said "COM OS ITENS EM TELA". We'll keep filters if they want? They probably don't want the filter dropdowns on the report. */
+        display: none !important;
+      }
+      body.print-mode-orcamento #page-orcamento {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      body.print-mode-orcamento .orc-buttons {
+        display: none !important; /* Hide export/planilha buttons */
+      }
+      /* Ensure flex containers don't wrap terribly if A4 is too narrow */
+      @page {
+        size: A4 landscape; /* Landscape is better for these cards and tables */
+        margin: 10mm;
+      }
+    }
+
+  </style>
 </head>
 
 <body>
@@ -96,7 +218,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.68</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.18</div>
   </div>
 </div>
   
@@ -104,7 +226,14 @@
   <div class="app-layout">
 
     <!-- ===================== SIDEBAR ===================== -->
-    <aside class="sidebar">
+    <aside class="sidebar" id="app-sidebar">
+
+      <div style="position: absolute; top: 20px; right: -12px; z-index: 100;">
+        <button onclick="toggleDesktopSidebar()" style="background: #1e293b; border: 1px solid #334155; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94a3b8; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+          <svg id="sidebar-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+      </div>
+
       <div class="sidebar-logo" style="margin: 16px 12px 24px; padding: 20px 14px; text-align: center; background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%); border: 1px solid rgba(255, 255, 255, 0.08); border-top: 1px solid rgba(255, 255, 255, 0.15); border-bottom: 1px solid rgba(0, 0, 0, 0.4); border-radius: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);">
         <div style="font-size: 34px; font-weight: 850; color: #f8fafc; letter-spacing: 2.5px; line-height: 1; font-family: 'Inter', sans-serif;">
           CAM
@@ -114,56 +243,66 @@
         </div>
       </div>
 
+      
       <nav class="sidebar-nav">
         <div class="nav-section-label">Menu Principal</div>
 
-        <button class="nav-item active" data-page="dashboard">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-          </span>
-          Dashboard
-        </button>
+        <a href="#" class="nav-item" data-page="dashboard" onclick="navegar('dashboard'); fecharSubmenus()">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span>
+          <span>Dashboard</span>
+        </a>
 
-        <button class="nav-item" data-page="processos">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          </span>
-          Processos
-        </button>
-        <button class="nav-item" data-page="senha">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-          </span>
-          Trocar Senha
-        </button>
+        <a href="#" class="nav-item active" data-page="orcamento" onclick="navegar('orcamento'); fecharSubmenus()">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+          <span>Orçamento</span>
+        </a>
 
-        <button class="nav-item action-adm" data-page="acessos">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
-          </span>
-          Gerenciar Acessos
-        </button>
+        <!-- Menu Processos -->
+        <div class="nav-group">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-processos', this)">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
+            <span style="flex:1">Processos</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu" id="sub-processos" style="display: none; padding-left: 20px;">
+            <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
+            <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
+            <a href="#" class="nav-item sub-item" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
+          </div>
+        </div>
 
-        <button class="nav-item action-adm" data-page="repetidos">
-          <span class="nav-icon">🔁</span>
-          Processos Repetidos
-        </button>
+        <!-- Menu Escolas -->
+        <div class="nav-group">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-escolas', this)">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
+            <span style="flex:1">Escolas & Mapas</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu" id="sub-escolas" style="display: none; padding-left: 20px;">
+            <a href="#" class="nav-item sub-item" data-page="escolas" onclick="navegar('escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Lista de Escolas</span></a>
+            <a href="#" class="nav-item sub-item" data-page="mapa-escolas" onclick="navegar('mapa-escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Mapa de Escolas</span></a>
+            <a href="#" class="nav-item sub-item" data-page="contatos" onclick="navegar('contatos')" style="font-size: 13px; padding: 10px 16px;"><span>Municípios</span></a>
+          </div>
+        </div>
 
-        <button class="nav-item" data-page="escolas">
-          <span class="nav-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          </span>
-          Escolas
-        </button>
+        <!-- Menu Configurações -->
+        <div class="nav-group">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-config', this)">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
+            <span style="flex:1">Configurações</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu" id="sub-config" style="display: none; padding-left: 20px;">
+            <a href="#" class="nav-item sub-item" data-page="acessos" onclick="navegar('acessos')" style="font-size: 13px; padding: 10px 16px;"><span>Gerenciar Acessos</span></a>
+            <a href="#" class="nav-item sub-item" data-page="senha" onclick="navegar('senha')" style="font-size: 13px; padding: 10px 16px;"><span>Trocar Senha</span></a>
+          </div>
+        </div>
 
-        <button class="nav-item" data-page="mapa-escolas">
-          <span class="nav-icon">🗺️</span>
-          Mapa de Escolas
-        </button>
       </nav>
 
+
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.0.68</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.18</div>
         <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -179,7 +318,7 @@
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;">
 
-          <button class="btn btn-ghost btn-sm" onclick="navegar('processos')">📋 Processos</button>
+          <button class="btn btn-ghost btn-sm" data-page="processos" onclick="navegar('processos')">📋 Processos</button>
           <button class="btn btn-ghost btn-sm" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha">🔄 Recarregar</button>
 
           <div class="user-profile"
@@ -188,7 +327,7 @@
               <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-primary)">-</div>
               <div id="user-role" style="font-size:11px;color:var(--text-muted)">Carregando...</div>
             </div>
-            <button onclick="navegar('senha')" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; padding:4px;" title="Trocar Senha">
+            <button data-page="senha" onclick="navegar('senha')" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; padding:4px;" title="Trocar Senha">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </button>
             <button class="btn btn-danger btn-sm" onclick="fazerLogout()" title="Sair">Sair</button>
@@ -354,7 +493,7 @@
             <div class="phone-share-form">
               <div class="form-group" style="margin-bottom: 16px;">
                 <label for="share-whatsapp-number" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Número do Celular</label>
-                <input type="text" id="share-whatsapp-number" placeholder="(00) 9 9999-9999" oninput="this.value = maskCelular(this.value)" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;">
+                <input type="text" id="share-whatsapp-number" placeholder="(00) 9 9999-9999" oninput="this.value = maskCelular(this.value)" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none;">
               </div>
               <button class="btn btn-primary" onclick="enviarLinkWhatsApp()" style="width:100%; display:flex; align-items:center; justify-content:center; gap:8px; background:#10b981; border:none; padding:10px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer;">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -399,27 +538,54 @@
       <!-- ============= PAGE: PROCESSOS ============= -->
       <section class="page" id="page-processos">
 
-        <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap: wrap; gap: 12px;">
-          <div style="flex: 1; display: flex; align-items: stretch; gap: 8px; min-width: 250px; flex-wrap: wrap;">
-            <span id="valor-filtrado" style="display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 8px; font-size: 17px; font-weight: 700; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-family: monospace; letter-spacing: 0.5px;">Carregando...</span>
-            <span id="qtd-registros-filtrados" style="display: inline-flex; align-items: center; padding: 8px 14px; border-radius: 8px; font-size: 14px; font-weight: 700; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); white-space: nowrap; font-family: monospace;">0 registros</span>
-            <button type="button" id="btn-toggle-filtros" onclick="toggleFiltros()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 8px 12px; height: 38px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;" title="Mostrar/Ocultar Filtros">
-              📌 <span class="btn-text">Ocultar Filtros</span>
-            </button>
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap: wrap; gap:16px;">
+          <!-- Left Badges -->
+          <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; min-width:250px;">
+            <span id="valor-filtrado" style="display:flex; justify-content:space-between; align-items:center; width:250px; padding:10px 16px; border-radius:8px; font-size:17px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); font-family:monospace; letter-spacing:0.5px;">
+              <span>R$</span> <span>Carregando...</span>
+            </span>
+            <span id="qtd-registros-filtrados" style="display:flex; align-items:center; justify-content:space-between; width:250px; padding:10px 16px; border-radius:8px; font-size:17px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace;">
+              0 Processos
+            </span>
           </div>
-          <div class="header-buttons" style="display:flex;align-items:stretch;gap:12px; flex: 2; min-width: 300px;">
-            <button class="btn action-adm" onclick="imprimirAnalise()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#9333ea; color:white; cursor:pointer; font-weight:600;" title="Análise Gerencial">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">Análise</span>
-            </button>
-            <button class="btn action-adm" onclick="imprimirDetalhado()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#2563eb; color:white; cursor:pointer; font-weight:600;" title="Relatório Detalhado">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> <span class="btn-text">Detalhado</span>
-            </button>
-            <button class="btn action-adm" onclick="imprimirPadrao()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Lista Atual">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">Padrão</span>
-            </button>
-            <button class="btn action-adm" onclick="exportarExcel()" style="flex:1; padding:10px 12px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#16a34a; color:white; cursor:pointer; font-weight:600;" title="Exportar para Excel">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> <span class="btn-text">EXCEL</span>
-            </button>
+
+          <!-- Right Action Buttons -->
+          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px; flex:1;">
+            
+            <!-- Row 1: Reports -->
+            <div class="header-buttons" style="display:flex; align-items:stretch; justify-content:flex-end; gap:10px; flex-wrap:wrap; width:100%;">
+              <button class="btn action-adm" onclick="imprimirAnalise()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">ANÁLISE</span>
+              </button>
+              <button class="btn action-adm" onclick="imprimirDetalhado()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Relatório Detalhado">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> <span class="btn-text">DETALHADO</span>
+              </button>
+              <button class="btn action-adm" onclick="imprimirPadrao()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Lista Atual">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÃO</span>
+              </button>
+              <button class="btn action-adm" onclick="imprimirPadraoSelecionado()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Selecionados">
+                <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><polyline points='6 9 6 2 18 2 18 9'/><path d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/><rect x='6' y='14' width='12' height='8'/></svg> <span class="btn-text">PADR�O SEL.</span>
+              </button>
+            </div>
+
+            <!-- Row 2: Controls -->
+            <div style="display:flex; align-items:stretch; justify-content:flex-end; gap:10px; flex-wrap:wrap; width:100%;">
+              <button class="btn action-adm" onclick="exportarExcel()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> <span class="btn-text">EXCEL</span>
+              </button>
+              <button type="button" id="btn-toggle-filtros" onclick="toggleFiltros()" class="btn btn-ghost btn-sm" style="flex:1; max-width:180px; border:none; background:#475569; color:white; padding:10px 12px; height:40px; border-radius:8px; font-weight:700; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Mostrar/Ocultar Filtros">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                <span class="btn-text">OCULTAR FILTROS</span>
+              </button>
+              <button class="action-editor action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="flex:1; max-width:180px; background:#10b981; border:none; color:white; padding:10px 12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar Planilha">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                PLANILHA
+              </button>
+              <button id="btn-limpar-filtros" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" style="flex:1; max-width:180px; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 12px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                LIMPAR PARÂMETROS
+              </button>
+            </div>
           </div>
         </div>
 
@@ -507,37 +673,27 @@
               <option value="sim">&#11088; Apenas Marcados</option>
               <option value="nao">&#9898; N&atilde;o Marcados</option>
             </select>
-            <button class="action-editor action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit', '_blank')" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.5); color: #10b981; padding: 0 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; height: 38px; transition: background 0.2s;" onmouseover="this.style.background='rgba(16, 185, 129, 0.3)'" onmouseout="this.style.background='rgba(16, 185, 129, 0.15)'" title="Acessar Planilha">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-              PLANILHA
-            </button>
+            
           </div>
           
-          <!-- LINHA 5 -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center; margin-top: 5px;">
-            <button id="btn-limpar-filtros" 
-                    onmouseover="this.style.background='rgba(250, 204, 21, 0.3)'" 
-                    onmouseout="this.style.background='rgba(250, 204, 21, 0.15)'"
-                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:rgba(250, 204, 21, 0.15); color:#facc15; border:1px solid #facc15; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
-              <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
-            </button>
-          </div>
+          
         </div>
 
         <!-- Tabela -->
-        <div class="table-wrap">
+        <div class="table-wrap" style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;">
           <table style="table-layout: fixed; width: 100%; min-width: 1200px;">
             <thead>
               <tr>
+                <th style="width: 40px; text-align: center;"><input type="checkbox" id="check-all-processos" onchange="toggleAllProcessos(this)" style="cursor:pointer; transform: scale(1.2);"></th>
                 <th data-sort="prefixo" style="width: 140px; min-width: 140px;">Prefixo</th>
                 <th data-sort="MUNICÍPIO" style="width: 120px;">MUNICÍPIO</th>
                 <th data-sort="numero" style="width: 165px; min-width: 165px;">Nº Processo</th>
                 <th data-sort="interessado" style="width: 25%;">Interessado</th>
                 <th data-sort="objeto" style="width: 25%;">Objeto</th>
-                <th data-sort="status" style="width: 110px;">Status</th>
-                <th data-sort="localizacao" style="width: 90px;">Localização</th>
-                <th data-sort="valorOf" style="text-align:right; width: 110px;">Valor Oficial</th>
-                <th data-sort="data" style="width: 80px;">Data</th>
+                <th data-sort="status" style="width: 130px; text-align: center;">Status</th>
+                <th data-sort="localizacao" style="width: 110px; text-align: center;">LOCALIZAÇÃO</th>
+                <th data-sort="valorOf" style="text-align:right; width: 130px;">Valor Oficial</th>
+                <th data-sort="data" style="width: 80px; text-align: center;">Data</th>
                 <th style="width: 60px; text-align:center;">Ações</th>
               </tr>
             </thead>
@@ -982,12 +1138,12 @@
             
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nome" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nome Completo</label>
-              <input type="text" id="acesso-nome" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;" placeholder="Digite o primeiro nome ou nome popular" disabled>
+              <input type="text" id="acesso-nome" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none;" placeholder="Digite o primeiro nome ou nome popular" disabled>
             </div>
 
             <div class="form-group" style="margin: 0;">
               <label for="acesso-whatsapp" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">WhatsApp</label>
-              <input type="text" id="acesso-whatsapp" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)" disabled>
+              <input type="text" id="acesso-whatsapp" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)" disabled>
             </div>
             
             <div class="form-group" style="margin: 0;">
@@ -1001,7 +1157,7 @@
 
             <div class="form-group" style="margin: 0;">
               <label for="acesso-senha" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Senha (4 números)</label>
-              <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:rgba(255,255,255,0.05); color:var(--text-primary); outline:none; text-align: center; letter-spacing: 2px; height: 40px; box-sizing: border-box;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')" disabled>
+              <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none; text-align: center; letter-spacing: 2px; height: 40px; box-sizing: border-box;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')" disabled>
             </div>
             
             <div class="form-group" style="margin: 0;">
@@ -1017,7 +1173,7 @@
           </form>
         </div>
 
-        <div class="table-wrap">
+        <div class="table-wrap" style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;">
           <table class="table" style="width:100%; border-collapse:collapse; text-align:left; table-layout: fixed;">
             <thead>
               <tr style="border-bottom:1px solid var(--border); background:var(--bg-secondary);">
@@ -1077,7 +1233,7 @@
             <span id="escolas-alunos-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
             <span id="escolas-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
           </div>
-          <div style="display:flex;align-items:center;gap:10px;">
+          <div style="display:flex;align-items:stretch;gap:10px;height:38px;">
             <button onclick="if(typeof carregarEscolasAPI==='function') carregarEscolasAPI(false)" title="Recarregar dados"
               style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
@@ -1182,9 +1338,9 @@
           <!-- Linha 3: limpar -->
           <div style="display:flex; width:100%; margin-top:5px;">
             <button onclick="limparFiltrosEscolas()" 
-                    onmouseover="this.style.background='rgba(250, 204, 21, 0.3)'" 
-                    onmouseout="this.style.background='rgba(250, 204, 21, 0.15)'"
-                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:rgba(250, 204, 21, 0.15); color:#facc15; border:1px solid #facc15; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
+                    onmouseover="this.style.background='#d97706'" 
+                    onmouseout="this.style.background='#f59e0b'"
+                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
               <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
             </button>
           </div>
@@ -1239,13 +1395,13 @@
     <!-- Header / Nav bar -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>
-        <button type="button" onclick="navegar('escolas')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-secondary); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;">← Voltar para Lista de Escolas</button>
+        <button type="button" data-page="escolas" onclick="navegar('escolas')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-secondary); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;">← Voltar para Lista de Escolas</button>
         <h2 id="form-escola-page-titulo" style="margin:0; font-size:22px; color:#f0f4ff; display:flex; align-items:center; gap:10px;">🏫 Editar Cadastro da Escola</h2>
         <p id="form-escola-page-subtitulo" style="margin:4px 0 0 0; color:#a78bfa; font-weight:600; font-size:14px;">Preencha os dados individualizados da unidade escolar</p>
       </div>
 
       <div style="display:flex; gap:12px;">
-        <button type="button" onclick="navegar('escolas')" class="btn btn-ghost" style="padding:10px 20px;">Cancelar</button>
+        <button type="button" data-page="escolas" onclick="navegar('escolas')" class="btn btn-ghost" style="padding:10px 20px;">Cancelar</button>
         <button type="button" onclick="salvarFormularioEscolaPage(event)" class="btn btn-primary" id="btn-salvar-escola-page" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:12px 28px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">💾 Salvar Escola</button>
       </div>
     </div>
@@ -1687,9 +1843,9 @@
       <!-- Linha 3 -->
       <div style="display:flex; width:100%; margin-top:5px;">
         <button onclick="if(typeof limparFiltrosMapa==='function') limparFiltrosMapa()" 
-                onmouseover="this.style.background='rgba(250, 204, 21, 0.3)'" 
-                onmouseout="this.style.background='rgba(250, 204, 21, 0.15)'"
-                style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:rgba(250, 204, 21, 0.15); color:#facc15; border:1px solid #facc15; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
+                onmouseover="this.style.background='#d97706'" 
+                onmouseout="this.style.background='#f59e0b'"
+                style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
           <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
         </button>
       </div>
@@ -1783,6 +1939,7 @@
       <table style="table-layout:fixed; width:100%; min-width:1100px; border-collapse:separate; border-spacing:0; font-size:13px;">
         <thead>
           <tr style="background:var(--bg-secondary);">
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Competência</th>
             <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">MUNICÍPIO</th>
             <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:240px;">Nome da Escola</th>
             <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">INEP</th>
@@ -1821,7 +1978,216 @@
 
   </section>
 
-  <!-- ============= MODAL DETALHES ESCOLA ============= -->
+  
+  <!-- ============= ABA CONTATOS ============= -->
+  <section class="page" id="page-contatos">
+    <div class="section-header" style="flex-wrap:wrap;gap:16px; justify-content: space-between;">
+      
+      <!-- Left side: Municipio Combo -->
+      <div style="display:flex; align-items:stretch; position:relative; min-width:240px; z-index:90;">
+        <button type="button" onclick="document.getElementById('contatos-municipio-dropdown').style.display = document.getElementById('contatos-municipio-dropdown').style.display==='none'?'block':'none'"
+          style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:6px; padding:9px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer; font-weight:600; text-align:left;">
+          <span id="contatos-municipio-label">MUNICÍPIO (Todos)</span>
+          <span style="font-size:10px;opacity:0.6;">▼</span>
+        </button>
+        <div id="contatos-municipio-dropdown" style="display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:260px; background:#1a1f35; border:1px solid rgba(255,255,255,0.15); border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.5); padding:8px 0; max-height:300px; overflow-y:auto; z-index:9999;">
+          <div style="padding:6px 12px 10px 12px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; flex-direction:column; gap:8px;">
+            <input type="text" placeholder="Buscar município..." oninput="contatosFiltrarComboMunicipio(this.value)"
+              style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:6px 8px; color:#f0f4ff; font-size:12px; outline:none; box-sizing:border-box;">
+            <div style="display:flex; gap:6px;">
+              <button onclick="contatosToggleTodosMunicipios(true)" style="flex:1; background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:4px 0; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer;">Todos</button>
+              <button onclick="contatosToggleTodosMunicipios(false)" style="flex:1; background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); padding:4px 0; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer;">Nenhum</button>
+            </div>
+          </div>
+          <div id="contatos-municipio-list" style="padding:4px 0;"></div>
+        </div>
+      </div>
+
+      <!-- Right side: Badges and Actions -->
+      <div style="display:flex;align-items:stretch;gap:16px;flex-wrap:wrap;margin-left:auto;">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <span id="contatos-badge-total" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">👥 0 Municípios</span>
+          <span id="contatos-badge-escolas" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);font-family:monospace;letter-spacing:0.5px;">🏫 0 Escolas</span>
+          <span id="contatos-badge-alunos" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
+        </div>
+        <div style="display:flex;align-items:stretch;gap:10px;height:38px;">
+          <button onclick="imprimirContatos()" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.5);color:#60a5fa;padding:9px 16px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:100%;transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            Impressão
+          </button>
+          <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit?gid=1855271818#gid=1855271818"
+            target="_blank" rel="noopener" class="action-editor action-adm"
+            style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;height:100%;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(16,185,129,0.35);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Acessar Planilha
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:16px;">
+      <div style="display:flex; width:100%;">
+        <div style="position:relative; flex:1;">
+          <input type="text" id="contatos-busca"
+            placeholder="Buscar por município, nome, email..."
+            oninput="filtrarContatos()"
+            style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0; overflow-x:auto;">
+      <table class="data-table" id="contatos-table">
+        <thead>
+          <tr>
+            <th style="width:15%;">Município</th>
+            <th style="width:23%;">Prefeito(a)</th>
+            <th style="width:23%;">Secretário(a)</th>
+            <th style="width:23%;">E-mail</th>
+            <th style="width:8%;text-align:center;">Escolas</th>
+            <th style="width:8%;text-align:center;">Alunos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="6" style="text-align:center;padding:48px;color:var(--text-muted);">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  
+  <!-- ===================== PAGE PROALFA ===================== -->
+  <section id="page-proalfa" class="page">
+    <div style="display: flex; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; align-items: stretch; justify-content: space-between;">
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; width: 450px;" id="proalfa-tabs"></div>
+      
+      <div style="display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; flex: 1;">
+        <button onclick="imprimirCenso()" style="flex:1; min-width:130px; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.5); color:#60a5fa; padding:0 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:4px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          I - CENSO ESCOLAR
+        </button>
+        <button onclick="imprimirProfessores()" style="flex:1; min-width:130px; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.5); color:#60a5fa; padding:0 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:4px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          II - PROFESSORES
+        </button>
+        <button onclick="imprimirMemoria()" style="flex:1; min-width:130px; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.5); color:#60a5fa; padding:0 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:4px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          III - MEMÓRIA CÁLC.
+        </button>
+        <button onclick="window.open('https://docs.google.com/spreadsheets/d/12w-tBU6lMlKR7mncvbfoKjKGcvCZftd12CFKxdtf7ac/edit?gid=392130906#gid=392130906', '_blank')" style="flex:1; min-width:130px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.5); color:#10b981; padding:0 16px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.3)'" onmouseout="this.style.background='rgba(16,185,129,0.15)'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          PLANILHA
+        </button>
+      </div>
+    </div>
+    <div class="filters-container">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+        <div style="display:flex; align-items:center; gap:10px; width:100%;">
+          <input type="text" id="proalfa-busca" class="search-input" placeholder="Buscar por escola, município, inep..." style="flex:1; width:100%; padding:10px 16px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:12px; color:var(--text-primary); font-size:14px; outline:none; transition:border-color 0.2s, box-shadow 0.2s;" onfocus="this.style.borderColor='var(--primary-color)'; this.style.boxShadow='0 0 0 3px rgba(99,102,241,0.2)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'; this.style.boxShadow='none'">
+        </div>
+      </div>
+      <div class="filters-grid" style="display:flex; flex-wrap:wrap; gap:10px; width:100%;">
+        <div class="filter-group" style="flex:0.5; min-width:90px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">ANO</label><select id="proalfa-ano" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="2025">2025</option></select></div>
+        <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">SUPER</label><select id="proalfa-super" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">MUNICÍPIO</label><select id="proalfa-municipio" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">DISTRITO</label><select id="proalfa-distrito" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOCALIZAÇÃO</label><select id="proalfa-localizacao" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOC. DIFERENCIADA</label><select id="proalfa-loc-dif" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+      </div>
+      <div style="margin-top: 15px; display:flex; justify-content:space-between; align-items:stretch; gap: 20px;">
+        <div style="display:flex; align-items:stretch; gap:15px; flex:1;">
+            <div id="proalfa-count" style="font-size:14px; font-weight:bold; color:var(--text-secondary); background:rgba(255,255,255,0.05); padding:8px 16px; border-radius:8px; white-space:nowrap; display:flex; align-items:center;">0 escolas listadas</div>
+            <!-- Totals container moved here -->
+            <div id="proalfa-totals-top" style="display:flex; flex:1; gap:15px; background:rgba(16,185,129,0.1); padding:8px 16px; border-radius:8px; border:1px solid rgba(16,185,129,0.2); overflow-x:auto;">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+        <button onclick="limparFiltrosProalfa()" 
+            onmouseover="this.style.background='#d97706'" 
+            onmouseout="this.style.background='#f59e0b'"
+            style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
+          <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
+        </button>
+      </div>
+    </div>
+    <div class="table-wrap" style="margin-top: 20px;">
+      <table id="table-proalfa" style="table-layout:fixed; width:100%; min-width:1100px; border-collapse:separate; border-spacing:0; font-size:13px;">
+        <thead><tr id="proalfa-thead-tr"></tr></thead>
+        <tbody id="proalfa-tbody"></tbody>
+        <tfoot id="proalfa-tfoot"></tfoot>
+      </table>
+    </div>
+  </section>
+
+
+  <!-- ============= MODAL FORMULÁRIO CONTATO ============= -->
+  <div class="modal-overlay" id="modal-contato-overlay" onclick="if(event.target===this)fecharModalContato()">
+    <div class="modal" style="max-width:550px; width:95%;">
+      <div class="modal-header">
+        <h3 id="modal-contato-titulo" style="display:flex; align-items:center; gap:8px;"><span>✏️</span> Editar Contato</h3>
+        <button class="modal-close" onclick="fecharModalContato()">?</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <form id="form-contato" onsubmit="salvarContato(event)">
+          <input type="hidden" id="contato-id">
+          
+          <div class="form-group" style="margin-bottom:12px;">
+            <label>Município</label>
+            <input type="text" id="contato-municipio" required>
+          </div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group">
+              <label>Nome do Prefeito</label>
+              <input type="text" id="contato-prefeito">
+            </div>
+            <div class="form-group">
+              <label>Celular Prefeito</label>
+              <input type="text" id="contato-cel-prefeito" placeholder="(00) 00000-0000">
+            </div>
+          </div>
+          
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+            <div class="form-group">
+              <label>Nome do Secretário</label>
+              <input type="text" id="contato-secretario">
+            </div>
+            <div class="form-group">
+              <label>Celular Secretário</label>
+              <input type="text" id="contato-cel-secretario" placeholder="(00) 00000-0000">
+            </div>
+          </div>
+          
+          <div class="form-group" style="margin-bottom:12px;">
+            <label>E-mail</label>
+            <input type="email" id="contato-email">
+          </div>
+          
+          <div class="form-group" style="margin-bottom:12px;">
+            <label>Observações</label>
+            <textarea id="contato-obs" rows="3" style="width:100%;padding:10px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);"></textarea>
+          </div>
+          
+          <div style="display:flex; gap:16px; margin-top:16px; padding:12px; background:rgba(255,255,255,0.02); border-radius:8px;">
+             <div><strong>Qtd Escolas (INEP): </strong><span id="contato-qtde-escolas">-</span></div>
+             <div><strong>Qtd Alunos: </strong><span id="contato-qtde-alunos">-</span></div>
+          </div>
+          
+          <div id="btn-excluir-contato-container" style="display:none; margin-top:20px; border-top:1px solid rgba(239,68,68,0.25); padding-top:16px; text-align:right;">
+             <button type="button" onclick="excluirContato()" class="btn" style="background:#dc2626; color:white; border:none; padding:8px 16px; border-radius:8px; cursor:pointer;">Excluir Contato</button>
+          </div>
+          
+          <div class="modal-footer" style="margin-top:20px; display:flex; justify-content:flex-end; gap:12px;">
+            <button type="button" class="btn btn-outline" onclick="fecharModalContato()" style="background:transparent; border:1px solid var(--text-muted); color:var(--text-primary); padding:8px 16px; border-radius:8px; cursor:pointer;">Cancelar</button>
+            <button type="submit" class="btn" id="btn-salvar-contato" style="background:var(--blue); border:none; color:white; padding:8px 16px; border-radius:8px; cursor:pointer;">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<!-- ============= MODAL DETALHES ESCOLA ============= -->
   <div class="modal-overlay" id="modal-escola-overlay" onclick="if(event.target===this)fecharModalEscola()">
     <div class="modal" style="max-width:680px; width:95%;">
       <div class="modal-header">
@@ -2025,7 +2391,7 @@
       </div>
       <div id="modal-alertas-content" style="overflow-y:auto; flex:1; padding-right:4px;"></div>
       <div style="margin-top:20px; text-align:right;">
-        <button onclick="fecharModalAlertas()" style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; padding:8px 20px; border-radius:8px; cursor:pointer;">Fechar</button>
+        <button onclick="fecharModalAlertas()" style="background:rgba(255,255,255,0.1); border:none; color:#e2e8f0; padding:8px 20px; border-radius:8px; cursor:pointer;">Fechar</button>
       </div>
     </div>
   </div>
@@ -2034,13 +2400,14 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=3.2.1"></script>
-  <script src="js/app.js?v=1786974445.0.5"></script>
-  <script src="js/auth-sap.js?v=3.2.1"></script>
-  <script src="js/escolas.js?v=7.0.7" charset="utf-8"></script>
+  <script src="js/dados.js?v=1787588267609"></script>
+  <script src="js/app.js?v=1787588267609"></script>
+  <script src="js/auth-sap.js?v=1787588267609"></script>
+  <script src="js/escolas.js?v=1787588267609" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=3.13.0"></script>
+<script src="js/mapa.js?v=1787588267609"></script>
+  <script src="js/contatos.js"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -2091,6 +2458,54 @@
       atualizarContador();
     });
 
+    
+    
+    function toggleSubmenu(id, el) {
+      // expand sidebar if collapsed
+      const sidebar = document.getElementById('app-sidebar');
+      if (sidebar && sidebar.classList.contains('collapsed')) {
+        toggleDesktopSidebar();
+      }
+
+      const menu = document.getElementById(id);
+      const indicator = el.querySelector('.submenu-indicator');
+      if (menu.style.display === 'none') {
+        menu.style.display = 'block';
+        if (indicator) indicator.style.transform = 'rotate(180deg)';
+        el.classList.add('open');
+      } else {
+        menu.style.display = 'none';
+        if (indicator) indicator.style.transform = 'rotate(0deg)';
+        el.classList.remove('open');
+      }
+    }
+    
+    function fecharSubmenus() {
+      document.querySelectorAll('.nav-submenu').forEach(m => m.style.display = 'none');
+      document.querySelectorAll('.submenu-indicator').forEach(i => i.style.transform = 'rotate(0deg)');
+      document.querySelectorAll('.nav-group .nav-item').forEach(i => i.classList.remove('open'));
+    }
+    
+    // Add transition to indicator
+    document.head.insertAdjacentHTML('beforeend', '<style>.submenu-indicator { transition: transform 0.2s; }</style>');
+
+
+    function toggleDesktopSidebar() {
+      const sidebar = document.getElementById('app-sidebar');
+      const layout = document.querySelector('.app-layout');
+      const chevron = document.getElementById('sidebar-chevron');
+      
+      sidebar.classList.toggle('collapsed');
+      
+      
+      if (sidebar.classList.contains('collapsed')) {
+        chevron.innerHTML = '<polyline points="9 18 15 12 9 6"></polyline>'; // point right
+      } else {
+        chevron.innerHTML = '<polyline points="15 18 9 12 15 6"></polyline>'; // point left
+      }
+    }
+
+
     // Toggle Sidebar no Mobile
     function toggleSidebar() {
       const sidebar = document.querySelector('.sidebar');
@@ -2135,9 +2550,209 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=639212790744655179"></script>
+  <script src="js/multi-select.js?v=1787588267609"></script>
   <script>
   </script>
+  <script src="js/orcamento.js?v=1787588267609"></script>
+  <script src="js/print-proalfa.js?v=1787630981767"></script>
+  <script src="js/proalfa.js?v=1787630656751"></script>
+
+
+  <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
+  <section class="page" id="page-orcamento">
+
+    <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+      <div>
+        <h2 style="margin:0 0 4px; font-size:20px; font-weight:800;">Controle Orcamentario</h2>
+        <p style="margin:0; font-size:13px; color:#64748b;">Execucao de Dotacao Orcamentaria - CAM SEDUC-RO</p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        
+        <button onclick="if(typeof imprimirOrcamento==='function') imprimirOrcamento(); else window.print();" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          RELATÓRIO
+        </button>
+
+        <button onclick="exportarOrcamentoExcel()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#16a34a; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
+          EXPORTAR CSV
+        </button>
+        <button onclick="window.open('https://docs.google.com/spreadsheets/d/1NQuN9icUm8RL08pqkPia3ZrgoC5zEka99mK43sUJm3o/edit?gid=325984433','_blank')" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#10b981; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+          PLANILHA
+        </button>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="orc-summary-cards" id="orc-cards"></div>
+
+    <!-- Filtros -->
+    <div class="orc-filters-bar">
+      <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px;">
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Programa de Acao (PA)</label>
+        <select id="orc-filtro-pa"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px;">
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Fonte de Recurso</label>
+        <select id="orc-filtro-fonte"></select>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:240px;">
+        <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Natureza da Despesa</label>
+        <select id="orc-filtro-despesa"></select>
+      </div>
+      <button onclick="limparFiltrosOrcamento()" style="height:40px;padding:0 16px;border-radius:8px;background:rgba(250,204,21,0.15);color:#facc15;border:1px solid #facc15;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;text-transform:uppercase;transition:background 0.2s;" onmouseover="this.style.background='rgba(250,204,21,0.3)'" onmouseout="this.style.background='rgba(250,204,21,0.15)'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        LIMPAR
+      </button>
+    </div>
+
+    <!-- Legenda das colunas de natureza da despesa – click to filter -->
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px 16px;background:#1e293b;border-radius:10px;border:1px solid rgba(255,255,255,0.05);">
+      <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;align-self:center;margin-right:4px;">Filtrar por Natureza:</span>
+      <button class="orc-badge-filter" data-code="339014" data-cor="#60a5fa" onclick="filtrarOrcamentoPorNatureza('339014')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);cursor:pointer;transition:all 0.2s;" title="Diárias Pessoal Civil">🏨 Diárias Pessoal</button>
+      <button class="orc-badge-filter" data-code="339030" data-cor="#fbbf24" onclick="filtrarOrcamentoPorNatureza('339030')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Consumo">📦 Material Consumo</button>
+      <button class="orc-badge-filter" data-code="339033" data-cor="#38bdf8" onclick="filtrarOrcamentoPorNatureza('339033')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);cursor:pointer;transition:all 0.2s;" title="Passagens e Locomoção">✈️ Passagens</button>
+      <button class="orc-badge-filter" data-code="339039" data-cor="#818cf8" onclick="filtrarOrcamentoPorNatureza('339039')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(129,140,248,0.12);color:#818cf8;border:1px solid rgba(129,140,248,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PJ">🏢 Serv. Terceiros PJ</button>
+      <button class="orc-badge-filter" data-code="339048" data-cor="#4ade80" onclick="filtrarOrcamentoPorNatureza('339048')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílio Financeiro a Pessoa Física">💳 Aux. Financeiro PF</button>
+      <button class="orc-badge-filter" data-code="335031" data-cor="#a78bfa" onclick="filtrarOrcamentoPorNatureza('335031')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílios / Premiação">🏆 Auxílios/Prêmio</button>
+      <button class="orc-badge-filter" data-code="339032" data-cor="#f472b6" onclick="filtrarOrcamentoPorNatureza('339032')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(244,114,182,0.12);color:#f472b6;border:1px solid rgba(244,114,182,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Distribuição Gratuita">🎁 Distrib. Gratuita</button>
+      <button class="orc-badge-filter" data-code="339036" data-cor="#fb923c" onclick="filtrarOrcamentoPorNatureza('339036')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,146,60,0.12);color:#fb923c;border:1px solid rgba(251,146,60,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PF">👤 Serv. Terceiros PF</button>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-wrap" style="overflow-x:auto; overflow-y:auto; max-height:calc(100vh - 380px); border-radius:12px; border:1px solid rgba(255,255,255,0.07);">
+      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+        <thead>
+          <tr style="background:#0f172a; position:sticky; top:0; z-index:10;">
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; min-width:140px; border-bottom:1px solid rgba(255,255,255,0.07);">PA</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; min-width:130px; border-bottom:1px solid rgba(255,255,255,0.07);">Fonte</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Cod.</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; border-bottom:1px solid rgba(255,255,255,0.07);">Natureza da Despesa</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#60a5fa; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Dotacao</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#f59e0b; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Empenhado</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#f87171; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Anulado</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#10b981; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Executado</th>
+            <th style="padding:12px 12px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#a78bfa; font-weight:700; text-align:right; white-space:nowrap; border-bottom:1px solid rgba(255,255,255,0.07);">Saldo Liq.</th>
+            <th style="padding:12px 16px; font-size:11px; text-transform:uppercase; letter-spacing:.5px; color:#64748b; font-weight:700; min-width:120px; border-bottom:1px solid rgba(255,255,255,0.07);">% Exec</th>
+          </tr>
+        </thead>
+        <tbody id="orc-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Graficos -->
+    <div class="orc-charts-row">
+      <div class="orc-chart-card">
+        <div class="orc-chart-title">Execucao por Natureza da Despesa</div>
+        <div style="height:240px;"><canvas id="orc-chart-bar"></canvas></div>
+      </div>
+      <div class="orc-chart-card">
+        <div class="orc-chart-title">Distribuicao da Dotacao por Programa</div>
+        <div style="height:240px;"><canvas id="orc-chart-donut"></canvas></div>
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- ============= MODAL: LOGADOS ============= -->
+<div class="modal-overlay" id="modal-logados" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+  <div style="background:#0f172a; border:1px solid rgba(59,130,246,0.4); width:100%; max-width:600px; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.6); overflow:hidden;">
+    <div style="padding:20px 24px; background:linear-gradient(135deg,#1e293b,#0f172a); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800; display:flex; align-items:center; gap:8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Usuários Logados (Sessões Ativas)
+      </h3>
+      <button type="button" onclick="fecharLogados()" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer;">&times;</button>
+    </div>
+    <div style="padding:24px; color:#e2e8f0; font-size:14px; background:#0b1120;">
+      <div class="table-wrap" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow:hidden;">
+        <table style="width:100%; border-collapse:collapse; text-align:left;">
+          <thead style="background:rgba(255,255,255,0.05);">
+            <tr>
+              <th style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.1); font-weight:700; color:#94a3b8;">Login (Nome)</th>
+              <th style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.1); font-weight:700; color:#94a3b8;">Data</th>
+              <th style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.1); font-weight:700; color:#94a3b8;">Hora Início</th>
+              <th style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.1); font-weight:700; color:#94a3b8;">Tempo Logado</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-logados">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="padding:16px 24px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); text-align:right;">
+      <button type="button" onclick="fecharLogados()" class="btn btn-ghost" style="padding:10px 20px;">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function fecharLogados() {
+  document.getElementById('modal-logados').style.display = 'none';
+}
+
+function abrirLogados() {
+  let usuario = null;
+  try {
+    const raw = sessionStorage.getItem('sap_user_data') || localStorage.getItem('sap_user_data');
+    if (raw) usuario = JSON.parse(raw);
+  } catch(e) {}
+  
+  if (!usuario || (usuario.nivel !== 'adm' && usuario.role !== 'adm' && (!usuario.role || usuario.role.toLowerCase() !== 'administrador'))) {
+    alert("Acesso Negado: Apenas Administradores podem visualizar as sessões de usuários logados.");
+    return;
+  }
+  
+  const tbody = document.getElementById('tbody-logados');
+  tbody.innerHTML = '';
+  
+  // Buscar a data de acesso na aba acessos (listaAcessos)
+  let dataAcesso = usuario.data;
+  if (typeof listaAcessos !== 'undefined' && Array.isArray(listaAcessos)) {
+      const u = listaAcessos.find(x => x.whatsapp === usuario.whatsapp || x.nome === usuario.nome);
+      if (u && u.data) {
+          dataAcesso = u.data;
+      }
+  }
+  
+  if (!dataAcesso) {
+      dataAcesso = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR');
+  }
+
+  // Tentar parsear DD/MM/YYYY HH:MM
+  let start = new Date();
+  const m = String(dataAcesso).match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})(:(\d{2}))?/);
+  if (m) {
+      start = new Date(m[3], m[2]-1, m[1], m[4], m[5], m[7] || 0);
+  }
+
+  const now = new Date();
+  let diffMs = now.getTime() - start.getTime();
+  if (diffMs < 0) diffMs = 0;
+
+  const diffHoras = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffMin = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+  const diffSec = Math.floor((diffMs % (1000 * 60)) / 1000);
+  
+  const tempoLogado = `${diffHoras.toString().padStart(2, '0')}:${diffMin.toString().padStart(2, '0')}:${diffSec.toString().padStart(2, '0')}`;
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.05); color:#e2e8f0;">${usuario.nome || 'Admin'}</td>
+    <td style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.05); color:#e2e8f0;">${String(dataAcesso).split(' ')[0]}</td>
+    <td style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.05); color:#e2e8f0;">${String(dataAcesso).split(' ')[1] || '-'}</td>
+    <td style="padding:12px; border-bottom:1px solid rgba(255,255,255,0.05); color:#34d399; font-weight:700;">${tempoLogado}</td>
+  `;
+  
+  tbody.appendChild(tr);
+  
+  document.getElementById('modal-logados').style.display = 'flex';
+}
+</script>
+
 </body>
 </html>
 
@@ -2173,6 +2788,19 @@
 
     </div>
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
