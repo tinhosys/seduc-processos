@@ -951,7 +951,7 @@ function getFiltrados() {
 
 function renderProcessos() {
   const processos = carregarProcessos();
-  const filtrados = getFiltrados();
+  const filtrados = processosToPrint || getFiltrados();
   const total = filtrados.length;
   const totalPags = Math.ceil(total / state.itensPorPagina);
   if (state.paginaAtual > totalPags) state.paginaAtual = Math.max(1, totalPags);
@@ -1009,6 +1009,7 @@ function renderProcessos() {
 
   tbody.innerHTML = pagina.map(p => `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
+      <td onclick="event.stopPropagation()" style="text-align: center;"><input type="checkbox" class="check-processo" value="${p.id}" style="cursor:pointer; transform: scale(1.2);"></td>
       <td class="col-prefixo" title="${p.prefixo}">
         <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
           <!-- Linha 1: PREFIXO -->
@@ -1048,7 +1049,7 @@ function renderProcessos() {
       </td>
     </tr>
   `).join('') || `
-    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9">
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="10">
       <div class="empty-state">
         <div class="empty-icon">��</div>
         <h3>Nenhum resultado encontrado</h3>
@@ -2407,7 +2408,7 @@ window.formatNumberOnly = function(valor) {
 
 function injectPrintHeader(subtitle) { /* disabled */ }
 
-window.imprimirPadrao = function() {
+window.imprimirPadrao = function(processosToPrint) {
       updatePrintDateTime();
       updatePrintDateTime();
       const filtrados = getFiltrados();
@@ -4382,3 +4383,19 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+
+window.imprimirPadraoSelecionado = function() {
+    const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
+    if (idsSelecionados.length === 0) {
+        alert('Nenhum processo selecionado.');
+        return;
+    }
+    const filtrados = getFiltrados().filter(p => idsSelecionados.includes(p.id));
+    imprimirPadrao(filtrados);
+};
+
+window.toggleAllProcessos = function(el) {
+    const checkboxes = document.querySelectorAll('.check-processo');
+    checkboxes.forEach(cb => cb.checked = el.checked);
+};
