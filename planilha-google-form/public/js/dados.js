@@ -1,5 +1,5 @@
 // ============================================================
-// SEDUC — Módulo de Dados e Estado Global
+// SEDUC - Módulo de Dados e Estado Global
 // ============================================================
 
 const DB_KEY = 'seduc_processos_v1';
@@ -194,9 +194,7 @@ function getHeaders(extraHeaders = {}) {
 }
 
 
-var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:3001'
-  : 'https://seduc-backend.onrender.com';
+var API_BASE = 'https://seduc-backend.onrender.com';
 
 
 // Helper para incluir cabeçalho de autenticação
@@ -241,6 +239,41 @@ function gerarId() {
 
 // ----- CRUD REMOTO (Google Sheets) -----
 window.processosCache = [];
+
+const AGRUPAMENTOS_REGIONAIS = {
+  "Rolim de Moura": "Zona da Mata",
+  "Alta Floresta D'Oeste": "Zona da Mata",
+  "Alto Alegre dos Parecis": "Zona da Mata",
+  "Castanheiras": "Zona da Mata",
+  "Nova Brasilândia D'Oeste": "Zona da Mata",
+  "Novo Horizonte do Oeste": "Zona da Mata",
+  "Santa Luzia D'Oeste": "Zona da Mata",
+  "São Miguel do Guaporé": "Região da 429",
+  "Alvorada D'Oeste": "Região da 429",
+  "Seringueiras": "Região da 429",
+  "São Francisco do Guaporé": "Região da 429",
+  "Costa Marques": "Região da 429",
+  "Cacoal": "Região do Café",
+  "Espigão D'Oeste": "Região do Café",
+  "Ministro Andreazza": "Região do Café",
+  "Pimenta Bueno": "Região do Café",
+  "Primavera de Rondônia": "Região do Café",
+  "Jaru": "Bacia Leiteira",
+  "Governador Jorge Teixeira": "Bacia Leiteira",
+  "Machadinho D'Oeste": "Bacia Leiteira",
+  "Theobroma": "Bacia Leiteira",
+  "Vale do Anari": "Bacia Leiteira",
+  "Ariquemes": "Vale do Jamari",
+  "Alto Paraíso": "Vale do Jamari",
+  "Buritis": "Vale do Jamari",
+  "Cacaulândia": "Vale do Jamari",
+  "Campo Novo de Rondônia": "Vale do Jamari",
+  "Cujubim": "Vale do Jamari",
+  "Monte Negro": "Vale do Jamari",
+  "Rio Crespo": "Vale do Jamari",
+  "Guajará-Mirim": "Pérola do Mamoré",
+  "Nova Mamoré": "Pérola do Mamoré"
+};
 
 const mapToApp = (row) => {
   let contatosStr = '';
@@ -291,8 +324,12 @@ const mapToApp = (row) => {
     const cleaned = String(val).replace(/[^\d,\.-]/g, '');
     return parseFloat(cleaned.replace(/\./g, '').replace(',', '.')) || 0;
   };
-  return {
-    id: `${row._tabName}__${row._rowNumber}`,
+      let mun = (row['Município'] || row.municipio || row['Municipio'] || '').trim();
+    let agrupamentoCalculado = AGRUPAMENTOS_REGIONAIS[mun] || mun;
+    
+    return {
+      id: `${row._tabName}__${row._rowNumber}`,
+      agrupamento: row.Agrupamento || row.agrupamento || agrupamentoCalculado,
     prefixo: row._tabName || row['Prefixo (codigo de prioridade)'] || row['Prefixo'] || '',
     municipio: row['Município'] || row['Municipio'] || '',
     numero: row['Processo'] || row['Nº Processo'] || '',
@@ -309,7 +346,7 @@ const mapToApp = (row) => {
     marca: String(row['Marca'] || row['marca'] || row['Marcado'] || '').trim(),
     categoria: row['CATEGORIA'] || row['categoria'] || '',
     tipo: row['TIPO'] || row['tipo'] || '',
-    ultimaEdicao: row['ULTIMA EDICAO'] || row['ultima edicao'] || row['última edição'] || row['ÚLTIMA EDIÇÃO'] || '',
+    ultimaEdicao: row['ULTIMA EDICAO'] || row['ultima edicao'] || row['Última edição'] || row['ÚLTIMA EDIÇÃO'] || '',
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || row['DATA/HORA EDIÇÃO'] || '',
     ano: row['ANO'] || row['ano'] || '',
     agrupamento: row['AGRUPAMENTO'] || row['agrupamento'] || row['Agrupamento'] || '',
@@ -324,7 +361,7 @@ const mapToApp = (row) => {
 
 const mapToSheet = (dados) => {
   const formatMoney = (val) => {
-    if (!val && val !== 0) return "";
+    if (!val && val !== 0) return "****";
     return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   return {
@@ -358,82 +395,6 @@ async function inicializarDados() {
   try {
     const res = await fetch(API_BASE + '/api/registros', { headers: getHeaders() });
 
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
-    if (res.status === 401 || res.status === 403) {
-      fazerLogout();
-      return;
-    }
     if (res.status === 401 || res.status === 403) {
       fazerLogout();
       return;
@@ -544,7 +505,7 @@ async function importarExcel(file) {
           "Apontamento",
           "ALERTA",
           "ULTIMA EDICAO LOGIN",
-          "DATA/HORA EDIÇAO",
+          "DATA/HORA EDIÇÃO",
           "marca",
           "CATEGORIA",
           "TIPO"
@@ -692,7 +653,7 @@ function formatCurrency(val) {
 }
 
 function formatDate(str) {
-  if (!str) return '—';
+  if (!str) return '-';
   const d = new Date(str + 'T00:00:00');
   if (isNaN(d)) return str;
   return d.toLocaleDateString('pt-BR');
@@ -719,3 +680,6 @@ function getStatusBadgeClass(status) {
   };
   return 'badge-' + (map[s] || 'DEFAULT');
 }
+
+
+

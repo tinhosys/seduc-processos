@@ -245,34 +245,34 @@ const AGRUPAMENTOS_REGIONAIS = {
   "Alta Floresta D'Oeste": "Zona da Mata",
   "Alto Alegre dos Parecis": "Zona da Mata",
   "Castanheiras": "Zona da Mata",
-  "Nova Brasilândia D'Oeste": "Zona da Mata",
+  "Nova BrasilÃ¢ndia D'Oeste": "Zona da Mata",
   "Novo Horizonte do Oeste": "Zona da Mata",
   "Santa Luzia D'Oeste": "Zona da Mata",
-  "São Miguel do Guaporé": "Região da 429",
-  "Alvorada D'Oeste": "Região da 429",
-  "Seringueiras": "Região da 429",
-  "São Francisco do Guaporé": "Região da 429",
-  "Costa Marques": "Região da 429",
-  "Cacoal": "Região do Café",
-  "Espigão D'Oeste": "Região do Café",
-  "Ministro Andreazza": "Região do Café",
-  "Pimenta Bueno": "Região do Café",
-  "Primavera de Rondônia": "Região do Café",
+  "SÃ£o Miguel do GuaporÃ©": "RegiÃ£o da 429",
+  "Alvorada D'Oeste": "RegiÃ£o da 429",
+  "Seringueiras": "RegiÃ£o da 429",
+  "SÃ£o Francisco do GuaporÃ©": "RegiÃ£o da 429",
+  "Costa Marques": "RegiÃ£o da 429",
+  "Cacoal": "RegiÃ£o do CafÃ©",
+  "EspigÃ£o D'Oeste": "RegiÃ£o do CafÃ©",
+  "Ministro Andreazza": "RegiÃ£o do CafÃ©",
+  "Pimenta Bueno": "RegiÃ£o do CafÃ©",
+  "Primavera de RondÃ´nia": "RegiÃ£o do CafÃ©",
   "Jaru": "Bacia Leiteira",
   "Governador Jorge Teixeira": "Bacia Leiteira",
   "Machadinho D'Oeste": "Bacia Leiteira",
   "Theobroma": "Bacia Leiteira",
   "Vale do Anari": "Bacia Leiteira",
   "Ariquemes": "Vale do Jamari",
-  "Alto Paraíso": "Vale do Jamari",
+  "Alto ParaÃ­so": "Vale do Jamari",
   "Buritis": "Vale do Jamari",
-  "Cacaulândia": "Vale do Jamari",
-  "Campo Novo de Rondônia": "Vale do Jamari",
+  "CacaulÃ¢ndia": "Vale do Jamari",
+  "Campo Novo de RondÃ´nia": "Vale do Jamari",
   "Cujubim": "Vale do Jamari",
   "Monte Negro": "Vale do Jamari",
   "Rio Crespo": "Vale do Jamari",
-  "Guajará-Mirim": "Pérola do Mamoré",
-  "Nova Mamoré": "Pérola do Mamoré"
+  "GuajarÃ¡-Mirim": "PÃ©rola do MamorÃ©",
+  "Nova MamorÃ©": "PÃ©rola do MamorÃ©"
 };
 
 const mapToApp = (row) => {
@@ -324,7 +324,7 @@ const mapToApp = (row) => {
     const cleaned = String(val).replace(/[^\d,\.-]/g, '');
     return parseFloat(cleaned.replace(/\./g, '').replace(',', '.')) || 0;
   };
-      let mun = (row['Município'] || row.municipio || row['Municipio'] || '').trim();
+      let mun = (row['MunicÃ­pio'] || row.municipio || row['Municipio'] || '').trim();
     let agrupamentoCalculado = AGRUPAMENTOS_REGIONAIS[mun] || mun;
     
     return {

@@ -1,7 +1,7 @@
 $ErrorActionPreference = "Continue"
 
 $port = 3003
-$destPath = "C:\Users\ADM\.gemini\antigravity\scratch\seduc-processos"
+$destPath = "C:\Users\ADM\Documents\GitHub\seduc-processos"
 
 Write-Output "Checking for existing processes on port $port..."
 $connections = Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue
