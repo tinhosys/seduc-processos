@@ -313,6 +313,12 @@ function _parseRow(row) {
     contatoSecretario: val(17),
     salas: parseInt(val(18)) || 0,
     localidade: val(26),
+    plusCode: (() => {
+      const p = [val(19), val(20), val(21), val(22), val(23), val(24), val(25), val(27), val(28), val(29), val(30), val(31), val(32)].find(v => v && v.includes('+') && v.length >= 6);
+      if(!p) return '';
+      const m = p.match(/([2-9C-F]{2,8}\+[2-9C-F]{2,3})/i);
+      return m ? m[1].toUpperCase() : '';
+    })(),
     modalidades: [],
     alunos: 0,
     totalMatricula: 0

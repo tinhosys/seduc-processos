@@ -195,12 +195,13 @@ const CENTER_RO = [-10.83, -62.90];
 
 function _mapaNormalizarStr(str) {
   if (!str) return '';
-  // Normaliza acentos, maiúsculas, espaços e apóstrofos (curvo/reto)
   return String(str)
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[\u2018\u2019\u201A\u201B\u2032\u0060]/g, "'")
+    .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
