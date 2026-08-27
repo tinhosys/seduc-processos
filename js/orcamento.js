@@ -35,30 +35,62 @@ const FONTE_DESCRICAO = {
 };
 
 // ---- Dados da Planilha (CSV importado) ----
-const ORCAMENTO_DATA = [
-  { pa:'4096', fonte:'1500001001', despesa:'339014', inicial:800000,    empenhado:406732.60,  anulacao:0,          executado:406732.60,  saldoExistente:393267.40, reserva:0,          saldoLiquido:393267.00,   detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'1500001001', despesa:'339030', inicial:522055,    empenhado:318447.74,  anulacao:10165.64,   executado:308282.10,  saldoExistente:213772.90, reserva:0,          saldoLiquido:213772.90,   detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'1500001001', despesa:'339032', inicial:80000,     empenhado:45897.00,   anulacao:0,          executado:45897.00,   saldoExistente:34103.00,  reserva:0,          saldoLiquido:34103.00,    detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'1500001001', despesa:'339033', inicial:700000,    empenhado:197320.87,  anulacao:43302.49,   executado:154018.38,  saldoExistente:545981.62, reserva:28963.52,   saldoLiquido:517018.10,   detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'1500001001', despesa:'339036', inicial:50000,     empenhado:0,          anulacao:0,          executado:0,          saldoExistente:50000,     reserva:0,          saldoLiquido:50000,       detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'1500001001', despesa:'339039', inicial:300000,    empenhado:96210.20,   anulacao:20351.64,   executado:75858.56,   saldoExistente:224141.44, reserva:0,          saldoLiquido:224141.44,   detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'2569000001', despesa:'339014', inicial:0,         empenhado:1200000,    anulacao:0,          executado:1200000,    saldoExistente:-1200000,  reserva:0,          saldoLiquido:-1200000,    detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'2569000001', despesa:'339030', inicial:0,         empenhado:0,          anulacao:0,          executado:0,          saldoExistente:0,         reserva:0,          saldoLiquido:0,           detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'2569000001', despesa:'339032', inicial:0,         empenhado:0,          anulacao:0,          executado:0,          saldoExistente:0,         reserva:0,          saldoLiquido:0,           detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'2569000001', despesa:'339033', inicial:0,         empenhado:0,          anulacao:0,          executado:0,          saldoExistente:0,         reserva:0,          saldoLiquido:0,           detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4096', fonte:'2569000001', despesa:'339039', inicial:0,         empenhado:0,          anulacao:0,          executado:0,          saldoExistente:0,         reserva:0,          saldoLiquido:0,           detalhamento:'Promover Capacitações para a Formação Continuada e em serviço' },
-  { pa:'4097', fonte:'1500001001', despesa:'339048', inicial:4490400,   empenhado:3151200,    anulacao:1280000,    executado:1871200,    saldoExistente:2619200,   reserva:0,          saldoLiquido:2619200,     detalhamento:'Bolsa para articuladores e formadores' },
-  { pa:'4099', fonte:'1500001001', despesa:'339048', inicial:2700000,   empenhado:0,          anulacao:0,          executado:0,          saldoExistente:2700000,   reserva:0,          saldoLiquido:2700000,     detalhamento:'Tutoria Pedagógica' },
-  { pa:'4100', fonte:'1500001001', despesa:'339014', inicial:5675832,   empenhado:0,          anulacao:0,          executado:0,          saldoExistente:5675832,   reserva:0,          saldoLiquido:5675832,     detalhamento:'Avaliação da aprendizagem' },
-  { pa:'4100', fonte:'1500001001', despesa:'339030', inicial:0,         empenhado:0,          anulacao:0,          executado:0,          saldoExistente:0,         reserva:0,          saldoLiquido:0,           detalhamento:'Avaliação da aprendizagem' },
-  { pa:'4100', fonte:'1500001001', despesa:'339039', inicial:0,         empenhado:603616.94,  anulacao:0,          executado:603616.94,  saldoExistente:-603616.94,reserva:4953746.23, saldoLiquido:-5557363.17, detalhamento:'Avaliação da aprendizagem' },
-  { pa:'4101', fonte:'1500001001', despesa:'339030', inicial:3838760,   empenhado:0,          anulacao:0,          executado:0,          saldoExistente:3838760,   reserva:0,          saldoLiquido:3838760,     detalhamento:'Material de suporte pedagógico' },
-  { pa:'4101', fonte:'1500101001', despesa:'339030', inicial:0,         empenhado:0,          anulacao:0,          executado:0,          saldoExistente:0,         reserva:0,          saldoLiquido:0,           detalhamento:'Material de suporte pedagógico' },
-  { pa:'4101', fonte:'1500001001', despesa:'449052', inicial:0,         empenhado:0,          anulacao:0,          executado:0,          saldoExistente:0,         reserva:0,          saldoLiquido:0,           detalhamento:'Material de suporte pedagógico' },
-  { pa:'4101', fonte:'1569000001', despesa:'339030', inicial:0,         empenhado:0,          anulacao:0,          executado:0,          saldoExistente:0,         reserva:0,          saldoLiquido:0,           detalhamento:'Material de suporte pedagógico' },
-  { pa:'4185', fonte:'1500001001', despesa:'335031', inicial:1300000,   empenhado:0,          anulacao:0,          executado:0,          saldoExistente:1300000,   reserva:0,          saldoLiquido:1300000,     detalhamento:'Premiar escolas estaduais e municipais' },
-  { pa:'4185', fonte:'1500001001', despesa:'335041', inicial:600000,    empenhado:0,          anulacao:0,          executado:0,          saldoExistente:600000,    reserva:0,          saldoLiquido:600000,      detalhamento:'Fomentar escolas estaduais e municipais' },
-];
+const ORCAMENTO_DATA = [];
+
+let _guiaAtualGid = '325984433';
+let _guiaAtualSheet = '26 Execução Orçamentária';
+
+window.mudarGuiaOrcamento = async function(nomeGuia, gid, el) {
+  if (el) {
+    document.querySelectorAll('#page-orcamento .tabs .tab-link').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  _guiaAtualSheet = nomeGuia;
+  _guiaAtualGid = gid;
+  await window.carregarOrcamentoData();
+};
+
+window.carregarOrcamentoData = async function() {
+  try {
+    let url = 'https://docs.google.com/spreadsheets/d/1NQuN9icUm8RL08pqkPia3ZrgoC5zEka99mK43sUJm3o/gviz/tq?tqx=out:csv';
+    if (_guiaAtualGid) url += '&gid=' + _guiaAtualGid;
+    else url += '&sheet=' + encodeURIComponent(_guiaAtualSheet);
+    
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const csv = await res.text();
+    
+    // Parse CSV
+    const lines = csv.split('\n');
+    ORCAMENTO_DATA.length = 0; // Clear array
+    for (let i = 1; i < lines.length; i++) {
+      let l = lines[i];
+      if (!l || l.trim() === '') continue;
+      // Basic CSV split
+      const cols = l.split('","').map(c => c.replace(/^"|"$/g, '').trim());
+      if (cols.length < 13) continue;
+      
+      const parseMon = (v) => parseFloat((v||'').replace(/\./g,'').replace(',','.')) || 0;
+      
+      ORCAMENTO_DATA.push({
+        pa: cols[0],
+        fonte: cols[1],
+        despesa: cols[2],
+        detalhamento: cols[4],
+        inicial: parseMon(cols[5]),
+        empenhado: parseMon(cols[7]),
+        executado: parseMon(cols[9]),
+        saldoLiquido: parseMon(cols[12])
+      });
+    }
+    
+    filtrarOrcamento();
+  } catch (e) {
+    console.error('Erro ao carregar orcamento do GSheets:', e);
+    // fallback if fail? it will just show empty or previous data
+  }
+};
+
 
 // ---- State ----
 let _orcFiltrado = [...ORCAMENTO_DATA];
@@ -596,13 +628,27 @@ function renderCRM() {
 window.imprimirOrcamento = function() {
   document.body.classList.add('print-mode-orcamento');
   
-  // Hide buttons container temporarily for print (can't just use CSS if it doesn't have a class)
-  const headerDivs = document.querySelectorAll('#page-orcamento > div');
-  if (headerDivs.length > 0 && headerDivs[0].querySelector('button')) {
-     headerDivs[0].querySelector('div[style*="display:flex"]').classList.add('orc-buttons');
+  // Create print header if not exists
+  let printHeader = document.getElementById('orc-print-header');
+  if (!printHeader) {
+    printHeader = document.createElement('div');
+    printHeader.id = 'orc-print-header';
+    printHeader.style.display = 'none';
+    document.getElementById('page-orcamento').prepend(printHeader);
   }
-
-  // Force chart.js to resize for print if needed? Usually window.print() handles it, but just in case.
+  
+  const selPA = document.getElementById('orc-filtro-pa');
+  const selND = document.getElementById('orc-filtro-despesa');
+  const nomePA = selPA && selPA.value ? PA_DESCRICAO[selPA.value] || selPA.value : 'Todos os Programas';
+  const nomeND = selND && selND.value ? _naturezaNome(selND.value) : 'Todas as Naturezas';
+  
+  printHeader.innerHTML = `<h1 style="font-size:24px; margin-bottom:5px; text-align:center;">Execução de Dotação Orçamentária</h1>
+                           <h3 style="font-size:16px; margin-bottom:20px; text-align:center; color:#475569;">PA: ${nomePA} | ND: ${nomeND}</h3>`;
+  
+  // Hide buttons container
+  const headerDivs = document.querySelectorAll('#page-orcamento > div.section-header');
+  if (headerDivs.length > 0) headerDivs[0].classList.add('orc-buttons');
+  
   setTimeout(() => {
     window.print();
     document.body.classList.remove('print-mode-orcamento');
@@ -688,3 +734,4 @@ window.gerarRelatorioOrcamento = function(modelo) {
   doc.autoTable({ startY: 40, head: head, body: body, styles: { fontSize: 8 }, headStyles: { fillColor: [79, 70, 229] } });
   doc.save(`Relatorio_Orcamento_Mod${modelo}.pdf`);
 };
+setTimeout(() => window.carregarOrcamentoData(), 500);

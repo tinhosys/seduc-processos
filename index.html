@@ -141,6 +141,7 @@
       body.print-mode-orcamento .filters-bar { /* The filters bar has naturezas etc, hide it if we want clean report, but user said "COM OS ITENS EM TELA". We'll keep filters if they want? They probably don't want the filter dropdowns on the report. */
         display: none !important;
       }
+      body.print-mode-orcamento #orc-print-header { display: block !important; color: #000; }
       body.print-mode-orcamento #page-orcamento {
         display: block !important;
         margin: 0 !important;
@@ -266,6 +267,7 @@
           </a>
           <div class="nav-submenu" id="sub-processos" style="display: none; padding-left: 20px;">
             <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
+            <a href="#" class="nav-item sub-item" data-page="diarias" onclick="navegar('diarias')" style="font-size: 13px; padding: 10px 16px;"><span>Diárias</span></a>
             <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
             <a href="#" class="nav-item sub-item" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
           </div>
@@ -2553,6 +2555,7 @@
   <script src="js/multi-select.js?v=1787588267609"></script>
   <script>
   </script>
+  <script src="js/diarias.js"></script>
   <script src="js/orcamento.js?v=1787588267609"></script>
   <script src="js/print-proalfa.js?v=1787630981767"></script>
   <script src="js/proalfa.js?v=1787630656751"></script>
@@ -2568,57 +2571,10 @@
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         
-        
-        
-        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-          <style>
-            .btn-relatorio-orc {
-              display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; 
-              background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; 
-              font-size:12px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;
-            }
-            .btn-relatorio-orc:hover { background:#4f46e5; }
-            .btn-relatorio-orc svg { width: 14px; height: 14px; }
-          </style>
-          
-          <button onclick="gerarRelatorioOrcamento(1)" class="btn action-adm btn-relatorio-orc" title="Resumo Geral">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            IMPRIMIR RESUMO
-          </button>
-          
-          <button onclick="gerarRelatorioOrcamento(2)" class="btn action-adm btn-relatorio-orc" title="Listagem Detalhada">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            IMPRIMIR DETALHADO
-          </button>
-          
-          <button onclick="gerarRelatorioOrcamento(3)" class="btn action-adm btn-relatorio-orc" title="Agrupado por Programa de Ação">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            IMPRIMIR POR P.A.
-          </button>
-          
-          <button onclick="gerarRelatorioOrcamento(4)" class="btn action-adm btn-relatorio-orc" title="Agrupado por Fonte de Recurso">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            IMPRIMIR POR FONTE
-          </button>
-          
-          <button onclick="gerarRelatorioOrcamento(5)" class="btn action-adm btn-relatorio-orc" title="Agrupado por Natureza da Despesa">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            IMPRIMIR POR NATUREZA
-          </button>
-          
-          <button onclick="gerarRelatorioOrcamento(6)" class="btn action-adm btn-relatorio-orc" title="Saldos Críticos / Alta Execução">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            IMPRIMIR CRÍTICOS
-          </button>
-          
-          <button onclick="if(typeof imprimirOrcamento==='function') imprimirOrcamento(); else window.print();" class="btn action-adm btn-relatorio-orc" title="Impressão Visual da Tela">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-            IMPRIMIR TELA
-          </button>
-        </div>
-
-        </div>
-
+        <button onclick="if(typeof imprimirOrcamento==='function') imprimirOrcamento(); else window.print();" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          RELATÓRIO
+        </button>
 
         <button onclick="exportarOrcamentoExcel()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#16a34a; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
@@ -2631,6 +2587,14 @@
       </div>
     </div>
 
+    
+    <!-- Guias Orçamento -->
+    <ul class="tabs" style="margin-bottom:16px;">
+      <li class="tab-link active" onclick="mudarGuiaOrcamento('26 Execução Orçamentária', '325984433', this)">26 Execução Orçamentária</li>
+      <li class="tab-link" onclick="mudarGuiaOrcamento('1 Recurso Federal', '', this)">1 Recurso Federal</li>
+      <li class="tab-link" onclick="mudarGuiaOrcamento('Consolidado', '', this)">Consolidado</li>
+    </ul>
+    
     <!-- Cards -->
     <div class="orc-summary-cards" id="orc-cards"></div>
 
@@ -2800,7 +2764,15 @@ function abrirLogados() {
 }
 </script>
 
-</body>
+<script>
+document.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('orc-print-dropdown');
+  if (dropdown && !dropdown.contains(e.target)) {
+    const menu = document.getElementById('orc-print-menu');
+    if (menu) menu.style.display = 'none';
+  }
+});
+</script></body>
 </html>
 
   <!-- ============= MODAL: MANIFESTO SINTÉTICO TCE-RO ============= -->
