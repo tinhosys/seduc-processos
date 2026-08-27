@@ -608,3 +608,83 @@ window.imprimirOrcamento = function() {
     document.body.classList.remove('print-mode-orcamento');
   }, 100);
 };
+
+
+window.gerarRelatorioOrcamento = function(modelo) {
+  if (!window.jspdf) {
+    alert("Biblioteca jsPDF não carregada.");
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF(modelo === 7 || modelo === 2 ? 'landscape' : 'portrait');
+  
+  doc.setFontSize(14);
+  doc.text("RELATÓRIO DE EXECUÇÃO ORÇAMENTÁRIA - SEDUC/RO", 14, 15);
+  doc.setFontSize(10);
+  doc.text("Gerado em: " + new Date().toLocaleString('pt-BR'), 14, 21);
+  
+  const tInicial = _orcFiltrado.reduce((acc, r) => acc + (r.inicial || 0), 0);
+  const tEmpenhado = _orcFiltrado.reduce((acc, r) => acc + (r.empenhado || 0), 0);
+  const tExecutado = _orcFiltrado.reduce((acc, r) => acc + (r.executado || 0), 0);
+  const tLiquido = _orcFiltrado.reduce((acc, r) => acc + (r.saldoLiquido || 0), 0);
+  
+  doc.text(`Dotação Inicial: ${_fmtBRL(tInicial)}`, 14, 27);
+  doc.text(`Empenhado: ${_fmtBRL(tEmpenhado)}`, 70, 27);
+  doc.text(`Executado: ${_fmtBRL(tExecutado)}`, 130, 27);
+  doc.text(`Saldo Líquido: ${_fmtBRL(tLiquido)}`, 190, 27);
+
+  let title = "Relatório";
+  let head = [];
+  let body = [];
+  
+  const baseHead = [['PA', 'Fonte', 'Natureza', 'Inicial', 'Empenhado', 'Executado', 'Saldo Líq.']];
+  const formatRow = (r) => [
+    r.pa, r.fonte, _naturezaNome(r.despesa), _fmtBRL(r.inicial), _fmtBRL(r.empenhado), _fmtBRL(r.executado), _fmtBRL(r.saldoLiquido)
+  ];
+
+  if (modelo === 1) {
+    title = "Resumo Geral por Programa";
+    head = [['Programa', 'Inicial', 'Executado', 'Saldo Líquido', '%']];
+    const grouped = {};
+    _orcFiltrado.forEach(r => {
+      if(!grouped[r.pa]) grouped[r.pa] = { inicial: 0, executado: 0, saldo: 0 };
+      grouped[r.pa].inicial += r.inicial;
+      grouped[r.pa].executado += r.executado;
+      grouped[r.pa].saldo += r.saldoLiquido;
+    });
+    for(const [pa, vals] of Object.entries(grouped)) {
+      body.push([pa, _fmtBRL(vals.inicial), _fmtBRL(vals.executado), _fmtBRL(vals.saldo), _pctExec(vals.inicial, vals.executado) + '%']);
+    }
+  } else if (modelo === 2) {
+    title = "Listagem Detalhada";
+    head = [['PA', 'Fonte', 'Natureza', 'Detalhe', 'Inicial', 'Empenhado', 'Executado', 'Saldo Líq.']];
+    body = _orcFiltrado.map(r => [
+      r.pa, r.fonte, _naturezaNome(r.despesa), r.detalhamento ? r.detalhamento.substring(0, 25) : '',
+      _fmtBRL(r.inicial), _fmtBRL(r.empenhado), _fmtBRL(r.executado), _fmtBRL(r.saldoLiquido)
+    ]);
+  } else if (modelo === 3) {
+    title = "Agrupado por Programa de Ação";
+    head = baseHead;
+    const sorted = [..._orcFiltrado].sort((a,b) => a.pa.localeCompare(b.pa));
+    body = sorted.map(formatRow);
+  } else if (modelo === 4) {
+    title = "Agrupado por Fonte de Recurso";
+    head = baseHead;
+    const sorted = [..._orcFiltrado].sort((a,b) => a.fonte.localeCompare(b.fonte));
+    body = sorted.map(formatRow);
+  } else if (modelo === 5) {
+    title = "Agrupado por Natureza da Despesa";
+    head = baseHead;
+    const sorted = [..._orcFiltrado].sort((a,b) => a.despesa.localeCompare(b.despesa));
+    body = sorted.map(formatRow);
+  } else if (modelo === 6) {
+    title = "Relatório de Saldos Críticos (Baixo Saldo ou Alta Execução)";
+    head = baseHead;
+    const crit = _orcFiltrado.filter(r => _pctExec(r.inicial, r.executado) >= 80 || r.saldoLiquido <= 10000);
+    body = crit.map(formatRow);
+  }
+
+  doc.text(title, 14, 35);
+  doc.autoTable({ startY: 40, head: head, body: body, styles: { fontSize: 8 }, headStyles: { fillColor: [79, 70, 229] } });
+  doc.save(`Relatorio_Orcamento_Mod${modelo}.pdf`);
+};
