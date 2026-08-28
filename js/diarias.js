@@ -70,14 +70,26 @@ window.carregarDiariasData = async function() {
       const motivo = cols[6] ? cols[6].trim().replace(/\n/g, ' ') : '';
       const valorStr = cols[11] || '0';
       const valor = parseFloat(valorStr.replace(/R\$|\s/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+      const mes = cols[13] ? cols[13].trim() : '';
+      
+      let dateObj = null;
+      if (dataInicio) {
+        const parts = dataInicio.split('/');
+        if (parts.length === 3) {
+           dateObj = new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+      }
       
       DIARIAS_DATA.push({
         status: status,
         processo: processo,
         data: dataInicio,
-        nome: setor, // using Setor/Processo as identifier since there is no 'Beneficiario'
+        nome: setor,
         motivo: motivo,
-        valor: valor
+        valor: valor,
+        mes: mes,
+        dateObj: dateObj,
+        setorOriginal: setor
       });
     }
     
