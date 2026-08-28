@@ -1,94 +1,11 @@
-﻿let DIARIAS_DATA = [];
-let DIARIAS_SALDO_INICIAL = 150000; // Fake fallback
-let DIARIAS_SALDO_ATUAL = 150000;
+﻿const fs = require('fs');
+const path = require('path');
+const file = path.join(__dirname, 'js', 'diarias.js');
+let content = fs.readFileSync(file, 'utf8');
 
-window.carregarDiariasData = async function() {
-  try {
-    const gid = '807660383';
-    const url = `https://docs.google.com/spreadsheets/d/1WunsuLAAIUAAo1q65qmSVMIH0qLJu_TjDsb_u9LO304/gviz/tq?tqx=out:csv&gid=${gid}`;
-    
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    const csv = await res.text();
-    
-    
-    // Proper CSV Parsing handling quoted newlines
-    const parseCSV = (str) => {
-      let result = [];
-      let row = [];
-      let inQuotes = false;
-      let val = '';
-      for (let i = 0; i < str.length; i++) {
-        let char = str[i];
-        if (inQuotes) {
-          if (char === '"') {
-            if (i + 1 < str.length && str[i + 1] === '"') {
-              val += '"';
-              i++;
-            } else {
-              inQuotes = false;
-            }
-          } else {
-            val += char;
-          }
-        } else {
-          if (char === '"') {
-            inQuotes = true;
-          } else if (char === ',') {
-            row.push(val);
-            val = '';
-          } else if (char === '\n' || char === '\r') {
-            if (char === '\r' && i + 1 < str.length && str[i + 1] === '\n') i++;
-            row.push(val);
-            result.push(row);
-            row = [];
-            val = '';
-          } else {
-            val += char;
-          }
-        }
-      }
-      if (val || row.length > 0) {
-        row.push(val);
-        result.push(row);
-      }
-      return result;
-    };
+const regex = /function renderizarDiarias\(\) \{[\s\S]*?\/\/ Update totals[\s\S]*?\}[\s\S]*?window\.inserirDiaria = function\(\) \{[\s\S]*?\};/m;
 
-    const rows = parseCSV(csv);
-    DIARIAS_DATA = [];
-    
-    // Skip header row
-    for (let i = 1; i < rows.length; i++) {
-      let cols = rows[i];
-      if (!cols || cols.length < 12) continue;
-      
-      const status = cols[0] ? cols[0].trim() : '';
-      const processo = cols[2] ? cols[2].trim() : '';
-      const dataInicio = cols[3] ? cols[3].trim() : '';
-      const setor = cols[5] ? cols[5].trim() : '';
-      const motivo = cols[6] ? cols[6].trim().replace(/\n/g, ' ') : '';
-      const valorStr = cols[11] || '0';
-      const valor = parseFloat(valorStr.replace(/R\$|\s/g, '').replace(/\./g, '').replace(',', '.')) || 0;
-      
-      DIARIAS_DATA.push({
-        status: status,
-        processo: processo,
-        data: dataInicio,
-        nome: setor, // using Setor/Processo as identifier since there is no 'Beneficiario'
-        motivo: motivo,
-        valor: valor
-      });
-    }
-    
-    renderizarDiarias();
-  } catch (e) {
-    console.error('Erro ao carregar diarias:', e);
-    document.querySelector('#table-diarias tbody').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#f87171;">Erro ao carregar dados. Verifique o link e permissões.</td></tr>';
-  }
-};
-
-function renderizarDiarias() {
+const replacement = `function renderizarDiarias() {
   const tbody = document.querySelector('#table-diarias tbody');
   if (!tbody) return;
   
@@ -125,7 +42,7 @@ function renderizarDiarias() {
   }
 
   filtrados.forEach(d => {
-    if(d.status.toLowerCase() !== 'anulação' && d.status.toLowerCase() !== 'anulação') {
+    if(d.status.toLowerCase() !== 'anulação' && d.status.toLowerCase() !== 'anula\u00E7\u00E3o') {
       totalGasto += d.valor;
     }
     if (d.status.toLowerCase() === 'pago') {
@@ -138,17 +55,17 @@ function renderizarDiarias() {
     else if(d.status.toLowerCase() === 'reserva') cor = '#3b82f6';
     
     let infoExtra = '';
-    if(d.cpf) infoExtra += ` | CPF: ${d.cpf}`;
-    if(d.cidade) infoExtra += ` | Destino: ${d.cidade}`;
+    if(d.cpf) infoExtra += \` | CPF: \${d.cpf}\`;
+    if(d.cidade) infoExtra += \` | Destino: \${d.cidade}\`;
     
-    html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-      <td style="padding:12px 16px; font-size:12px;">${d.data}<br><span style="color:${cor}; font-size:10px; font-weight:bold; text-transform:uppercase;">${d.status}</span></td>
-      <td style="padding:12px 16px; font-size:12px; font-weight:bold; color:#e2e8f0;">${d.nome}${infoExtra}<br><span style="color:#64748b; font-weight:normal; font-size:10px;">Proc: ${d.processo}</span></td>
-      <td style="padding:12px 16px; font-size:11px; color:#cbd5e1; max-width:300px; white-space:normal;">${d.motivo}</td>
-      <td style="padding:12px 16px; color:${d.status.toLowerCase().includes('anul') ? '#64748b' : '#f87171'}; font-weight:bold; text-align:right;">
-        R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}
+    html += \`<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <td style="padding:12px 16px; font-size:12px;">\${d.data}<br><span style="color:\${cor}; font-size:10px; font-weight:bold; text-transform:uppercase;">\${d.status}</span></td>
+      <td style="padding:12px 16px; font-size:12px; font-weight:bold; color:#e2e8f0;">\${d.nome}\${infoExtra}<br><span style="color:#64748b; font-weight:normal; font-size:10px;">Proc: \${d.processo}</span></td>
+      <td style="padding:12px 16px; font-size:11px; color:#cbd5e1; max-width:300px; white-space:normal;">\${d.motivo}</td>
+      <td style="padding:12px 16px; color:\${d.status.toLowerCase().includes('anul') ? '#64748b' : '#f87171'}; font-weight:bold; text-align:right;">
+        R$ \${d.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}
       </td>
-    </tr>`;
+    </tr>\`;
   });
   
   if (filtrados.length === 0) {
@@ -192,8 +109,8 @@ window.verificarSaldoDiaria = function() {
   const empenho = ORCAMENTO_DATA.find(o => o.pa === pa && o.fonte === fonte && o.despesa === nd);
   
   if (!empenho || empenho.saldoLiquido <= 0) {
-    aviso.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> 
-      <strong>Empenho Inválido ou Sem Saldo!</strong> Saldo atual: R$ ${empenho ? empenho.saldoLiquido.toLocaleString('pt-BR',{minimumFractionDigits:2}) : '0,00'}`;
+    aviso.innerHTML = \`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> 
+      <strong>Empenho Inválido ou Sem Saldo!</strong> Saldo atual: R$ \${empenho ? empenho.saldoLiquido.toLocaleString('pt-BR',{minimumFractionDigits:2}) : '0,00'}\`;
     aviso.style.background = 'rgba(239,68,68,0.1)';
     aviso.style.borderColor = 'rgba(239,68,68,0.3)';
     aviso.style.color = '#f87171';
@@ -203,8 +120,8 @@ window.verificarSaldoDiaria = function() {
     btn.style.cursor = 'not-allowed';
     btn.innerText = 'Bloqueado - Sem Saldo';
   } else {
-    aviso.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 
-      <strong>Empenho Válido!</strong> Saldo Disponível: R$ ${empenho.saldoLiquido.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    aviso.innerHTML = \`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 
+      <strong>Empenho Válido!</strong> Saldo Disponível: R$ \${empenho.saldoLiquido.toLocaleString('pt-BR',{minimumFractionDigits:2})}\`;
     aviso.style.background = 'rgba(16,185,129,0.1)';
     aviso.style.borderColor = 'rgba(16,185,129,0.3)';
     aviso.style.color = '#34d399';
@@ -279,38 +196,9 @@ window.inserirDiaria = function() {
   
   if (typeof toast === 'function') toast('Diária registrada e saldo deduzido temporariamente!', 'success');
   else alert('Registrado com sucesso!');
-};
+};`;
 
-window.gerarRelatorioDiarias = function() {
-  if (!window.jspdf) {
-    alert("Biblioteca jsPDF não carregada.");
-    return;
-  }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  
-  doc.setFontSize(14);
-  doc.text("RELATÓRIO DE DIÁRIAS - SEDUC/RO", 14, 15);
-  doc.setFontSize(10);
-  doc.text("Gerado em: " + new Date().toLocaleString('pt-BR'), 14, 21);
-  doc.text("Saldo Atual: " + DIARIAS_SALDO_ATUAL.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}), 14, 27);
-  
-  const head = [['Data', 'Beneficiário', 'Motivo', 'Valor']];
-  const body = DIARIAS_DATA.map(d => [
-    d.data, d.nome, d.motivo, 'R$ ' + d.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})
-  ]);
-  
-  doc.autoTable({
-    startY: 35,
-    head: head,
-    body: body,
-    styles: { fontSize: 9 },
-    headStyles: { fillColor: [14, 165, 233] }
-  });
-  
-  doc.save(`Relatorio_Diarias.pdf`);
-};
+content = content.replace(regex, replacement);
 
-setTimeout(() => { window.carregarDiariasData(); }, 1000);
-
-setTimeout(() => popularSelectsFluxo(), 3000);
+fs.writeFileSync(file, content);
+console.log('diarias.js logic patched');
