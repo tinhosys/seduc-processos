@@ -111,10 +111,10 @@ window.popularSelectsDiarias = function() {
 };
 
 window.limparFiltrosDiarias = function() {
-  const b = document.getElementById('busca-diarias'); if(b) b.value = '';
-  const m = document.getElementById('diaria-filtro-mes'); if(m) m.value = 'Todos';
-  const s = document.getElementById('diaria-filtro-status'); if(s) s.value = 'Todos';
-  const st = document.getElementById('diaria-filtro-setor'); if(st) st.value = 'Todos';
+  const ids = ['busca-diarias', 'diaria-filtro-data-ini', 'diaria-filtro-data-fim'];
+  ids.forEach(id => { const e = document.getElementById(id); if(e) e.value = ''; });
+  const idsSel = ['diaria-filtro-mes', 'diaria-filtro-status', 'diaria-filtro-setor'];
+  idsSel.forEach(id => { const e = document.getElementById(id); if(e) e.value = 'Todos'; });
   renderizarDiarias();
 };
 
@@ -135,6 +135,8 @@ function renderizarDiarias() {
   const vMes = document.getElementById('diaria-filtro-mes') ? document.getElementById('diaria-filtro-mes').value : 'Todos';
   const vStatus = document.getElementById('diaria-filtro-status') ? document.getElementById('diaria-filtro-status').value : 'Todos';
   const vSetor = document.getElementById('diaria-filtro-setor') ? document.getElementById('diaria-filtro-setor').value : 'Todos';
+  const vDataIni = document.getElementById('diaria-filtro-data-ini') ? document.getElementById('diaria-filtro-data-ini').value : '';
+  const vDataFim = document.getElementById('diaria-filtro-data-fim') ? document.getElementById('diaria-filtro-data-fim').value : '';
   
   let filtrados = DIARIAS_DATA;
   
@@ -161,6 +163,16 @@ function renderizarDiarias() {
     if (vStatus === 'Pago') filtrados = filtrados.filter(d => d.status.toLowerCase() === 'pago');
     else if (vStatus === 'Reserva') filtrados = filtrados.filter(d => d.status.toLowerCase() === 'reserva');
     else if (vStatus === 'Anulação') filtrados = filtrados.filter(d => d.status.toLowerCase().includes('anula') || d.status.toLowerCase().includes('encerra'));
+  }
+
+  // Date Search
+  if (vDataIni) {
+    const dtIni = new Date(vDataIni + 'T00:00:00');
+    filtrados = filtrados.filter(d => d.dateObj && d.dateObj >= dtIni);
+  }
+  if (vDataFim) {
+    const dtFim = new Date(vDataFim + 'T23:59:59');
+    filtrados = filtrados.filter(d => d.dateObj && d.dateObj <= dtFim);
   }
 
   // Text Search
