@@ -11,22 +11,74 @@ window.carregarDiariasData = async function() {
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const csv = await res.text();
     
-    const lines = csv.split('\n');
+    
+    // Proper CSV Parsing handling quoted newlines
+    const parseCSV = (str) => {
+      let result = [];
+      let row = [];
+      let inQuotes = false;
+      let val = '';
+      for (let i = 0; i < str.length; i++) {
+        let char = str[i];
+        if (inQuotes) {
+          if (char === '"') {
+            if (i + 1 < str.length && str[i + 1] === '"') {
+              val += '"';
+              i++;
+            } else {
+              inQuotes = false;
+            }
+          } else {
+            val += char;
+          }
+        } else {
+          if (char === '"') {
+            inQuotes = true;
+          } else if (char === ',') {
+            row.push(val);
+            val = '';
+          } else if (char === '\n' || char === '\r') {
+            if (char === '\r' && i + 1 < str.length && str[i + 1] === '\n') i++;
+            row.push(val);
+            result.push(row);
+            row = [];
+            val = '';
+          } else {
+            val += char;
+          }
+        }
+      }
+      if (val || row.length > 0) {
+        row.push(val);
+        result.push(row);
+      }
+      return result;
+    };
+
+    const rows = parseCSV(csv);
     DIARIAS_DATA = [];
     
-    // Simplistic parsing. Assuming the spreadsheet has Date, Name, Reason, Value
-    for (let i = 1; i < lines.length; i++) {
-      let l = lines[i];
-      if (!l || l.trim() === '') continue;
-      const cols = l.split('","').map(c => c.replace(/^"|"$/g, '').trim());
-      if (cols.length >= 4) {
-         DIARIAS_DATA.push({
-           data: cols[0],
-           nome: cols[1],
-           motivo: cols[2],
-           valor: parseFloat(cols[3].replace(/\./g, '').replace(',', '.')) || 0
-         });
-      }
+    // Skip header row
+    for (let i = 1; i < rows.length; i++) {
+      let cols = rows[i];
+      if (!cols || cols.length < 12) continue;
+      
+      const status = cols[0] ? cols[0].trim() : '';
+      const processo = cols[2] ? cols[2].trim() : '';
+      const dataInicio = cols[3] ? cols[3].trim() : '';
+      const setor = cols[5] ? cols[5].trim() : '';
+      const motivo = cols[6] ? cols[6].trim().replace(/\n/g, ' ') : '';
+      const valorStr = cols[11] || '0';
+      const valor = parseFloat(valorStr.replace(/R\$|\s/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+      
+      DIARIAS_DATA.push({
+        status: status,
+        processo: processo,
+        data: dataInicio,
+        nome: setor, // using Setor/Processo as identifier since there is no 'Beneficiario'
+        motivo: motivo,
+        valor: valor
+      });
     }
     
     renderizarDiarias();
@@ -42,27 +94,58 @@ function renderizarDiarias() {
   
   let html = '';
   let totalGasto = 0;
+  let totalPago = 0;
   
-  DIARIAS_DATA.forEach(d => {
-    totalGasto += d.valor;
-    html += `<tr>
-      <td>${d.data}</td>
-      <td>${d.nome}</td>
-      <td>${d.motivo}</td>
-      <td style="color:#f87171; font-weight:bold;">- R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+  const aba = window._filtroDiariasAba || 'todas';
+  
+  let filtrados = DIARIAS_DATA;
+  if (aba === 'executadas') {
+    filtrados = DIARIAS_DATA.filter(d => d.status.toLowerCase() === 'pago');
+  }
+
+  filtrados.forEach(d => {
+    if(d.status.toLowerCase() !== 'anulação' && d.status.toLowerCase() !== 'anulação') {
+      totalGasto += d.valor;
+    }
+    if (d.status.toLowerCase() === 'pago') {
+      totalPago += d.valor;
+    }
+    
+    let cor = '#94a3b8';
+    if(d.status.toLowerCase() === 'pago') cor = '#10b981';
+    else if(d.status.toLowerCase().includes('anul')) cor = '#f87171';
+    else if(d.status.toLowerCase() === 'reserva') cor = '#3b82f6';
+    
+    html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+      <td style="padding:12px 16px; font-size:12px;">${d.data}<br><span style="color:${cor}; font-size:10px; font-weight:bold; text-transform:uppercase;">${d.status}</span></td>
+      <td style="padding:12px 16px; font-size:12px; font-weight:bold; color:#e2e8f0;">${d.nome}<br><span style="color:#64748b; font-weight:normal; font-size:10px;">Proc: ${d.processo}</span></td>
+      <td style="padding:12px 16px; font-size:11px; color:#cbd5e1; max-width:300px; white-space:normal;">${d.motivo}</td>
+      <td style="padding:12px 16px; color:${d.status.toLowerCase().includes('anul') ? '#64748b' : '#f87171'}; font-weight:bold; text-align:right;">
+        R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}
+      </td>
     </tr>`;
   });
   
-  if (DIARIAS_DATA.length === 0) {
-    html = '<tr><td colspan="4" style="text-align:center; padding:20px;">Nenhum registro encontrado.</td></tr>';
+  if (filtrados.length === 0) {
+    html = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#94a3b8;">Nenhum registro encontrado para este filtro.</td></tr>';
   }
   
   tbody.innerHTML = html;
+  
+  // Update totals
   DIARIAS_SALDO_ATUAL = DIARIAS_SALDO_INICIAL - totalGasto;
   
   const saldoEl = document.getElementById('diaria-saldo-total');
   if(saldoEl) {
     saldoEl.innerText = DIARIAS_SALDO_ATUAL.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+  }
+  
+  const pagoEl = document.getElementById('diaria-total-pago');
+  if(pagoEl) {
+    // Calculando o pago geral, ignorando o filtro atual para o card do painel
+    let calcTotalPago = 0;
+    DIARIAS_DATA.forEach(d => { if(d.status.toLowerCase() === 'pago') calcTotalPago += d.valor; });
+    pagoEl.innerText = calcTotalPago.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
   }
 }
 
