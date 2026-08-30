@@ -80,6 +80,7 @@ window.carregarOrcamentoData = async function() {
       
       const parseMon = (v) => parseFloat((v||'').replace(/\./g,'').replace(',','.')) || 0;
       
+      if (!cols[0]) return;
       ORCAMENTO_DATA.push({
         pa: cols[0],
         fonte: cols[1],
@@ -677,7 +678,11 @@ window.gerarRelatorioOrcamento = function(modelo) {
   
   doc.setFontSize(14);
   const anoRelativo = new Date().getFullYear();
-    doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo + ' - CAM / Coordenadoria de Articulações com os Municípios / SEDUC - RO', 14, 15);
+    doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo, 14, 15);
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('CAM / Coordenadoria de Articulações com os Municípios / SEDUC - RO', 14, 20);
+    doc.setTextColor(0, 0, 0);
   const tInicial = _orcFiltrado.reduce((acc, r) => acc + (r.inicial || 0), 0);
   const tEmpenhado = _orcFiltrado.reduce((acc, r) => acc + (r.empenhado || 0), 0);
   const tExecutado = _orcFiltrado.reduce((acc, r) => acc + (r.executado || 0), 0);
@@ -838,12 +843,12 @@ window.gerarRelatorioOrcamento = function(modelo) {
        totalRow.push(_fmtBRL(tI), _fmtBRL(tEmp), _fmtBRL(tE), _fmtBRL(tS));
        body.push(totalRow);
     }
-    doc.text(title, 14, 25);
+    doc.text(title, 14, 26);
   doc.autoTable({ 
-      startY: 30, 
+      startY: 31, 
       head: head, 
       body: body, 
-      styles: { fontSize: 8 }, 
+      styles: { fontSize: 7, cellPadding: 1.5 }, 
       headStyles: { fillColor: [79, 70, 229] },
       didDrawPage: function(data) {
         doc.setFontSize(8);
@@ -863,6 +868,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
         const txt = data.cell.text[0] || '';
         if (txt.includes('R$') || txt.includes('%') || (data.section === 'head' && ['Inicial', 'Executado', 'Saldo Líq.', 'Saldo Líquido', '%', 'Empenhado'].includes(txt))) {
            data.cell.styles.halign = 'right';
+           data.cell.styles.cellWidth = 'wrap';
         }
         if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
            const cell0 = data.table.body[data.row.index].cells[0].text[0] || '';
