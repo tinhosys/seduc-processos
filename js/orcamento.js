@@ -757,6 +757,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
       ['Taxa de Execução', perc + '%']
     ];
     
+    const totalPagesExp = '{total_pages_count_string}';
     doc.autoTable({
       startY: 120,
       head: head,
@@ -861,7 +862,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
         doc.text(str, (pageWidth - textWidth) / 2, doc.internal.pageSize.height - 10);
         
         // a esquerda "1/1" ou apenas "Página 1" etc
-        const pageText = "Página " + data.pageNumber;
+        const pageText = "Página " + data.pageNumber + "/" + totalPagesExp;
         doc.text(pageText, 14, doc.internal.pageSize.height - 10);
       },
       didParseCell: function(data) {
@@ -891,7 +892,10 @@ window.gerarRelatorioOrcamento = function(modelo) {
         }
       }
     });
-  doc.autoPrint();
+  if (typeof doc.putTotalPages === 'function') {
+      doc.putTotalPages(totalPagesExp);
+    }
+    doc.autoPrint();
     window.open(doc.output('bloburl'), '_blank');
-};
+  };
 setTimeout(() => window.carregarOrcamentoData(), 500);
