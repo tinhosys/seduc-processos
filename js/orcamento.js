@@ -676,7 +676,8 @@ window.gerarRelatorioOrcamento = function(modelo) {
   const doc = new jsPDF('landscape', 'mm', 'a4');
   
   doc.setFontSize(14);
-  doc.text("RELATÓRIO DE EXECUÇÃO ORÇAMENTÁRIA - SEDUC/RO", 14, 15);
+  const anoRelativo = new Date().getFullYear();
+    doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo + ' - CAM / Coordenadoria de Articulações com os Municípios / SEDUC - RO', 14, 15);
   doc.setFontSize(10);
   doc.text("Gerado em: " + new Date().toLocaleString('pt-BR'), 14, 21);
   
@@ -844,7 +845,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
            const isTotalRow = (data.table.body[data.row.index].cells[0].text[0] || '').includes('TOTAIS');
            if (isTotalRow) {
               data.cell.styles.fontStyle = 'bold';
-              data.cell.styles.textColor = [220, 38, 38];
+              data.cell.styles.textColor = [0, 0, 0];
               data.cell.styles.lineWidth = { top: 1 };
               data.cell.styles.lineColor = [220, 38, 38];
            }
