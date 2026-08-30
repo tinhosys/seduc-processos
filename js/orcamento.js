@@ -115,6 +115,11 @@ function _fmtBRL(v) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
+function _pctEmp(empenhado, executado) {
+    if (!empenhado || empenhado <= 0) return executado > 0 ? 100 : 0;
+    return Math.min(Math.round((executado / empenhado) * 100), 100);
+}
+
 function _pctExec(inicial, executado) {
   if (!inicial || inicial <= 0) return executado > 0 ? 100 : 0;
   return Math.min(Math.round((executado / inicial) * 100), 100);
