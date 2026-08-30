@@ -874,10 +874,13 @@ window.gerarRelatorioOrcamento = function(modelo) {
            const cell0 = data.table.body[data.row.index].cells[0].text[0] || '';
            const isTotalRow = cell0.includes('TOTAIS');
            const isSubtotalRow = cell0.includes('Subtotal');
-           if (isSubtotalRow) {
-              data.cell.styles.fontStyle = 'bold';
-              data.cell.styles.fillColor = [241, 245, 249]; // subtle highlight
-           }
+             if (isSubtotalRow) {
+                data.cell.styles.fontStyle = 'bold';
+                data.cell.styles.textColor = [30, 58, 138]; // azul marinho
+                data.cell.styles.lineWidth = { top: 0.5 };
+                data.cell.styles.lineColor = [200, 200, 200]; // grey separator line
+                data.cell.styles.fillColor = [248, 250, 252]; // very subtle highlight
+             }
            if (isTotalRow) {
               data.cell.styles.fontStyle = 'bold';
               data.cell.styles.textColor = [0, 0, 0];
