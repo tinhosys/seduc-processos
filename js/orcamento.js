@@ -793,7 +793,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
       body = _orcFiltrado.map(r => {
         let desc = PA_DESCRICAO[r.pa] || '';
         return [
-          r.pa, desc, r.fonte, _naturezaNome(r.despesa), r.detalhamento ? r.detalhamento.substring(0, 25) : '',
+          r.pa, desc, r.fonte, (r.despesa && r.despesa.length === 6 ? r.despesa.substring(0,2)+'.'+r.despesa.substring(2,4)+'.'+r.despesa.substring(4,6)+' - ' : '') + _naturezaNome(r.despesa), r.detalhamento || '',
           _fmtBRL(r.inicial), _fmtBRL(r.empenhado), _fmtBRL(r.executado), _fmtBRL(r.saldoLiquido)
         ];
       });
