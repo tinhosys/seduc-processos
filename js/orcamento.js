@@ -870,18 +870,19 @@ window.gerarRelatorioOrcamento = function(modelo) {
            data.cell.styles.halign = 'right';
            data.cell.styles.cellWidth = 'wrap';
         }
-        if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
-           const cell0 = data.table.body[data.row.index].cells[0].text[0] || '';
-           const isTotalRow = cell0.includes('TOTAIS');
-           const isSubtotalRow = cell0.includes('Subtotal');
+        if (data.section === 'body') {
+             const cell0 = data.row.cells[0].text[0] || '';
+             const isSubtotalRow = cell0.includes('Subtotal');
              if (isSubtotalRow) {
                 data.cell.styles.fontStyle = 'bold';
                 data.cell.styles.textColor = [30, 58, 138]; // azul marinho
+                data.cell.styles.fillColor = [238, 242, 255]; // slight blue background
                 data.cell.styles.lineWidth = { top: 0.5 };
-                data.cell.styles.lineColor = [200, 200, 200]; // grey separator line
-                data.cell.styles.fillColor = [248, 250, 252]; // very subtle highlight
+                data.cell.styles.lineColor = [200, 200, 200];
              }
-           if (isTotalRow) {
+             
+             const isTotalRow = cell0.includes('TOTAIS');
+             if (isTotalRow) {
               data.cell.styles.fontStyle = 'bold';
               data.cell.styles.textColor = [0, 0, 0];
               data.cell.styles.lineWidth = { top: 1 };
