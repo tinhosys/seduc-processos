@@ -675,6 +675,7 @@ window.imprimirOrcamento = function() {
 
 
 window.gerarRelatorioOrcamento = function(modelo) {
+    const totalPagesExp = '{total_pages_count_string}';
   if (!window.jspdf) {
     alert("Biblioteca jsPDF não carregada.");
     return;
@@ -763,7 +764,6 @@ window.gerarRelatorioOrcamento = function(modelo) {
       ['Taxa de Execução', perc + '%']
     ];
     
-    const totalPagesExp = '{total_pages_count_string}';
     doc.autoTable({
       startY: 120,
       head: head,
