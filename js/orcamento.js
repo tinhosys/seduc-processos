@@ -678,9 +678,6 @@ window.gerarRelatorioOrcamento = function(modelo) {
   doc.setFontSize(14);
   const anoRelativo = new Date().getFullYear();
     doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo + ' - CAM / Coordenadoria de Articulações com os Municípios / SEDUC - RO', 14, 15);
-  doc.setFontSize(10);
-  doc.text("Gerado em: " + new Date().toLocaleString('pt-BR'), 14, 21);
-  
   const tInicial = _orcFiltrado.reduce((acc, r) => acc + (r.inicial || 0), 0);
   const tEmpenhado = _orcFiltrado.reduce((acc, r) => acc + (r.empenhado || 0), 0);
   const tExecutado = _orcFiltrado.reduce((acc, r) => acc + (r.executado || 0), 0);
@@ -698,7 +695,10 @@ window.gerarRelatorioOrcamento = function(modelo) {
   const baseHead = [['PA', 'Descrição', 'Fonte', 'Natureza', 'Inicial', 'Empenhado', 'Executado', 'Saldo Líq.']];
     const formatRow = (r) => {
       let desc = PA_DESCRICAO[r.pa] || '';
-      return [r.pa, desc.length > 25 ? desc.substring(0, 25) + '...' : desc, r.fonte, _naturezaNome(r.despesa), _fmtBRL(r.inicial), _fmtBRL(r.empenhado), _fmtBRL(r.executado), _fmtBRL(r.saldoLiquido)];
+      let natCode = r.despesa || '';
+      if (natCode.length === 6) natCode = natCode.substring(0,2) + '.' + natCode.substring(2,4) + '.' + natCode.substring(4,6);
+      let natText = (natCode ? natCode + ' - ' : '') + _naturezaNome(r.despesa);
+      return [r.pa, desc, r.fonte, natText, _fmtBRL(r.inicial), _fmtBRL(r.empenhado), _fmtBRL(r.executado), _fmtBRL(r.saldoLiquido)];
     };
 
   if (modelo === 7) {
@@ -783,7 +783,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
       });
       for(const [pa, vals] of Object.entries(grouped)) {
         let desc = vals.desc;
-        body.push([pa, desc.length > 35 ? desc.substring(0,35)+'...' : desc, _fmtBRL(vals.inicial), _fmtBRL(vals.executado), _fmtBRL(vals.saldo), _pctExec(vals.inicial, vals.executado) + '%']);
+        body.push([pa, desc, _fmtBRL(vals.inicial), _fmtBRL(vals.executado), _fmtBRL(vals.saldo), _pctExec(vals.inicial, vals.executado) + '%']);
       }
       body.push(['TOTAIS', '', _fmtBRL(tI), _fmtBRL(tE), _fmtBRL(tS), _pctExec(tI, tE) + '%']);
     } else if (modelo === 2) {
@@ -792,26 +792,39 @@ window.gerarRelatorioOrcamento = function(modelo) {
       body = _orcFiltrado.map(r => {
         let desc = PA_DESCRICAO[r.pa] || '';
         return [
-          r.pa, desc.length > 20 ? desc.substring(0, 20)+'...' : desc, r.fonte, _naturezaNome(r.despesa), r.detalhamento ? r.detalhamento.substring(0, 25) : '',
+          r.pa, desc, r.fonte, _naturezaNome(r.despesa), r.detalhamento ? r.detalhamento.substring(0, 25) : '',
           _fmtBRL(r.inicial), _fmtBRL(r.empenhado), _fmtBRL(r.executado), _fmtBRL(r.saldoLiquido)
         ];
       });
-    } else if (modelo === 3) {
-    title = "Agrupado por Programa de Ação";
-    head = baseHead;
-    const sorted = [..._orcFiltrado].sort((a,b) => a.pa.localeCompare(b.pa));
-    body = sorted.map(formatRow);
-  } else if (modelo === 4) {
-    title = "Agrupado por Fonte de Recurso";
-    head = baseHead;
-    const sorted = [..._orcFiltrado].sort((a,b) => a.fonte.localeCompare(b.fonte));
-    body = sorted.map(formatRow);
-  } else if (modelo === 5) {
-    title = "Agrupado por Natureza da Despesa";
-    head = baseHead;
-    const sorted = [..._orcFiltrado].sort((a,b) => a.despesa.localeCompare(b.despesa));
-    body = sorted.map(formatRow);
-  } else if (modelo === 6) {
+    } else if (modelo === 3 || modelo === 4 || modelo === 5) {
+      if (modelo === 3) title = "Agrupado por Programa de Ação";
+      if (modelo === 4) title = "Agrupado por Fonte de Recurso";
+      if (modelo === 5) title = "Agrupado por Natureza da Despesa";
+      head = baseHead;
+      
+      let sortKey = 'pa';
+      if (modelo === 4) sortKey = 'fonte';
+      if (modelo === 5) sortKey = 'despesa';
+      
+      const sorted = [..._orcFiltrado].sort((a,b) => (a[sortKey]||'').localeCompare(b[sortKey]||''));
+      
+      let lastKey = null;
+      let subT = {i:0, emp:0, e:0, s:0};
+      
+      sorted.forEach(r => {
+         const currentKey = r[sortKey];
+         if (lastKey && lastKey !== currentKey) {
+            body.push(['Subtotal ' + lastKey, '', '', '', _fmtBRL(subT.i), _fmtBRL(subT.emp), _fmtBRL(subT.e), _fmtBRL(subT.s)]);
+            subT = {i:0, emp:0, e:0, s:0};
+         }
+         body.push(formatRow(r));
+         subT.i += r.inicial; subT.emp += r.empenhado; subT.e += r.executado; subT.s += r.saldoLiquido;
+         lastKey = currentKey;
+      });
+      if (lastKey) {
+         body.push(['Subtotal ' + lastKey, '', '', '', _fmtBRL(subT.i), _fmtBRL(subT.emp), _fmtBRL(subT.e), _fmtBRL(subT.s)]);
+      }
+    } else if (modelo === 6) {
     title = "Relatório de Saldos Críticos (Baixo Saldo ou Alta Execução)";
     head = baseHead;
     const crit = _orcFiltrado.filter(r => _pctExec(r.inicial, r.executado) >= 80 || r.saldoLiquido <= 10000);
@@ -829,25 +842,45 @@ window.gerarRelatorioOrcamento = function(modelo) {
        totalRow.push(_fmtBRL(tI), _fmtBRL(tEmp), _fmtBRL(tE), _fmtBRL(tS));
        body.push(totalRow);
     }
-    doc.text(title, 14, 35);
+    doc.text(title, 14, 25);
   doc.autoTable({ 
-      startY: 40, 
+      startY: 30, 
       head: head, 
       body: body, 
       styles: { fontSize: 8 }, 
       headStyles: { fillColor: [79, 70, 229] },
+      didDrawPage: function(data) {
+        doc.setFontSize(8);
+        doc.setTextColor(150, 150, 150);
+        
+        const str = "Gerado em: " + new Date().toLocaleString('pt-BR');
+        const pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+        const textWidth = doc.getTextWidth(str);
+        // centralizado
+        doc.text(str, (pageWidth - textWidth) / 2, doc.internal.pageSize.height - 10);
+        
+        // a esquerda "1/1" ou apenas "Página 1" etc
+        const pageText = "Página " + data.pageNumber;
+        doc.text(pageText, 14, doc.internal.pageSize.height - 10);
+      },
       didParseCell: function(data) {
         const txt = data.cell.text[0] || '';
         if (txt.includes('R$') || txt.includes('%') || (data.section === 'head' && ['Inicial', 'Executado', 'Saldo Líq.', 'Saldo Líquido', '%', 'Empenhado'].includes(txt))) {
            data.cell.styles.halign = 'right';
         }
         if (data.section === 'body' && data.row.index === data.table.body.length - 1) {
-           const isTotalRow = (data.table.body[data.row.index].cells[0].text[0] || '').includes('TOTAIS');
+           const cell0 = data.table.body[data.row.index].cells[0].text[0] || '';
+           const isTotalRow = cell0.includes('TOTAIS');
+           const isSubtotalRow = cell0.includes('Subtotal');
+           if (isSubtotalRow) {
+              data.cell.styles.fontStyle = 'bold';
+              data.cell.styles.fillColor = [241, 245, 249]; // subtle highlight
+           }
            if (isTotalRow) {
               data.cell.styles.fontStyle = 'bold';
               data.cell.styles.textColor = [0, 0, 0];
               data.cell.styles.lineWidth = { top: 1 };
-              data.cell.styles.lineColor = [220, 38, 38];
+              data.cell.styles.lineColor = [30, 58, 138];
            }
         }
       }
