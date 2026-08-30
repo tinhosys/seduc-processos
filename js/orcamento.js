@@ -683,11 +683,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
   const tExecutado = _orcFiltrado.reduce((acc, r) => acc + (r.executado || 0), 0);
   const tLiquido = _orcFiltrado.reduce((acc, r) => acc + (r.saldoLiquido || 0), 0);
   
-  doc.text(`Dotação Inicial: ${_fmtBRL(tInicial)}`, 14, 27);
-  doc.text(`Empenhado: ${_fmtBRL(tEmpenhado)}`, 70, 27);
-  doc.text(`Executado: ${_fmtBRL(tExecutado)}`, 130, 27);
-  doc.text(`Saldo Líquido: ${_fmtBRL(tLiquido)}`, 190, 27);
-
+  
   let title = "Relatório";
   let head = [];
   let body = [];
