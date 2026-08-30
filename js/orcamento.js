@@ -673,7 +673,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
     return;
   }
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF(modelo === 7 || modelo === 2 ? 'landscape' : 'portrait');
+  const doc = new jsPDF('landscape', 'mm', 'a4');
   
   doc.setFontSize(14);
   doc.text("RELATÓRIO DE EXECUÇÃO ORÇAMENTÁRIA - SEDUC/RO", 14, 15);
@@ -688,7 +688,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
   doc.text(`Dotação Inicial: ${_fmtBRL(tInicial)}`, 14, 27);
   doc.text(`Empenhado: ${_fmtBRL(tEmpenhado)}`, 70, 27);
   doc.text(`Executado: ${_fmtBRL(tExecutado)}`, 130, 27);
-  doc.text(`Saldo Líquido: ${_fmtBRL(tLiquido)}`, 190, 27);
+  doc.text(`Saldo Líquido)}`, 190, 27);
 
   let title = "Relatório";
   let head = [];
@@ -750,7 +750,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
       ['Dotação Inicial', _fmtBRL(tInicial)],
       ['Total Empenhado', _fmtBRL(tEmpenhado)],
       ['Total Executado', _fmtBRL(tExecutado)],
-      ['Saldo Líquido', _fmtBRL(tLiquido)],
+      ['Saldo Líquido)],
       ['Taxa de Execução', perc + '%']
     ];
     
@@ -762,7 +762,8 @@ window.gerarRelatorioOrcamento = function(modelo) {
       headStyles: { fillColor: [16, 185, 129] }
     });
     
-    doc.save("Relatorio_Status_Graficos.pdf");
+    doc.autoPrint();
+    window.open(doc.output('bloburl'), '_blank');
     return;
   }
   
@@ -810,6 +811,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
 
   doc.text(title, 14, 35);
   doc.autoTable({ startY: 40, head: head, body: body, styles: { fontSize: 8 }, headStyles: { fillColor: [79, 70, 229] } });
-  doc.save(`Relatorio_Orcamento_Mod${modelo}.pdf`);
+  doc.autoPrint();
+    window.open(doc.output('bloburl'), '_blank');
 };
 setTimeout(() => window.carregarOrcamentoData(), 500);
