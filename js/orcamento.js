@@ -681,7 +681,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
     doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo, 14, 15);
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
-    doc.text('CAM / Coordenadoria de Articulações com os Municípios / SEDUC - RO', 14, 20);
+    doc.text('CAM - Coordenadoria de Articulações com os Municípios | SEDUC - RO', 14, 20);
     doc.setTextColor(0, 0, 0);
   const tInicial = _orcFiltrado.reduce((acc, r) => acc + (r.inicial || 0), 0);
   const tEmpenhado = _orcFiltrado.reduce((acc, r) => acc + (r.empenhado || 0), 0);
