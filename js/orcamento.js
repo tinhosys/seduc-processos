@@ -142,10 +142,16 @@ function _getFilterValues() {
 function filtrarOrcamento() {
   const { pa, fonte, despesa } = _getFilterValues();
   _orcFiltrado = ORCAMENTO_DATA.filter(row =>
-    (!pa      || row.pa      === pa)      &&
-    (!fonte   || row.fonte   === fonte)   &&
-    (!despesa || row.despesa === despesa)
-  );
+      (!pa      || row.pa      === pa)      &&
+      (!fonte   || row.fonte   === fonte)   &&
+      (!despesa || row.despesa === despesa)
+    ).sort((a, b) => {
+       let cPA = (a.pa||'').localeCompare(b.pa||'');
+       if (cPA !== 0) return cPA;
+       let cDesp = (a.despesa||'').localeCompare(b.despesa||'');
+       if (cDesp !== 0) return cDesp;
+       return (a.fonte||'').localeCompare(b.fonte||'');
+    });
   renderOrcamentoCards();
   renderOrcamentoTable();
   renderOrcamentoCharts();
@@ -808,7 +814,11 @@ window.gerarRelatorioOrcamento = function(modelo) {
       if (modelo === 4) sortKey = 'fonte';
       if (modelo === 5) sortKey = 'despesa';
       
-      const sorted = [..._orcFiltrado].sort((a,b) => (a[sortKey]||'').localeCompare(b[sortKey]||''));
+      const sorted = [..._orcFiltrado].sort((a,b) => {
+          let cmp = (a[sortKey]||'').localeCompare(b[sortKey]||'');
+          if (cmp !== 0) return cmp;
+          return (a.despesa||'').localeCompare(b.despesa||'');
+        });
       
       let lastKey = null;
       let subT = {i:0, emp:0, e:0, s:0};
