@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.69</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.70</div>
   </div>
 </div>
   
@@ -329,7 +329,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.69</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.70</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2429,13 +2429,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1788151169327"></script>
-  <script src="js/app.js?v=1788151169472"></script>
-  <script src="js/auth-sap.js?v=1788151169327"></script>
-  <script src="js/escolas.js?v=1788151169327" charset="utf-8"></script>
+  <script src="js/dados.js?v=1788151540835"></script>
+  <script src="js/app.js?v=1788151540956"></script>
+  <script src="js/auth-sap.js?v=1788151540835"></script>
+  <script src="js/escolas.js?v=1788151540835" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1788151169327"></script>
+<script src="js/mapa.js?v=1788151540835"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2579,13 +2579,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1788151169327"></script>
+  <script src="js/multi-select.js?v=1788151540835"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1788151169472"></script>
-  <script src="js/orcamento.js?v=1788151169472"></script>
-  <script src="js/print-proalfa.js?v=1788151169327"></script>
-  <script src="js/proalfa.js?v=1788151169472"></script>
+  <script src="js/diarias.js?v=1788151540956"></script>
+  <script src="js/orcamento.js?v=1788151540956"></script>
+  <script src="js/print-proalfa.js?v=1788151540835"></script>
+  <script src="js/proalfa.js?v=1788151540956"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
@@ -2800,11 +2800,19 @@
   
 <div id="diarias-tab-gerar" class="diarias-content-tab" style="display:none; margin-bottom:20px;">
       <div style="background:#1e293b; border-radius:12px; padding:20px; border:1px solid #334155;">
-        <h3 style="margin-top:0; color:#e2e8f0; font-size:18px; display:flex; align-items:center; gap:8px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-          Regra de Fluxo: Emitir Nova Diária
-        </h3>
-        <p style="font-size:12px; color:#94a3b8; margin-bottom:20px;">Selecione o empenho orçamentário válido e preencha os dados do beneficiário.</p>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+            <div>
+              <h3 style="margin:0 0 4px 0; color:#e2e8f0; font-size:18px; display:flex; align-items:center; gap:8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                Regra de Fluxo: Emitir Nova Diária
+              </h3>
+              <p style="margin:0; font-size:12px; color:#94a3b8;">Selecione o empenho orçamentário válido e preencha os dados do beneficiário.</p>
+            </div>
+            <button type="button" class="btn btn-ghost" onclick="if(typeof limparFormNovaDiaria === 'function') limparFormNovaDiaria();" style="font-size:12px; padding:6px 12px; display:flex; align-items:center; gap:6px; border:1px solid rgba(255,255,255,0.1); color:#cbd5e1; background:rgba(255,255,255,0.05); border-radius:6px; cursor:pointer;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Limpar Formulário
+            </button>
+          </div>
         
         <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:20px; background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;">
           <div>
