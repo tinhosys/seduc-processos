@@ -52,7 +52,7 @@ window.carregarDiariasData = async function() {
     for (let i = 1; i < rowsEst.length; i++) {
       let cols = rowsEst[i];
       if (!cols || cols.length < 12) continue;
-      const status = cols[0] ? cols[0].trim() : '';
+      const status = cols[12] ? cols[12].trim() : '';
       const processo = cols[2] ? cols[2].trim() : '';
       const dataInicio = cols[3] ? cols[3].trim() : '';
       const setor = cols[5] ? cols[5].trim() : '';
@@ -60,7 +60,8 @@ window.carregarDiariasData = async function() {
       const valorStr = cols[11] || '0';
       const valor = parseFloat(valorStr.replace(/R\$|\s/g, '').replace(/\./g, '').replace(',', '.')) || 0;
       const mes = cols[13] ? cols[13].trim() : '';
-      DIARIAS_DATA.push({ origem: 'estadual', status, processo, data: dataInicio, nome: setor, motivo, valor, mes, setorOriginal: setor });
+      const nota = ''; // No NE in Estadual
+      DIARIAS_DATA.push({ origem: 'estadual', status, processo, data: dataInicio, nome: setor, motivo, valor, mes, setorOriginal: setor, nota });
     }
 
     // Parse Federal
@@ -68,15 +69,16 @@ window.carregarDiariasData = async function() {
     for (let i = 1; i < rowsFed.length; i++) {
       let cols = rowsFed[i];
       if (!cols || cols.length < 11) continue;
-      const status = cols[0] ? cols[0].trim() : '';
+      const status = cols[11] ? cols[11].trim() : '';
       const processo = cols[2] ? cols[2].trim() : '';
+      const nota = cols[3] ? cols[3].trim() : '';
       const dataInicio = cols[4] ? cols[4].trim() : '';
       const setor = cols[6] ? cols[6].trim() : '';
       const motivo = cols[7] ? cols[7].trim().replace(/\n/g, ' ') : '';
       const valorStr = cols[10] || '0';
       const valor = parseFloat(valorStr.replace(/R\$|\s/g, '').replace(/\./g, '').replace(',', '.')) || 0;
       const mes = cols[12] ? cols[12].trim() : '';
-      DIARIAS_DATA.push({ origem: 'federal', status, processo, data: dataInicio, nome: setor, motivo, valor, mes, setorOriginal: setor });
+      DIARIAS_DATA.push({ origem: 'federal', status, processo, data: dataInicio, nome: setor, motivo, valor, mes, setorOriginal: setor, nota });
     }
 
     // Parse Consolidado
@@ -140,6 +142,7 @@ window.popularSelectsDiarias = function() {
   };
   fill('diaria-filtro-status', PARAM_STATUS.length > 0 ? PARAM_STATUS : [...new Set(DIARIAS_DATA.map(d => d.status))].filter(x => x));
   fill('diaria-filtro-setor', PARAM_SETORES.length > 0 ? PARAM_SETORES : [...new Set(DIARIAS_DATA.map(d => d.setorOriginal))].filter(x => x));
+    fill('diaria-filtro-nota', [...new Set(DIARIAS_DATA.map(d => d.nota))].filter(x => x));
   fill('diaria-filtro-mes', [...new Set(DIARIAS_DATA.map(d => d.mes))].filter(x => x));
 };
 
@@ -156,6 +159,7 @@ function renderizarDiarias() {
   const vMes = document.getElementById('diaria-filtro-mes') ? document.getElementById('diaria-filtro-mes').value : 'Todos';
   const vStatus = document.getElementById('diaria-filtro-status') ? document.getElementById('diaria-filtro-status').value : 'Todos';
   const vSetor = document.getElementById('diaria-filtro-setor') ? document.getElementById('diaria-filtro-setor').value : 'Todos';
+    const vNota = document.getElementById('diaria-filtro-nota') ? document.getElementById('diaria-filtro-nota').value : 'Todos';
   const vDataIni = document.getElementById('diaria-filtro-data-ini') ? document.getElementById('diaria-filtro-data-ini').value : '';
   const vDataFim = document.getElementById('diaria-filtro-data-fim') ? document.getElementById('diaria-filtro-data-fim').value : '';
   
@@ -182,6 +186,7 @@ function renderizarDiarias() {
   if (vMes !== 'Todos') filtrados = filtrados.filter(d => d.mes === vMes);
   if (vStatus !== 'Todos') filtrados = filtrados.filter(d => d.status === vStatus);
   if (vSetor !== 'Todos') filtrados = filtrados.filter(d => d.setorOriginal === vSetor);
+    if (vNota !== 'Todos') filtrados = filtrados.filter(d => d.nota === vNota);
   
   // Date filter
   if (vDataIni || vDataFim) {
@@ -318,7 +323,255 @@ window.renderConsolidadoDiarias = function() {
             <tbody>
   `;
   
-  CONSOL_DATA_NOTAS.forEach(n => {
+  const formatMoeda = (val) => {
+      if (!val) return 'R$ 0,00';
+      if (val.toString().includes('R
+    let bg = 'transparent';
+    if(n.nome.toUpperCase().includes('TOTAL')) bg = 'rgba(59,130,246,0.1)';
+    html += `
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.02); background:${bg};">
+                <td style="padding:12px; color:#e2e8f0; font-weight:bold; text-align:left;">${n.nome}</td>
+                <td style="padding:12px; color:#cbd5e1;">${formatMoeda(n.empenhado)}</td>
+                <td style="padding:12px; color:#3b82f6; font-weight:bold;">${formatMoeda(n.saldoLiquido)}</td>
+              </tr>
+    `;
+  });
+  
+  html += `
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+    </div>
+  `;
+  container.innerHTML = html;
+};
+
+
+
+window.limparFiltrosDiarias = function() {
+  const ids = ['busca-diarias', 'diaria-filtro-data-ini', 'diaria-filtro-data-fim'];
+  ids.forEach(id => { const e = document.getElementById(id); if(e) e.value = ''; });
+  const idsSel = ['diaria-filtro-mes', 'diaria-filtro-status', 'diaria-filtro-setor', 'diaria-filtro-nota'];
+  idsSel.forEach(id => { const e = document.getElementById(id); if(e) e.value = 'Todos'; });
+  renderizarDiarias();
+};
+
+window.verificarSaldoDiaria = function() {
+  const pa = document.getElementById('diaria-pa').value;
+  const fonte = document.getElementById('diaria-fonte').value;
+  const nd = document.getElementById('diaria-nd').value;
+  const aviso = document.getElementById('diaria-saldo-aviso');
+  const btn = document.getElementById('btn-registrar-diaria');
+  
+  if(!pa || !fonte || !nd) {
+    aviso.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg> Selecione os parâmetros acima para verificar a disponibilidade de saldo.';
+    aviso.style.background = 'rgba(59,130,246,0.1)';
+    aviso.style.borderColor = 'rgba(59,130,246,0.3)';
+    aviso.style.color = '#60a5fa';
+    btn.disabled = true;
+    btn.style.background = '#475569';
+    btn.style.color = '#94a3b8';
+    btn.style.cursor = 'not-allowed';
+    btn.innerText = 'Bloqueado - Verifique o Saldo';
+    return;
+  }
+  
+  // Find in ORCAMENTO_DATA
+  if (typeof ORCAMENTO_DATA === 'undefined') {
+    aviso.innerHTML = 'Dados do Orçamento não carregados. Aguarde...';
+    return;
+  }
+  
+  const empenho = ORCAMENTO_DATA.find(o => o.pa === pa && o.fonte === fonte && o.despesa === nd);
+  
+  if (!empenho || empenho.saldoLiquido <= 0) {
+    aviso.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> 
+      <strong>Empenho Inválido ou Sem Saldo!</strong> Saldo atual: R$ ${empenho ? empenho.saldoLiquido.toLocaleString('pt-BR',{minimumFractionDigits:2}) : '0,00'}`;
+    aviso.style.background = 'rgba(239,68,68,0.1)';
+    aviso.style.borderColor = 'rgba(239,68,68,0.3)';
+    aviso.style.color = '#f87171';
+    btn.disabled = true;
+    btn.style.background = '#475569';
+    btn.style.color = '#94a3b8';
+    btn.style.cursor = 'not-allowed';
+    btn.innerText = 'Bloqueado - Sem Saldo';
+  } else {
+    aviso.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> 
+      <strong>Empenho Válido!</strong> Saldo Disponível: R$ ${empenho.saldoLiquido.toLocaleString('pt-BR',{minimumFractionDigits:2})}`;
+    aviso.style.background = 'rgba(16,185,129,0.1)';
+    aviso.style.borderColor = 'rgba(16,185,129,0.3)';
+    aviso.style.color = '#34d399';
+    btn.disabled = false;
+    btn.style.background = '#3b82f6';
+    btn.style.color = 'white';
+    btn.style.cursor = 'pointer';
+    btn.innerText = 'Registrar e Subtrair Saldo';
+  }
+};
+
+window.popularSelectsFluxo = function() {
+  if (typeof ORCAMENTO_DATA === 'undefined') return;
+  const selectPA = document.getElementById('diaria-pa');
+  const selectFonte = document.getElementById('diaria-fonte');
+  
+  if(selectPA && selectPA.options.length <= 1) {
+    const pas = [...new Set(ORCAMENTO_DATA.map(o => o.pa))];
+    pas.forEach(p => {
+      let opt = document.createElement('option');
+      opt.value = p; opt.text = p + (typeof PA_DESCRICAO !== 'undefined' && PA_DESCRICAO[p] ? ' - ' + PA_DESCRICAO[p] : '');
+      selectPA.appendChild(opt);
+    });
+  }
+  
+  if(selectFonte && selectFonte.options.length <= 1) {
+    const fontes = [...new Set(ORCAMENTO_DATA.map(o => o.fonte))];
+    fontes.forEach(f => {
+      let opt = document.createElement('option');
+      opt.value = f; opt.text = f;
+      selectFonte.appendChild(opt);
+    });
+  }
+};
+
+
+  function validarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    if(cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+    let soma = 0, resto;
+    for(let i=1; i<=9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if((resto === 10) || (resto === 11)) resto = 0;
+    if(resto !== parseInt(cpf.substring(9, 10))) return false;
+    soma = 0;
+    for(let i=1; i<=10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+    resto = (soma * 10) % 11;
+    if((resto === 10) || (resto === 11)) resto = 0;
+    if(resto !== parseInt(cpf.substring(10, 11))) return false;
+    return true;
+  }
+
+window.inserirDiaria = function() {
+
+  const nome = document.getElementById('diaria-nome').value;
+  const cpf = document.getElementById('diaria-cpf').value;
+  const cidade = document.getElementById('diaria-cidade').value;
+  const proc = document.getElementById('diaria-proc').value;
+  const qtde = parseFloat(document.getElementById('diaria-qtde').value) || 0;
+  const unit = parseFloat(document.getElementById('diaria-valor-unit').value) || 0;
+  const valor = qtde * unit;
+  const motivo = document.getElementById('diaria-motivo').value;
+  const dataSaida = document.getElementById('diaria-data-saida').value;
+  
+  if (!validarCPF(cpf)) {
+    alert("CPF Inválido! Verifique o número digitado.");
+    return;
+  }
+  
+  if (!nome || !valor || !motivo || !cpf || !cidade) {
+    alert("Preencha todos os campos obrigatórios (Nome, CPF, Cidade, Motivo, Qtde e Valor)!");
+    return;
+  }
+  
+  DIARIAS_DATA.unshift({
+    status: 'Reserva',
+    data: dataSaida ? dataSaida.split('-').reverse().join('/') : new Date().toLocaleDateString('pt-BR'),
+    nome: nome,
+    cpf: cpf,
+    cidade: cidade,
+    processo: proc,
+    motivo: motivo,
+    valor: valor,
+    valorFederal: 0
+  });
+  
+  document.getElementById('diaria-nome').value = '';
+  document.getElementById('diaria-cpf').value = '';
+  document.getElementById('diaria-cidade').value = '';
+  document.getElementById('diaria-proc').value = '';
+  document.getElementById('diaria-qtde').value = '';
+  document.getElementById('diaria-valor-unit').value = '';
+  document.getElementById('diaria-valor-total').value = '';
+  document.getElementById('diaria-motivo').value = '';
+  document.getElementById('diaria-data-saida').value = '';
+  
+  // Create simple report PDF
+  if (window.jspdf) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('portrait');
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Relatório de Emissão de Diária', 14, 20);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Beneficiário: ' + nome, 14, 30);
+    doc.text('CPF: ' + cpf, 14, 37);
+    doc.text('Processo SEI: ' + proc, 14, 44);
+    doc.text('Cidade de Destino: ' + cidade, 14, 51);
+    doc.text('Data de Saída: ' + (dataSaida ? dataSaida.split('-').reverse().join('/') : 'N/A'), 14, 58);
+    doc.text('Motivo da Viagem: ' + motivo, 14, 65, {maxWidth: 180});
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('Quantidade de Diárias: ' + qtde.toFixed(1), 14, 85);
+    doc.text('Valor Unitário: R$ ' + unit.toLocaleString('pt-BR', {minimumFractionDigits:2}), 14, 92);
+    doc.text('Valor Total: R$ ' + valor.toLocaleString('pt-BR', {minimumFractionDigits:2}), 14, 99);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text('* Este documento comprova o registro local da diária.', 14, 120);
+    doc.text('* Para gravar na planilha oficial do Google Sheets, um script de integração backend é necessário.', 14, 127);
+    
+    window.open(doc.output('bloburl'), '_blank');
+  }
+
+  const tabConsolidado = Array.from(document.querySelectorAll('#page-diarias .tabs .tab-link')).find(t => t.innerText === 'Consolidado');
+  if(tabConsolidado) tabConsolidado.click();
+  else mudarAbaDiarias('consolidado', null);
+  
+  if (typeof toast === 'function') toast('Diária registrada localmente!', 'success');
+  else alert('Registrado com sucesso!');
+};
+
+window.gerarRelatorioDiarias = function() {
+  if (!window.jspdf) {
+    alert("Biblioteca jsPDF não carregada.");
+    return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  
+  doc.setFontSize(14);
+  doc.text("RELATÓRIO DE DIÁRIAS - SEDUC/RO", 14, 15);
+  doc.setFontSize(10);
+  doc.text("Gerado em: " + new Date().toLocaleString('pt-BR'), 14, 21);
+  doc.text("Saldo Atual: " + DIARIAS_SALDO_ATUAL.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}), 14, 27);
+  
+  const head = [['Data', 'Beneficiário', 'Motivo', 'Valor']];
+  const body = DIARIAS_DATA.map(d => [
+    d.data, d.nome, d.motivo, 'R$ ' + d.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})
+  ]);
+  
+  doc.autoTable({
+    startY: 35,
+    head: head,
+    body: body,
+    styles: { fontSize: 9 },
+    headStyles: { fillColor: [14, 165, 233] }
+  });
+  
+  doc.save(`Relatorio_Diarias.pdf`);
+};
+
+setTimeout(() => { window.carregarDiariasData(); }, 1000);
+
+setTimeout(() => popularSelectsFluxo(), 3000);
+)) return val;
+      let num = parseFloat(val.toString().replace(/\./g, '').replace(',', '.'));
+      if (isNaN(num)) return val;
+      return num.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+    };
+    CONSOL_DATA_NOTAS.forEach(n => {
     let bg = 'transparent';
     if(n.nome.toUpperCase().includes('TOTAL')) bg = 'rgba(59,130,246,0.1)';
     html += `
@@ -346,7 +599,7 @@ window.renderConsolidadoDiarias = function() {
 window.limparFiltrosDiarias = function() {
   const ids = ['busca-diarias', 'diaria-filtro-data-ini', 'diaria-filtro-data-fim'];
   ids.forEach(id => { const e = document.getElementById(id); if(e) e.value = ''; });
-  const idsSel = ['diaria-filtro-mes', 'diaria-filtro-status', 'diaria-filtro-setor'];
+  const idsSel = ['diaria-filtro-mes', 'diaria-filtro-status', 'diaria-filtro-setor', 'diaria-filtro-nota'];
   idsSel.forEach(id => { const e = document.getElementById(id); if(e) e.value = 'Todos'; });
   renderizarDiarias();
 };

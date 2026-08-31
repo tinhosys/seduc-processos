@@ -1,0 +1,80 @@
+"Coluna 1","Elemento de Despesa","Processo","Nota de empenho","Início da viagem","Término da viagem","Setor
+atendido","Descrição","Qtd. de Pessoas","Valor (Federal)","Valor Total","Status","MÊS DE PAGAMENTO","Data de Atualização","Último Setor
+Movimentação","Motivo","","","","","","","","",""
+"Reserva","339014","0029.045573/2026-91","2026NE9698","01/09/2026","04/10/2026","SUPER JIP","Participação na formação de Formadores Regionais e Municipais dos Anos Iniciais – Recomposição.
+Presidente Médici X Ji Paraná X Presidente Médici","1","R$ 1.557,20","R$ 1.557,20","Em análise","","21/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045365/2026-92","2026NE9698","01/09/2026","04/09/2026","SUPER VHA","Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Vilhena / Ji-Paraná / Vilhena","4","R$ 6.230,00","R$ 6.230,00","Em análise","","19/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.046174/2026-48","2026NE9698","01/09/2026","04/09/2026","SUPER OPO","A viagem tem como objetivo participar do 4º Encontro Formativo dos(as) Formadores(as) do PROALFA Rondônia .
+Ouro Preto do Oeste x Ji-Paraná x Ouro Preto do Oeste","4","R$ 6.230,00","R$ 6.230,00","Em análise","","19/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045419/2026-10","2026NE9698","01/09/2026","04/09/2026","SUPER ARI","Participação na formação de Formadores Regionais e Municipais dos Anos Iniciais – Recomposição.
+Ariquemes X Ji Parana X Ariquemes","8","R$ 12.640,00","R$ 12.640,00","Em análise","","19/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045437/2026-00","2026NE9698","01/09/2026","04/09/2026","SUPER SFG","Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia
+São Francisco do Guaporé /Ji-Paraná/São Francisco do Guaporé","1","R$ 1.557,20","R$ 1.557,20","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045302/2026-36","2026NE9698","01/09/2026","04/09/2026","SUPER GUM","Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Guajará-Mirim x Porto Velho x Ji-Paraná  /  Ji-Paraná x Porto Velho x Guajará-Mirim","1","R$ 1.557,50","R$ 1.557,50","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045418/2026-75","2026NE9698","01/09/2026","04/09/2026","SUPER GUM","Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Nova Mamoré x Porto Velho x Ji-Paraná / Ji-Paraná x Porto Velho x Nova Mamoré","2","R$ 3.115,00","R$ 3.115,00","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045347/2026-19","2026NE9698","01/09/2026","04/09/2026","SUPER PIB","Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+PIMENTA BUENO/JI-PARANÁ / PIMENTA BUENO","3","R$ 4.672,50","R$ 4.672,50","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045446/2026-92","2026NE9698","01/09/2026","04/09/2026","SUPER SFG","Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+São Miguel do Guaporé/Ji-Paraná/São Miguel","1","R$ 1.557,50","R$ 1.557,50","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.046274/2026-74","2026NE9698","01/09/2026","04/09/2026","SUPER JAR","4º Encontro Formativo dos(as) Formadores(as) do PROALFA Rondônia.
+THEOBROMA/JIPARANÁ/THEOBROMA","1","R$ 1.557,50","R$ 1.557,50","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.046270/2026-96","2026NE9698","01/09/2026","04/09/2026","SUPER JAR","4º Encontro Formativo dos(as) Formadores(as) do PROALFA Rondônia.
+Jaru/JI-PARANÁ/Jaru","1","R$ 1.557,50","R$ 1.557,50","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045720/2026-23","2026NE9698","01/09/2026","04/09/2026","SUPER CER","4º Encontro Formativo dos Formadores de Recomposição do PROALFA Rondônia.
+Colorado do Oeste - Ji-Paraná - Colorado do Oeste","1","R$ 1.557,50","R$ 1.557,50","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045660/2026-49","2026NE9698","01/09/2026","04/09/2026","SUPER CER","4º Encontro Formativo dos Formadores de Recomposição do PROALFA Rondônia.
+Cerejeiras - Ji-Paraná- Cerejeiras","3","R$ 4.672,50","R$ 4.672,50","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045887/2026-94","2026NE9698","01/09/2026","04/09/2026","SUPER RDM","Participarem do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Rolim de Moura/Ji-Paraná/Rolim de Moura","3","R$ 4.672,50","R$ 4.672,50","Em análise","","20/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045570/2026-58","2026NE9698","01/09/2026","04/09/2026","SUPER JIP","Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Alvorada do Oeste X Ji Paraná X Alvorada do Oeste","1","R$ 1.557,50","R$ 1.557,50","Em análise","","21/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045693/2026-99","2026NE9698","01/09/2026","04/09/2026","SUPER BUR","Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Campo Novo de Rondônia/Ji-Paraná/Campo Novo de Rondônia","1","R$ 1.557,50","R$ 1.557,50","Em análise","","21/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045232/2026-16","2026NE9698","01/09/2026","04/09/2026","SUPER AFO","Participar da capacitação e do aprimoramento teórico-metodológico voltados à recomposição da aprendizagem nos Anos Iniciais
+Alta Floresta D'Oeste/Jí-Paraná/Alta Floresta D'Oeste","2","R$ 3.115,00","R$ 3.115,00","Em análise","","","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045445/2026-48","2026NE9698","01/09/2026","04/09/2026","SUPER SFG"," Participar do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Seringueiras/São Miguel/Seringueiras","1","R$ 0,00","R$ 1.557,50","Em análise","","19/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045904/2026-93","2026NE9698","01/09/2026","04/09/2026","SUPER MDO","Participar  do do 4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Machadinho/Ji-Paraná/Machadinho","1","R$ 1.557,50","R$ 1.557,50","Em análise","","21/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045629/2026-16","2026NE9698","01/09/2026","04/09/2026","SUPER EDO","4º Encontro de Formação dos Formadores Municipais do PROALFA Rondônia
+Espigão do Oeste/ Ji-Paraná /Espigão do Oeste","2","R$ 3.115,00","R$ 3.115,00","Em análise","","21/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.043562/2026-77","2026NE9698","01/09/2026","04/09/2026","SUPER CAC","4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Cacoal / Ji-Paraná/ Cacoal
+
+","2","R$ 3.115,00","R$ 3.115,00","Em análise","","21/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.046475/2026-71","2026NE9698","01/09/2026","04/09/2026","SUPER CMA","4º Encontro Formativo dos Formadores do PROALFA Rondônia.
+Costa Marques / Jí - Paraná / Costa Marques","1","R$ 1.557,50","R$ 1.557,50","Em análise","","24/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.045854/2026-44","2026NE9698","01/09/2026","04/09/2026","SUPER PVH","Participar do 4º Encontro Formativo dos Formadores PROALFA/RO.
+Porto Velho /Ji-Paraná / Porto Velho.","4","R$ 6.230,00","R$ 6.230,00","Em análise","","25/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.046151/2026-33","2026NE9698","01/09/2026","04/09/2026","SUPER PVH","Participação do 4º Encontro Formativo dos Formadores do PROALFA/RO .
+Itapuã do Oeste/Ji-Paraná /Itapuã do Oeste.","1","R$ 1.557,50","R$ 1.557,50","Em análise","","26/08/2026","GEIN","","","","","","","","","",""
+"Reserva","339014","0029.046132/2026-15","2026NE9698","01/09/2026","04/09/2026","SUPER PVH","Participação do 4º Encontro Formativo dos Formadores do PROALFA/RO.
+Candeias do Jamari/Ji-Paraná / Candeias do Jamari.","1","R$ 1.557,50","R$ 1.557,50","Em análise","","26/08/2026","GEIN","","","","","","","","","",""
+"Reserva","","0029.045839/2026-04","","08/09/2026","11/09/2026","SUPER CAC","2º Encontro Formativo dos Agentes de Monitoramento do PROALFA Rondônia , a ser realizado no município de Porto Velho/RO.
+Cacoal / Porto Velho / Cacoal","2","R$ 3.115,00","R$ 3.115,00","Em instrução inicial","","19/08/2026","CAM","","","","","","","","","",""
+"Reserva","","0029.045386/2026-16","","08/09/2026","11/09/2026","SUPER JAR","2º Encontro Formativo dos Agentes de Monitoramento do PROALFA Rondônia.
+Jaru/Porta Velho/Jaru","3","R$ 4.672,50","R$ 4.672,50","Em instrução inicial","","19/08/2026","CAM","","","","","","","","","",""
+"Reserva","","0029.045471/2026-76","","08/09/2026","11/09/2026","SUPER SFG","Participar  do 2º Encontro Formativo dos Agentes de Monitoramento do PROALFA Rondônia, a ser realizado no município de Porto Velho/RO.
+São Francisco do Guaporé/Porto Velho/São Francisco do Guaporé","1","R$ 1.557,50","R$ 1.557,50","Em instrução inicial","","19/08/2026","CAM","","","","","","","","","",""
+"Reserva","","0029.045289/2026-15","","08/09/2026","10/09/2026","SUPER AFO","2º Encontro Formativo dos Agentes de Monitoramento do PROALFA Rondônia.
+ Alta Floresta D'Oeste/JPorto Velho/Alta Floresta D'Oeste","2","R$ 1.112,50","R$ 1.112,50","Em instrução inicial","","20/08/2026","CAM","","","","","","","","","",""
+"Reserva","","0029.045426/2026-11","","08/09/2026","11/09/2026","SUPER GUM","Participar do 2º Encontro Formativo dos Agentes de Monitoramentos do PROALFA Rondônia, a ser realizado nos dias 09 e 10 de setembro de 2026.
+Nova Mamoré x Porto Velho x Nova Mamoré","1","R$ 1.557,50","R$ 1.557,50","Em instrução inicial","","20/08/2026","CAM","","","","","","","","","",""
+"Reserva","","0029.045425/2026-77","","08/09/2026","11/09/2026","SUPER GUM","Participar do 2º Encontro Formativo dos Agentes de Monitoramentos do PROALFA Rondônia, a ser realizado nos dias 09 e 10 de setembro de 2026.
+Guajará-Mirim x Porto Velho xGuajará-Mirim","1","R$ 1.557,50","R$ 1.557,50","Em instrução inicial","","20/08/2026","CAM","","","","","","","","","",""
+"Reserva","","0029.045882/2026-61","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.045731/2026-11","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.045351/2026-79","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.045761/2026-10","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.045747/2026-16","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.045500/2026-08","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.045173/2026-86","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.046524/2026-76","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.046469/2026-14","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.046439/2026-16","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"Reserva","","0029.046511/2026-05","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"","","","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""
+"","","","","","","","","","","R$ 0,00","","","","","","","","","","","","","",""

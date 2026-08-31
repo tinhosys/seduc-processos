@@ -1,0 +1,130 @@
+"Coluna 1","Elemento de Despesa","Processo","Início da viagem","Término da viagem","Setor
+atendido","Descrição","Qtd. de Pessoas","Valor Fora Estado","Valor (Estadual)","Valor (Federal)","Valor Total","Status","MÊS DE PAGAMENTO","Data de Atualização","Último Setor
+Movimentação","Motivo"
+"Anulação","339014","0029.026737/2026-81","02/08/2026","08/08/2026","CAM","  II Ciclo Formativo de Articuladores Regionais e Municipais do Proalfa Rondônia.  - Proalfa - 
+Porto Velho/Cerejeiras/Vilhena/Pimenta Bueno/Espigão/ Cacoal/Porto Velho","05","","","","R$ 0,00","Encerrado","","","",""
+"Anulação","339014","0029.037378/2026-98","03/08/2026","04/08/2026","SUPER SFG"," Participar da 3º Formação de Professores e Supervisores (FORMAÇÃO EM SÃO MIGUEL DO GUAPORÉ) BLOCO VI RENALFA/PROALFA/PAIC no Município de São Miguel do Guaporé-RO.
+São Francisco do Guaporé/São Miguel do Guaporé/São Francisco do Guaporé ","03","","","","R$ 0,00","Encerrado","","14/07/2026","CAM",""
+"Pago","339014","0029.040627/2026-22","03/08/2026","07/08/2026","CAM","Realizar acompanhamento técnico nos municípios de Vilhena/RO, Espigão D'Oeste e Ji-Paraná/RO.
+Porto Velho/ Vilhena/Espigão do Oeste/ Ji-Paraná/RO /Porto Velho","04","R$ 0,00","R$ 8.410,00","R$ 0,00","R$ 8.410,00","Pago","AGOSTO","29/07/2026","GEIN",""
+"Anulação","339014","0029.033756/2026-64","04/08/2026","04/08/2026","SUPER CAC"," Promover formação continuada em serviço PROALFA / RO Escola Municipal Cruzeiro do Norte.
+Cacoal / Zona Rural - Linha 21 / Cacoal","04","","","","R$ 0,00","Encerrado","","14/07/2026","CAM",""
+"Reserva","339014","0029.038221/2026-80","04/08/2026","04/08/2026","SUPER JIP","Realizar orientação, acompanhamento sistemático e intervenção pedagógica na EEEFM Emburana (Presidente Médici), distrito de Estrela de Rondônia, Presidente Médici, com base resultados dos 1º e 2º ciclos avaliativos de 2026.
+Ji Paraná / Presidente Médici  / Ji Paraná.","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Autorização emitida","","14/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.040183/2026-25","04/08/2026","04/08/2026","SUPER ARI","realizar Formação PAIC/PROALFA para os Professores do 1º ano de Buritis
+Ariquemes X  Buritis X Ariquemes","02","R$ 0,00","R$ 1.335,00","R$ 0,00","R$ 1.335,00","Em análise","","23/07/2026","CAM","Encaminhado para GEIN"
+"Pago","339014","0029.038259/2026-52","05/08/2026","05/08/2026","SUPER JIP","Realizar monitoramento para alinhar o trabalho e ações pedagógicas das Joaquim Xavier de Oliveira, Alvorada do Oeste, com as metas do Proalfa para 4º e 5º anos, mantendo o foco na aprendizagem dos alunos e na melhoria contínua das práticas pedagógicas.
+ Ji Paraná / Alvorada do Oeste / Ji Paraná","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Pago","","14/07/2026","CAM",""
+"Pago","339014","0029.038866/2026-12","05/08/2026","05/08/2026","SUPER VHA","Realizar monitoramento, acompanhamento e assessoramento pedagógico no âmbito do Programa de Alfabetização de Rondônia – Proalfa.
+Vilhena / Aldeia Sowainte / Vilhena","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Pago","AGOSTO","14/07/2026","CAM",""
+"Pago","339014","0029.037941/2026-28","06/08/2026","06/08/2026","SUPER JIP","Realizar formação continuada e acompanhamento pedagógico às docentes ingressantes do Ensino Fundamental I na Escola Josué Montello.
+ Jaru/ Distrito de Santa Cruz/Jaru","03","R$ 0,00","R$ 890,00","R$ 0,00","R$ 890,00","Pago","","14/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.039411/2026-14","06/08/2026","07/08/2026","SUPER AFO","Participar da capacitação e o aprimoramento teórico-metodológico para os profissionais formadores na área de Matemática para o 2º e 3º anos do Ensino Fundamenta.
+Alta Floresta D'Oeste/Jí-Paraná/Alta Floresta D'Oeste","02","R$ 0,00","R$ 1.335,00","R$ 0,00","R$ 1.335,00","Em análise","","24/07/2026","CAM","Encaminhado para GEIN"
+"Pago","339014","0029.038811/2026-11","07/08/2026","07/08/2026","SUPER PIB","Viabilizar a participação da servidora no Curso de Formação de Formadores em Matemática em 2026, ofertada pelo TCE- RO, visando aprimorar o conhecimento.
+Pimenta Bueno/Ji-Paraná/Pimenta Bueno","02","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Pago","AGOSTO","14/07/2026","CAM",""
+"Pago","339014","0029.037357/2026-72","11/08/2026","11/08/2026","SUPER CER","O objetivo da viagem será Encontro Formativo PROALFA ""Recomposição"" onde as mesmas irão orientar, monitorar, assessorar, oferecer suporte técnico.
+Cerejeiras - Colorado do Oeste - Cerejeiras","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Pago","","14/07/2026","CAM","Encaminhado para GEIN"
+"Pago","339014","0029.038941/2026-45","11/08/2026","11/08/2026","SUPER OPO","realizarem Monitoramento das ações do Proalfa na EMEF Sebastiao Amorim da Silva e na SEMED de Teixeirópolis.
+Ouro Preto do Oeste x Teixeirópolis  x Ouro Preto do Oeste. ","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Pago","","16/07/2026","CAM","Encaminhado para GEIN"
+"Pago","339014","0029.038995/2026-19","12/08/2026","12/08/2026","SUPER OPO","Monitoramento das ações do Proalfa na Escola Municipal Duque de Caxias e na SEMED de Mirante da Serra.
+Ouro Preto do Oeste X Mirante da Serra x Ouro Preto do Oeste.","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Pago","","16/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.038279/2026-23","12/08/2026","12/08/2026","SUPER JIP","Realizar orientação,, acompanhamento sistemático e intervenção pedagógica na EEEF Monte Alegre, Alvorada do Oeste, com as metas do Proalfa para 4º e 5º anos, mantendo o foco na aprendizagem dos alunos e na melhoria contínua das práticas pedagógicas. 
+ Ji Paraná / Alvorada do Oeste / Ji Paraná.","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","10/07/2026","CAM","Encaminhado para GEIN"
+"Anulação","339014","0029.041092/2026-15","12/08/2026","12/08/2026","SUPER PIB","Acompanhamento das articuladoras no repasse das formações, recebidas em Porto Velho pelas formadoras e a articulação da Gerente de apoios as Politicas Publicas de Alfabetização Juntos a SEMED.
+Pimenta Bueno/Parecis/Pimenta Bueno","04","","","","R$ 0,00","Encerrado","","29/07/2026","CAM",""
+"Pago","339014","0029.039032/2026-24","13/08/2026","13/08/2026","SUPER OPO","Realizar orientação, acompanhamento sistemático e intervenção pedagógica na EEEF Inácio de Loyola, considerada prioritária pelos dados do Saero 2025
+Ji Paraná / Distrito de Nova Londrina / Ji Paraná.
+Ouro Preto do Oeste x Nova União x Ouro Preto do Oeste. ","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Pago","","16/07/2026","CAM",""
+"Reserva","339014","0029.038404/2026-03","13/08/2026","13/08/2026","SUPER JIP","Realizar Realizar orientação, acompanhamento sistemático e intervenção pedagógica na EEEF Inácio de Loyola, considerada prioritária pelos dados do Saero 2025:
+Ji Paraná / Distrito de Nova Londrina / Ji Paraná.","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","13/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.038461/2026-84","14/08/2026","14/08/2026","SUPER JIP","Realizar orientação, acompanhamento sistemático e intervenção pedagógica na EEEFM Tupã, considerada prioritária pelos dados do Saero 2025
+Ji Paraná / Distrito de Nova Colina / Ji Paraná","04","R$ 0,00","R$ 890,00","R$ 0,00","R$ 890,00","Em análise","","13/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.037375/2026-54","14/08/2026","14/08/2026","SUPER CER","O objetivo da viagem será participar da Reunião Técnica com Articuladores Regionais e Municipais e Secretários Municipais de Educação, com vistas ao monitoramento das práticas pedagógicas e ao fortalecimento das ações educacionais desenvolvidas.
+Cerejeiras - Vilhena- Cerejeiras","014","R$ 0,00","R$ 890,00","R$ 0,00","R$ 890,00","Autorização emitida","","13/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.039048/2026-37","14/08/2026","14/08/2026","SUPER OPO","Monitoramento das ações do Proalfa nas Escola Municipal Jorge Teixeira e Centro Educacional Maria Matilde  e Reunião com a Articuladora municipal da Renalfa e agente de Monitoramento Proalfa na Secretaria municipal de Vale do Paraiso.
+Ouro Preto do Oeste x Vale do Paraiso x Ouro Preto do Oeste.","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Autorização emitida","","16/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.040648/2026-48","14/08/2026","14/08/2026","SUPER AFO","Aprimorar os índices educacionais da rede pública estadual no município de Alto Alegre dos Parecis por meio do acompanhamento técnico-pedagógico do PROALFA/RENALFA
+Alta Floresta D’Oeste / Alto Alegre dos Parecis / Alta Floresta D’Oeste","02","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Lançado Sugesp","","27/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.038206/2026-31","14/08/2026","14/08/2026","SUPER MDO","Participar da Formação de Gestores e Reunião Técnica, a ser realizado no dia 14 de agosto de 2026 no município de Ariquemes.
+Machadinho/Ariquemes/ Machadinho","04","R$ 0,00","R$ 890,00","R$ 0,00","R$ 890,00","Autorização emitida","","30/07/2026","CAM",""
+"Reserva","339014","0029.033466/2026-11","17/08/2026","17/08/2026","SUPER CAC"," Formação de gestores e equipe técnica PROALFA / RO - bloco II em Pimenta Bueno. 
+Cacoal / Pimenta Bueno / Cacoal","05","R$ 0,00","R$ 1.157,00","R$ 0,00","R$ 1.157,00","Em análise","","18/06/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.039839/2026-67","17/08/2026","17/08/2026","SUPER EDO","Participar da Reunião Técnica  RENALFA/PROALFA/PAIC, em atendimento a agenda de reunião presencial do BLOCO II 
+Espigão D'Oeste/Pimenta Bueno/Espigão D'Oeste","02","R$ 0,00","R$ 534,00","R$ 0,00","R$ 534,00","Lançado Sugesp","","23/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.039588/2026-11","17/08/2026","17/08/2026","SUPER AFO","Participar da Reunião Técnica do Bloco II em Pimenta Bueno - RO para alinhar diretrizes pedagógicas e administrativas.
+Alta Floresta D'Oeste/Pimenta Bueno/Alta Floresta D'Oeste","05","R$ 0,00","R$ 1.157,00","R$ 0,00","R$ 1.157,00","Lançado Sugesp","","27/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.039926/2026-14","17/08/2026","17/08/2026","SUPER EDO","Participar do Encontro Formativo para Gestores RENALFA/PROALFA-RONDÔNIA, em atendimento a agenda de reunião presencial do BLOCO II que acontecerá em Pimenta Bueno no dia 17 de agosto de 2026. 
+Espigão D'Oeste/Pimenta Bueno/Espigão D'Oeste","05","R$ 0,00","R$ 1.112,50","R$ 0,00","R$ 1.112,50","Em análise","","23/07/2026","CAM","Encaminhado para GEIN 27/07"
+"Reserva","339014","0029.037387/2026-89","17/08/2026","17/08/2026","SUPER CER","Encontro Formativo PROALFA ""Recomposição"" onde as mesmas irão orientar, monitorar, assessorar, oferecer suporte técnico às secretarias.
+Cerejeiras - Pimenteiras do Oeste- Cerejeiras","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","24/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.040053/2026-92","18/08/2026","21/08/2026","CAM","Participar da Jornada Bett Nordeste 2026, a ser realizada no período de 18 a 21 de agosto de 2026, na cidade de Recife/PE
+Porto Velho-RO/Recife/PE/Porto Velho-RO","03","R$ 11.251,40","R$ 0,00","R$ 0,00","R$ 11.251,40","Em análise","","21/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.040113/2026-77","18/08/2026","21/08/2026","CAM","Participar da Jornada Bett Nordeste 2026, a ser realizada no período de 18 a 21 de agosto de 2026, na cidade de Recife/PE
+Porto Velho-RO/Recife/PE/Porto Velho-RO","03","R$ 10.628,40","R$ 0,00","R$ 0,00","R$ 10.628,40","Em análise","","21/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.040188/2026-58","18/08/2026","18/08/2026","SUPER EDO","Formação PROALFA-RONDÔNIA, com o objetivo de promover o aprimoramento profissional de gestores escolares e professores das redes pública
+Espigão D'Oeste/Pimenta Bueno/Espigão D'Oeste","11","R$ 0,00","R$ 2.447,50","R$ 0,00","R$ 2.447,50","Em análise","","23/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.039528/2026-06","18/08/2026","18/08/2026","SUPER AFO","Fortalecer a execução do Programa PROALFA através da participação e o acompanhamento direto junto aos gestores, garantindo a atualização profissional e a padronização das práticas pedagógicas recomendadas.
+Alta Floresta D'Oeste/Pimenta Bueno/Alta Floresta D'Oeste","03","R$ 0,00","R$ 712,00","R$ 0,00","R$ 712,00","Em análise","","24/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.039516/2026-73","18/08/2026","18/08/2026","SUPER AFO"," Participar e Mediar as formações pedagógicas do Programa PROALFA para professores e supervisores do Bloco II em Rolim de Moura - RO.
+Alta Floresta D'Oeste/Rolim de Moura/Alta Floresta D'Oeste","02","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Em análise","","","",""
+"Reserva","339014","0029.041988/2026-96","18/08/2026","18/08/2026","SUPER JAR","Participar da Formação para Gestores do Programa de Alfabetização do Estado de Rondônia - PROALFA.
+JARU/JI-PARANÁ/JARU","03","R$ 0,00","R$ 712,00","R$ 0,00","R$ 712,00","Em análise","","11/08/2026","CAM","Encaminhado para GEIN 11/08"
+"Reserva","339014","0029.040410/2026-12","19/08/2026","19/08/2026","SUPER EDO","Desenvolver atividades técnicas de acompanhamento e monitoramento in loco das ações do Programa de Alfabetização- PROALFA Rondônia
+Espigão D'Oeste/ Aldeia Sapecado /Espigão D'Oeste","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","23/07/2026","CAM","Encaminhado para GEIN 23/07"
+"Reserva","339014","0029.038296/2026-61","19/08/2026","19/08/2026","SUPER CER","objetivo da viagem será Encontro Formativo PROALFA ""Recomposição"" onde as mesmas irão orientar, monitorar, assessorar, oferecer suporte técnico às secretarias.
+Cerejeiras - Colorado do Oeste- Cerejeiras","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","27/07/2026","CAM","Encaminhado para GEIN 27/07"
+"Reserva","339014","0029.043581/2026-01","19/08/2026","22/08/2026","CAM","Ministrar o III Ciclo de Formação do Proalfa aos professores do 1º ao 5º ano do Ensino Fundamental da Rede Municipal de Ensino.
+Ariquemes/ Porto Velho-RO / Ariquemes.
+","2","R$ 0,00","R$ 3.115,00","R$ 0,00","R$ 3.115,00","Em análise","","11/08/2026","CAM","Encaminhado para GEIN"
+"Anulação","339014","0029.036842/2026-29","20/08/2026","20/08/2026","SUPER ARI","Realizar monitoramento na Escola Municipal Padre Ângelo Spadari, localizada no Distrito de Bom Futuro (Garimpo).
+Ariquemes X Distrito de Bom Futuro X Ariquemes","03","","","","R$ 0,00","Encerrado","","03/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.040520/2026-84","20/08/2026","20/08/2026","SUPER EDO","Desenvolver atividades técnicas de acompanhamento e monitoramento in loco das ações do Programa de Alfabetização- PROALFA Rondônia
+ Espigão D'Oeste/ Aldeia João Bravo /Espigão D'Oeste","02","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Autorização emitida","","24/07/2026","CAM","Aguardando o prazo de 15 dias pra encaminhar pra GEIN"
+"Reserva","339014","0029.038499/2026-57","20/08/2026","20/08/2026","SUPER JIP","Realizar monitoramento e intervenção pedagógica com a equipe pedagógica e professores dos anos iniciais da EEEFM Pres. Emílio Garrastazu Médici, considerada prioritária pelos dados do Saero 2025
+ Ji Paraná / Presidente Médici / Ji Paraná","02","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Em análise","","13/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.041990/2026-65","20/08/2026","20/08/2026","SUPER JAR","Participar da Reunião Técnica destinada a Secretários de Educação, Coordenadores e Articuladores do Programa de Alfabetização do Estado de Rondônia (PROALFA).
+JARU/JI-PARANÁ/JARU","03","R$ 0,00","R$ 712,00","R$ 0,00","R$ 712,00","Em análise","","03/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.043092/2026-41","20/08/2026","21/08/2026","CAM","Participar do II Seminário Nacional de Avaliação da Alfabetização.
+Porto Velho-RO/Brasília/Porto Velho-RO","1","R$ 427,80","R$ 0,00","R$ 0,00","R$ 427,80","Em análise","","13/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.038508/2026-18","21/08/2026","21/08/2026","SUPER JIP","Acompanhamento e participação no 3º Ciclo Formativo para professores de 4º e 5º anos Proalfa em Presidente Médici
+Ji Paraná / Presidente Médici / Ji Paraná. ","04","R$ 0,00","R$ 890,00","R$ 0,00","R$ 890,00","Em análise","","13/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.039948/2026-84","21/08/2026","21/08/2026","SUPER VHA","Participar da Formação Continuada dos professores do 4º e 5º anos do Ensino Fundamental do município Chupinguaia
+ Vilhena / Chupinguaia / Vilhena","02","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Em análise","","21/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.041497/2026-45","21/08/2026","21/08/2026","SUPER AFO","Aprimorar os índices educacionais da rede pública estadual no município de Alto Alegre dos Parecis por meio do acompanhamento técnico-pedagógico do PROALFA/RENALFA.
+Alta Floresta D’Oeste / Alto Alegre dos Parecis / Alta Floresta D’Oeste","03","R$ 0,00","R$ 712,00","R$ 0,00","R$ 712,00","Em análise","","31/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.040105/2026-21","22/08/2026","27/08/2026","CAM","Participar do II Seminário de Pedagogia da Região Sul.
+Porto Velho-RO/Santa Maria-RS/Porto Velho-RO","01","R$ 6.301,80","R$ 0,00","R$ 0,00","R$ 6.301,80","Em análise","","04/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.043298/2026-71","23/08/2026","26/08/2026","CAM","Ministrar o III Ciclo de Formação do Proalfa aos professores do 1º ao 5º ano do Ensino Fundamental da Rede Municipal de Ensino.
+Ariquemes/ Porto Velho-RO / Ariquemes","1","R$ 0,00","R$ 1.557,50","R$ 0,00","R$ 1.557,50","Em análise","","07/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.044062/2026-52","23/08/2026","26/08/2026","CAM"," ministrar o III Ciclo de Formação do Proalfa aos professores do 1º ao 5º ano do Ensino Fundamental da Rede Municipal de Ensino
+ JI-PARANÁ/ Porto Velho-RO / JI-PARANÁ","1","R$ 0,00","R$ 1.557,50","R$ 0,00","R$ 1.557,50","Em análise","","11/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.043771/2026-11","23/08/2026","26/08/2026","CAM"," ministrar o III Ciclo de Formação do Proalfa aos professores do 1º ao 5º ano do Ensino Fundamental da Rede Municipal de Ensino
+ Cacoal / Porto Velho-RO / Cacoal","1","R$ 0,00","R$ 1.557,50","R$ 0,00","R$ 1.557,50","Em análise","","11/08/2026","CAM","Encaminhado para GEIN"
+"Anulação","339014","0029.026873/2026-71","24/08/2026","29/08/2026","CAM"," Acompahamento Pedagógico/Gestores e a Formação de professores do 4º e 5º anos Proalfa
+PortoVelho/Cujubim/Ariquemes/Cacaulândia/Alto Paraíso//Porto Velho
+","3","","","","R$ 0,00","Encerrado","","12/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.036979/2026-83","24/08/2026","24/08/2026","SUPER ARI","Realizar o monitoramento da Execução e Aplicabilidade dos recursos recebidos pela Escola Municipal Nelso Alquieri.
+Ariquemes X Cacaulândia X Ariquemes","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","03/07/2026","CAM","Aguardando o prazo de 15 dias pra encaminhar pra GEIN"
+"Reserva","339014","0029.041306/2026-45","24/08/2026","25/08/2026","SUPER PVH","Realizar a formação do 3º Ciclo Formativo da Política de Alfabetização - Proalfa para professores de 4º e 5º anos da rede municipal e estadual de Porto Velho.
+Candeias do Jamari /Porto Velho / Candeias do Jamari","01","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Em análise","","03/08/2026","CAM","Aguardando o prazo de 15 dias pra encaminhar pra GEIN"
+"Reserva","339014","0029.043413/2026-16","24/08/2026","24/08/2026","SUPER JIP","Realizar orientação, acompanhamento sistemático e intervenção pedagógica na EEEFM Dona Benta.
+ Ji Paraná / Presidente Médici  / Ji Paraná.","2","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Em análise","","10/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.037003/2026-28","25/08/2026","25/08/2026","SUPER ARI","Realizar o monitoramento da Execução e Aplicabilidade dos recursos recebidos pela Escola Municipal Vaneide de Oliveir.
+Ariquemes X Rio Crespo X Ariquemes","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","03/07/2026","CAM","Aguardando o prazo de 15 dias pra encaminhar pra GEIN"
+"Reserva","339014","0029.041034/2026-83","25/08/2026","25/08/2026","SUPER AFO","Aprimorar os índices educacionais da rede pública estadual no município de Alto Alegre dos Parecis por meio do acompanhamento técnico-pedagógico do PROALFA/RENALFA.
+Alta Floresta D’Oeste / Alto Alegre dos Parecis / Alta Floresta D’Oeste","03","R$ 0,00","R$ 712,00","R$ 0,00","R$ 712,00","Em análise","","31/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.043435/2026-78","25/08/2026","25/08/2026","SUPER JIP","Realizar orientação, acompanhamento sistemático e intervenção pedagógica na EEEF Apolônia Rossi Javarini, distrito de Bandeira Branca, Presidente Médici, com base nos resultados dos 1º e 2º ciclos avaliativos de 2026.
+Ji Paraná / Presidente Médici  / Ji Paraná.","2","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Em análise","","07/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.038301/2026-35","25/08/2026","25/08/2026","SUPER CER","Encontro Formativo PROALFA ""Recomposição"" onde as mesmas irão orientar, monitorar, assessorar, oferecer suporte técnico às secretarias.
+Cerejeiras - Colorado do Oeste - Cerejeiras","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","06/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.043448/2026-47","26/08/2026","26/08/2026","SUPER JIP","Realizar orientação, acompanhamento sistemático e intervenção pedagógica na EEEFM Emburan.
+Ji Paraná / Presidente Médici  / Ji Paraná.","2","R$ 0,00","R$ 445,00","R$ 0,00","R$ 445,00","Em análise","","10/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.036943/2026-08","26/08/2026","26/08/2026","SUPER ARI"," Realizar  realizar em Alto Paraíso o Monitoramento do Prêmio Excelência com Equidade quanto a Execução e Aplicabilidade dos recursos recebidos.
+Ariquemes X Alto Paraíso X Ariquemes","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","03/07/2026","CAM","Aguardando o prazo de 15 dias pra encaminhar pra GEIN"
+"Reserva","339014","0029.039480/2026-28","27/08/2026","27/08/2026","SUPER AFO","Realizar Formação para Professores de 4º e 5º anos da rede Municipal de Alto Alegre dos Parecis, 3ª Formação Presencial do Programa de Alfabetização do Estado de Rondônia – Proalfa Rondônia.
+ Alta Floresta D`Oeste/ Alto Alegre dos Parecis/Alta Floresta D`Oeste","03","R$ 0,00","R$ 712,00","R$ 0,00","R$ 712,00","Em análise","","29/07/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.043764/2026-19","27/08/2026","28/08/2026","SUPER BUR","Realização do 3º Ciclo Formativo da Política de Alfabetização.
+Campo Novo de Rondônia/Buritis / Campo Novo de Rondônia","1","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","12/08/2026","CAM","Encaminhado para GEIN"
+"Reserva","339014","0029.037016/2026-05","27/08/2026","27/08/2026","SUPER ARI","Realizar o monitoramento da Execução e Aplicabilidade dos recursos recebidos pela Escola Municipal Francisco dos Santos no Município de Monte Negro.
+  Ariquemes X Monte Negro X Ariquemes","03","R$ 0,00","R$ 667,50","R$ 0,00","R$ 667,50","Em análise","","03/07/2026","CAM","Encaminhado para GEIN"
