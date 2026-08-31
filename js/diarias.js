@@ -574,22 +574,24 @@ setTimeout(() => popularSelectsFluxo(), 3000);
 
 
 // Função para limpar o formulário de Nova Diária
+// Função para limpar o formulário de Nova Diária
 window.limparFormNovaDiaria = function() {
   if (confirm("Tem certeza que deseja limpar todos os dados do formulário?")) {
-    document.getElementById('diaria-pa').value = '';
-    document.getElementById('diaria-fonte').value = '';
-    document.getElementById('diaria-natureza').value = '';
-    document.getElementById('diaria-empenho-info').innerHTML = '<span style="color:#94a3b8;">Aguardando seleção...</span>';
+    if(document.getElementById('diaria-pa')) document.getElementById('diaria-pa').value = '';
+    if(document.getElementById('diaria-fonte')) document.getElementById('diaria-fonte').value = '';
+    if(document.getElementById('diaria-nd')) document.getElementById('diaria-nd').value = '';
     
-    document.getElementById('diaria-nome').value = '';
-    document.getElementById('diaria-cpf').value = '';
-    document.getElementById('diaria-cidade').value = '';
-    document.getElementById('diaria-proc').value = '';
-    document.getElementById('diaria-motivo').value = '';
-    document.getElementById('diaria-data-saida').value = '';
-    document.getElementById('diaria-qtde').value = '';
-    document.getElementById('diaria-valor-unit').value = '';
-    document.getElementById('diaria-valor-total').value = '';
+    if (typeof verificarSaldoDiaria === 'function') verificarSaldoDiaria();
+    
+    if(document.getElementById('diaria-nome')) document.getElementById('diaria-nome').value = '';
+    if(document.getElementById('diaria-cpf')) document.getElementById('diaria-cpf').value = '';
+    if(document.getElementById('diaria-cidade')) document.getElementById('diaria-cidade').value = '';
+    if(document.getElementById('diaria-proc')) document.getElementById('diaria-proc').value = '';
+    if(document.getElementById('diaria-motivo')) document.getElementById('diaria-motivo').value = '';
+    if(document.getElementById('diaria-data-saida')) document.getElementById('diaria-data-saida').value = '';
+    if(document.getElementById('diaria-qtde')) document.getElementById('diaria-qtde').value = '';
+    if(document.getElementById('diaria-valor-unit')) document.getElementById('diaria-valor-unit').value = '';
+    if(document.getElementById('diaria-valor-total')) document.getElementById('diaria-valor-total').value = '';
     
     if (typeof toast === 'function') toast('Formulário limpo', 'info');
   }
