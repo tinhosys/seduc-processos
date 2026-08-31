@@ -208,18 +208,66 @@ function getHeaders(extraHeaders = {}) {
 
 
 const STATUS_LIST = [
-  '.', 'AUTORIZADO', 'CANCELADO', 'CONCLUÍDO', 'DUPLICADO',
-  'ENCERRADO', 'Não autorizado', 'Não chegou na CAM',
-  'NÃO PRIORIDADE', 'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO',
-  'P/AUTORIZO', 'PAGO', 'para autorizo', 'PENDENTE',
-  'PRIORIDADE', 'REABERTO'
+  '.', 'AGUARD. AUT.', 'AUTORIZADO', 'CANCELADO', 'DUPLICADO',
+  'N/ AUTORIZADO', 'N/ ENCAM. Á CAM', 'NOTIF. FINAL',
+  'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO', 'PAGO', 'REG. DEMANDA'
 ];
 
 const LOCALIZACAO_LIST = [
-  '.', 'Casa Civil', 'Casa Civil p/ Autorizo', 'CC', 'CCTE',
-  'COINFRA', 'Convenente', 'GAB', 'GAB-SEDUC', 'GCF',
-  'GDSM', 'PAGO', 'PGE-SEDUC', 'SEDUC-GAB', 'SEDUC--GAB'
+  '.', 'CAM | GDSM | GMAC', 'CASA CIVIL', 'CCTE', 'COINFRA',
+  'CONVENENTE', 'GAB | SEDUC', 'GCF', 'PGE | SEDUC'
 ];
+
+function normalizarStatus(status) {
+  if (!status) return '.';
+  const s = status.trim().toUpperCase();
+  if (s === '.' || s === '') return '.';
+  if (s === 'AUTORIZADO') return 'AUTORIZADO';
+  if (s === 'CANCELADO') return 'CANCELADO';
+  if (s === 'DUPLICADO') return 'DUPLICADO';
+  if (s === 'NOTIFICADO') return 'NOTIFICADO';
+  if (s === 'NOTIFICAR') return 'NOTIFICAR';
+  if (s === 'NOTIF. FINAL' || s === 'NOTIF FINAL') return 'NOTIF. FINAL';
+  if (s === 'P/ AUTORIZO' || s === 'P/AUTORIZO' || s === 'PARA AUTORIZO') return 'P/ AUTORIZO';
+  if (s === 'PAGO') return 'PAGO';
+  if (s === 'REG. DEMANDA' || s === 'REG DEMANDA' || s === 'REG.DEMANDA') return 'REG. DEMANDA';
+  if (s === 'N/ AUTORIZADO' || s === 'NÃO AUTORIZADO' || s === 'NAO AUTORIZADO') return 'N/ AUTORIZADO';
+  if (s === 'N/ ENCAM. Á CAM' || s === 'N/ ENCAM. A CAM' || s === 'NÃO CHEGOU NA CAM' || s === 'NAO CHEGOU NA CAM') return 'N/ ENCAM. Á CAM';
+  if (s === 'PENDENTE' || s === 'AGUARD. AUT.' || s === 'AGUARD AUT' || s === 'AGUARD.AUT.') return 'AGUARD. AUT.';
+  
+  const validStatuses = [
+    'AGUARD. AUT.', 'AUTORIZADO', 'CANCELADO', 'DUPLICADO',
+    'N/ AUTORIZADO', 'N/ ENCAM. Á CAM', 'NOTIF. FINAL',
+    'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO', 'PAGO', 'REG. DEMANDA'
+  ];
+  const match = validStatuses.find(val => val.toUpperCase() === s);
+  if (match) return match;
+  
+  return status;
+}
+
+function normalizarLocalizacao(loc) {
+  if (!loc) return '.';
+  const l = loc.trim().toUpperCase();
+  if (l === '.' || l === '') return '.';
+  if (l === 'CASA CIVIL' || l === 'CC' || l === 'CASA CIVIL P/ AUTORIZO') return 'CASA CIVIL';
+  if (l === 'CCTE') return 'CCTE';
+  if (l === 'COINFRA') return 'COINFRA';
+  if (l === 'CONVENENTE') return 'CONVENENTE';
+  if (l === 'GCF') return 'GCF';
+  if (l === 'GAB | SEDUC' || l === 'GAB' || l === 'GAB-SEDUC' || l === 'SEDUC-GAB' || l === 'SEDUC--GAB' || l === 'GAB/SEDUC' || l === 'SEDUC/GAB') return 'GAB | SEDUC';
+  if (l === 'PGE | SEDUC' || l === 'PGE-SEDUC' || l === 'PGE/SEDUC') return 'PGE | SEDUC';
+  if (l === 'CAM | GDSM | GMAC' || l === 'GDSM' || l === 'CAM' || l === 'GMAC') return 'CAM | GDSM | GMAC';
+  
+  const validLocs = [
+    'CAM | GDSM | GMAC', 'CASA CIVIL', 'CCTE', 'COINFRA',
+    'CONVENENTE', 'GAB | SEDUC', 'GCF', 'PGE | SEDUC'
+  ];
+  const match = validLocs.find(val => val.toUpperCase() === l);
+  if (match) return match;
+  
+  return loc;
+}
 
 const OBJETO_LIST = [
   'AQUISIÇÃO DE MATERIAL PERMANENTE',
@@ -338,8 +386,10 @@ const mapToApp = (row) => {
     valorOf: parseMoney(row['Valor Of.']),
     valorPlan: parseMoney(row['Valor/Planilha']),
     diferenca: parseMoney(row['Diferença']),
-    status: row['Status'] || '',
-    localizacao: row['Localização'] || '',
+    _statusOriginal: row['Status'] || '',
+    _localizacaoOriginal: row['Localização'] || '',
+    status: normalizarStatus(row['Status'] || ''),
+    localizacao: normalizarLocalizacao(row['Localização'] || ''),
     obs: row['Obs.:'] || row['Obs'] || '',
     data: row['Data'] || '',
     anotacao: row['Anotação'] || row['Anota\u00e7\u00e3o'] || '',

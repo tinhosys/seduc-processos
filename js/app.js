@@ -961,8 +961,8 @@ function renderProcessos() {
 
   // Preencher filtros dinâmicos (preencherSelectFiltro preserva seleções existentes)
   const todosProcs = carregarProcessos();
-  preencherSelectFiltro('filtro-status',      [...new Set(todosProcs.map(p => p.status).filter(s => s && s !== '.'))].sort());
-  preencherSelectFiltro('filtro-localizacao', [...new Set(todosProcs.map(p => p.localizacao).filter(l => l && l !== '.'))].sort());
+  preencherSelectFiltro('filtro-status',      STATUS_LIST.filter(s => s && s !== '.'));
+  preencherSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(l => l && l !== '.'));
   
   const superList = [...new Set(todosProcs.map(p => getSuperPorMunicipio(p.municipio)).filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   preencherSelectFiltro('filtro-super', superList);
@@ -4393,4 +4393,117 @@ window.imprimirPadraoSelecionado = function() {
 window.toggleAllProcessos = function(el) {
     const checkboxes = document.querySelectorAll('.check-processo');
     checkboxes.forEach(cb => cb.checked = el.checked);
+};
+
+window.verificarInconsistenciasPlanilha = function() {
+  const processos = carregarProcessos();
+  const inconsistentes = processos.filter(p => {
+    return p.status !== p._statusOriginal || p.localizacao !== p._localizacaoOriginal;
+  });
+
+  const btnExecutar = document.getElementById('btn-executar-padronizacao');
+  const container = document.getElementById('status-padronizacao-container');
+  const labelStatus = document.getElementById('label-status-padronizacao');
+  const logDiv = document.getElementById('log-status-padronizacao');
+  const bar = document.getElementById('bar-status-padronizacao');
+
+  if (container) container.style.display = 'block';
+  if (logDiv) logDiv.innerHTML = '';
+  if (bar) bar.style.width = '0%';
+
+  if (inconsistentes.length === 0) {
+    if (labelStatus) labelStatus.textContent = '✅ Planilha já está totalmente padronizada!';
+    if (btnExecutar) btnExecutar.disabled = true;
+    if (logDiv) logDiv.innerHTML = '<div>Nenhuma inconsistência encontrada.</div>';
+  } else {
+    if (labelStatus) labelStatus.textContent = `🔍 Encontrados ${inconsistentes.length} processos com dados não padronizados.`;
+    if (btnExecutar) btnExecutar.disabled = false;
+    
+    if (logDiv) {
+      inconsistentes.forEach(p => {
+        let det = [];
+        if (p.status !== p._statusOriginal) det.push(`Status: "${p._statusOriginal}" ➔ "${p.status}"`);
+        if (p.localizacao !== p._localizacaoOriginal) det.push(`Loc: "${p._localizacaoOriginal}" ➔ "${p.localizacao}"`);
+        const item = document.createElement('div');
+        item.textContent = `Processo ${p.numero || p.id}: ` + det.join(' | ');
+        logDiv.appendChild(item);
+      });
+    }
+  }
+};
+
+window.executarPadronizacaoPlanilha = async function() {
+  const processos = carregarProcessos();
+  const inconsistentes = processos.filter(p => {
+    return p.status !== p._statusOriginal || p.localizacao !== p._localizacaoOriginal;
+  });
+
+  if (inconsistentes.length === 0) return;
+
+  const btnVerificar = document.getElementById('btn-verificar-padronizacao');
+  const btnExecutar = document.getElementById('btn-executar-padronizacao');
+  const labelStatus = document.getElementById('label-status-padronizacao');
+  const logDiv = document.getElementById('log-status-padronizacao');
+  const bar = document.getElementById('bar-status-padronizacao');
+
+  if (btnVerificar) btnVerificar.disabled = true;
+  if (btnExecutar) btnExecutar.disabled = true;
+  if (logDiv) logDiv.innerHTML = '';
+
+  let total = inconsistentes.length;
+  let sucesso = 0;
+  let falha = 0;
+
+  for (let i = 0; i < total; i++) {
+    const p = inconsistentes[i];
+    const pct = Math.round(((i + 1) / total) * 100);
+    if (bar) bar.style.width = `${pct}%`;
+    if (labelStatus) labelStatus.textContent = `⚙️ Processando: ${i + 1} de ${total} (${pct}%)`;
+
+    const statusNorm = p.status;
+    const locNorm = p.localizacao;
+    
+    try {
+      const payload = {
+        ...p,
+        status: statusNorm,
+        localizacao: locNorm
+      };
+      
+      await atualizarProcesso(p.id, payload);
+      
+      p._statusOriginal = statusNorm;
+      p._localizacaoOriginal = locNorm;
+      
+      sucesso++;
+      const msg = document.createElement('div');
+      msg.textContent = `✅ Processo ${p.numero || p.id} atualizado com sucesso.`;
+      msg.style.color = '#4ade80';
+      if (logDiv) {
+        logDiv.appendChild(msg);
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+    } catch (err) {
+      falha++;
+      const msg = document.createElement('div');
+      msg.textContent = `❌ Erro ao atualizar Processo ${p.numero || p.id}: ${err.message}`;
+      msg.style.color = '#f87171';
+      if (logDiv) {
+        logDiv.appendChild(msg);
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+
+  if (labelStatus) {
+    labelStatus.textContent = `✅ Concluído! Sucesso: ${sucesso}, Falhas: ${falha}`;
+  }
+  
+  if (btnVerificar) btnVerificar.disabled = false;
+  
+  if (typeof recarregarDadosGlobais === 'function') {
+    recarregarDadosGlobais();
+  }
 };
