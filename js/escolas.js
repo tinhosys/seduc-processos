@@ -1058,7 +1058,7 @@ function abrirFormEscolaByInepOrId(identifier) {
 window.abrirFormEscolaByInepOrId = abrirFormEscolaByInepOrId;
 window.abrirModalEditarEscolaById = abrirFormEscolaByInepOrId;
 
-window.imprimirRelatorioEscolas = function() {
+function imprimirRelatorioEscolas() {
   try {
     const pool = (typeof _escolasFiltradas !== 'undefined' && _escolasFiltradas.length > 0)
       ? _escolasFiltradas
@@ -1202,7 +1202,8 @@ window.imprimirRelatorioEscolas = function() {
     console.error('Erro ao gerar relatório de escolas:', err);
     alert('Erro ao gerar relatório: ' + err.message);
   }
-};
+}
+window.imprimirRelatorioEscolas = imprimirRelatorioEscolas;
 
 
 
