@@ -958,11 +958,12 @@ setTimeout(() => window.carregarOrcamentoData(), 500);
 
 
 window.popularFiltrosDespesas = function() {
-  const paSet = new Set(), setorSet = new Set(), tipoSet = new Set();
+  const paSet = new Set(), setorSet = new Set(), tipoSet = new Set(), naturezaSet = new Set();
   _crmData.forEach(r => {
     if(r.pa) paSet.add(r.pa);
     if(r.setor) setorSet.add(r.setor);
     if(r.tipo) tipoSet.add(r.tipo);
+    if(r.despesa) naturezaSet.add(r.despesa);
   });
   
   const fill = (id, set) => {
@@ -974,10 +975,12 @@ window.popularFiltrosDespesas = function() {
   fill('orc-desp-filtro-pa', paSet);
   fill('orc-desp-filtro-setor', setorSet);
   fill('orc-desp-filtro-tipo', tipoSet);
+  fill('orc-desp-filtro-natureza', naturezaSet);
 
-  document.getElementById('orc-desp-filtro-pa').addEventListener('change', window.renderDespesasRealizadas);
-  document.getElementById('orc-desp-filtro-setor').addEventListener('change', window.renderDespesasRealizadas);
-  document.getElementById('orc-desp-filtro-tipo').addEventListener('change', window.renderDespesasRealizadas);
+  document.getElementById('orc-desp-filtro-pa')?.addEventListener('change', window.renderDespesasRealizadas);
+  document.getElementById('orc-desp-filtro-setor')?.addEventListener('change', window.renderDespesasRealizadas);
+  document.getElementById('orc-desp-filtro-tipo')?.addEventListener('change', window.renderDespesasRealizadas);
+  document.getElementById('orc-desp-filtro-natureza')?.addEventListener('change', window.renderDespesasRealizadas);
 };
 
 window.renderDespesasRealizadas = function() {
@@ -987,12 +990,14 @@ window.renderDespesasRealizadas = function() {
   const pa = document.getElementById('orc-desp-filtro-pa')?.value || '';
   const setor = document.getElementById('orc-desp-filtro-setor')?.value || '';
   const tipo = document.getElementById('orc-desp-filtro-tipo')?.value || '';
+  const natureza = document.getElementById('orc-desp-filtro-natureza')?.value || '';
   const busca = (document.getElementById('orc-desp-filtro-busca')?.value || '').toLowerCase();
 
   const filtrado = _crmData.filter(r => {
     if (pa && r.pa !== pa) return false;
     if (setor && r.setor !== setor) return false;
     if (tipo && r.tipo !== tipo) return false;
+    if (natureza && r.despesa !== natureza) return false;
     if (busca) {
       const match = (r.processo.toLowerCase().includes(busca) || r.descricao.toLowerCase().includes(busca));
       if (!match) return false;

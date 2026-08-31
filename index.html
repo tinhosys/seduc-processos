@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.51</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.52</div>
   </div>
 </div>
   
@@ -304,7 +304,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.51</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.52</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2404,13 +2404,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1788138247850"></script>
-  <script src="js/app.js?v=1788138247850"></script>
-  <script src="js/auth-sap.js?v=1788138247850"></script>
-  <script src="js/escolas.js?v=1788138247850" charset="utf-8"></script>
+  <script src="js/dados.js?v=1788138574054"></script>
+  <script src="js/app.js?v=1788138574054"></script>
+  <script src="js/auth-sap.js?v=1788138574054"></script>
+  <script src="js/escolas.js?v=1788138574054" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1788138247850"></script>
+<script src="js/mapa.js?v=1788138574054"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2554,13 +2554,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1788138247850"></script>
+  <script src="js/multi-select.js?v=1788138574054"></script>
   <script>
   </script>
   <script src="js/diarias.js"></script>
-  <script src="js/orcamento.js?v=1788138247850"></script>
-  <script src="js/print-proalfa.js?v=1788138247850"></script>
-  <script src="js/proalfa.js?v=1788138247850"></script>
+  <script src="js/orcamento.js?v=1788138574054"></script>
+  <script src="js/print-proalfa.js?v=1788138574054"></script>
+  <script src="js/proalfa.js?v=1788138574054"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
@@ -2573,11 +2573,6 @@
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         
-        <button onclick="if(typeof imprimirOrcamento==='function') imprimirOrcamento(); else window.print();" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          RELATÓRIO
-        </button>
-
         <button onclick="exportarOrcamentoExcel()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#16a34a; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
           EXPORTAR CSV
@@ -2700,25 +2695,29 @@
 <!-- ================== VIEW DESPESAS REALIZADAS ================== -->
 <div id="orc-view-despesas" style="display: none;">
   <!-- Filtros Despesas -->
-  <div class="orc-filters-bar" style="margin-bottom: 20px;">
-    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:150px;">
-      <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">PA</label>
-      <select id="orc-desp-filtro-pa"><option value="">Todos</option></select>
+  <div class="orc-filters-bar" style="margin-bottom: 20px; display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; padding: 12px;">
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:100px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">PA</label>
+      <select id="orc-desp-filtro-pa" style="padding:7px 10px; font-size:12px;"><option value="">Todos</option></select>
     </div>
-    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:150px;">
-      <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Setor</label>
-      <select id="orc-desp-filtro-setor"><option value="">Todos</option></select>
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:100px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Setor</label>
+      <select id="orc-desp-filtro-setor" style="padding:7px 10px; font-size:12px;"><option value="">Todos</option></select>
     </div>
-    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:150px;">
-      <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Tipo</label>
-      <select id="orc-desp-filtro-tipo"><option value="">Todos</option></select>
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:100px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Tipo</label>
+      <select id="orc-desp-filtro-tipo" style="padding:7px 10px; font-size:12px;"><option value="">Todos</option></select>
     </div>
-    <div style="display:flex;flex-direction:column;gap:4px;flex:2;min-width:200px;">
-      <label style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Busca (Processo / Descrição)</label>
-      <input type="text" id="orc-desp-filtro-busca" placeholder="Digite para buscar..." style="padding:9px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:13px; font-weight:600; outline:none;" onkeyup="if(typeof renderDespesasRealizadas === 'function') renderDespesasRealizadas()">
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Natureza</label>
+      <select id="orc-desp-filtro-natureza" style="padding:7px 10px; font-size:12px;"><option value="">Todas</option></select>
     </div>
-    <button onclick="if(typeof renderDespesasRealizadas === 'function') { document.getElementById('orc-desp-filtro-pa').value=''; document.getElementById('orc-desp-filtro-setor').value=''; document.getElementById('orc-desp-filtro-tipo').value=''; document.getElementById('orc-desp-filtro-busca').value=''; renderDespesasRealizadas(); }" style="height:40px;padding:0 16px;border-radius:8px;background:rgba(250,204,21,0.15);color:#facc15;border:1px solid #facc15;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;text-transform:uppercase;transition:background 0.2s;" onmouseover="this.style.background='rgba(250,204,21,0.3)'" onmouseout="this.style.background='rgba(250,204,21,0.15)'">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <div style="display:flex;flex-direction:column;gap:4px;flex:2;min-width:140px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Busca</label>
+      <input type="text" id="orc-desp-filtro-busca" placeholder="Proc. ou Desc..." style="padding:7px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; font-weight:600; outline:none;" onkeyup="if(typeof renderDespesasRealizadas === 'function') renderDespesasRealizadas()">
+    </div>
+    <button onclick="if(typeof renderDespesasRealizadas === 'function') { document.getElementById('orc-desp-filtro-pa').value=''; document.getElementById('orc-desp-filtro-setor').value=''; document.getElementById('orc-desp-filtro-tipo').value=''; document.getElementById('orc-desp-filtro-natureza').value=''; document.getElementById('orc-desp-filtro-busca').value=''; renderDespesasRealizadas(); }" style="height:34px; align-self:flex-end; padding:0 12px; border-radius:8px; background:rgba(250,204,21,0.15); color:#facc15; border:1px solid #facc15; font-weight:700; font-size:11px; cursor:pointer; display:flex; align-items:center; gap:6px; text-transform:uppercase; transition:background 0.2s; white-space:nowrap;" onmouseover="this.style.background='rgba(250,204,21,0.3)'" onmouseout="this.style.background='rgba(250,204,21,0.15)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       LIMPAR
     </button>
   </div>
