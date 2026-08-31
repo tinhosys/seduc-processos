@@ -325,22 +325,48 @@ window.popularSelectsFluxo = function() {
   }
 };
 
+
+  function validarCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+    if(cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
+    let soma = 0, resto;
+    for(let i=1; i<=9; i++) soma += parseInt(cpf.substring(i-1, i)) * (11 - i);
+    resto = (soma * 10) % 11;
+    if((resto === 10) || (resto === 11)) resto = 0;
+    if(resto !== parseInt(cpf.substring(9, 10))) return false;
+    soma = 0;
+    for(let i=1; i<=10; i++) soma += parseInt(cpf.substring(i-1, i)) * (12 - i);
+    resto = (soma * 10) % 11;
+    if((resto === 10) || (resto === 11)) resto = 0;
+    if(resto !== parseInt(cpf.substring(10, 11))) return false;
+    return true;
+  }
+
 window.inserirDiaria = function() {
+
   const nome = document.getElementById('diaria-nome').value;
   const cpf = document.getElementById('diaria-cpf').value;
   const cidade = document.getElementById('diaria-cidade').value;
   const proc = document.getElementById('diaria-proc').value;
-  const valor = parseFloat(document.getElementById('diaria-valor').value);
+  const qtde = parseFloat(document.getElementById('diaria-qtde').value) || 0;
+  const unit = parseFloat(document.getElementById('diaria-valor-unit').value) || 0;
+  const valor = qtde * unit;
   const motivo = document.getElementById('diaria-motivo').value;
+  const dataSaida = document.getElementById('diaria-data-saida').value;
   
-  if (!nome || !valor || !motivo) {
-    alert("Preencha Nome, Valor e Motivo!");
+  if (!validarCPF(cpf)) {
+    alert("CPF Inválido! Verifique o número digitado.");
+    return;
+  }
+  
+  if (!nome || !valor || !motivo || !cpf || !cidade) {
+    alert("Preencha todos os campos obrigatórios (Nome, CPF, Cidade, Motivo, Qtde e Valor)!");
     return;
   }
   
   DIARIAS_DATA.unshift({
     status: 'Reserva',
-    data: new Date().toLocaleDateString('pt-BR'),
+    data: dataSaida ? dataSaida.split('-').reverse().join('/') : new Date().toLocaleDateString('pt-BR'),
     nome: nome,
     cpf: cpf,
     cidade: cidade,
@@ -354,15 +380,46 @@ window.inserirDiaria = function() {
   document.getElementById('diaria-cpf').value = '';
   document.getElementById('diaria-cidade').value = '';
   document.getElementById('diaria-proc').value = '';
-  document.getElementById('diaria-valor').value = '';
+  document.getElementById('diaria-qtde').value = '';
+  document.getElementById('diaria-valor-unit').value = '';
+  document.getElementById('diaria-valor-total').value = '';
   document.getElementById('diaria-motivo').value = '';
+  document.getElementById('diaria-data-saida').value = '';
   
-  // Return to Consolidado Tab to see it
+  // Create simple report PDF
+  if (window.jspdf) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('portrait');
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Relatório de Emissão de Diária', 14, 20);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Beneficiário: ' + nome, 14, 30);
+    doc.text('CPF: ' + cpf, 14, 37);
+    doc.text('Processo SEI: ' + proc, 14, 44);
+    doc.text('Cidade de Destino: ' + cidade, 14, 51);
+    doc.text('Data de Saída: ' + (dataSaida ? dataSaida.split('-').reverse().join('/') : 'N/A'), 14, 58);
+    doc.text('Motivo da Viagem: ' + motivo, 14, 65, {maxWidth: 180});
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('Quantidade de Diárias: ' + qtde.toFixed(1), 14, 85);
+    doc.text('Valor Unitário: R$ ' + unit.toLocaleString('pt-BR', {minimumFractionDigits:2}), 14, 92);
+    doc.text('Valor Total: R$ ' + valor.toLocaleString('pt-BR', {minimumFractionDigits:2}), 14, 99);
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    doc.text('* Este documento comprova o registro local da diária.', 14, 120);
+    doc.text('* Para gravar na planilha oficial do Google Sheets, um script de integração backend é necessário.', 14, 127);
+    
+    window.open(doc.output('bloburl'), '_blank');
+  }
+
   const tabConsolidado = Array.from(document.querySelectorAll('#page-diarias .tabs .tab-link')).find(t => t.innerText === 'Consolidado');
   if(tabConsolidado) tabConsolidado.click();
   else mudarAbaDiarias('consolidado', null);
   
-  if (typeof toast === 'function') toast('Diária registrada e saldo deduzido temporariamente!', 'success');
+  if (typeof toast === 'function') toast('Diária registrada localmente!', 'success');
   else alert('Registrado com sucesso!');
 };
 
