@@ -525,7 +525,7 @@ window.inserirDiaria = function() {
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
     doc.text('* Este documento comprova o registro local da diária.', 14, 120);
-    doc.text('* Para gravar na planilha oficial do Google Sheets, um script de integração backend é necessário.', 14, 127);
+    
     
     window.open(doc.output('bloburl'), '_blank');
   }
