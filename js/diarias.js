@@ -215,11 +215,11 @@ function renderizarDiarias() {
     if (d.status.toLowerCase().includes('pago')) totalPago += d.valor;
   });
   
-  if (document.getElementById('diarias-total-filtrado')) {
-     document.getElementById('diarias-total-filtrado').innerText = totalGasto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+  if (document.getElementById('diaria-total-pago')) {
+     document.getElementById('diaria-total-pago').innerText = totalGasto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
   }
-  if (document.getElementById('diarias-count')) {
-     document.getElementById('diarias-count').innerText = filtrados.length + ' diárias listadas';
+  if (document.getElementById('diaria-qtd-listadas')) {
+     document.getElementById('diaria-qtd-listadas').innerText = filtrados.length + ' diárias listadas';
   }
   
   // Render html
