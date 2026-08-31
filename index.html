@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.66</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.67</div>
   </div>
 </div>
   
@@ -254,10 +254,22 @@
         </a>
 
         
-          <a href="#" class="nav-item" data-page="proalfa" onclick="navegar('proalfa'); fecharSubmenus()">
-            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span>
-            <span>PROALFA</span>
-          </a>
+          
+          <!-- Menu CAM -->
+          <div class="nav-group">
+            <a href="#" class="nav-item" onclick="toggleSubmenu('sub-cam', this)">
+              <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></span>
+              <span style="flex:1">CAM</span>
+              <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </a>
+            <div class="nav-submenu" id="sub-cam" style="display: none; padding-left: 20px;">
+              <a href="#" class="nav-item sub-item" onclick="alert('GDSM está em construção');" style="font-size: 13px; padding: 10px 16px;"><span style="display:flex; align-items:center;">GDSM <span style="font-size:9px; background:rgba(234,179,8,0.2); color:#eab308; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:bold; letter-spacing:0.5px;">EM CONSTRUÇÃO</span></span></a>
+              <a href="#" class="nav-item sub-item" onclick="alert('GMAC está em construção');" style="font-size: 13px; padding: 10px 16px;"><span style="display:flex; align-items:center;">GMAC <span style="font-size:9px; background:rgba(234,179,8,0.2); color:#eab308; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:bold; letter-spacing:0.5px;">EM CONSTRUÇÃO</span></span></a>
+              <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
+              <a href="#" class="nav-item sub-item" data-page="contatos" onclick="navegar('contatos')" style="font-size: 13px; padding: 10px 16px;"><span>Municípios</span></a>
+            </div>
+          </div>
+
 
           <!-- Menu Orçamento -->
           <div class="nav-group">
@@ -294,7 +306,7 @@
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
           <div class="nav-submenu" id="sub-escolas" style="display: none; padding-left: 20px;">
-            <a href="#" class="nav-item sub-item" data-page="contatos" onclick="navegar('contatos')" style="font-size: 13px; padding: 10px 16px;"><span>Municípios</span></a>
+            
             <a href="#" class="nav-item sub-item" data-page="escolas" onclick="navegar('escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Lista de Escolas</span></a>
             <a href="#" class="nav-item sub-item" data-page="mapa-escolas" onclick="navegar('mapa-escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Mapa de Escolas</span></a>
           </div>
@@ -317,7 +329,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.66</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.67</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2417,13 +2429,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1788149437843"></script>
-  <script src="js/app.js?v=1788149437929"></script>
-  <script src="js/auth-sap.js?v=1788149437843"></script>
-  <script src="js/escolas.js?v=1788149437843" charset="utf-8"></script>
+  <script src="js/dados.js?v=1788149867810"></script>
+  <script src="js/app.js?v=1788149867894"></script>
+  <script src="js/auth-sap.js?v=1788149867810"></script>
+  <script src="js/escolas.js?v=1788149867810" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1788149437843"></script>
+<script src="js/mapa.js?v=1788149867810"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2567,13 +2579,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1788149437843"></script>
+  <script src="js/multi-select.js?v=1788149867810"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1788149437929"></script>
-  <script src="js/orcamento.js?v=1788149437929"></script>
-  <script src="js/print-proalfa.js?v=1788149437843"></script>
-  <script src="js/proalfa.js?v=1788149437929"></script>
+  <script src="js/diarias.js?v=1788149867894"></script>
+  <script src="js/orcamento.js?v=1788149867894"></script>
+  <script src="js/print-proalfa.js?v=1788149867810"></script>
+  <script src="js/proalfa.js?v=1788149867894"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
