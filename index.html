@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.64</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.65</div>
   </div>
 </div>
   
@@ -253,10 +253,25 @@
           <span>Dashboard</span>
         </a>
 
-        <a href="#" class="nav-item active" data-page="orcamento" onclick="navegar('orcamento'); fecharSubmenus()">
-          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
-          <span>Orçamento</span>
-        </a>
+        
+          <a href="#" class="nav-item" data-page="proalfa" onclick="navegar('proalfa'); fecharSubmenus()">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg></span>
+            <span>PROALFA</span>
+          </a>
+
+          <!-- Menu Orçamento -->
+          <div class="nav-group">
+            <a href="#" class="nav-item" onclick="toggleSubmenu('sub-orcamento', this)">
+              <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+              <span style="flex:1">Orçamento</span>
+              <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </a>
+            <div class="nav-submenu" id="sub-orcamento" style="display: none; padding-left: 20px;">
+              <a href="#" class="nav-item sub-item" data-page="orcamento" onclick="navegar('orcamento')" style="font-size: 13px; padding: 10px 16px;"><span>Visão Geral</span></a>
+              <a href="#" class="nav-item sub-item" data-page="diarias" onclick="navegar('diarias')" style="font-size: 13px; padding: 10px 16px;"><span>Diárias</span></a>
+            </div>
+          </div>
+
 
         <!-- Menu Processos -->
         <div class="nav-group">
@@ -266,11 +281,9 @@
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
           <div class="nav-submenu" id="sub-processos" style="display: none; padding-left: 20px;">
-            <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
-            <a href="#" class="nav-item sub-item" data-page="diarias" onclick="navegar('diarias')" style="font-size: 13px; padding: 10px 16px;"><span>Diárias</span></a>
-            <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
-            <a href="#" class="nav-item sub-item" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
-          </div>
+              <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
+              <a href="#" class="nav-item sub-item" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
+            </div>
         </div>
 
         <!-- Menu Escolas -->
@@ -304,7 +317,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.64</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.65</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2404,13 +2417,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1788147772325"></script>
-  <script src="js/app.js?v=1788147772425"></script>
-  <script src="js/auth-sap.js?v=1788147772325"></script>
-  <script src="js/escolas.js?v=1788147772325" charset="utf-8"></script>
+  <script src="js/dados.js?v=1788149058075"></script>
+  <script src="js/app.js?v=1788149058174"></script>
+  <script src="js/auth-sap.js?v=1788149058075"></script>
+  <script src="js/escolas.js?v=1788149058075" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1788147772325"></script>
+<script src="js/mapa.js?v=1788149058075"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2554,13 +2567,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1788147772325"></script>
+  <script src="js/multi-select.js?v=1788149058075"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1788147772425"></script>
-  <script src="js/orcamento.js?v=1788147772425"></script>
-  <script src="js/print-proalfa.js?v=1788147772325"></script>
-  <script src="js/proalfa.js?v=1788147772425"></script>
+  <script src="js/diarias.js?v=1788149058174"></script>
+  <script src="js/orcamento.js?v=1788149058174"></script>
+  <script src="js/print-proalfa.js?v=1788149058075"></script>
+  <script src="js/proalfa.js?v=1788149058174"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
