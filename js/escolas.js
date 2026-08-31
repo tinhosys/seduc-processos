@@ -1,4 +1,4 @@
-﻿
+
 // ============================================================
 // SEDUC - Formulário Individualizado de Escola (Página & Modal)
 // ============================================================
@@ -1060,90 +1060,147 @@ window.abrirModalEditarEscolaById = abrirFormEscolaByInepOrId;
 
 window.imprimirRelatorioEscolas = function() {
   try {
+    const pool = (typeof _escolasFiltradas !== 'undefined' && _escolasFiltradas.length > 0)
+      ? _escolasFiltradas
+      : (typeof _escolasCache !== 'undefined' ? _escolasCache : []);
+
+    if (!pool || pool.length === 0) {
+      alert('Nenhuma escola encontrada para gerar o relatório.');
+      return;
+    }
+
     const dt = new Date();
     const today = dt.toLocaleDateString('pt-BR') + ' ' + dt.toLocaleTimeString('pt-BR');
-    
-    let h = '';
-    h += '<style>';
-    h += '#print-layout-escolas { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; color: #333; }';
-    h += '#print-layout-escolas h2 { text-align: center; color: #1e293b; font-size: 16px; margin-bottom: 20px; text-transform: uppercase; }';
-    h += '#print-layout-escolas .header-info { text-align: center; margin-bottom: 20px; font-size: 12px; font-weight: 600; color: #64748b; }';
-    h += '#print-layout-escolas table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }';
-    h += '#print-layout-escolas th, #print-layout-escolas td { border: 1px solid #cbd5e1; padding: 6px; text-align: left; vertical-align: middle; }';
-    h += '#print-layout-escolas th { background-color: #f1f5f9; color: #334155; font-weight: 700; font-size: 10px; text-transform: uppercase; }';
-    h += '#print-layout-escolas .num { text-align: center; width: 40px; }';
-    h += '#print-layout-escolas .center { text-align: center; }';
-    h += '#print-layout-escolas .right { text-align: right; }';
-    h += '</style>';
-    
-    h += '<h2>Relatório de Escolas - SEDUC/RO (CAM)</h2>';
-    
+
     let tMat = 0, tSal = 0;
-    _escolasFiltradas.forEach(e => {
-      tMat += _calcTotalAlunos(e);
+    pool.forEach(e => {
+      tMat += typeof _calcTotalAlunos === 'function' ? _calcTotalAlunos(e) : (Number(e.alunos) || 0);
       tSal += Number(e.salas) || 0;
     });
-    
-    h += '<div class="header-info">Total de Escolas: ' + _escolasFiltradas.length + ' &nbsp;|&nbsp; Total de Alunos: ' + tMat.toLocaleString('pt-BR') + ' &nbsp;|&nbsp; Total de Salas: ' + tSal.toLocaleString('pt-BR') + '</div>';
-    
-    h += '<table><thead><tr>';
-    h += '<th class="num">Nº</th>';
-    h += '<th>Competência</th>';
-    h += '<th>SUPER</th>';
-    h += '<th>Município</th>';
-    h += '<th>Nome da Escola</th>';
-    h += '<th class="center">Localização</th>';
-    h += '<th>Telefone</th>';
-    h += '<th class="right">Matrículas</th>';
-    h += '<th class="center">Salas</th>';
-    h += '</tr></thead><tbody>';
-    
-    _escolasFiltradas.forEach((e, i) => {
-      h += '<tr>';
-      h += '<td class="num">' + (i + 1) + '</td>';
-      h += '<td>' + (e.codigoSuper || '-') + '</td>';
-      h += '<td>' + (e.super || '-') + '</td>';
-      h += '<td>' + (e.municipio || '-') + '</td>';
-      h += '<td>' + (e.nome || '-') + '</td>';
-      h += '<td class="center">' + (e.localizacao || '-') + '</td>';
-      h += '<td>' + (e.telefone || '-') + '</td>';
-      h += '<td class="right">' + (Number(e.totalMatricula) > 0 ? Number(e.totalMatricula).toLocaleString('pt-BR') : '-') + '</td>';
-      h += '<td class="center">' + (Number(e.salas) > 0 ? e.salas : '-') + '</td>';
-      h += '</tr>';
+
+    let h = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Relatorio_Escolas_CAM</title>
+        <style>
+          @media print {
+            @page { size: A4 landscape; margin: 10mm; }
+            body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          }
+          body { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; color: #1e293b; background: #fff; margin: 0; padding: 20px; }
+          .header-container { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 15px; }
+          .header-title { font-size: 18px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+          .header-sub { font-size: 13px; color: #64748b; font-weight: 600; }
+          .badges-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; font-size: 12px; font-weight: 700; }
+          .badge { padding: 4px 12px; border-radius: 6px; background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; }
+          table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
+          tr { page-break-inside: avoid; }
+          th { background-color: #0f172a; color: #ffffff; font-weight: 700; font-size: 10px; text-transform: uppercase; padding: 8px 6px; border: 1px solid #334155; text-align: left; }
+          td { border: 1px solid #cbd5e1; padding: 6px; vertical-align: middle; }
+          tr:nth-child(even) { background-color: #f8fafc; }
+          .num { text-align: center; font-weight: bold; width: 35px; }
+          .center { text-align: center; }
+          .right { text-align: right; }
+          .bold { font-weight: 700; }
+          .tag-comp { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; display: inline-block; }
+          .comp-est { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+          .comp-mun { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+          .footer-info { margin-top: 20px; display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+        </style>
+      </head>
+      <body>
+        <div class="header-container">
+          <div class="header-title">Relatório de Escolas — SEDUC / RO (CAM)</div>
+          <div class="header-sub">Coordenadoria de Articulação com os Municípios</div>
+          <div class="badges-row">
+            <span class="badge">🏫 Escolas: ${pool.length.toLocaleString('pt-BR')}</span>
+            <span class="badge">🎓 Alunos: ${tMat.toLocaleString('pt-BR')}</span>
+            <span class="badge">📚 Salas: ${tSal.toLocaleString('pt-BR')}</span>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th class="num">Nº</th>
+              <th class="center">Competência</th>
+              <th>Município</th>
+              <th>Nome da Escola</th>
+              <th class="center">INEP</th>
+              <th class="center">Localização</th>
+              <th>SUPER</th>
+              <th>Modalidades</th>
+              <th class="right">Alunos</th>
+              <th class="center">Salas</th>
+              <th>Diretor(a)</th>
+              <th>Telefone</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+
+    pool.forEach((e, i) => {
+      const comp = e.competencia || 'Municipal';
+      const compClass = comp.toLowerCase().includes('est') ? 'comp-est' : 'comp-mun';
+      const totalA = typeof _calcTotalAlunos === 'function' ? _calcTotalAlunos(e) : (Number(e.alunos) || 0);
+      const matStr = totalA > 0 ? totalA.toLocaleString('pt-BR') : '-';
+      const salasStr = Number(e.salas) > 0 ? e.salas : '-';
+      
+      let modsStr = '-';
+      if (typeof _getModalidades === 'function') {
+        const mList = _getModalidades(e);
+        if (mList && mList.length > 0) {
+          modsStr = mList.map(m => m.modalidade + (m.alunos ? ` (${Number(m.alunos).toLocaleString('pt-BR')})` : '')).join(', ');
+        }
+      }
+
+      h += `
+        <tr>
+          <td class="num">${i + 1}</td>
+          <td class="center"><span class="tag-comp ${compClass}">${comp}</span></td>
+          <td class="bold">${e.municipio || '-'}</td>
+          <td class="bold" style="color:#0f172a;">${e.nome || '-'}</td>
+          <td class="center">${e.codigoInep || '-'}</td>
+          <td class="center">${e.localizacao || '-'}</td>
+          <td>${e.super || '-'}</td>
+          <td style="font-size:10px;">${modsStr}</td>
+          <td class="right bold" style="color:#047857;">${matStr}</td>
+          <td class="center">${salasStr}</td>
+          <td>${e.diretor || '-'}</td>
+          <td>${e.telefone || '-'}</td>
+        </tr>
+      `;
     });
-    
-    h += '</tbody></table>';
-    h += '<div style="text-align: right; font-size: 10px; color: #94a3b8; margin-top: 20px;">Gerado em: ' + today + '</div>';
-    
-    let printDiv = document.getElementById('print-layout-escolas');
-    if (!printDiv) {
-      printDiv = document.createElement('div');
-      printDiv.id = 'print-layout-escolas';
-      printDiv.style.display = 'none';
-      document.body.appendChild(printDiv);
+
+    h += `
+          </tbody>
+        </table>
+        <div class="footer-info">
+          <span>SEDUC-RO — Sistema GDSM / CAM</span>
+          <span>Gerado em: ${today}</span>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      alert('O bloqueador de pop-ups impediu a abertura da janela de impressão. Por favor, permita pop-ups para este site.');
+      return;
     }
-    printDiv.innerHTML = h;
-    
-    const styleEl = document.createElement('style');
-    styleEl.innerHTML = '@media print { body > *:not(#print-layout-escolas) { display: none !important; } #print-layout-escolas { display: block !important; position: absolute; top: 0; left: 0; width: 100%; background: white; padding: 0 !important; margin: 0 !important; } @page { size: A4 landscape; margin: 10mm; } }';
-    document.head.appendChild(styleEl);
-    
-    printDiv.style.display = 'block';
-    document.body.classList.add('print-mode-escolas');
-    
-    const origTitle = document.title;
-    document.title = 'Relatorio_Escolas_CAM';
-    
-    window.print();
-    
-    document.title = origTitle;
+
+    printWin.document.write(h);
+    printWin.document.close();
     setTimeout(() => {
-      document.body.classList.remove('print-mode-escolas');
-      if (document.head.contains(styleEl)) document.head.removeChild(styleEl);
-      printDiv.style.display = 'none';
-    }, 2000);
+      printWin.focus();
+      printWin.print();
+    }, 400);
+
   } catch (err) {
-    alert('Erro ao gerar relatÃ³rio: ' + err.message);
+    console.error('Erro ao gerar relatório de escolas:', err);
+    alert('Erro ao gerar relatório: ' + err.message);
   }
 };
 
