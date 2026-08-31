@@ -961,8 +961,18 @@ function renderProcessos() {
 
   // Preencher filtros dinâmicos (preencherSelectFiltro preserva seleções existentes)
   const todosProcs = carregarProcessos();
-  preencherSelectFiltro('filtro-status',      STATUS_LIST.filter(s => s && s !== '.'));
-  preencherSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(l => l && l !== '.'));
+  const distinctStatus = [...new Set([
+    ...todosProcs.map(p => p.status),
+    ...STATUS_LIST
+  ])].filter(s => s && s !== '.' && s !== '****').sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+  const distinctLocalizacao = [...new Set([
+    ...todosProcs.map(p => p.localizacao),
+    ...LOCALIZACAO_LIST
+  ])].filter(l => l && l !== '.' && l !== '****').sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+  preencherSelectFiltro('filtro-status',      distinctStatus);
+  preencherSelectFiltro('filtro-localizacao', distinctLocalizacao);
   
   const superList = [...new Set(todosProcs.map(p => getSuperPorMunicipio(p.municipio)).filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   preencherSelectFiltro('filtro-super', superList);

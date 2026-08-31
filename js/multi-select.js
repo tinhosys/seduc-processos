@@ -1,4 +1,4 @@
-﻿class MultiSelect {
+class MultiSelect {
   constructor(selectElement) {
     this.select = selectElement;
     this.options = Array.from(this.select.options);
@@ -62,20 +62,35 @@
 
     const header = document.createElement("div");
     header.className = "custom-multiselect-header";
+
+    const titleSpan = document.createElement("span");
+    titleSpan.className = "custom-multiselect-title";
+    titleSpan.style.cssText = "font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8; display:flex; align-items:center; gap:4px;";
+    titleSpan.innerHTML = `<span style="font-size:10px; color:#38bdf8;">📌</span> ${this.placeholder}`;
+
+    const actionsDiv = document.createElement("div");
+    actionsDiv.style.cssText = "display:flex; align-items:center;";
+
     const spanTodos = document.createElement("span");
     spanTodos.className = "custom-multiselect-action";
     spanTodos.setAttribute("data-action", "all");
     spanTodos.textContent = "Todos";
+
     const spanSep = document.createElement("span");
     spanSep.style.cssText = "color:#475569; margin:0 6px;";
     spanSep.textContent = "|";
+
     const spanNenhum = document.createElement("span");
     spanNenhum.className = "custom-multiselect-action";
     spanNenhum.setAttribute("data-action", "none");
     spanNenhum.textContent = "Nenhum";
-    header.appendChild(spanTodos);
-    header.appendChild(spanSep);
-    header.appendChild(spanNenhum);
+
+    actionsDiv.appendChild(spanTodos);
+    actionsDiv.appendChild(spanSep);
+    actionsDiv.appendChild(spanNenhum);
+
+    header.appendChild(titleSpan);
+    header.appendChild(actionsDiv);
     this.dropdown.appendChild(header);
 
     header.addEventListener("click", (e) => {

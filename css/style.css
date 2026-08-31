@@ -1928,10 +1928,14 @@ thead th {
   font-size: 0.85rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: #1e293b;
   position: sticky;
-  top: 0;
-  z-index: 2;
+  top: -4px;
+  z-index: 10;
+  margin: -4px -4px 4px -4px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 .custom-multiselect-action {
   color: #38bdf8;
