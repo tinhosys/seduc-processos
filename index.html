@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.59</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.60</div>
   </div>
 </div>
   
@@ -304,7 +304,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.59</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.60</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2404,13 +2404,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1788143407846"></script>
-  <script src="js/app.js?v=1788143413831"></script>
-  <script src="js/auth-sap.js?v=1788143407846"></script>
-  <script src="js/escolas.js?v=1788143407846" charset="utf-8"></script>
+  <script src="js/dados.js?v=1788145018978"></script>
+  <script src="js/app.js?v=1788145019078"></script>
+  <script src="js/auth-sap.js?v=1788145018978"></script>
+  <script src="js/escolas.js?v=1788145018978" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1788143407846"></script>
+<script src="js/mapa.js?v=1788145018978"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2554,13 +2554,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1788143407846"></script>
+  <script src="js/multi-select.js?v=1788145018978"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1788143413831"></script>
-  <script src="js/orcamento.js?v=1788143413831"></script>
-  <script src="js/print-proalfa.js?v=1788143407846"></script>
-  <script src="js/proalfa.js?v=1788143413831"></script>
+  <script src="js/diarias.js?v=1788145019078"></script>
+  <script src="js/orcamento.js?v=1788145019078"></script>
+  <script src="js/print-proalfa.js?v=1788145018978"></script>
+  <script src="js/proalfa.js?v=1788145019078"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
@@ -2764,7 +2764,7 @@
     <ul class="tabs" style="list-style:none; padding:0; margin:0 0 20px 0; display:flex; flex-wrap:wrap; gap:8px;">
       <li class="tab-link active" onclick="mudarAbaDiarias('estadual', this)" style="padding:10px 15px; background:#1e293b; border-radius:8px; cursor:pointer; color:#cbd5e1; font-size:13px; border:1px solid #334155;">Execução Orçamentária Estadual</li>
       <li class="tab-link" onclick="mudarAbaDiarias('federal', this)" style="padding:10px 15px; background:#1e293b; border-radius:8px; cursor:pointer; color:#cbd5e1; font-size:13px; border:1px solid #334155;">Recurso Federal</li>
-      <li class="tab-link" onclick="mudarAbaDiarias('parametros', this)" style="padding:10px 15px; background:#1e293b; border-radius:8px; cursor:pointer; color:#cbd5e1; font-size:13px; border:1px solid #334155;">Parâmetros</li>
+      
       <li class="tab-link" onclick="mudarAbaDiarias('consolidado', this)" style="padding:10px 15px; background:#1e293b; border-radius:8px; cursor:pointer; color:#cbd5e1; font-size:13px; border:1px solid #334155;">Consolidado</li>
       <li class="tab-link" onclick="mudarAbaDiarias('gerar', this)" style="padding:10px 15px; background:#3b82f6; border-radius:8px; cursor:pointer; color:white; font-size:13px; border:none; font-weight:bold;">+ Gerar Nova Diária</li>
     </ul>
@@ -3079,10 +3079,12 @@ function mudarAbaDiarias(aba, el) {
   }
   
   const gerar = document.getElementById('diarias-tab-gerar');
-  const lista = document.getElementById('diarias-tab-lista');
+    const lista = document.getElementById('diarias-tab-lista');
+    const consol = document.getElementById('diarias-tab-consolidado');
   
   if (gerar) gerar.style.display = aba === 'gerar' ? 'block' : 'none';
-  if (lista) lista.style.display = aba !== 'gerar' ? 'block' : 'none';
+    if (lista) lista.style.display = (aba === 'estadual' || aba === 'federal') ? 'block' : 'none';
+    if (consol) consol.style.display = aba === 'consolidado' ? 'block' : 'none';
   
   window._filtroDiariasAba = aba;
   if(typeof renderizarDiarias === 'function') renderizarDiarias();

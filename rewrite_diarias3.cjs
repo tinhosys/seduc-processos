@@ -1,0 +1,353 @@
+﻿const fs = require('fs');
+const path = require('path');
+const file = path.join(__dirname, 'js', 'diarias.js');
+let content = fs.readFileSync(file, 'utf8');
+
+const start = content.indexOf('window.carregarDiariasData =');
+const end = content.indexOf('window.limparFiltrosDiarias =');
+
+let replacement = `let CONSOL_DATA_SETORES = [];
+let CONSOL_DATA_NOTAS = [];
+let PARAM_SETORES = [];
+let PARAM_STATUS = [];
+
+window.carregarDiariasData = async function() {
+  try {
+    const urlBase = 'https://docs.google.com/spreadsheets/d/1WunsuLAAIUAAo1q65qmSVMIH0qLJu_TjDsb_u9LO304/gviz/tq?tqx=out:csv&gid=';
+    
+    const [resEst, resFed, resConsol, resParam] = await Promise.all([
+      fetch(urlBase + '807660383'),
+      fetch(urlBase + '1893936129'),
+      fetch(urlBase + '325984433'),
+      fetch(urlBase + '24037202')
+    ]);
+    
+    if(!resEst.ok) throw new Error('Falha ao carregar');
+    
+    const parseCSV = (str) => {
+      let result = [];
+      let row = [];
+      let inQuotes = false;
+      let val = '';
+      for (let i = 0; i < str.length; i++) {
+        let char = str[i];
+        if (inQuotes) {
+          if (char === '"') {
+            if (i + 1 < str.length && str[i + 1] === '"') { val += '"'; i++; }
+            else { inQuotes = false; }
+          } else { val += char; }
+        } else {
+          if (char === '"') { inQuotes = true; }
+          else if (char === ',') { row.push(val); val = ''; }
+          else if (char === '\\n' || char === '\\r') {
+            if (char === '\\r' && i + 1 < str.length && str[i + 1] === '\\n') i++;
+            row.push(val); result.push(row); row = []; val = '';
+          } else { val += char; }
+        }
+      }
+      if (val || row.length > 0) { row.push(val); result.push(row); }
+      return result;
+    };
+
+    DIARIAS_DATA = [];
+    
+    // Parse Estadual
+    const rowsEst = parseCSV(await resEst.text());
+    for (let i = 1; i < rowsEst.length; i++) {
+      let cols = rowsEst[i];
+      if (!cols || cols.length < 12) continue;
+      const status = cols[0] ? cols[0].trim() : '';
+      const processo = cols[2] ? cols[2].trim() : '';
+      const dataInicio = cols[3] ? cols[3].trim() : '';
+      const setor = cols[5] ? cols[5].trim() : '';
+      const motivo = cols[6] ? cols[6].trim().replace(/\\n/g, ' ') : '';
+      const valorStr = cols[11] || '0';
+      const valor = parseFloat(valorStr.replace(/R\\$|\\s/g, '').replace(/\\./g, '').replace(',', '.')) || 0;
+      const mes = cols[13] ? cols[13].trim() : '';
+      DIARIAS_DATA.push({ origem: 'estadual', status, processo, data: dataInicio, nome: setor, motivo, valor, mes, setorOriginal: setor });
+    }
+
+    // Parse Federal
+    const rowsFed = parseCSV(await resFed.text());
+    for (let i = 1; i < rowsFed.length; i++) {
+      let cols = rowsFed[i];
+      if (!cols || cols.length < 11) continue;
+      const status = cols[0] ? cols[0].trim() : '';
+      const processo = cols[2] ? cols[2].trim() : '';
+      const dataInicio = cols[4] ? cols[4].trim() : '';
+      const setor = cols[6] ? cols[6].trim() : '';
+      const motivo = cols[7] ? cols[7].trim().replace(/\\n/g, ' ') : '';
+      const valorStr = cols[10] || '0';
+      const valor = parseFloat(valorStr.replace(/R\\$|\\s/g, '').replace(/\\./g, '').replace(',', '.')) || 0;
+      const mes = cols[12] ? cols[12].trim() : '';
+      DIARIAS_DATA.push({ origem: 'federal', status, processo, data: dataInicio, nome: setor, motivo, valor, mes, setorOriginal: setor });
+    }
+
+    // Parse Consolidado
+    CONSOL_DATA_SETORES = [];
+    CONSOL_DATA_NOTAS = [];
+    const rowsConsol = parseCSV(await resConsol.text());
+    for (let i = 1; i < rowsConsol.length; i++) {
+      let cols = rowsConsol[i];
+      if (!cols || cols.length < 1) continue;
+      if (cols[0] && cols[0].trim()) {
+        CONSOL_DATA_SETORES.push({
+          setor: cols[0],
+          dentroAnulacao: cols[1] || 'R$ 0,00',
+          dentroPago: cols[2] || 'R$ 0,00',
+          dentroReserva: cols[3] || 'R$ 0,00',
+          foraPago: cols[4] || 'R$ 0,00',
+          foraReserva: cols[5] || 'R$ 0,00'
+        });
+      }
+      if (cols[6] && cols[6].trim() && i <= 5) {
+        CONSOL_DATA_NOTAS.push({
+          nome: cols[6],
+          empenhado: cols[7] || '',
+          reforco: cols[8] || '',
+          anulacao: cols[9] || '',
+          valorAtualizado: cols[10] || '',
+          pago: cols[11] || '',
+          reserva: cols[12] || '',
+          saldoLiquido: cols[13] || ''
+        });
+      }
+    }
+
+    // Parse Parâmetros
+    PARAM_SETORES = [];
+    PARAM_STATUS = [];
+    const rowsParam = parseCSV(await resParam.text());
+    for (let i = 1; i < rowsParam.length; i++) {
+      let cols = rowsParam[i];
+      if (cols && cols[0]) PARAM_SETORES.push(cols[0].trim());
+      if (cols && cols[4]) PARAM_STATUS.push(cols[4].trim());
+    }
+    PARAM_SETORES = [...new Set(PARAM_SETORES)].filter(x => x && x !== 'Setor');
+    PARAM_STATUS = [...new Set(PARAM_STATUS)].filter(x => x && x !== 'Status');
+
+    popularSelectsDiarias();
+    renderizarDiarias();
+    if(typeof window.renderConsolidadoDiarias === 'function') window.renderConsolidadoDiarias();
+
+  } catch (e) {
+    console.error(e);
+    document.querySelector('#table-diarias tbody').innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#f87171;">Erro ao carregar dados.</td></tr>';
+  }
+};
+
+window.popularSelectsDiarias = function() {
+  const fill = (id, arr) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '<option value="Todos">Todos</option>' + arr.map(a => `<option value="${a}">${a}</option>`).join('');
+  };
+  fill('diaria-filtro-status', PARAM_STATUS.length ? PARAM_STATUS : [...new Set(DIARIAS_DATA.map(d => d.status))].filter(x => x));
+  fill('diaria-filtro-setor', PARAM_SETORES.length ? PARAM_SETORES : [...new Set(DIARIAS_DATA.map(d => d.setorOriginal))].filter(x => x));
+  fill('diaria-filtro-mes', [...new Set(DIARIAS_DATA.map(d => d.mes))].filter(x => x));
+};
+
+function renderizarDiarias() {
+  const tbody = document.querySelector('#table-diarias tbody');
+  if (!tbody) return;
+  
+  let totalGasto = 0;
+  let totalPago = 0;
+  
+  const aba = window._filtroDiariasAba || 'estadual';
+  const busca = (document.getElementById('busca-diarias') ? document.getElementById('busca-diarias').value.toLowerCase() : '');
+  
+  const vMes = document.getElementById('diaria-filtro-mes') ? document.getElementById('diaria-filtro-mes').value : 'Todos';
+  const vStatus = document.getElementById('diaria-filtro-status') ? document.getElementById('diaria-filtro-status').value : 'Todos';
+  const vSetor = document.getElementById('diaria-filtro-setor') ? document.getElementById('diaria-filtro-setor').value : 'Todos';
+  const vDataIni = document.getElementById('diaria-filtro-data-ini') ? document.getElementById('diaria-filtro-data-ini').value : '';
+  const vDataFim = document.getElementById('diaria-filtro-data-fim') ? document.getElementById('diaria-filtro-data-fim').value : '';
+  
+  let filtrados = DIARIAS_DATA;
+  
+  // Aba Filter
+  if (aba === 'federal') {
+     filtrados = filtrados.filter(d => d.origem === 'federal');
+  } else {
+     // Default Estadual
+     filtrados = filtrados.filter(d => d.origem === 'estadual');
+  }
+
+  // Text search
+  if (busca) {
+    filtrados = filtrados.filter(d => 
+      (d.nome && d.nome.toLowerCase().includes(busca)) ||
+      (d.motivo && d.motivo.toLowerCase().includes(busca)) ||
+      (d.processo && d.processo.toLowerCase().includes(busca))
+    );
+  }
+  
+  // Outros filtros
+  if (vMes !== 'Todos') filtrados = filtrados.filter(d => d.mes === vMes);
+  if (vStatus !== 'Todos') filtrados = filtrados.filter(d => d.status === vStatus);
+  if (vSetor !== 'Todos') filtrados = filtrados.filter(d => d.setorOriginal === vSetor);
+  
+  // Date filter
+  if (vDataIni || vDataFim) {
+    let dIni = null;
+    let dFim = null;
+    if (vDataIni) {
+       const p = vDataIni.split('-');
+       if(p.length===3) dIni = new Date(p[0], p[1]-1, p[2]);
+    }
+    if (vDataFim) {
+       const p = vDataFim.split('-');
+       if(p.length===3) dFim = new Date(p[0], p[1]-1, p[2]);
+    }
+    
+    filtrados = filtrados.filter(d => {
+      if (!d.dateObj) return true;
+      if (dIni && d.dateObj < dIni) return false;
+      if (dFim && d.dateObj > dFim) return false;
+      return true;
+    });
+  }
+
+  // Somatórias
+  filtrados.forEach(d => {
+    totalGasto += d.valor;
+    if (d.status.toLowerCase().includes('pago')) totalPago += d.valor;
+  });
+  
+  if (document.getElementById('diarias-total-filtrado')) {
+     document.getElementById('diarias-total-filtrado').innerText = totalGasto.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+  }
+  if (document.getElementById('diarias-count')) {
+     document.getElementById('diarias-count').innerText = filtrados.length + ' diárias listadas';
+  }
+  
+  // Render html
+  let html = '';
+  if (filtrados.length === 0) {
+    html = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#94a3b8;">Nenhum registro encontrado para este filtro.</td></tr>';
+  } else {
+    filtrados.forEach(d => {
+      let cor = '#3b82f6';
+      let stLow = (d.status || '').toLowerCase();
+      if(stLow.includes('pago')) cor = '#10b981';
+      if(stLow.includes('anula') || stLow.includes('encerra')) cor = '#f87171';
+      
+      let infoExtra = '';
+      if(d.cpf) infoExtra += ` | CPF: ${d.cpf}`;
+      if(d.cidade) infoExtra += ` | Destino: ${d.cidade}`;
+      
+      html += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <td style="padding:12px 16px; font-size:12px;">${d.data}<br><span style="color:${cor}; font-size:10px; font-weight:bold; text-transform:uppercase;">${d.status}</span></td>
+        <td style="padding:12px 16px; font-size:12px; font-weight:bold; color:#e2e8f0;">
+            ${d.nome}${infoExtra}<br>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:4px;">
+              <span style="color:#a3e635; font-weight:bold; font-size:11px;">${d.processo}</span>
+              <button onclick="navigator.clipboard.writeText('${d.processo}'); typeof showToast === 'function' ? showToast('Processo copiado!', 'success') : alert('Copiado');" style="padding:4px 8px; font-size:10px; display:flex; align-items:center; justify-content:center; gap:4px; border:none; border-radius:4px; background:#3b82f6; color:#ffffff; cursor:pointer;" title="Copiar Número">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar
+              </button>
+              <a href="https://sei.sistemas.ro.gov.br/sip/login.php?sigla_orgao_sistema=RO&sigla_sistema=SEI" target="_blank" style="padding:2px 8px; height:20px; display:flex; align-items:center; justify-content:center; background:white; border-radius:4px; text-decoration:none;" title="Acessar SEI">
+                <img src="img/logo-sei.png" style="height:14px; object-fit:contain" alt="SEI">
+              </a>
+            </div>
+          </td>
+        <td style="padding:12px 16px; font-size:11px; color:#cbd5e1; max-width:300px; white-space:normal;">${d.motivo}</td>
+        <td style="padding:12px 16px; color:${stLow.includes('anul') || stLow.includes('encerra') ? '#64748b' : '#f87171'}; font-weight:bold; text-align:right;">
+          R$ ${d.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})}
+        </td>
+      </tr>`;
+    });
+  }
+  
+  tbody.innerHTML = html;
+}
+
+window.renderConsolidadoDiarias = function() {
+  const container = document.getElementById('diarias-tab-consolidado');
+  if(!container) return;
+  
+  let html = `
+    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:20px;">
+      
+      <div style="flex:2; min-width:400px; background:#1e293b; border-radius:12px; overflow:hidden; border:1px solid #334155;">
+        <div style="padding:15px 20px; background:linear-gradient(135deg,#0f172a,#1e293b); border-bottom:1px solid rgba(255,255,255,0.05);">
+          <h4 style="margin:0; color:#f8fafc; font-size:14px;">SETORES (DENTRO E FORA DO ESTADO)</h4>
+        </div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse; text-align:right; font-size:12px;">
+            <thead style="background:rgba(255,255,255,0.02);">
+              <tr>
+                <th style="padding:12px; color:#64748b; font-weight:600; text-align:left; border-bottom:1px solid #334155;">Setor</th>
+                <th style="padding:12px; color:#64748b; font-weight:600; border-bottom:1px solid #334155;">Anulação (Dentro)</th>
+                <th style="padding:12px; color:#64748b; font-weight:600; border-bottom:1px solid #334155;">Pago (Dentro)</th>
+                <th style="padding:12px; color:#64748b; font-weight:600; border-bottom:1px solid #334155;">Reserva (Dentro)</th>
+                <th style="padding:12px; color:#64748b; font-weight:600; border-bottom:1px solid #334155;">Pago (Fora)</th>
+                <th style="padding:12px; color:#64748b; font-weight:600; border-bottom:1px solid #334155;">Reserva (Fora)</th>
+              </tr>
+            </thead>
+            <tbody>
+  `;
+  
+  CONSOL_DATA_SETORES.forEach(s => {
+    html += `
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.02); transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+                <td style="padding:12px; color:#e2e8f0; font-weight:bold; text-align:left;">${s.setor}</td>
+                <td style="padding:12px; color:#f87171;">${s.dentroAnulacao}</td>
+                <td style="padding:12px; color:#10b981;">${s.dentroPago}</td>
+                <td style="padding:12px; color:#cbd5e1;">${s.dentroReserva}</td>
+                <td style="padding:12px; color:#10b981;">${s.foraPago}</td>
+                <td style="padding:12px; color:#cbd5e1;">${s.foraReserva}</td>
+              </tr>
+    `;
+  });
+  
+  html += `
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div style="flex:1; min-width:300px; background:#1e293b; border-radius:12px; overflow:hidden; border:1px solid #334155;">
+        <div style="padding:15px 20px; background:linear-gradient(135deg,#0f172a,#1e293b); border-bottom:1px solid rgba(255,255,255,0.05);">
+          <h4 style="margin:0; color:#f8fafc; font-size:14px;">CONTROLE DAS NOTAS DE EMPENHO</h4>
+        </div>
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse; text-align:right; font-size:12px;">
+            <thead style="background:rgba(255,255,255,0.02);">
+              <tr>
+                <th style="padding:12px; color:#64748b; font-weight:600; text-align:left; border-bottom:1px solid #334155;">Nota</th>
+                <th style="padding:12px; color:#64748b; font-weight:600; border-bottom:1px solid #334155;">Empenhado</th>
+                <th style="padding:12px; color:#64748b; font-weight:600; border-bottom:1px solid #334155;">Saldo Liq.</th>
+              </tr>
+            </thead>
+            <tbody>
+  `;
+  
+  CONSOL_DATA_NOTAS.forEach(n => {
+    let bg = 'transparent';
+    if(n.nome.toUpperCase().includes('TOTAL')) bg = 'rgba(59,130,246,0.1)';
+    html += `
+              <tr style="border-bottom:1px solid rgba(255,255,255,0.02); background:${bg};">
+                <td style="padding:12px; color:#e2e8f0; font-weight:bold; text-align:left;">${n.nome}</td>
+                <td style="padding:12px; color:#cbd5e1;">${n.empenhado}</td>
+                <td style="padding:12px; color:#3b82f6; font-weight:bold;">${n.saldoLiquido}</td>
+              </tr>
+    `;
+  });
+  
+  html += `
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+    </div>
+  `;
+  container.innerHTML = html;
+};
+
+`;
+
+const finalScript = content.replace(/\\`/g, '`'); // Ensure backticks are preserved! Wait, in JS template literal they were not escaped!
+
+fs.writeFileSync(file, content);
+console.log('Patched final diarias.js');
