@@ -1020,7 +1020,7 @@ window.renderDespesasRealizadas = function() {
         <td style="padding: 10px 16px; font-family: monospace; font-size: 13px; font-weight: 700; color: #e2e8f0; white-space: nowrap;">${p.processo}</td>
         <td style="padding: 10px 16px; color: #94a3b8;">${p.pa}</td>
         <td style="padding: 10px 16px; color: #94a3b8;">${p.setor}</td>
-        <td style="padding: 10px 16px; color: #94a3b8;">${p.despesa}</td>
+        <td style="padding: 10px 16px; color: #94a3b8; font-size: 11px;">${p.despesa} ${NATUREZA_DESCRICAO[p.despesa]?.nome ? '- ' + NATUREZA_DESCRICAO[p.despesa].nome : ''}</td>
         <td style="padding: 10px 16px;">
           <span style="font-size:10px; font-weight:700; text-transform:uppercase; color:${badgeCor}; background:${badgeCor}22; padding:2px 6px; border-radius:4px; border:1px solid ${badgeCor}44;">${p.tipo}</span>
         </td>
