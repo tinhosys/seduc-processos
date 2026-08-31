@@ -55,6 +55,17 @@ window.mudarGuiaOrcamento = async function(nomeGuia, gid, el) {
   }
   _guiaAtualSheet = nomeGuia;
   _guiaAtualGid = gid;
+
+  const viewConsolidado = document.getElementById('orc-view-consolidado');
+  const viewDespesas = document.getElementById('orc-view-despesas');
+  if (gid === '807660383') {
+     if(viewConsolidado) viewConsolidado.style.display = 'none';
+     if(viewDespesas) viewDespesas.style.display = 'block';
+  } else {
+     if(viewConsolidado) viewConsolidado.style.display = 'block';
+     if(viewDespesas) viewDespesas.style.display = 'none';
+  }
+
   await window.carregarOrcamentoData();
 };
 
@@ -70,6 +81,32 @@ window.carregarOrcamentoData = async function() {
     
     // Parse CSV
     const lines = csv.split('\n');
+    
+    if (_guiaAtualGid === '807660383') {
+      _crmData = csv.split('\n').slice(1).map(line => {
+        const regex = /"([^"]*)"|([^,]+)/g;
+        const row = [];
+        let m;
+        while ((m = regex.exec(line)) !== null) {
+          row.push(m[1] !== undefined ? m[1] : (m[2] || ''));
+        }
+        return {
+          pa: row[0] || '',
+          fonte: row[1] || '',
+          despesa: row[2] || '',
+          tipo: row[3] || '',
+          processo: row[4] || '',
+          data: row[5] || '',
+          setor: row[6] || '',
+          descricao: row[7] || '',
+          valorText: row[8] || '0,00'
+        };
+      }).filter(r => r.processo || r.descricao);
+      window.popularFiltrosDespesas();
+      window.renderDespesasRealizadas();
+      return;
+    }
+  
     ORCAMENTO_DATA.length = 0; // Clear array
     for (let i = 1; i < lines.length; i++) {
       let l = lines[i];
