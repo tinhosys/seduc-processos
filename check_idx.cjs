@@ -1,4 +1,5 @@
 ﻿const fs = require('fs');
-const html = fs.readFileSync('index.html', 'utf8');
-if(html.includes('width: 10%;')) console.log("OK!");
-else console.log("NOT FOUND");
+const content = fs.readFileSync('index.html', 'utf8');
+const p = content.indexOf('diarias-tab-consolidado"');
+if(p !== -1) console.log(content.substring(p - 100, p + 100));
+else console.log("Not found!");
