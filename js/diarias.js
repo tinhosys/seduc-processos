@@ -140,7 +140,7 @@ window.popularSelectsDiarias = function() {
     if (!el) return;
     el.innerHTML = '<option value="Todos">Todos</option>' + arr.map(a => `<option value="${a}">${a}</option>`).join('');
   };
-  fill('diaria-filtro-status', PARAM_STATUS.length > 0 ? PARAM_STATUS : [...new Set(DIARIAS_DATA.map(d => d.status))].filter(x => x));
+  fill('diaria-filtro-status', [...new Set(DIARIAS_DATA.map(d => d.status))].filter(x => x).sort());
   fill('diaria-filtro-setor', PARAM_SETORES.length > 0 ? PARAM_SETORES : [...new Set(DIARIAS_DATA.map(d => d.setorOriginal))].filter(x => x));
     fill('diaria-filtro-nota', [...new Set(DIARIAS_DATA.map(d => d.nota))].filter(x => x));
   fill('diaria-filtro-mes', [...new Set(DIARIAS_DATA.map(d => d.mes))].filter(x => x));
@@ -154,6 +154,23 @@ function renderizarDiarias() {
   let totalPago = 0;
   
   const aba = window._filtroDiariasAba || 'estadual';
+
+    // Toggle display of Nota Empenho based on tab
+    const notaEmpenhoEl = document.getElementById('diaria-filtro-nota');
+    if (notaEmpenhoEl && notaEmpenhoEl.parentElement) {
+      notaEmpenhoEl.parentElement.style.display = (aba === 'estadual') ? 'none' : 'block';
+    }
+
+    // Dynamic Options Update for Status based on active tab
+    const statusEl = document.getElementById('diaria-filtro-status');
+    if (statusEl) {
+       const oldVal = statusEl.value;
+       const filteredByTab = DIARIAS_DATA.filter(d => (aba === 'estadual' ? d.origem === 'estadual' : d.origem === 'federal'));
+       const uniqueStatuses = [...new Set(filteredByTab.map(d => d.status))].filter(x => x).sort();
+       statusEl.innerHTML = '<option value="Todos">Todos</option>' + uniqueStatuses.map(a => `<option value="${a}">${a}</option>`).join('');
+       if(uniqueStatuses.includes(oldVal)) statusEl.value = oldVal;
+    }
+
   const busca = (document.getElementById('busca-diarias') ? document.getElementById('busca-diarias').value.toLowerCase() : '');
   
   const vMes = document.getElementById('diaria-filtro-mes') ? document.getElementById('diaria-filtro-mes').value : 'Todos';
