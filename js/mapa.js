@@ -138,6 +138,19 @@ const BAIRROS_RO_COORDS = {
 const MUNICIPIOS_RO_COORDS = {
   // Porto Velho: centro urbano - área do Bairro São Cristóvão / Caiari (evita o Igarapé do Tanque)
   "Porto Velho": [-8.7540, -63.8860],
+    "Alta Floresta do Oeste": [-11.9797, -61.9953],
+    "Espigão do Oeste": [-11.5269, -61.0089],
+    "Machadinho do Oeste": [-9.4439, -61.9819],
+    "Nova Brasilândia do Oeste": [-11.7247, -62.3169],
+    "Santa Luzia do Oeste": [-11.9022, -61.7825],
+    "Alvorada do Oeste": [-11.3417, -62.2747],
+    "Novo Horizonte do Oeste": [-11.7042, -61.9961],
+    "São Felipe do Oeste": [-11.9028, -61.5033],
+    "Guajará Mirim": [-10.7839, -65.3314],
+    "Ji Paraná": [-10.8828, -61.9519],
+    "Vilhena ": [-12.7406, -60.1458],
+    "Seringueiras ": [-11.7703, -63.0286],
+    "Rio  Crespo": [-9.7044, -62.9011],
   "Ji-Paraná": [-10.8828, -61.9519],
   "Ariquemes": [-9.9133, -63.0408],
   "Cacoal": [-11.4386, -61.4472],
@@ -256,7 +269,7 @@ function _geocSave() {
 // Encaminha uma escola para geocodificação assíncrona
 function _geocEnqueue(escola, onDone) {
   const key = escola.codigoInep || (escola.nome + '|' + escola.municipio);
-  if (_geocCache[key]) { onDone(_geocCache[key]); return; }
+  if (_geocCache[key]) { onDone(_geocCache[key] === 'NOT_FOUND' ? null : _geocCache[key]); return; }
   _geocQueue.push({ escola, key, onDone });
   _geocDrain();
 }
@@ -267,7 +280,7 @@ async function _geocDrain() {
   _geocRunning = true;
   while (_geocQueue.length > 0) {
     const { escola, key, onDone } = _geocQueue.shift();
-    if (_geocCache[key]) { onDone(_geocCache[key]); continue; }
+    if (_geocCache[key]) { onDone(_geocCache[key] === 'NOT_FOUND' ? null : _geocCache[key]); continue; }
     try {
       const q = encodeURIComponent(
         (escola.nome || '') + ' ' + (escola.municipio || '') + ' Rondônia'
