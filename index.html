@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.73</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.74</div>
   </div>
 </div>
   
@@ -255,7 +255,21 @@
 
         
           
-          <!-- Menu CAM -->
+          <!-- Menu Processos -->
+        <div class="nav-group">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-processos', this)">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
+            <span style="flex:1">Processos</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu" id="sub-processos" style="display: none; padding-left: 20px;">
+              <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
+              <a href="#" class="nav-item sub-item" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
+            </div>
+        </div>
+
+        
+            <!-- Menu CAM -->
           <div class="nav-group">
             <a href="#" class="nav-item" onclick="toggleSubmenu('sub-cam', this)">
               <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></span>
@@ -284,19 +298,6 @@
             </div>
           </div>
 
-
-        <!-- Menu Processos -->
-        <div class="nav-group">
-          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-processos', this)">
-            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
-            <span style="flex:1">Processos</span>
-            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-          </a>
-          <div class="nav-submenu" id="sub-processos" style="display: none; padding-left: 20px;">
-              <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
-              <a href="#" class="nav-item sub-item" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
-            </div>
-        </div>
 
         <!-- Menu Escolas -->
         <div class="nav-group">
@@ -329,7 +330,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.73</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.74</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2429,13 +2430,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1788153002089"></script>
-  <script src="js/app.js?v=1788153002175"></script>
-  <script src="js/auth-sap.js?v=1788153002089"></script>
-  <script src="js/escolas.js?v=1788153002089" charset="utf-8"></script>
+  <script src="js/dados.js?v=1788153371487"></script>
+  <script src="js/app.js?v=1788153371582"></script>
+  <script src="js/auth-sap.js?v=1788153371487"></script>
+  <script src="js/escolas.js?v=1788153371487" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1788153002089"></script>
+<script src="js/mapa.js?v=1788153371487"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2579,13 +2580,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1788153002089"></script>
+  <script src="js/multi-select.js?v=1788153371487"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1788153002175"></script>
-  <script src="js/orcamento.js?v=1788153002175"></script>
-  <script src="js/print-proalfa.js?v=1788153002089"></script>
-  <script src="js/proalfa.js?v=1788153002175"></script>
+  <script src="js/diarias.js?v=1788153371582"></script>
+  <script src="js/orcamento.js?v=1788153371582"></script>
+  <script src="js/print-proalfa.js?v=1788153371487"></script>
+  <script src="js/proalfa.js?v=1788153371582"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
