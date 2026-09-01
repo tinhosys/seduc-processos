@@ -207,13 +207,13 @@ function getHeaders(extraHeaders = {}) {
 }
 
 
-const STATUS_LIST = [
+let STATUS_LIST = [
   '.', 'AGUARD. AUT.', 'AUTORIZADO', 'CANCELADO', 'DUPLICADO',
   'N/ AUTORIZADO', 'N/ ENCAM. Á CAM', 'NOTIF. FINAL',
   'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO', 'PAGO', 'REG. DEMANDA'
 ];
 
-const LOCALIZACAO_LIST = [
+let LOCALIZACAO_LIST = [
   '.', 'CAM | GDSM | GMAC', 'CASA CIVIL', 'CCTE', 'COINFRA',
   'CONVENENTE', 'GAB | SEDUC', 'GCF', 'PGE | SEDUC'
 ];
@@ -221,52 +221,13 @@ const LOCALIZACAO_LIST = [
 function normalizarStatus(status) {
   if (!status) return '.';
   const s = status.trim().toUpperCase();
-  if (s === '.' || s === '') return '.';
-  if (s === 'AUTORIZADO') return 'AUTORIZADO';
-  if (s === 'CANCELADO') return 'CANCELADO';
-  if (s === 'DUPLICADO') return 'DUPLICADO';
-  if (s === 'NOTIFICADO') return 'NOTIFICADO';
-  if (s === 'NOTIFICAR') return 'NOTIFICAR';
-  if (s === 'NOTIF. FINAL' || s === 'NOTIF FINAL') return 'NOTIF. FINAL';
-  if (s === 'P/ AUTORIZO' || s === 'P/AUTORIZO' || s === 'PARA AUTORIZO') return 'P/ AUTORIZO';
-  if (s === 'PAGO') return 'PAGO';
-  if (s === 'REG. DEMANDA' || s === 'REG DEMANDA' || s === 'REG.DEMANDA') return 'REG. DEMANDA';
-  if (s === 'N/ AUTORIZADO' || s === 'NÃO AUTORIZADO' || s === 'NAO AUTORIZADO') return 'N/ AUTORIZADO';
-  if (s === 'N/ ENCAM. Á CAM' || s === 'N/ ENCAM. A CAM' || s === 'NÃO CHEGOU NA CAM' || s === 'NAO CHEGOU NA CAM') return 'N/ ENCAM. Á CAM';
-  if (s === 'PENDENTE' || s === 'AGUARD. AUT.' || s === 'AGUARD AUT' || s === 'AGUARD.AUT.') return 'AGUARD. AUT.';
-  
-  const validStatuses = [
-    'AGUARD. AUT.', 'AUTORIZADO', 'CANCELADO', 'DUPLICADO',
-    'N/ AUTORIZADO', 'N/ ENCAM. Á CAM', 'NOTIF. FINAL',
-    'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO', 'PAGO', 'REG. DEMANDA'
-  ];
-  const match = validStatuses.find(val => val.toUpperCase() === s);
-  if (match) return match;
-  
-  return status;
+  return (s === '' || s === '.') ? '.' : status.trim();
 }
 
 function normalizarLocalizacao(loc) {
   if (!loc) return '.';
   const l = loc.trim().toUpperCase();
-  if (l === '.' || l === '') return '.';
-  if (l === 'CASA CIVIL' || l === 'CC' || l === 'CASA CIVIL P/ AUTORIZO') return 'CASA CIVIL';
-  if (l === 'CCTE') return 'CCTE';
-  if (l === 'COINFRA') return 'COINFRA';
-  if (l === 'CONVENENTE') return 'CONVENENTE';
-  if (l === 'GCF') return 'GCF';
-  if (l === 'GAB | SEDUC' || l === 'GAB' || l === 'GAB-SEDUC' || l === 'SEDUC-GAB' || l === 'SEDUC--GAB' || l === 'GAB/SEDUC' || l === 'SEDUC/GAB') return 'GAB | SEDUC';
-  if (l === 'PGE | SEDUC' || l === 'PGE-SEDUC' || l === 'PGE/SEDUC') return 'PGE | SEDUC';
-  if (l === 'CAM | GDSM | GMAC' || l === 'GDSM' || l === 'CAM' || l === 'GMAC') return 'CAM | GDSM | GMAC';
-  
-  const validLocs = [
-    'CAM | GDSM | GMAC', 'CASA CIVIL', 'CCTE', 'COINFRA',
-    'CONVENENTE', 'GAB | SEDUC', 'GCF', 'PGE | SEDUC'
-  ];
-  const match = validLocs.find(val => val.toUpperCase() === l);
-  if (match) return match;
-  
-  return loc;
+  return (l === '' || l === '.') ? '.' : loc.trim();
 }
 
 const OBJETO_LIST = [
@@ -451,7 +412,16 @@ async function inicializarDados() {
     }
     const data = await res.json();
     if (data.rows) {
-      window.processosCache = data.rows.map(mapToApp);
+      window.processosCache = data.rows.filter(r => r._tabName && r._tabName.toLowerCase() !== 'parametro_combo' && r._tabName.toLowerCase() !== 'parametros').map(mapToApp);
+      
+      // Update global STATUS_LIST and LOCALIZACAO_LIST dynamically, ignoring the hardcoded ones completely
+      STATUS_LIST = ['.', ...new Set(window.processosCache.map(p => p.status))].filter((item, i, ar) => ar.indexOf(item) === i && item && item.trim() !== '');
+      LOCALIZACAO_LIST = ['.', ...new Set(window.processosCache.map(p => p.localizacao))].filter((item, i, ar) => ar.indexOf(item) === i && item && item.trim() !== '');
+      
+      // Ensure 'Todos' isn't added here, but keep '.' as placeholder if needed. Or just sort them
+      STATUS_LIST.sort((a,b) => a.localeCompare(b));
+      LOCALIZACAO_LIST.sort((a,b) => a.localeCompare(b));
+
       
       if (typeof checkAlertasADM === 'function') {
          checkAlertasADM(window.processosCache);

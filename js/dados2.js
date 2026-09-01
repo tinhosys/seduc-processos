@@ -4,7 +4,7 @@
 
 const DB_KEY = 'seduc_processos_v1';
 
-const STATUS_LIST = [
+let STATUS_LIST = [
   '.', 'AUTORIZADO', 'CANCELADO', 'CONCLUÍDO', 'DUPLICADO',
   'ENCERRADO', 'Não autorizado', 'Não chegou na CAM',
   'NÃO PRIORIDADE', 'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO',
@@ -12,7 +12,7 @@ const STATUS_LIST = [
   'PRIORIDADE', 'REABERTO'
 ];
 
-const LOCALIZACAO_LIST = [
+let LOCALIZACAO_LIST = [
   '.', 'Casa Civil', 'Casa Civil p/ Autorizo', 'CC', 'CCTE',
   'COINFRA', 'Convenente', 'GAB', 'GAB-SEDUC', 'GCF',
   'GDSM', 'PAGO', 'PGE-SEDUC', 'SEDUC-GAB', 'SEDUC--GAB'
