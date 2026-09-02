@@ -2132,14 +2132,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Importação
   setupImportacao();
 
-  // Preencher selects de filtro com status e localização
-  const fillSelectFiltro = (id, lista) => {
-    const s = document.getElementById(id);
-    if (!s) return;
-    s.innerHTML = `<option value="****">Todos</option>` + lista.map(o => `<option value="${o}">${o}</option>`).join('');
-  };
-  fillSelectFiltro('filtro-status',      STATUS_LIST.filter(s => s !== '.'));
-  fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
+  // Preencher selects de filtro com status e localizacao
+    window.popularFiltrosProcessos = function() {
+      const fillSelectFiltro = (id, lista) => {
+        const s = document.getElementById(id);
+        if (!s) return;
+        
+        s.innerHTML = `<option value="****">Todos</option>` + lista.map(o => `<option value="${o}">${o}</option>`).join('');
+        
+        if (typeof window.initMultiSelect === 'function' && s.multiple) {
+           window.initMultiSelect(id);
+        }
+      };
+      fillSelectFiltro('filtro-status', STATUS_LIST.filter(s => s !== '.'));
+      fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
+    };
+    window.popularFiltrosProcessos();
 
   // Máscara de Celular (WhatsApp)
   const shareNum = document.getElementById("share-whatsapp-number");
