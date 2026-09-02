@@ -3846,6 +3846,7 @@ function imprimirManifestoTCE() {
   } else {
       h += '&mdash;';
   }
+  h += '</td></tr></table>';
   var obsAll = [obs, demaisObs].filter(Boolean).join('\n\n');
   if (obsAll) { h += '<div class="sec-title">OBSERVA&Ccedil;&Otilde;ES ESPEC&Iacute;FICAS</div><div class="obs-block">' + obsAll + '</div>'; }
 
