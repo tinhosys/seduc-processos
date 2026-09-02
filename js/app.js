@@ -4130,46 +4130,127 @@ window.toggleAllProcessos = toggleAllProcessos;
 
 window._processosInconsistentesParaCorrigir = [];
 
-window.verificarInconsistenciasPlanilha = function() {
+function normalizarEspacos(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/\s+/g, ' ').trim();
+}
+
+function verificarInconsistenciasPlanilha() {
   const container = document.getElementById('status-padronizacao-container');
   const labelStatus = document.getElementById('label-status-padronizacao');
   const logDiv = document.getElementById('log-status-padronizacao');
   const btnExecutar = document.getElementById('btn-executar-padronizacao');
+  const progContainer = document.getElementById('bar-prog-container');
 
   if (container) container.style.display = 'block';
-  if (labelStatus) labelStatus.textContent = 'Verificando todos os campos...';
+  if (labelStatus) labelStatus.textContent = '🔎 Realizando varredura completa em todos os registros do sistema...';
   if (logDiv) logDiv.innerHTML = '';
   if (btnExecutar) btnExecutar.style.display = 'none';
+  if (progContainer) progContainer.style.display = 'none';
 
   if (!window.processosCache || window.processosCache.length === 0) {
-    if (labelStatus) labelStatus.textContent = 'Erro: Planilha vazia ou não carregada.';
+    if (labelStatus) labelStatus.textContent = '❌ Erro: Nenhum registro carregado no sistema para análise.';
     return;
   }
 
   let inconsistentes = [];
-
-  const padronizarString = (str) => {
-    if (!str) return '';
-    return String(str).trim().replace(/\s+/g, ' ').toUpperCase();
-  };
-
-  const camposParaVerificar = ['status', 'localizacao', 'municipio', 'prefixo', 'categoria', 'tipo', 'agrupamento', 'interessado', 'objeto'];
 
   window.processosCache.forEach(p => {
     let mudou = false;
     let atualizacoes = {};
     let descricoes = [];
 
-    camposParaVerificar.forEach(campo => {
-      if (p[campo]) {
-        const ps = padronizarString(p[campo]);
-        if (p[campo] !== ps) {
-          atualizacoes[campo] = ps;
-          descricoes.push(`${campo.toUpperCase()}: "${p[campo]}" ➔ "${ps}"`);
-          mudou = true;
-        }
+    // 1. Status
+    if (p.status) {
+      let stNorm = normalizarEspacos(p.status).toUpperCase();
+      if (typeof normalizarStatus === 'function') stNorm = normalizarStatus(stNorm);
+      if (p.status !== stNorm) {
+        atualizacoes.status = stNorm;
+        descricoes.push(`STATUS: "${p.status}" ➔ "${stNorm}"`);
+        mudou = true;
       }
-    });
+    }
+
+    // 2. Localização
+    if (p.localizacao) {
+      let locNorm = normalizarEspacos(p.localizacao).toUpperCase();
+      if (typeof normalizarLocalizacao === 'function') locNorm = normalizarLocalizacao(locNorm);
+      if (p.localizacao !== locNorm) {
+        atualizacoes.localizacao = locNorm;
+        descricoes.push(`LOCALIZAÇÃO: "${p.localizacao}" ➔ "${locNorm}"`);
+        mudou = true;
+      }
+    }
+
+    // 3. Município
+    if (p.municipio) {
+      let munNorm = normalizarEspacos(p.municipio);
+      if (p.municipio !== munNorm) {
+        atualizacoes.municipio = munNorm;
+        descricoes.push(`MUNICÍPIO: "${p.municipio}" ➔ "${munNorm}"`);
+        mudou = true;
+      }
+    }
+
+    // 4. Objeto
+    if (p.objeto) {
+      let objNorm = normalizarEspacos(p.objeto);
+      if (p.objeto !== objNorm) {
+        atualizacoes.objeto = objNorm;
+        descricoes.push(`OBJETO: "${p.objeto}" ➔ "${objNorm}"`);
+        mudou = true;
+      }
+    }
+
+    // 5. Interessado
+    if (p.interessado) {
+      let intNorm = normalizarEspacos(p.interessado);
+      if (p.interessado !== intNorm) {
+        atualizacoes.interessado = intNorm;
+        descricoes.push(`INTERESSADO: "${p.interessado}" ➔ "${intNorm}"`);
+        mudou = true;
+      }
+    }
+
+    // 6. Categoria
+    if (p.categoria) {
+      let catNorm = normalizarEspacos(p.categoria).toUpperCase();
+      if (p.categoria !== catNorm) {
+        atualizacoes.categoria = catNorm;
+        descricoes.push(`CATEGORIA: "${p.categoria}" ➔ "${catNorm}"`);
+        mudou = true;
+      }
+    }
+
+    // 7. Tipo
+    if (p.tipo) {
+      let tipoNorm = normalizarEspacos(p.tipo).toUpperCase();
+      if (p.tipo !== tipoNorm) {
+        atualizacoes.tipo = tipoNorm;
+        descricoes.push(`TIPO: "${p.tipo}" ➔ "${tipoNorm}"`);
+        mudou = true;
+      }
+    }
+
+    // 8. Prefixo
+    if (p.prefixo) {
+      let prefNorm = normalizarEspacos(p.prefixo).toUpperCase();
+      if (p.prefixo !== prefNorm) {
+        atualizacoes.prefixo = prefNorm;
+        descricoes.push(`PREFIXO: "${p.prefixo}" ➔ "${prefNorm}"`);
+        mudou = true;
+      }
+    }
+
+    // 9. Agrupamento
+    if (p.agrupamento) {
+      let agNorm = normalizarEspacos(p.agrupamento).toUpperCase();
+      if (p.agrupamento !== agNorm) {
+        atualizacoes.agrupamento = agNorm;
+        descricoes.push(`AGRUPAMENTO: "${p.agrupamento}" ➔ "${agNorm}"`);
+        mudou = true;
+      }
+    }
 
     if (mudou && (p.aba !== 'PARAMETROS' && p.aba !== 'parametro_combo')) {
       inconsistentes.push({
@@ -4186,38 +4267,41 @@ window.verificarInconsistenciasPlanilha = function() {
   window._processosInconsistentesParaCorrigir = inconsistentes;
 
   if (inconsistentes.length === 0) {
-    if (labelStatus) labelStatus.textContent = '✓ Tudo perfeito! Nenhuma divergência encontrada em nenhum campo.';
+    if (labelStatus) labelStatus.innerHTML = '<span style="color:#34d399; font-weight:700;">✅ Varredura Concluída: Todos os registros estão 100% padronizados! Nenhuma divergência encontrada.</span>';
     return;
   }
 
-  if (labelStatus) labelStatus.textContent = `Atenção: ${inconsistentes.length} registros com divergências (espaços extras ou minúsculas).`;
+  if (labelStatus) labelStatus.innerHTML = `<span style="color:#fbbf24; font-weight:700;">⚠️ Varredura Concluída: Encontrados ${inconsistentes.length} registros com divergências de formatação/padronização no sistema.</span>`;
   
-  let html = `<table style="width:100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; color: #cbd5e1; background: rgba(0,0,0,0.2);">
+  let html = `<table style="width:100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; color: #cbd5e1; background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden;">
     <thead>
-      <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); text-align: left;">
-        <th style="padding: 6px;">ID / Processo</th>
-        <th style="padding: 6px;">Alterações Necessárias</th>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.08); text-align: left;">
+        <th style="padding: 8px 12px; color: #94a3b8;">Nº Processo / ID</th>
+        <th style="padding: 8px 12px; color: #94a3b8;">Divergências Detectadas (Espaços Extras, Caixas ou Termos)</th>
       </tr>
     </thead>
     <tbody>`;
   
-  inconsistentes.slice(0, 100).forEach(inc => {
+  inconsistentes.slice(0, 150).forEach(inc => {
     html += `<tr style="border-bottom: 1px dashed rgba(255,255,255,0.05);">
-      <td style="padding: 6px; font-weight: bold; color: #94a3b8;">${inc.numero}</td>
-      <td style="padding: 6px; color: #34d399;">${inc.descricao}</td>
+      <td style="padding: 8px 12px; font-weight: bold; color: #60a5fa; font-family: monospace;">${inc.numero}</td>
+      <td style="padding: 8px 12px; color: #34d399;">${inc.descricao}</td>
     </tr>`;
   });
   
-  if (inconsistentes.length > 100) {
-    html += `<tr><td colspan="2" style="padding: 6px; text-align: center; color: #fbbf24;">... e mais ${inconsistentes.length - 100} registros ocultos ...</td></tr>`;
+  if (inconsistentes.length > 150) {
+    html += `<tr><td colspan="2" style="padding: 10px; text-align: center; color: #fbbf24; font-weight: 600;">... e mais ${inconsistentes.length - 150} registros pendentes no lote ...</td></tr>`;
   }
   
   html += '</tbody></table>';
   if (logDiv) logDiv.innerHTML = html;
-  if (btnExecutar) btnExecutar.style.display = 'inline-flex';
-};
+  if (btnExecutar) {
+    btnExecutar.style.display = 'inline-flex';
+    btnExecutar.disabled = false;
+  }
+}
 
-window.executarPadronizacaoPlanilha = async function() {
+async function executarPadronizacaoPlanilha() {
   const btnExecutar = document.getElementById('btn-executar-padronizacao');
   const labelStatus = document.getElementById('label-status-padronizacao');
   const btnVerificar = document.getElementById('btn-verificar-padronizacao');
@@ -4228,44 +4312,103 @@ window.executarPadronizacaoPlanilha = async function() {
   
   const inconsistentes = window._processosInconsistentesParaCorrigir || [];
   let total = inconsistentes.length;
-  
-  if (labelStatus) labelStatus.textContent = `Corrigindo 0 de ${total} registros...`;
-  
+
+  if (total === 0) return;
+
+  // Barra de progresso interativa
   let progContainer = document.getElementById('bar-prog-container');
   if (!progContainer) {
     progContainer = document.createElement('div');
     progContainer.id = 'bar-prog-container';
-    progContainer.style = 'width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 10px; margin-bottom: 10px;';
-    const bar = document.createElement('div');
-    bar.id = 'bar-prog-fill';
-    bar.style = 'width: 0%; height: 100%; background: #10b981; transition: width 0.2s ease;';
-    progContainer.appendChild(bar);
+    progContainer.style.cssText = 'width: 100%; margin-top: 14px; margin-bottom: 14px; background: rgba(15,23,42,0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);';
     logDiv.parentNode.insertBefore(progContainer, logDiv);
+  } else {
+    progContainer.style.display = 'block';
   }
-  
-  const barFill = document.getElementById('bar-prog-fill');
-  barFill.style.width = '0%';
 
-  try {
-    const token = sessionStorage.getItem('sap_session_token');
-    let count = 0;
-    
-    for (let inc of inconsistentes) {
-      count++;
-      if (labelStatus) labelStatus.textContent = `Corrigindo ${count} de ${total}...`;
-      if (barFill) barFill.style.width = `${Math.round((count / total) * 100)}%`;
-      
-      await fetch(API_BASE + '/api/registros/' + inc.id, {
+  progContainer.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px;">
+      <span id="prog-text-status">⚙️ Aplicando correções na planilha em lote...</span>
+      <span id="prog-pct" style="color: #10b981; font-family: monospace; font-size: 13px;">0%</span>
+    </div>
+    <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
+      <div id="bar-prog-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 5px; transition: width 0.15s ease-out; box-shadow: 0 0 10px rgba(16,185,129,0.5);"></div>
+    </div>
+    <div style="display: flex; gap: 15px; margin-top: 8px; font-size: 11px; color: #94a3b8;">
+      <span id="prog-count-suc" style="color: #34d399;">✅ Sucesso: 0</span>
+      <span id="prog-count-err" style="color: #f87171;">❌ Falhas: 0</span>
+      <span id="prog-count-rem">Total: ${total}</span>
+    </div>
+  `;
+
+  const barFill = document.getElementById('bar-prog-fill');
+  const progPct = document.getElementById('prog-pct');
+  const progSuc = document.getElementById('prog-count-suc');
+  const progErr = document.getElementById('prog-count-err');
+  const progText = document.getElementById('prog-text-status');
+
+  logDiv.innerHTML = '<div id="live-log-box" style="display:flex; flex-direction:column; gap:4px;"></div>';
+  const liveBox = document.getElementById('live-log-box');
+
+  let sucesso = 0;
+  let falhas = 0;
+  const token = sessionStorage.getItem('sap_session_token');
+
+  for (let i = 0; i < total; i++) {
+    const inc = inconsistentes[i];
+    const currentNum = i + 1;
+    const pct = Math.round((currentNum / total) * 100);
+
+    if (barFill) barFill.style.width = `${pct}%`;
+    if (progPct) progPct.textContent = `${pct}%`;
+    if (labelStatus) labelStatus.textContent = `Processando registro ${currentNum} de ${total}...`;
+
+    try {
+      const res = await fetch(API_BASE + '/api/registros/' + inc.id, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify(inc.atualizacoes)
       });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      sucesso++;
+      if (progSuc) progSuc.textContent = `✅ Sucesso: ${sucesso}`;
+
+      if (liveBox) {
+        const item = document.createElement('div');
+        item.style.cssText = 'color: #34d399; font-size: 11px; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03);';
+        item.textContent = `✅ Processo ${inc.numero}: ${inc.descricao}`;
+        liveBox.appendChild(item);
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+    } catch (err) {
+      falhas++;
+      if (progErr) progErr.textContent = `❌ Falhas: ${falhas}`;
+
+      if (liveBox) {
+        const item = document.createElement('div');
+        item.style.cssText = 'color: #f87171; font-size: 11px; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03);';
+        item.textContent = `❌ Erro no Processo ${inc.numero}: ${err.message}`;
+        liveBox.appendChild(item);
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
     }
-    
-    if (labelStatus) labelStatus.textContent = '✓ Correções aplicadas com sucesso!';
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
+
+    await new Promise(r => setTimeout(r, 150));
+  }
+
+  if (progText) progText.textContent = '🎉 Padronização concluída!';
+  if (labelStatus) labelStatus.innerHTML = `<span style="color:#34d399; font-weight:700;">✅ Padronização Concluída! ${sucesso} registros corrigidos com sucesso (${falhas} falhas).</span>`;
+  if (btnVerificar) btnVerificar.disabled = false;
+
+  if (typeof recarregarDadosGlobais === 'function') {
+    recarregarDadosGlobais();
+  }
+}
+
+window.verificarInconsistenciasPlanilha = verificarInconsistenciasPlanilha;
+window.executarPadronizacaoPlanilha = executarPadronizacaoPlanilha;
     
   } catch (e) {
     console.error(e);

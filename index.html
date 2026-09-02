@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.91</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.92</div>
   </div>
 </div>
   
@@ -330,7 +330,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.91</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.92</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1243,14 +1243,14 @@
               ✅ Corretor Ortográfico & Padronizador
             </h3>
             <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
-              Esta ferramenta busca divergências de formatação (espaços extras, letras minúsculas) em <strong>Status</strong> e <strong>Localização</strong>. Nenhuma alteração é feita sem sua autorização.
+              Esta ferramenta realiza uma varredura completa em todo o sistema (<strong>Status, Localização, Município, Objeto, Interessado, Categoria, Tipo, Prefixo e Agrupamento</strong>). Remove espaços extras, corrige letras minúsculas e padroniza todas as células da planilha em lote com acompanhamento interativo em tempo real. Nenhuma alteração é feita sem sua autorização.
             </p>
             <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-              <button type="button" class="btn" id="btn-verificar-padronizacao" onclick="verificarInconsistenciasPlanilha()" style="background:#3b82f6; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;">
-                🔍 Buscar Divergências
+              <button type="button" class="btn" id="btn-verificar-padronizacao" onclick="if(typeof window.verificarInconsistenciasPlanilha==='function'){window.verificarInconsistenciasPlanilha();}else if(typeof verificarInconsistenciasPlanilha==='function'){verificarInconsistenciasPlanilha();}" style="background:#3b82f6; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;">
+                🔍 Buscar Divergências em Todo o Sistema
               </button>
-              <button type="button" class="btn" id="btn-executar-padronizacao" onclick="executarPadronizacaoPlanilha()" style="background:#10b981; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px; display: none;">
-                ✓ Autorizar e Corrigir
+              <button type="button" class="btn" id="btn-executar-padronizacao" onclick="if(typeof window.executarPadronizacaoPlanilha==='function'){window.executarPadronizacaoPlanilha();}else if(typeof executarPadronizacaoPlanilha==='function'){executarPadronizacaoPlanilha();}" style="background:#10b981; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px; display: none;">
+                ✓ Autorizar e Corrigir Planilhas
               </button>
             </div>
             <div id="status-padronizacao-container" style="margin-top: 16px; font-size: 13px; display: none;">
@@ -2467,7 +2467,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1788328659944"></script>
-  <script src="js/app.js?v=1.1.91"></script>
+  <script src="js/app.js?v=1.1.92"></script>
   <script src="js/auth-sap.js?v=1788328659944"></script>
   <script src="js/escolas.js?v=1788328659944.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
