@@ -2898,7 +2898,7 @@ function abrirModalAcesso(index = null) {
     senhaInput.value = user.senha || '';
 
     nomeInput.disabled = false;
-    whatsappInput.disabled = true; // WhatsApp nǜo pode ser alterado na ediǜo
+    whatsappInput.disabled = true; // WhatsApp não pode ser alterado na ediǜo
     nivelInput.disabled = false;
     if(setorInput) setorInput.disabled = false;
     senhaInput.disabled = false;
@@ -3105,6 +3105,22 @@ async function carregarAcessos() {
     }
 
     listaAcessos = await res.json();
+    
+    // Correção temporária para o caso do backend retornar colunas deslocadas (devido à inserção da coluna Setor na planilha)
+    listaAcessos = listaAcessos.map(u => {
+      // Se a coluna 'senha' está retornando 1 ou 0 (que é o padrão de bloqueado/liberado), sabemos que deslocou.
+      if (u.senha === 1 || u.senha === 0 || u.senha === '1' || u.senha === '0') {
+        return {
+          ...u,
+          setor: u.status,
+          status: (u.senha == 1 || String(u.senha).toLowerCase() === 'liberado') ? 'liberado' : 'bloqueado',
+          senha: u.contagem,
+          contagem: u.data,
+          data: 'N/D' // Data foi cortada pelo backend que limita a A:G
+        };
+      }
+      return u;
+    });
     renderListaAcessosUI();
   } catch (error) {
     console.error(error);
@@ -3383,373 +3399,25 @@ function toggleFiltros() {
 }
 
 function toggleFormAcesso() {
-  const card = document.getElementById('card-form-acesso');
+  const form = document.getElementById('form-acesso');
   const btn = document.getElementById('btn-toggle-form-acesso');
-  if (!card || !btn) return;
-  const isCollapsed = card.classList.toggle('collapsed');
+  if (!form || !btn) return;
   
-  if (isCollapsed) {
-    btn.innerHTML = '�� <span class="btn-text">Mostrar</span>';
+  if (form.style.display !== 'none') {
+    form.style.display = 'none';
+    btn.innerHTML = '&#10133; <span class="btn-text">Mostrar</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('form_acesso_collapsed', '1');
   } else {
-    btn.innerHTML = '�� <span class="btn-text">Ocultar</span>';
+    form.style.display = 'grid';
+    btn.innerHTML = '&#128065; <span class="btn-text">Ocultar</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('form_acesso_collapsed');
   }
 }
 
-function toggleFormProcesso() {
-  const card = document.getElementById('card-form-processo');
-  const btn = document.getElementById('btn-toggle-form-processo');
-  if (!card || !btn) return;
-  const isCollapsed = card.classList.toggle('collapsed');
-  
-  if (isCollapsed) {
-    btn.innerHTML = '�� <span class="btn-text">Mostrar Formulário</span>';
-    btn.style.borderColor = 'var(--blue)';
-    btn.style.color = 'var(--blue)';
-  } else {
-    btn.innerHTML = '�� <span class="btn-text">Ocultar Formulário</span>';
-    btn.style.borderColor = 'var(--border)';
-    btn.style.color = '';
-  }
-}
-
-async function recarregarDadosGlobais() {
-  toast('Recarregando dados do servidor...', 'info');
-  try {
-    await inicializarDados();
-    toast('Dados atualizados com sucesso!', 'success');
-    
-    // Atualizar tela atual
-    if (state.page === 'dashboard') renderDashboard();
-    else if (state.page === 'processos') renderProcessos();
-    else if (state.page === 'repetidos') renderProcessosRepetidos();
-    else if (state.page === 'acessos') carregarAcessos();
-    
-    // Atualizar contador sidebar
-    if (typeof atualizarContador === 'function') atualizarContador();
-  } catch (err) {
-    console.error(err);
-    toast('Erro ao recarregar dados.', 'error');
-  }
-}
-
-// Inicialização dos estados colapsados de acordo com tela (mobile ou localStorage)
-function inicializarEstadosColapsaveis() {
-  const isMobile = window.innerWidth <= 768;
-  
-  // 1. Filtros
-  const savedFiltersCollapse = localStorage.getItem('filters_collapsed');
-  const bar = document.querySelector('#page-processos .filters-bar');
-  const btnFilters = document.getElementById('btn-toggle-filtros');
-  if (bar && btnFilters) {
-    if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
-      bar.classList.add('collapsed');
-      btnFilters.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg> <span class="btn-text">MOSTRAR FILTROS</span>';
-      btnFilters.style.borderColor = 'var(--blue)';
-      btnFilters.style.color = 'var(--blue)';
-    }
-  }
-  
-  // 2. Formulário Acessos
-  const savedAcessosCollapse = localStorage.getItem('form_acesso_collapsed');
-  const cardAcessos = document.getElementById('card-form-acesso');
-  const btnAcessos = document.getElementById('btn-toggle-form-acesso');
-  if (cardAcessos && btnAcessos) {
-    if (savedAcessosCollapse === '1' || (savedAcessosCollapse === null && isMobile)) {
-      cardAcessos.classList.add('collapsed');
-      btnAcessos.innerHTML = '�� <span class="btn-text">Mostrar</span>';
-      btnAcessos.style.borderColor = 'var(--blue)';
-      btnAcessos.style.color = 'var(--blue)';
-    }
-  }
-}
-
-// Chamar inicialização no DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-  inicializarEstadosColapsaveis();
-});
-
-window.toggleFiltros = toggleFiltros;
-window.toggleFormAcesso = toggleFormAcesso;
-window.toggleFormProcesso = toggleFormProcesso;
-window.recarregarDadosGlobais = recarregarDadosGlobais;
-
-function selectSegment(group, value) {
-  const hiddenInput = document.getElementById(`form-${group}`);
-  if (!hiddenInput) return;
-  
-  const isSelected = hiddenInput.value === value;
-  hiddenInput.value = isSelected ? '' : value;
-  
-  updateSegmentControl(group, hiddenInput.value);
-}
-
-function updateSegmentControl(group, activeValue) {
-  const control = document.getElementById(`control-${group}`);
-  if (!control) return;
-  const buttons = control.querySelectorAll('.segment-btn');
-  buttons.forEach(btn => {
-    const val = btn.getAttribute('data-value');
-    if (val === activeValue) {
-      btn.style.background = getActiveBgColor(group, val);
-      btn.style.borderColor = getActiveBorderColor(group, val);
-      btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
-      btn.style.color = (val === 'OB' || val === 'MC') ? '#0f172a' : '#fff';
-      btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-    } else {
-      btn.style.background = 'none';
-      btn.style.border = '1px solid transparent';
-      btn.style.color = 'var(--text-secondary)';
-      btn.style.boxShadow = 'none';
-    }
-  });
-}
-
-function getActiveBgColor(group, val) {
-  if (group === 'categoria') {
-    if (val === 'F') return '#3b82f6'; // Fomento - Solid Blue
-    if (val === 'C') return '#10b981'; // Convênio - Solid Green
-    if (val === 'O' || val === 'T') return '#8b5cf6'; // Termo de Cooperação - Solid Purple
-  } else if (group === 'tipo') {
-    if (val === 'OB') return '#06b6d4'; // Obras - Solid Cyan
-    if (val === 'MP') return '#f97316'; // Mat. Permanente - Solid Orange
-    if (val === 'MC') return '#f59e0b'; // Mat. Consumo - Solid Yellow/Amber
-    if (val === 'SI') return '#a855f7'; // Sistema - Solid Purple
-    if (val === 'TR') return '#10b981'; // Treinamento - Solid Emerald
-    if (val === 'OUT') return '#f43f5e'; // Outros - Solid Rose
-  }
-  return 'rgba(255, 255, 255, 0.1)';
-}
-
-function getActiveBorderColor(group, val) {
-  return getActiveBgColor(group, val);
-}
-
-function getCategoryBadge(categoria) {
-  if (!categoria) return '';
-  const char = String(categoria).trim().toUpperCase()[0];
-  if (char === 'F') {
-    return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
-  }
-  if (char === 'C') {
-    return `<span class="badge-cat badge-cat-c" title="Categoria: Convênio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
-  }
-  if (char === 'O') {
-    return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
-  }
-  if (char === 'T') {
-    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
-  }
-  return '';
-}
-
-function getTypeBadge(tipo) {
-  if (!tipo) return '';
-  const char = String(tipo).trim().toUpperCase();
-  if (char === 'OB') {
-    return `<span class="badge-tipo badge-tipo-ob" title="Tipo: Obras" style="margin-left: 4px; padding: 2px 6px; background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OB</span>`;
-  }
-  if (char === 'MP') {
-    return `<span class="badge-tipo badge-tipo-mp" title="Tipo: Material Permanente" style="margin-left: 4px; padding: 2px 6px; background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MP</span>`;
-  }
-  if (char === 'MC') {
-    return `<span class="badge-tipo badge-tipo-mc" title="Tipo: Material de Consumo" style="margin-left: 4px; padding: 2px 6px; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MC</span>`;
-  }
-  if (char === 'SI') {
-    return `<span class="badge-tipo badge-tipo-si" title="Tipo: Sistema" style="margin-left: 4px; padding: 2px 6px; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">SI</span>`;
-  }
-  if (char === 'TR') {
-    return `<span class="badge-tipo badge-tipo-tr" title="Tipo: Treinamento" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">TR</span>`;
-  }
-  if (char === 'OUT' || char === 'OU') {
-    return `<span class="badge-tipo badge-tipo-out" title="Tipo: Outros" style="margin-left: 4px; padding: 2px 6px; background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OUT</span>`;
-  }
-  return '';
-}
-
-window.selectSegment = selectSegment;
-window.updateSegmentControl = updateSegmentControl;
-window.getCategoryBadge = getCategoryBadge;
-window.getTypeBadge = getTypeBadge;
-
-// ============================================================
-// MÓDULO: ESCOLAS (ADM ONLY)
-// ============================================================
-
-function inserirDataHoje() {
-  const dateInput = document.getElementById('form-data');
-  if (dateInput) {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    dateInput.value = `${yyyy}-${mm}-${dd}`;
-  }
-}
-window.inserirDataHoje = inserirDataHoje;
-
-
-// ============================================================
-// SEDUC — Gerador de Manifestação Técnica & Relatório Sintético TCE-RO
-// ============================================================
-
-
-// ============================================================
-// SEDUC — Gerador de Manifestação Técnica & Relatório A4/PDF (TCE-RO)
-// ============================================================
-
-window._manifestoProcessoAtual = null;
-
-function gerarTextoManifestoTCE(p) {
-  p = p || {};
-
-  const municipio = p.municipio || 'Município não informado';
-  const interessado = p.interessado || 'Unidade Escolar / Conselho Escolar';
-  const numeroProcesso = p.numero || 'Sem número';
-  const oficioNum = p.oficioNumero || 'XX - XXX';
-  
-  let diretorNome = 'XXX';
-  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
-    const esc = _escolasCache.find(e => 
-      (e.nome && p.interessado && e.nome.toLowerCase().includes(p.interessado.toLowerCase())) ||
-      (e.municipio && p.municipio && e.municipio.toLowerCase() === p.municipio.toLowerCase())
-    );
-    if (esc && esc.diretor) diretorNome = esc.diretor;
-  }
-
-  const tipoCod = (p.tipo || '').toUpperCase();
-  const tipoDesc = {
-    'OB': 'Obras e Infraestrutura Fsica',
-    'MP': 'Aquisição de Material Permanente',
-    'MC': 'Aquisição de Material de Consumo',
-    'SI': 'Sistemas e Tecnologias da Informação',
-    'TR': 'Treinamento e Capacitação',
-    'OU': 'Outros Investimentos'
-  }[tipoCod] || p.tipo || 'Investimento em Infraestrutura/Material';
-
-  let detalheObj = '';
-  if (p.detalhamentoItens && p.detalhamentoItens.trim()) {
-    detalheObj = p.detalhamentoItens.trim();
-  } else {
-    let partes = [];
-    if (p.objeto) partes.push(p.objeto);
-    if (p.metragemM2) partes.push('metragem aproximada de ' + p.metragemM2 + ' m²');
-    if (p.qtdeSala) partes.push(p.qtdeSala + ' salas de aula');
-    if (p.auditorio) partes.push('auditório (' + (p.tipoAuditorio || 'padrão') + ')');
-    if (p.quadra) partes.push('quadra (' + p.quadra + ')');
-    if (p.refeitorio) partes.push('refeitório (' + p.refeitorio + ')');
-    if (p.banheiros) partes.push('instalações sanitárias (' + p.banheiros + ')');
-    detalheObj = partes.length > 0 ? partes.join(', ') : (tipoDesc.toLowerCase() + ', compreendendo mobiliários, equipamentos e adequações necessárias');
-  }
-
-  let textoObjetoConstruido = '';
-  if (tipoCod === 'OB' && p.metragemM2) {
-    textoObjetoConstruido = 'a execução de obras/serviços de engenharia com metragem total de ' + p.metragemM2 + ' m², abrangendo ' + detalheObj;
-  } else {
-    textoObjetoConstruido = (p.objeto ? p.objeto.toLowerCase() : 'aquisição e instalação de materiais') + ', compreendendo ' + detalheObj;
-  }
-
-  const dataAtualExtenso = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
-
-  return `Manifestação
-
-A legislação educacional brasileira, em seus diversos nveis, estabelece um complexo de deveres e colaborações para a garantia do direito à educação. A Constituição Federal, em seu artigo 205, consagra a educação como um direito de todos e um dever do Estado e da famlia, a ser promovida com a colaboração da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualificação para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos Municípios a competência para manter, com a cooperação técnica e financeira da União e do Estado, programas de educação infantil e de ensino fundamental. O regime de colaboração entre os entes federados é reforçado pelo artigo 211, § 4º, que determina a definição de formas de colaboração entre União, Estados, Distrito Federal e Municípios para assegurar a universalização do ensino obrigatório.
-
-A Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996) reitera e detalha essa estrutura colaborativa, estabelecendo em seu artigo 8º que a União, os Estados, o Distrito Federal e os Municípios organizarão, em regime de colaboração, seus respectivos sistemas de ensino. O artigo 10 da mesma lei incumbe os Estados de organizar, manter e desenvolver os órgãos e instituições oficiais de seus sistemas de ensino, definindo, com os Municípios, formas de colaboração na oferta do ensino fundamental (inciso II), e de baixar normas complementares para seu sistema de ensino (inciso VI).
-
-A Lei nº 14.113/2020, que regulamenta o Fundeb, fortalece a cooperação entre os entes federativos. O artigo 14, § 1º, inciso IV, condiciona o recebimento de complementação de recursos federais à existência de um regime de colaboração entre Estado e Municípios formalizado na legislação estadual. Ademais, o artigo 50, em seu parágrafo único, estabelece que a União, os Estados e o Distrito Federal desenvolverão, em regime de colaboração, programas de apoio para a conclusão da educação básica por alunos matriculados no sistema público.
-
-No âmbito estadual, a Constituição do Estado de Rondônia, em seus artigos 187 e 188, detalha as responsabilidades do poder público com a educação, estabelecendo que o ensino será ministrado com base em princpios como a igualdade de condições para o acesso e permanência na escola e a gestão democrática do ensino público, e define as atribuições do sistema estadual de ensino.
-
-Ainda no âmbito estadual, a Lei nº. 5.735/2024 institui o Programa de Alfabetização do Estado de Rondônia, em regime de colaboração com os Municípios, cabendo ao Estado prestar cooperação técnica e financeira aos Municípios. Dentre os eixos do programa, há o Eixo 2 que trata da infraestrutura fsica e pedagógica. Desta feita, compulsando o Ofcio ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados à organização, equipagem e melhoria dos espaços pedagógicos da unidade escolar, visando aprimorar as condições de trabalho dos profissionais da educação e qualificar os espaços escolares, por meio da disponibilização de mobiliário e equipamentos adequados, contribuindo para o fortalecimento das práticas pedagógicas e assegurando maior organização, conforto, segurança e funcionalidade aos ambientes educacionais.
-
-Em atendimento à solicitação do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do Ofcio ${oficioNum}, manifestamo-nos favoravelmente à solicitação do Município, no que tange ao regime de colaboração regulamentado pela Lei Estadual nº. 5.735/2024.
-
-Nestes termos, submeto os autos à apreciação superior, para deliberação acerca da oportunidade e conveniência administrativa.
-
-Porto Velho - RO, ${dataAtualExtenso}.`;
-}
-
-function gerarRelatorioMonitoramento() {
-  var g  = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
-  var gb = function(id) { var el = document.getElementById(id); return el ? el.checked : false; };
-
-  // Números do processo (campo múltiplo)
-  var inputsNum  = Array.from(document.querySelectorAll('input[name="numero[]"]'));
-  var numeroProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || 'Sem número';
-
-  // Valores financeiros
-  var parseMon = function(v) {
-    if (!v) return 0;
-    var s = String(v).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');
-    return parseFloat(s) || 0;
-  };
-  var valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : parseMon(g('form-valorPlan'));
-  var valOf   = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf'))   : parseMon(g('form-valorOf'));
-
-  // Categoria / Tipo (segment buttons)
-  var catEl  = document.querySelector('#control-categoria .segment-btn.active') || {};
-  var tipoEl = document.querySelector('#control-tipo .segment-btn.active')      || {};
-
-  // Montar objeto com TODOS os campos das duas abas
-  var p = {
-    numero:            numeroProc,
-    municipio:         g('form-municipio'),
-    interessado:       g('form-interessado'),
-    objeto:            g('form-objeto'),
-    prefixo:           g('form-prefixo'),
-    ano:               g('form-ano'),
-    agrupamento:       g('form-agrupamento'),
-    data:              g('form-data'),
-    status:            g('form-status'),
-    localizacao:       g('form-localizacao'),
-    obs:               g('form-obs'),
-    categoria:         (catEl.dataset  && catEl.dataset.value)  || g('form-categoria'),
-    tipo:              (tipoEl.dataset && tipoEl.dataset.value) || g('form-tipo'),
-    cam:               gb('form-cam')  ? 1 : 0,
-    gab:               gb('form-gab')  ? 1 : 0,
-    cc:                gb('form-cc')   ? 1 : 0,
-    valorPlan:         valPlan,
-    valorOf:           valOf,
-    qtdeSala:          g('form-qtdeSala'),
-    tipoSala:          g('form-tipoSala'),
-    auditorio:         g('form-auditorio'),
-    tipoAuditorio:     g('form-tipoAuditorio'),
-    quadra:            g('form-quadra'),
-    patio:             g('form-patio'),
-    refeitorio:        g('form-refeitorio'),
-    banheiros:         g('form-banheiros'),
-    metragemM2:        g('form-metragemM2'),
-    detalhamentoItens: g('form-detalhamentoItens'),
-    demaisObservacoes: g('form-demaisObservacoes')
-  };
-
-  // Complementar com dados já salvos se estiver editando
-  if (typeof state !== 'undefined' && state.editandoId) {
-    var saved = (state.processos || []).find(function(item){ return item.id === state.editandoId; });
-    if (saved) {
-      Object.keys(p).forEach(function(k) {
-        if (p[k] === '' || p[k] === 0 || p[k] === null || p[k] === undefined) {
-          if (saved[k] !== undefined && saved[k] !== null && saved[k] !== '') p[k] = saved[k];
-        }
-      });
-    }
-  }
-
-  // Gerar PDF diretamente (sem modal intermediário)
-  window._manifestoProcessoAtual = p;
-  imprimirManifestoTCE();
-}
-
-// Compatibilidade com referências antigas
-function gerarEExibirManifestoTCEAtual() {
-  gerarRelatorioMonitoramento();
-}
 function abrirModalManifestoTCEById(id) {
   const p = (state.processos || []).find(item => item.id === id);
   if (!p) {
@@ -4465,7 +4133,7 @@ window.verificarInconsistenciasPlanilha = function() {
   if (btnExecutar) btnExecutar.style.display = 'none';
 
   if (!window.processosCache || window.processosCache.length === 0) {
-    if (labelStatus) labelStatus.textContent = 'Erro: Planilha vazia ou nǜo carregada.';
+    if (labelStatus) labelStatus.textContent = 'Erro: Planilha vazia ou não carregada.';
     return;
   }
 
@@ -4514,8 +4182,8 @@ window.verificarInconsistenciasPlanilha = function() {
   window._processosInconsistentesParaCorrigir = inconsistentes;
 
   if (inconsistentes.length === 0) {
-    if (labelStatus) labelStatus.textContent = '✓ Planilha estǭ 100% padronizada! Nenhuma divergǦncia encontrada.';
-    if (logDiv) logDiv.innerHTML = '<div>Sem erros ortogrǭficos ou de espaçamento.</div>';
+    if (labelStatus) labelStatus.textContent = '✓ Planilha está 100% padronizada! Nenhuma divergência encontrada.';
+    if (logDiv) logDiv.innerHTML = '<div>Sem erros ortográficos ou de espaçamento.</div>';
   } else {
     if (labelStatus) labelStatus.textContent = `Atenção: ${inconsistentes.length} divergências encontradas. Por favor, autorize as mudanças abaixo:`;
     
@@ -4538,28 +4206,68 @@ window.executarPadronizacaoPlanilha = async function() {
   const btnExecutar = document.getElementById('btn-executar-padronizacao');
   const labelStatus = document.getElementById('label-status-padronizacao');
   const btnVerificar = document.getElementById('btn-verificar-padronizacao');
+  const logDiv = document.getElementById('log-status-padronizacao');
   
   if (btnExecutar) btnExecutar.style.display = 'none';
   if (btnVerificar) btnVerificar.disabled = true;
-  if (labelStatus) labelStatus.textContent = 'Enviando correes para a planilha... Isso pode levar alguns segundos.';
+  
+  const inconsistentes = window._processosInconsistentesParaCorrigir || [];
+  let total = inconsistentes.length;
+  
+  if (labelStatus) labelStatus.textContent = `Corrigindo 0 de ${total} divergências...`;
+  
+  // Create progress bar
+  let progContainer = document.getElementById('bar-prog-container');
+  if (!progContainer) {
+    progContainer = document.createElement('div');
+    progContainer.id = 'bar-prog-container';
+    progContainer.style = 'width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-top: 10px; margin-bottom: 10px;';
+    const bar = document.createElement('div');
+    bar.id = 'bar-prog-fill';
+    bar.style = 'width: 0%; height: 100%; background: #10b981; transition: width 0.2s ease;';
+    progContainer.appendChild(bar);
+    logDiv.parentNode.insertBefore(progContainer, logDiv);
+  }
+  
+  const barFill = document.getElementById('bar-prog-fill');
+  barFill.style.width = '0%';
 
   try {
     const token = sessionStorage.getItem('sap_session_token');
-    const inconsistentes = window._processosInconsistentesParaCorrigir || [];
     let count = 0;
     
     for (let inc of inconsistentes) {
-      if (labelStatus) labelStatus.textContent = `Corrigindo ${count + 1} de ${inconsistentes.length}...`;
-      const payload = { action: 'updateProcesso', token: token, data: { id: inc.id, aba: inc.aba, status: inc.statusNovo, localizacao: inc.locNova } };
-      await fetch(API_BASE, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       count++;
+      if (labelStatus) labelStatus.textContent = `Corrigindo ${count} de ${total}...`;
+      if (barFill) barFill.style.width = `${Math.round((count / total) * 100)}%`;
+      
+      const payload = {
+        action: 'updateProcesso',
+        token: token,
+        data: {
+          id: inc.id,
+          aba: inc.aba,
+          status: inc.statusNovo,
+          localizacao: inc.locNova
+        }
+      };
+      
+      await fetch(API_BASE, {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
     }
     
     if (labelStatus) labelStatus.textContent = '✓ Correções aplicadas com sucesso!';
-    setTimeout(() => { window.location.reload(); }, 2000);
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+    
   } catch (e) {
     console.error(e);
-    if (labelStatus) labelStatus.textContent = 'Erro ao aplicar correes. Tente novamente.';
+    if (labelStatus) labelStatus.textContent = 'Erro ao aplicar correções. Tente novamente.';
     if (btnVerificar) btnVerificar.disabled = false;
   }
 };

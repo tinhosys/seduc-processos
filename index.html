@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.84</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.85</div>
   </div>
 </div>
   
@@ -330,7 +330,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.84</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.85</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -784,8 +784,8 @@
           </div>
 
           <button type="button" id="btn-toggle-form-processo" onclick="toggleFormProcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 8px 12px; height: 38px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
-            📌 <span class="btn-text">Ocultar Formulário</span>
-          </button>
+              &#128065; <span class="btn-text">Ocultar Formulário</span>
+            </button>
         </div>
 
         <div class="card" id="card-form-processo">
@@ -1162,7 +1162,7 @@
           <h3 id="cadastro-acesso-title" style="font-size: 14px; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
             <span style="display: flex; align-items: center; gap: 8px;">👤 Registro de Acesso</span>
             <button type="button" id="btn-toggle-form-acesso" onclick="toggleFormAcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 4px 10px; font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: normal; cursor: pointer;">
-              📌 <span class="btn-text">Ocultar</span>
+              &#128065; <span class="btn-text">Ocultar</span>
             </button>
           </h3>
           <form id="form-acesso" onsubmit="salvarAcessoForm(event)" style="display: none; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; align-items: flex-end; transition: all 0.3s ease; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05);">
@@ -1170,17 +1170,17 @@
             
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nome" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nome Completo</label>
-              <input type="text" id="acesso-nome" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none;" placeholder="Digite o primeiro nome ou nome popular" disabled>
+              <input type="text" id="acesso-nome" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" placeholder="Digite o primeiro nome ou nome popular" disabled>
             </div>
 
             <div class="form-group" style="margin: 0;">
               <label for="acesso-whatsapp" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">WhatsApp</label>
-              <input type="text" id="acesso-whatsapp" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)" disabled>
+              <input type="text" id="acesso-whatsapp" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)" disabled>
             </div>
             
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nivel" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nível de Acesso</label>
-              <select id="acesso-nivel" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:var(--bg-secondary); color:var(--text-primary); outline:none; height: 40px; box-sizing: border-box;" disabled>
+              <select id="acesso-nivel" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" disabled>
                 <option value="leitor">👁️ LEITOR</option>
                 <option value="editor">✏️ EDITOR</option>
                   <option value="gerente">💼 GERENTE</option>
@@ -1191,12 +1191,12 @@
             
               <div class="form-group" style="margin: 0;">
                 <label for="acesso-setor" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Setor</label>
-                <input type="text" id="acesso-setor" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none; height: 40px; box-sizing: border-box;" placeholder="Ex: GDSM" disabled>
+                <input type="text" id="acesso-setor" style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" placeholder="Ex: GDSM" disabled>
               </div>
 
 <div class="form-group" style="margin: 0;">
               <label for="acesso-senha" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Senha (4 números)</label>
-              <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none; text-align: center; letter-spacing: 2px; height: 40px; box-sizing: border-box;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')" disabled>
+              <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s; text-align:center; letter-spacing:2px;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')" disabled>
             </div>
             
             <div class="form-group" style="margin: 0;">
@@ -2462,13 +2462,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1788325186691"></script>
-  <script src="js/app.js?v=1788325186920"></script>
-  <script src="js/auth-sap.js?v=1788325186691"></script>
-  <script src="js/escolas.js?v=1788325186691.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1788326562876"></script>
+  <script src="js/app.js?v=1788326563040"></script>
+  <script src="js/auth-sap.js?v=1788326562876"></script>
+  <script src="js/escolas.js?v=1788326562876.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1788325186691"></script>
+<script src="js/mapa.js?v=1788326562876"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2612,13 +2612,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1788325186691"></script>
+  <script src="js/multi-select.js?v=1788326562876"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1788325186920"></script>
-  <script src="js/orcamento.js?v=1788325186920"></script>
-  <script src="js/print-proalfa.js?v=1788325186691"></script>
-  <script src="js/proalfa.js?v=1788325186920"></script>
+  <script src="js/diarias.js?v=1788326563040"></script>
+  <script src="js/orcamento.js?v=1788326563040"></script>
+  <script src="js/print-proalfa.js?v=1788326562876"></script>
+  <script src="js/proalfa.js?v=1788326563040"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
