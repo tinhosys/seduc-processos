@@ -2430,7 +2430,7 @@ window.formatNumberOnly = function(valor) {
 
 function injectPrintHeader(subtitle) { /* disabled */ }
 
-window.imprimirPadrao = function(filtrados = getFiltrados()) {
+function imprimirPadrao(filtrados = getFiltrados()) {
       updatePrintDateTime();
       updatePrintDateTime();
       
@@ -2545,7 +2545,9 @@ window.imprimirPadrao = function(filtrados = getFiltrados()) {
       }, 1000);
     };
 
-window.imprimirDetalhado = function() {
+window.imprimirPadrao = imprimirPadrao;
+
+function imprimirDetalhado() {
   updatePrintDateTime();
   const filtrados = getFiltrados();
   
@@ -2742,7 +2744,9 @@ window.imprimirDetalhado = function() {
   }, 1000);
 };
 
-window.imprimirAnalise = function() {
+window.imprimirDetalhado = imprimirDetalhado;
+
+function imprimirAnalise() {
   updatePrintDateTime();
   const filtrados = getFiltrados();
   let total = 0;
@@ -2844,6 +2848,7 @@ window.imprimirAnalise = function() {
     document.getElementById('print-layout-analise').style.display = 'none';
   }, 1000);
 };
+window.imprimirAnalise = imprimirAnalise;
 
 // ---- GERENCIAMENTO DE ACESSOS (CRUD) ----
 
@@ -4106,7 +4111,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-window.imprimirPadraoSelecionado = function() {
+function imprimirPadraoSelecionado() {
     const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
     if (idsSelecionados.length === 0) {
         alert('Nenhum processo selecionado.');
@@ -4114,12 +4119,14 @@ window.imprimirPadraoSelecionado = function() {
     }
     const filtrados = getFiltrados().filter(p => idsSelecionados.includes(p.id));
     imprimirPadrao(filtrados);
-};
+}
+window.imprimirPadraoSelecionado = imprimirPadraoSelecionado;
 
-window.toggleAllProcessos = function(el) {
+function toggleAllProcessos(el) {
     const checkboxes = document.querySelectorAll('.check-processo');
     checkboxes.forEach(cb => cb.checked = el.checked);
-};
+}
+window.toggleAllProcessos = toggleAllProcessos;
 
 window._processosInconsistentesParaCorrigir = [];
 
