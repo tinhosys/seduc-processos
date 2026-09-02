@@ -83,7 +83,6 @@ function aplicarPermissoes(nivel) {
       elRole.style.color = nivel === 'gerente' ? '#a78bfa' : (nivel === 'editor' ? '#10b981' : '#f59e0b');
     }
   }
-  }
 }
 
 // Exibe a tela de login
