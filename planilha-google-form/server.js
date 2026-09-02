@@ -107,10 +107,10 @@ app.post("/api/auth", async (req, res) => {
   const whatsappNorm = whatsapp.toString().replace(/\D/g, "");
 
   try {
-    // Ler aba "Acessos" da planilha (A=NOME, B=WHATSAPP, C=NIVEL DE ACESSO, D=BLOQUEADO/LIBERADO, E=SENHA, F=CONTAGEM ACESSO, G=DATA ACESSO)
+    // Ler aba "Acessos" da planilha (A=NOME, B=WHATSAPP, C=NIVEL DE ACESSO, D=SETOR, E=BLOQUEADO/LIBERADO, F=SENHA, G=CONTAGEM ACESSO, H=DATA ACESSO)
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:G"
+      range: "Acessos!A:H"
     });
 
     const rows = result.data.values || [];
@@ -130,11 +130,12 @@ app.post("/api/auth", async (req, res) => {
       return res.status(403).json({ erro: "Acesso negado. Seu WhatsApp não está cadastrado ou autorizado." });
     }
 
-    const nome  = (usuario[0] || whatsappNorm).trim();
-    const waValue = (usuario[1] || "").trim();
-    const nivel = (usuario[2] || "").trim().toLowerCase();
-    const statusRaw = (usuario[3] || "1").toString().trim();
-    const senhaPlanilha = (usuario[4] || "").toString().trim();
+    const nome          = (usuario[0] || whatsappNorm).trim();
+    const waValue       = (usuario[1] || "").trim();
+    const nivel         = (usuario[2] || "").trim().toLowerCase();
+    const setor         = (usuario[3] || "").trim();
+    const statusRaw     = (usuario[4] || "1").toString().trim();
+    const senhaPlanilha = (usuario[5] || "").toString().trim();
 
     const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
 
@@ -146,29 +147,29 @@ app.post("/api/auth", async (req, res) => {
       return res.status(401).json({ erro: "Senha incorreta." });
     }
 
-    if (nivel !== "editor" && nivel !== "leitor" && nivel !== "adm") {
+    if (nivel !== "editor" && nivel !== "leitor" && nivel !== "adm" && nivel !== "gerente") {
       return res.status(403).json({ erro: "Nível de acesso inválido. Contate o administrador." });
     }
 
-    // Incrementar contagem e atualizar data de acesso no Sheets
-    const contagemAtual = Number(usuario[5] || "0");
+    // Incrementar contagem (coluna G/index 6) e atualizar data de acesso (coluna H/index 7) no Sheets
+    const contagemAtual = Number(usuario[6] || "0");
     const novaContagem = contagemAtual + 1;
     const dataHoraAtual = new Date().toLocaleString("pt-BR", { timeZone: "America/Porto_Velho" });
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
-      range: `Acessos!F${userRowIndex}:G${userRowIndex}`,
+      range: `Acessos!G${userRowIndex}:H${userRowIndex}`,
       valueInputOption: "USER_ENTERED",
       requestBody: { values: [[novaContagem, dataHoraAtual]] }
     });
 
     // Criar sessão
     const token = gerarToken();
-    sessoes.set(token, { whatsapp: whatsappNorm, nome, nivel, criadoEm: Date.now() });
+    sessoes.set(token, { whatsapp: whatsappNorm, nome, nivel, setor, criadoEm: Date.now() });
 
-    console.log(`[AUTH] Login: ${nome} (${whatsappNorm}) | Nível: ${nivel} | Token: ${token.substring(0,8)}...`);
+    console.log(`[AUTH] Login: ${nome} (${whatsappNorm}) | Nível: ${nivel} | Setor: ${setor} | Token: ${token.substring(0,8)}...`);
 
-    return res.json({ token, whatsapp: whatsappNorm, nome, nivel });
+    return res.json({ token, whatsapp: whatsappNorm, nome, nivel, setor });
   } catch (err) {
     console.error("[AUTH] Erro:", err);
     return res.status(500).json({ erro: "Erro ao verificar acesso. Tente novamente." });
@@ -210,7 +211,7 @@ app.put("/api/auth/senha", authMiddleware, async (req, res) => {
 
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:G"
+      range: "Acessos!A:H"
     });
 
     const rows = result.data.values || [];
@@ -231,14 +232,14 @@ app.put("/api/auth/senha", authMiddleware, async (req, res) => {
       return res.status(404).json({ erro: "Usuário não encontrado." });
     }
 
-    const senhaPlanilha = (usuarioEncontrado[4] || "").toString().trim();
+    const senhaPlanilha = (usuarioEncontrado[5] || "").toString().trim();
     if (senhaPlanilha !== senhaAtual.toString().trim()) {
       return res.status(401).json({ erro: "Senha atual incorreta." });
     }
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
-      range: `Acessos!E${userRowIndex}`,
+      range: `Acessos!F${userRowIndex}`,
       valueInputOption: "USER_ENTERED",
       requestBody: { values: [[novaSenhaStr]] }
     });
@@ -699,7 +700,7 @@ app.get("/api/acessos", adminOnly, async (req, res) => {
   try {
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:G"
+      range: "Acessos!A:H"
     });
 
     const rows = result.data.values || [];
@@ -709,21 +710,22 @@ app.get("/api/acessos", adminOnly, async (req, res) => {
 
     const validRows = [];
 
-    // Colunas: A=NOME, B=WHATSAPP, C=NIVEL DE ACESSO, D=BLOQUEADO/LIBERADO, E=SENHA, F=CONTAGEM ACESSO, G=DATA ACESSO
+    // Colunas: A=NOME, B=WHATSAPP, C=NIVEL DE ACESSO, D=SETOR, E=BLOQUEADO/LIBERADO, F=SENHA, G=CONTAGEM ACESSO, H=DATA ACESSO
     rows.slice(1).forEach((row, index) => {
       if (!row || row.length === 0 || row.every(cell => !cell || String(cell).trim() === "")) {
         return;
       }
-      const statusRaw = (row[3] || "1").toString().trim();
+      const statusRaw = (row[4] || "1").toString().trim();
       const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
       validRows.push({
         nome:     (row[0] || "").trim(),
         whatsapp: (row[1] || "").trim(),
         nivel:    (row[2] || "").trim().toLowerCase(),
+        setor:    (row[3] || "").trim(),
         status:   status,
-        senha:    (row[4] || "").toString().trim(),
-        contagem: (row[5] || "0").toString().trim(),
-        data:     (row[6] || "").toString().trim(),
+        senha:    (row[5] || "").toString().trim(),
+        contagem: (row[6] || "0").toString().trim(),
+        data:     (row[7] || "").toString().trim(),
         _rowNumber: index + 2
       });
     });
@@ -737,17 +739,18 @@ app.get("/api/acessos", adminOnly, async (req, res) => {
 
 app.post("/api/acessos", adminOnly, async (req, res) => {
   try {
-    const { nivel, nome, whatsapp, status, senha } = req.body;
+    const { nivel, nome, whatsapp, setor, status, senha } = req.body;
     if (!whatsapp || !nivel || !nome || !senha) {
       return res.status(400).json({ erro: "Nome, WhatsApp, nível de acesso e senha são obrigatórios." });
     }
 
-    const nomeTrim  = nome.trim();
+    const nomeTrim     = nome.trim();
     const whatsappTrim = whatsapp.trim();
     const whatsappNorm = whatsappTrim.replace(/\D/g, "");
-    const nivelNorm = nivel.trim().toLowerCase();
-    const statusVal = (status === "bloqueado") ? "0" : "1"; // Converte para 1/0
-    const senhaTrim = senha.toString().trim();
+    const nivelNorm    = nivel.trim().toLowerCase();
+    const setorTrim    = (setor || "").trim();
+    const statusVal    = (status === "bloqueado") ? "0" : "1"; // Converte para 1/0
+    const senhaTrim    = senha.toString().trim();
 
     // Validar se o whatsapp já existe (WHATSAPP está na coluna B)
     const result = await sheets.spreadsheets.values.get({
@@ -760,12 +763,12 @@ app.post("/api/acessos", adminOnly, async (req, res) => {
       return res.status(400).json({ erro: "Este WhatsApp já está cadastrado." });
     }
 
-    // Ordem correta: NOME | WHATSAPP | NIVEL | STATUS | SENHA | CONTAGEM ACESSO | DATA ACESSO
-    const newRow = [nomeTrim, whatsappTrim, nivelNorm, statusVal, senhaTrim, "0", ""];
+    // Ordem correta: NOME | WHATSAPP | NIVEL | SETOR | STATUS | SENHA | CONTAGEM ACESSO | DATA ACESSO
+    const newRow = [nomeTrim, whatsappTrim, nivelNorm, setorTrim, statusVal, senhaTrim, "0", ""];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: "Acessos!A:G",
+      range: "Acessos!A:H",
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
@@ -785,23 +788,24 @@ app.put("/api/acessos/:row", adminOnly, async (req, res) => {
       return res.status(400).json({ erro: "Linha inválida." });
     }
 
-    const { nivel, nome, whatsapp, status, senha } = req.body;
+    const { nivel, nome, whatsapp, setor, status, senha } = req.body;
     if (!whatsapp || !nivel || !nome || !senha) {
       return res.status(400).json({ erro: "Nome, WhatsApp, nível de acesso e senha são obrigatórios." });
     }
 
-    const nomeTrim  = nome.trim();
+    const nomeTrim     = nome.trim();
     const whatsappTrim = whatsapp.trim();
-    const nivelNorm = nivel.trim().toLowerCase();
-    const statusVal = (status === "bloqueado") ? "0" : "1"; // Converte para 1/0
-    const senhaTrim = senha.toString().trim();
+    const nivelNorm    = nivel.trim().toLowerCase();
+    const setorTrim    = (setor || "").trim();
+    const statusVal    = (status === "bloqueado") ? "0" : "1"; // Converte para 1/0
+    const senhaTrim    = senha.toString().trim();
 
-    // Ordem correta: NOME | WHATSAPP | NIVEL | STATUS | SENHA (mantém colunas F e G intocadas no Sheets)
-    const updatedRow = [nomeTrim, whatsappTrim, nivelNorm, statusVal, senhaTrim];
+    // Ordem correta: NOME | WHATSAPP | NIVEL | SETOR | STATUS | SENHA (mantém colunas G e H intocadas no Sheets)
+    const updatedRow = [nomeTrim, whatsappTrim, nivelNorm, setorTrim, statusVal, senhaTrim];
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
-      range: `Acessos!A${rowNumber}:E${rowNumber}`,
+      range: `Acessos!A${rowNumber}:F${rowNumber}`,
       valueInputOption: "USER_ENTERED",
       requestBody: { values: [updatedRow] }
     });

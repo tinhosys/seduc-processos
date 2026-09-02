@@ -3059,6 +3059,7 @@ async function toggleStatusAcesso(rowNumber, isChecked) {
       nome: user.nome,
       whatsapp: user.whatsapp,
       nivel: user.nivel,
+      setor: user.setor || '',
       status: status,
       senha: user.senha
     };
