@@ -4267,6 +4267,57 @@ window.executarPadronizacaoPlanilha = async function() {
   }
 };
 
+function selectSegment(group, value) {
+  const hiddenInput = document.getElementById(`form-${group}`);
+  if (!hiddenInput) return;
+  
+  const isSelected = hiddenInput.value === value;
+  hiddenInput.value = isSelected ? '' : value;
+  
+  updateSegmentControl(group, hiddenInput.value);
+}
+
+function updateSegmentControl(group, activeValue) {
+  const control = document.getElementById(`control-${group}`);
+  if (!control) return;
+  const buttons = control.querySelectorAll('.segment-btn');
+  buttons.forEach(btn => {
+    const val = btn.getAttribute('data-value');
+    if (val === activeValue) {
+      btn.style.background = getActiveBgColor(group, val);
+      btn.style.borderColor = getActiveBorderColor(group, val);
+      btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
+      btn.style.color = (val === 'OB' || val === 'MC') ? '#0f172a' : '#fff';
+      btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+    } else {
+      btn.style.background = 'none';
+      btn.style.border = '1px solid transparent';
+      btn.style.color = 'var(--text-secondary)';
+      btn.style.boxShadow = 'none';
+    }
+  });
+}
+
+function getActiveBgColor(group, val) {
+  if (group === 'categoria') {
+    if (val === 'F') return '#3b82f6';
+    if (val === 'C') return '#10b981';
+    if (val === 'O' || val === 'T') return '#8b5cf6';
+  } else if (group === 'tipo') {
+    if (val === 'OB') return '#06b6d4';
+    if (val === 'MP') return '#f97316';
+    if (val === 'MC') return '#f59e0b';
+    if (val === 'SI') return '#a855f7';
+    if (val === 'TR') return '#10b981';
+    if (val === 'OUT') return '#f43f5e';
+  }
+  return 'rgba(255, 255, 255, 0.1)';
+}
+
+function getActiveBorderColor(group, val) {
+  return getActiveBgColor(group, val);
+}
+
 function getCategoryBadge(categoria) {
   if (!categoria) return '';
   const char = String(categoria).trim().toUpperCase()[0];
@@ -4283,7 +4334,7 @@ function getCategoryBadge(categoria) {
     return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
   }
   return '';
-};
+}
 
 function getTypeBadge(tipo) {
   if (!tipo) return '';
@@ -4307,4 +4358,11 @@ function getTypeBadge(tipo) {
     return `<span class="badge-tipo badge-tipo-out" title="Tipo: Outros" style="margin-left: 4px; padding: 2px 6px; background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OUT</span>`;
   }
   return '';
-};
+}
+
+window.selectSegment = selectSegment;
+window.updateSegmentControl = updateSegmentControl;
+window.getActiveBgColor = getActiveBgColor;
+window.getActiveBorderColor = getActiveBorderColor;
+window.getCategoryBadge = getCategoryBadge;
+window.getTypeBadge = getTypeBadge;
