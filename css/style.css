@@ -1355,6 +1355,11 @@ body:not(.role-adm) .action-adm {
   display: none !important;
 }
 
+/* ==================== CONTROLE DE ACESSO (REPORTS - ADM/GERENTE ONLY) ==================== */
+body:not(.role-adm):not(.role-gerente) .action-report {
+  display: none !important;
+}
+
 /* Toggle Switch */
 .switch {
   position: relative;

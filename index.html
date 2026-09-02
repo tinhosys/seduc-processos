@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.82</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.83</div>
   </div>
 </div>
   
@@ -321,7 +321,7 @@
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
           <div class="nav-submenu" id="sub-config" style="display: none; padding-left: 20px;">
-            <a href="#" class="nav-item sub-item" data-page="acessos" onclick="navegar('acessos')" style="font-size: 13px; padding: 10px 16px;"><span>Gerenciar Acessos</span></a>
+            <a href="#" class="nav-item sub-item action-adm" data-page="acessos" onclick="navegar('acessos')" style="font-size: 13px; padding: 10px 16px;"><span>Gerenciar Acessos</span></a>
             <a href="#" class="nav-item sub-item" data-page="senha" onclick="navegar('senha')" style="font-size: 13px; padding: 10px 16px;"><span>Trocar Senha</span></a>
           </div>
         </div>
@@ -330,7 +330,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.82</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.83</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -587,23 +587,23 @@
             
             <!-- Row 1: Reports -->
             <div class="header-buttons" style="display:flex; align-items:stretch; justify-content:flex-end; gap:10px; flex-wrap:wrap; width:100%;">
-              <button class="btn action-adm" onclick="imprimirAnalise()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
+              <button class="btn action-report" onclick="imprimirAnalise()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">ANÁLISE</span>
               </button>
-              <button class="btn action-adm" onclick="imprimirDetalhado()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Relatório Detalhado">
+              <button class="btn action-report" onclick="imprimirDetalhado()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Relatório Detalhado">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> <span class="btn-text">DETALHADO</span>
               </button>
-              <button class="btn action-adm" onclick="imprimirPadrao()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Lista Atual">
+              <button class="btn action-report" onclick="imprimirPadrao()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Lista Atual">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÃO</span>
               </button>
-              <button class="btn action-adm" onclick="imprimirPadraoSelecionado()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Selecionados">
+              <button class="btn action-report" onclick="imprimirPadraoSelecionado()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Selecionados">
                 <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><polyline points='6 9 6 2 18 2 18 9'/><path d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/><rect x='6' y='14' width='12' height='8'/></svg> <span class="btn-text">PADRÃO SEL.</span>
               </button>
             </div>
 
             <!-- Row 2: Controls -->
             <div style="display:flex; align-items:stretch; justify-content:flex-end; gap:10px; flex-wrap:wrap; width:100%;">
-              <button class="btn action-adm" onclick="exportarExcel()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel">
+              <button class="btn action-report" onclick="exportarExcel()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> <span class="btn-text">EXCEL</span>
               </button>
               
@@ -798,7 +798,7 @@
                 <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">🎯 OBJETIVO</button>
               </div>
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
-                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">📊 Gerar Relatório</button>
+                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">📊 Gerar Relatório</button>
                 <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">Cancelar</button>
                 <button type="submit" class="btn btn-success" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">💾 Salvar Processo</button>
               </div>
@@ -1165,7 +1165,7 @@
               📌 <span class="btn-text">Ocultar</span>
             </button>
           </h3>
-          <form id="form-acesso" onsubmit="salvarAcessoForm(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: flex-end;">
+          <form id="form-acesso" onsubmit="salvarAcessoForm(event)" style="display: none; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; align-items: flex-end; transition: all 0.3s ease; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05);">
             <input type="hidden" id="acesso-row">
             
             <div class="form-group" style="margin: 0;">
@@ -1182,12 +1182,19 @@
               <label for="acesso-nivel" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nível de Acesso</label>
               <select id="acesso-nivel" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:var(--bg-secondary); color:var(--text-primary); outline:none; height: 40px; box-sizing: border-box;" disabled>
                 <option value="leitor">👁️ LEITOR</option>
-                <option value="editor">📝 EDITOR</option>
+                <option value="editor">✏️ EDITOR</option>
+                  <option value="gerente">💼 GERENTE</option>
                 <option value="adm">🛡️ ADMIN</option>
               </select>
             </div>
 
-            <div class="form-group" style="margin: 0;">
+            
+              <div class="form-group" style="margin: 0;">
+                <label for="acesso-setor" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Setor</label>
+                <input type="text" id="acesso-setor" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none; height: 40px; box-sizing: border-box;" placeholder="Ex: GDSM" disabled>
+              </div>
+
+<div class="form-group" style="margin: 0;">
               <label for="acesso-senha" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Senha (4 números)</label>
               <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none; text-align: center; letter-spacing: 2px; height: 40px; box-sizing: border-box;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')" disabled>
             </div>
@@ -1211,7 +1218,8 @@
               <tr style="border-bottom:1px solid var(--border); background:var(--bg-secondary);">
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 18%;">Nome</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 16%;">WhatsApp</th>
-                <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 14%;">Nível de Acesso</th>
+                <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Nível de Acesso</th>
+                  <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Setor</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Status</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 10%;">Senha</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 8%;">Acessos</th>
@@ -1226,29 +1234,26 @@
         </div>
 
         <!-- CARD PARA PADRONIZAR DADOS DA PLANILHA (ADMIN ONLY) -->
-        <div class="card action-adm" id="card-padronizacao-dados" style="margin-top: 24px; padding: 20px; border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.02);">
-          <h3 style="font-size: 14px; margin-bottom: 12px; color: #fbbf24; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-            ⚙️ Padronização de Dados da Planilha
-          </h3>
-          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
-            Esta ferramenta verifica todas as células de <strong>Status</strong> e <strong>Localização</strong> na planilha e as normaliza de acordo com os parâmetros oficiais definidos.
-          </p>
-          <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-            <button type="button" class="btn" id="btn-verificar-padronizacao" onclick="verificarInconsistenciasPlanilha()" style="background:#3b82f6; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;">
-              🔍 Verificar Planilha
-            </button>
-            <button type="button" class="btn" id="btn-executar-padronizacao" onclick="executarPadronizacaoPlanilha()" style="background:#f59e0b; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;" disabled>
-              ⚙️ Padronizar Planilha
-            </button>
-          </div>
-          <div id="status-padronizacao-container" style="margin-top: 16px; font-size: 13px; display: none;">
-            <div style="font-weight: 600; margin-bottom: 8px;" id="label-status-padronizacao">Aguardando início...</div>
-            <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
-              <div id="bar-status-padronizacao" style="width: 0%; height: 100%; background: #fbbf24; transition: width 0.1s ease;"></div>
+        <div class="card action-adm" id="card-padronizacao-dados" style="margin-top: 24px; padding: 20px; border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.02);">
+            <h3 style="font-size: 14px; margin-bottom: 12px; color: #34d399; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+              ✅ Corretor Ortográfico & Padronizador
+            </h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
+              Esta ferramenta busca divergências de formatação (espaços extras, letras minúsculas) em <strong>Status</strong> e <strong>Localização</strong>. Nenhuma alteração é feita sem sua autorização.
+            </p>
+            <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+              <button type="button" class="btn" id="btn-verificar-padronizacao" onclick="verificarInconsistenciasPlanilha()" style="background:#3b82f6; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;">
+                🔍 Buscar Divergências
+              </button>
+              <button type="button" class="btn" id="btn-executar-padronizacao" onclick="executarPadronizacaoPlanilha()" style="background:#10b981; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px; display: none;">
+                ✓ Autorizar e Corrigir
+              </button>
             </div>
-            <div id="log-status-padronizacao" style="max-height: 120px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; font-family: monospace; font-size: 11px; color: #a3e635; text-align: left;"></div>
+            <div id="status-padronizacao-container" style="margin-top: 16px; font-size: 13px; display: none;">
+              <div style="font-weight: 600; margin-bottom: 8px;" id="label-status-padronizacao"></div>
+              <div id="log-status-padronizacao" style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #cbd5e1; text-align: left;"></div>
+            </div>
           </div>
-        </div>
 
       </section>
 
@@ -1302,7 +1307,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Acessar Planilha
             </a>
-            <button class="btn action-adm" onclick="if(typeof window.imprimirRelatorioEscolas==='function'){window.imprimirRelatorioEscolas();}else if(typeof imprimirRelatorioEscolas==='function'){imprimirRelatorioEscolas();}" style="padding:10px 16px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Relatório de Escolas">
+            <button class="btn action-report" onclick="if(typeof window.imprimirRelatorioEscolas==='function'){window.imprimirRelatorioEscolas();}else if(typeof imprimirRelatorioEscolas==='function'){imprimirRelatorioEscolas();}" style="padding:10px 16px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Relatório de Escolas">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÓRIO</span>
             </button>
           </div>
@@ -2457,13 +2462,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1788321644072"></script>
-  <script src="js/app.js?v=1788321644306"></script>
-  <script src="js/auth-sap.js?v=1788321644072"></script>
-  <script src="js/escolas.js?v=1788321644072.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1788324942631"></script>
+  <script src="js/app.js?v=1788324942872"></script>
+  <script src="js/auth-sap.js?v=1788324942631"></script>
+  <script src="js/escolas.js?v=1788324942631.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1788321644072"></script>
+<script src="js/mapa.js?v=1788324942631"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2607,13 +2612,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1788321644072"></script>
+  <script src="js/multi-select.js?v=1788324942631"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1788321644306"></script>
-  <script src="js/orcamento.js?v=1788321644306"></script>
-  <script src="js/print-proalfa.js?v=1788321644072"></script>
-  <script src="js/proalfa.js?v=1788321644306"></script>
+  <script src="js/diarias.js?v=1788324942872"></script>
+  <script src="js/orcamento.js?v=1788324942872"></script>
+  <script src="js/print-proalfa.js?v=1788324942631"></script>
+  <script src="js/proalfa.js?v=1788324942872"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

@@ -2849,31 +2849,58 @@ window.imprimirAnalise = function() {
 
 let listaAcessos = [];
 
+
+window.novoAcessoForm = function() {
+  cancelarEdicaoAcesso();
+  const form = document.getElementById('form-acesso');
+  const btnCancelar = document.getElementById('btn-cancelar-edicao');
+  if (form) form.style.display = 'grid';
+  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
+  
+  const nomeInput = document.getElementById('acesso-nome');
+  const whatsappInput = document.getElementById('acesso-whatsapp');
+  const nivelInput = document.getElementById('acesso-nivel');
+  const setorInput = document.getElementById('acesso-setor');
+  const senhaInput = document.getElementById('acesso-senha');
+  const btnSalvar = document.getElementById('btn-salvar-acesso');
+  
+  if(nomeInput) nomeInput.disabled = false;
+  if(whatsappInput) whatsappInput.disabled = false;
+  if(nivelInput) nivelInput.disabled = false;
+  if(setorInput) setorInput.disabled = false;
+  if(senhaInput) senhaInput.disabled = false;
+  if(btnSalvar) btnSalvar.disabled = false;
+  
+  if(nomeInput) nomeInput.focus();
+};
+
 function abrirModalAcesso(index = null) {
-  const title = document.getElementById('cadastro-acesso-title');
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
   const nivelInput = document.getElementById('acesso-nivel');
+  const setorInput = document.getElementById('acesso-setor');
   const senhaInput = document.getElementById('acesso-senha');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
   const btnSalvar = document.getElementById('btn-salvar-acesso');
+  const form = document.getElementById('form-acesso');
 
   if (!rowInput) return;
 
   if (index !== null) {
+    if (form) form.style.display = 'grid';
     const user = listaAcessos[index];
-    title.innerHTML = '<span>✏️</span> Editar Registro de Acesso';
     rowInput.value = user._rowNumber;
     nomeInput.value = user.nome;
     whatsappInput.value = user.whatsapp || '';
     nivelInput.value = user.nivel;
+    if(setorInput) setorInput.value = user.setor || '';
     senhaInput.value = user.senha || '';
 
-    // Habilitar campos
     nomeInput.disabled = false;
-    whatsappInput.disabled = true; // WhatsApp não pode ser alterado na edição
+    whatsappInput.disabled = true; // WhatsApp nǜo pode ser alterado na ediǜo
     nivelInput.disabled = false;
+    if(setorInput) setorInput.disabled = false;
     senhaInput.disabled = false;
 
     if (btnSalvar) btnSalvar.disabled = false;
@@ -2886,26 +2913,27 @@ function abrirModalAcesso(index = null) {
 }
 
 function cancelarEdicaoAcesso() {
-  const title = document.getElementById('cadastro-acesso-title');
   const form = document.getElementById('form-acesso');
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
   const nivelInput = document.getElementById('acesso-nivel');
+  const setorInput = document.getElementById('acesso-setor');
   const senhaInput = document.getElementById('acesso-senha');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
   const btnSalvar = document.getElementById('btn-salvar-acesso');
 
-  if (form) form.reset();
+  if (form) {
+    form.reset();
+    form.style.display = 'none';
+  }
   if (rowInput) rowInput.value = '';
-  if (title) title.innerHTML = '<span>��</span> Registro de Acesso';
 
-  // Limpar e Desabilitar campos
-  if (nomeInput) { nomeInput.value = ''; nomeInput.disabled = true; }
-  if (whatsappInput) { whatsappInput.value = ''; whatsappInput.disabled = true; }
-  if (nivelInput) { nivelInput.selectedIndex = -1; nivelInput.disabled = true; }
-  if (senhaInput) { senhaInput.value = ''; senhaInput.disabled = true; }
-
+  if (nomeInput) nomeInput.disabled = true;
+  if (whatsappInput) whatsappInput.disabled = true;
+  if (nivelInput) nivelInput.disabled = true;
+  if (setorInput) setorInput.disabled = true;
+  if (senhaInput) senhaInput.disabled = true;
   if (btnSalvar) btnSalvar.disabled = true;
   if (btnCancelar) btnCancelar.style.display = 'none';
 }
@@ -2963,11 +2991,17 @@ function renderListaAcessosUI() {
         </span>
       `,
       adm: `
-        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          Admin
-        </span>
-      `
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Admin
+          </span>
+        `,
+        gerente: `
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(139, 92, 246, 0.12); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            Gerente
+          </span>
+        `
     }[user.nivel] || `<span style="font-size:12px; font-weight:600; color:var(--text-primary);">${user.nivel}</span>`;
 
     const whatsappDisplay = user.whatsapp || '—';
@@ -2980,6 +3014,7 @@ function renderListaAcessosUI() {
         <td style="padding:12px 16px; font-size:14px; font-weight:600; color:var(--text-primary);">${user.nome}</td>
         <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${whatsappDisplay}</td>
         <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${nivelDisplay}</td>
+          <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${user.setor || '-'}</td>
         <td style="padding:12px 16px; font-size:14px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <label class="switch" style="transform:scale(0.85); margin:0;">
@@ -2999,10 +3034,7 @@ function renderListaAcessosUI() {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             Editar
           </button>
-          <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; margin-left:6px; background:rgba(239, 68, 68, 0.08); color:#f87171; border:1px solid rgba(239, 68, 68, 0.2); border-radius:6px; font-weight:600; cursor:pointer; transition:var(--transition);">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-            Excluir
-          </button>
+          
         </td>
       </tr>
     `;
@@ -3087,6 +3119,7 @@ async function salvarAcessoForm(event) {
   const nome = document.getElementById('acesso-nome').value;
   const whatsapp = document.getElementById('acesso-whatsapp').value;
   const nivel = document.getElementById('acesso-nivel').value;
+    const setor = document.getElementById('acesso-setor').value.trim();
   const senha = document.getElementById('acesso-senha').value;
   
   let status = 'liberado';
@@ -3097,7 +3130,7 @@ async function salvarAcessoForm(event) {
     }
   }
 
-  const payload = { nome, whatsapp, nivel, status, senha };
+  const payload = { nome, whatsapp, nivel, status, senha, setor };
   const token = sessionStorage.getItem('sap_session_token');
 
   try {
@@ -4418,115 +4451,115 @@ window.toggleAllProcessos = function(el) {
     checkboxes.forEach(cb => cb.checked = el.checked);
 };
 
-window.verificarInconsistenciasPlanilha = function() {
-  const processos = carregarProcessos();
-  const inconsistentes = processos.filter(p => {
-    return p.status !== p._statusOriginal || p.localizacao !== p._localizacaoOriginal;
-  });
+window._processosInconsistentesParaCorrigir = [];
 
-  const btnExecutar = document.getElementById('btn-executar-padronizacao');
+window.verificarInconsistenciasPlanilha = function() {
   const container = document.getElementById('status-padronizacao-container');
   const labelStatus = document.getElementById('label-status-padronizacao');
   const logDiv = document.getElementById('log-status-padronizacao');
-  const bar = document.getElementById('bar-status-padronizacao');
+  const btnExecutar = document.getElementById('btn-executar-padronizacao');
 
   if (container) container.style.display = 'block';
+  if (labelStatus) labelStatus.textContent = 'Verificando...';
   if (logDiv) logDiv.innerHTML = '';
-  if (bar) bar.style.width = '0%';
+  if (btnExecutar) btnExecutar.style.display = 'none';
 
-  if (inconsistentes.length === 0) {
-    if (labelStatus) labelStatus.textContent = '✅ Planilha já está totalmente padronizada!';
-    if (btnExecutar) btnExecutar.disabled = true;
-    if (logDiv) logDiv.innerHTML = '<div>Nenhuma inconsistência encontrada.</div>';
-  } else {
-    if (labelStatus) labelStatus.textContent = `🔍 Encontrados ${inconsistentes.length} processos com dados não padronizados.`;
-    if (btnExecutar) btnExecutar.disabled = false;
-    
-    if (logDiv) {
-      inconsistentes.forEach(p => {
-        let det = [];
-        if (p.status !== p._statusOriginal) det.push(`Status: "${p._statusOriginal}" ➔ "${p.status}"`);
-        if (p.localizacao !== p._localizacaoOriginal) det.push(`Loc: "${p._localizacaoOriginal}" ➔ "${p.localizacao}"`);
-        const item = document.createElement('div');
-        item.textContent = `Processo ${p.numero || p.id}: ` + det.join(' | ');
-        logDiv.appendChild(item);
+  if (!window.processosCache || window.processosCache.length === 0) {
+    if (labelStatus) labelStatus.textContent = 'Erro: Planilha vazia ou nǜo carregada.';
+    return;
+  }
+
+  let inconsistentes = [];
+
+  const padronizarString = (str) => {
+    if (!str) return '';
+    return str.trim().replace(/\s+/g, ' ').toUpperCase();
+  };
+
+  window.processosCache.forEach(p => {
+    let mudou = false;
+    let novoStatus = p.status;
+    let novaLocalizacao = p.localizacao;
+
+    if (p.status) {
+      const ps = padronizarString(p.status);
+      if (p.status !== ps) {
+        novoStatus = ps;
+        mudou = true;
+      }
+    }
+
+    if (p.localizacao) {
+      const pl = padronizarString(p.localizacao);
+      if (p.localizacao !== pl) {
+        novaLocalizacao = pl;
+        mudou = true;
+      }
+    }
+
+    if (mudou && (p.aba !== 'PARAMETROS' && p.aba !== 'parametro_combo')) {
+      inconsistentes.push({
+        id: p.id,
+        rowNumber: p.rowNumber,
+        aba: p.aba,
+        numero: p.numero,
+        statusAntigo: p.status || '-',
+        statusNovo: novoStatus || '-',
+        locAntiga: p.localizacao || '-',
+        locNova: novaLocalizacao || '-'
       });
     }
+  });
+
+  window._processosInconsistentesParaCorrigir = inconsistentes;
+
+  if (inconsistentes.length === 0) {
+    if (labelStatus) labelStatus.textContent = '✓ Planilha estǭ 100% padronizada! Nenhuma divergǦncia encontrada.';
+    if (logDiv) logDiv.innerHTML = '<div>Sem erros ortogrǭficos ou de espaçamento.</div>';
+  } else {
+    if (labelStatus) labelStatus.textContent = `Atenção: ${inconsistentes.length} divergências encontradas. Por favor, autorize as mudanças abaixo:`;
+    
+    let htmlTable = '<table style="width:100%; border-collapse:collapse; margin-top:10px;">';
+    htmlTable += '<tr style="border-bottom:1px solid rgba(255,255,255,0.2);"><th style="padding:4px; text-align:left;">Processo</th><th style="padding:4px; text-align:left;">Status (Antes -> Depois)</th><th style="padding:4px; text-align:left;">Localização (Antes -> Depois)</th></tr>';
+    
+    inconsistentes.forEach(inc => {
+      let stDiff = inc.statusAntigo !== inc.statusNovo ? `<span style="color:#ef4444">${inc.statusAntigo}</span> &rarr; <span style="color:#10b981">${inc.statusNovo}</span>` : `<span style="color:#94a3b8">${inc.statusAntigo}</span>`;
+      let locDiff = inc.locAntiga !== inc.locNova ? `<span style="color:#ef4444">${inc.locAntiga}</span> &rarr; <span style="color:#10b981">${inc.locNova}</span>` : `<span style="color:#94a3b8">${inc.locAntiga}</span>`;
+      htmlTable += `<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:4px;">${inc.numero || inc.id}</td><td style="padding:4px;">${stDiff}</td><td style="padding:4px;">${locDiff}</td></tr>`;
+    });
+    htmlTable += '</table>';
+    
+    if (logDiv) logDiv.innerHTML = htmlTable;
+    if (btnExecutar) btnExecutar.style.display = 'flex';
   }
 };
 
 window.executarPadronizacaoPlanilha = async function() {
-  const processos = carregarProcessos();
-  const inconsistentes = processos.filter(p => {
-    return p.status !== p._statusOriginal || p.localizacao !== p._localizacaoOriginal;
-  });
-
-  if (inconsistentes.length === 0) return;
-
-  const btnVerificar = document.getElementById('btn-verificar-padronizacao');
   const btnExecutar = document.getElementById('btn-executar-padronizacao');
   const labelStatus = document.getElementById('label-status-padronizacao');
-  const logDiv = document.getElementById('log-status-padronizacao');
-  const bar = document.getElementById('bar-status-padronizacao');
-
+  const btnVerificar = document.getElementById('btn-verificar-padronizacao');
+  
+  if (btnExecutar) btnExecutar.style.display = 'none';
   if (btnVerificar) btnVerificar.disabled = true;
-  if (btnExecutar) btnExecutar.disabled = true;
-  if (logDiv) logDiv.innerHTML = '';
+  if (labelStatus) labelStatus.textContent = 'Enviando correes para a planilha... Isso pode levar alguns segundos.';
 
-  let total = inconsistentes.length;
-  let sucesso = 0;
-  let falha = 0;
-
-  for (let i = 0; i < total; i++) {
-    const p = inconsistentes[i];
-    const pct = Math.round(((i + 1) / total) * 100);
-    if (bar) bar.style.width = `${pct}%`;
-    if (labelStatus) labelStatus.textContent = `⚙️ Processando: ${i + 1} de ${total} (${pct}%)`;
-
-    const statusNorm = p.status;
-    const locNorm = p.localizacao;
+  try {
+    const token = sessionStorage.getItem('sap_session_token');
+    const inconsistentes = window._processosInconsistentesParaCorrigir || [];
+    let count = 0;
     
-    try {
-      const payload = {
-        ...p,
-        status: statusNorm,
-        localizacao: locNorm
-      };
-      
-      await atualizarProcesso(p.id, payload);
-      
-      p._statusOriginal = statusNorm;
-      p._localizacaoOriginal = locNorm;
-      
-      sucesso++;
-      const msg = document.createElement('div');
-      msg.textContent = `✅ Processo ${p.numero || p.id} atualizado com sucesso.`;
-      msg.style.color = '#4ade80';
-      if (logDiv) {
-        logDiv.appendChild(msg);
-        logDiv.scrollTop = logDiv.scrollHeight;
-      }
-    } catch (err) {
-      falha++;
-      const msg = document.createElement('div');
-      msg.textContent = `❌ Erro ao atualizar Processo ${p.numero || p.id}: ${err.message}`;
-      msg.style.color = '#f87171';
-      if (logDiv) {
-        logDiv.appendChild(msg);
-        logDiv.scrollTop = logDiv.scrollHeight;
-      }
+    for (let inc of inconsistentes) {
+      if (labelStatus) labelStatus.textContent = `Corrigindo ${count + 1} de ${inconsistentes.length}...`;
+      const payload = { action: 'updateProcesso', token: token, data: { id: inc.id, aba: inc.aba, status: inc.statusNovo, localizacao: inc.locNova } };
+      await fetch(API_BASE, { method: 'POST', mode: 'cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      count++;
     }
     
-    await new Promise(resolve => setTimeout(resolve, 300));
-  }
-
-  if (labelStatus) {
-    labelStatus.textContent = `✅ Concluído! Sucesso: ${sucesso}, Falhas: ${falha}`;
-  }
-  
-  if (btnVerificar) btnVerificar.disabled = false;
-  
-  if (typeof recarregarDadosGlobais === 'function') {
-    recarregarDadosGlobais();
+    if (labelStatus) labelStatus.textContent = '✓ Correções aplicadas com sucesso!';
+    setTimeout(() => { window.location.reload(); }, 2000);
+  } catch (e) {
+    console.error(e);
+    if (labelStatus) labelStatus.textContent = 'Erro ao aplicar correes. Tente novamente.';
+    if (btnVerificar) btnVerificar.disabled = false;
   }
 };
