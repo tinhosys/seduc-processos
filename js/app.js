@@ -1283,8 +1283,12 @@ function renderFormulario() {
     s.innerHTML = lista.map(o => `<option value="${o}" ${o === val ? 'selected' : ''}>${o}</option>`).join('');
   };
 
-  fillSelect('form-status',      STATUS_LIST,      p.status      || '');
-  fillSelect('form-localizacao', LOCALIZACAO_LIST, p.localizacao || '');
+  
+  fillSelect('list-status', STATUS_LIST, '');
+  fillSelect('list-localizacao', LOCALIZACAO_LIST, '');
+  if(document.getElementById('form-status')) document.getElementById('form-status').value = p.status || '';
+  if(document.getElementById('form-localizacao')) document.getElementById('form-localizacao').value = p.localizacao || '';
+
   
   const anos_list = [...new Set(carregarProcessos().map(x => String(x.ano || '')).filter(Boolean))].sort((a,b)=>b-a);
   fillSelect('list-anos', anos_list, '');
