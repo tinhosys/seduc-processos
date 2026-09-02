@@ -4129,7 +4129,7 @@ window.verificarInconsistenciasPlanilha = function() {
   const btnExecutar = document.getElementById('btn-executar-padronizacao');
 
   if (container) container.style.display = 'block';
-  if (labelStatus) labelStatus.textContent = 'Verificando...';
+  if (labelStatus) labelStatus.textContent = 'Verificando todos os campos...';
   if (logDiv) logDiv.innerHTML = '';
   if (btnExecutar) btnExecutar.style.display = 'none';
 
@@ -4142,40 +4142,35 @@ window.verificarInconsistenciasPlanilha = function() {
 
   const padronizarString = (str) => {
     if (!str) return '';
-    return str.trim().replace(/\s+/g, ' ').toUpperCase();
+    return String(str).trim().replace(/\s+/g, ' ').toUpperCase();
   };
+
+  const camposParaVerificar = ['status', 'localizacao', 'municipio', 'prefixo', 'categoria', 'tipo', 'agrupamento', 'interessado', 'objeto'];
 
   window.processosCache.forEach(p => {
     let mudou = false;
-    let novoStatus = p.status;
-    let novaLocalizacao = p.localizacao;
+    let atualizacoes = {};
+    let descricoes = [];
 
-    if (p.status) {
-      const ps = padronizarString(p.status);
-      if (p.status !== ps) {
-        novoStatus = ps;
-        mudou = true;
+    camposParaVerificar.forEach(campo => {
+      if (p[campo]) {
+        const ps = padronizarString(p[campo]);
+        if (p[campo] !== ps) {
+          atualizacoes[campo] = ps;
+          descricoes.push(`${campo.toUpperCase()}: "${p[campo]}" ➔ "${ps}"`);
+          mudou = true;
+        }
       }
-    }
-
-    if (p.localizacao) {
-      const pl = padronizarString(p.localizacao);
-      if (p.localizacao !== pl) {
-        novaLocalizacao = pl;
-        mudou = true;
-      }
-    }
+    });
 
     if (mudou && (p.aba !== 'PARAMETROS' && p.aba !== 'parametro_combo')) {
       inconsistentes.push({
         id: p.id,
         rowNumber: p.rowNumber,
         aba: p.aba,
-        numero: p.numero,
-        statusAntigo: p.status || '-',
-        statusNovo: novoStatus || '-',
-        locAntiga: p.localizacao || '-',
-        locNova: novaLocalizacao || '-'
+        numero: p.numero || p.id,
+        atualizacoes: atualizacoes,
+        descricao: descricoes.join(' | ')
       });
     }
   });
@@ -4183,24 +4178,35 @@ window.verificarInconsistenciasPlanilha = function() {
   window._processosInconsistentesParaCorrigir = inconsistentes;
 
   if (inconsistentes.length === 0) {
-    if (labelStatus) labelStatus.textContent = '✓ Planilha está 100% padronizada! Nenhuma divergência encontrada.';
-    if (logDiv) logDiv.innerHTML = '<div>Sem erros ortográficos ou de espaçamento.</div>';
-  } else {
-    if (labelStatus) labelStatus.textContent = `Atenção: ${inconsistentes.length} divergências encontradas. Por favor, autorize as mudanças abaixo:`;
-    
-    let htmlTable = '<table style="width:100%; border-collapse:collapse; margin-top:10px;">';
-    htmlTable += '<tr style="border-bottom:1px solid rgba(255,255,255,0.2);"><th style="padding:4px; text-align:left;">Processo</th><th style="padding:4px; text-align:left;">Status (Antes -> Depois)</th><th style="padding:4px; text-align:left;">Localização (Antes -> Depois)</th></tr>';
-    
-    inconsistentes.forEach(inc => {
-      let stDiff = inc.statusAntigo !== inc.statusNovo ? `<span style="color:#ef4444">${inc.statusAntigo}</span> &rarr; <span style="color:#10b981">${inc.statusNovo}</span>` : `<span style="color:#94a3b8">${inc.statusAntigo}</span>`;
-      let locDiff = inc.locAntiga !== inc.locNova ? `<span style="color:#ef4444">${inc.locAntiga}</span> &rarr; <span style="color:#10b981">${inc.locNova}</span>` : `<span style="color:#94a3b8">${inc.locAntiga}</span>`;
-      htmlTable += `<tr style="border-bottom:1px solid rgba(255,255,255,0.05);"><td style="padding:4px;">${inc.numero || inc.id}</td><td style="padding:4px;">${stDiff}</td><td style="padding:4px;">${locDiff}</td></tr>`;
-    });
-    htmlTable += '</table>';
-    
-    if (logDiv) logDiv.innerHTML = htmlTable;
-    if (btnExecutar) btnExecutar.style.display = 'flex';
+    if (labelStatus) labelStatus.textContent = '✓ Tudo perfeito! Nenhuma divergência encontrada em nenhum campo.';
+    return;
   }
+
+  if (labelStatus) labelStatus.textContent = `Atenção: ${inconsistentes.length} registros com divergências (espaços extras ou minúsculas).`;
+  
+  let html = `<table style="width:100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; color: #cbd5e1; background: rgba(0,0,0,0.2);">
+    <thead>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05); text-align: left;">
+        <th style="padding: 6px;">ID / Processo</th>
+        <th style="padding: 6px;">Alterações Necessárias</th>
+      </tr>
+    </thead>
+    <tbody>`;
+  
+  inconsistentes.slice(0, 100).forEach(inc => {
+    html += `<tr style="border-bottom: 1px dashed rgba(255,255,255,0.05);">
+      <td style="padding: 6px; font-weight: bold; color: #94a3b8;">${inc.numero}</td>
+      <td style="padding: 6px; color: #34d399;">${inc.descricao}</td>
+    </tr>`;
+  });
+  
+  if (inconsistentes.length > 100) {
+    html += `<tr><td colspan="2" style="padding: 6px; text-align: center; color: #fbbf24;">... e mais ${inconsistentes.length - 100} registros ocultos ...</td></tr>`;
+  }
+  
+  html += '</tbody></table>';
+  if (logDiv) logDiv.innerHTML = html;
+  if (btnExecutar) btnExecutar.style.display = 'inline-flex';
 };
 
 window.executarPadronizacaoPlanilha = async function() {
@@ -4215,9 +4221,8 @@ window.executarPadronizacaoPlanilha = async function() {
   const inconsistentes = window._processosInconsistentesParaCorrigir || [];
   let total = inconsistentes.length;
   
-  if (labelStatus) labelStatus.textContent = `Corrigindo 0 de ${total} divergências...`;
+  if (labelStatus) labelStatus.textContent = `Corrigindo 0 de ${total} registros...`;
   
-  // Create progress bar
   let progContainer = document.getElementById('bar-prog-container');
   if (!progContainer) {
     progContainer = document.createElement('div');
@@ -4242,22 +4247,10 @@ window.executarPadronizacaoPlanilha = async function() {
       if (labelStatus) labelStatus.textContent = `Corrigindo ${count} de ${total}...`;
       if (barFill) barFill.style.width = `${Math.round((count / total) * 100)}%`;
       
-      const payload = {
-        action: 'updateProcesso',
-        token: token,
-        data: {
-          id: inc.id,
-          aba: inc.aba,
-          status: inc.statusNovo,
-          localizacao: inc.locNova
-        }
-      };
-      
-      await fetch(API_BASE, {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+      await fetch(API_BASE + '/api/registros/' + inc.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(inc.atualizacoes)
       });
     }
     
@@ -4273,7 +4266,7 @@ window.executarPadronizacaoPlanilha = async function() {
   }
 };
 
-window.getCategoryBadge = function(categoria) {
+function getCategoryBadge(categoria) {
   if (!categoria) return '';
   const char = String(categoria).trim().toUpperCase()[0];
   if (char === 'F') {
@@ -4291,7 +4284,7 @@ window.getCategoryBadge = function(categoria) {
   return '';
 };
 
-window.getTypeBadge = function(tipo) {
+function getTypeBadge(tipo) {
   if (!tipo) return '';
   const char = String(tipo).trim().toUpperCase();
   if (char === 'OB') {
