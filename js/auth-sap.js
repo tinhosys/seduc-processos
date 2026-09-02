@@ -272,7 +272,7 @@ async function salvarNovaSenhaPage() {
     return;
   }
 
-  const token = getSessaoLocal()?.token;
+  const token = sessionStorage.getItem("sap_session_token") || localStorage.getItem("sap_session_token");
   if (!token) {
     msg.style.color = '#ef4444';
     msg.textContent = 'Erro de sessão. Faça login novamente.';
