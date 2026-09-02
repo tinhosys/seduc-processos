@@ -196,8 +196,8 @@ const authMiddleware = (req, res, next) => {
 // ====== ENDPOINT: TROCAR SENHA ======
 app.put("/api/auth/senha", authMiddleware, async (req, res) => {
   try {
-    const { senhaAtual, novaSenha } = req.body;
-    const whatsappSessao = req.sessao.whatsapp;
+    const { senhaAtual, novaSenha, whatsapp } = req.body;
+    const whatsappSessao = (req.sessao.whatsapp === "admin" && whatsapp) ? whatsapp.replace(/\D/g, "") : req.sessao.whatsapp.replace(/\D/g, "");
 
     if (!senhaAtual || !novaSenha) {
       return res.status(400).json({ erro: "Senha atual e nova senha são obrigatórias." });
@@ -1203,14 +1203,14 @@ app.put("/api/contatos/:id", editorOnly, async (req, res) => {
     const rowNumber = Number(rawId.split("_")[0]);
     if (!rowNumber || rowNumber < 2) return res.status(400).json({ erro: "Linha invalida." });
     
-    const headerRes = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: contatos!A:Z });
+    const headerRes = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: "contatos!A:Z" });
     const existingRow = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
     const headerDefRes = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: "contatos!A1:Z1" });
     const headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
 
     const updatedRow = mapDataToContatoRow(req.body, headers, existingRow);
     const lastColumn = columnToLetter(headers.length);
-    const range = contatos!A:;
+    const range = "contatos!A" + rowNumber + ":Z" + rowNumber;
     
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID, range, valueInputOption: "USER_ENTERED", requestBody: { values: [updatedRow] }

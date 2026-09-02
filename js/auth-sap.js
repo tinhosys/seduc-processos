@@ -58,6 +58,13 @@ function limparSessao() {
 
 // Aplica as restrições de UI baseadas no nível do usuário
 function aplicarPermissoes(nivel) {
+  try {
+    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
+    const elNome = document.getElementById('senha-usuario-nome');
+    const elWa = document.getElementById('senha-usuario-whatsapp');
+    if (elNome) elNome.textContent = 'Usuário: ' + (uData.nome || 'Desconhecido');
+    if (elWa) elWa.textContent = 'WhatsApp: ' + (uData.whatsapp || '');
+  } catch(e) {}
   const body = document.body;
 
   // Remove classes anteriores
@@ -289,7 +296,7 @@ async function salvarNovaSenhaPage() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ senhaAtual, novaSenha })
+      body: JSON.stringify({ senhaAtual, novaSenha, whatsapp: (JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}")).whatsapp })
     });
     
     const data = await res.json();
