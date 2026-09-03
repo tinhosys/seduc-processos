@@ -58,8 +58,9 @@ function limparSessao() {
 
 // Aplica as restrições de UI baseadas no nível do usuário
 function aplicarPermissoes(nivel) {
+  let uData = {};
   try {
-    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
+    uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
     const elNome = document.getElementById('senha-usuario-nome');
     const elWa = document.getElementById('senha-usuario-whatsapp');
     if (elNome) elNome.textContent = 'Usuário: ' + (uData.nome || 'Desconhecido');
@@ -85,8 +86,8 @@ function aplicarPermissoes(nivel) {
       elRole.textContent = '👑 Admin';
       elRole.style.color = '#3b82f6';
     } else {
-      let setorDisplay = user.setor && user.setor.trim() !== '' ? user.setor : (nivel === 'gerente' ? 'Gerente' : (nivel === 'editor' ? 'Editor' : 'Leitor'));
-      elRole.textContent = '🏢 ' + setorDisplay;
+      let setorDisplay = uData.setor && uData.setor.trim() !== '' ? uData.setor : (nivel === 'gerente' ? 'Gerente' : (nivel === 'editor' ? 'Editor' : 'Leitor'));
+      elRole.textContent = '👤 ' + setorDisplay;
       elRole.style.color = nivel === 'gerente' ? '#a78bfa' : (nivel === 'editor' ? '#10b981' : '#f59e0b');
     }
   }
