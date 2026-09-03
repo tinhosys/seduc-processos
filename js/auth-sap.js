@@ -69,12 +69,14 @@ function aplicarPermissoes(nivel) {
   const body = document.body;
 
   // Remove classes anteriores
-  body.classList.remove('role-editor', 'role-leitor', 'role-adm');
+  body.classList.remove('role-editor', 'role-leitor', 'role-adm', 'role-gerente');
 
   if (nivel === 'leitor') {
     body.classList.add('role-leitor');
-  } else if (nivel === 'adm') {
+  } else if (nivel === 'adm' || nivel === 'admin') {
     body.classList.add('role-adm');
+  } else if (nivel === 'gerente') {
+    body.classList.add('role-gerente');
   } else {
     body.classList.add('role-editor');
   }
@@ -82,7 +84,7 @@ function aplicarPermissoes(nivel) {
   // Atualiza badge de perfil na topbar
   const elRole = document.getElementById('user-role');
   if (elRole) {
-    if (nivel === 'adm') {
+    if (nivel === 'adm' || nivel === 'admin') {
       elRole.textContent = '👑 Admin';
       elRole.style.color = '#3b82f6';
     } else {
@@ -320,4 +322,6 @@ async function salvarNovaSenhaPage() {
     msg.textContent = 'Erro de conexão.';
   }
 }
+
+
 
