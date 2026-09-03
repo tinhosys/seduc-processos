@@ -4409,13 +4409,6 @@ async function executarPadronizacaoPlanilha() {
 
 window.verificarInconsistenciasPlanilha = verificarInconsistenciasPlanilha;
 window.executarPadronizacaoPlanilha = executarPadronizacaoPlanilha;
-    
-  } catch (e) {
-    console.error(e);
-    if (labelStatus) labelStatus.textContent = 'Erro ao aplicar correções. Tente novamente.';
-    if (btnVerificar) btnVerificar.disabled = false;
-  }
-};
 
 function selectSegment(group, value) {
   const hiddenInput = document.getElementById(`form-${group}`);
