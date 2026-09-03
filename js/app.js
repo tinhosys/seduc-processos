@@ -4367,7 +4367,7 @@ async function executarPadronizacaoPlanilha() {
       const res = await fetch(API_BASE + '/api/registros/' + inc.id, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify(inc.atualizacoes)
+        body: JSON.stringify({ ...(window._dadosPlanilhaCache ? window._dadosPlanilhaCache.find(p => p.id === inc.id) : {}), ...inc.atualizacoes })
       });
 
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -4509,3 +4509,4 @@ window.getActiveBgColor = getActiveBgColor;
 window.getActiveBorderColor = getActiveBorderColor;
 window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
+
