@@ -1,3 +1,56 @@
+function jaroWinkler(s1, s2) {
+    var m = 0;
+    if (!s1 || !s2 || s1.length === 0 || s2.length === 0) return 0;
+    if (s1 === s2) return 1;
+    var range = (Math.floor(Math.max(s1.length, s2.length) / 2)) - 1;
+    var s1Matches = new Array(s1.length);
+    var s2Matches = new Array(s2.length);
+    for (var i = 0; i < s1.length; i++) {
+        var low  = (i >= range) ? i - range : 0;
+        var high = (i + range <= s2.length - 1) ? (i + range) : (s2.length - 1);
+        for (var j = low; j <= high; j++) {
+            if (s1Matches[i] !== true && s2Matches[j] !== true && s1[i] === s2[j]) {
+                ++m; s1Matches[i] = s2Matches[j] = true; break;
+            }
+        }
+    }
+    if (m === 0) return 0;
+    var k = 0, numTrans = 0;
+    for (var i = 0; i < s1.length; i++) {
+        if (s1Matches[i] === true) {
+            for (var j = k; j < s2.length; j++) {
+                if (s2Matches[j] === true) { k = j + 1; break; }
+            }
+            if (s1[i] !== s2[j]) ++numTrans;
+        }
+    }
+    var weight = (m / s1.length + m / s2.length + (m - (numTrans / 2)) / m) / 3;
+    var l = 0, p = 0.1;
+    if (weight > 0.7) {
+        while (s1[l] === s2[l] && l < 4) ++l;
+        weight = weight + l * p * (1 - weight);
+    }
+    return weight;
+}
+
+function encontrarEscolaSemelhante(nomeDigitado) {
+    const escolas = (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache) && _escolasCache.length > 0) ? _escolasCache : ((typeof _mapaCacheEscolas !== 'undefined' && Array.isArray(_mapaCacheEscolas)) ? _mapaCacheEscolas : []);
+    if (escolas.length === 0) return null;
+    let melhorMatch = null;
+    let melhorScore = 0;
+    const digitadoNormal = nomeDigitado.trim().toUpperCase().replace(/[^A-Z0-9 ]/g, '');
+    for (let e of escolas) {
+        if (!e.nome) continue;
+        const nomeEsc = e.nome.trim().toUpperCase().replace(/[^A-Z0-9 ]/g, '');
+        const score = jaroWinkler(digitadoNormal, nomeEsc);
+        if (score > melhorScore) {
+            melhorScore = score;
+            melhorMatch = e.nome;
+        }
+    }
+    return (melhorScore >= 0.90 && melhorScore < 1.0) ? melhorMatch : null;
+}
+
 
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
@@ -3218,15 +3271,14 @@ async function deletarAcesso(rowNumber, whatsapp) {
 function maskCelular(v) {
   v = v.replace(/\D/g, "");
   if (v.length > 11) v = v.substring(0, 11);
-  
-  if (v.length > 10) {
-    return `(${v.substring(0, 2)}) ${v.substring(2, 3)} ${v.substring(3, 7)}-${v.substring(7)}`;
-  } else if (v.length > 6) {
-    return `(${v.substring(0, 2)}) ${v.substring(2, 6)}-${v.substring(6)}`;
+  if (v.length > 7) {
+    return "(" + v.substring(0, 2) + ") " + v.substring(2, 3) + " " + v.substring(3, 7) + "-" + v.substring(7);
+  } else if (v.length > 3) {
+    return "(" + v.substring(0, 2) + ") " + v.substring(2, 3) + " " + v.substring(3);
   } else if (v.length > 2) {
-    return `(${v.substring(0, 2)}) ${v.substring(2)}`;
+    return "(" + v.substring(0, 2) + ") " + v.substring(2);
   } else if (v.length > 0) {
-    return `(${v}`;
+    return "(" + v;
   }
   return v;
 }
@@ -4160,94 +4212,14 @@ function verificarInconsistenciasPlanilha() {
     let atualizacoes = {};
     let descricoes = [];
 
-    // 1. Status
-    if (p.status) {
-      let stNorm = normalizarEspacos(p.status).toUpperCase();
-      if (typeof normalizarStatus === 'function') stNorm = normalizarStatus(stNorm);
-      if (p.status !== stNorm) {
-        atualizacoes.status = stNorm;
-        descricoes.push(`STATUS: "${p.status}" ➔ "${stNorm}"`);
-        mudou = true;
-      }
-    }
-
-    // 2. Localização
-    if (p.localizacao) {
-      let locNorm = normalizarEspacos(p.localizacao).toUpperCase();
-      if (typeof normalizarLocalizacao === 'function') locNorm = normalizarLocalizacao(locNorm);
-      if (p.localizacao !== locNorm) {
-        atualizacoes.localizacao = locNorm;
-        descricoes.push(`LOCALIZAÇÃO: "${p.localizacao}" ➔ "${locNorm}"`);
-        mudou = true;
-      }
-    }
-
-    // 3. Município
-    if (p.municipio) {
-      let munNorm = normalizarEspacos(p.municipio);
-      if (p.municipio !== munNorm) {
-        atualizacoes.municipio = munNorm;
-        descricoes.push(`MUNICÍPIO: "${p.municipio}" ➔ "${munNorm}"`);
-        mudou = true;
-      }
-    }
-
-    // 4. Objeto
-    if (p.objeto) {
-      let objNorm = normalizarEspacos(p.objeto);
-      if (p.objeto !== objNorm) {
-        atualizacoes.objeto = objNorm;
-        descricoes.push(`OBJETO: "${p.objeto}" ➔ "${objNorm}"`);
-        mudou = true;
-      }
-    }
-
-    // 5. Interessado
+        // A pedido do usuario, o padronizador agora MEXE SOMENTE NOS NOMES (Interessado)
+    // usando Jaro-Winkler com +90% de certeza com base na lista de escolas.
     if (p.interessado) {
       let intNorm = normalizarEspacos(p.interessado);
-      if (p.interessado !== intNorm) {
-        atualizacoes.interessado = intNorm;
-        descricoes.push(`INTERESSADO: "${p.interessado}" ➔ "${intNorm}"`);
-        mudou = true;
-      }
-    }
-
-    // 6. Categoria
-    if (p.categoria) {
-      let catNorm = normalizarEspacos(p.categoria).toUpperCase();
-      if (p.categoria !== catNorm) {
-        atualizacoes.categoria = catNorm;
-        descricoes.push(`CATEGORIA: "${p.categoria}" ➔ "${catNorm}"`);
-        mudou = true;
-      }
-    }
-
-    // 7. Tipo
-    if (p.tipo) {
-      let tipoNorm = normalizarEspacos(p.tipo).toUpperCase();
-      if (p.tipo !== tipoNorm) {
-        atualizacoes.tipo = tipoNorm;
-        descricoes.push(`TIPO: "${p.tipo}" ➔ "${tipoNorm}"`);
-        mudou = true;
-      }
-    }
-
-    // 8. Prefixo
-    if (p.prefixo) {
-      let prefNorm = normalizarEspacos(p.prefixo).toUpperCase();
-      if (p.prefixo !== prefNorm) {
-        atualizacoes.prefixo = prefNorm;
-        descricoes.push(`PREFIXO: "${p.prefixo}" ➔ "${prefNorm}"`);
-        mudou = true;
-      }
-    }
-
-    // 9. Agrupamento
-    if (p.agrupamento) {
-      let agNorm = normalizarEspacos(p.agrupamento).toUpperCase();
-      if (p.agrupamento !== agNorm) {
-        atualizacoes.agrupamento = agNorm;
-        descricoes.push(`AGRUPAMENTO: "${p.agrupamento}" ➔ "${agNorm}"`);
+      const matchEscola = encontrarEscolaSemelhante(intNorm);
+      if (matchEscola && matchEscola !== p.interessado) {
+        atualizacoes.interessado = matchEscola;
+        descricoes.push("NOME: " + p.interessado + " -> " + matchEscola);
         mudou = true;
       }
     }
@@ -4509,4 +4481,11 @@ window.getActiveBgColor = getActiveBgColor;
 window.getActiveBorderColor = getActiveBorderColor;
 window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
+
+
+
+
+
+
+
 
