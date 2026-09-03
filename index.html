@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.98</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.100</div>
   </div>
 </div>
   
@@ -278,7 +278,17 @@
             </a>
             <div class="nav-submenu" id="sub-cam" style="display: none; padding-left: 20px;">
               <a href="#" class="nav-item sub-item" onclick="alert('GDSM está em construção');" style="font-size: 13px; padding: 10px 16px;"><span style="display:flex; align-items:center;">GDSM <span style="font-size:9px; background:rgba(234,179,8,0.2); color:#eab308; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:bold; letter-spacing:0.5px;">EM CONSTRUÇÃO</span></span></a>
-              <a href="#" class="nav-item sub-item" onclick="alert('GMAC está em construção');" style="font-size: 13px; padding: 10px 16px;"><span style="display:flex; align-items:center;">GMAC <span style="font-size:9px; background:rgba(234,179,8,0.2); color:#eab308; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:bold; letter-spacing:0.5px;">EM CONSTRUÇÃO</span></span></a>
+              <a href="#" class="nav-item sub-item" onclick="toggleSubmenu('sub-gmac', this)" style="font-size: 13px; padding: 10px 16px;">
+                <span style="display:flex; align-items:center; flex:1;">GMAC</span>
+                <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </a>
+              <div class="nav-submenu" id="sub-gmac" style="display: none; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 10px;">
+                <a href="#" class="nav-item sub-item" data-page="gmac-aee" onclick="navegar('gmac-aee')" style="font-size: 12px; padding: 8px 16px;"><span>Equipamento - AEE</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-onibus" onclick="navegar('gmac-onibus')" style="font-size: 12px; padding: 8px 16px;"><span>Doação do Ônibus Escolar</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-veiculos" onclick="navegar('gmac-veiculos')" style="font-size: 12px; padding: 8px 16px;"><span>Doação Definitiva de Veículos</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-reordenamento" onclick="navegar('gmac-reordenamento')" style="font-size: 12px; padding: 8px 16px;"><span>Municipalização e Reordenamento</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-cooperacao" onclick="navegar('gmac-cooperacao')" style="font-size: 12px; padding: 8px 16px;"><span>Termo de Cooperação</span></a>
+              </div>
               <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
               <a href="#" class="nav-item sub-item" data-page="contatos" onclick="navegar('contatos')" style="font-size: 13px; padding: 10px 16px;"><span>Municípios</span></a>
             </div>
@@ -330,7 +340,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.98</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.100</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1251,6 +1261,9 @@
               </button>
               <button type="button" class="btn" id="btn-executar-padronizacao" onclick="if(typeof window.executarPadronizacaoPlanilha==='function'){window.executarPadronizacaoPlanilha();}else if(typeof executarPadronizacaoPlanilha==='function'){executarPadronizacaoPlanilha();}" style="background:#10b981; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px; display: none;">
                 ✓ Autorizar e Corrigir Planilhas
+              </button>
+              <button type="button" class="btn" id="btn-cancelar-padronizacao" onclick="if(typeof window.cancelarPadronizacao==='function'){window.cancelarPadronizacao();}else if(typeof cancelarPadronizacao==='function'){cancelarPadronizacao();}" style="background:#ef4444; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; align-items: center; gap: 6px; display: none;">
+                ? Cancelar
               </button>
             </div>
             <div id="status-padronizacao-container" style="margin-top: 16px; font-size: 13px; display: none;">
@@ -2466,13 +2479,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.1.98"></script>
-  <script src="js/app.js?v=1.1.98"></script>
-  <script src="js/auth-sap.js?v=1.1.98"></script>
-  <script src="js/escolas.js?v=1.1.98.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.1.100"></script>
+  <script src="js/app.js?v=1.1.100"></script>
+  <script src="js/auth-sap.js?v=1.1.100"></script>
+  <script src="js/escolas.js?v=1.1.100.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1.1.98"></script>
+<script src="js/mapa.js?v=1.1.100"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2616,12 +2629,12 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.1.98"></script>
+  <script src="js/multi-select.js?v=1.1.100"></script>
   <script>
   </script>
   <script src="js/diarias.js?v=1788328660163"></script>
   <script src="js/orcamento.js?v=1788328660163"></script>
-  <script src="js/print-proalfa.js?v=1.1.98"></script>
+  <script src="js/print-proalfa.js?v=1.1.100"></script>
   <script src="js/proalfa.js?v=1788328660163"></script>
 
 
@@ -3206,6 +3219,10 @@ function mudarAbaDiarias(aba, el) {
 
     </div>
   </div>
+
+
+
+
 
 
 

@@ -1,3 +1,15 @@
+function cancelarPadronizacao() {
+  const logDiv = document.getElementById('log-status-padronizacao');
+  const btnExecutar = document.getElementById('btn-executar-padronizacao');
+  const btnCancelar = document.getElementById('btn-cancelar-padronizacao');
+  const labelStatus = document.getElementById('label-status-padronizacao');
+  if (logDiv) logDiv.innerHTML = '';
+  if (btnExecutar) btnExecutar.style.display = 'none';
+  if (btnCancelar) btnCancelar.style.display = 'none';
+  if (labelStatus) labelStatus.innerHTML = '';
+  window._processosInconsistentesParaCorrigir = [];
+}
+window.cancelarPadronizacao = cancelarPadronizacao;
 function jaroWinkler(s1, s2) {
     var m = 0;
     if (!s1 || !s2 || s1.length === 0 || s2.length === 0) return 0;
@@ -4271,6 +4283,8 @@ function verificarInconsistenciasPlanilha() {
     btnExecutar.style.display = 'inline-flex';
     btnExecutar.disabled = false;
   }
+  const btnCancelar = document.getElementById('btn-cancelar-padronizacao');
+  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
 }
 
 async function executarPadronizacaoPlanilha() {
@@ -4481,6 +4495,7 @@ window.getActiveBgColor = getActiveBgColor;
 window.getActiveBorderColor = getActiveBorderColor;
 window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
+
 
 
 
