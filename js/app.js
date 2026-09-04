@@ -991,7 +991,9 @@ function getFiltrados() {
   filterByMultiple('tipo', tipo);
   filterByMultiple('ano', ano);
   filterByMultiple('agrupamento', state.filtros.agrupamento);
-  filterByMultiple('digito', state.filtros.digito);
+  if (state.filtros.digito) {
+    lista = lista.filter(p => normalizar(p.digito || p.DIGITO || '').includes(normalizar(state.filtros.digito)));
+  }
   filterIncludesMultiple('prefixo', state.filtros.prefixo);
 
   // Filtros individuais de autorização
@@ -1048,7 +1050,7 @@ function renderProcessos() {
   preencherSelectFiltro('filtro-objeto',      [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-ano',         [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-digito', [...new Set(todosProcs.map(p => p.digito || p.DIGITO).filter(Boolean))].sort());
+   [...new Set(todosProcs.map(p => p.digito || p.DIGITO).filter(Boolean))].sort());
   // Mapeamento de categorias e tipos para exibição amigável
   const MAPA_CATEGORIA = {
     'C': 'C - Conv\u00eanio', 'F': 'F - Fomento', 'T': 'T - Termo de Coopera\u00e7\u00e3o',
@@ -1175,8 +1177,7 @@ function preencherSelectFiltro(id, opcoes) {
   else if (id === 'filtro-ano') placeholder = 'ANO';
   else if (id === 'filtro-prefixo') placeholder = 'PREFIXO';
   else if (id === 'filtro-agrupamento') placeholder = 'AGRUPAMENTO';
-  else if (id === 'filtro-digito') placeholder = 'D�GITO';
-  else if (id === 'filtro-categoria') placeholder = 'CATEGORIA';
+    else if (id === 'filtro-categoria') placeholder = 'CATEGORIA';
   else if (id === 'filtro-tipo') placeholder = 'TIPO';
   else if (id === 'filtro-super') placeholder = 'SUPER';
 
@@ -2135,7 +2136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroAnoEl.addEventListener('change', () => aplicarFiltro('ano', null));
   }
   const filtroDigitoEl = document.getElementById('filtro-digito');
-  if (filtroDigitoEl) { filtroDigitoEl.addEventListener('change', (e) => aplicarFiltro('digito', e?.target?.value || null)); }
+  if (filtroDigitoEl) { filtroDigitoEl.addEventListener('input', (e) => aplicarFiltro('digito', e.target.value.trim())); }
   const filtroAgrupEl = document.getElementById('filtro-agrupamento');
   if (filtroAgrupEl) {
     filtroAgrupEl.addEventListener('change', () => aplicarFiltro('agrupamento', null));
@@ -2153,9 +2154,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: [] };
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
+    const fd = document.getElementById('filtro-digito');
+    if(fd) fd.value = '';
 
     // Limpar autorizações (toggles)
     ['filtro-cam', 'filtro-gab', 'filtro-cc'].forEach(id => {
@@ -2165,7 +2168,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Limpar todos os selects múltiplos e simples
     ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto',
-     'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento','filtro-digito'].forEach(id => {
+     'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
       Array.from(el.options).forEach(opt => { opt.selected = false; });

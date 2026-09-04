@@ -823,7 +823,7 @@ function renderProcessos() {
   // Preencher filtros dinâmicos
   preencherSelectFiltro('filtro-ano',         [...new Set(carregarProcessos().map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(carregarProcessos().map(p => p.agrupamento).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-digito', [...new Set(carregarProcessos().map(p => p.digito || p.DIGITO).filter(Boolean))].sort());
+   [...new Set(carregarProcessos().map(p => p.digito || p.DIGITO).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-status',      [...new Set(carregarProcessos().map(p => p.status).filter(s => s && s !== '.'))].sort());
   preencherSelectFiltro('filtro-localizacao', [...new Set(carregarProcessos().map(p => p.localizacao).filter(l => l && l !== '.'))].sort());
   preencherSelectFiltro('filtro-municipio',   [...new Set(carregarProcessos().map(p => p.municipio).filter(Boolean))].sort());
@@ -1773,7 +1773,7 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroAnoEl.addEventListener('change', e => aplicarFiltro('ano', e.target.value));
   }
   const filtroDigitoEl = document.getElementById('filtro-digito');
-  if (filtroDigitoEl) { filtroDigitoEl.addEventListener('change', (e) => aplicarFiltro('digito', e?.target?.value || null)); }
+  if (filtroDigitoEl) { filtroDigitoEl.addEventListener('input', (e) => aplicarFiltro('digito', e.target.value.trim())); }
   const filtroAgrupEl = document.getElementById('filtro-agrupamento');
   if (filtroAgrupEl) {
     filtroAgrupEl.addEventListener('change', e => aplicarFiltro('agrupamento', e.target.value));
@@ -1793,6 +1793,8 @@ document.addEventListener('DOMContentLoaded', () => {
     state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', alerta: '', marca: '', categoria: '', tipo: '', autorizacao: '', ano: '', agrupamento: '' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
+    const fd = document.getElementById('filtro-digito');
+    if(fd) fd.value = '';
     document.getElementById('filtro-status').value = '';
     document.getElementById('filtro-localizacao').value = '';
     document.getElementById('filtro-municipio').value = '';
