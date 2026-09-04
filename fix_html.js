@@ -1,48 +1,38 @@
 const fs = require('fs');
 let html = fs.readFileSync('index.html', 'utf8');
 
-const anchor = `                <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🚻 BANHEIROS</label>
-                  <input type="text" id="form-banheiros" class="form-control" placeholder="Ex: Masc / Fem / Acessível" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
-                </div>`;
-
-const restoredBlock = `
-              </div>
-
-              <!-- SEÇÃO: DETALHAMENTO DO PEDIDO & MONITORAMENTO -->
-              <div style="margin-top:24px; padding:20px; background:linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.05)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; margin-bottom:20px;">
-                <div style="font-size:13px; font-weight:800; color:#60a5fa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <span>📊</span> <span>Detalhamento do Pedido - Relatório de Monitoramento</span>
-                  </div>
-                  <button type="button" onclick="gerarRelatorioMonitoramento()" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; font-size:12px; font-weight:700; padding:8px 16px; border-radius:6px; cursor:pointer; box-shadow:0 3px 10px rgba(59,130,246,0.35); display:inline-flex; align-items:center; gap:6px;">📊 GERAR RELATÓRIO</button>
-                </div>
-
-                <div class="form-group" style="margin-bottom:14px;">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📐 Metragem m² (Obras / Ampliação / Reforma)</label>
-                  <input type="text" id="form-metragemM2" class="form-control" placeholder="Ex: 450 m²" style="border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
-                </div>
-
-                <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:700; font-size:13px; display:flex; align-items:center; gap:6px; margin-bottom:6px;">`;
-
-const endTargetStr = `                    <span>📦</span> <span>Detalhamento dos Itens & Quantidades Pedidas`;
-
-let index1 = html.indexOf(anchor);
-if (index1 > -1) {
-    let index2 = html.indexOf(endTargetStr, index1);
-    if (index2 > -1) {
-        html = html.substring(0, index1 + anchor.length) + restoredBlock + html.substring(index2 - 1); // -1 to keep some indentation before span if any, actually index2 is fine
-        fs.writeFileSync('index.html', html);
-        console.log("Restored successfully");
-    } else {
-        console.log("End target not found");
-    }
+// 1. Insert filter dropdown
+const filterAnchor = '<select id="filtro-agrupamento"';
+const filterEnd = '</select>';
+const idxFilter = html.indexOf(filterAnchor);
+if (idxFilter !== -1) {
+  const endIdx = html.indexOf(filterEnd, idxFilter) + filterEnd.length;
+  const newFilter = '\n            <select id="filtro-digito" multiple style="border-color: rgba(99,102,241,0.5); color: #818cf8;">\n              <option value="">D�GITO</option>\n            </select>';
+  html = html.substring(0, endIdx) + newFilter + html.substring(endIdx);
 } else {
-    console.log("Anchor not found");
+  console.log("filterAnchor not found");
 }
 
-// Update version number in index.html to 1.0.1 since we're making another change
-html = html.replace('GBZ - v1.0.0', 'GBZ - v1.0.1');
-fs.writeFileSync('index.html', html);
-console.log("Version bumped to 1.0.1");
+// 2. Insert form-digito
+const formAnchor = '<label for="form-agrupamento">';
+const idxForm = html.indexOf(formAnchor);
+if (idxForm !== -1) {
+  // Find the end of this form-group div
+  const nextFormGroup = html.indexOf('<div class="form-group"', idxForm);
+  // Wait, let's just find the closing </div> of the agrupamento form-group
+  // actually, let's just look for <datalist id="list-agrupamentos"></datalist>\n              </div>
+  const dlAnchor = '<datalist id="list-agrupamentos"></datalist>';
+  const idxDl = html.indexOf(dlAnchor);
+  if (idxDl !== -1) {
+    const endDivIdx = html.indexOf('</div>', idxDl) + 6;
+    const newForm = '\n\n              <div class="form-group">\n                <label for="form-digito">D�gito</label>\n                <input type="text" id="form-digito" placeholder="000" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">\n              </div>';
+    html = html.substring(0, endDivIdx) + newForm + html.substring(endDivIdx);
+  } else {
+    console.log("dlAnchor not found");
+  }
+} else {
+  console.log("formAnchor not found");
+}
+
+fs.writeFileSync('index.html', html, 'utf8');
+console.log("Done");

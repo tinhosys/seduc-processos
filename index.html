@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.01</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.02</div>
   </div>
 </div>
   
@@ -340,7 +340,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.01</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.02</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -748,6 +748,9 @@
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
+              <select id="filtro-digito" multiple style="border-color: rgba(99,102,241,0.5); color: #818cf8;">
+                <option value="">D�GITO</option>
+              </select>
           </div>
 
           <!-- LINHA 4 -->
@@ -761,6 +764,7 @@
             <select id="filtro-agrupamento" multiple style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
               <option value="">AGRUPAMENTO</option>
             </select>
+            
             <select id="filtro-ano" multiple style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
               <option value="">ANO</option>
             </select>
@@ -955,6 +959,11 @@
                 <label for="form-agrupamento">Agrupamento</label>
                 <input type="text" id="form-agrupamento" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
                 <datalist id="list-agrupamentos"></datalist>
+              </div>
+
+              <div class="form-group">
+                <label for="form-digito">D�gito</label>
+                <input type="text" id="form-digito" placeholder="000" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
               </div>
 
               <div class="form-group" id="legend-ultima-edicao" style="display:none;">

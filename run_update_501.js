@@ -1,0 +1,58 @@
+const fs = require('fs');
+
+const processosList = [
+  "0029.027683/2026-71", "0029.027733/2026-11", "0029.028131/2026-81",
+  "0029.027787/2026-86", "0029.028042/2026-34", "0029.027741/2026-67",
+  "0029.028266/2026-46", "0029.027986/2026-94", "0029.027866/2026-97",
+  "0029.028410/2026-44", "0029.028379/2026-41", "0029.027766/2026-61",
+  "0029.028426/2026-57", "0029.028125/2026-23", "0029.028442/2026-40",
+  "0029.028061/2026-61", "0029.028564/2026-36", "0029.028287/2026-61",
+  "0029.028132/2026-25", "0029.028958/2026-94", "0029.028141/2026-16",
+  "0029.028436/2026-92", "0029.028160/2026-42", "0029.028559/2026-23",
+  "0029.028765/2026-33", "0029.028411/2026-99", "0029.028482/2026-91",
+  "0029.028588/2026-95", "0029.028381/2026-11", "0029.028377/2026-52",
+  "0029.028282/2026-39", "0029.028444/2026-39", "0029.028135/2026-69",
+  "0029.028413/2026-88", "0029.028809/2026-25", "0029.028834/2026-17",
+  "0029.028159/2026-18", "0029.028763/2026-44", "0029.028326/2026-21",
+  "0029.028567/2026-70", "0029.029912/2026-92", "0029.028319/2026-29",
+  "0029.028557/2026-34"
+];
+
+async function run() {
+  console.log('Buscando processos na API...');
+  const res = await fetch('https://seduc-backend.onrender.com/api/registros?refresh=true');
+  const json = await res.json();
+  const dados = json.rows;
+  
+  let atualizados = 0;
+  
+  for (const item of dados) {
+    const proc = String(item['Processo'] || '').trim();
+    if (processosList.includes(proc)) {
+      const id = item._tabName + '__' + item._rowNumber;
+      console.log('Atualizando ' + proc + ' (' + id + ')...');
+      
+      const payload = Object.assign({}, item, { DIGITO: '501' });
+      
+      try {
+        const putRes = await fetch('https://seduc-backend.onrender.com/api/registros/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (putRes.ok) {
+          console.log('[OK] ' + id + ' atualizado.');
+          atualizados++;
+        } else {
+          console.log('[ERRO] ' + id + ' falhou com status: ' + putRes.status);
+        }
+      } catch (err) {
+        console.error('[ERRO] Request falhou:', err);
+      }
+    }
+  }
+  
+  console.log('\nPronto! Atualizados: ' + atualizados + '/' + processosList.length);
+}
+
+run();
