@@ -1050,7 +1050,6 @@ function renderProcessos() {
   preencherSelectFiltro('filtro-objeto',      [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-ano',         [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
-   [...new Set(todosProcs.map(p => p.digito || p.DIGITO).filter(Boolean))].sort());
   // Mapeamento de categorias e tipos para exibição amigável
   const MAPA_CATEGORIA = {
     'C': 'C - Conv\u00eanio', 'F': 'F - Fomento', 'T': 'T - Termo de Coopera\u00e7\u00e3o',
