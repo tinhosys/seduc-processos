@@ -339,6 +339,7 @@ const mapToApp = (row) => {
     return {
       id: `${row._tabName}__${row._rowNumber}`,
       agrupamento: row.Agrupamento || row.agrupamento || agrupamentoCalculado,
+      digito: row.DIGITO || row.digito || row.Digito || '',
     prefixo: row._tabName || row['Prefixo (codigo de prioridade)'] || row['Prefixo'] || '',
     municipio: row['Município'] || row['Municipio'] || '',
     numero: row['Processo'] || row['Nº Processo'] || '',
@@ -361,6 +362,7 @@ const mapToApp = (row) => {
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || row['DATA/HORA EDIÇÃO'] || '',
     ano: row['ANO'] || row['ano'] || '',
     agrupamento: row['AGRUPAMENTO'] || row['agrupamento'] || row['Agrupamento'] || '',
+    digito: row['DIGITO'] || row['digito'] || row['Digito'] || '',
     CAM: row['CAM'] || '',
     GAB: row['GAB'] || '',
     CC: row['CC'] || '',

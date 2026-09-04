@@ -823,6 +823,7 @@ function renderProcessos() {
   // Preencher filtros dinâmicos
   preencherSelectFiltro('filtro-ano',         [...new Set(carregarProcessos().map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(carregarProcessos().map(p => p.agrupamento).filter(Boolean))].sort());
+  preencherSelectFiltro('filtro-digito', [...new Set(carregarProcessos().map(p => p.digito || p.DIGITO).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-status',      [...new Set(carregarProcessos().map(p => p.status).filter(s => s && s !== '.'))].sort());
   preencherSelectFiltro('filtro-localizacao', [...new Set(carregarProcessos().map(p => p.localizacao).filter(l => l && l !== '.'))].sort());
   preencherSelectFiltro('filtro-municipio',   [...new Set(carregarProcessos().map(p => p.municipio).filter(Boolean))].sort());
@@ -1036,6 +1037,7 @@ function renderFormulario() {
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
+    document.getElementById('form-digito').value = p.digito || p.DIGITO || '';
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
     document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
@@ -1133,6 +1135,7 @@ function renderFormulario() {
     document.getElementById('form-marca').checked = false;
     document.getElementById('form-ano').value = '';
     document.getElementById('form-agrupamento').value = '';
+    document.getElementById('form-digito').value = '';
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
     updateSegmentControl('categoria', '');
@@ -1266,6 +1269,7 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
+    digito: document.getElementById('form-digito').value.trim(),
     categoria:   document.getElementById('form-categoria').value,
     tipo:        document.getElementById('form-tipo').value,
     CAM:         document.getElementById('form-cam')?.checked ? '1' : '',
@@ -1768,6 +1772,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (filtroAnoEl) {
     filtroAnoEl.addEventListener('change', e => aplicarFiltro('ano', e.target.value));
   }
+  const filtroDigitoEl = document.getElementById('filtro-digito');
+  if (filtroDigitoEl) { filtroDigitoEl.addEventListener('change', (e) => aplicarFiltro('digito', e?.target?.value || null)); }
   const filtroAgrupEl = document.getElementById('filtro-agrupamento');
   if (filtroAgrupEl) {
     filtroAgrupEl.addEventListener('change', e => aplicarFiltro('agrupamento', e.target.value));
