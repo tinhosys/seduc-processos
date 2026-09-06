@@ -194,7 +194,10 @@ function filtrarOrcamento() {
        if (cDesp !== 0) return cDesp;
        return (a.fonte||'').localeCompare(b.fonte||'');
     });
-  renderOrcamentoCards();
+  window.ORCAMENTO_DATA = ORCAMENTO_DATA;
+    window._orcFiltrado = _orcFiltrado;
+    if (typeof window.atualizarMetricasSistemaInfo === 'function') window.atualizarMetricasSistemaInfo();
+    renderOrcamentoCards();
   renderOrcamentoTable();
   renderOrcamentoCharts();
 }

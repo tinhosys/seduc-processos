@@ -55,6 +55,8 @@ async function carregarProalfa() {
         .filter(_isValidDataRow);
     }
 
+    window.proalfaData = proalfaData;
+    if (typeof window.atualizarMetricasSistemaInfo === 'function') window.atualizarMetricasSistemaInfo();
     renderProalfaTabs();
     selecionarTabProalfa(currentTabProalfa);
 

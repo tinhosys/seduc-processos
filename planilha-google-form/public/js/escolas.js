@@ -474,6 +474,8 @@ async function carregarEscolasAPI(silencioso) {
     mergedSchools.sort((a, b) => (a.municipio || '').localeCompare(b.municipio || '') || (a.nome || '').localeCompare(b.nome || ''));
 
     _escolasCache = mergedSchools;
+    window._escolasCache = mergedSchools;
+    if (typeof window.atualizarMetricasSistemaInfo === 'function') window.atualizarMetricasSistemaInfo();
 
 
     const qtdEst = mergedSchools.filter(e => e.competencia === 'Estadual').length;

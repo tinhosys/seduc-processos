@@ -3691,7 +3691,76 @@ function imprimirManifestoTCE() {
   if (!win) { alert('Permita popups para gerar o relat\u00f3rio.'); return; }
   win.document.write(h);
   win.document.close();
-}window.gerarRelatorioMonitoramento    = gerarRelatorioMonitoramento;
+}
+
+function gerarRelatorioMonitoramento() {
+  var g  = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
+  var gb = function(id) { var el = document.getElementById(id); return el ? el.checked : false; };
+
+  var inputsNum  = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  var numeroProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || 'Sem número';
+
+  var parseMon = function(v) {
+    if (!v) return 0;
+    var s = String(v).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');
+    return parseFloat(s) || 0;
+  };
+  var valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : parseMon(g('form-valorPlan'));
+  var valOf   = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf'))   : parseMon(g('form-valorOf'));
+
+  var catEl  = document.querySelector('#control-categoria .segment-btn.active') || {};
+  var tipoEl = document.querySelector('#control-tipo .segment-btn.active')      || {};
+
+  var p = {
+    numero:            numeroProc,
+    municipio:         g('form-municipio'),
+    interessado:       g('form-interessado'),
+    objeto:            g('form-objeto'),
+    prefixo:           g('form-prefixo'),
+    ano:               g('form-ano'),
+    agrupamento:       g('form-agrupamento'),
+    data:              g('form-data'),
+    status:            g('form-status'),
+    localizacao:       g('form-localizacao'),
+    obs:               g('form-obs'),
+    categoria:         (catEl.dataset  && catEl.dataset.value)  || g('form-categoria'),
+    tipo:              (tipoEl.dataset && tipoEl.dataset.value) || g('form-tipo'),
+    cam:               gb('form-cam')  ? 1 : 0,
+    gab:               gb('form-gab')  ? 1 : 0,
+    cc:                gb('form-cc')   ? 1 : 0,
+    valorPlan:         valPlan,
+    valorOf:           valOf,
+    qtdeSala:          g('form-qtdeSala'),
+    tipoSala:          g('form-tipoSala'),
+    auditorio:         g('form-auditorio'),
+    tipoAuditorio:     g('form-tipoAuditorio'),
+    quadra:            g('form-quadra'),
+    patio:             g('form-patio'),
+    refeitorio:        g('form-refeitorio'),
+    banheiros:         g('form-banheiros'),
+    metragemM2:        g('form-metragemM2'),
+    detalhamentoItens: g('form-detalhamentoItens'),
+    demaisObservacoes: g('form-demaisObservacoes')
+  };
+
+  if (typeof state !== 'undefined' && state.editandoId) {
+    var saved = (state.processos || []).find(function(item){ return item.id === state.editandoId; });
+    if (saved) {
+      Object.keys(p).forEach(function(k) {
+        if (p[k] === '' || p[k] === 0 || p[k] === null || p[k] === undefined) {
+          if (saved[k] !== undefined && saved[k] !== null && saved[k] !== '') p[k] = saved[k];
+        }
+      });
+    }
+  }
+
+  window._manifestoProcessoAtual = p;
+  if (typeof imprimirManifestoTCE === 'function') {
+    imprimirManifestoTCE();
+  }
+}
+
+window.gerarRelatorioMonitoramento = gerarRelatorioMonitoramento;
 window.abrirModalManifestoTCEById     = abrirModalManifestoTCEById;
 window.abrirModalManifestoTCE         = abrirModalManifestoTCE;
 window.fecharModalManifestoTCE        = fecharModalManifestoTCE;
@@ -4560,6 +4629,289 @@ window.getTypeBadge = getTypeBadge;
 
 
 // =========================================================================
+// PAINEL DE INFORMAÇÕES DO SISTEMA, DIAGNÓSTICO & MÉTRICAS (GBZ - v1.2.21)
+// =========================================================================
+
+let _sysInfoTimer = null;
+
+function atualizarMetricasSistemaInfo() {
+  // 1. GDSM
+  const poolGDSM = window.processosCache || (typeof state !== 'undefined' && state.processos) || [];
+  const elTotalGDSM = document.getElementById('metric-gdsm-total');
+  const elRepGDSM = document.getElementById('metric-gdsm-repetidos');
+  if (elTotalGDSM) elTotalGDSM.textContent = poolGDSM.length;
+
+  if (elRepGDSM) {
+    const mapaRep = {};
+    poolGDSM.forEach(p => {
+      const num = (p.numero || '').trim();
+      if (num && num !== '-' && num !== 'S/N') {
+        mapaRep[num] = (mapaRep[num] || 0) + 1;
+      }
+    });
+    let repetidos = 0;
+    Object.values(mapaRep).forEach(qtd => {
+      if (qtd > 1) repetidos += (qtd - 1);
+    });
+    elRepGDSM.textContent = repetidos;
+  }
+
+  // 2. GMAC
+  const gmac = window.gmacCache || {};
+  const setElText = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+  setElText('metric-gmac-aee', (gmac.aee || []).length);
+  setElText('metric-gmac-onibus', (gmac.onibus || []).length);
+  setElText('metric-gmac-veiculos', (gmac.veiculos || []).length);
+  setElText('metric-gmac-reord', (gmac.reordenamento || []).length);
+  setElText('metric-gmac-coop', (gmac.cooperacao || []).length);
+
+  // 3. Escolas de Rondônia
+  const escolas = window._escolasCache || (typeof _escolasCache !== 'undefined' ? _escolasCache : []) || [];
+  const munEsc = escolas.filter(e => {
+    const c = String(e.competencia || e.rede || '').toUpperCase();
+    return c.includes('MUN');
+  }).length;
+  const estEsc = escolas.filter(e => {
+    const c = String(e.competencia || e.rede || '').toUpperCase();
+    return c.includes('EST');
+  }).length;
+  const fedEsc = escolas.filter(e => {
+    const c = String(e.competencia || e.rede || '').toUpperCase();
+    return c.includes('FED');
+  }).length;
+  setElText('metric-escolas-mun', munEsc);
+  setElText('metric-escolas-est', estEsc);
+  setElText('metric-escolas-fed', fedEsc);
+
+  // 4. PROALFA / CENSO
+  const pData = window.proalfaData || (typeof proalfaData !== 'undefined' ? proalfaData : null) || {};
+  let profMun = 0, profEst = 0, alunMun = 0, alunEst = 0;
+  if (pData['Docentes_Rede_Municipal_2025']) {
+    pData['Docentes_Rede_Municipal_2025'].forEach(r => { profMun += (Number(r[8]) || 0); });
+  }
+  if (pData['Docentes_Rede_Est.2025-EF-AI']) {
+    pData['Docentes_Rede_Est.2025-EF-AI'].forEach(r => { profEst += (Number(r[8]) || 0); });
+  }
+  if (pData['Matrículas_Municipal_2025']) {
+    pData['Matrículas_Municipal_2025'].forEach(r => {
+      alunMun += ((Number(r[9])||0) + (Number(r[10])||0) + (Number(r[11])||0) + (Number(r[12])||0) + (Number(r[13])||0));
+    });
+  }
+  if (pData['Matrículas_Estadual_2025-EF-AI']) {
+    pData['Matrículas_Estadual_2025-EF-AI'].forEach(r => {
+      alunEst += ((Number(r[9])||0) + (Number(r[10])||0) + (Number(r[11])||0) + (Number(r[12])||0) + (Number(r[13])||0));
+    });
+  }
+  setElText('metric-proalfa-prof-mun', profMun.toLocaleString('pt-BR'));
+  setElText('metric-proalfa-prof-est', profEst.toLocaleString('pt-BR'));
+  setElText('metric-proalfa-alun-mun', alunMun.toLocaleString('pt-BR'));
+  setElText('metric-proalfa-alun-est', alunEst.toLocaleString('pt-BR'));
+
+  // 5. Orçamento CAM (Execução)
+  const orcList = window._orcFiltrado || window.ORCAMENTO_DATA || (typeof _orcFiltrado !== 'undefined' ? _orcFiltrado : []) || [];
+  const totalExec = orcList.reduce((s, r) => s + (Number(r.executado) || 0), 0);
+  const totalEmp  = orcList.reduce((s, r) => s + (Number(r.empenhado) || 0), 0);
+  const totalSal  = orcList.reduce((s, r) => s + (Number(r.saldoLiquido) || 0), 0);
+  const fmtBRL = v => (v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  setElText('metric-orc-executado', fmtBRL(totalExec));
+  setElText('metric-orc-empenhado', fmtBRL(totalEmp));
+  setElText('metric-orc-saldo', fmtBRL(totalSal));
+
+  // 6. Controle de Diárias
+  const diarias = window.DIARIAS_DATA || (typeof DIARIAS_DATA !== 'undefined' ? DIARIAS_DATA : []) || [];
+  let dPagos = 0, dAnalise = 0, dEncerrados = 0, dAguardando = 0;
+  diarias.forEach(d => {
+    const s = String(d.status || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (s.includes('PAGO')) dPagos++;
+    else if (s.includes('ANALIS')) dAnalise++;
+    else if (s.includes('ENCERR')) dEncerrados++;
+    else if (s.includes('AGUARD')) dAguardando++;
+  });
+  setElText('metric-diarias-pagos', dPagos);
+  setElText('metric-diarias-analise', dAnalise);
+  setElText('metric-diarias-encerrados', dEncerrados);
+  setElText('metric-diarias-aguardando', dAguardando);
+}
+window.atualizarMetricasSistemaInfo = atualizarMetricasSistemaInfo;
+
+async function carregarPainelSistemaInfo() {
+  // 1. Dados do Usuário Ativo
+  let user = null;
+  try {
+    user = JSON.parse(sessionStorage.getItem('sap_usuario') || localStorage.getItem('sap_usuario') || '{}');
+  } catch(e) {}
+  if (!user || !user.login) {
+    user = window.usuarioAtual || (typeof state !== 'undefined' && state.usuario) || {
+      login: 'admin',
+      nome: 'Administrador CAM',
+      perfil: 'admin',
+      cargo: 'Coordenador',
+      setor: 'CAM / SEDUC-RO',
+      whatsapp: '69999999999'
+    };
+  }
+
+  const elNome = document.getElementById('sysinfo-user-nome');
+  const elWhats = document.getElementById('sysinfo-user-whats');
+  const elRole = document.getElementById('sysinfo-user-role');
+  const elSetor = document.getElementById('sysinfo-user-setor');
+  const elEntrada = document.getElementById('sysinfo-user-entrada');
+
+  if (elNome) {
+    const labelNome = user.nome || user.login || 'Usuário';
+    const labelLogin = user.login ? (' (@' + user.login + ')') : '';
+    elNome.textContent = labelNome + labelLogin;
+  }
+  if (elWhats) {
+    const rawWhats = user.whatsapp || user.telefone || '';
+    if (rawWhats) {
+      const cleanNum = String(rawWhats).replace(/\D/g, '');
+      elWhats.innerHTML = '<a href="https://wa.me/55' + cleanNum + '" target="_blank" rel="noopener" style="color:#60a5fa; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📱 WhatsApp: ' + rawWhats + ' ↗</a>';
+    } else {
+      elWhats.textContent = 'WhatsApp: Não informado';
+    }
+  }
+  if (elRole) {
+    const perfil = (user.perfil || user.role || 'Admin').toUpperCase();
+    elRole.textContent = perfil === 'ADMIN' ? 'Admin (Acesso Total)' : perfil;
+  }
+  if (elSetor) {
+    elSetor.textContent = user.setor || user.cargo || 'CAM / SEDUC-RO';
+  }
+
+  // Data e hora de entrada da sessão
+  let entradaISO = sessionStorage.getItem('sap_session_start_time');
+  if (!entradaISO) {
+    entradaISO = new Date().toISOString();
+    sessionStorage.setItem('sap_session_start_time', entradaISO);
+  }
+  const dtEntrada = new Date(entradaISO);
+  if (elEntrada) {
+    elEntrada.textContent = dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR');
+  }
+
+  // Cronômetro da sessão ativa
+  const elTempo = document.getElementById('sysinfo-tempo-sessao');
+  if (_sysInfoTimer) clearInterval(_sysInfoTimer);
+  _sysInfoTimer = setInterval(() => {
+    if (!elTempo) return;
+    const diffMs = Math.max(0, Date.now() - dtEntrada.getTime());
+    const totalSec = Math.floor(diffMs / 1000);
+    const hrs = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+    const mins = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+    const secs = String(totalSec % 60).padStart(2, '0');
+    elTempo.textContent = 'Sessão: ' + hrs + ':' + mins + ':' + secs;
+  }, 1000);
+
+  // Histórico de sessões / conexões registradas
+  const tbodyLogados = document.getElementById('sysinfo-tbody-logados');
+  if (tbodyLogados) {
+    let historico = [];
+    try {
+      historico = JSON.parse(localStorage.getItem('sap_historico_conexoes') || '[]');
+    } catch(e) {}
+    
+    if (!historico || historico.length === 0) {
+      historico = [
+        {
+          usuario: user.nome || user.login || 'Admin',
+          whats: user.whatsapp || '(69) 99318-6415',
+          perfil: (user.perfil || 'admin').toUpperCase(),
+          dataHora: dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR'),
+          acessos: '1 (Ativo)'
+        }
+      ];
+    }
+
+    tbodyLogados.innerHTML = historico.slice(0, 5).map(h => 
+      '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">' +
+        '<td style="padding:8px 12px; font-weight:700; color:#f8fafc;">' + h.usuario + '</td>' +
+        '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + (h.whats || '-') + '</td>' +
+        '<td style="padding:8px 12px;"><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + h.perfil + '</span></td>' +
+        '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + h.dataHora + '</td>' +
+        '<td style="padding:8px 12px; color:#38bdf8;">' + (h.acessos || 'Ativo') + '</td>' +
+      '</tr>'
+    ).join('');
+  }
+
+  // 2. Atualizar Métricas Imediatamente
+  atualizarMetricasSistemaInfo();
+  atualizarBadgeBackupPadronizacao();
+
+  // 3. Proativamente carregar dados dos módulos se ainda estiverem vazios
+  try {
+    const promises = [];
+    
+    // GDSM
+    if (!window.processosCache || window.processosCache.length === 0) {
+      if (typeof inicializarDados === 'function') promises.push(inicializarDados());
+      else if (typeof carregarProcessos === 'function') promises.push(carregarProcessos());
+      else if (typeof buscarDados === 'function') promises.push(buscarDados());
+    }
+
+    // GMAC
+    const modulosGMAC = ['aee', 'onibus', 'veiculos', 'reordenamento', 'cooperacao'];
+    const precisaGMAC = !window.gmacCache || modulosGMAC.some(m => !window.gmacCache[m] || window.gmacCache[m].length === 0);
+    if (precisaGMAC && typeof carregarGMAC === 'function') {
+      modulosGMAC.forEach(m => promises.push(carregarGMAC(m, true)));
+    }
+
+    // Escolas
+    if ((!window._escolasCache || window._escolasCache.length === 0) && typeof carregarEscolasAPI === 'function') {
+      promises.push(carregarEscolasAPI(true));
+    }
+
+    // PROALFA
+    if (!window.proalfaData && typeof carregarProalfa === 'function') {
+      promises.push(carregarProalfa());
+    }
+
+    // Orçamento
+    if ((!window._orcFiltrado || window._orcFiltrado.length === 0) && typeof carregarOrcamentoData === 'function') {
+      promises.push(carregarOrcamentoData());
+    }
+
+    // Diárias
+    if ((!window.DIARIAS_DATA || window.DIARIAS_DATA.length === 0) && typeof carregarDiariasData === 'function') {
+      promises.push(carregarDiariasData());
+    }
+
+    if (promises.length > 0) {
+      Promise.allSettled(promises).then(() => {
+        atualizarMetricasSistemaInfo();
+      });
+    }
+  } catch(err) {
+    console.warn('Carregamento proativo de métricas:', err);
+    atualizarMetricasSistemaInfo();
+  }
+}
+window.carregarPainelSistemaInfo = carregarPainelSistemaInfo;
+
+function atualizarBadgeBackupPadronizacao() {
+  const badge = document.getElementById('sysinfo-backup-badge');
+  if (!badge) return;
+  const raw = localStorage.getItem('padronizacao_backup');
+  if (!raw) {
+    badge.textContent = 'Último Backup: Nenhum registrado';
+    badge.style.color = '#94a3b8';
+    return;
+  }
+  try {
+    const b = JSON.parse(raw);
+    const regs = (b.registros || []).length;
+    badge.textContent = 'Último Backup: ' + (b.dataHora || 'Gravado') + ' (' + regs + ' regs)';
+    badge.style.color = '#00ff66';
+  } catch(e) {
+    badge.textContent = 'Último Backup: Gravado';
+  }
+}
+window.atualizarBadgeBackupPadronizacao = atualizarBadgeBackupPadronizacao;
+
+// =========================================================================
 // PADRONIZADOR & CORRETOR ORTOGRÁFICO (TERMINAL CMD VERDE FÓSFORO)
 // =========================================================================
 
@@ -4570,7 +4922,7 @@ function normalizarTextoSeguro(val) {
   return String(val).replace(/\s+/g, ' ').trim();
 }
 
-window.verificarInconsistenciasPlanilhaCMD = function() {
+window.verificarInconsistenciasPlanilhaCMD = async function() {
   const output = document.getElementById('cmd-output-area');
   const btnAutorizar = document.getElementById('btn-cmd-autorizar');
   const btnCancelar = document.getElementById('btn-cmd-cancelar');
@@ -4583,10 +4935,22 @@ window.verificarInconsistenciasPlanilhaCMD = function() {
     output.innerHTML = '<div style="color:#00ff66;">> Iniciando varredura ortográfica e estrutural nas planilhas do sistema...</div><div style="color:#94a3b8;">> Verificando campos: Número, Status, Localização, Município, Objeto, Interessado, Categoria, Tipo, Prefixo e Agrupamento...</div>';
   }
 
-  const pool = window.processosCache || [];
+  let pool = window.processosCache || (typeof state !== 'undefined' && state.processos) || [];
   if (!pool || pool.length === 0) {
-    if (output) output.innerHTML += '<div style="color:#f87171;">> [ERRO] Nenhum registro carregado no cache para análise. Recarregue os dados globais.</div>';
-    if (indStatus) indStatus.textContent = 'STATUS: ERRO';
+    if (output) output.innerHTML = '<div style="color:#fbbf24;">> [AVISO] Cache de processos local vazio. Carregando dados do servidor...</div>';
+    if (indStatus) indStatus.textContent = 'STATUS: CARREGANDO DADOS...';
+    try {
+      if (typeof inicializarDados === 'function') await inicializarDados();
+      else if (typeof carregarProcessos === 'function') await carregarProcessos();
+      pool = window.processosCache || (typeof state !== 'undefined' && state.processos) || [];
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+  if (!pool || pool.length === 0) {
+    if (output) output.innerHTML += '<div style="color:#f87171;">> [ERRO] Nenhum registro carregado da planilha. Verifique a conexão com o servidor.</div>';
+    if (indStatus) indStatus.textContent = 'STATUS: ERRO CONEXAO';
     return;
   }
 
