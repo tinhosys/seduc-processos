@@ -2339,3 +2339,17 @@ thead th {
   opacity: 1 !important;
   pointer-events: all !important;
 }
+
+/* Estilos para o grupo de parâmetros do Dígito */
+.btn-param-digito {
+  outline: none;
+  user-select: none;
+}
+.btn-param-digito:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #e2e8f0 !important;
+}
+.digito-input-box:focus-within {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25) !important;
+}

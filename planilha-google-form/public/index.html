@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.26">
+  <link rel="stylesheet" href="css/style.css?v=1.2.27">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.26</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.27</div>
   </div>
 </div>
   
@@ -412,7 +412,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.26</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.27</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1045,7 +1045,47 @@
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
-              <input type="text" id="filtro-digito" placeholder="DÍGITO" maxlength="3" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 3);" style="flex:1; min-width:120px; max-width:150px; padding:10px 12px; background:transparent; border:1px solid rgba(99,102,241,0.5); border-radius:8px; color:#818cf8; font-size:13px; font-weight:600; outline:none;" autocomplete="off">
+              <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÃO -->
+            <div class="filtro-digito-container" style="display:flex; align-items:center; gap:6px; flex:1; min-width:260px; max-width:350px;">
+              <div style="position:relative; flex:1; min-width:110px;">
+                <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 8px; height:38px; box-sizing:border-box;">
+                  <input type="text" id="filtro-digito" placeholder="DÍGITO" maxlength="20" autocomplete="off"
+                    style="width:100%; background:transparent; border:none; color:#c7d2fe; font-size:13px; font-weight:600; outline:none; padding:0;">
+                  <button type="button" id="btn-digito-dropdown-toggle" title="Ver dígitos disponíveis na planilha"
+                    style="background:none; border:none; color:#818cf8; cursor:pointer; padding:4px; font-size:12px; display:flex; align-items:center; justify-content:center; transition:transform 0.2s;">
+                    &#9662;
+                  </button>
+                </div>
+                <!-- Dropdown de Multi-Seleção de Dígitos -->
+                <div id="dropdown-digitos-opcoes" class="custom-multiselect-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; min-width:180px; z-index:9999; margin-top:4px; max-height:220px; overflow-y:auto; background:#1e293b; border:1px solid #334155; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.5); padding:4px;">
+                  <div class="custom-multiselect-header" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; border-bottom:1px solid #334155;">
+                    <span style="font-weight:700; font-size:10px; text-transform:uppercase; color:#94a3b8; display:flex; align-items:center; gap:4px;">
+                      <span style="font-size:10px; color:#38bdf8;">📌</span> DÍGITOS DISPONÍVEIS
+                    </span>
+                    <span id="btn-digito-limpar-checks" style="color:#38bdf8; cursor:pointer; font-size:11px; font-weight:500;">Limpar</span>
+                  </div>
+                  <div id="lista-digitos-checkboxes" style="display:flex; flex-direction:column; padding:4px 0;">
+                    <!-- Preenchido dinamicamente via JS -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Botões de Condição / Parâmetro: TODOS, =, <> -->
+              <div class="btn-group-param-digito" style="display:flex; align-items:center; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:2px; gap:2px; height:38px; box-sizing:border-box; flex-shrink:0;">
+                <button type="button" id="btn-param-digito-todos" class="btn-param-digito active" data-cond="todos" title="Mostrar todos os registros"
+                  style="padding:4px 8px; font-size:11px; font-weight:700; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:#3b82f6; color:#ffffff; box-shadow:0 0 8px rgba(59,130,246,0.4);">
+                  TODOS
+                </button>
+                <button type="button" id="btn-param-digito-eq" class="btn-param-digito" data-cond="=" title="Igual ao valor digitado (=)"
+                  style="padding:4px 9px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#94a3b8;">
+                  =
+                </button>
+                <button type="button" id="btn-param-digito-neq" class="btn-param-digito" data-cond="<>" title="Diferente do valor digitado (<>), inclusive nulos/vazios"
+                  style="padding:4px 8px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#94a3b8;">
+                  &lt;&gt;
+                </button>
+              </div>
+            </div>
           </div>
 
           <!-- LINHA 4 -->
@@ -1654,7 +1694,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.26
+              GBZ - v1.2.27
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -1928,7 +1968,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.26] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.27] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -3211,13 +3251,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.26"></script>
-  <script src="js/app.js?v=1.2.26"></script>
-  <script src="js/auth-sap.js?v=1.2.26"></script>
-  <script src="js/escolas.js?v=1.2.26" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.27"></script>
+  <script src="js/app.js?v=1.2.27"></script>
+  <script src="js/auth-sap.js?v=1.2.27"></script>
+  <script src="js/escolas.js?v=1.2.27" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.26"></script>
-  <script src="js/contatos.js?v=1.2.26"></script>
+  <script src="js/mapa.js?v=1.2.27"></script>
+  <script src="js/contatos.js?v=1.2.27"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3360,14 +3400,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.26"></script>
+  <script src="js/multi-select.js?v=1.2.27"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.26"></script>
-  <script src="js/gmac.js?v=1.2.26"></script>
-  <script src="js/orcamento.js?v=1.2.26"></script>
-  <script src="js/print-proalfa.js?v=1.2.26"></script>
-  <script src="js/proalfa.js?v=1.2.26"></script>
+  <script src="js/diarias.js?v=1.2.27"></script>
+  <script src="js/gmac.js?v=1.2.27"></script>
+  <script src="js/orcamento.js?v=1.2.27"></script>
+  <script src="js/print-proalfa.js?v=1.2.27"></script>
+  <script src="js/proalfa.js?v=1.2.27"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

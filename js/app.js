@@ -1054,8 +1054,55 @@ function getFiltrados() {
   filterByMultiple('tipo', tipo);
   filterByMultiple('ano', ano);
   filterByMultiple('agrupamento', state.filtros.agrupamento);
-  if (state.filtros.digito) {
-    lista = lista.filter(p => normalizar(p.digito || p.DIGITO || '').includes(normalizar(state.filtros.digito)));
+    // Filtro de Dígito com parâmetro (=, <>, TODOS) e suporte a multi-valores
+  const condDigito = state.filtros.digitoCond || 'todos';
+  const valDigitoRaw = String(state.filtros.digito || '').trim();
+
+  if (condDigito !== 'todos' || valDigitoRaw !== '') {
+    const alvos = valDigitoRaw
+      ? valDigitoRaw.split(/[,;\s]+/).map(v => v.trim()).filter(Boolean)
+      : [];
+
+    const numMatch = (procDig, alvo) => {
+      if (!procDig && !alvo) return true;
+      if (!procDig || !alvo) return false;
+      const s1 = String(procDig).trim();
+      const s2 = String(alvo).trim();
+      if (s1 === s2) return true;
+      const n1 = parseFloat(s1.replace(',', '.'));
+      const n2 = parseFloat(s2.replace(',', '.'));
+      if (!isNaN(n1) && !isNaN(n2) && n1 === n2) return true;
+      return false;
+    };
+
+    if (condDigito === '=') {
+      if (alvos.length > 0) {
+        lista = lista.filter(p => {
+          const pDig = p.digito || p.DIGITO || '';
+          return alvos.some(alvo => numMatch(pDig, alvo));
+        });
+      } else {
+        // '=' com campo vazio: mostra processos sem dígito (vazio/nulo)
+        lista = lista.filter(p => {
+          const pDig = String(p.digito || p.DIGITO || '').trim();
+          return pDig === '';
+        });
+      }
+    } else if (condDigito === '<>') {
+      if (alvos.length > 0) {
+        lista = lista.filter(p => {
+          const pDig = p.digito || p.DIGITO || '';
+          // Diferente de todos os alvos digitados. Se pDig for vazio/nulo, !alvos.some é true (INCLUSIVE NULL/VAZIO!)
+          return !alvos.some(alvo => numMatch(pDig, alvo));
+        });
+      } else {
+        // '<>' com campo vazio: mostra processos COM dígito preenchido
+        lista = lista.filter(p => {
+          const pDig = String(p.digito || p.DIGITO || '').trim();
+          return pDig !== '';
+        });
+      }
+    }
   }
   filterIncludesMultiple('prefixo', state.filtros.prefixo);
 
@@ -1143,6 +1190,7 @@ function renderProcessos() {
   preencherDatalist('list-interessados', 'interessado');
   preencherDatalist('list-objetos', 'objeto');
   preencherDatalist('list-agrupamentos', 'agrupamento');
+  if (typeof popularDigitosDisponiveis === 'function') popularDigitosDisponiveis();
 
   // Tabela
   const tbody = document.getElementById('table-processos');
@@ -1226,6 +1274,112 @@ function hl(txt, busca) {
   const re = new RegExp(`(${busca.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`, 'gi');
   return String(txt).replace(re, '<mark>$1</mark>');
 }
+
+
+// ==========================================
+// CONTROLE DE PARÂMETROS DO DÍGITO (=, <>, TODOS)
+// ==========================================
+window.setDigitoCondicao = function(cond, triggerFilter = true) {
+  state.filtros.digitoCond = cond;
+  
+  const btnTodos = document.getElementById('btn-param-digito-todos');
+  const btnEq    = document.getElementById('btn-param-digito-eq');
+  const btnNeq   = document.getElementById('btn-param-digito-neq');
+
+  if (btnTodos) {
+    if (cond === 'todos') {
+      btnTodos.classList.add('active');
+      btnTodos.style.background = '#3b82f6';
+      btnTodos.style.color = '#ffffff';
+      btnTodos.style.boxShadow = '0 0 8px rgba(59,130,246,0.4)';
+    } else {
+      btnTodos.classList.remove('active');
+      btnTodos.style.background = 'transparent';
+      btnTodos.style.color = '#94a3b8';
+      btnTodos.style.boxShadow = 'none';
+    }
+  }
+
+  if (btnEq) {
+    if (cond === '=') {
+      btnEq.classList.add('active');
+      btnEq.style.background = '#10b981';
+      btnEq.style.color = '#ffffff';
+      btnEq.style.boxShadow = '0 0 8px rgba(16,185,129,0.4)';
+    } else {
+      btnEq.classList.remove('active');
+      btnEq.style.background = 'transparent';
+      btnEq.style.color = '#94a3b8';
+      btnEq.style.boxShadow = 'none';
+    }
+  }
+
+  if (btnNeq) {
+    if (cond === '<>') {
+      btnNeq.classList.add('active');
+      btnNeq.style.background = '#f59e0b';
+      btnNeq.style.color = '#ffffff';
+      btnNeq.style.boxShadow = '0 0 8px rgba(245,158,11,0.4)';
+    } else {
+      btnNeq.classList.remove('active');
+      btnNeq.style.background = 'transparent';
+      btnNeq.style.color = '#94a3b8';
+      btnNeq.style.boxShadow = 'none';
+    }
+  }
+
+  if (triggerFilter) {
+    state.paginaAtual = 1;
+    renderProcessos();
+  }
+};
+
+window.popularDigitosDisponiveis = function() {
+  const todosProcs = (typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []));
+  const distinctDigitos = [...new Set(
+    todosProcs
+      .map(p => String(p.digito || p.DIGITO || '').trim())
+      .filter(Boolean)
+  )].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+  const container = document.getElementById('lista-digitos-checkboxes');
+  if (container) {
+    if (distinctDigitos.length === 0) {
+      container.innerHTML = '<div style="padding:8px; color:#94a3b8; font-size:12px; text-align:center;">Nenhum dígito cadastrado</div>';
+    } else {
+      const inputVal = (document.getElementById('filtro-digito')?.value || '').trim();
+      const currentSelected = inputVal ? inputVal.split(/[,;\s]+/).map(v => v.trim()).filter(Boolean) : [];
+      
+      container.innerHTML = distinctDigitos.map(dig => {
+        const isChecked = currentSelected.includes(dig);
+        return `
+          <label class="custom-multiselect-item" style="display:flex; align-items:center; padding:6px 10px; cursor:pointer; font-size:12px; color:#e2e8f0; user-select:none; gap:8px;">
+            <input type="checkbox" class="cb-digito-opcao" value="${dig}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:#3b82f6;">
+            <span style="font-weight:600;">Dígito ${dig}</span>
+          </label>
+        `;
+      }).join('');
+
+      container.querySelectorAll('.cb-digito-opcao').forEach(cb => {
+        cb.addEventListener('change', () => {
+          const cbs = Array.from(container.querySelectorAll('.cb-digito-opcao:checked')).map(c => c.value);
+          const fd = document.getElementById('filtro-digito');
+          if (fd) {
+            fd.value = cbs.join(', ');
+            if (cbs.length > 0 && (state.filtros.digitoCond === 'todos' || !state.filtros.digitoCond)) {
+              setDigitoCondicao('=', false);
+            } else if (cbs.length === 0 && state.filtros.digitoCond === '=') {
+              setDigitoCondicao('todos', false);
+            }
+            state.filtros.digito = fd.value;
+            state.paginaAtual = 1;
+            renderProcessos();
+          }
+        });
+      });
+    }
+  }
+};
 
 function preencherSelectFiltro(id, opcoes) {
   const sel = document.getElementById(id);
@@ -2198,8 +2352,87 @@ document.addEventListener('DOMContentLoaded', () => {
   if (filtroAnoEl) {
     filtroAnoEl.addEventListener('change', () => aplicarFiltro('ano', null));
   }
+    // Botões de condição do filtro de dígito: TODOS, =, <>
+  document.getElementById('btn-param-digito-todos')?.addEventListener('click', () => {
+    const fd = document.getElementById('filtro-digito');
+    if (fd) fd.value = '';
+    document.querySelectorAll('.cb-digito-opcao').forEach(cb => { cb.checked = false; });
+    state.filtros.digito = '';
+    setDigitoCondicao('todos', true);
+  });
+
+  document.getElementById('btn-param-digito-eq')?.addEventListener('click', () => {
+    setDigitoCondicao('=', true);
+  });
+
+  document.getElementById('btn-param-digito-neq')?.addEventListener('click', () => {
+    setDigitoCondicao('<>', true);
+  });
+
+  // Toggle do dropdown de checkboxes de dígitos
+  const btnToggleDigDropdown = document.getElementById('btn-digito-dropdown-toggle');
+  const dropdownDigitos = document.getElementById('dropdown-digitos-opcoes');
+  if (btnToggleDigDropdown && dropdownDigitos) {
+    btnToggleDigDropdown.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isAberto = dropdownDigitos.style.display === 'block';
+      document.querySelectorAll('.custom-multiselect-dropdown').forEach(d => {
+        if (d !== dropdownDigitos) d.style.display = 'none';
+      });
+      dropdownDigitos.style.display = isAberto ? 'none' : 'block';
+      if (!isAberto && typeof popularDigitosDisponiveis === 'function') popularDigitosDisponiveis();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!dropdownDigitos.contains(e.target) && e.target !== btnToggleDigDropdown) {
+        dropdownDigitos.style.display = 'none';
+      }
+    });
+
+    document.getElementById('btn-digito-limpar-checks')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      document.querySelectorAll('.cb-digito-opcao').forEach(cb => { cb.checked = false; });
+      const fd = document.getElementById('filtro-digito');
+      if (fd) fd.value = '';
+      state.filtros.digito = '';
+      setDigitoCondicao('todos', true);
+    });
+  }
+
+  // Listener no input de dígito com parser inteligente
   const filtroDigitoEl = document.getElementById('filtro-digito');
-  if (filtroDigitoEl) { filtroDigitoEl.addEventListener('input', (e) => aplicarFiltro('digito', e.target.value.trim())); }
+  if (filtroDigitoEl) {
+    filtroDigitoEl.addEventListener('input', (e) => {
+      let val = e.target.value;
+      
+      // Parser inteligente se o usuário digitar "=" ou "<>" ou "!=" no próprio campo
+      if (val.startsWith('<>') || val.startsWith('!=')) {
+        val = val.replace(/^(<>|!=)\s*/, '');
+        e.target.value = val;
+        setDigitoCondicao('<>', false);
+      } else if (val.startsWith('=')) {
+        val = val.replace(/^=\s*/, '');
+        e.target.value = val;
+        setDigitoCondicao('=', false);
+      } else if (val.toLowerCase() === 'todos') {
+        val = '';
+        e.target.value = '';
+        setDigitoCondicao('todos', false);
+      } else if (val.trim() !== '') {
+        if (state.filtros.digitoCond === 'todos' || !state.filtros.digitoCond) {
+          setDigitoCondicao('=', false);
+        }
+      }
+
+      // Sincroniza checkboxes se houver
+      const alvos = val ? val.split(/[,;\s]+/).map(v => v.trim()).filter(Boolean) : [];
+      document.querySelectorAll('.cb-digito-opcao').forEach(cb => {
+        cb.checked = alvos.includes(cb.value);
+      });
+
+      aplicarFiltro('digito', val.trim());
+    });
+  }
   const filtroAgrupEl = document.getElementById('filtro-agrupamento');
   if (filtroAgrupEl) {
     filtroAgrupEl.addEventListener('change', () => aplicarFiltro('agrupamento', null));
@@ -2217,7 +2450,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '' };
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
     const fd = document.getElementById('filtro-digito');
@@ -2321,6 +2554,7 @@ document.addEventListener('DOMContentLoaded', () => {
         preencherSelectFiltroMapeado('filtro-categoria', categoriasRaw, MAPA_CATEGORIA);
         preencherSelectFiltroMapeado('filtro-tipo', tiposRaw, MAPA_TIPO);
       }
+      if (typeof popularDigitosDisponiveis === 'function') popularDigitosDisponiveis();
     }
   };
   window.popularFiltrosProcessos();
@@ -2939,6 +3173,7 @@ function imprimirAnalise() {
   if (fLocalizacao && fLocalizacao !== 'Todos') filtrosAplicados.push("Localização: " + fLocalizacao);
   if (fPrefixo && fPrefixo !== 'Todos') filtrosAplicados.push("Prefixo: " + fPrefixo);
   if (fMunicipio && fMunicipio !== 'Todos') filtrosAplicados.push("Município: " + fMunicipio);
+  if (state.filtros.digitoCond && state.filtros.digitoCond !== 'todos') { const dVal = state.filtros.digito || '(vazio)'; filtrosAplicados.push(`Dígito: ${state.filtros.digitoCond} ${dVal}`); } else if (state.filtros.digito) { filtrosAplicados.push(`Dígito: = ${state.filtros.digito}`); }
   
   const filtrosTexto = filtrosAplicados.length > 0 
     ? "Filtros aplicados (" + filtrosAplicados.join(', ') + ")" 
