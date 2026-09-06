@@ -4,196 +4,6 @@
 
 const DB_KEY = 'seduc_processos_v1';
 
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
-// Helper para incluir cabeçalho de autenticação
-function getHeaders(extraHeaders = {}) {
-  const token = sessionStorage.getItem('sap_session_token');
-  return {
-    ...extraHeaders,
-    ...(token ? { 'Authorization': 'Bearer ' + token } : {})
-  };
-}
-
-
 var API_BASE = 'https://seduc-backend.onrender.com';
 
 
@@ -207,19 +17,28 @@ function getHeaders(extraHeaders = {}) {
 }
 
 
-const STATUS_LIST = [
-  '.', 'AUTORIZADO', 'CANCELADO', 'CONCLUÍDO', 'DUPLICADO',
-  'ENCERRADO', 'Não autorizado', 'Não chegou na CAM',
-  'NÃO PRIORIDADE', 'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO',
-  'P/AUTORIZO', 'PAGO', 'para autorizo', 'PENDENTE',
-  'PRIORIDADE', 'REABERTO'
+let STATUS_LIST = [
+  '.', 'AGUARD. AUT.', 'AUTORIZADO', 'CANCELADO', 'DUPLICADO',
+  'N/ AUTORIZADO', 'N/ ENCAM. Á CAM', 'NOTIF. FINAL',
+  'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO', 'PAGO', 'REG. DEMANDA'
 ];
 
-const LOCALIZACAO_LIST = [
-  '.', 'Casa Civil', 'Casa Civil p/ Autorizo', 'CC', 'CCTE',
-  'COINFRA', 'Convenente', 'GAB', 'GAB-SEDUC', 'GCF',
-  'GDSM', 'PAGO', 'PGE-SEDUC', 'SEDUC-GAB', 'SEDUC--GAB'
+let LOCALIZACAO_LIST = [
+  '.', 'CAM | GDSM | GMAC', 'CASA CIVIL', 'CCTE', 'COINFRA',
+  'CONVENENTE', 'GAB | SEDUC', 'GCF', 'PGE | SEDUC'
 ];
+
+function normalizarStatus(status) {
+  if (!status) return '.';
+  const s = status.trim().toUpperCase();
+  return (s === '' || s === '.') ? '.' : status.trim();
+}
+
+function normalizarLocalizacao(loc) {
+  if (!loc) return '.';
+  const l = loc.trim().toUpperCase();
+  return (l === '' || l === '.') ? '.' : loc.trim();
+}
 
 const OBJETO_LIST = [
   'AQUISIÇÃO DE MATERIAL PERMANENTE',
@@ -330,6 +149,8 @@ const mapToApp = (row) => {
     return {
       id: `${row._tabName}__${row._rowNumber}`,
       agrupamento: row.Agrupamento || row.agrupamento || agrupamentoCalculado,
+      digito: row.DIGITO || row['DÍGITO'] || row.digito || row.Digito || '',
+      DIGITO: row.DIGITO || row['DÍGITO'] || row.digito || row.Digito || '',
     prefixo: row._tabName || row['Prefixo (codigo de prioridade)'] || row['Prefixo'] || '',
     municipio: row['Município'] || row['Municipio'] || '',
     numero: row['Processo'] || row['Nº Processo'] || '',
@@ -338,8 +159,10 @@ const mapToApp = (row) => {
     valorOf: parseMoney(row['Valor Of.']),
     valorPlan: parseMoney(row['Valor/Planilha']),
     diferenca: parseMoney(row['Diferença']),
-    status: row['Status'] || '',
-    localizacao: row['Localização'] || '',
+    _statusOriginal: row['Status'] || '',
+    _localizacaoOriginal: row['Localização'] || '',
+    status: normalizarStatus(row['Status'] || ''),
+    localizacao: normalizarLocalizacao(row['Localização'] || ''),
     obs: row['Obs.:'] || row['Obs'] || '',
     data: row['Data'] || '',
     anotacao: row['Anotação'] || row['Anota\u00e7\u00e3o'] || '',
@@ -350,6 +173,8 @@ const mapToApp = (row) => {
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || row['DATA/HORA EDIÇÃO'] || '',
     ano: row['ANO'] || row['ano'] || '',
     agrupamento: row['AGRUPAMENTO'] || row['agrupamento'] || row['Agrupamento'] || '',
+    digito: row['DIGITO'] || row['DÍGITO'] || row['digito'] || row['dígito'] || row.DIGITO || row.digito || '',
+      DIGITO: row['DIGITO'] || row['DÍGITO'] || row['digito'] || row['dígito'] || row.DIGITO || row.digito || '',
     CAM: row['CAM'] || '',
     GAB: row['GAB'] || '',
     CC: row['CC'] || '',
@@ -365,6 +190,8 @@ const mapToSheet = (dados) => {
     return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   return {
+    'DIGITO': String(dados.digito || dados.DIGITO || '').replace(/\D/g, '').slice(0, 3),
+    'DÍGITO': String(dados.digito || dados.DIGITO || '').replace(/\D/g, '').slice(0, 3),
     'Prefixo (codigo de prioridade)': dados.prefixo || '',
     'Município': dados.municipio || '',
     'Processo': dados.numero || '',
@@ -401,7 +228,22 @@ async function inicializarDados() {
     }
     const data = await res.json();
     if (data.rows) {
-      window.processosCache = data.rows.map(mapToApp);
+      window.processosCache = data.rows.filter(r => r._tabName && !r._tabName.toLowerCase().includes('parametro')).map(mapToApp);
+      
+      // Update global STATUS_LIST and LOCALIZACAO_LIST dynamically, ignoring the hardcoded ones completely
+      STATUS_LIST = ['.', ...new Set(window.processosCache.map(p => p.status))].filter((item, i, ar) => ar.indexOf(item) === i && item && item.trim() !== '');
+      LOCALIZACAO_LIST = ['.', ...new Set(window.processosCache.map(p => p.localizacao))].filter((item, i, ar) => ar.indexOf(item) === i && item && item.trim() !== '');
+      
+      // Ensure 'Todos' isn't added here, but keep '.' as placeholder if needed. Or just sort them
+      
+      STATUS_LIST.sort((a,b) => a.localeCompare(b));
+      LOCALIZACAO_LIST.sort((a,b) => a.localeCompare(b));
+
+      if (typeof window.popularFiltrosProcessos === 'function') {
+         window.popularFiltrosProcessos();
+      }
+
+
       
       if (typeof checkAlertasADM === 'function') {
          checkAlertasADM(window.processosCache);
@@ -431,7 +273,7 @@ async function adicionarProcesso(dados) {
     await fetch(API_BASE + '/api/registros', {
       method: 'POST',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify(dados)
+      body: JSON.stringify({ ...dados, DIGITO: dados.digito || dados.DIGITO || '', 'DÍGITO': dados.digito || dados.DIGITO || '' })
     });
   } catch(err) {
     console.error(err);
@@ -451,7 +293,7 @@ async function atualizarProcesso(id, dados) {
     await fetch(API_BASE + `/api/registros/${id}`, {
       method: 'PUT',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify(dados)
+      body: JSON.stringify({ ...dados, DIGITO: dados.digito || dados.DIGITO || '', 'DÍGITO': dados.digito || dados.DIGITO || '' })
     });
   } catch(err) {
     console.error(err);

@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.18">
+  <link rel="stylesheet" href="css/style.css?v=1.2.19">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.18</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.19</div>
   </div>
 </div>
   
@@ -299,7 +299,7 @@
             </a>
             <div class="nav-submenu sub-level-gmac" id="sub-gmac" style="display: none;">
               <a href="#" class="nav-item nav-form-item" data-page="gmac-aee" onclick="navegar('gmac-aee'); if(typeof carregarGMAC==='function') carregarGMAC('aee');">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                 <span>Equipamento - AEE</span>
               </a>
               <a href="#" class="nav-item nav-form-item" data-page="gmac-onibus" onclick="navegar('gmac-onibus'); if(typeof carregarGMAC==='function') carregarGMAC('onibus');">
@@ -337,56 +337,77 @@
               </a>
             </div>
 
-            <!-- 4. Diárias (dentro da CAM) -->
-            <a href="#" class="nav-item nav-form-item item-diarias" data-page="diarias" onclick="navegar('diarias')" style="margin-top: 4px; padding: 8px 12px !important;">
-              <span class="menu-badge badge-diarias" style="margin-right: 6px;">CAM</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          </div>
+        </div>
+
+        <!-- Menu Orçamento (Container Principal) -->
+        <div class="nav-group action-report">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-orcamento', this)">
+            <span class="nav-icon" style="color: #22c55e;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </span>
+            <span style="flex:1; font-weight: 700; letter-spacing: 0.5px;">Orçamento</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu sub-orcamento-container" id="sub-orcamento" style="display: none;">
+            <a href="#" class="nav-item nav-form-item item-orcamento" data-page="orcamento" onclick="navegar('orcamento')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <span>Orçamento</span>
+            </a>
+            <a href="#" class="nav-item nav-form-item item-diarias" data-page="diarias" onclick="navegar('diarias')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               <span>Diárias</span>
             </a>
           </div>
         </div>
 
-        <!-- Menu Orçamento -->
-        <a href="#" class="nav-item action-report" data-page="orcamento" onclick="navegar('orcamento'); fecharSubmenus()">
-          <span class="nav-icon" style="color: #22c55e;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          </span>
-          <span>Orçamento</span>
-        </a>
-
-
-        <!-- Menu Escolas -->
+        <!-- Menu Escolas & Mapas (Container Principal) -->
         <div class="nav-group">
           <a href="#" class="nav-item" onclick="toggleSubmenu('sub-escolas', this)">
-            <span class="nav-icon" style="color: #fb923c;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
-            <span style="flex:1">Escolas & Mapas</span>
+            <span class="nav-icon" style="color: #fb923c;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </span>
+            <span style="flex:1; font-weight: 700; letter-spacing: 0.5px;">Escolas & Mapas</span>
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
-          <div class="nav-submenu" id="sub-escolas" style="display: none; padding-left: 20px;">
-            
-            <a href="#" class="nav-item sub-item" data-page="escolas" onclick="navegar('escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Lista de Escolas</span></a>
-            <a href="#" class="nav-item sub-item" data-page="mapa-escolas" onclick="navegar('mapa-escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Mapa de Escolas</span></a>
+          <div class="nav-submenu sub-escolas-container" id="sub-escolas" style="display: none;">
+            <a href="#" class="nav-item nav-form-item item-escolas" data-page="escolas" onclick="navegar('escolas')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10l7-5 7 5v11"></path><path d="M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path><line x1="12" y1="2" x2="12" y2="5"></line></svg>
+              <span>Lista de Escolas</span>
+            </a>
+            <a href="#" class="nav-item nav-form-item item-mapa-escolas" data-page="mapa-escolas" onclick="navegar('mapa-escolas')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+              <span>Mapa de Escolas</span>
+            </a>
           </div>
         </div>
 
-        <!-- Menu Configurações -->
+        <!-- Menu Configurações (Container Principal) -->
         <div class="nav-group">
           <a href="#" class="nav-item" onclick="toggleSubmenu('sub-config', this)">
-            <span class="nav-icon" style="color: #94a3b8;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
-            <span style="flex:1">Configurações</span>
+            <span class="nav-icon" style="color: #94a3b8;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </span>
+            <span style="flex:1; font-weight: 700; letter-spacing: 0.5px;">Configurações</span>
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
-          <div class="nav-submenu" id="sub-config" style="display: none; padding-left: 20px;">
-            <a href="#" class="nav-item sub-item action-adm" data-page="acessos" onclick="navegar('acessos')" style="font-size: 13px; padding: 10px 16px;"><span>Gerenciar Acessos</span></a>
-            <a href="#" class="nav-item sub-item" data-page="senha" onclick="navegar('senha')" style="font-size: 13px; padding: 10px 16px;"><span>Trocar Senha</span></a>
+          <div class="nav-submenu sub-config-container" id="sub-config" style="display: none;">
+            <a href="#" class="nav-item nav-form-item action-adm item-acessos" data-page="acessos" onclick="navegar('acessos')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><circle cx="18" cy="8" r="2.5"></circle><path d="M19.8 9.8L22 12"></path><line x1="21" y1="11" x2="22" y2="10"></line></svg>
+              <span>Gerenciar Acessos</span>
+            </a>
+            <a href="#" class="nav-item nav-form-item item-senha" data-page="senha" onclick="navegar('senha')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="11" width="12" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path><polyline points="9 16 12 13 15 16"></polyline><polyline points="15 18 12 21 9 18"></polyline></svg>
+              <span>Trocar Senha</span>
+            </a>
           </div>
         </div>
 
       </nav>
 
 
-      <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.18</div>
+<div class="sidebar-footer">
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.19</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2814,13 +2835,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.18"></script>
-  <script src="js/app.js?v=1.2.18"></script>
-  <script src="js/auth-sap.js?v=1.2.18"></script>
-  <script src="js/escolas.js?v=1.2.18" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.19"></script>
+  <script src="js/app.js?v=1.2.19"></script>
+  <script src="js/auth-sap.js?v=1.2.19"></script>
+  <script src="js/escolas.js?v=1.2.19" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.18"></script>
-  <script src="js/contatos.js?v=1.2.18"></script>
+  <script src="js/mapa.js?v=1.2.19"></script>
+  <script src="js/contatos.js?v=1.2.19"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -2963,14 +2984,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.18"></script>
+  <script src="js/multi-select.js?v=1.2.19"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.18"></script>
-  <script src="js/gmac.js?v=1.2.18"></script>
-  <script src="js/orcamento.js?v=1.2.18"></script>
-  <script src="js/print-proalfa.js?v=1.2.18"></script>
-  <script src="js/proalfa.js?v=1.2.18"></script>
+  <script src="js/diarias.js?v=1.2.19"></script>
+  <script src="js/gmac.js?v=1.2.19"></script>
+  <script src="js/orcamento.js?v=1.2.19"></script>
+  <script src="js/print-proalfa.js?v=1.2.19"></script>
+  <script src="js/proalfa.js?v=1.2.19"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

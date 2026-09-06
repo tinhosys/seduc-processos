@@ -1,3 +1,68 @@
+function cancelarPadronizacao() {
+  const logDiv = document.getElementById('log-status-padronizacao');
+  const btnExecutar = document.getElementById('btn-executar-padronizacao');
+  const btnCancelar = document.getElementById('btn-cancelar-padronizacao');
+  const labelStatus = document.getElementById('label-status-padronizacao');
+  if (logDiv) logDiv.innerHTML = '';
+  if (btnExecutar) btnExecutar.style.display = 'none';
+  if (btnCancelar) btnCancelar.style.display = 'none';
+  if (labelStatus) labelStatus.innerHTML = '';
+  window._processosInconsistentesParaCorrigir = [];
+}
+window.cancelarPadronizacao = cancelarPadronizacao;
+function jaroWinkler(s1, s2) {
+    var m = 0;
+    if (!s1 || !s2 || s1.length === 0 || s2.length === 0) return 0;
+    if (s1 === s2) return 1;
+    var range = (Math.floor(Math.max(s1.length, s2.length) / 2)) - 1;
+    var s1Matches = new Array(s1.length);
+    var s2Matches = new Array(s2.length);
+    for (var i = 0; i < s1.length; i++) {
+        var low  = (i >= range) ? i - range : 0;
+        var high = (i + range <= s2.length - 1) ? (i + range) : (s2.length - 1);
+        for (var j = low; j <= high; j++) {
+            if (s1Matches[i] !== true && s2Matches[j] !== true && s1[i] === s2[j]) {
+                ++m; s1Matches[i] = s2Matches[j] = true; break;
+            }
+        }
+    }
+    if (m === 0) return 0;
+    var k = 0, numTrans = 0;
+    for (var i = 0; i < s1.length; i++) {
+        if (s1Matches[i] === true) {
+            for (var j = k; j < s2.length; j++) {
+                if (s2Matches[j] === true) { k = j + 1; break; }
+            }
+            if (s1[i] !== s2[j]) ++numTrans;
+        }
+    }
+    var weight = (m / s1.length + m / s2.length + (m - (numTrans / 2)) / m) / 3;
+    var l = 0, p = 0.1;
+    if (weight > 0.7) {
+        while (s1[l] === s2[l] && l < 4) ++l;
+        weight = weight + l * p * (1 - weight);
+    }
+    return weight;
+}
+
+function encontrarEscolaSemelhante(nomeDigitado) {
+    const escolas = (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache) && _escolasCache.length > 0) ? _escolasCache : ((typeof _mapaCacheEscolas !== 'undefined' && Array.isArray(_mapaCacheEscolas)) ? _mapaCacheEscolas : []);
+    if (escolas.length === 0) return null;
+    let melhorMatch = null;
+    let melhorScore = 0;
+    const digitadoNormal = nomeDigitado.trim().toUpperCase().replace(/[^A-Z0-9 ]/g, '');
+    for (let e of escolas) {
+        if (!e.nome) continue;
+        const nomeEsc = e.nome.trim().toUpperCase().replace(/[^A-Z0-9 ]/g, '');
+        const score = jaroWinkler(digitadoNormal, nomeEsc);
+        if (score > melhorScore) {
+            melhorScore = score;
+            melhorMatch = e.nome;
+        }
+    }
+    return (melhorScore >= 0.90 && melhorScore < 1.0) ? melhorMatch : null;
+}
+
 
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
@@ -117,8 +182,9 @@ function navegar(pagina) {
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === pagina);
   });
+  const pageTarget = pagina.startsWith('proalfa') ? 'proalfa' : pagina;
   document.querySelectorAll('.page').forEach(el => {
-    el.classList.toggle('active', el.id === 'page-' + pagina);
+    el.classList.toggle('active', el.id === 'page-' + pageTarget);
   });
 
   const titles = {
@@ -128,9 +194,22 @@ function navegar(pagina) {
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
-    escolas: '�� Escolas',
-    'mapa-escolas': '��️ Mapa de Escolas de Rondônia',
-    'todas-escolas': '�� Todas as Escolas'
+    'gmac-aee': '🎒 Equipamento - AEE',
+    'gmac-onibus': '🚌 Doação do Ônibus Escolar',
+    'gmac-veiculos': '🚗 Doação Definitiva de Veículos',
+    'gmac-reordenamento': '🏛️ Municipalização e Reordenamento',
+    'gmac-cooperacao': '🤝 Termo de Cooperação',
+    proalfa: '📖 PROALFA',
+    'proalfa-professores': '👨‍🏫 PROALFA - Professores (Docentes)',
+    'proalfa-alunos': '🎒 PROALFA - Alunos (Matrículas)',
+    diarias: '✈️ Diárias',
+    orcamento: '💰 Controle Orçamentário',
+    contatos: '🏛️ Municípios',
+    escolas: '🏫 Escolas',
+    'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia',
+    'todas-escolas': '🏫 Todas as Escolas',
+    'orcamento': '💵 Orçamento',
+    'diarias': '📅 Controle de Diárias'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -151,6 +230,25 @@ function navegar(pagina) {
   }
   if (pagina === 'todas-escolas') iniciarPaginaTodasEscolas();
   if (pagina === 'orcamento' && typeof carregarOrcamento === 'function') carregarOrcamento();
+  if (pagina === 'diarias' && typeof carregarDiarias === 'function') carregarDiarias();
+  if (pagina && pagina.startsWith('gmac-')) {
+    const mod = pagina.replace('gmac-', '');
+    if (typeof carregarGMAC === 'function') {
+      carregarGMAC(mod);
+    } else {
+      setTimeout(() => {
+        if (typeof carregarGMAC === 'function') carregarGMAC(mod);
+      }, 150);
+    }
+  }
+  if (pagina && pagina.startsWith('proalfa')) {
+    const tipo = pagina === 'proalfa-alunos' ? 'alunos' : (pagina === 'proalfa-professores' ? 'professores' : null);
+    if (typeof window.navegarProalfa === 'function' && tipo) {
+      window.navegarProalfa(tipo);
+    } else if (typeof carregarProalfa === 'function') {
+      carregarProalfa();
+    }
+  }
 }
 
 // ---- TOAST ----
@@ -253,7 +351,7 @@ function renderDashboard() {
           <a href="#" onclick="event.preventDefault(); state.filtros.busca='${(d.num||'').replace(/'/g,'')}'; navegar('processos');" 
              style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:2px 10px; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap; transition:background 0.2s;" 
              onmouseover="this.style.background='rgba(59,130,246,0.35)'" 
-             onmouseout="this.style.background='rgba(59,130,246,0.15)'">�� VER</a>
+             onmouseout="this.style.background='rgba(59,130,246,0.15)'">👁️ VER</a>
         </div>`;
       }).join('');
     }
@@ -926,6 +1024,9 @@ function getFiltrados() {
   filterByMultiple('tipo', tipo);
   filterByMultiple('ano', ano);
   filterByMultiple('agrupamento', state.filtros.agrupamento);
+  if (state.filtros.digito) {
+    lista = lista.filter(p => normalizar(p.digito || p.DIGITO || '').includes(normalizar(state.filtros.digito)));
+  }
   filterIncludesMultiple('prefixo', state.filtros.prefixo);
 
   // Filtros individuais de autorização
@@ -961,8 +1062,18 @@ function renderProcessos() {
 
   // Preencher filtros dinâmicos (preencherSelectFiltro preserva seleções existentes)
   const todosProcs = carregarProcessos();
-  preencherSelectFiltro('filtro-status',      [...new Set(todosProcs.map(p => p.status).filter(s => s && s !== '.'))].sort());
-  preencherSelectFiltro('filtro-localizacao', [...new Set(todosProcs.map(p => p.localizacao).filter(l => l && l !== '.'))].sort());
+  const distinctStatus = [...new Set([
+    ...todosProcs.map(p => p.status),
+    ...STATUS_LIST
+  ])].filter(s => s && s !== '.' && s !== '****').sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+  const distinctLocalizacao = [...new Set([
+    ...todosProcs.map(p => p.localizacao),
+    ...LOCALIZACAO_LIST
+  ])].filter(l => l && l !== '.' && l !== '****').sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+  preencherSelectFiltro('filtro-status',      distinctStatus);
+  preencherSelectFiltro('filtro-localizacao', distinctLocalizacao);
   
   const superList = [...new Set(todosProcs.map(p => getSuperPorMunicipio(p.municipio)).filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   preencherSelectFiltro('filtro-super', superList);
@@ -1023,7 +1134,7 @@ function renderProcessos() {
           <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
-            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">��</span>' : ''}
+            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">📌</span>' : ''}
           </div>
           <!-- Linha 3: CAM; GAB; CC -->
           <div style="display: flex; gap: 6px; align-items: center; margin-top: 1px;">
@@ -1051,7 +1162,7 @@ function renderProcessos() {
   `).join('') || `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="11">
       <div class="empty-state">
-        <div class="empty-icon">��</div>
+        <div class="empty-icon">📂</div>
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente ajustar os filtros</p>
       </div>
@@ -1098,7 +1209,7 @@ function preencherSelectFiltro(id, opcoes) {
   else if (id === 'filtro-ano') placeholder = 'ANO';
   else if (id === 'filtro-prefixo') placeholder = 'PREFIXO';
   else if (id === 'filtro-agrupamento') placeholder = 'AGRUPAMENTO';
-  else if (id === 'filtro-categoria') placeholder = 'CATEGORIA';
+    else if (id === 'filtro-categoria') placeholder = 'CATEGORIA';
   else if (id === 'filtro-tipo') placeholder = 'TIPO';
   else if (id === 'filtro-super') placeholder = 'SUPER';
 
@@ -1273,8 +1384,12 @@ function renderFormulario() {
     s.innerHTML = lista.map(o => `<option value="${o}" ${o === val ? 'selected' : ''}>${o}</option>`).join('');
   };
 
-  fillSelect('form-status',      STATUS_LIST,      p.status      || '');
-  fillSelect('form-localizacao', LOCALIZACAO_LIST, p.localizacao || '');
+  
+  fillSelect('list-status', STATUS_LIST, '');
+  fillSelect('list-localizacao', LOCALIZACAO_LIST, '');
+  if(document.getElementById('form-status')) document.getElementById('form-status').value = p.status || '';
+  if(document.getElementById('form-localizacao')) document.getElementById('form-localizacao').value = p.localizacao || '';
+
   
   const anos_list = [...new Set(carregarProcessos().map(x => String(x.ano || '')).filter(Boolean))].sort((a,b)=>b-a);
   fillSelect('list-anos', anos_list, '');
@@ -1284,6 +1399,7 @@ function renderFormulario() {
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
+    document.getElementById('form-digito').value = String(p.digito || p.DIGITO || '').replace(/\D/g, '').slice(0, 3);
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
     document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
@@ -1381,6 +1497,7 @@ function renderFormulario() {
     document.getElementById('form-marca').checked = false;
     document.getElementById('form-ano').value = '';
     document.getElementById('form-agrupamento').value = '';
+    document.getElementById('form-digito').value = '';
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
     updateSegmentControl('categoria', '');
@@ -1426,8 +1543,8 @@ function renderFormulario() {
     const dataEdicao = p.dataHoraEdicao || '';
     
     if (nomeEdicao || dataEdicao) {
-      if (nomeDiv) nomeDiv.innerHTML = `�� ${nomeEdicao}`;
-      if (dataDiv) dataDiv.innerHTML = `�� ${dataEdicao}`;
+      if (nomeDiv) nomeDiv.innerHTML = `👤 ${nomeEdicao}`;
+      if (dataDiv) dataDiv.innerHTML = `📅 ${dataEdicao}`;
     } else {
       if (nomeDiv) nomeDiv.innerHTML = `<span style="font-style: italic; color: var(--text-muted);">Sem registros</span>`;
       if (dataDiv) dataDiv.innerHTML = '—';
@@ -1514,6 +1631,8 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
+    digito: (document.getElementById('form-digito')?.value || '').replace(/\D/g, '').slice(0, 3),
+    DIGITO: (document.getElementById('form-digito')?.value || '').replace(/\D/g, '').slice(0, 3),
     categoria:   document.getElementById('form-categoria').value,
     tipo:        document.getElementById('form-tipo').value,
     CAM:         document.getElementById('form-cam')?.checked ? '1' : '',
@@ -1569,7 +1688,7 @@ function abrirDetalhe(id) {
   if (p.contatos && p.contatos.length > 0) {
     contatosHtml = `
       <div class="card" style="margin-bottom:16px">
-        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">�� Contatos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">📞 Contatos</h4>
         <div style="display:flex;flex-direction:column;gap:8px">
           ${p.contatos.map(c => {
             const numeroLimpo = c.whatsapp.replace(/\D/g, '');
@@ -1596,7 +1715,7 @@ function abrirDetalhe(id) {
   if (userNivel === 'leitor') {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">�� Novo Apontamento</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">✍️ Novo Apontamento</h4>
         <textarea id="modal-apontamento-texto" placeholder="Digite seu apontamento..." style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:12px;"></textarea>
         <button onclick="salvarApontamentoModal('${p.id}')" id="btn-salvar-apont" style="width:100%; padding:10px; border-radius:6px; border:none; background:#22c55e; color:#fff; font-weight:bold; cursor:pointer;">Salvar Apontamento</button>
       </div>
@@ -1604,7 +1723,7 @@ function abrirDetalhe(id) {
   } else if (userNivel === 'adm' && p.apontamento) {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">�� Histórico de Apontamentos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">📋 Histórico de Apontamentos</h4>
         <div style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; white-space:pre-wrap; min-height:60px;">${p.apontamento}</div>
       </div>
     `;
@@ -1678,7 +1797,7 @@ function abrirDetalhe(id) {
 
 
     <div class="card" style="margin-bottom:16px">
-      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">�� Execução Financeira</h4>
+      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">💰 Execução Financeira</h4>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
         <div>
           <div style="font-size:11px;color:var(--text-muted)">Valor Oficial</div>
@@ -1697,7 +1816,7 @@ function abrirDetalhe(id) {
 
     ${p.marca === '1' || p.marca === 'SIM' ? `
       <div class="card" style="margin-bottom:16px; border: 2px solid var(--blue); background: rgba(59, 130, 246, 0.08); display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(59,130,246,0.15);">
-        <span style="font-size: 24px;">��</span>
+        <span style="font-size: 24px;">📜</span>
         <div>
           <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para Atenção!</strong>
           <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observações abaixo.</p>
@@ -1707,11 +1826,11 @@ function abrirDetalhe(id) {
 
     ${p.obs ? `
       <div class="card" style="margin-bottom:16px; ${p.marca === '1' || p.marca === 'SIM' ? 'border: 1px solid var(--blue); background: rgba(59, 130, 246, 0.03);' : ''}">
-        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">�� Observações</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">📝 Observações</h4>
         <p style="color:var(--text-secondary);font-size:14px">${p.obs}</p>
       </div>
     ` : ''}
-    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">��️ Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
+    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">📌 Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
     ${apontamentoHtml}
@@ -1782,7 +1901,7 @@ window.gravarApontamentoImediato = function() {
   .then(resData => {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>��</span> Gravar';
+      btn.innerHTML = '<span>💾</span> Gravar';
     }
     
     if (resData.sucesso) {
@@ -1814,7 +1933,7 @@ window.gravarApontamentoImediato = function() {
     console.error(err);
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>��</span> Gravar';
+      btn.innerHTML = '<span>💾</span> Gravar';
     }
     toast('Erro de conexão ao gravar apontamento.', 'error');
   });
@@ -2049,6 +2168,8 @@ document.addEventListener('DOMContentLoaded', () => {
   if (filtroAnoEl) {
     filtroAnoEl.addEventListener('change', () => aplicarFiltro('ano', null));
   }
+  const filtroDigitoEl = document.getElementById('filtro-digito');
+  if (filtroDigitoEl) { filtroDigitoEl.addEventListener('input', (e) => aplicarFiltro('digito', e.target.value.trim())); }
   const filtroAgrupEl = document.getElementById('filtro-agrupamento');
   if (filtroAgrupEl) {
     filtroAgrupEl.addEventListener('change', () => aplicarFiltro('agrupamento', null));
@@ -2066,9 +2187,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [] };
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
+    const fd = document.getElementById('filtro-digito');
+    if(fd) fd.value = '';
 
     // Limpar autorizações (toggles)
     ['filtro-cam', 'filtro-gab', 'filtro-cc'].forEach(id => {
@@ -2122,14 +2245,22 @@ document.addEventListener('DOMContentLoaded', () => {
   // Importação
   setupImportacao();
 
-  // Preencher selects de filtro com status e localização
-  const fillSelectFiltro = (id, lista) => {
-    const s = document.getElementById(id);
-    if (!s) return;
-    s.innerHTML = `<option value="****">Todos</option>` + lista.map(o => `<option value="${o}">${o}</option>`).join('');
-  };
-  fillSelectFiltro('filtro-status',      STATUS_LIST.filter(s => s !== '.'));
-  fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
+  // Preencher selects de filtro com status e localizacao
+    window.popularFiltrosProcessos = function() {
+      const fillSelectFiltro = (id, lista) => {
+        const s = document.getElementById(id);
+        if (!s) return;
+        
+        s.innerHTML = `<option value="****">Todos</option>` + lista.map(o => `<option value="${o}">${o}</option>`).join('');
+        
+        if (typeof window.initMultiSelect === 'function' && s.multiple) {
+           window.initMultiSelect(id);
+        }
+      };
+      fillSelectFiltro('filtro-status', STATUS_LIST.filter(s => s !== '.'));
+      fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
+    };
+    window.popularFiltrosProcessos();
 
   // Máscara de Celular (WhatsApp)
   const shareNum = document.getElementById("share-whatsapp-number");
@@ -2316,7 +2447,7 @@ function renderizarContatosForm() {
     const whatsappFormatado = maskCelular(numeroLimpo);
     
     div.innerHTML = "<div style=\"display:flex; flex-direction:column; gap:2px;\">" +
-      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">�� " + whatsappFormatado + "</span>" +
+      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">💬 " + whatsappFormatado + "</span>" +
       (c.detalhes ? "<span style=\"color:var(--text-secondary); font-size:12px;\">" + c.detalhes + "</span>" : "****") +
       "</div>" +
       "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">❌</button>";
@@ -2357,17 +2488,18 @@ function getFormattedDateForTitle() {
 
 function getCommonHeader(subtitle) {
   return `
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0f172a; padding-bottom:6px; margin-bottom:14px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left;">
-        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
+        <div style="font-size:11px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.5px; line-height:1.2;">GOVERNO DO ESTADO DE RONDÔNIA</div>
+        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase; line-height:1.2;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+        <div style="font-size:9.5px; font-weight:700; color:#334155; text-transform:uppercase; line-height:1.2;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>
+        <div style="font-size:10px; color:#475569; font-weight:bold; text-transform:uppercase; background:#f1f5f9; border:1px solid #cbd5e1; padding:3px 8px; border-radius:4px;">${subtitle.toUpperCase()}</div>
       </div>
     </div>
   `;
 }
-
 
 function injectFixedHeader(subtitle) {
   let header = document.getElementById('fixed-print-header');
@@ -2379,10 +2511,12 @@ function injectFixedHeader(subtitle) {
   }
   header.innerHTML = getCommonHeader(subtitle);
 }
-function getCommonFooter() {
+
+function getCommonFooter(gerenciaCustom) {
+  const gerenciaTexto = gerenciaCustom || 'GDSM - GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS';
   return `
-    <div style="border-top:1px solid #ccc; padding-top:4px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:9px; font-weight:normal; color:#333; font-family: Arial, sans-serif; width:100%;">
-      <div style="flex:1; text-align:left; font-weight:bold; color:#000;">GBZ</div>
+    <div style="border-top:1px solid #cbd5e1; padding-top:5px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:8.5px; font-weight:normal; color:#475569; font-family: Arial, sans-serif; width:100%;">
+      <div style="flex:1; text-align:left; font-weight:bold; color:#0f172a;">${gerenciaTexto}</div>
       <div style="flex:1; text-align:right;" class="print-date-time-rodape"></div>
     </div>
   `;
@@ -2408,7 +2542,7 @@ window.formatNumberOnly = function(valor) {
 
 function injectPrintHeader(subtitle) { /* disabled */ }
 
-window.imprimirPadrao = function(filtrados = getFiltrados()) {
+function imprimirPadrao(filtrados = getFiltrados()) {
       updatePrintDateTime();
       updatePrintDateTime();
       
@@ -2523,7 +2657,9 @@ window.imprimirPadrao = function(filtrados = getFiltrados()) {
       }, 1000);
     };
 
-window.imprimirDetalhado = function() {
+window.imprimirPadrao = imprimirPadrao;
+
+function imprimirDetalhado() {
   updatePrintDateTime();
   const filtrados = getFiltrados();
   
@@ -2720,7 +2856,9 @@ window.imprimirDetalhado = function() {
   }, 1000);
 };
 
-window.imprimirAnalise = function() {
+window.imprimirDetalhado = imprimirDetalhado;
+
+function imprimirAnalise() {
   updatePrintDateTime();
   const filtrados = getFiltrados();
   let total = 0;
@@ -2822,36 +2960,64 @@ window.imprimirAnalise = function() {
     document.getElementById('print-layout-analise').style.display = 'none';
   }, 1000);
 };
+window.imprimirAnalise = imprimirAnalise;
 
 // ---- GERENCIAMENTO DE ACESSOS (CRUD) ----
 
 let listaAcessos = [];
 
+
+window.novoAcessoForm = function() {
+  cancelarEdicaoAcesso();
+  const form = document.getElementById('form-acesso');
+  const btnCancelar = document.getElementById('btn-cancelar-edicao');
+  if (form) form.style.display = 'grid';
+  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
+  
+  const nomeInput = document.getElementById('acesso-nome');
+  const whatsappInput = document.getElementById('acesso-whatsapp');
+  const nivelInput = document.getElementById('acesso-nivel');
+  const setorInput = document.getElementById('acesso-setor');
+  const senhaInput = document.getElementById('acesso-senha');
+  const btnSalvar = document.getElementById('btn-salvar-acesso');
+  
+  if(nomeInput) nomeInput.disabled = false;
+  if(whatsappInput) whatsappInput.disabled = false;
+  if(nivelInput) nivelInput.disabled = false;
+  if(setorInput) setorInput.disabled = false;
+  if(senhaInput) senhaInput.disabled = false;
+  if(btnSalvar) btnSalvar.disabled = false;
+  
+  if(nomeInput) nomeInput.focus();
+};
+
 function abrirModalAcesso(index = null) {
-  const title = document.getElementById('cadastro-acesso-title');
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
   const nivelInput = document.getElementById('acesso-nivel');
+  const setorInput = document.getElementById('acesso-setor');
   const senhaInput = document.getElementById('acesso-senha');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
   const btnSalvar = document.getElementById('btn-salvar-acesso');
+  const form = document.getElementById('form-acesso');
 
   if (!rowInput) return;
 
   if (index !== null) {
+    if (form) form.style.display = 'grid';
     const user = listaAcessos[index];
-    title.innerHTML = '<span>✏️</span> Editar Registro de Acesso';
     rowInput.value = user._rowNumber;
     nomeInput.value = user.nome;
     whatsappInput.value = user.whatsapp || '';
     nivelInput.value = user.nivel;
+    if(setorInput) setorInput.value = user.setor || '';
     senhaInput.value = user.senha || '';
 
-    // Habilitar campos
     nomeInput.disabled = false;
-    whatsappInput.disabled = true; // WhatsApp não pode ser alterado na edição
+    whatsappInput.disabled = true; // WhatsApp não pode ser alterado na ediǜo
     nivelInput.disabled = false;
+    if(setorInput) setorInput.disabled = false;
     senhaInput.disabled = false;
 
     if (btnSalvar) btnSalvar.disabled = false;
@@ -2864,26 +3030,27 @@ function abrirModalAcesso(index = null) {
 }
 
 function cancelarEdicaoAcesso() {
-  const title = document.getElementById('cadastro-acesso-title');
   const form = document.getElementById('form-acesso');
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
   const nivelInput = document.getElementById('acesso-nivel');
+  const setorInput = document.getElementById('acesso-setor');
   const senhaInput = document.getElementById('acesso-senha');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
   const btnSalvar = document.getElementById('btn-salvar-acesso');
 
-  if (form) form.reset();
+  if (form) {
+    form.reset();
+    form.style.display = 'none';
+  }
   if (rowInput) rowInput.value = '';
-  if (title) title.innerHTML = '<span>��</span> Registro de Acesso';
 
-  // Limpar e Desabilitar campos
-  if (nomeInput) { nomeInput.value = ''; nomeInput.disabled = true; }
-  if (whatsappInput) { whatsappInput.value = ''; whatsappInput.disabled = true; }
-  if (nivelInput) { nivelInput.selectedIndex = -1; nivelInput.disabled = true; }
-  if (senhaInput) { senhaInput.value = ''; senhaInput.disabled = true; }
-
+  if (nomeInput) nomeInput.disabled = true;
+  if (whatsappInput) whatsappInput.disabled = true;
+  if (nivelInput) nivelInput.disabled = true;
+  if (setorInput) setorInput.disabled = true;
+  if (senhaInput) senhaInput.disabled = true;
   if (btnSalvar) btnSalvar.disabled = true;
   if (btnCancelar) btnCancelar.style.display = 'none';
 }
@@ -2941,11 +3108,17 @@ function renderListaAcessosUI() {
         </span>
       `,
       adm: `
-        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-          Admin
-        </span>
-      `
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            Admin
+          </span>
+        `,
+        gerente: `
+          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(139, 92, 246, 0.12); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            Gerente
+          </span>
+        `
     }[user.nivel] || `<span style="font-size:12px; font-weight:600; color:var(--text-primary);">${user.nivel}</span>`;
 
     const whatsappDisplay = user.whatsapp || '—';
@@ -2958,6 +3131,7 @@ function renderListaAcessosUI() {
         <td style="padding:12px 16px; font-size:14px; font-weight:600; color:var(--text-primary);">${user.nome}</td>
         <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${whatsappDisplay}</td>
         <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${nivelDisplay}</td>
+          <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${user.setor || '-'}</td>
         <td style="padding:12px 16px; font-size:14px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <label class="switch" style="transform:scale(0.85); margin:0;">
@@ -2977,10 +3151,7 @@ function renderListaAcessosUI() {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             Editar
           </button>
-          <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; margin-left:6px; background:rgba(239, 68, 68, 0.08); color:#f87171; border:1px solid rgba(239, 68, 68, 0.2); border-radius:6px; font-weight:600; cursor:pointer; transition:var(--transition);">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-            Excluir
-          </button>
+          
         </td>
       </tr>
     `;
@@ -3005,6 +3176,7 @@ async function toggleStatusAcesso(rowNumber, isChecked) {
       nome: user.nome,
       whatsapp: user.whatsapp,
       nivel: user.nivel,
+      setor: user.setor || '',
       status: status,
       senha: user.senha
     };
@@ -3051,6 +3223,23 @@ async function carregarAcessos() {
     }
 
     listaAcessos = await res.json();
+    
+    // Corrige os campos deslocados
+    listaAcessos = listaAcessos.map(u => {
+      // Se a coluna senha tem 1/0, e a contagem tem a senha real (ex 4791)
+      if (u.senha === 1 || u.senha === 0 || u.senha === '1' || u.senha === '0') {
+        return {
+          ...u,
+          status: (u.senha == 1 || String(u.senha).toLowerCase() === 'liberado' || String(u.status).toLowerCase() === 'liberado') ? 'liberado' : 'bloqueado',
+          senha: u.contagem,
+          contagem: u.data,
+          data: 'N/D'
+        };
+      }
+      return u;
+    });
+    
+    
     renderListaAcessosUI();
   } catch (error) {
     console.error(error);
@@ -3065,6 +3254,7 @@ async function salvarAcessoForm(event) {
   const nome = document.getElementById('acesso-nome').value;
   const whatsapp = document.getElementById('acesso-whatsapp').value;
   const nivel = document.getElementById('acesso-nivel').value;
+    const setor = document.getElementById('acesso-setor').value.trim();
   const senha = document.getElementById('acesso-senha').value;
   
   let status = 'liberado';
@@ -3075,7 +3265,7 @@ async function salvarAcessoForm(event) {
     }
   }
 
-  const payload = { nome, whatsapp, nivel, status, senha };
+  const payload = { nome, whatsapp, nivel, status, senha, setor };
   const token = sessionStorage.getItem('sap_session_token');
 
   try {
@@ -3140,15 +3330,14 @@ async function deletarAcesso(rowNumber, whatsapp) {
 function maskCelular(v) {
   v = v.replace(/\D/g, "");
   if (v.length > 11) v = v.substring(0, 11);
-  
-  if (v.length > 10) {
-    return `(${v.substring(0, 2)}) ${v.substring(2, 3)} ${v.substring(3, 7)}-${v.substring(7)}`;
-  } else if (v.length > 6) {
-    return `(${v.substring(0, 2)}) ${v.substring(2, 6)}-${v.substring(6)}`;
+  if (v.length > 7) {
+    return "(" + v.substring(0, 2) + ") " + v.substring(2, 3) + " " + v.substring(3, 7) + "-" + v.substring(7);
+  } else if (v.length > 3) {
+    return "(" + v.substring(0, 2) + ") " + v.substring(2, 3) + " " + v.substring(3);
   } else if (v.length > 2) {
-    return `(${v.substring(0, 2)}) ${v.substring(2)}`;
+    return "(" + v.substring(0, 2) + ") " + v.substring(2);
   } else if (v.length > 0) {
-    return `(${v}`;
+    return "(" + v;
   }
   return v;
 }
@@ -3215,7 +3404,7 @@ function renderProcessosRepetidos() {
     tbody.innerHTML = `
       <tr>
         <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
-          <h3>�� Nenhum processo repetido encontrado!</h3>
+          <h3>🔍 Nenhum processo repetido encontrado!</h3>
           <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são úúnicos.</p>
         </td>
       </tr>
@@ -3319,386 +3508,34 @@ function toggleFiltros() {
   const isCollapsed = bar.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg> <span class="btn-text">MOSTRAR FILTROS</span>';
-    btn.style.borderColor = 'var(--blue)';
-    btn.style.color = 'var(--blue)';
+    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg>';
     localStorage.setItem('filters_collapsed', '1');
   } else {
-    btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> <span class="btn-text">OCULTAR FILTROS</span>';
-    btn.style.borderColor = 'var(--border)';
-    btn.style.color = '';
+    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>';
     localStorage.removeItem('filters_collapsed');
   }
 }
 
 function toggleFormAcesso() {
-  const card = document.getElementById('card-form-acesso');
+  const form = document.getElementById('form-acesso');
   const btn = document.getElementById('btn-toggle-form-acesso');
-  if (!card || !btn) return;
-  const isCollapsed = card.classList.toggle('collapsed');
+  if (!form || !btn) return;
   
-  if (isCollapsed) {
-    btn.innerHTML = '�� <span class="btn-text">Mostrar</span>';
+  if (form.style.display !== 'none') {
+    form.style.display = 'none';
+    btn.innerHTML = '&#10133; <span class="btn-text">Mostrar</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('form_acesso_collapsed', '1');
   } else {
-    btn.innerHTML = '�� <span class="btn-text">Ocultar</span>';
+    form.style.display = 'grid';
+    btn.innerHTML = '&#128065; <span class="btn-text">Ocultar</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('form_acesso_collapsed');
   }
 }
 
-function toggleFormProcesso() {
-  const card = document.getElementById('card-form-processo');
-  const btn = document.getElementById('btn-toggle-form-processo');
-  if (!card || !btn) return;
-  const isCollapsed = card.classList.toggle('collapsed');
-  
-  if (isCollapsed) {
-    btn.innerHTML = '�� <span class="btn-text">Mostrar Formulário</span>';
-    btn.style.borderColor = 'var(--blue)';
-    btn.style.color = 'var(--blue)';
-  } else {
-    btn.innerHTML = '�� <span class="btn-text">Ocultar Formulário</span>';
-    btn.style.borderColor = 'var(--border)';
-    btn.style.color = '';
-  }
-}
-
-async function recarregarDadosGlobais() {
-  toast('Recarregando dados do servidor...', 'info');
-  try {
-    await inicializarDados();
-    toast('Dados atualizados com sucesso!', 'success');
-    
-    // Atualizar tela atual
-    if (state.page === 'dashboard') renderDashboard();
-    else if (state.page === 'processos') renderProcessos();
-    else if (state.page === 'repetidos') renderProcessosRepetidos();
-    else if (state.page === 'acessos') carregarAcessos();
-    
-    // Atualizar contador sidebar
-    if (typeof atualizarContador === 'function') atualizarContador();
-  } catch (err) {
-    console.error(err);
-    toast('Erro ao recarregar dados.', 'error');
-  }
-}
-
-// Inicialização dos estados colapsados de acordo com tela (mobile ou localStorage)
-function inicializarEstadosColapsaveis() {
-  const isMobile = window.innerWidth <= 768;
-  
-  // 1. Filtros
-  const savedFiltersCollapse = localStorage.getItem('filters_collapsed');
-  const bar = document.querySelector('#page-processos .filters-bar');
-  const btnFilters = document.getElementById('btn-toggle-filtros');
-  if (bar && btnFilters) {
-    if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
-      bar.classList.add('collapsed');
-      btnFilters.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg> <span class="btn-text">MOSTRAR FILTROS</span>';
-      btnFilters.style.borderColor = 'var(--blue)';
-      btnFilters.style.color = 'var(--blue)';
-    }
-  }
-  
-  // 2. Formulário Acessos
-  const savedAcessosCollapse = localStorage.getItem('form_acesso_collapsed');
-  const cardAcessos = document.getElementById('card-form-acesso');
-  const btnAcessos = document.getElementById('btn-toggle-form-acesso');
-  if (cardAcessos && btnAcessos) {
-    if (savedAcessosCollapse === '1' || (savedAcessosCollapse === null && isMobile)) {
-      cardAcessos.classList.add('collapsed');
-      btnAcessos.innerHTML = '�� <span class="btn-text">Mostrar</span>';
-      btnAcessos.style.borderColor = 'var(--blue)';
-      btnAcessos.style.color = 'var(--blue)';
-    }
-  }
-}
-
-// Chamar inicialização no DOMContentLoaded
-document.addEventListener('DOMContentLoaded', () => {
-  inicializarEstadosColapsaveis();
-});
-
-window.toggleFiltros = toggleFiltros;
-window.toggleFormAcesso = toggleFormAcesso;
-window.toggleFormProcesso = toggleFormProcesso;
-window.recarregarDadosGlobais = recarregarDadosGlobais;
-
-function selectSegment(group, value) {
-  const hiddenInput = document.getElementById(`form-${group}`);
-  if (!hiddenInput) return;
-  
-  const isSelected = hiddenInput.value === value;
-  hiddenInput.value = isSelected ? '' : value;
-  
-  updateSegmentControl(group, hiddenInput.value);
-}
-
-function updateSegmentControl(group, activeValue) {
-  const control = document.getElementById(`control-${group}`);
-  if (!control) return;
-  const buttons = control.querySelectorAll('.segment-btn');
-  buttons.forEach(btn => {
-    const val = btn.getAttribute('data-value');
-    if (val === activeValue) {
-      btn.style.background = getActiveBgColor(group, val);
-      btn.style.borderColor = getActiveBorderColor(group, val);
-      btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
-      btn.style.color = (val === 'OB' || val === 'MC') ? '#0f172a' : '#fff';
-      btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-    } else {
-      btn.style.background = 'none';
-      btn.style.border = '1px solid transparent';
-      btn.style.color = 'var(--text-secondary)';
-      btn.style.boxShadow = 'none';
-    }
-  });
-}
-
-function getActiveBgColor(group, val) {
-  if (group === 'categoria') {
-    if (val === 'F') return '#3b82f6'; // Fomento - Solid Blue
-    if (val === 'C') return '#10b981'; // Convênio - Solid Green
-    if (val === 'O' || val === 'T') return '#8b5cf6'; // Termo de Cooperação - Solid Purple
-  } else if (group === 'tipo') {
-    if (val === 'OB') return '#06b6d4'; // Obras - Solid Cyan
-    if (val === 'MP') return '#f97316'; // Mat. Permanente - Solid Orange
-    if (val === 'MC') return '#f59e0b'; // Mat. Consumo - Solid Yellow/Amber
-    if (val === 'SI') return '#a855f7'; // Sistema - Solid Purple
-    if (val === 'TR') return '#10b981'; // Treinamento - Solid Emerald
-    if (val === 'OUT') return '#f43f5e'; // Outros - Solid Rose
-  }
-  return 'rgba(255, 255, 255, 0.1)';
-}
-
-function getActiveBorderColor(group, val) {
-  return getActiveBgColor(group, val);
-}
-
-function getCategoryBadge(categoria) {
-  if (!categoria) return '';
-  const char = String(categoria).trim().toUpperCase()[0];
-  if (char === 'F') {
-    return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
-  }
-  if (char === 'C') {
-    return `<span class="badge-cat badge-cat-c" title="Categoria: Convênio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
-  }
-  if (char === 'O') {
-    return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
-  }
-  if (char === 'T') {
-    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
-  }
-  return '';
-}
-
-function getTypeBadge(tipo) {
-  if (!tipo) return '';
-  const char = String(tipo).trim().toUpperCase();
-  if (char === 'OB') {
-    return `<span class="badge-tipo badge-tipo-ob" title="Tipo: Obras" style="margin-left: 4px; padding: 2px 6px; background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OB</span>`;
-  }
-  if (char === 'MP') {
-    return `<span class="badge-tipo badge-tipo-mp" title="Tipo: Material Permanente" style="margin-left: 4px; padding: 2px 6px; background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MP</span>`;
-  }
-  if (char === 'MC') {
-    return `<span class="badge-tipo badge-tipo-mc" title="Tipo: Material de Consumo" style="margin-left: 4px; padding: 2px 6px; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MC</span>`;
-  }
-  if (char === 'SI') {
-    return `<span class="badge-tipo badge-tipo-si" title="Tipo: Sistema" style="margin-left: 4px; padding: 2px 6px; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">SI</span>`;
-  }
-  if (char === 'TR') {
-    return `<span class="badge-tipo badge-tipo-tr" title="Tipo: Treinamento" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">TR</span>`;
-  }
-  if (char === 'OUT' || char === 'OU') {
-    return `<span class="badge-tipo badge-tipo-out" title="Tipo: Outros" style="margin-left: 4px; padding: 2px 6px; background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OUT</span>`;
-  }
-  return '';
-}
-
-window.selectSegment = selectSegment;
-window.updateSegmentControl = updateSegmentControl;
-window.getCategoryBadge = getCategoryBadge;
-window.getTypeBadge = getTypeBadge;
-
-// ============================================================
-// MÓDULO: ESCOLAS (ADM ONLY)
-// ============================================================
-
-function inserirDataHoje() {
-  const dateInput = document.getElementById('form-data');
-  if (dateInput) {
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    dateInput.value = `${yyyy}-${mm}-${dd}`;
-  }
-}
-window.inserirDataHoje = inserirDataHoje;
-
-
-// ============================================================
-// SEDUC — Gerador de Manifestação Técnica & Relatório Sintético TCE-RO
-// ============================================================
-
-
-// ============================================================
-// SEDUC — Gerador de Manifestação Técnica & Relatório A4/PDF (TCE-RO)
-// ============================================================
-
-window._manifestoProcessoAtual = null;
-
-function gerarTextoManifestoTCE(p) {
-  p = p || {};
-
-  const municipio = p.municipio || 'Município não informado';
-  const interessado = p.interessado || 'Unidade Escolar / Conselho Escolar';
-  const numeroProcesso = p.numero || 'Sem número';
-  const oficioNum = p.oficioNumero || 'XX - XXX';
-  
-  let diretorNome = 'XXX';
-  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
-    const esc = _escolasCache.find(e => 
-      (e.nome && p.interessado && e.nome.toLowerCase().includes(p.interessado.toLowerCase())) ||
-      (e.municipio && p.municipio && e.municipio.toLowerCase() === p.municipio.toLowerCase())
-    );
-    if (esc && esc.diretor) diretorNome = esc.diretor;
-  }
-
-  const tipoCod = (p.tipo || '').toUpperCase();
-  const tipoDesc = {
-    'OB': 'Obras e Infraestrutura Fsica',
-    'MP': 'Aquisição de Material Permanente',
-    'MC': 'Aquisição de Material de Consumo',
-    'SI': 'Sistemas e Tecnologias da Informação',
-    'TR': 'Treinamento e Capacitação',
-    'OU': 'Outros Investimentos'
-  }[tipoCod] || p.tipo || 'Investimento em Infraestrutura/Material';
-
-  let detalheObj = '';
-  if (p.detalhamentoItens && p.detalhamentoItens.trim()) {
-    detalheObj = p.detalhamentoItens.trim();
-  } else {
-    let partes = [];
-    if (p.objeto) partes.push(p.objeto);
-    if (p.metragemM2) partes.push('metragem aproximada de ' + p.metragemM2 + ' m²');
-    if (p.qtdeSala) partes.push(p.qtdeSala + ' salas de aula');
-    if (p.auditorio) partes.push('auditório (' + (p.tipoAuditorio || 'padrão') + ')');
-    if (p.quadra) partes.push('quadra (' + p.quadra + ')');
-    if (p.refeitorio) partes.push('refeitório (' + p.refeitorio + ')');
-    if (p.banheiros) partes.push('instalações sanitárias (' + p.banheiros + ')');
-    detalheObj = partes.length > 0 ? partes.join(', ') : (tipoDesc.toLowerCase() + ', compreendendo mobiliários, equipamentos e adequações necessárias');
-  }
-
-  let textoObjetoConstruido = '';
-  if (tipoCod === 'OB' && p.metragemM2) {
-    textoObjetoConstruido = 'a execução de obras/serviços de engenharia com metragem total de ' + p.metragemM2 + ' m², abrangendo ' + detalheObj;
-  } else {
-    textoObjetoConstruido = (p.objeto ? p.objeto.toLowerCase() : 'aquisição e instalação de materiais') + ', compreendendo ' + detalheObj;
-  }
-
-  const dataAtualExtenso = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
-
-  return `Manifestação
-
-A legislação educacional brasileira, em seus diversos nveis, estabelece um complexo de deveres e colaborações para a garantia do direito à educação. A Constituição Federal, em seu artigo 205, consagra a educação como um direito de todos e um dever do Estado e da famlia, a ser promovida com a colaboração da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualificação para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos Municípios a competência para manter, com a cooperação técnica e financeira da União e do Estado, programas de educação infantil e de ensino fundamental. O regime de colaboração entre os entes federados é reforçado pelo artigo 211, § 4º, que determina a definição de formas de colaboração entre União, Estados, Distrito Federal e Municípios para assegurar a universalização do ensino obrigatório.
-
-A Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996) reitera e detalha essa estrutura colaborativa, estabelecendo em seu artigo 8º que a União, os Estados, o Distrito Federal e os Municípios organizarão, em regime de colaboração, seus respectivos sistemas de ensino. O artigo 10 da mesma lei incumbe os Estados de organizar, manter e desenvolver os órgãos e instituições oficiais de seus sistemas de ensino, definindo, com os Municípios, formas de colaboração na oferta do ensino fundamental (inciso II), e de baixar normas complementares para seu sistema de ensino (inciso VI).
-
-A Lei nº 14.113/2020, que regulamenta o Fundeb, fortalece a cooperação entre os entes federativos. O artigo 14, § 1º, inciso IV, condiciona o recebimento de complementação de recursos federais à existência de um regime de colaboração entre Estado e Municípios formalizado na legislação estadual. Ademais, o artigo 50, em seu parágrafo único, estabelece que a União, os Estados e o Distrito Federal desenvolverão, em regime de colaboração, programas de apoio para a conclusão da educação básica por alunos matriculados no sistema público.
-
-No âmbito estadual, a Constituição do Estado de Rondônia, em seus artigos 187 e 188, detalha as responsabilidades do poder público com a educação, estabelecendo que o ensino será ministrado com base em princpios como a igualdade de condições para o acesso e permanência na escola e a gestão democrática do ensino público, e define as atribuições do sistema estadual de ensino.
-
-Ainda no âmbito estadual, a Lei nº. 5.735/2024 institui o Programa de Alfabetização do Estado de Rondônia, em regime de colaboração com os Municípios, cabendo ao Estado prestar cooperação técnica e financeira aos Municípios. Dentre os eixos do programa, há o Eixo 2 que trata da infraestrutura fsica e pedagógica. Desta feita, compulsando o Ofcio ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados à organização, equipagem e melhoria dos espaços pedagógicos da unidade escolar, visando aprimorar as condições de trabalho dos profissionais da educação e qualificar os espaços escolares, por meio da disponibilização de mobiliário e equipamentos adequados, contribuindo para o fortalecimento das práticas pedagógicas e assegurando maior organização, conforto, segurança e funcionalidade aos ambientes educacionais.
-
-Em atendimento à solicitação do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do Ofcio ${oficioNum}, manifestamo-nos favoravelmente à solicitação do Município, no que tange ao regime de colaboração regulamentado pela Lei Estadual nº. 5.735/2024.
-
-Nestes termos, submeto os autos à apreciação superior, para deliberação acerca da oportunidade e conveniência administrativa.
-
-Porto Velho - RO, ${dataAtualExtenso}.`;
-}
-
-function gerarRelatorioMonitoramento() {
-  var g  = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
-  var gb = function(id) { var el = document.getElementById(id); return el ? el.checked : false; };
-
-  // Números do processo (campo múltiplo)
-  var inputsNum  = Array.from(document.querySelectorAll('input[name="numero[]"]'));
-  var numeroProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || 'Sem número';
-
-  // Valores financeiros
-  var parseMon = function(v) {
-    if (!v) return 0;
-    var s = String(v).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');
-    return parseFloat(s) || 0;
-  };
-  var valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : parseMon(g('form-valorPlan'));
-  var valOf   = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf'))   : parseMon(g('form-valorOf'));
-
-  // Categoria / Tipo (segment buttons)
-  var catEl  = document.querySelector('#control-categoria .segment-btn.active') || {};
-  var tipoEl = document.querySelector('#control-tipo .segment-btn.active')      || {};
-
-  // Montar objeto com TODOS os campos das duas abas
-  var p = {
-    numero:            numeroProc,
-    municipio:         g('form-municipio'),
-    interessado:       g('form-interessado'),
-    objeto:            g('form-objeto'),
-    prefixo:           g('form-prefixo'),
-    ano:               g('form-ano'),
-    agrupamento:       g('form-agrupamento'),
-    data:              g('form-data'),
-    status:            g('form-status'),
-    localizacao:       g('form-localizacao'),
-    obs:               g('form-obs'),
-    categoria:         (catEl.dataset  && catEl.dataset.value)  || g('form-categoria'),
-    tipo:              (tipoEl.dataset && tipoEl.dataset.value) || g('form-tipo'),
-    cam:               gb('form-cam')  ? 1 : 0,
-    gab:               gb('form-gab')  ? 1 : 0,
-    cc:                gb('form-cc')   ? 1 : 0,
-    valorPlan:         valPlan,
-    valorOf:           valOf,
-    qtdeSala:          g('form-qtdeSala'),
-    tipoSala:          g('form-tipoSala'),
-    auditorio:         g('form-auditorio'),
-    tipoAuditorio:     g('form-tipoAuditorio'),
-    quadra:            g('form-quadra'),
-    patio:             g('form-patio'),
-    refeitorio:        g('form-refeitorio'),
-    banheiros:         g('form-banheiros'),
-    metragemM2:        g('form-metragemM2'),
-    detalhamentoItens: g('form-detalhamentoItens'),
-    demaisObservacoes: g('form-demaisObservacoes')
-  };
-
-  // Complementar com dados já salvos se estiver editando
-  if (typeof state !== 'undefined' && state.editandoId) {
-    var saved = (state.processos || []).find(function(item){ return item.id === state.editandoId; });
-    if (saved) {
-      Object.keys(p).forEach(function(k) {
-        if (p[k] === '' || p[k] === 0 || p[k] === null || p[k] === undefined) {
-          if (saved[k] !== undefined && saved[k] !== null && saved[k] !== '') p[k] = saved[k];
-        }
-      });
-    }
-  }
-
-  // Gerar PDF diretamente (sem modal intermediário)
-  window._manifestoProcessoAtual = p;
-  imprimirManifestoTCE();
-}
-
-// Compatibilidade com referências antigas
-function gerarEExibirManifestoTCEAtual() {
-  gerarRelatorioMonitoramento();
-}
 function abrirModalManifestoTCEById(id) {
   const p = (state.processos || []).find(item => item.id === id);
   if (!p) {
@@ -3811,9 +3648,9 @@ function imprimirManifestoTCE() {
     '<title>Relat&oacute;rio de Monitoramento &mdash; ' + numero + '</title>\n' +
     '<style>' + css + '</style>\n</head>\n<body>\n' +
     '<div class="hdr"><div class="hdr-txt">' +
-    '<div class="hdr-gov">Governo do Estado de Rond&ocirc;nia</div>' +
-    '<div class="hdr-sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>' +
-    '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div></div></div>' +
+    '<div class="hdr-gov" style="font-weight:800; color:#0f172a; font-size:11pt; letter-spacing:0.5px;">GOVERNO DO ESTADO DE ROND&Ocirc;NIA</div>' +
+    '<div class="hdr-sec" style="font-weight:700; color:#0284c7; font-size:10pt;">SEDUC - SECRETARIA DE ESTADO DA EDUCA&Ccedil;&Atilde;O</div>' +
+    '<div class="hdr-dep" style="font-weight:700; color:#334155; font-size:9pt; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULA&Ccedil;&Atilde;O COM OS MUNIC&Iacute;PIOS</div></div></div>' +
     '<div class="tbar">RELAT&Oacute;RIO DE MONITORAMENTO</div>' +
     '<table class="info-table">' +
     '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>' +
@@ -3828,6 +3665,7 @@ function imprimirManifestoTCE() {
   } else {
       h += '&mdash;';
   }
+  h += '</td></tr></table>';
   var obsAll = [obs, demaisObs].filter(Boolean).join('\n\n');
   if (obsAll) { h += '<div class="sec-title">OBSERVA&Ccedil;&Otilde;ES ESPEC&Iacute;FICAS</div><div class="obs-block">' + obsAll + '</div>'; }
 
@@ -3842,7 +3680,7 @@ function imprimirManifestoTCE() {
 
   // Bottom Fixed Container
   h += '<div class="bottom-container">' +
-       '<div class="ft"><span class="ft-logo">SEDUC-RO / CAM</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
+       '<div class="ft"><span class="ft-logo">CAM - COORDENADORIA DE ARTICULA&Ccedil;&Atilde;O COM OS MUNIC&Iacute;PIOS</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
        '</div>'; // end bottom-container
 
   h += '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
@@ -3861,7 +3699,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.0.47)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.19)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -4107,7 +3945,7 @@ function _tePopularFiltros() {
   // Popula badge de abas
   const abasBadge = document.getElementById('te-badge-abas');
   if (abasBadge) {
-    abasBadge.textContent = '�� ' + _teAbas.length + ' planilhas';
+    abasBadge.textContent = '📊 ' + _teAbas.length + ' planilhas';
     abasBadge.style.display = 'inline-flex';
   }
 }
@@ -4161,8 +3999,8 @@ function _teAtualizarUI() {
   const totalAlunos = _teFiltrados.reduce((s,e) => s + (parseInt(e.alunos)||0), 0);
   const badgeTotal  = document.getElementById('te-badge-total');
   const badgeAlunos = document.getElementById('te-badge-alunos');
-  if (badgeTotal)  badgeTotal.textContent  = '�� ' + total.toLocaleString('pt-BR') + ' Escolas';
-  if (badgeAlunos) badgeAlunos.textContent = '�� ' + totalAlunos.toLocaleString('pt-BR') + ' Alunos';
+  if (badgeTotal)  badgeTotal.textContent  = '🏫 ' + total.toLocaleString('pt-BR') + ' Escolas';
+  if (badgeAlunos) badgeAlunos.textContent = '👥 ' + totalAlunos.toLocaleString('pt-BR') + ' Alunos';
 
   if (total === 0) {
     if (wrap)    wrap.style.display    = 'none';
@@ -4384,7 +4222,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 
-window.imprimirPadraoSelecionado = function() {
+function imprimirPadraoSelecionado() {
     const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
     if (idsSelecionados.length === 0) {
         alert('Nenhum processo selecionado.');
@@ -4392,9 +4230,328 @@ window.imprimirPadraoSelecionado = function() {
     }
     const filtrados = getFiltrados().filter(p => idsSelecionados.includes(p.id));
     imprimirPadrao(filtrados);
-};
+}
+window.imprimirPadraoSelecionado = imprimirPadraoSelecionado;
 
-window.toggleAllProcessos = function(el) {
+function toggleAllProcessos(el) {
     const checkboxes = document.querySelectorAll('.check-processo');
     checkboxes.forEach(cb => cb.checked = el.checked);
-};
+}
+window.toggleAllProcessos = toggleAllProcessos;
+
+window._processosInconsistentesParaCorrigir = [];
+
+function normalizarEspacos(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/\s+/g, ' ').trim();
+}
+
+function verificarInconsistenciasPlanilha() {
+  const container = document.getElementById('status-padronizacao-container');
+  const labelStatus = document.getElementById('label-status-padronizacao');
+  const logDiv = document.getElementById('log-status-padronizacao');
+  const btnExecutar = document.getElementById('btn-executar-padronizacao');
+  const progContainer = document.getElementById('bar-prog-container');
+
+  if (container) container.style.display = 'block';
+  if (labelStatus) labelStatus.textContent = '🔎 Realizando varredura completa em todos os registros do sistema...';
+  if (logDiv) logDiv.innerHTML = '';
+  if (btnExecutar) btnExecutar.style.display = 'none';
+  if (progContainer) progContainer.style.display = 'none';
+
+  if (!window.processosCache || window.processosCache.length === 0) {
+    if (labelStatus) labelStatus.textContent = '❌ Erro: Nenhum registro carregado no sistema para análise.';
+    return;
+  }
+
+  let inconsistentes = [];
+
+  window.processosCache.forEach(p => {
+    let mudou = false;
+    let atualizacoes = {};
+    let descricoes = [];
+
+        // A pedido do usuario, o padronizador agora MEXE SOMENTE NOS NOMES (Interessado)
+    // usando Jaro-Winkler com +90% de certeza com base na lista de escolas.
+    if (p.interessado) {
+      let intNorm = normalizarEspacos(p.interessado);
+      const matchEscola = encontrarEscolaSemelhante(intNorm);
+      if (matchEscola && matchEscola !== p.interessado) {
+        atualizacoes.interessado = matchEscola;
+        descricoes.push("NOME: " + p.interessado + " -> " + matchEscola);
+        mudou = true;
+      }
+    }
+
+    if (mudou && (p.aba !== 'PARAMETROS' && p.aba !== 'parametro_combo')) {
+      inconsistentes.push({
+        id: p.id,
+        rowNumber: p.rowNumber,
+        aba: p.aba,
+        numero: p.numero || p.id,
+        atualizacoes: atualizacoes,
+        descricao: descricoes.join(' | ')
+      });
+    }
+  });
+
+  window._processosInconsistentesParaCorrigir = inconsistentes;
+
+  if (inconsistentes.length === 0) {
+    if (labelStatus) labelStatus.innerHTML = '<span style="color:#34d399; font-weight:700;">✅ Varredura Concluída: Todos os registros estão 100% padronizados! Nenhuma divergência encontrada.</span>';
+    return;
+  }
+
+  if (labelStatus) labelStatus.innerHTML = `<span style="color:#fbbf24; font-weight:700;">⚠️ Varredura Concluída: Encontrados ${inconsistentes.length} registros com divergências de formatação/padronização no sistema.</span>`;
+  
+  let html = `<table style="width:100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; color: #cbd5e1; background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.08); text-align: left;">
+        <th style="padding: 8px 12px; color: #94a3b8;">Nº Processo / ID</th>
+        <th style="padding: 8px 12px; color: #94a3b8;">Divergências Detectadas (Espaços Extras, Caixas ou Termos)</th>
+      </tr>
+    </thead>
+    <tbody>`;
+  
+  inconsistentes.slice(0, 150).forEach(inc => {
+    html += `<tr style="border-bottom: 1px dashed rgba(255,255,255,0.05);">
+      <td style="padding: 8px 12px; font-weight: bold; color: #60a5fa; font-family: monospace;">${inc.numero}</td>
+      <td style="padding: 8px 12px; color: #34d399;">${inc.descricao}</td>
+    </tr>`;
+  });
+  
+  if (inconsistentes.length > 150) {
+    html += `<tr><td colspan="2" style="padding: 10px; text-align: center; color: #fbbf24; font-weight: 600;">... e mais ${inconsistentes.length - 150} registros pendentes no lote ...</td></tr>`;
+  }
+  
+  html += '</tbody></table>';
+  if (logDiv) logDiv.innerHTML = html;
+  if (btnExecutar) {
+    btnExecutar.style.display = 'inline-flex';
+    btnExecutar.disabled = false;
+  }
+  const btnCancelar = document.getElementById('btn-cancelar-padronizacao');
+  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
+}
+
+async function executarPadronizacaoPlanilha() {
+  const btnExecutar = document.getElementById('btn-executar-padronizacao');
+  const labelStatus = document.getElementById('label-status-padronizacao');
+  const btnVerificar = document.getElementById('btn-verificar-padronizacao');
+  const logDiv = document.getElementById('log-status-padronizacao');
+  
+  if (btnExecutar) btnExecutar.style.display = 'none';
+  if (btnVerificar) btnVerificar.disabled = true;
+  
+  const inconsistentes = window._processosInconsistentesParaCorrigir || [];
+  let total = inconsistentes.length;
+
+  if (total === 0) return;
+
+  // Barra de progresso interativa
+  let progContainer = document.getElementById('bar-prog-container');
+  if (!progContainer) {
+    progContainer = document.createElement('div');
+    progContainer.id = 'bar-prog-container';
+    progContainer.style.cssText = 'width: 100%; margin-top: 14px; margin-bottom: 14px; background: rgba(15,23,42,0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);';
+    logDiv.parentNode.insertBefore(progContainer, logDiv);
+  } else {
+    progContainer.style.display = 'block';
+  }
+
+  progContainer.innerHTML = `
+    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px;">
+      <span id="prog-text-status">⚙️ Aplicando correções na planilha em lote...</span>
+      <span id="prog-pct" style="color: #10b981; font-family: monospace; font-size: 13px;">0%</span>
+    </div>
+    <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
+      <div id="bar-prog-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 5px; transition: width 0.15s ease-out; box-shadow: 0 0 10px rgba(16,185,129,0.5);"></div>
+    </div>
+    <div style="display: flex; gap: 15px; margin-top: 8px; font-size: 11px; color: #94a3b8;">
+      <span id="prog-count-suc" style="color: #34d399;">✅ Sucesso: 0</span>
+      <span id="prog-count-err" style="color: #f87171;">❌ Falhas: 0</span>
+      <span id="prog-count-rem">Total: ${total}</span>
+    </div>
+  `;
+
+  const barFill = document.getElementById('bar-prog-fill');
+  const progPct = document.getElementById('prog-pct');
+  const progSuc = document.getElementById('prog-count-suc');
+  const progErr = document.getElementById('prog-count-err');
+  const progText = document.getElementById('prog-text-status');
+
+  logDiv.innerHTML = '<div id="live-log-box" style="display:flex; flex-direction:column; gap:4px;"></div>';
+  const liveBox = document.getElementById('live-log-box');
+
+  let sucesso = 0;
+  let falhas = 0;
+  const token = sessionStorage.getItem('sap_session_token');
+
+  for (let i = 0; i < total; i++) {
+    const inc = inconsistentes[i];
+    const currentNum = i + 1;
+    const pct = Math.round((currentNum / total) * 100);
+
+    if (barFill) barFill.style.width = `${pct}%`;
+    if (progPct) progPct.textContent = `${pct}%`;
+    if (labelStatus) labelStatus.textContent = `Processando registro ${currentNum} de ${total}...`;
+
+    try {
+      const res = await fetch(API_BASE + '/api/registros/' + inc.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ ...(window._dadosPlanilhaCache ? window._dadosPlanilhaCache.find(p => p.id === inc.id) : {}), ...inc.atualizacoes })
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      sucesso++;
+      if (progSuc) progSuc.textContent = `✅ Sucesso: ${sucesso}`;
+
+      if (liveBox) {
+        const item = document.createElement('div');
+        item.style.cssText = 'color: #34d399; font-size: 11px; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03);';
+        item.textContent = `✅ Processo ${inc.numero}: ${inc.descricao}`;
+        liveBox.appendChild(item);
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+    } catch (err) {
+      falhas++;
+      if (progErr) progErr.textContent = `❌ Falhas: ${falhas}`;
+
+      if (liveBox) {
+        const item = document.createElement('div');
+        item.style.cssText = 'color: #f87171; font-size: 11px; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03);';
+        item.textContent = `❌ Erro no Processo ${inc.numero}: ${err.message}`;
+        liveBox.appendChild(item);
+        logDiv.scrollTop = logDiv.scrollHeight;
+      }
+    }
+
+    await new Promise(r => setTimeout(r, 150));
+  }
+
+  if (progText) progText.textContent = '🎉 Padronização concluída!';
+  if (labelStatus) labelStatus.innerHTML = `<span style="color:#34d399; font-weight:700;">✅ Padronização Concluída! ${sucesso} registros corrigidos com sucesso (${falhas} falhas).</span>`;
+  if (btnVerificar) btnVerificar.disabled = false;
+
+  if (typeof recarregarDadosGlobais === 'function') {
+    recarregarDadosGlobais();
+  }
+}
+
+window.verificarInconsistenciasPlanilha = verificarInconsistenciasPlanilha;
+window.executarPadronizacaoPlanilha = executarPadronizacaoPlanilha;
+
+function selectSegment(group, value) {
+  const hiddenInput = document.getElementById(`form-${group}`);
+  if (!hiddenInput) return;
+  
+  const isSelected = hiddenInput.value === value;
+  hiddenInput.value = isSelected ? '' : value;
+  
+  updateSegmentControl(group, hiddenInput.value);
+}
+
+function updateSegmentControl(group, activeValue) {
+  const control = document.getElementById(`control-${group}`);
+  if (!control) return;
+  const buttons = control.querySelectorAll('.segment-btn');
+  buttons.forEach(btn => {
+    const val = btn.getAttribute('data-value');
+    if (val === activeValue) {
+      btn.style.background = getActiveBgColor(group, val);
+      btn.style.borderColor = getActiveBorderColor(group, val);
+      btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
+      btn.style.color = (val === 'OB' || val === 'MC') ? '#0f172a' : '#fff';
+      btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+    } else {
+      btn.style.background = 'none';
+      btn.style.border = '1px solid transparent';
+      btn.style.color = 'var(--text-secondary)';
+      btn.style.boxShadow = 'none';
+    }
+  });
+}
+
+function getActiveBgColor(group, val) {
+  if (group === 'categoria') {
+    if (val === 'F') return '#3b82f6';
+    if (val === 'C') return '#10b981';
+    if (val === 'O' || val === 'T') return '#8b5cf6';
+  } else if (group === 'tipo') {
+    if (val === 'OB') return '#06b6d4';
+    if (val === 'MP') return '#f97316';
+    if (val === 'MC') return '#f59e0b';
+    if (val === 'SI') return '#a855f7';
+    if (val === 'TR') return '#10b981';
+    if (val === 'OUT') return '#f43f5e';
+  }
+  return 'rgba(255, 255, 255, 0.1)';
+}
+
+function getActiveBorderColor(group, val) {
+  return getActiveBgColor(group, val);
+}
+
+function getCategoryBadge(categoria) {
+  if (!categoria) return '';
+  const char = String(categoria).trim().toUpperCase()[0];
+  if (char === 'F') {
+    return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
+  }
+  if (char === 'C') {
+    return `<span class="badge-cat badge-cat-c" title="Categoria: Convênio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
+  }
+  if (char === 'O') {
+    return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
+  }
+  if (char === 'T') {
+    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
+  }
+  return '';
+}
+
+function getTypeBadge(tipo) {
+  if (!tipo) return '';
+  const char = String(tipo).trim().toUpperCase();
+  if (char === 'OB') {
+    return `<span class="badge-tipo badge-tipo-ob" title="Tipo: Obras" style="margin-left: 4px; padding: 2px 6px; background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OB</span>`;
+  }
+  if (char === 'MP') {
+    return `<span class="badge-tipo badge-tipo-mp" title="Tipo: Material Permanente" style="margin-left: 4px; padding: 2px 6px; background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MP</span>`;
+  }
+  if (char === 'MC') {
+    return `<span class="badge-tipo badge-tipo-mc" title="Tipo: Material de Consumo" style="margin-left: 4px; padding: 2px 6px; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MC</span>`;
+  }
+  if (char === 'SI') {
+    return `<span class="badge-tipo badge-tipo-si" title="Tipo: Sistema" style="margin-left: 4px; padding: 2px 6px; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">SI</span>`;
+  }
+  if (char === 'TR') {
+    return `<span class="badge-tipo badge-tipo-tr" title="Tipo: Treinamento" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">TR</span>`;
+  }
+  if (char === 'OUT' || char === 'OU') {
+    return `<span class="badge-tipo badge-tipo-out" title="Tipo: Outros" style="margin-left: 4px; padding: 2px 6px; background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OUT</span>`;
+  }
+  return '';
+}
+
+window.selectSegment = selectSegment;
+window.updateSegmentControl = updateSegmentControl;
+window.getActiveBgColor = getActiveBgColor;
+window.getActiveBorderColor = getActiveBorderColor;
+window.getCategoryBadge = getCategoryBadge;
+window.getTypeBadge = getTypeBadge;
+
+
+
+
+
+
+
+
+
+
+
+
+

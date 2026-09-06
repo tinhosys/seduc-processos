@@ -5,15 +5,14 @@
 function maskCelular(v) {
   v = v.replace(/\D/g, "");
   if (v.length > 11) v = v.substring(0, 11);
-  
-  if (v.length > 10) {
-    return `(${v.substring(0, 2)}) ${v.substring(2, 3)} ${v.substring(3, 7)}-${v.substring(7)}`;
-  } else if (v.length > 6) {
-    return `(${v.substring(0, 2)}) ${v.substring(2, 6)}-${v.substring(6)}`;
+  if (v.length > 7) {
+    return "(" + v.substring(0, 2) + ") " + v.substring(2, 3) + " " + v.substring(3, 7) + "-" + v.substring(7);
+  } else if (v.length > 3) {
+    return "(" + v.substring(0, 2) + ") " + v.substring(2, 3) + " " + v.substring(3);
   } else if (v.length > 2) {
-    return `(${v.substring(0, 2)}) ${v.substring(2)}`;
+    return "(" + v.substring(0, 2) + ") " + v.substring(2);
   } else if (v.length > 0) {
-    return `(${v}`;
+    return "(" + v;
   }
   return v;
 }
@@ -21,9 +20,7 @@ function maskCelular(v) {
 const SAP_SESSION_KEY = 'sap_session_token';
 const SAP_USER_KEY    = 'sap_user_data';
 
-var API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-  ? 'http://localhost:3001'
-  : 'https://seduc-backend.onrender.com';
+var API_BASE = 'https://seduc-backend.onrender.com';
 
 
 // Retorna o usuário da sessão atual, ou null
@@ -60,15 +57,25 @@ function limparSessao() {
 
 // Aplica as restrições de UI baseadas no nível do usuário
 function aplicarPermissoes(nivel) {
+  let uData = {};
+  try {
+    uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
+    const elNome = document.getElementById('senha-usuario-nome');
+    const elWa = document.getElementById('senha-usuario-whatsapp');
+    if (elNome) elNome.textContent = 'Usuário: ' + (uData.nome || 'Desconhecido');
+    if (elWa) elWa.textContent = 'WhatsApp: ' + (uData.whatsapp || '');
+  } catch(e) {}
   const body = document.body;
 
   // Remove classes anteriores
-  body.classList.remove('role-editor', 'role-leitor', 'role-adm');
+  body.classList.remove('role-editor', 'role-leitor', 'role-adm', 'role-gerente');
 
   if (nivel === 'leitor') {
     body.classList.add('role-leitor');
-  } else if (nivel === 'adm') {
+  } else if (nivel === 'adm' || nivel === 'admin') {
     body.classList.add('role-adm');
+  } else if (nivel === 'gerente') {
+    body.classList.add('role-gerente');
   } else {
     body.classList.add('role-editor');
   }
@@ -76,15 +83,13 @@ function aplicarPermissoes(nivel) {
   // Atualiza badge de perfil na topbar
   const elRole = document.getElementById('user-role');
   if (elRole) {
-    if (nivel === 'adm') {
-      elRole.textContent = '🛡️ Administrador';
+    if (nivel === 'adm' || nivel === 'admin') {
+      elRole.textContent = '👑 Admin';
       elRole.style.color = '#3b82f6';
-    } else if (nivel === 'editor') {
-      elRole.textContent = '✏️ Editor';
-      elRole.style.color = '#10b981';
     } else {
-      elRole.textContent = '👁️ Leitor';
-      elRole.style.color = '#f59e0b';
+      let setorDisplay = uData.setor && uData.setor.trim() !== '' ? uData.setor : (nivel === 'gerente' ? 'Gerente' : (nivel === 'editor' ? 'Editor' : 'Leitor'));
+      elRole.textContent = '👤 ' + setorDisplay;
+      elRole.style.color = nivel === 'gerente' ? '#a78bfa' : (nivel === 'editor' ? '#10b981' : '#f59e0b');
     }
   }
 }
@@ -276,7 +281,7 @@ async function salvarNovaSenhaPage() {
     return;
   }
 
-  const token = getSessaoLocal()?.token;
+  const token = sessionStorage.getItem("sap_session_token") || localStorage.getItem("sap_session_token");
   if (!token) {
     msg.style.color = '#ef4444';
     msg.textContent = 'Erro de sessão. Faça login novamente.';
@@ -293,7 +298,7 @@ async function salvarNovaSenhaPage() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ senhaAtual, novaSenha })
+      body: JSON.stringify({ senhaAtual, novaSenha, whatsapp: (JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}")).whatsapp })
     });
     
     const data = await res.json();
@@ -316,4 +321,8 @@ async function salvarNovaSenhaPage() {
     msg.textContent = 'Erro de conexão.';
   }
 }
+
+
+
+
 

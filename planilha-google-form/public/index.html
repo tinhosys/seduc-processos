@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1787793970448">
+  <link rel="stylesheet" href="css/style.css?v=1.2.19">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -80,7 +80,7 @@
     }
 
 
-    /* ---- Controle Orcamentario Styles ---- */
+    /* ---- Controle Orçamentário Styles ---- */
     .orc-summary-cards { display:grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap:14px; margin-bottom:20px; }
     .orc-card { display:flex; align-items:center; gap:14px; padding:18px 20px; background:#1e293b; border-radius:12px; border:1px solid rgba(255,255,255,0.07); transition: box-shadow 0.2s; }
     .orc-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
@@ -141,6 +141,7 @@
       body.print-mode-orcamento .filters-bar { /* The filters bar has naturezas etc, hide it if we want clean report, but user said "COM OS ITENS EM TELA". We'll keep filters if they want? They probably don't want the filter dropdowns on the report. */
         display: none !important;
       }
+      body.print-mode-orcamento #orc-print-header { display: block !important; color: #000; }
       body.print-mode-orcamento #page-orcamento {
         display: block !important;
         margin: 0 !important;
@@ -218,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.23</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.19</div>
   </div>
 </div>
   
@@ -248,62 +249,166 @@
         <div class="nav-section-label">Menu Principal</div>
 
         <a href="#" class="nav-item" data-page="dashboard" onclick="navegar('dashboard'); fecharSubmenus()">
-          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span>
+          <span class="nav-icon" style="color: #38bdf8;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          </span>
           <span>Dashboard</span>
         </a>
 
-        <a href="#" class="nav-item active" data-page="orcamento" onclick="navegar('orcamento'); fecharSubmenus()">
-          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
-          <span>Orçamento</span>
+        <!-- Municípios logo abaixo do Dashboard -->
+        <a href="#" class="nav-item" data-page="contatos" onclick="navegar('contatos'); fecharSubmenus()">
+          <span class="nav-icon" style="color: #34d399;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+          </span>
+          <span>Municípios</span>
         </a>
 
-        <!-- Menu Processos -->
-        <div class="nav-group">
-          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-processos', this)">
-            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
-            <span style="flex:1">Processos</span>
+        <!-- Menu CAM (Container Principal) -->
+        <div class="nav-group action-editor">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-cam', this)">
+            <span class="nav-icon" style="color: #60a5fa;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+            </span>
+            <span style="flex:1; font-weight: 700; letter-spacing: 0.5px;">CAM</span>
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
-          <div class="nav-submenu" id="sub-processos" style="display: none; padding-left: 20px;">
-            <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
-            <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
-            <a href="#" class="nav-item sub-item" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
+          <div class="nav-submenu sub-cam-container" id="sub-cam" style="display: none;">
+            
+            <!-- 1. GDSM (Submenu) -->
+            <a href="#" class="nav-item nav-gerencia-header header-gdsm" onclick="toggleSubmenu('sub-gdsm', this)">
+              <span class="menu-badge badge-gdsm">GDSM</span>
+              <span style="flex:1;">GDSM</span>
+              <svg class="submenu-indicator" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </a>
+            <div class="nav-submenu sub-level-gdsm" id="sub-gdsm" style="display: none;">
+              <a href="#" class="nav-item nav-form-item" data-page="processos" onclick="navegar('processos')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <span>Todos os Processos</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="repetidos" onclick="navegar('repetidos')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <span>Processos Repetidos</span>
+              </a>
+            </div>
+
+            <!-- 2. GMAC (Submenu) -->
+            <a href="#" class="nav-item nav-gerencia-header header-gmac" onclick="toggleSubmenu('sub-gmac', this)">
+              <span class="menu-badge badge-gmac">GMAC</span>
+              <span style="flex:1;">GMAC</span>
+              <svg class="submenu-indicator" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </a>
+            <div class="nav-submenu sub-level-gmac" id="sub-gmac" style="display: none;">
+              <a href="#" class="nav-item nav-form-item" data-page="gmac-aee" onclick="navegar('gmac-aee'); if(typeof carregarGMAC==='function') carregarGMAC('aee');">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                <span>Equipamento - AEE</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="gmac-onibus" onclick="navegar('gmac-onibus'); if(typeof carregarGMAC==='function') carregarGMAC('onibus');">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"></rect><path d="M4 11h16"></path><path d="M8 15h.01"></path><path d="M16 15h.01"></path><path d="M6 18v2"></path><path d="M18 18v2"></path></svg>
+                <span>Doação do Ônibus Escolar</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="gmac-veiculos" onclick="navegar('gmac-veiculos'); if(typeof carregarGMAC==='function') carregarGMAC('veiculos');">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></svg>
+                <span>Doação Definitiva de Veículos</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="gmac-reordenamento" onclick="navegar('gmac-reordenamento'); if(typeof carregarGMAC==='function') carregarGMAC('reordenamento');">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path></svg>
+                <span>Municipalização e Reordenamento</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="gmac-cooperacao" onclick="navegar('gmac-cooperacao'); if(typeof carregarGMAC==='function') carregarGMAC('cooperacao');">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                <span>Termo de Cooperação</span>
+              </a>
+            </div>
+
+            <!-- 3. PROALFA (Submenu) -->
+            <a href="#" class="nav-item nav-gerencia-header header-proalfa" onclick="toggleSubmenu('sub-proalfa', this)">
+              <span class="menu-badge badge-proalfa">PROALFA</span>
+              <span style="flex:1;">PROALFA</span>
+              <svg class="submenu-indicator" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </a>
+            <div class="nav-submenu sub-level-proalfa" id="sub-proalfa" style="display: none;">
+              <a href="#" class="nav-item nav-form-item" data-page="proalfa-professores" onclick="navegarProalfa('professores')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                <span>Professores</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="proalfa-alunos" onclick="navegarProalfa('alunos')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                <span>Alunos</span>
+              </a>
+            </div>
+
           </div>
         </div>
 
-        <!-- Menu Escolas -->
+        <!-- Menu Orçamento (Container Principal) -->
+        <div class="nav-group action-report">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-orcamento', this)">
+            <span class="nav-icon" style="color: #22c55e;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </span>
+            <span style="flex:1; font-weight: 700; letter-spacing: 0.5px;">Orçamento</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu sub-orcamento-container" id="sub-orcamento" style="display: none;">
+            <a href="#" class="nav-item nav-form-item item-orcamento" data-page="orcamento" onclick="navegar('orcamento')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <span>Orçamento</span>
+            </a>
+            <a href="#" class="nav-item nav-form-item item-diarias" data-page="diarias" onclick="navegar('diarias')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span>Diárias</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Menu Escolas & Mapas (Container Principal) -->
         <div class="nav-group">
           <a href="#" class="nav-item" onclick="toggleSubmenu('sub-escolas', this)">
-            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></span>
-            <span style="flex:1">Escolas & Mapas</span>
+            <span class="nav-icon" style="color: #fb923c;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            </span>
+            <span style="flex:1; font-weight: 700; letter-spacing: 0.5px;">Escolas & Mapas</span>
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
-          <div class="nav-submenu" id="sub-escolas" style="display: none; padding-left: 20px;">
-            <a href="#" class="nav-item sub-item" data-page="escolas" onclick="navegar('escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Lista de Escolas</span></a>
-            <a href="#" class="nav-item sub-item" data-page="mapa-escolas" onclick="navegar('mapa-escolas')" style="font-size: 13px; padding: 10px 16px;"><span>Mapa de Escolas</span></a>
-            <a href="#" class="nav-item sub-item" data-page="contatos" onclick="navegar('contatos')" style="font-size: 13px; padding: 10px 16px;"><span>Municípios</span></a>
+          <div class="nav-submenu sub-escolas-container" id="sub-escolas" style="display: none;">
+            <a href="#" class="nav-item nav-form-item item-escolas" data-page="escolas" onclick="navegar('escolas')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"></path><path d="M5 21V10l7-5 7 5v11"></path><path d="M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path><line x1="12" y1="2" x2="12" y2="5"></line></svg>
+              <span>Lista de Escolas</span>
+            </a>
+            <a href="#" class="nav-item nav-form-item item-mapa-escolas" data-page="mapa-escolas" onclick="navegar('mapa-escolas')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
+              <span>Mapa de Escolas</span>
+            </a>
           </div>
         </div>
 
-        <!-- Menu Configurações -->
+        <!-- Menu Configurações (Container Principal) -->
         <div class="nav-group">
           <a href="#" class="nav-item" onclick="toggleSubmenu('sub-config', this)">
-            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></span>
-            <span style="flex:1">Configurações</span>
+            <span class="nav-icon" style="color: #94a3b8;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </span>
+            <span style="flex:1; font-weight: 700; letter-spacing: 0.5px;">Configurações</span>
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
-          <div class="nav-submenu" id="sub-config" style="display: none; padding-left: 20px;">
-            <a href="#" class="nav-item sub-item" data-page="acessos" onclick="navegar('acessos')" style="font-size: 13px; padding: 10px 16px;"><span>Gerenciar Acessos</span></a>
-            <a href="#" class="nav-item sub-item" data-page="senha" onclick="navegar('senha')" style="font-size: 13px; padding: 10px 16px;"><span>Trocar Senha</span></a>
+          <div class="nav-submenu sub-config-container" id="sub-config" style="display: none;">
+            <a href="#" class="nav-item nav-form-item action-adm item-acessos" data-page="acessos" onclick="navegar('acessos')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><circle cx="18" cy="8" r="2.5"></circle><path d="M19.8 9.8L22 12"></path><line x1="21" y1="11" x2="22" y2="10"></line></svg>
+              <span>Gerenciar Acessos</span>
+            </a>
+            <a href="#" class="nav-item nav-form-item item-senha" data-page="senha" onclick="navegar('senha')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="11" width="12" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path><polyline points="9 16 12 13 15 16"></polyline><polyline points="15 18 12 21 9 18"></polyline></svg>
+              <span>Trocar Senha</span>
+            </a>
           </div>
         </div>
 
       </nav>
 
 
-      <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.1.23</div>
-        <span id="sidebar-total-count" style="color:var(--blue);font-weight:600"></span>
+<div class="sidebar-footer">
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.19</div>
+        <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
 
@@ -335,7 +440,289 @@
         </div>
       </header>
 
-      <!-- ============= PAGE: DASHBOARD ============= -->
+            <!-- INICIO GMAC PAGES -->
+      <!-- GMAC: EQUIPAMENTO - AEE -->
+      <section class="page" id="page-gmac-aee">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🎒</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Equipamento - AEE</h2>
+                  <span id="badge-total-aee" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Doação de equipamento e mobiliário - AEE</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
+            <button type="button" onclick="carregarGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('aee')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" id="filtro-busca-aee" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-aee" onchange="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-aee" onchange="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('aee')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
+        </div>
+
+        <div id="tabela-container-aee" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- GMAC: DOAÇÃO DO ÔNIBUS ESCOLAR -->
+      <section class="page" id="page-gmac-onibus">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🚌</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação do Ônibus Escolar</h2>
+                  <span id="badge-total-onibus" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Controle de doação e regularização patrimonial de frotas escolares</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
+            <button type="button" onclick="carregarGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('onibus')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" id="filtro-busca-onibus" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-onibus" onchange="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-onibus" onchange="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('onibus')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
+        </div>
+
+        <div id="tabela-container-onibus" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- GMAC: DOAÇÃO DEFINITIVA DE VEÍCULOS -->
+      <section class="page" id="page-gmac-veiculos">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🚗</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação Definitiva de Veículos</h2>
+                  <span id="badge-total-veiculos" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Acompanhamento processual de doação definitiva de veículos</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
+            <button type="button" onclick="carregarGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('veiculos')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" id="filtro-busca-veiculos" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-veiculos" onchange="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-veiculos" onchange="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
+        </div>
+
+        <div id="tabela-container-veiculos" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- GMAC: MUNICIPALIZAÇÃO E REORDENAMENTO -->
+      <section class="page" id="page-gmac-reordenamento">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🏛️</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Municipalização e Reordenamento</h2>
+                  <span id="badge-total-reordenamento" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Controle de processos de municipalização e reordenamento escolar</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
+            <button type="button" onclick="carregarGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('reordenamento')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" id="filtro-busca-reordenamento" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-reordenamento" onchange="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-reordenamento" onchange="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
+        </div>
+
+        <div id="tabela-container-reordenamento" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- GMAC: TERMO DE COOPERAÇÃO -->
+      <section class="page" id="page-gmac-cooperacao">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🤝</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Termo de Cooperação</h2>
+                  <span id="badge-total-cooperacao" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Gestão de termos de cooperação técnica e administrativa com municípios</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
+            <button type="button" onclick="carregarGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('cooperacao')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
+        </div>
+
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" id="filtro-busca-cooperacao" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-cooperacao" onchange="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-cooperacao" onchange="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
+        </div>
+
+        <div id="tabela-container-cooperacao" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+      <!-- FIM GMAC PAGES -->
+
+<!-- ============= PAGE: DASHBOARD ============= -->
       <section class="page active" id="page-dashboard">
 
         <div class="stats-grid">
@@ -510,6 +897,10 @@
         <div style="display:flex; align-items:center; justify-content:center; min-height: 80vh;">
           <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 420px; backdrop-filter: blur(20px); box-shadow: 0 25px 60px rgba(0,0,0,0.5); text-align: center;">
             <h2 style="color:#f0f4ff; font-size:18px; font-weight:800; margin-bottom:40px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">Trocar Senha</h2>
+            <div id="info-usuario-senha" style="background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; padding: 12px; margin-bottom: 24px; text-align: center; color: #93c5fd;">
+              <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;" id="senha-usuario-nome"></div>
+              <div style="font-size: 12px; opacity: 0.8;" id="senha-usuario-whatsapp"></div>
+            </div>
             
             <div style="text-align:left; margin-bottom:16px;">
               <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">SENHA ATUAL</label>
@@ -544,9 +935,14 @@
             <span id="valor-filtrado" style="display:flex; justify-content:space-between; align-items:center; width:250px; padding:10px 16px; border-radius:8px; font-size:17px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); font-family:monospace; letter-spacing:0.5px;">
               <span>R$</span> <span>Carregando...</span>
             </span>
-            <span id="qtd-registros-filtrados" style="display:flex; align-items:center; justify-content:space-between; width:250px; padding:10px 16px; border-radius:8px; font-size:17px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace;">
-              0 Processos
-            </span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span id="qtd-registros-filtrados" style="display:flex; align-items:center; justify-content:space-between; width:250px; padding:10px 16px; border-radius:8px; font-size:17px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace;">
+                0 Processos
+              </span>
+              <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:40px; height:40px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
+              </button>
+            </div>
           </div>
 
           <!-- Right Action Buttons -->
@@ -554,34 +950,31 @@
             
             <!-- Row 1: Reports -->
             <div class="header-buttons" style="display:flex; align-items:stretch; justify-content:flex-end; gap:10px; flex-wrap:wrap; width:100%;">
-              <button class="btn action-adm" onclick="imprimirAnalise()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
+              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">ANÁLISE</span>
               </button>
-              <button class="btn action-adm" onclick="imprimirDetalhado()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Relatório Detalhado">
+              <button class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Relatório Detalhado">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> <span class="btn-text">DETALHADO</span>
               </button>
-              <button class="btn action-adm" onclick="imprimirPadrao()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Lista Atual">
+              <button class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Lista Atual">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÃO</span>
               </button>
-              <button class="btn action-adm" onclick="imprimirPadraoSelecionado()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Selecionados">
+              <button class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Selecionados">
                 <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><polyline points='6 9 6 2 18 2 18 9'/><path d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/><rect x='6' y='14' width='12' height='8'/></svg> <span class="btn-text">PADRÃO SEL.</span>
               </button>
             </div>
 
             <!-- Row 2: Controls -->
             <div style="display:flex; align-items:stretch; justify-content:flex-end; gap:10px; flex-wrap:wrap; width:100%;">
-              <button class="btn action-adm" onclick="exportarExcel()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel">
+              <button class="btn action-report" onclick="exportarExcel()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> <span class="btn-text">EXCEL</span>
               </button>
-              <button type="button" id="btn-toggle-filtros" onclick="toggleFiltros()" class="btn btn-ghost btn-sm" style="flex:1; max-width:180px; border:none; background:#475569; color:white; padding:10px 12px; height:40px; border-radius:8px; font-weight:700; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Mostrar/Ocultar Filtros">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                <span class="btn-text">OCULTAR FILTROS</span>
-              </button>
-              <button class="action-editor action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="flex:1; max-width:180px; background:#10b981; border:none; color:white; padding:10px 12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar Planilha">
+              
+              <button class="btn action-report" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="flex:1; max-width:180px; background:#10b981; border:none; color:white; padding:10px 12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar Planilha">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                 PLANILHA
               </button>
-              <button id="btn-limpar-filtros" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" style="flex:1; max-width:180px; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 12px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;">
+              <button id="btn-limpar-filtros" class="btn action-report" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" style="flex:1; max-width:180px; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 12px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 LIMPAR PARÂMETROS
               </button>
@@ -647,6 +1040,7 @@
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
+              <input type="text" id="filtro-digito" placeholder="DÍGITO" maxlength="3" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 3);" style="flex:1; min-width:120px; max-width:150px; padding:10px 12px; background:transparent; border:1px solid rgba(99,102,241,0.5); border-radius:8px; color:#818cf8; font-size:13px; font-weight:600; outline:none;" autocomplete="off">
           </div>
 
           <!-- LINHA 4 -->
@@ -660,6 +1054,7 @@
             <select id="filtro-agrupamento" multiple style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
               <option value="">AGRUPAMENTO</option>
             </select>
+            
             <select id="filtro-ano" multiple style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
               <option value="">ANO</option>
             </select>
@@ -754,8 +1149,8 @@
           </div>
 
           <button type="button" id="btn-toggle-form-processo" onclick="toggleFormProcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 8px 12px; height: 38px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
-            📌 <span class="btn-text">Ocultar Formulário</span>
-          </button>
+              &#128065; <span class="btn-text">Ocultar Formulário</span>
+            </button>
         </div>
 
         <div class="card" id="card-form-processo">
@@ -768,7 +1163,7 @@
                 <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">🎯 OBJETIVO</button>
               </div>
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
-                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">📊 Gerar Relatório</button>
+                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">📊 Gerar Relatório</button>
                 <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">Cancelar</button>
                 <button type="submit" class="btn btn-success" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">💾 Salvar Processo</button>
               </div>
@@ -864,6 +1259,11 @@
                 </div>
               </div>
 
+              <div class="form-group">
+                <label for="form-digito">Dígito</label>
+                <input type="text" id="form-digito" placeholder="000" maxlength="3" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 3);" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
+              </div>
+
               <div class="form-group full">
                 <label for="form-interessado">Interessado / Escola *</label>
                 <input type="text" id="form-interessado" placeholder="Nome da escola ou entidade" required
@@ -889,12 +1289,14 @@
 
               <div class="form-group">
                 <label for="form-status">Status</label>
-                <select id="form-status"></select>
+                <input type="text" id="form-status" list="list-status" autocomplete="off" placeholder="Selecione ou digite..." style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 13px;">
+                <datalist id="list-status"></datalist>
               </div>
 
               <div class="form-group">
                 <label for="form-localizacao">Localização</label>
-                <select id="form-localizacao"></select>
+                <input type="text" id="form-localizacao" list="list-localizacao" autocomplete="off" placeholder="Selecione ou digite..." style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 13px;">
+                <datalist id="list-localizacao"></datalist>
               </div>
 
 
@@ -1130,44 +1532,51 @@
           <h3 id="cadastro-acesso-title" style="font-size: 14px; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
             <span style="display: flex; align-items: center; gap: 8px;">👤 Registro de Acesso</span>
             <button type="button" id="btn-toggle-form-acesso" onclick="toggleFormAcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 4px 10px; font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: normal; cursor: pointer;">
-              📌 <span class="btn-text">Ocultar</span>
+              &#128065; <span class="btn-text">Ocultar</span>
             </button>
           </h3>
-          <form id="form-acesso" onsubmit="salvarAcessoForm(event)" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: flex-end;">
+          <form id="form-acesso" onsubmit="salvarAcessoForm(event)" style="display: none; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; align-items: flex-end; transition: all 0.3s ease; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05);">
             <input type="hidden" id="acesso-row">
             
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nome" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nome Completo</label>
-              <input type="text" id="acesso-nome" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none;" placeholder="Digite o primeiro nome ou nome popular" disabled>
+              <input type="text" id="acesso-nome" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" placeholder="Digite o primeiro nome ou nome popular" disabled>
             </div>
 
             <div class="form-group" style="margin: 0;">
               <label for="acesso-whatsapp" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">WhatsApp</label>
-              <input type="text" id="acesso-whatsapp" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)" disabled>
+              <input type="text" id="acesso-whatsapp" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" placeholder="Ex: (69) 9 9999-9999" oninput="this.value = maskCelular(this.value)" disabled>
             </div>
             
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nivel" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nível de Acesso</label>
-              <select id="acesso-nivel" required style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:var(--bg-secondary); color:var(--text-primary); outline:none; height: 40px; box-sizing: border-box;" disabled>
+              <select id="acesso-nivel" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" disabled>
                 <option value="leitor">👁️ LEITOR</option>
-                <option value="editor">📝 EDITOR</option>
+                <option value="editor">✏️ EDITOR</option>
+                  <option value="gerente">💼 GERENTE</option>
                 <option value="adm">🛡️ ADMIN</option>
               </select>
             </div>
 
-            <div class="form-group" style="margin: 0;">
+            
+              <div class="form-group" style="margin: 0;">
+                <label for="acesso-setor" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Setor</label>
+                <input type="text" id="acesso-setor" style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" placeholder="Ex: GDSM" disabled>
+              </div>
+
+<div class="form-group" style="margin: 0;">
               <label for="acesso-senha" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Senha (4 números)</label>
-              <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:14px; background:#475569; color:white; outline:none; text-align: center; letter-spacing: 2px; height: 40px; box-sizing: border-box;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')" disabled>
+              <input type="password" id="acesso-senha" required maxlength="4" pattern="[0-9]*" inputmode="numeric" style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s; text-align:center; letter-spacing:2px;" placeholder="Ex: 1234" oninput="this.value = this.value.replace(/\D/g, '')" disabled>
             </div>
             
             <div class="form-group" style="margin: 0;">
               <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary); visibility: hidden;">Ações</label>
               <div class="form-actions" style="margin: 0; display:flex; gap:8px; height: 40px; align-items: center; min-width: 250px;">
-                <button type="button" class="btn" id="btn-novo-acesso" style="background:#f59e0b; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;" onclick="novoAcessoForm()">
+                <button type="button" class="btn" id="btn-novo-acesso" style="background:#f59e0b; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height:40px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; gap:6px; margin:0;" onclick="novoAcessoForm()">
                   <span>➕</span> Novo
                 </button>
-                <button type="submit" class="btn btn-primary" id="btn-salvar-acesso" style="flex: 1; height: 40px; background:#10b981; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer;" disabled>Salvar</button>
-                <button type="button" id="btn-cancelar-edicao" class="btn btn-ghost" onclick="cancelarEdicaoAcesso()" style="height: 40px; background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:0 12px; border-radius:6px; font-weight:600; color:var(--text-primary); cursor:pointer; display:none; align-items:center;">Cancelar</button>
+                <button type="submit" class="btn btn-primary" id="btn-salvar-acesso" style="flex:1; background:#10b981; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height:40px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; margin:0;" disabled>Salvar</button>
+                <button type="button" id="btn-cancelar-edicao" class="btn btn-ghost" onclick="cancelarEdicaoAcesso()" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:0 12px; border-radius:6px; font-weight:600; color:var(--text-primary); cursor:pointer; height:40px; box-sizing:border-box; align-items:center; justify-content:center; display:none; margin:0;">Cancelar</button>
               </div>
             </div>
           </form>
@@ -1179,7 +1588,8 @@
               <tr style="border-bottom:1px solid var(--border); background:var(--bg-secondary);">
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 18%;">Nome</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 16%;">WhatsApp</th>
-                <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 14%;">Nível de Acesso</th>
+                <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Nível de Acesso</th>
+                  <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Setor</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Status</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 10%;">Senha</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 8%;">Acessos</th>
@@ -1192,6 +1602,31 @@
             </tbody>
           </table>
         </div>
+
+        <!-- CARD PARA PADRONIZAR DADOS DA PLANILHA (ADMIN ONLY) -->
+        <div class="card action-adm" id="card-padronizacao-dados" style="margin-top: 24px; padding: 20px; border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.02);">
+            <h3 style="font-size: 14px; margin-bottom: 12px; color: #34d399; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
+              ✅ Corretor Ortográfico & Padronizador
+            </h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
+              Esta ferramenta realiza uma varredura completa em todo o sistema (<strong>Status, Localização, Município, Objeto, Interessado, Categoria, Tipo, Prefixo e Agrupamento</strong>). Remove espaços extras, corrige letras minúsculas e padroniza todas as células da planilha em lote com acompanhamento interativo em tempo real. Nenhuma alteração é feita sem sua autorização.
+            </p>
+            <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+              <button type="button" class="btn" id="btn-verificar-padronizacao" onclick="if(typeof window.verificarInconsistenciasPlanilha==='function'){window.verificarInconsistenciasPlanilha();}else if(typeof verificarInconsistenciasPlanilha==='function'){verificarInconsistenciasPlanilha();}" style="background:#3b82f6; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;">
+                🔍 Buscar Divergências em Todo o Sistema
+              </button>
+              <button type="button" class="btn" id="btn-executar-padronizacao" onclick="if(typeof window.executarPadronizacaoPlanilha==='function'){window.executarPadronizacaoPlanilha();}else if(typeof executarPadronizacaoPlanilha==='function'){executarPadronizacaoPlanilha();}" style="background:#10b981; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px; display: none;">
+                ✓ Autorizar e Corrigir Planilhas
+              </button>
+              <button type="button" class="btn" id="btn-cancelar-padronizacao" onclick="if(typeof window.cancelarPadronizacao==='function'){window.cancelarPadronizacao();}else if(typeof cancelarPadronizacao==='function'){cancelarPadronizacao();}" style="background:#ef4444; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; align-items: center; gap: 6px; display: none;">
+                ? Cancelar
+              </button>
+            </div>
+            <div id="status-padronizacao-container" style="margin-top: 16px; font-size: 13px; display: none;">
+              <div style="font-weight: 600; margin-bottom: 8px;" id="label-status-padronizacao"></div>
+              <div id="log-status-padronizacao" style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #cbd5e1; text-align: left;"></div>
+            </div>
+          </div>
 
       </section>
 
@@ -1245,7 +1680,7 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Acessar Planilha
             </a>
-            <button class="btn action-adm" onclick="if(typeof imprimirRelatorioEscolas==='function') imprimirRelatorioEscolas()" style="padding:10px 16px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Relatório de Escolas">
+            <button class="btn action-report" onclick="if(typeof window.imprimirRelatorioEscolas==='function'){window.imprimirRelatorioEscolas();}else if(typeof imprimirRelatorioEscolas==='function'){imprimirRelatorioEscolas();}" style="padding:10px 16px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Relatório de Escolas">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÓRIO</span>
             </button>
           </div>
@@ -2400,14 +2835,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1787793970448"></script>
-  <script src="js/app.js?v=1787793970448"></script>
-  <script src="js/auth-sap.js?v=1787588267609"></script>
-  <script src="js/escolas.js?v=1787794797026" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.19"></script>
+  <script src="js/app.js?v=1.2.19"></script>
+  <script src="js/auth-sap.js?v=1.2.19"></script>
+  <script src="js/escolas.js?v=1.2.19" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-<script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1787794797026"></script>
-  <script src="js/contatos.js"></script>
+  <script src="js/mapa.js?v=1.2.19"></script>
+  <script src="js/contatos.js?v=1.2.19"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -2550,12 +2984,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1787588267609"></script>
+  <script src="js/multi-select.js?v=1.2.19"></script>
   <script>
   </script>
-  <script src="js/orcamento.js?v=1787588267609"></script>
-  <script src="js/print-proalfa.js?v=1787630981767"></script>
-  <script src="js/proalfa.js?v=1787630656751"></script>
+  <script src="js/diarias.js?v=1.2.19"></script>
+  <script src="js/gmac.js?v=1.2.19"></script>
+  <script src="js/orcamento.js?v=1.2.19"></script>
+  <script src="js/print-proalfa.js?v=1.2.19"></script>
+  <script src="js/proalfa.js?v=1.2.19"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
@@ -2563,16 +2999,11 @@
 
     <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
       <div>
-        <h2 style="margin:0 0 4px; font-size:20px; font-weight:800;">Controle Orcamentario</h2>
-        <p style="margin:0; font-size:13px; color:#64748b;">Execucao de Dotacao Orcamentaria - CAM SEDUC-RO</p>
+        <h2 style="margin:0 0 4px; font-size:20px; font-weight:800;">Controle Orçamentário</h2>
+        <p style="margin:0; font-size:13px; color:#64748b;">Execução de Dotação Orçamentária - CAM SEDUC-RO</p>
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         
-        <button onclick="if(typeof imprimirOrcamento==='function') imprimirOrcamento(); else window.print();" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#4f46e5'" onmouseout="this.style.background='#6366f1'">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          RELATÓRIO
-        </button>
-
         <button onclick="exportarOrcamentoExcel()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#16a34a; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
           EXPORTAR CSV
@@ -2584,7 +3015,44 @@
       </div>
     </div>
 
-    <!-- Cards -->
+    
+    <!-- Guias Orçamento -->
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; margin-bottom:20px; gap:15px;">
+        
+        <ul class="tabs" style="list-style:none; padding:0; margin:0; display:flex; flex-wrap:wrap; gap:8px;">
+            <li class="tab-link active" onclick="mudarGuiaOrcamento('Consolidado', '325984433', this)" style="padding:10px 15px; background:#3b82f6; border-radius:8px; cursor:pointer; color:white; font-size:13px; font-weight:bold; border:1px solid #3b82f6;">Consolidado</li>
+            <li class="tab-link" onclick="mudarGuiaOrcamento('Despesas Realizadas', '807660383', this)" style="padding:10px 15px; background:#1e293b; border-radius:8px; cursor:pointer; color:#cbd5e1; font-size:13px; font-weight:bold; border:1px solid #334155;">Despesas Realizadas</li>
+          </ul>
+        
+        <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; background:#0f172a; padding:6px; border-radius:10px; border:1px solid #334155;">
+          <span style="font-size:10px; color:#64748b; text-transform:uppercase; font-weight:bold; margin-right:5px; margin-left:5px;">Modelos de Relatórios (PDF/Impressão):</span>
+          <button onclick="gerarRelatorioOrcamento(1)" title="Resumo Geral por Programa" class="btn-orc-report">R1</button>
+          <button onclick="gerarRelatorioOrcamento(2)" title="Listagem Detalhada" class="btn-orc-report">R2</button>
+          <button onclick="gerarRelatorioOrcamento(3)" title="Agrupado por Programa" class="btn-orc-report">R3</button>
+          <button onclick="gerarRelatorioOrcamento(4)" title="Agrupado por Fonte" class="btn-orc-report">R4</button>
+          <button onclick="gerarRelatorioOrcamento(5)" title="Agrupado por Natureza" class="btn-orc-report">R5</button>
+          <button onclick="gerarRelatorioOrcamento(6)" title="Relatório de Saldos Críticos" class="btn-orc-report">R6</button>
+          <button onclick="gerarRelatorioOrcamento(7)" title="Impressão Visual Rápida" class="btn-orc-report">R7</button>
+          <button onclick="gerarRelatorioOrcamento(8)" title="Relatório Completo (Gráficos e Detalhes)" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:white; border:none; padding:8px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            R8 (Detalhado com Gráficos)
+          </button>
+        </div>
+      </div>
+      
+      <style>
+      .btn-orc-report {
+        background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:6px 10px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; transition:all 0.2s;
+      }
+      .btn-orc-report:hover {
+        background:#3b82f6; color:white; border-color:#3b82f6;
+      }
+      </style>
+    
+    
+<!-- ================== VIEW CONSOLIDADO ================== -->
+<div id="orc-view-consolidado">
+<!-- Cards -->
     <div class="orc-summary-cards" id="orc-cards"></div>
 
     <!-- Filtros -->
@@ -2653,6 +3121,281 @@
       </div>
     </div>
 
+  </div>
+
+<!-- ================== VIEW DESPESAS REALIZADAS ================== -->
+<div id="orc-view-despesas" style="display: none;">
+  <!-- Filtros Despesas -->
+  <div class="orc-filters-bar" style="margin-bottom: 20px; display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; padding: 12px;">
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:100px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">PA</label>
+      <select id="orc-desp-filtro-pa" style="padding:7px 10px; font-size:12px;"><option value="">Todos</option></select>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:100px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Setor</label>
+      <select id="orc-desp-filtro-setor" style="padding:7px 10px; font-size:12px;"><option value="">Todos</option></select>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:100px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Tipo</label>
+      <select id="orc-desp-filtro-tipo" style="padding:7px 10px; font-size:12px;"><option value="">Todos</option></select>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Natureza</label>
+      <select id="orc-desp-filtro-natureza" style="padding:7px 10px; font-size:12px;"><option value="">Todas</option></select>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:4px;flex:2;min-width:140px;">
+      <label style="font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#64748b;font-weight:700;">Busca</label>
+      <input type="text" id="orc-desp-filtro-busca" placeholder="Proc. ou Desc..." style="padding:7px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; font-weight:600; outline:none;" onkeyup="if(typeof renderDespesasRealizadas === 'function') renderDespesasRealizadas()">
+    </div>
+    <button onclick="if(typeof renderDespesasRealizadas === 'function') { document.getElementById('orc-desp-filtro-pa').value=''; document.getElementById('orc-desp-filtro-setor').value=''; document.getElementById('orc-desp-filtro-tipo').value=''; document.getElementById('orc-desp-filtro-natureza').value=''; document.getElementById('orc-desp-filtro-busca').value=''; renderDespesasRealizadas(); }" style="height:34px; align-self:flex-end; padding:0 12px; border-radius:8px; background:rgba(250,204,21,0.15); color:#facc15; border:1px solid #facc15; font-weight:700; font-size:11px; cursor:pointer; display:flex; align-items:center; gap:6px; text-transform:uppercase; transition:background 0.2s; white-space:nowrap;" onmouseover="this.style.background='rgba(250,204,21,0.3)'" onmouseout="this.style.background='rgba(250,204,21,0.15)'">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      LIMPAR
+    </button>
+  </div>
+
+  <div class="table-wrap" style="overflow-x:auto; overflow-y:auto; max-height:calc(100vh - 250px); border-radius:12px; border:1px solid rgba(255,255,255,0.07);">
+    <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+      <thead>
+        <tr>
+          <th style="padding:14px 16px; font-size:11px; text-transform:uppercase; color:#64748b; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:10; white-space:nowrap; width: 8%;">Data</th>
+          <th style="padding:14px 16px; font-size:11px; text-transform:uppercase; color:#64748b; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:10; white-space:nowrap; width: 14%;">Processo SEI</th>
+          <th style="padding:14px 16px; font-size:11px; text-transform:uppercase; color:#64748b; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:10; white-space:nowrap; width: 5%;">PA</th>
+          <th style="padding:14px 16px; font-size:11px; text-transform:uppercase; color:#64748b; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:10; white-space:nowrap; width: 6%;">Setor</th>
+          <th style="padding:14px 16px; font-size:11px; text-transform:uppercase; color:#64748b; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:10; white-space:nowrap; width: 24%;">Natureza</th>
+          <th style="padding:14px 16px; font-size:11px; text-transform:uppercase; color:#64748b; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:10; white-space:nowrap; width: 10%;">Tipo</th>
+          <th style="padding:14px 16px; font-size:11px; text-transform:uppercase; color:#64748b; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:10; width: 23%;">Descrição</th>
+          <th style="padding:14px 16px; font-size:11px; text-transform:uppercase; color:#64748b; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.05); position:sticky; top:0; z-index:10; text-align:right; white-space:nowrap; width: 10%;">Valor (R$)</th>
+        </tr>
+      </thead>
+      <tbody id="orc-desp-table-body">
+      </tbody>
+    </table>
+  </div>
+</div>
+</section>
+<!-- ============= PAGE: DIARIAS ============= -->
+  <section class="page" id="page-diarias">
+    <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+      <div>
+        <h2 style="margin:0 0 4px; font-size:20px; font-weight:800;">Controle de Diárias</h2>
+        <p style="margin:0; font-size:13px; color:#64748b;">Acompanhamento de Diárias</p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <button onclick="gerarRelatorioDiarias()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;">
+          IMPRIMIR RELATÓRIO
+        </button>
+        <button onclick="window.open('https://docs.google.com/spreadsheets/d/1WunsuLAAIUAAo1q65qmSVMIH0qLJu_TjDsb_u9LO304/edit?gid=807660383','_blank')" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#10b981; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;">
+          PLANILHA DE DIÁRIAS
+        </button>
+      </div>
+    </div>
+    
+    
+    <!-- Fichario Tabs -->
+    <ul class="tabs" style="list-style:none; padding:0; margin:0 0 20px 0; display:flex; flex-wrap:wrap; gap:8px;">
+      <li class="tab-link active" onclick="mudarAbaDiarias('estadual', this)" style="padding:10px 15px; background:#1e293b; border-radius:8px; cursor:pointer; color:#cbd5e1; font-size:13px; border:1px solid #334155;">Execução Orçamentária Estadual</li>
+      <li class="tab-link" onclick="mudarAbaDiarias('federal', this)" style="padding:10px 15px; background:#1e293b; border-radius:8px; cursor:pointer; color:#cbd5e1; font-size:13px; border:1px solid #334155;">Recurso Federal</li>
+      
+      <li class="tab-link" onclick="mudarAbaDiarias('consolidado', this)" style="padding:10px 15px; background:#1e293b; border-radius:8px; cursor:pointer; color:#cbd5e1; font-size:13px; border:1px solid #334155;">Consolidado</li>
+      <li class="tab-link" onclick="mudarAbaDiarias('gerar', this)" style="padding:10px 15px; background:#3b82f6; border-radius:8px; cursor:pointer; color:white; font-size:13px; border:none; font-weight:bold;">+ Gerar Nova Diária</li>
+    </ul>
+
+    
+    <!-- ABA CONSOLIDADO -->
+    <div id="diarias-tab-consolidado" style="display:none;"></div>
+  
+<div id="diarias-tab-gerar" class="diarias-content-tab" style="display:none; margin-bottom:20px;">
+      <div style="background:#1e293b; border-radius:12px; padding:20px; border:1px solid #334155;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px;">
+            <div>
+              <h3 style="margin:0 0 4px 0; color:#e2e8f0; font-size:18px; display:flex; align-items:center; gap:8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                Regra de Fluxo: Emitir Nova Diária
+              </h3>
+              <p style="margin:0; font-size:12px; color:#94a3b8;">Selecione o empenho orçamentário válido e preencha os dados do beneficiário.</p>
+            </div>
+            <button type="button" class="btn btn-ghost" onclick="if(typeof limparFormNovaDiaria === 'function') limparFormNovaDiaria();" style="font-size:12px; padding:6px 12px; display:flex; align-items:center; gap:6px; border:1px solid rgba(255,255,255,0.1); color:#cbd5e1; background:rgba(255,255,255,0.05); border-radius:6px; cursor:pointer;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Limpar Formulário
+            </button>
+          </div>
+        
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:20px; background:rgba(0,0,0,0.2); padding:15px; border-radius:8px;">
+          <div>
+            <label style="font-size:11px; color:#94a3b8; text-transform:uppercase; font-weight:bold;">Programa de Ação (PA)</label>
+            <select id="diaria-pa" onchange="verificarSaldoDiaria()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;">
+              <option value="">Selecione o PA...</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px; color:#94a3b8; text-transform:uppercase; font-weight:bold;">Fonte de Recurso</label>
+            <select id="diaria-fonte" onchange="verificarSaldoDiaria()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;">
+              <option value="">Selecione a Fonte...</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:11px; color:#94a3b8; text-transform:uppercase; font-weight:bold;">Natureza (ND)</label>
+            <select id="diaria-nd" onchange="verificarSaldoDiaria()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;">
+              <option value="339014">339014 - Diárias Pessoal Civil</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="diaria-saldo-aviso" style="margin-bottom:20px; padding:12px; border-radius:6px; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); color:#60a5fa; font-size:13px; display:flex; align-items:center; gap:8px;">
+           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+           Selecione os parâmetros acima para verificar a disponibilidade de saldo.
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:15px; margin-bottom:15px;">
+            <div>
+              <label style="font-size:11px; color:#94a3b8; text-transform:uppercase;">Nome Completo do Beneficiário</label>
+              <input type="text" id="diaria-nome" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;" placeholder="Ex: João da Silva">
+            </div>
+            <div>
+              <label style="font-size:11px; color:#94a3b8; text-transform:uppercase;">CPF</label>
+              <input type="text" id="diaria-cpf" maxlength="14" oninput="let v=this.value.replace(/\D/g,'');if(v.length>3)v=v.replace(/^(\d{3})(\d)/,'$1.$2');if(v.length>6)v=v.replace(/^(\d{3})\.(\d{3})(\d)/,'$1.$2.$3');if(v.length>9)v=v.replace(/^(\d{3})\.(\d{3})\.(\d{3})(\d{1,2})$/,'$1.$2.$3-$4');this.value=v;" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;" placeholder="000.000.000-00">
+            </div>
+            <div>
+              <label style="font-size:11px; color:#94a3b8; text-transform:uppercase;">Cidade de Destino</label>
+              <select id="diaria-cidade" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;">
+                <option value="">Selecione a cidade...</option>
+                <option value="Alta Floresta D'Oeste">Alta Floresta D'Oeste</option><option value="Alto Alegre dos Parecis">Alto Alegre dos Parecis</option><option value="Alto Paraíso">Alto Paraíso</option><option value="Alvorada D'Oeste">Alvorada D'Oeste</option><option value="Ariquemes">Ariquemes</option><option value="Buritis">Buritis</option><option value="Cabixi">Cabixi</option><option value="Cacaulândia">Cacaulândia</option><option value="Cacoal">Cacoal</option><option value="Campo Novo de Rondônia">Campo Novo de Rondônia</option><option value="Candeias do Jamari">Candeias do Jamari</option><option value="Castanheiras">Castanheiras</option><option value="Cerejeiras">Cerejeiras</option><option value="Chupinguaia">Chupinguaia</option><option value="Colorado do Oeste">Colorado do Oeste</option><option value="Corumbiara">Corumbiara</option><option value="Costa Marques">Costa Marques</option><option value="Cujubim">Cujubim</option><option value="Espigão D'Oeste">Espigão D'Oeste</option><option value="Governador Jorge Teixeira">Governador Jorge Teixeira</option><option value="Guajará-Mirim">Guajará-Mirim</option><option value="Itapuã do Oeste">Itapuã do Oeste</option><option value="Jaru">Jaru</option><option value="Ji-Paraná">Ji-Paraná</option><option value="Machadinho D'Oeste">Machadinho D'Oeste</option><option value="Ministro Andreazza">Ministro Andreazza</option><option value="Mirante da Serra">Mirante da Serra</option><option value="Monte Negro">Monte Negro</option><option value="Nova Brasilândia D'Oeste">Nova Brasilândia D'Oeste</option><option value="Nova Mamoré">Nova Mamoré</option><option value="Nova União">Nova União</option><option value="Novo Horizonte do Oeste">Novo Horizonte do Oeste</option><option value="Ouro Preto do Oeste">Ouro Preto do Oeste</option><option value="Parecis">Parecis</option><option value="Pimenta Bueno">Pimenta Bueno</option><option value="Pimenteiras do Oeste">Pimenteiras do Oeste</option><option value="Porto Velho">Porto Velho</option><option value="Presidente Médici">Presidente Médici</option><option value="Primavera de Rondônia">Primavera de Rondônia</option><option value="Rio Crespo">Rio Crespo</option><option value="Rolim de Moura">Rolim de Moura</option><option value="Santa Luzia D'Oeste">Santa Luzia D'Oeste</option><option value="São Felipe D'Oeste">São Felipe D'Oeste</option><option value="São Francisco do Guaporé">São Francisco do Guaporé</option><option value="São Miguel do Guaporé">São Miguel do Guaporé</option><option value="Seringueiras">Seringueiras</option><option value="Teixeirópolis">Teixeirópolis</option><option value="Theobroma">Theobroma</option><option value="Urupá">Urupá</option><option value="Vale do Anari">Vale do Anari</option><option value="Vale do Paraíso">Vale do Paraíso</option><option value="Vilhena">Vilhena</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:11px; color:#ef4444; text-transform:uppercase; font-weight:bold;">Data de Saída</label>
+              <input type="date" id="diaria-data-saida" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;">
+            </div>
+            <div>
+              <label style="font-size:11px; color:#94a3b8; text-transform:uppercase;">Nº do Processo SEI</label>
+              <input type="text" id="diaria-proc" maxlength="20" oninput="let v=this.value.replace(/\D/g,''); v=v.replace(/(\d{4})(\d)/, '$1.$2'); v=v.replace(/(\d{4}\.\d{6})(\d)/, '$1/$2'); v=v.replace(/(\d{4}\.\d{6}\/\d{4})(\d)/, '$1-$2'); this.value=v;" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;" placeholder="0000.000000/0000-00">
+            </div>
+          </div>
+          
+          <div style="display:grid; grid-template-columns:1fr 120px 150px 150px; gap:15px; margin-bottom:20px;">
+            <div>
+              <label style="font-size:11px; color:#94a3b8; text-transform:uppercase;">Motivo da Viagem</label>
+              <textarea id="diaria-motivo" rows="2" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc; resize:vertical; min-height:42px;" placeholder="Tipo Memorando..."></textarea>
+            </div>
+            <div>
+              <label style="font-size:11px; color:#facc15; text-transform:uppercase; font-weight:bold;">Qtde Diárias</label>
+              <input type="number" id="diaria-qtde" step="0.5" min="0" oninput="if(typeof calcularTotalDiaria==='function') calcularTotalDiaria()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #ca8a04; background:#0f172a; color:#f8fafc;" placeholder="Ex: 1.5">
+            </div>
+            <div>
+              <label style="font-size:11px; color:#22c55e; text-transform:uppercase; font-weight:bold;">Valor Unit. (R$)</label>
+              <input type="number" id="diaria-valor-unit" step="10.00" min="0" oninput="if(typeof calcularTotalDiaria==='function') calcularTotalDiaria()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #16a34a; background:#0f172a; color:#f8fafc;" placeholder="0.00">
+            </div>
+            <div>
+              <label style="font-size:11px; color:#a855f7; text-transform:uppercase; font-weight:bold;">Valor Total (R$)</label>
+              <input type="text" id="diaria-valor-total" readonly style="width:100%; padding:10px; border-radius:6px; border:1px solid #9333ea; background:#1e1b4b; color:#c084fc; font-weight:bold;" placeholder="0.00">
+            </div>
+          </div>
+          <script>
+            function calcularTotalDiaria() {
+              const qtde = parseFloat(document.getElementById('diaria-qtde').value) || 0;
+              const unit = parseFloat(document.getElementById('diaria-valor-unit').value) || 0;
+              const total = qtde * unit;
+              document.getElementById('diaria-valor-total').value = total.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            }
+          </script>
+          <button id="btn-registrar-diaria" onclick="inserirDiaria()" disabled style="width:100%; padding:12px; background:#475569; color:#94a3b8; border:none; border-radius:8px; font-weight:bold; font-size:14px; cursor:not-allowed; transition:all 0.3s;">
+          Bloqueado - Verifique o Saldo
+        </button>
+      </div>
+    </div>
+    
+    <div id="diarias-tab-lista" class="diarias-content-tab" style="margin-bottom:20px;">
+      
+      <!-- ESQUEMA DE BUSCA -->
+      <div style="background:#111827; border-radius:12px; padding:20px; border:1px solid #1f2937; margin-bottom:15px; display:flex; flex-direction:column; gap:15px;">
+        
+        <!-- Barra de Busca -->
+        <div class="search-box" style="background:#0f172a; border:1px solid #334155; border-radius:8px; display:flex; align-items:center; padding:0 12px;">
+          <span style="color:#64748b; margin-right:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </span>
+          <input type="text" id="busca-diarias" oninput="renderizarDiarias()" placeholder="Buscar por processo, cpf, nome, cidade, motivo..." style="background:transparent; border:none; color:#f8fafc; width:100%; height:45px; outline:none; font-size:14px;">
+        </div>
+
+        <!-- Filtros em Linha -->
+        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:150px;">
+            <label style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:bold; letter-spacing:0.5px; margin-bottom:5px; display:block;">Mês de Pagamento</label>
+            <select id="diaria-filtro-mes" onchange="renderizarDiarias()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#f8fafc; outline:none;">
+              <option value="Todos">Todos</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:150px;">
+            <label style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:bold; letter-spacing:0.5px; margin-bottom:5px; display:block;">Status</label>
+            <select id="diaria-filtro-status" onchange="renderizarDiarias()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#f8fafc; outline:none;">
+              <option value="Todos">Todos</option>
+              <option value="Pago">Pago (Executado)</option>
+              <option value="Reserva">Reserva</option>
+              <option value="Anulação">Anulação / Encerrado</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:110px;">
+            <label style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:bold; letter-spacing:0.5px; margin-bottom:5px; display:block;">Data Início</label>
+            <input type="date" id="diaria-filtro-data-ini" onchange="renderizarDiarias()" style="width:100%; padding:9px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#f8fafc; outline:none; font-family:inherit;">
+          </div>
+          <div style="flex:1; min-width:110px;">
+            <label style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:bold; letter-spacing:0.5px; margin-bottom:5px; display:block;">Data Fim</label>
+            <input type="date" id="diaria-filtro-data-fim" onchange="renderizarDiarias()" style="width:100%; padding:9px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#f8fafc; outline:none; font-family:inherit;">
+          </div>
+          <div style="flex:1; min-width:150px;">
+            <label style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:bold; letter-spacing:0.5px; margin-bottom:5px; display:block;">Setor</label>
+            <select id="diaria-filtro-setor" onchange="renderizarDiarias()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#f8fafc; outline:none;">
+              <option value="Todos">Todos</option>
+            </select>
+          </div>
+            <div style="flex:1; min-width:150px;">
+              <label style="font-size:10px; color:#94a3b8; text-transform:uppercase; font-weight:bold; letter-spacing:0.5px; margin-bottom:5px; display:block;">Nota Empenho</label>
+              <select id="diaria-filtro-nota" onchange="renderizarDiarias()" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#1e293b; color:#f8fafc; outline:none;">
+                <option value="Todos">Todos</option>
+              </select>
+            </div>
+
+        </div>
+
+        <!-- Totais da Busca & Limpar -->
+        <div style="display:flex; gap:15px; flex-wrap:wrap; align-items:center;">
+          <div style="background:#1e293b; border-radius:8px; padding:10px 15px; color:#cbd5e1; font-size:13px; font-weight:bold; display:flex; align-items:center; border:1px solid #334155;">
+            <span id="diaria-qtd-listadas">0 diárias listadas</span>
+          </div>
+          
+          <div style="flex:1; background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:8px; padding:10px 15px; color:#10b981; display:flex; align-items:center; gap:15px;">
+            <div style="font-size:12px; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">Totais da Busca:</div>
+            <div>
+               <div style="font-size:10px; color:rgba(16,185,129,0.7); text-transform:uppercase;">Valor Filtrado</div>
+               <div style="font-size:16px; font-weight:800;" id="diaria-total-pago">R$ 0,00</div>
+            </div>
+          </div>
+          
+          <button onclick="limparFiltrosDiarias()" style="background:#f59e0b; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-weight:bold; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            LIMPAR PARÂMETROS
+          </button>
+        </div>
+
+      </div>
+      <!-- FIM ESQUEMA DE BUSCA -->
+
+      <div class="card" style="padding:0; overflow:hidden;">
+        <table class="table" id="table-diarias">
+      <table class="table" id="table-diarias">
+        <thead>
+          <tr>
+            <th style="width: 10%;">Data</th>
+              <th style="width: 25%;">Beneficiário</th>
+              <th style="width: 50%;">Motivo</th>
+              <th style="width: 15%; text-align: right;">Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="4" style="text-align:center; padding:20px;">Carregando dados...</td></tr>
+        </tbody>
+      </table>
+    </div>
   </section>
 
 
@@ -2753,6 +3496,82 @@ function abrirLogados() {
 }
 </script>
 
+<script>
+document.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('orc-print-dropdown');
+  if (dropdown && !dropdown.contains(e.target)) {
+    const menu = document.getElementById('orc-print-menu');
+    if (menu) menu.style.display = 'none';
+  }
+});
+</script>
+<script>
+function mudarAbaDiarias(aba, el) {
+  document.querySelectorAll('#page-diarias .tabs .tab-link').forEach(t => {
+    t.classList.remove('active');
+    t.style.background = '#1e293b';
+    t.style.color = '#cbd5e1';
+    t.style.borderColor = '#334155';
+    if(t.innerText.includes('Gerar Nova Diária')) {
+      t.style.background = '#3b82f6';
+      t.style.color = 'white';
+      t.style.border = 'none';
+    }
+  });
+  
+  if (el) {
+    el.classList.add('active');
+    if(!el.innerText.includes('Gerar Nova Diária')) {
+      el.style.background = '#3b82f6';
+      el.style.color = 'white';
+      el.style.borderColor = '#3b82f6';
+    }
+  }
+  
+  const gerar = document.getElementById('diarias-tab-gerar');
+    const lista = document.getElementById('diarias-tab-lista');
+    const consol = document.getElementById('diarias-tab-consolidado');
+  
+  if (gerar) gerar.style.display = aba === 'gerar' ? 'block' : 'none';
+    if (lista) lista.style.display = (aba === 'estadual' || aba === 'federal') ? 'block' : 'none';
+    if (consol) consol.style.display = aba === 'consolidado' ? 'block' : 'none';
+  
+  window._filtroDiariasAba = aba;
+  if(typeof renderizarDiarias === 'function') renderizarDiarias();
+}
+</script>
+
+  <!-- ============= MODAL: FORMULÁRIO GMAC ============= -->
+  <div class="modal-overlay" id="modal-gmac-form" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+    <div style="background:#0f172a; border:1px solid rgba(59,130,246,0.4); width:100%; max-width:780px; max-height:92vh; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.7); overflow:hidden;">
+      
+      <!-- Modal Header -->
+      <div style="padding:18px 24px; background:linear-gradient(135deg,#1e293b,#0f172a); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h3 id="modal-gmac-titulo" style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">Registro GMAC</h3>
+          <p id="modal-gmac-subtitulo" style="margin:2px 0 0 0; font-size:12px; color:#94a3b8;">Preencha os campos para salvar na planilha</p>
+        </div>
+        <button type="button" onclick="fecharModalGMAC()" style="background:none; border:none; color:#94a3b8; font-size:26px; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Form) -->
+      <form id="form-gmac-modal-data" onsubmit="salvarFormularioGMAC(event)" style="display:flex; flex-direction:column; flex:1; overflow:hidden; margin:0;">
+        <div id="modal-gmac-fields" style="padding:22px; overflow-y:auto; flex:1; background:#0b1120;">
+          <!-- Campos gerados dinamicamente via gmac.js -->
+        </div>
+
+        <!-- Modal Footer -->
+        <div style="padding:14px 24px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+          <button type="button" onclick="fecharModalGMAC()" class="btn btn-ghost" style="padding:9px 18px;">Cancelar</button>
+          <button type="submit" id="btn-salvar-gmac" class="btn btn-primary" style="padding:9px 24px; font-weight:700; border-radius:8px; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:inline-flex; align-items:center; gap:6px;">
+            💾 Salvar na Planilha
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
 </body>
 </html>
 
@@ -2788,6 +3607,17 @@ function abrirLogados() {
 
     </div>
   </div>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

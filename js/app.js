@@ -207,7 +207,9 @@ function navegar(pagina) {
     contatos: '🏛️ Municípios',
     escolas: '🏫 Escolas',
     'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia',
-    'todas-escolas': '🏫 Todas as Escolas'
+    'todas-escolas': '🏫 Todas as Escolas',
+    'orcamento': '💵 Orçamento',
+    'diarias': '📅 Controle de Diárias'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -3697,7 +3699,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.18)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.19)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
