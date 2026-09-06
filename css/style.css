@@ -2358,3 +2358,10 @@ thead th {
 body:not(.can-access-dashboard) .dashboard-only-elton {
   display: none !important;
 }
+
+/* Ocultar rigorosamente o select original dos multiselects para evitar listbox indesejada */
+select.custom-multiselect-hidden,
+select[multiple]._has-multiselect,
+select#filtro-agrupamento.action-adm {
+  display: none !important;
+}

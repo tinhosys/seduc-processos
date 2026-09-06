@@ -30,7 +30,8 @@ class MultiSelect {
     this.wrapper.appendChild(this.dropdown);
 
     this.select.parentNode.insertBefore(this.wrapper, this.select.nextSibling);
-    this.select.style.display = "none";
+    this.select.style.setProperty("display", "none", "important");
+    this.select.classList.add("custom-multiselect-hidden");
 
     this.button.addEventListener("click", (e) => {
       e.stopPropagation();

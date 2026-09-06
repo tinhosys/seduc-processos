@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.31">
+  <link rel="stylesheet" href="css/style.css?v=1.2.32">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.31</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.32</div>
   </div>
 </div>
   
@@ -412,7 +412,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.31</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.32</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1072,10 +1072,6 @@
 
               <!-- Botões de Condição / Parâmetro: TODOS, =, <> -->
               <div class="btn-group-param-digito" style="display:flex; align-items:center; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:2px; gap:2px; height:38px; box-sizing:border-box; flex-shrink:0;">
-                <button type="button" id="btn-param-digito-todos" class="btn-param-digito active" data-cond="todos" title="Mostrar todos os registros"
-                  style="padding:4px 8px; font-size:11px; font-weight:700; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:#3b82f6; color:#ffffff; box-shadow:0 0 8px rgba(59,130,246,0.4);">
-                  TODOS
-                </button>
                 <button type="button" id="btn-param-digito-eq" class="btn-param-digito" data-cond="=" title="Igual ao valor digitado (=)"
                   style="padding:4px 9px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#94a3b8;">
                   =
@@ -1648,30 +1644,7 @@
           </table>
         </div>
 
-        <!-- CARD PARA PADRONIZAR DADOS DA PLANILHA (ADMIN ONLY) -->
-        <div class="card action-adm" id="card-padronizacao-dados" style="margin-top: 24px; padding: 20px; border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.02);">
-            <h3 style="font-size: 14px; margin-bottom: 12px; color: #34d399; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-              ✅ Corretor Ortográfico / Padronizador
-            </h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
-              Esta ferramenta realiza uma varredura completa em todo o sistema (<strong>Status, Localização, Município, Objeto, Interessado, Categoria, Tipo, Prefixo e Agrupamento</strong>). Remove espaços extras, corrige letras minúsculas e padroniza todas as células da planilha em lote com acompanhamento interativo em tempo real. Nenhuma alteração é feita sem sua autorização.
-            </p>
-            <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-              <button type="button" class="btn" id="btn-verificar-padronizacao" onclick="if(typeof window.verificarInconsistenciasPlanilha==='function'){window.verificarInconsistenciasPlanilha();}else if(typeof verificarInconsistenciasPlanilha==='function'){verificarInconsistenciasPlanilha();}" style="background:#3b82f6; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px;">
-                🔍 Buscar Divergências em Todo o Sistema
-              </button>
-              <button type="button" class="btn" id="btn-executar-padronizacao" onclick="if(typeof window.executarPadronizacaoPlanilha==='function'){window.executarPadronizacaoPlanilha();}else if(typeof executarPadronizacaoPlanilha==='function'){executarPadronizacaoPlanilha();}" style="background:#10b981; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; display: flex; align-items: center; gap: 6px; display: none;">
-                ✓ Autorizar e Corrigir Planilhas
-              </button>
-              <button type="button" class="btn" id="btn-cancelar-padronizacao" onclick="if(typeof window.cancelarPadronizacao==='function'){window.cancelarPadronizacao();}else if(typeof cancelarPadronizacao==='function'){cancelarPadronizacao();}" style="background:#ef4444; border:none; padding:10px 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height: 40px; align-items: center; gap: 6px; display: none;">
-                ? Cancelar
-              </button>
-            </div>
-            <div id="status-padronizacao-container" style="margin-top: 16px; font-size: 13px; display: none;">
-              <div style="font-weight: 600; margin-bottom: 8px;" id="label-status-padronizacao"></div>
-              <div id="log-status-padronizacao" style="max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; font-family: monospace; font-size: 12px; color: #cbd5e1; text-align: left;"></div>
-            </div>
-          </div>
+        <!-- Card padronizador transferido para Informações do Sistema -->
 
       </section>
 
@@ -1694,7 +1667,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.31
+              GBZ - v1.2.32
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -1968,7 +1941,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.31] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.32] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -3251,13 +3224,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.31"></script>
-  <script src="js/app.js?v=1.2.31"></script>
-  <script src="js/auth-sap.js?v=1.2.31"></script>
-  <script src="js/escolas.js?v=1.2.31" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.32"></script>
+  <script src="js/app.js?v=1.2.32"></script>
+  <script src="js/auth-sap.js?v=1.2.32"></script>
+  <script src="js/escolas.js?v=1.2.32" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.31"></script>
-  <script src="js/contatos.js?v=1.2.31"></script>
+  <script src="js/mapa.js?v=1.2.32"></script>
+  <script src="js/contatos.js?v=1.2.32"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3400,14 +3373,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.31"></script>
+  <script src="js/multi-select.js?v=1.2.32"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.31"></script>
-  <script src="js/gmac.js?v=1.2.31"></script>
-  <script src="js/orcamento.js?v=1.2.31"></script>
-  <script src="js/print-proalfa.js?v=1.2.31"></script>
-  <script src="js/proalfa.js?v=1.2.31"></script>
+  <script src="js/diarias.js?v=1.2.32"></script>
+  <script src="js/gmac.js?v=1.2.32"></script>
+  <script src="js/orcamento.js?v=1.2.32"></script>
+  <script src="js/print-proalfa.js?v=1.2.32"></script>
+  <script src="js/proalfa.js?v=1.2.32"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

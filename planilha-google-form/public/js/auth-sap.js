@@ -1,4 +1,32 @@
 
+let _hbTimer = null;
+window.iniciarHeartbeat = function() {
+  if (_hbTimer) clearInterval(_hbTimer);
+  const pulsar = async () => {
+    const token = getSessionToken();
+    if (!token) return;
+    try {
+      await fetch(API_BASE + '/api/heartbeat', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+    } catch(e) {}
+  };
+  pulsar();
+  _hbTimer = setInterval(pulsar, 25000);
+};
+
+window.buscarUsuariosOnline = async function() {
+  try {
+    const res = await fetch(API_BASE + '/api/usuarios-online');
+    if (res.ok) {
+      const data = await res.json();
+      window._usuariosOnlineAtivos = data.usuariosOnline || [];
+    }
+  } catch(e) {}
+};
+
+
 // ====== REGRA RESTRITA: DASHBOARD EXCLUSIVO ADMIN ELTON (69) 9 9922-1336 ======
 window.podeAcessarDashboard = function() {
   try {
@@ -128,6 +156,10 @@ function aplicarPermissoes(nivel) {
 
   const isAdminUser = (nivel === 'adm' || nivel === 'admin');
   document.querySelectorAll('.action-adm').forEach(el => {
+    if (el.tagName === 'SELECT' && (el.classList.contains('custom-multiselect-hidden') || el.multiple)) {
+      el.style.setProperty('display', 'none', 'important');
+      return;
+    }
     el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
   });
 
@@ -229,6 +261,7 @@ async function realizarLogin() {
     await inicializarDados();
     const isAdminLog = (data.nivel === 'adm' || data.nivel === 'admin');
     const canDashLog = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
+    if (typeof window.iniciarHeartbeat === 'function') window.iniciarHeartbeat();
     navegar(canDashLog ? 'dashboard' : 'processos');
     atualizarContador();
 
@@ -292,6 +325,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         atualizarContador();
         const isAdminSess = (usuario.nivel === 'adm' || usuario.nivel === 'admin');
         const canDashSess = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
+        if (typeof window.iniciarHeartbeat === 'function') window.iniciarHeartbeat();
         navegar(canDashSess ? 'dashboard' : 'processos');
         if (canDashSess) renderDashboard();
         

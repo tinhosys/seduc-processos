@@ -1322,23 +1322,7 @@ function hl(txt, busca) {
 window.setDigitoCondicao = function(cond, triggerFilter = true) {
   state.filtros.digitoCond = cond;
   
-  const btnTodos = document.getElementById('btn-param-digito-todos');
-  const btnEq    = document.getElementById('btn-param-digito-eq');
-  const btnNeq   = document.getElementById('btn-param-digito-neq');
-
-  if (btnTodos) {
-    if (cond === 'todos') {
-      btnTodos.classList.add('active');
-      btnTodos.style.background = '#3b82f6';
-      btnTodos.style.color = '#ffffff';
-      btnTodos.style.boxShadow = '0 0 8px rgba(59,130,246,0.4)';
-    } else {
-      btnTodos.classList.remove('active');
-      btnTodos.style.background = 'transparent';
-      btnTodos.style.color = '#94a3b8';
-      btnTodos.style.boxShadow = 'none';
-    }
-  }
+  
 
   if (btnEq) {
     if (cond === '=') {
@@ -2408,20 +2392,16 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroAnoEl.addEventListener('change', () => aplicarFiltro('ano', null));
   }
     // Botões de condição do filtro de dígito: TODOS, =, <>
-  document.getElementById('btn-param-digito-todos')?.addEventListener('click', () => {
-    const fd = document.getElementById('filtro-digito');
-    if (fd) fd.value = '';
-    document.querySelectorAll('.cb-digito-opcao').forEach(cb => { cb.checked = false; });
-    state.filtros.digito = '';
-    setDigitoCondicao('todos', true);
-  });
-
   document.getElementById('btn-param-digito-eq')?.addEventListener('click', () => {
-    setDigitoCondicao('=', true);
+    // Se já estiver ativo, desativa voltando para todos
+    const novaCond = state.filtros.digitoCond === '=' ? '' : '=';
+    setDigitoCondicao(novaCond, true);
   });
 
   document.getElementById('btn-param-digito-neq')?.addEventListener('click', () => {
-    setDigitoCondicao('<>', true);
+    // Se já estiver ativo, desativa voltando para todos
+    const novaCond = state.filtros.digitoCond === '<>' ? '' : '<>';
+    setDigitoCondicao(novaCond, true);
   });
 
   // Toggle do dropdown de checkboxes de dígitos
@@ -5212,37 +5192,40 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos (GBZ - v1.2.24)
-  const isUsuarioAtivoHoje = (dataStr, isCurrent, u) => {
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.32)
+  const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
-    // Regra explícita: Se o nome for Erica (ou contiver erica), garantir status ativo
-    if (u && u.nome && u.nome.toLowerCase().includes('erica')) {
-      return true;
+    // 1. Verificar lista em tempo real do servidor (heartbeat ativo nos últimos 2 min)
+    if (window._usuariosOnlineAtivos && Array.isArray(window._usuariosOnlineAtivos)) {
+      const uWhatsClean = String(u.whatsapp || u.whats || '').replace(/\D/g, '');
+      const uNomeClean = String(u.nome || '').trim().toLowerCase();
+      const matchHb = window._usuariosOnlineAtivos.some(online => {
+        const oWhatsClean = String(online.whatsapp || '').replace(/\D/g, '');
+        const oNomeClean = String(online.nome || '').trim().toLowerCase();
+        if (uWhatsClean && oWhatsClean && uWhatsClean === oWhatsClean) return true;
+        if (uNomeClean && oNomeClean && uNomeClean === oNomeClean) return true;
+        return false;
+      });
+      if (matchHb) return true;
     }
     
+    // 2. Se não há heartbeat recente, verificar se o registro de acesso na planilha ocorreu nos últimos 5 minutos
     if (!dataStr) return false;
     const str = String(dataStr).trim();
-    
-    // Formato pt-BR: 06/09/2026
-    const todayBR = new Date().toLocaleDateString('pt-BR');
-    const sessBR = (typeof dtEntrada !== 'undefined' && dtEntrada) ? dtEntrada.toLocaleDateString('pt-BR') : '';
-    
-    if (str.includes(todayBR) || (sessBR && str.includes(sessBR))) {
-      return true;
-    }
-    
-    // Parse flexível de data
     const m = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
-    if (m) {
-      const day = parseInt(m[1], 10);
-      const month = parseInt(m[2], 10) - 1;
-      const year = parseInt(m[3], 10);
-      const now = new Date();
-      if (now.getFullYear() === year && now.getMonth() === month && now.getDate() === day) {
-        return true;
-      }
-      if (typeof dtEntrada !== 'undefined' && dtEntrada && dtEntrada.getFullYear() === year && dtEntrada.getMonth() === month && dtEntrada.getDate() === day) {
+    if (m && m[4] && m[5]) {
+      const uDate = new Date(
+        parseInt(m[3], 10),
+        parseInt(m[2], 10) - 1,
+        parseInt(m[1], 10),
+        parseInt(m[4], 10),
+        parseInt(m[5], 10),
+        m[6] ? parseInt(m[6], 10) : 0
+      );
+      const diffMin = (Date.now() - uDate.getTime()) / 60000;
+      // Considera online se o acesso foi há menos de 5 minutos
+      if (diffMin >= 0 && diffMin <= 5) {
         return true;
       }
     }
@@ -5256,17 +5239,17 @@ async function carregarPainelSistemaInfo() {
 
     if (!lista || lista.length === 0) {
       tbodyLogados.innerHTML = 
-        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(16,185,129,0.12); border-left:4px solid #10b981;">' +
-          '<td style="padding:8px 12px; font-weight:700; color:#34d399;">' + userName + '</td>' +
+        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(245,158,11,0.14); border-left:4px solid #f59e0b;">' +
+          '<td style="padding:8px 12px; font-weight:800; color:#fbbf24;">👑 ' + userName + ' (Você)</td>' +
           '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(userWhats) + '</td>' +
-          '<td style="padding:8px 12px;"><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(userNivel).toUpperCase() + '</span></td>' +
-          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR') + '<div style="font-size:10.5px; color:#34d399; font-weight:600;">(ativo agora)</div></td>' +
-          '<td style="padding:8px 12px;"><span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Online (Você)</span></td>' +
+          '<td style="padding:8px 12px;"><span style="background:rgba(245,158,11,0.2); color:#fbbf24; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:800; border:1px solid rgba(245,158,11,0.4);">' + String(userNivel).toUpperCase() + '</span></td>' +
+          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR') + '<div style="font-size:10.5px; color:#fbbf24; font-weight:700;">(ativo agora)</div></td>' +
+          '<td style="padding:8px 12px;"><span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span></td>' +
         '</tr>';
       return;
     }
 
-    // Ordena: usuário atual primeiro, depois usuários online, depois offline
+    // Ordena: usuário atual (Você) primeiro, depois outros online, depois offline
     const ordenados = [...lista].sort((a, b) => {
       const isCurA = (a.nome && a.nome.toLowerCase() === userName.toLowerCase()) || 
                      (a.whatsapp && String(a.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
@@ -5275,8 +5258,8 @@ async function carregarPainelSistemaInfo() {
       if (isCurA && !isCurB) return -1;
       if (!isCurA && isCurB) return 1;
 
-      const ativA = isUsuarioAtivoHoje(a.data, isCurA, a) ? 1 : 0;
-      const ativB = isUsuarioAtivoHoje(b.data, isCurB, b) ? 1 : 0;
+      const ativA = isUsuarioAtivoAgora(a.data, isCurA, a) ? 1 : 0;
+      const ativB = isUsuarioAtivoAgora(b.data, isCurB, b) ? 1 : 0;
       if (ativA !== ativB) return ativB - ativA;
 
       return 0;
@@ -5285,50 +5268,56 @@ async function carregarPainelSistemaInfo() {
     tbodyLogados.innerHTML = ordenados.map((u) => {
       const isCurrent = (u.nome && u.nome.toLowerCase() === userName.toLowerCase()) || 
                         (u.whatsapp && String(u.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
-      const ativo = isUsuarioAtivoHoje(u.data, isCurrent, u);
+      const ativo = isUsuarioAtivoAgora(u.data, isCurrent, u);
 
       let statusBadge = '';
       if (isCurrent) {
-        statusBadge = '<span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Online (Você)</span>';
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.32)
+        statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';
       } else {
-        statusBadge = '<span style="color:#f87171; font-weight:800; background:rgba(239,68,68,0.18); padding:4px 12px; border-radius:6px; border:1px solid rgba(239,68,68,0.45); display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(239,68,68,0.25); font-size:11px;">🔴 Offline</span>';
+        statusBadge = '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.15); padding:4px 12px; border-radius:6px; border:1px solid rgba(239,68,68,0.4); display:inline-flex; align-items:center; gap:6px; font-size:11px;">🔴 Offline</span>';
       }
       
       const horaAcesso = isCurrent 
         ? (dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR'))
         : (u.data || u.ultimoAcesso || '--/--/---- --:--:--');
 
-      // Calcular tempo decorrido desde o login para usuários online
+      // Calcular tempo decorrido desde o login
       let tempoRelativo = '';
       if (isCurrent) {
         const diffMin = Math.floor(Math.max(0, Date.now() - dtEntrada.getTime()) / 60000);
-        if (diffMin < 1) tempoRelativo = '<div style="font-size:10.5px; color:#34d399; font-weight:600;">(ativo agora)</div>';
-        else if (diffMin < 60) tempoRelativo = '<div style="font-size:10.5px; color:#34d399; font-weight:600;">(ativo há ' + diffMin + ' min)</div>';
-        else tempoRelativo = '<div style="font-size:10.5px; color:#34d399; font-weight:600;">(ativo há ' + Math.floor(diffMin/60) + 'h ' + (diffMin%60) + 'm)</div>';
-      } else if (ativo && u.data) {
+        if (diffMin < 1) tempoRelativo = '<div style="font-size:10.5px; color:#fbbf24; font-weight:700;">(ativo agora)</div>';
+        else if (diffMin < 60) tempoRelativo = '<div style="font-size:10.5px; color:#fbbf24; font-weight:700;">(ativo há ' + diffMin + ' min)</div>';
+        else tempoRelativo = '<div style="font-size:10.5px; color:#fbbf24; font-weight:700;">(ativo há ' + Math.floor(diffMin/60) + 'h ' + (diffMin%60) + 'm)</div>';
+      } else if (u.data) {
         const m = String(u.data).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
         if (m && m[4] && m[5]) {
           const uDate = new Date(parseInt(m[3],10), parseInt(m[2],10)-1, parseInt(m[1],10), parseInt(m[4],10), parseInt(m[5],10), m[6]?parseInt(m[6],10):0);
           const diffMin = Math.floor(Math.max(0, Date.now() - uDate.getTime()) / 60000);
-          if (diffMin >= 0 && diffMin < 720) {
+          if (ativo) {
             if (diffMin < 1) tempoRelativo = '<div style="font-size:10.5px; color:#10b981; font-weight:600;">(ativo agora)</div>';
-            else if (diffMin < 60) tempoRelativo = '<div style="font-size:10.5px; color:#10b981; font-weight:600;">(ativo há ' + diffMin + ' min)</div>';
-            else tempoRelativo = '<div style="font-size:10.5px; color:#10b981; font-weight:600;">(ativo há ' + Math.floor(diffMin/60) + 'h ' + (diffMin%60) + 'm)</div>';
+            else tempoRelativo = '<div style="font-size:10.5px; color:#10b981; font-weight:600;">(ativo há ' + diffMin + ' min)</div>';
+          } else {
+            if (diffMin < 60) tempoRelativo = '<div style="font-size:10.5px; color:#94a3b8;">(acesso há ' + diffMin + ' min)</div>';
+            else if (diffMin < 1440) tempoRelativo = '<div style="font-size:10.5px; color:#94a3b8;">(acesso há ' + Math.floor(diffMin/60) + 'h ' + (diffMin%60) + 'm)</div>';
+            else tempoRelativo = '<div style="font-size:10.5px; color:#94a3b8;">(acesso há ' + Math.floor(diffMin/1440) + ' d)</div>';
           }
         }
       }
 
-      const trBg = isCurrent ? 'rgba(16,185,129,0.15)' : (ativo ? 'rgba(16,185,129,0.10)' : 'transparent');
-      const trBorder = (isCurrent || ativo) ? 'border-left:4px solid #10b981;' : 'border-left:4px solid transparent;';
-      const nameColor = isCurrent ? '#34d399' : (ativo ? '#10b981' : '#f8fafc');
+      // Estilização diferenciada da linha: Amarelo ouro para Você/Elton
+      const trBg = isCurrent ? 'rgba(245,158,11,0.12)' : (ativo ? 'rgba(16,185,129,0.08)' : 'transparent');
+      const trBorder = isCurrent ? 'border-left:4px solid #f59e0b;' : (ativo ? 'border-left:4px solid #10b981;' : 'border-left:4px solid transparent;');
+      const nameColor = isCurrent ? '#fbbf24' : (ativo ? '#34d399' : '#cbd5e1');
+      const displayName = isCurrent ? ('👑 ' + (u.nome || userName) + ' (Você)') : (u.nome || 'Usuário');
 
       return (
         '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:' + trBg + '; ' + trBorder + '">' +
-          '<td style="padding:8px 12px; font-weight:700; color:' + nameColor + ';">' + (u.nome || 'Usuário') + '</td>' +
+          '<td style="padding:8px 12px; font-weight:700; color:' + nameColor + ';">' + displayName + '</td>' +
           '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(u.whatsapp || u.whats) + '</td>' +
-          '<td style="padding:8px 12px;"><span style="background:rgba(59,130,246,0.15); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(u.nivel || u.perfil || 'EDITOR').toUpperCase() + '</span></td>' +
+          '<td style="padding:8px 12px;"><span style="background:' + (isCurrent ? 'rgba(245,158,11,0.2)' : 'rgba(59,130,246,0.15)') + '; color:' + (isCurrent ? '#fbbf24' : '#60a5fa') + '; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;' + (isCurrent ? 'border:1px solid rgba(245,158,11,0.4);' : '') + '">' + String(u.nivel || u.perfil || 'EDITOR').toUpperCase() + '</span></td>' +
           '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + horaAcesso + tempoRelativo + '</td>' +
           '<td style="padding:8px 12px;">' + statusBadge + '</td>' +
         '</tr>'
@@ -5336,22 +5325,27 @@ async function carregarPainelSistemaInfo() {
     }).join('');
   };
 
-  const token = sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token');
-  if (token && typeof API_BASE !== 'undefined') {
-    fetch(API_BASE + '/api/acessos', { headers: { 'Authorization': 'Bearer ' + token } })
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          window.listaAcessos = data;
-          renderTabelaUsuarios(data);
-        } else {
-          renderTabelaUsuarios(window.listaAcessos || []);
+  const atualizarListaEConexoes = async () => {
+    if (typeof window.buscarUsuariosOnline === 'function') {
+      try { await window.buscarUsuariosOnline(); } catch(e) {}
+    }
+    const token = sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token');
+    if (token && typeof API_BASE !== 'undefined') {
+      try {
+        const res = await fetch(API_BASE + '/api/acessos', { headers: { 'Authorization': 'Bearer ' + token } });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            window.listaAcessos = data;
+            renderTabelaUsuarios(data);
+            return;
+          }
         }
-      })
-      .catch(() => renderTabelaUsuarios(window.listaAcessos || []));
-  } else {
+      } catch(e) {}
+    }
     renderTabelaUsuarios(window.listaAcessos || []);
-  }
+  };
+  atualizarListaEConexoes();
 
   // 2. Atualizar Métricas Imediatamente
   atualizarMetricasSistemaInfo();

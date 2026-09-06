@@ -106,6 +106,38 @@ function validarSessao(req) {
   return sessao;
 }
 
+
+// ====== ENDPOINTS DE HEARTBEAT E USUÁRIOS ONLINE EM TEMPO REAL ======
+app.post("/api/heartbeat", (req, res) => {
+  const sessao = validarSessao(req);
+  if (sessao) {
+    sessao.ultimoAcesso = Date.now();
+    return res.json({ ok: true, online: true });
+  }
+  res.status(401).json({ erro: "Sessão inválida" });
+});
+
+app.get("/api/usuarios-online", (req, res) => {
+  const agora = Date.now();
+  const onlineUsers = [];
+  // Considera online quem enviou heartbeat nos últimos 2 minutos
+  for (const [token, s] of sessoes.entries()) {
+    if (s.whatsapp && s.whatsapp !== "admin") {
+      const diff = agora - (s.ultimoAcesso || s.criadoEm || 0);
+      if (diff < 2 * 60 * 1000) {
+        onlineUsers.push({
+          whatsapp: s.whatsapp,
+          nome: s.nome,
+          nivel: s.nivel,
+          setor: s.setor,
+          ultimoAcesso: s.ultimoAcesso || s.criadoEm
+        });
+      }
+    }
+  }
+  res.json({ usuariosOnline: onlineUsers });
+});
+
 // ====== ENDPOINT: LOGIN ======
 app.post("/api/auth", async (req, res) => {
   const { whatsapp, senha } = req.body;
