@@ -2495,7 +2495,7 @@ function injectFixedHeader(subtitle) {
 }
 
 function getCommonFooter(gerenciaCustom) {
-  const gerenciaTexto = gerenciaCustom || 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS';
+  const gerenciaTexto = gerenciaCustom || 'GDSM - GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS';
   return `
     <div style="border-top:1px solid #cbd5e1; padding-top:5px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:8.5px; font-weight:normal; color:#475569; font-family: Arial, sans-serif; width:100%;">
       <div style="flex:1; text-align:left; font-weight:bold; color:#0f172a;">${gerenciaTexto}</div>
@@ -3681,7 +3681,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.14)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.15)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -4524,6 +4524,7 @@ window.getActiveBgColor = getActiveBgColor;
 window.getActiveBorderColor = getActiveBorderColor;
 window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
+
 
 
 

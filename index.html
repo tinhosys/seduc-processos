@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.14</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.15</div>
   </div>
 </div>
   
@@ -255,21 +255,7 @@
 
         
           
-          <!-- Menu Processos -->
-        <div class="nav-group">
-          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-processos', this)">
-            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></span>
-            <span style="flex:1">Processos</span>
-            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-          </a>
-          <div class="nav-submenu" id="sub-processos" style="display: none; padding-left: 20px;">
-              <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 13px; padding: 10px 16px;"><span>Todos os Processos</span></a>
-              <a href="#" class="nav-item sub-item action-editor" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 13px; padding: 10px 16px;"><span>Processos Repetidos</span></a>
-            </div>
-        </div>
-
-        
-            <!-- Menu CAM -->
+          <!-- Menu CAM -->
           <div class="nav-group action-editor">
             <a href="#" class="nav-item" onclick="toggleSubmenu('sub-cam', this)">
               <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></span>
@@ -277,7 +263,17 @@
               <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </a>
             <div class="nav-submenu" id="sub-cam" style="display: none; padding-left: 20px;">
-              <a href="#" class="nav-item sub-item" onclick="alert('GDSM está em construção');" style="font-size: 13px; padding: 10px 16px;"><span style="display:flex; align-items:center;">GDSM <span style="font-size:9px; background:rgba(234,179,8,0.2); color:#eab308; padding:2px 6px; border-radius:4px; margin-left:8px; font-weight:bold; letter-spacing:0.5px;">EM CONSTRUÇÃO</span></span></a>
+              <!-- GDSM com Processos integrados -->
+              <a href="#" class="nav-item sub-item" onclick="toggleSubmenu('sub-gdsm', this)" style="font-size: 13px; padding: 10px 16px;">
+                <span style="display:flex; align-items:center; flex:1;">GDSM</span>
+                <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </a>
+              <div class="nav-submenu" id="sub-gdsm" style="display: none; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 10px;">
+                <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 12px; padding: 8px 16px;"><span>Todos os Processos</span></a>
+                <a href="#" class="nav-item sub-item action-editor" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 12px; padding: 8px 16px;"><span>Processos Repetidos</span></a>
+              </div>
+
+              <!-- GMAC -->
               <a href="#" class="nav-item sub-item" onclick="toggleSubmenu('sub-gmac', this)" style="font-size: 13px; padding: 10px 16px;">
                 <span style="display:flex; align-items:center; flex:1;">GMAC</span>
                 <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -340,7 +336,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.14</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.15</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -3541,6 +3537,7 @@ function mudarAbaDiarias(aba, el) {
 
     </div>
   </div>
+
 
 
 
