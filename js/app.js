@@ -1,4 +1,4 @@
-﻿function cancelarPadronizacao() {
+function cancelarPadronizacao() {
   const logDiv = document.getElementById('log-status-padronizacao');
   const btnExecutar = document.getElementById('btn-executar-padronizacao');
   const btnCancelar = document.getElementById('btn-cancelar-padronizacao');
@@ -3681,7 +3681,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.16)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.17)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 

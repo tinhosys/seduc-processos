@@ -117,12 +117,12 @@ window.carregarOrcamentoData = async function() {
       
       const parseMon = (v) => parseFloat((v||'').replace(/\./g,'').replace(',','.')) || 0;
       
-      if (!cols[0]) return;
+      if (!cols[0] || !cols[2]) continue;
       ORCAMENTO_DATA.push({
         pa: cols[0],
         fonte: cols[1],
         despesa: cols[2],
-        detalhamento: cols[4],
+        detalhamento: cols[4] || '',
         inicial: parseMon(cols[5]),
         empenhado: parseMon(cols[7]),
         anulacao: parseMon(cols[8]),
@@ -133,10 +133,10 @@ window.carregarOrcamentoData = async function() {
       });
     }
     
+    inicializarFiltrosOrcamento();
     filtrarOrcamento();
   } catch (e) {
     console.error('Erro ao carregar orcamento do GSheets:', e);
-    // fallback if fail? it will just show empty or previous data
   }
 };
 
@@ -480,9 +480,13 @@ function exportarOrcamentoExcel() {
 
 // ---- Entry point ----
 function carregarOrcamento() {
-  inicializarFiltrosOrcamento();
-  filtrarOrcamento();
-  carregarCRM();
+  if (!ORCAMENTO_DATA || ORCAMENTO_DATA.length === 0) {
+    window.carregarOrcamentoData();
+  } else {
+    inicializarFiltrosOrcamento();
+    filtrarOrcamento();
+  }
+  if (typeof carregarCRM === 'function') carregarCRM();
 }
 
 

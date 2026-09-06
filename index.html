@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.16</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.17</div>
   </div>
 </div>
   
@@ -253,56 +253,56 @@
           <span>Dashboard</span>
         </a>
 
-        
-          
-          <!-- Menu CAM -->
-          <div class="nav-group action-editor">
-            <a href="#" class="nav-item" onclick="toggleSubmenu('sub-cam', this)">
-              <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></span>
-              <span style="flex:1">CAM</span>
+        <!-- Municípios logo abaixo do Dashboard -->
+        <a href="#" class="nav-item" data-page="contatos" onclick="navegar('contatos'); fecharSubmenus()">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+          <span>Municípios</span>
+        </a>
+
+        <!-- Menu CAM -->
+        <div class="nav-group action-editor">
+          <a href="#" class="nav-item" onclick="toggleSubmenu('sub-cam', this)">
+            <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg></span>
+            <span style="flex:1">CAM</span>
+            <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </a>
+          <div class="nav-submenu" id="sub-cam" style="display: none; padding-left: 20px;">
+            <!-- GDSM com Processos integrados -->
+            <a href="#" class="nav-item sub-item" onclick="toggleSubmenu('sub-gdsm', this)" style="font-size: 13px; padding: 10px 16px;">
+              <span style="display:flex; align-items:center; flex:1;">GDSM</span>
               <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </a>
-            <div class="nav-submenu" id="sub-cam" style="display: none; padding-left: 20px;">
-              <!-- GDSM com Processos integrados -->
-              <a href="#" class="nav-item sub-item" onclick="toggleSubmenu('sub-gdsm', this)" style="font-size: 13px; padding: 10px 16px;">
-                <span style="display:flex; align-items:center; flex:1;">GDSM</span>
-                <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </a>
-              <div class="nav-submenu" id="sub-gdsm" style="display: none; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 10px;">
-                <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 12px; padding: 8px 16px;"><span>Todos os Processos</span></a>
-                <a href="#" class="nav-item sub-item action-editor" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 12px; padding: 8px 16px;"><span>Processos Repetidos</span></a>
-              </div>
-
-              <!-- GMAC -->
-              <a href="#" class="nav-item sub-item" onclick="toggleSubmenu('sub-gmac', this)" style="font-size: 13px; padding: 10px 16px;">
-                <span style="display:flex; align-items:center; flex:1;">GMAC</span>
-                <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
-              </a>
-              <div class="nav-submenu" id="sub-gmac" style="display: none; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 10px;">
-                <a href="#" class="nav-item sub-item" data-page="gmac-aee" onclick="navegar('gmac-aee'); if(typeof carregarGMAC==='function') carregarGMAC('aee');" style="font-size: 12px; padding: 8px 16px;"><span>Equipamento - AEE</span></a>
-                <a href="#" class="nav-item sub-item" data-page="gmac-onibus" onclick="navegar('gmac-onibus'); if(typeof carregarGMAC==='function') carregarGMAC('onibus');" style="font-size: 12px; padding: 8px 16px;"><span>Doação do Ônibus Escolar</span></a>
-                <a href="#" class="nav-item sub-item" data-page="gmac-veiculos" onclick="navegar('gmac-veiculos'); if(typeof carregarGMAC==='function') carregarGMAC('veiculos');" style="font-size: 12px; padding: 8px 16px;"><span>Doação Definitiva de Veículos</span></a>
-                <a href="#" class="nav-item sub-item" data-page="gmac-reordenamento" onclick="navegar('gmac-reordenamento'); if(typeof carregarGMAC==='function') carregarGMAC('reordenamento');" style="font-size: 12px; padding: 8px 16px;"><span>Municipalização e Reordenamento</span></a>
-                <a href="#" class="nav-item sub-item" data-page="gmac-cooperacao" onclick="navegar('gmac-cooperacao'); if(typeof carregarGMAC==='function') carregarGMAC('cooperacao');" style="font-size: 12px; padding: 8px 16px;"><span>Termo de Cooperação</span></a>
-              </div>
-              <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
-              <a href="#" class="nav-item sub-item" data-page="contatos" onclick="navegar('contatos')" style="font-size: 13px; padding: 10px 16px;"><span>Municípios</span></a>
+            <div class="nav-submenu" id="sub-gdsm" style="display: none; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 10px;">
+              <a href="#" class="nav-item sub-item" data-page="processos" onclick="navegar('processos')" style="font-size: 12px; padding: 8px 16px;"><span>Todos os Processos</span></a>
+              <a href="#" class="nav-item sub-item action-editor" data-page="repetidos" onclick="navegar('repetidos')" style="font-size: 12px; padding: 8px 16px;"><span>Processos Repetidos</span></a>
             </div>
-          </div>
 
-
-          <!-- Menu Orçamento -->
-          <div class="nav-group action-report">
-            <a href="#" class="nav-item" onclick="toggleSubmenu('sub-orcamento', this)">
-              <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
-              <span style="flex:1">Orçamento</span>
+            <!-- GMAC -->
+            <a href="#" class="nav-item sub-item" onclick="toggleSubmenu('sub-gmac', this)" style="font-size: 13px; padding: 10px 16px;">
+              <span style="display:flex; align-items:center; flex:1;">GMAC</span>
               <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </a>
-            <div class="nav-submenu" id="sub-orcamento" style="display: none; padding-left: 20px;">
-              <a href="#" class="nav-item sub-item" data-page="orcamento" onclick="navegar('orcamento')" style="font-size: 13px; padding: 10px 16px;"><span>Visão Geral</span></a>
-              <a href="#" class="nav-item sub-item" data-page="diarias" onclick="navegar('diarias')" style="font-size: 13px; padding: 10px 16px;"><span>Diárias</span></a>
+            <div class="nav-submenu" id="sub-gmac" style="display: none; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 10px;">
+              <a href="#" class="nav-item sub-item" data-page="gmac-aee" onclick="navegar('gmac-aee'); if(typeof carregarGMAC==='function') carregarGMAC('aee');" style="font-size: 12px; padding: 8px 16px;"><span>Equipamento - AEE</span></a>
+              <a href="#" class="nav-item sub-item" data-page="gmac-onibus" onclick="navegar('gmac-onibus'); if(typeof carregarGMAC==='function') carregarGMAC('onibus');" style="font-size: 12px; padding: 8px 16px;"><span>Doação do Ônibus Escolar</span></a>
+              <a href="#" class="nav-item sub-item" data-page="gmac-veiculos" onclick="navegar('gmac-veiculos'); if(typeof carregarGMAC==='function') carregarGMAC('veiculos');" style="font-size: 12px; padding: 8px 16px;"><span>Doação Definitiva de Veículos</span></a>
+              <a href="#" class="nav-item sub-item" data-page="gmac-reordenamento" onclick="navegar('gmac-reordenamento'); if(typeof carregarGMAC==='function') carregarGMAC('reordenamento');" style="font-size: 12px; padding: 8px 16px;"><span>Municipalização e Reordenamento</span></a>
+              <a href="#" class="nav-item sub-item" data-page="gmac-cooperacao" onclick="navegar('gmac-cooperacao'); if(typeof carregarGMAC==='function') carregarGMAC('cooperacao');" style="font-size: 12px; padding: 8px 16px;"><span>Termo de Cooperação</span></a>
             </div>
+
+            <!-- Diárias dentro da CAM -->
+            <a href="#" class="nav-item sub-item" data-page="diarias" onclick="navegar('diarias')" style="font-size: 13px; padding: 10px 16px;"><span>Diárias</span></a>
+
+            <!-- PROALFA -->
+            <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
           </div>
+        </div>
+
+        <!-- Menu Orçamento -->
+        <a href="#" class="nav-item action-report" data-page="orcamento" onclick="navegar('orcamento'); fecharSubmenus()">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+          <span>Orçamento</span>
+        </a>
 
 
         <!-- Menu Escolas -->
@@ -336,7 +336,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.16</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.17</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2764,14 +2764,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.16"></script>
-  <script src="js/app.js?v=1.2.16"></script>
-  <script src="js/auth-sap.js?v=1.2.16"></script>
-  <script src="js/escolas.js?v=1.2.16.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.17"></script>
+  <script src="js/app.js?v=1.2.17"></script>
+  <script src="js/auth-sap.js?v=1.2.17"></script>
+  <script src="js/escolas.js?v=1.2.17" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-<script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1.2.16"></script>
-  <script src="js/contatos.js"></script>
+  <script src="js/mapa.js?v=1.2.17"></script>
+  <script src="js/contatos.js?v=1.2.17"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -2914,14 +2913,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.16"></script>
+  <script src="js/multi-select.js?v=1.2.17"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.16"></script>
-  <script src="js/gmac.js?v=1.2.16"></script>
-  <script src="js/orcamento.js?v=1.2.16"></script>
-  <script src="js/print-proalfa.js?v=1.2.16"></script>
-  <script src="js/proalfa.js?v=1.2.16"></script>
+  <script src="js/diarias.js?v=1.2.17"></script>
+  <script src="js/gmac.js?v=1.2.17"></script>
+  <script src="js/orcamento.js?v=1.2.17"></script>
+  <script src="js/print-proalfa.js?v=1.2.17"></script>
+  <script src="js/proalfa.js?v=1.2.17"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
