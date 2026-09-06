@@ -4765,6 +4765,41 @@ function atualizarMetricasSistemaInfo() {
 }
 window.atualizarMetricasSistemaInfo = atualizarMetricasSistemaInfo;
 
+window.atualizarPainelSistemaCompleto = async function(btn) {
+  const originalHtml = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.innerHTML = '<span style="display:inline-block; animation:spin 1s linear infinite;">🔄</span> Atualizando...';
+  }
+  try {
+    if (typeof recarregarDadosGlobais === 'function') {
+      await recarregarDadosGlobais();
+    } else {
+      if (typeof inicializarDados === 'function') await inicializarDados();
+      if (typeof carregarAcessos === 'function') await carregarAcessos();
+      if (typeof carregarPainelSistemaInfo === 'function') await carregarPainelSistemaInfo();
+    }
+    if (typeof carregarPainelSistemaInfo === 'function') {
+      await carregarPainelSistemaInfo();
+    }
+    if (typeof toast === 'function') {
+      toast('Painel e sistema atualizados com sucesso!', 'success');
+    }
+  } catch(err) {
+    console.error('Erro ao atualizar painel:', err);
+    if (typeof toast === 'function') {
+      toast('Erro ao atualizar: ' + (err.message || err), 'error');
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.innerHTML = originalHtml || '🔄 Atualizar Painel';
+    }
+  }
+};
+
 async function carregarPainelSistemaInfo() {
   // 1. Dados do Usuário Ativo
   let user = null;
@@ -4818,18 +4853,20 @@ async function carregarPainelSistemaInfo() {
     elEntrada.textContent = dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR');
   }
 
-  // Cronômetro da sessão ativa
+  // Cronômetro da sessão ativa (GBZ - v1.2.25)
   const elTempo = document.getElementById('sysinfo-tempo-sessao');
   if (_sysInfoTimer) clearInterval(_sysInfoTimer);
-  _sysInfoTimer = setInterval(() => {
+  const formatarTempoAtivo = () => {
     if (!elTempo) return;
     const diffMs = Math.max(0, Date.now() - dtEntrada.getTime());
     const totalSec = Math.floor(diffMs / 1000);
     const hrs = String(Math.floor(totalSec / 3600)).padStart(2, '0');
     const mins = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
     const secs = String(totalSec % 60).padStart(2, '0');
-    elTempo.textContent = 'Sessão: ' + hrs + ':' + mins + ':' + secs;
-  }, 1000);
+    elTempo.innerHTML = '⏱️ Tempo Ativo: <strong>' + hrs + ':' + mins + ':' + secs + '</strong>';
+  };
+  formatarTempoAtivo();
+  _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
   // Renderizar tabela de conexões/usuários com detecção de usuários ativos (GBZ - v1.2.24)
   const isUsuarioAtivoHoje = (dataStr, isCurrent, u) => {
@@ -4879,13 +4916,13 @@ async function carregarPainelSistemaInfo() {
           '<td style="padding:8px 12px; font-weight:700; color:#34d399;">' + userName + '</td>' +
           '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(userWhats) + '</td>' +
           '<td style="padding:8px 12px;"><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(userNivel).toUpperCase() + '</span></td>' +
-          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR') + '</td>' +
-          '<td style="padding:8px 12px;"><span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Ativo (Você)</span></td>' +
+          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR') + '<div style="font-size:10.5px; color:#34d399; font-weight:600;">(ativo agora)</div></td>' +
+          '<td style="padding:8px 12px;"><span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Online (Você)</span></td>' +
         '</tr>';
       return;
     }
 
-    // Ordena: usuário atual primeiro, depois usuários ativos, depois offline
+    // Ordena: usuário atual primeiro, depois usuários online, depois offline
     const ordenados = [...lista].sort((a, b) => {
       const isCurA = (a.nome && a.nome.toLowerCase() === userName.toLowerCase()) || 
                      (a.whatsapp && String(a.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
@@ -4908,16 +4945,36 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        statusBadge = '<span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Ativo (Você)</span>';
+        statusBadge = '<span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Online (Você)</span>';
       } else if (ativo) {
-        statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Ativo</span>';
+        statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';
       } else {
-        statusBadge = '<span style="color:#94a3b8; font-weight:500; background:rgba(255,255,255,0.05); padding:3px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); display:inline-flex; align-items:center; gap:5px; font-size:11px;">⚪ Offline</span>';
+        statusBadge = '<span style="color:#f87171; font-weight:800; background:rgba(239,68,68,0.18); padding:4px 12px; border-radius:6px; border:1px solid rgba(239,68,68,0.45); display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(239,68,68,0.25); font-size:11px;">🔴 Offline</span>';
       }
       
       const horaAcesso = isCurrent 
         ? (dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR'))
         : (u.data || u.ultimoAcesso || '--/--/---- --:--:--');
+
+      // Calcular tempo decorrido desde o login para usuários online
+      let tempoRelativo = '';
+      if (isCurrent) {
+        const diffMin = Math.floor(Math.max(0, Date.now() - dtEntrada.getTime()) / 60000);
+        if (diffMin < 1) tempoRelativo = '<div style="font-size:10.5px; color:#34d399; font-weight:600;">(ativo agora)</div>';
+        else if (diffMin < 60) tempoRelativo = '<div style="font-size:10.5px; color:#34d399; font-weight:600;">(ativo há ' + diffMin + ' min)</div>';
+        else tempoRelativo = '<div style="font-size:10.5px; color:#34d399; font-weight:600;">(ativo há ' + Math.floor(diffMin/60) + 'h ' + (diffMin%60) + 'm)</div>';
+      } else if (ativo && u.data) {
+        const m = String(u.data).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+        if (m && m[4] && m[5]) {
+          const uDate = new Date(parseInt(m[3],10), parseInt(m[2],10)-1, parseInt(m[1],10), parseInt(m[4],10), parseInt(m[5],10), m[6]?parseInt(m[6],10):0);
+          const diffMin = Math.floor(Math.max(0, Date.now() - uDate.getTime()) / 60000);
+          if (diffMin >= 0 && diffMin < 720) {
+            if (diffMin < 1) tempoRelativo = '<div style="font-size:10.5px; color:#10b981; font-weight:600;">(ativo agora)</div>';
+            else if (diffMin < 60) tempoRelativo = '<div style="font-size:10.5px; color:#10b981; font-weight:600;">(ativo há ' + diffMin + ' min)</div>';
+            else tempoRelativo = '<div style="font-size:10.5px; color:#10b981; font-weight:600;">(ativo há ' + Math.floor(diffMin/60) + 'h ' + (diffMin%60) + 'm)</div>';
+          }
+        }
+      }
 
       const trBg = isCurrent ? 'rgba(16,185,129,0.15)' : (ativo ? 'rgba(16,185,129,0.10)' : 'transparent');
       const trBorder = (isCurrent || ativo) ? 'border-left:4px solid #10b981;' : 'border-left:4px solid transparent;';
@@ -4928,7 +4985,7 @@ async function carregarPainelSistemaInfo() {
           '<td style="padding:8px 12px; font-weight:700; color:' + nameColor + ';">' + (u.nome || 'Usuário') + '</td>' +
           '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(u.whatsapp || u.whats) + '</td>' +
           '<td style="padding:8px 12px;"><span style="background:rgba(59,130,246,0.15); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(u.nivel || u.perfil || 'EDITOR').toUpperCase() + '</span></td>' +
-          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + horaAcesso + '</td>' +
+          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + horaAcesso + tempoRelativo + '</td>' +
           '<td style="padding:8px 12px;">' + statusBadge + '</td>' +
         '</tr>'
       );
