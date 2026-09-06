@@ -3681,7 +3681,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.15)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.16)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -4524,6 +4524,7 @@ window.getActiveBgColor = getActiveBgColor;
 window.getActiveBorderColor = getActiveBorderColor;
 window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
+
 
 
 

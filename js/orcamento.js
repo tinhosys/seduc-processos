@@ -728,20 +728,13 @@ window.gerarRelatorioOrcamento = function(modelo) {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF('landscape', 'mm', 'a4');
   
-  doc.setFontSize(11);
-  doc.setFont('helvetica', 'bold');
-  doc.setTextColor(15, 23, 42);
-  doc.text('GOVERNO DO ESTADO DE RONDÔNIA', 14, 12);
-  doc.setFontSize(9.5);
-  doc.setTextColor(2, 132, 199);
-  doc.text('SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO', 14, 16.5);
-  doc.setFontSize(8.5);
-  doc.setTextColor(51, 65, 85);
-  doc.text('CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS', 14, 21);
-  doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(14);
   const anoRelativo = new Date().getFullYear();
-  doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo, 14, 26);
+    doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo, 14, 15);
+    doc.setFontSize(10);
+    doc.setTextColor(100, 100, 100);
+    doc.text('CAM - Coordenadoria de Articulações com os Municípios | SEDUC - RO', 14, 20);
+    doc.setTextColor(0, 0, 0);
   const tInicial = _orcFiltrado.reduce((acc, r) => acc + (r.inicial || 0), 0);
   const tEmpenhado = _orcFiltrado.reduce((acc, r) => acc + (r.empenhado || 0), 0);
   const tExecutado = _orcFiltrado.reduce((acc, r) => acc + (r.executado || 0), 0);
@@ -909,30 +902,27 @@ window.gerarRelatorioOrcamento = function(modelo) {
          if (modelo === 2) totalRow.push('');
          totalRow.push(_fmtBRL(tI), _fmtBRL(tEmp), _fmtBRL(tE), totalPct, _fmtBRL(tS));
          body.push(totalRow);
-       doc.text(title, 14, 27);
+    }
+    doc.text(title, 14, 26);
   doc.autoTable({ 
-      startY: 32, 
+      startY: 31, 
       head: head, 
       body: body, 
       styles: { fontSize: 7, cellPadding: 1.5 }, 
       headStyles: { fillColor: [79, 70, 229] },
       didDrawPage: function(data) {
         doc.setFontSize(8);
-        doc.setTextColor(71, 85, 105);
+        doc.setTextColor(150, 150, 150);
         
-        // Esquerda: CAM
-        doc.text("CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS", 14, doc.internal.pageSize.height - 10);
-
-        // Centro: Data/Hora
         const str = "Gerado em: " + new Date().toLocaleString('pt-BR');
         const pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
         const textWidth = doc.getTextWidth(str);
+        // centralizado
         doc.text(str, (pageWidth - textWidth) / 2, doc.internal.pageSize.height - 10);
         
-        // Direita: Página N/M
+        // a esquerda "1/1" ou apenas "Página 1" etc
         const pageText = "Página " + data.pageNumber + "/" + totalPagesExp;
-        const pageTextWidth = doc.getTextWidth(pageText);
-        doc.text(pageText, pageWidth - data.settings.margin.right - pageTextWidth, doc.internal.pageSize.height - 10);
+        doc.text(pageText, 14, doc.internal.pageSize.height - 10);
       },
       didParseCell: function(data) {
         const txt = data.cell.text[0] || '';
@@ -1108,33 +1098,16 @@ window.gerarRelatorioDespesas = function(modelo) {
   if(tipo) subtitle.push('Tipo: ' + tipo);
   if(subtitle.length === 0) subtitle.push('Todos os registros');
 
-  let y = 12;
-  doc.setFontSize(11);
+  let y = 15;
+  doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
-  doc.setTextColor(15, 23, 42);
-  doc.text('GOVERNO DO ESTADO DE RONDÔNIA', 14, y);
-  y += 4.5;
-
-  doc.setFontSize(9.5);
-  doc.setTextColor(2, 132, 199);
-  doc.text('SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO', 14, y);
-  y += 4.5;
-
-  doc.setFontSize(8.5);
-  doc.setTextColor(51, 65, 85);
-  doc.text('CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS', 14, y);
-  y += 5.5;
-
-  doc.setFontSize(10);
-  doc.setTextColor(0, 0, 0);
-  doc.text('Relatório de Despesas Realizadas', 14, y);
-  y += 5;
+  doc.text('Relatório de Despesas Realizadas - CAM SEDUC-RO', 14, y);
+  y += 7;
   
-  doc.setFontSize(8.5);
+  doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.setTextColor(100, 116, 139);
   doc.text(subtitle.join(' | '), 14, y);
-  y += 6;
+  y += 10;
 
   const rows = filtrado.map(p => [
     p.data,
@@ -1160,26 +1133,16 @@ window.gerarRelatorioDespesas = function(modelo) {
       7: { cellWidth: 25, halign: 'right' }
     },
     didDrawPage: function(data) {
-      doc.setFontSize(8);
-      doc.setTextColor(71, 85, 105);
-
-      // Esquerda: CAM
-      doc.text("CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS", 14, doc.internal.pageSize.height - 10);
-
-      // Centro: Gerado em
-      const now = new Date();
-      const dateStr = 'Gerado em: ' + now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
-      const pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-      const textWidth = doc.getTextWidth(dateStr);
-      doc.text(dateStr, (pageWidth - textWidth) / 2, doc.internal.pageSize.height - 10);
-
-      // Direita: Página
       let str = 'Página ' + doc.internal.getNumberOfPages();
       if (typeof doc.putTotalPages === 'function') {
         str = str + ' de ' + totalPagesExp;
       }
-      const pageTextWidth = doc.getTextWidth(str);
-      doc.text(str, pageWidth - data.settings.margin.right - pageTextWidth, doc.internal.pageSize.height - 10);
+      doc.setFontSize(8);
+      doc.text(str, data.settings.margin.left, doc.internal.pageSize.height - 10);
+      
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR');
+      doc.text('Gerado em: ' + dateStr, doc.internal.pageSize.width - data.settings.margin.right - 40, doc.internal.pageSize.height - 10);
     }
   });
 
