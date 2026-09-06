@@ -209,7 +209,8 @@ function navegar(pagina) {
     'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia',
     'todas-escolas': '🏫 Todas as Escolas',
     'orcamento': '💵 Orçamento',
-    'diarias': '📅 Controle de Diárias'
+    'diarias': '📅 Controle de Diárias',
+    'sistema-info': '🖥️ Informações do Sistema & Diagnóstico'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -230,6 +231,7 @@ function navegar(pagina) {
   }
   if (pagina === 'todas-escolas') iniciarPaginaTodasEscolas();
   if (pagina === 'orcamento' && typeof carregarOrcamento === 'function') carregarOrcamento();
+  if (pagina === 'sistema-info' && typeof carregarPainelSistemaInfo === 'function') carregarPainelSistemaInfo();
   if (pagina === 'diarias' && typeof carregarDiarias === 'function') carregarDiarias();
   if (pagina && pagina.startsWith('gmac-')) {
     const mod = pagina.replace('gmac-', '');
@@ -3699,7 +3701,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.19)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.20)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -4555,3 +4557,447 @@ window.getTypeBadge = getTypeBadge;
 
 
 
+
+
+// =========================================================================
+// PADRONIZADOR & CORRETOR ORTOGRÁFICO (TERMINAL CMD VERDE FÓSFORO)
+// =========================================================================
+
+let _divergenciasDetectadasCMD = [];
+
+function normalizarTextoSeguro(val) {
+  if (val === null || val === undefined) return '';
+  return String(val).replace(/\s+/g, ' ').trim();
+}
+
+window.verificarInconsistenciasPlanilhaCMD = function() {
+  const output = document.getElementById('cmd-output-area');
+  const btnAutorizar = document.getElementById('btn-cmd-autorizar');
+  const btnCancelar = document.getElementById('btn-cmd-cancelar');
+  const indStatus = document.getElementById('cmd-status-indicator');
+  const progBox = document.getElementById('cmd-progress-container');
+
+  if (progBox) progBox.style.display = 'none';
+  if (indStatus) indStatus.textContent = 'STATUS: ESCANEANDO...';
+  if (output) {
+    output.innerHTML = '<div style="color:#00ff66;">> Iniciando varredura ortográfica e estrutural nas planilhas do sistema...</div><div style="color:#94a3b8;">> Verificando campos: Número, Status, Localização, Município, Objeto, Interessado, Categoria, Tipo, Prefixo e Agrupamento...</div>';
+  }
+
+  const pool = window.processosCache || [];
+  if (!pool || pool.length === 0) {
+    if (output) output.innerHTML += '<div style="color:#f87171;">> [ERRO] Nenhum registro carregado no cache para análise. Recarregue os dados globais.</div>';
+    if (indStatus) indStatus.textContent = 'STATUS: ERRO';
+    return;
+  }
+
+  const divergencias = [];
+
+  // Campos a verificar estritamente ortográficos (NUNCA VALORES NEM DATAS)
+  const camposTexto = [
+    { key: 'numero', label: 'Número Processo' },
+    { key: 'status', label: 'Status' },
+    { key: 'localizacao', label: 'Localização' },
+    { key: 'municipio', label: 'Município' },
+    { key: 'objeto', label: 'Objeto' },
+    { key: 'interessado', label: 'Interessado' },
+    { key: 'categoria', label: 'Categoria' },
+    { key: 'tipo', label: 'Tipo' },
+    { key: 'prefixo', label: 'Prefixo' },
+    { key: 'agrupamento', label: 'Agrupamento' }
+  ];
+
+  pool.forEach(p => {
+    if (p.aba === 'PARAMETROS' || p.aba === 'parametro_combo') return;
+
+    let updates = {};
+    let diffs = [];
+
+    camposTexto.forEach(({ key, label }) => {
+      const valAtual = p[key];
+      if (typeof valAtual === 'string' && valAtual.length > 0) {
+        let valSugerido = normalizarTextoSeguro(valAtual);
+
+        // Ajuste inteligente por campo
+        if (key === 'status') {
+          valSugerido = valSugerido.toUpperCase();
+        } else if (key === 'prefixo') {
+          valSugerido = valSugerido.toUpperCase();
+        } else if (key === 'interessado' && typeof encontrarEscolaSemelhante === 'function') {
+          const matchEscola = encontrarEscolaSemelhante(valSugerido);
+          if (matchEscola && matchEscola !== valAtual) {
+            valSugerido = matchEscola;
+          }
+        }
+
+        if (valSugerido !== valAtual) {
+          updates[key] = valSugerido;
+          diffs.push({
+            campo: label,
+            key: key,
+            anterior: valAtual,
+            sugerido: valSugerido
+          });
+        }
+      }
+    });
+
+    if (diffs.length > 0) {
+      divergencias.push({
+        id: p.id,
+        rowNumber: p.rowNumber,
+        aba: p.aba,
+        numero: p.numero || p.id,
+        registroOriginal: { ...p },
+        updates: updates,
+        diffs: diffs
+      });
+    }
+  });
+
+  _divergenciasDetectadasCMD = divergencias;
+
+  if (divergencias.length === 0) {
+    if (indStatus) indStatus.textContent = 'STATUS: 100% PADRONIZADO';
+    if (output) {
+      output.innerHTML += '<div style="color:#00ff66; margin-top:10px; font-weight:bold;">> [SUCESSO] Varredura Concluída! Todas as células analisadas estão 100% padronizadas. Nenhuma divergência detectada.</div>';
+    }
+    if (btnAutorizar) btnAutorizar.style.display = 'none';
+    if (btnCancelar) btnCancelar.style.display = 'none';
+    return;
+  }
+
+  if (indStatus) indStatus.textContent = `STATUS: ${divergencias.length} DIVERGÊNCIAS DETECTADAS`;
+
+  let tableHtml = `
+    <div style="margin-top:10px; color:#fbbf24; font-weight:bold;">
+      > [ATENÇÃO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0 6px; font-size:11px; color:#94a3b8;">
+      <span>Selecione as linhas que deseja autorizar para correção:</span>
+      <label style="cursor:pointer; display:flex; align-items:center; gap:6px; color:#00ff66; font-weight:bold;">
+        <input type="checkbox" id="cmd-check-all" onchange="toggleAllCmdCheckboxes(this.checked)" checked style="cursor:pointer;">
+        Selecionar Todos / Nenhum
+      </label>
+    </div>
+    <table style="width:100%; border-collapse:collapse; font-size:11px; text-align:left; background:rgba(0,0,0,0.5); border:1px solid rgba(0,255,102,0.2);">
+      <thead>
+        <tr style="border-bottom:1px solid rgba(0,255,102,0.3); background:rgba(0,255,102,0.08); color:#00ff66;">
+          <th style="padding:6px 10px; width:40px; text-align:center;">Sel.</th>
+          <th style="padding:6px 10px; width:130px;">Processo / ID</th>
+          <th style="padding:6px 10px; width:110px;">Campo</th>
+          <th style="padding:6px 10px;">Valor Atual</th>
+          <th style="padding:6px 10px; color:#34d399;">Sugestão Padronizada</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  divergencias.slice(0, 100).forEach((d, idx) => {
+    d.diffs.forEach((diff) => {
+      tableHtml += `
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:${idx % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent'};">
+          <td style="padding:6px 10px; text-align:center;">
+            <input type="checkbox" class="cmd-row-check" data-idx="${idx}" onchange="atualizarContadorSelecaoCMD()" checked style="cursor:pointer;">
+          </td>
+          <td style="padding:6px 10px; font-weight:bold; color:#60a5fa; font-family:monospace;">${d.numero}</td>
+          <td style="padding:6px 10px; color:#fbbf24;">${diff.campo}</td>
+          <td style="padding:6px 10px; color:#f87171; text-decoration:line-through; word-break:break-all;">${diff.anterior}</td>
+          <td style="padding:6px 10px; color:#00ff66; font-weight:bold; word-break:break-all;">${diff.sugerido}</td>
+        </tr>
+      `;
+    });
+  });
+
+  if (divergencias.length > 100) {
+    tableHtml += `<tr><td colspan="5" style="padding:8px; text-align:center; color:#fbbf24; font-weight:bold;">... e mais ${divergencias.length - 100} registros no lote ...</td></tr>`;
+  }
+
+  tableHtml += '</tbody></table>';
+
+  if (output) output.innerHTML = tableHtml;
+
+  if (btnAutorizar) {
+    btnAutorizar.style.display = 'inline-flex';
+    document.getElementById('cmd-qtd-selecionados').textContent = divergencias.length;
+  }
+  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
+};
+
+window.toggleAllCmdCheckboxes = function(check) {
+  document.querySelectorAll('.cmd-row-check').forEach(cb => {
+    cb.checked = check;
+  });
+  atualizarContadorSelecaoCMD();
+};
+
+window.atualizarContadorSelecaoCMD = function() {
+  const checks = document.querySelectorAll('.cmd-row-check:checked');
+  const countSpan = document.getElementById('cmd-qtd-selecionados');
+  if (countSpan) countSpan.textContent = checks.length;
+
+  const btnAutorizar = document.getElementById('btn-cmd-autorizar');
+  if (btnAutorizar) {
+    btnAutorizar.disabled = checks.length === 0;
+    btnAutorizar.style.opacity = checks.length === 0 ? '0.5' : '1';
+  }
+};
+
+window.cancelarPadronizacaoCMD = function() {
+  _divergenciasDetectadasCMD = [];
+  const output = document.getElementById('cmd-output-area');
+  const btnAutorizar = document.getElementById('btn-cmd-autorizar');
+  const btnCancelar = document.getElementById('btn-cmd-cancelar');
+  const indStatus = document.getElementById('cmd-status-indicator');
+  const progBox = document.getElementById('cmd-progress-container');
+
+  if (progBox) progBox.style.display = 'none';
+  if (btnAutorizar) btnAutorizar.style.display = 'none';
+  if (btnCancelar) btnCancelar.style.display = 'none';
+  if (indStatus) indStatus.textContent = 'STATUS: CANCELADO';
+  if (output) {
+    output.innerHTML = '<div style="color:#64748b;">> Operação cancelada pelo usuário. Nenhuma célula foi alterada.</div>';
+  }
+};
+
+// =========================================================================
+// CONTRA-NOTIFICAÇÃO & CONFIRMAÇÃO DE SEGURANÇA
+// =========================================================================
+
+window.confirmarContraNotificacaoPadronizacao = function() {
+  const selectedIndices = new Set();
+  document.querySelectorAll('.cmd-row-check:checked').forEach(cb => {
+    const idx = parseInt(cb.getAttribute('data-idx'), 10);
+    if (!isNaN(idx)) selectedIndices.add(idx);
+  });
+
+  if (selectedIndices.size === 0) {
+    alert("Nenhuma linha selecionada. Marque ao menos um registro para autorizar a correção.");
+    return;
+  }
+
+  const modal = document.getElementById('modal-contra-notificacao');
+  const qtdEl = document.getElementById('modal-contra-qtd');
+  const checkContra = document.getElementById('check-contra-notificacao');
+  const btnExec = document.getElementById('btn-confirmar-contra-execucao');
+
+  if (qtdEl) qtdEl.textContent = selectedIndices.size;
+  if (checkContra) checkContra.checked = false;
+  if (btnExec) {
+    btnExec.style.opacity = '0.5';
+    btnExec.style.pointerEvents = 'none';
+  }
+  if (modal) modal.style.display = 'flex';
+};
+
+window.fecharContraNotificacao = function() {
+  const modal = document.getElementById('modal-contra-notificacao');
+  if (modal) modal.style.display = 'none';
+};
+
+window.toggleBotaoContraExecucao = function(isChecked) {
+  const btn = document.getElementById('btn-confirmar-contra-execucao');
+  if (btn) {
+    btn.style.opacity = isChecked ? '1' : '0.5';
+    btn.style.pointerEvents = isChecked ? 'auto' : 'none';
+  }
+};
+
+// =========================================================================
+// EXECUÇÃO EM LOTE COM PROGRESSO DINÂMICO & BACKUP DE ESTORNO
+// =========================================================================
+
+window.executarPadronizacaoPlanilhaCMD = async function() {
+  fecharContraNotificacao();
+
+  const selectedIndices = new Set();
+  document.querySelectorAll('.cmd-row-check:checked').forEach(cb => {
+    const idx = parseInt(cb.getAttribute('data-idx'), 10);
+    if (!isNaN(idx)) selectedIndices.add(idx);
+  });
+
+  const fila = _divergenciasDetectadasCMD.filter((_, i) => selectedIndices.has(i));
+  const total = fila.length;
+  if (total === 0) return;
+
+  // 1. Criar ponto de restauração (BACKUP PARA ESTORNO)
+  const backupSnapshot = {
+    timestamp: new Date().toISOString(),
+    dataHora: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR'),
+    registros: fila.map(item => ({
+      id: item.id,
+      numero: item.numero,
+      valoresAnteriores: Object.keys(item.updates).reduce((acc, k) => {
+        acc[k] = item.registroOriginal[k];
+        return acc;
+      }, {})
+    }))
+  };
+
+  try {
+    localStorage.setItem('padronizacao_backup', JSON.stringify(backupSnapshot));
+    if (typeof atualizarBadgeBackupPadronizacao === 'function') {
+      atualizarBadgeBackupPadronizacao();
+    }
+  } catch(e) {
+    console.warn('Não foi possível salvar backup em localStorage:', e);
+  }
+
+  // 2. Exibir barra de progresso no terminal
+  const progBox = document.getElementById('cmd-progress-container');
+  const bar = document.getElementById('cmd-progress-bar');
+  const pctText = document.getElementById('cmd-progress-pct');
+  const msgText = document.getElementById('cmd-progress-msg');
+  const sucText = document.getElementById('cmd-count-sucesso');
+  const errText = document.getElementById('cmd-count-falhas');
+  const totText = document.getElementById('cmd-count-total');
+  const indStatus = document.getElementById('cmd-status-indicator');
+  const output = document.getElementById('cmd-output-area');
+
+  if (progBox) progBox.style.display = 'block';
+  if (totText) totText.textContent = 'Total no lote: ' + total;
+  if (indStatus) indStatus.textContent = 'STATUS: GRAVANDO NA PLANILHA...';
+
+  const btnVarredura = document.getElementById('btn-cmd-varredura');
+  const btnAutorizar = document.getElementById('btn-cmd-autorizar');
+  const btnCancelar = document.getElementById('btn-cmd-cancelar');
+  if (btnVarredura) btnVarredura.disabled = true;
+  if (btnAutorizar) btnAutorizar.style.display = 'none';
+  if (btnCancelar) btnCancelar.style.display = 'none';
+
+  output.innerHTML = '<div style="color:#00ff66;">> [INÍCIO] Gravando correções ortográficas autorizadas...</div>';
+
+  let sucesso = 0;
+  let falhas = 0;
+  const token = sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token');
+  const base = typeof API_BASE !== 'undefined' ? API_BASE : 'https://seduc-backend.onrender.com';
+
+  for (let i = 0; i < total; i++) {
+    const item = fila[i];
+    const curr = i + 1;
+    const pct = Math.round((curr / total) * 100);
+
+    if (bar) bar.style.width = pct + '%';
+    if (pctText) pctText.textContent = pct + '%';
+    if (msgText) msgText.textContent = `⚙️ Gravando registro ${curr} de ${total} (Nº ${item.numero})...`;
+
+    try {
+      const payloadOriginal = (window._dadosPlanilhaCache ? window._dadosPlanilhaCache.find(p => p.id === item.id) : null) || item.registroOriginal;
+      const payloadFinal = { ...payloadOriginal, ...item.updates };
+
+      const res = await fetch(base + '/api/registros/' + item.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(payloadFinal)
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      sucesso++;
+      if (sucText) sucText.textContent = '✅ Sucesso: ' + sucesso;
+      output.innerHTML += `<div style="color:#34d399; font-size:11px;">> [OK ${curr}/${total}] Processo ${item.numero}: Atualizado com sucesso.</div>`;
+    } catch(err) {
+      falhas++;
+      if (errText) errText.textContent = '❌ Falhas: ' + falhas;
+      output.innerHTML += `<div style="color:#f87171; font-size:11px;">> [FALHA ${curr}/${total}] Processo ${item.numero}: ${err.message}</div>`;
+    }
+
+    output.scrollTop = output.scrollHeight;
+    await new Promise(r => setTimeout(r, 120));
+  }
+
+  if (indStatus) indStatus.textContent = `STATUS: CONCLUÍDO (${sucesso} SUCESSOS, ${falhas} FALHAS)`;
+  if (msgText) msgText.textContent = '🎉 Padronização concluída com sucesso!';
+  output.innerHTML += `<div style="color:#00ff66; font-weight:bold; margin-top:10px;">> [CONCLUÍDO] Lote finalizado! ${sucesso} registros corrigidos. Ponto de restauração disponível para estorno.</div>`;
+
+  if (btnVarredura) btnVarredura.disabled = false;
+  if (typeof recarregarDadosGlobais === 'function') {
+    recarregarDadosGlobais();
+  }
+};
+
+// =========================================================================
+// ESTORNO DA ÚLTIMA ATUALIZAÇÃO (UNDO COM DATA E HORA)
+// =========================================================================
+
+window.estornarUltimaPadronizacao = async function() {
+  const raw = localStorage.getItem('padronizacao_backup');
+  if (!raw) {
+    alert("Nenhum backup de padronização encontrado para estornar.");
+    return;
+  }
+
+  let backup;
+  try {
+    backup = JSON.parse(raw);
+  } catch(e) {
+    alert("Erro ao ler dados do backup de estorno.");
+    return;
+  }
+
+  if (!backup.registros || backup.registros.length === 0) {
+    alert("O backup de padronização está vazio.");
+    return;
+  }
+
+  const confirma = confirm(`⚠️ ATENÇÃO: Deseja realmente estornar (reverter) a última padronização realizada em ${backup.dataHora}?
+
+Total de registros a restaurar: ${backup.registros.length}`);
+  if (!confirma) return;
+
+  const output = document.getElementById('cmd-output-area');
+  const indStatus = document.getElementById('cmd-status-indicator');
+  const progBox = document.getElementById('cmd-progress-container');
+  const bar = document.getElementById('cmd-progress-bar');
+  const pctText = document.getElementById('cmd-progress-pct');
+  const msgText = document.getElementById('cmd-progress-msg');
+
+  if (progBox) progBox.style.display = 'block';
+  if (indStatus) indStatus.textContent = 'STATUS: EXECUTANDO ESTORNO...';
+  if (output) {
+    output.innerHTML = `<div style="color:#fbbf24; font-weight:bold;">> [ESTORNO] Iniciando reversão dos valores para o estado de ${backup.dataHora}...</div>`;
+  }
+
+  const token = sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token');
+  const base = typeof API_BASE !== 'undefined' ? API_BASE : 'https://seduc-backend.onrender.com';
+
+  const total = backup.registros.length;
+  let sucesso = 0;
+  let falhas = 0;
+
+  for (let i = 0; i < total; i++) {
+    const item = backup.registros[i];
+    const curr = i + 1;
+    const pct = Math.round((curr / total) * 100);
+
+    if (bar) bar.style.width = pct + '%';
+    if (pctText) pctText.textContent = pct + '%';
+    if (msgText) msgText.textContent = `↺ Restaurando registro ${curr} de ${total}...`;
+
+    try {
+      const res = await fetch(base + '/api/registros/' + item.id, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify(item.valoresAnteriores)
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      sucesso++;
+      if (output) output.innerHTML += `<div style="color:#34d399; font-size:11px;">> [RESTORE OK] Processo ${item.numero}: Valores restaurados com sucesso.</div>`;
+    } catch(err) {
+      falhas++;
+      if (output) output.innerHTML += `<div style="color:#f87171; font-size:11px;">> [RESTORE FALHA] Processo ${item.numero}: ${err.message}</div>`;
+    }
+
+    if (output) output.scrollTop = output.scrollHeight;
+    await new Promise(r => setTimeout(r, 120));
+  }
+
+  if (indStatus) indStatus.textContent = `STATUS: ESTORNO CONCLUÍDO (${sucesso}/${total})`;
+  if (output) {
+    output.innerHTML += `<div style="color:#00ff66; font-weight:bold; margin-top:10px;">> [ESTORNO FINALIZADO] ${sucesso} registros revertidos com sucesso para a versão de ${backup.dataHora}.</div>`;
+  }
+
+  if (typeof recarregarDadosGlobais === 'function') {
+    recarregarDadosGlobais();
+  }
+};

@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.19">
+  <link rel="stylesheet" href="css/style.css?v=1.2.20">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.19</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.20</div>
   </div>
 </div>
   
@@ -392,6 +392,11 @@
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
           <div class="nav-submenu sub-config-container" id="sub-config" style="display: none;">
+            <a href="#" class="nav-item nav-form-item action-adm item-sistema" data-page="sistema-info" onclick="navegar('sistema-info')">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+              <span>Informações do Sistema</span>
+            </a>
+
             <a href="#" class="nav-item nav-form-item action-adm item-acessos" data-page="acessos" onclick="navegar('acessos')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><circle cx="18" cy="8" r="2.5"></circle><path d="M19.8 9.8L22 12"></path><line x1="21" y1="11" x2="22" y2="10"></line></svg>
               <span>Gerenciar Acessos</span>
@@ -407,7 +412,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.19</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.20</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1630,6 +1635,377 @@
 
       </section>
 
+      <!-- ============= PAGE: INFORMAÇÕES DO SISTEMA (ADMIN ONLY) ============= -->
+      <section class="page action-adm" id="page-sistema-info">
+        
+        <!-- Header da Página -->
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+              <span style="font-size:26px;">🖥️</span>
+              <h2 style="margin:0; font-size:22px; font-weight:800; color:#f8fafc;">Informações do Sistema & Diagnóstico Operacional</h2>
+            </div>
+            <p style="margin:0; font-size:13px; color:#94a3b8; line-height:1.5;">
+              Painel consolidado administrativo — Sessões ativas, métricas globais integradas, mapa de planilhas e padronizador ortográfico seguro.
+            </p>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
+              🟢 Sistema Online
+            </span>
+            <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
+              GBZ - v1.2.20
+            </span>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="carregarPainelSistemaInfo()" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;">
+              🔄 Atualizar Painel
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. USUÁRIOS LOGADOS & SESSÃO ATIVA -->
+        <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(59,130,246,0.3); background:linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.5));">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+            <h3 style="margin:0; font-size:15px; font-weight:700; color:#60a5fa; display:flex; align-items:center; gap:8px;">
+              <span>👤</span> Usuários Conectados no Momento & Sessões Ativas
+            </h3>
+            <span id="sysinfo-tempo-sessao" style="font-family:monospace; font-size:12px; color:#34d399; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:6px;">
+              Sessão: 00:00:00
+            </span>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px; margin-bottom:16px;">
+            <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:14px;">
+              <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-bottom:4px;">Usuário Atual (Login)</div>
+              <div id="sysinfo-user-nome" style="font-size:16px; font-weight:700; color:#f8fafc;">Carregando...</div>
+              <div id="sysinfo-user-whats" style="font-size:12px; color:#60a5fa; font-family:monospace; margin-top:2px;">-</div>
+            </div>
+            <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:14px;">
+              <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-bottom:4px;">Perfil & Nível de Acesso</div>
+              <div id="sysinfo-user-role" style="font-size:16px; font-weight:700; color:#34d399;">Admin (Acesso Total)</div>
+              <div id="sysinfo-user-setor" style="font-size:12px; color:#cbd5e1; margin-top:2px;">CAM / SEDUC-RO</div>
+            </div>
+            <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:14px;">
+              <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-bottom:4px;">Data e Hora da Entrada</div>
+              <div id="sysinfo-user-entrada" style="font-size:15px; font-weight:700; color:#fbbf24; font-family:monospace;">--/--/---- --:--:--</div>
+              <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Conexão autenticada via Google Sheets</div>
+            </div>
+          </div>
+
+          <!-- Histórico / Lista de Usuários Logados -->
+          <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
+            <div style="font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:8px;">Últimos Acessos Registrados na Planilha:</div>
+            <div style="max-height:180px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:6px;">
+              <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                <thead>
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.08); color:#94a3b8; text-align:left;">
+                    <th style="padding:8px 12px;">Usuário</th>
+                    <th style="padding:8px 12px;">WhatsApp</th>
+                    <th style="padding:8px 12px;">Perfil</th>
+                    <th style="padding:8px 12px;">Data / Hora Entrada</th>
+                    <th style="padding:8px 12px;">Acessos</th>
+                  </tr>
+                </thead>
+                <tbody id="sysinfo-tbody-logados">
+                  <tr><td colspan="5" style="padding:14px; text-align:center; color:#94a3b8;">Carregando histórico de conexões...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. PAINEL EXECUTIVO COM NÚMEROS DO SISTEMA -->
+        <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(16,185,129,0.3);">
+          <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#34d399; display:flex; align-items:center; gap:8px;">
+            <span>📊</span> Painel de Indicadores Globais do Sistema (Tempo Real)
+          </h3>
+
+          <!-- Grade de Grupos -->
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">
+            
+            <!-- Grupo 1: GDSM -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(56,189,248,0.25); border-left:4px solid #38bdf8; border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:13px; font-weight:700; color:#38bdf8;">GDSM (Processos Gerais)</span>
+                <span style="font-size:18px;">📋</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                <span style="font-size:12px; color:#cbd5e1;">Processos GDSM Cadastrados:</span>
+                <span id="metric-gdsm-total" style="font-weight:700; font-family:monospace; color:#38bdf8; font-size:14px;">0</span>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span style="font-size:12px; color:#cbd5e1;">Processos Repetidos Detectados:</span>
+                <span id="metric-gdsm-repetidos" style="font-weight:700; font-family:monospace; color:#f87171; font-size:14px;">0</span>
+              </div>
+            </div>
+
+            <!-- Grupo 2: GMAC -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(52,211,153,0.25); border-left:4px solid #34d399; border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:13px; font-weight:700; color:#34d399;">GMAC (Gestão Municipal)</span>
+                <span style="font-size:18px;">🏛️</span>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
+                <div>🎒 Equipamento AEE: <strong id="metric-gmac-aee" style="color:#34d399; font-family:monospace;">0</strong></div>
+                <div>🚌 Doação Ônibus: <strong id="metric-gmac-onibus" style="color:#f59e0b; font-family:monospace;">0</strong></div>
+                <div>🚗 Doação Veículos: <strong id="metric-gmac-veiculos" style="color:#10b981; font-family:monospace;">0</strong></div>
+                <div>🏛️ Reordenamento: <strong id="metric-gmac-reord" style="color:#8b5cf6; font-family:monospace;">0</strong></div>
+                <div style="grid-column: span 2;">🤝 Termo de Cooperação: <strong id="metric-gmac-coop" style="color:#ec4899; font-family:monospace;">0</strong></div>
+              </div>
+            </div>
+
+            <!-- Grupo 3: Escolas -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(251,146,60,0.25); border-left:4px solid #fb923c; border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:13px; font-weight:700; color:#fb923c;">Rede Escolar de Rondônia</span>
+                <span style="font-size:18px;">🏫</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
+                <span style="color:#cbd5e1;">Escolas Municipais (52 Mun.):</span>
+                <strong id="metric-escolas-mun" style="color:#fb923c; font-family:monospace; font-size:13px;">0</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
+                <span style="color:#cbd5e1;">Escolas Estaduais:</span>
+                <strong id="metric-escolas-est" style="color:#34d399; font-family:monospace; font-size:13px;">0</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span style="color:#cbd5e1;">Escolas Federais:</span>
+                <strong id="metric-escolas-fed" style="color:#60a5fa; font-family:monospace; font-size:13px;">0</strong>
+              </div>
+            </div>
+
+            <!-- Grupo 4: PROALFA -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(192,132,252,0.25); border-left:4px solid #c084fc; border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:13px; font-weight:700; color:#c084fc;">PROALFA / CENSO</span>
+                <span style="font-size:18px;">🎓</span>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
+                <div>👨‍🏫 Prof. Municipais: <strong id="metric-proalfa-prof-mun" style="color:#c084fc; font-family:monospace;">0</strong></div>
+                <div>👩‍🏫 Prof. Estaduais: <strong id="metric-proalfa-prof-est" style="color:#a78bfa; font-family:monospace;">0</strong></div>
+                <div>🎒 Alunos Municipais: <strong id="metric-proalfa-alun-mun" style="color:#38bdf8; font-family:monospace;">0</strong></div>
+                <div>📚 Alunos Estaduais: <strong id="metric-proalfa-alun-est" style="color:#818cf8; font-family:monospace;">0</strong></div>
+              </div>
+            </div>
+
+            <!-- Grupo 5: Orçamento -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(34,197,94,0.25); border-left:4px solid #22c55e; border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:13px; font-weight:700; color:#22c55e;">Orçamento CAM (Execução)</span>
+                <span style="font-size:18px;">💰</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
+                <span style="color:#cbd5e1;">Executado (Liquidado):</span>
+                <strong id="metric-orc-executado" style="color:#10b981; font-family:monospace;">R$ 0,00</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
+                <span style="color:#cbd5e1;">Empenhado:</span>
+                <strong id="metric-orc-empenhado" style="color:#f59e0b; font-family:monospace;">R$ 0,00</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span style="color:#cbd5e1;">Saldo Disponível:</span>
+                <strong id="metric-orc-saldo" style="color:#a78bfa; font-family:monospace;">R$ 0,00</strong>
+              </div>
+            </div>
+
+            <!-- Grupo 6: Diárias -->
+            <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(251,191,36,0.25); border-left:4px solid #fbbf24; border-radius:8px; padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <span style="font-size:13px; font-weight:700; color:#fbbf24;">Controle de Diárias</span>
+                <span style="font-size:18px;">📅</span>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
+                <div>🟢 Pagos: <strong id="metric-diarias-pagos" style="color:#34d399; font-family:monospace;">0</strong></div>
+                <div>🟡 Em Análise: <strong id="metric-diarias-analise" style="color:#fbbf24; font-family:monospace;">0</strong></div>
+                <div>🔵 Encerrados: <strong id="metric-diarias-encerrados" style="color:#60a5fa; font-family:monospace;">0</strong></div>
+                <div>🟠 Aguardando: <strong id="metric-diarias-aguardando" style="color:#f97316; font-family:monospace;">0</strong></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 3. MAPA DE CONEXÕES DAS PLANILHAS DO GOOGLE SHEETS -->
+        <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(59,130,246,0.3);">
+          <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#60a5fa; display:flex; align-items:center; gap:8px;">
+            <span>🗺️</span> Mapa de Conexões das Planilhas Google Sheets em Uso
+          </h3>
+          <p style="font-size:13px; color:#94a3b8; margin-bottom:16px;">
+            Acesso direto às bases de dados que alimentam os módulos da aplicação em tempo real:
+          </p>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+            
+            <a href="https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
+              <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">📋 Planilha Principal (Processos)</span>
+                  <span style="font-size:11px; color:#38bdf8;">Abrir ↗</span>
+                </div>
+                <div style="font-size:11px; color:#94a3b8; line-height:1.4;">GDSM, GMAC e Gerenciamento de Acessos do Sistema.</div>
+              </div>
+            </a>
+
+            <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
+              <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">🏫 Planilha de Escolas de RO</span>
+                  <span style="font-size:11px; color:#fb923c;">Abrir ↗</span>
+                </div>
+                <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Rede Estadual, Federal e 52 Municípios de Rondônia.</div>
+              </div>
+            </a>
+
+            <a href="https://docs.google.com/spreadsheets/d/12w-tBU6lMlKR7mncvbfoKjKGcvCZftd12CFKxdtf7ac/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
+              <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">🎓 Planilha PROALFA / CENSO</span>
+                  <span style="font-size:11px; color:#c084fc;">Abrir ↗</span>
+                </div>
+                <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Matrículas de Alunos e Docentes Municipais e Estaduais.</div>
+              </div>
+            </a>
+
+            <a href="https://docs.google.com/spreadsheets/d/1NQuN9icUm8RL08pqkPia3ZrgoC5zEka99mK43sUJm3o/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
+              <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">💰 Planilha de Orçamento CAM</span>
+                  <span style="font-size:11px; color:#22c55e;">Abrir ↗</span>
+                </div>
+                <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Execução Orçamentária, Dotação, Naturezas e Despesas.</div>
+              </div>
+            </a>
+
+            <a href="https://docs.google.com/spreadsheets/d/1WunsuLAAIUAAo1q65qmSVMIH0qLJu_TjDsb_u9LO304/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
+              <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">✈️ Planilha de Diárias</span>
+                  <span style="font-size:11px; color:#fbbf24;">Abrir ↗</span>
+                </div>
+                <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Controle de Concessão de Diárias Estadual e Federal.</div>
+              </div>
+            </a>
+
+          </div>
+        </div>
+
+        <!-- 4. CORRETOR ORTOGRÁFICO & PADRONIZADOR (TERMINAL CMD VERDE FÓSFORO) -->
+        <div class="card" id="card-terminal-padronizador" style="margin-bottom:24px; padding:20px; border-color:rgba(0,255,102,0.4); background:#050907; box-shadow:0 10px 30px rgba(0,0,0,0.6);">
+          
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="color:#00ff66; font-size:18px;">📟</span>
+              <h3 style="margin:0; font-size:16px; font-weight:800; color:#00ff66; font-family:'Consolas', monospace; letter-spacing:0.5px; text-shadow:0 0 8px rgba(0,255,102,0.4);">
+                CORRETOR ORTOGRÁFICO & PADRONIZADOR
+              </h3>
+            </div>
+            <div id="sysinfo-backup-badge" style="font-family:'Consolas', monospace; font-size:11px; color:#34d399; background:rgba(0,255,102,0.1); border:1px solid rgba(0,255,102,0.25); padding:4px 10px; border-radius:4px;">
+              Último Backup: Nenhum registrado
+            </div>
+          </div>
+
+          <p style="font-size:13px; color:#94a3b8; margin-bottom:16px; line-height:1.6;">
+            Esta ferramenta realiza uma varredura completa em todo o sistema (<strong>Número de Processo, Status, Localização, Município, Objeto, Interessado, Categoria, Tipo, Prefixo e Agrupamento</strong>). Remove espaços extras, corrige letras minúsculas e padroniza todas as células da planilha, não mexe em valores. Nenhuma alteração é feita sem sua autorização.
+          </p>
+
+          <!-- Barra de Ações do Padronizador -->
+          <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
+            <button type="button" class="btn" id="btn-cmd-varredura" onclick="verificarInconsistenciasPlanilhaCMD()" style="background:#00ff66; color:#050907; font-weight:800; border:none; padding:10px 20px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; box-shadow:0 0 14px rgba(0,255,102,0.4);">
+              🔍 Buscar Divergências em Todo o Sistema
+            </button>
+            <button type="button" class="btn" id="btn-cmd-autorizar" onclick="confirmarContraNotificacaoPadronizacao()" style="background:#10b981; color:#fff; font-weight:700; border:none; padding:10px 20px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:none; align-items:center; gap:8px;">
+              ✓ Autorizar e Corrigir Linhas Selecionadas (<span id="cmd-qtd-selecionados">0</span>)
+            </button>
+            <button type="button" class="btn" id="btn-cmd-cancelar" onclick="cancelarPadronizacaoCMD()" style="background:rgba(239,68,68,0.2); color:#f87171; border:1px solid rgba(239,68,68,0.4); padding:10px 16px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:none; align-items:center; gap:6px;">
+              ✕ Cancelar
+            </button>
+            <button type="button" class="btn" id="btn-cmd-estornar" onclick="estornarUltimaPadronizacao()" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.4); padding:10px 16px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px;">
+              ↺ Estornar Última Atualização
+            </button>
+          </div>
+
+          <!-- Console Terminal (CMD Verde Fósforo) -->
+          <div id="cmd-terminal-box" style="background:#020603; border:1px solid rgba(0,255,102,0.3); border-radius:8px; padding:16px; font-family:'Consolas', 'Fira Code', 'Courier New', monospace; box-shadow:inset 0 0 20px rgba(0,0,0,0.8);">
+            
+            <!-- Terminal Header -->
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.20] — Módulo de Integridade e Padronização</span>
+              <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
+            </div>
+
+            <!-- Barra de Progresso Dinâmica Verde Fósforo -->
+            <div id="cmd-progress-container" style="display:none; margin-bottom:16px; background:rgba(0,0,0,0.5); padding:12px; border-radius:6px; border:1px solid rgba(0,255,102,0.2);">
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#00ff66; margin-bottom:6px;">
+                <span id="cmd-progress-msg">⚙️ Processando correções nas células selecionadas...</span>
+                <span id="cmd-progress-pct" style="font-weight:bold; font-size:14px; text-shadow:0 0 6px #00ff66;">0%</span>
+              </div>
+              <div style="width:100%; height:12px; background:rgba(255,255,255,0.06); border-radius:6px; overflow:hidden; border:1px solid rgba(0,255,102,0.3);">
+                <div id="cmd-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #059669, #00ff66); box-shadow:0 0 10px #00ff66; transition:width 0.15s ease;"></div>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:#94a3b8;">
+                <span id="cmd-count-sucesso" style="color:#00ff66;">✅ Sucesso: 0</span>
+                <span id="cmd-count-falhas" style="color:#f87171;">❌ Falhas: 0</span>
+                <span id="cmd-count-total">Total no lote: 0</span>
+              </div>
+            </div>
+
+            <!-- Mensagens do Terminal / Tabela de Divergências -->
+            <div id="cmd-output-area" style="font-size:12px; line-height:1.6; color:#cbd5e1; max-height:400px; overflow-y:auto;">
+              <div style="color:#64748b;">> Digite ou clique em "Buscar Divergências em Todo o Sistema" para iniciar a varredura ortográfica.</div>
+              <div style="color:#64748b;">> Nenhuma alteração é aplicada sem conferência e autorização prévia por linha.</div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ============= MODAL: CONTRA-NOTIFICAÇÃO / CONFIRMAÇÃO DE SEGURANÇA ============= -->
+      <div class="modal-overlay" id="modal-contra-notificacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+        <div style="background:#0f172a; border:2px solid #ef4444; width:100%; max-width:620px; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.8); overflow:hidden;">
+          
+          <div style="padding:20px 24px; background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(15,23,42,0.9)); border-bottom:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; gap:12px;">
+            <span style="font-size:28px;">⚠️</span>
+            <div>
+              <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">CONTRA-NOTIFICAÇÃO: Confirmação de Segurança</h3>
+              <p style="margin:2px 0 0 0; font-size:12px; color:#fca5a5;">Autorização expressa para padronização em lote</p>
+            </div>
+          </div>
+
+          <div style="padding:24px; color:#cbd5e1; font-size:13.5px; line-height:1.6; background:#0b1120;">
+            <p style="margin-top:0; font-weight:700; color:#f8fafc;">
+              Você está prestes a aplicar correções ortográficas em <span id="modal-contra-qtd" style="color:#00ff66; font-size:16px; font-family:monospace;">0</span> linha(s) selecionada(s).
+            </p>
+
+            <div style="background:rgba(239,68,68,0.1); border-left:4px solid #ef4444; padding:12px; border-radius:4px; margin-bottom:16px; font-size:12.5px;">
+              <strong style="color:#f87171;">GARANTIA DE INTEGRIDADE:</strong>
+              <ul style="margin:6px 0 0 0; padding-left:18px; color:#e2e8f0;">
+                <li>Nenhum valor financeiro ou monetário será modificado.</li>
+                <li>Nenhum dado ou registro será excluído.</li>
+                <li>Um ponto de restauração (Backup com data/hora) será criado antes da gravação.</li>
+              </ul>
+            </div>
+
+            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; user-select:none; background:rgba(255,255,255,0.04); padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
+              <input type="checkbox" id="check-contra-notificacao" onchange="toggleBotaoContraExecucao(this.checked)" style="margin-top:3px; transform:scale(1.2); cursor:pointer;">
+              <span style="font-size:12.5px; color:#f8fafc;">
+                <strong>Eu confirmo que revisei as linhas selecionadas</strong> e autorizo expressamente a padronização das células checadas na planilha Google Sheets.
+              </span>
+            </label>
+          </div>
+
+          <div style="padding:16px 24px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+            <button type="button" onclick="fecharContraNotificacao()" class="btn btn-ghost" style="padding:10px 18px; color:#94a3b8;">Voltar / Cancelar</button>
+            <button type="button" id="btn-confirmar-contra-execucao" onclick="executarPadronizacaoPlanilhaCMD()" class="btn" style="background:#10b981; color:#fff; font-weight:700; padding:10px 24px; border-radius:8px; cursor:pointer; opacity:0.5; pointer-events:none; display:flex; align-items:center; gap:6px;">
+              🚀 Sim, Executar Padronização
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+
+
       <!-- ============= PAGE: REPETIDOS (ADMIN ONLY) ============= -->
       <section class="page" id="page-repetidos">
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
@@ -2835,13 +3211,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.19"></script>
-  <script src="js/app.js?v=1.2.19"></script>
-  <script src="js/auth-sap.js?v=1.2.19"></script>
-  <script src="js/escolas.js?v=1.2.19" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.20"></script>
+  <script src="js/app.js?v=1.2.20"></script>
+  <script src="js/auth-sap.js?v=1.2.20"></script>
+  <script src="js/escolas.js?v=1.2.20" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.19"></script>
-  <script src="js/contatos.js?v=1.2.19"></script>
+  <script src="js/mapa.js?v=1.2.20"></script>
+  <script src="js/contatos.js?v=1.2.20"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -2984,14 +3360,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.19"></script>
+  <script src="js/multi-select.js?v=1.2.20"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.19"></script>
-  <script src="js/gmac.js?v=1.2.19"></script>
-  <script src="js/orcamento.js?v=1.2.19"></script>
-  <script src="js/print-proalfa.js?v=1.2.19"></script>
-  <script src="js/proalfa.js?v=1.2.19"></script>
+  <script src="js/diarias.js?v=1.2.20"></script>
+  <script src="js/gmac.js?v=1.2.20"></script>
+  <script src="js/orcamento.js?v=1.2.20"></script>
+  <script src="js/print-proalfa.js?v=1.2.20"></script>
+  <script src="js/proalfa.js?v=1.2.20"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
