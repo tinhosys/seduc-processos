@@ -4741,18 +4741,22 @@ async function carregarPainelSistemaInfo() {
   // 1. Dados do Usuário Ativo
   let user = null;
   try {
-    user = JSON.parse(sessionStorage.getItem('sap_usuario') || localStorage.getItem('sap_usuario') || '{}');
+    user = JSON.parse(sessionStorage.getItem('sap_user_data') || localStorage.getItem('sap_user_data') || '{}');
   } catch(e) {}
-  if (!user || !user.login) {
-    user = window.usuarioAtual || (typeof state !== 'undefined' && state.usuario) || {
-      login: 'admin',
-      nome: 'Administrador CAM',
-      perfil: 'admin',
-      cargo: 'Coordenador',
-      setor: 'CAM / SEDUC-RO',
-      whatsapp: '69999999999'
-    };
-  }
+  
+  const topUserName = document.getElementById('user-name')?.textContent?.trim();
+  const userName = user?.nome || topUserName || 'Elton';
+  const userWhats = user?.whatsapp || '69993186415';
+  const userNivel = user?.nivel || 'admin';
+  const userSetor = user?.setor || 'CAM / SEDUC-RO';
+
+  const formatTel = (w) => {
+    if (!w) return 'Não informado';
+    if (typeof maskCelular === 'function') return maskCelular(String(w));
+    const clean = String(w).replace(/\D/g, '');
+    if (clean.length === 11) return '(' + clean.slice(0,2) + ') ' + clean.slice(2,7) + '-' + clean.slice(7);
+    return w;
+  };
 
   const elNome = document.getElementById('sysinfo-user-nome');
   const elWhats = document.getElementById('sysinfo-user-whats');
@@ -4761,25 +4765,18 @@ async function carregarPainelSistemaInfo() {
   const elEntrada = document.getElementById('sysinfo-user-entrada');
 
   if (elNome) {
-    const labelNome = user.nome || user.login || 'Usuário';
-    const labelLogin = user.login ? (' (@' + user.login + ')') : '';
-    elNome.textContent = labelNome + labelLogin;
+    elNome.textContent = userName;
   }
   if (elWhats) {
-    const rawWhats = user.whatsapp || user.telefone || '';
-    if (rawWhats) {
-      const cleanNum = String(rawWhats).replace(/\D/g, '');
-      elWhats.innerHTML = '<a href="https://wa.me/55' + cleanNum + '" target="_blank" rel="noopener" style="color:#60a5fa; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📱 WhatsApp: ' + rawWhats + ' ↗</a>';
-    } else {
-      elWhats.textContent = 'WhatsApp: Não informado';
-    }
+    const cleanNum = String(userWhats).replace(/\D/g, '');
+    elWhats.innerHTML = '<a href="https://wa.me/55' + cleanNum + '" target="_blank" rel="noopener" style="color:#60a5fa; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📱 WhatsApp: ' + formatTel(userWhats) + ' ↗</a>';
   }
   if (elRole) {
-    const perfil = (user.perfil || user.role || 'Admin').toUpperCase();
-    elRole.textContent = perfil === 'ADMIN' ? 'Admin (Acesso Total)' : perfil;
+    const perfil = String(userNivel).toUpperCase();
+    elRole.textContent = (perfil === 'ADM' || perfil === 'ADMIN') ? 'Admin (Acesso Total)' : perfil;
   }
   if (elSetor) {
-    elSetor.textContent = user.setor || user.cargo || 'CAM / SEDUC-RO';
+    elSetor.textContent = userSetor;
   }
 
   // Data e hora de entrada da sessão
@@ -4806,35 +4803,61 @@ async function carregarPainelSistemaInfo() {
     elTempo.textContent = 'Sessão: ' + hrs + ':' + mins + ':' + secs;
   }, 1000);
 
-  // Histórico de sessões / conexões registradas
-  const tbodyLogados = document.getElementById('sysinfo-tbody-logados');
-  if (tbodyLogados) {
-    let historico = [];
-    try {
-      historico = JSON.parse(localStorage.getItem('sap_historico_conexoes') || '[]');
-    } catch(e) {}
-    
-    if (!historico || historico.length === 0) {
-      historico = [
-        {
-          usuario: user.nome || user.login || 'Admin',
-          whats: user.whatsapp || '(69) 99318-6415',
-          perfil: (user.perfil || 'admin').toUpperCase(),
-          dataHora: dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR'),
-          acessos: '1 (Ativo)'
-        }
-      ];
+  // Renderizar tabela de conexões/usuários com nomes reais
+  const renderTabelaUsuarios = (lista) => {
+    const tbodyLogados = document.getElementById('sysinfo-tbody-logados');
+    if (!tbodyLogados) return;
+
+    if (!lista || lista.length === 0) {
+      tbodyLogados.innerHTML = 
+        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(16,185,129,0.05);">' +
+          '<td style="padding:8px 12px; font-weight:700; color:#34d399;">' + userName + '</td>' +
+          '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(userWhats) + '</td>' +
+          '<td style="padding:8px 12px;"><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(userNivel).toUpperCase() + '</span></td>' +
+          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR') + '</td>' +
+          '<td style="padding:8px 12px; color:#34d399; font-weight:bold;">🟢 Conectado (Sessão Ativa)</td>' +
+        '</tr>';
+      return;
     }
 
-    tbodyLogados.innerHTML = historico.slice(0, 5).map(h => 
-      '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">' +
-        '<td style="padding:8px 12px; font-weight:700; color:#f8fafc;">' + h.usuario + '</td>' +
-        '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + (h.whats || '-') + '</td>' +
-        '<td style="padding:8px 12px;"><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + h.perfil + '</span></td>' +
-        '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + h.dataHora + '</td>' +
-        '<td style="padding:8px 12px; color:#38bdf8;">' + (h.acessos || 'Ativo') + '</td>' +
-      '</tr>'
-    ).join('');
+    tbodyLogados.innerHTML = lista.map((u) => {
+      const isCurrent = (u.nome && u.nome.toLowerCase() === userName.toLowerCase()) || 
+                        (u.whatsapp && String(u.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
+      const statusBadge = isCurrent 
+        ? '<span style="color:#34d399; font-weight:bold;">🟢 Ativo</span>' 
+        : '<span style="color:#94a3b8;">⚪ Registrado</span>';
+      
+      const horaAcesso = isCurrent 
+        ? (dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR'))
+        : (u.data || u.ultimoAcesso || '--/--/---- --:--:--');
+
+      return (
+        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:' + (isCurrent ? 'rgba(16,185,129,0.05)' : 'transparent') + ';">' +
+          '<td style="padding:8px 12px; font-weight:700; color:' + (isCurrent ? '#34d399' : '#f8fafc') + ';">' + (u.nome || 'Usuário') + '</td>' +
+          '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(u.whatsapp || u.whats) + '</td>' +
+          '<td style="padding:8px 12px;"><span style="background:rgba(59,130,246,0.15); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(u.nivel || u.perfil || 'EDITOR').toUpperCase() + '</span></td>' +
+          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + horaAcesso + '</td>' +
+          '<td style="padding:8px 12px;">' + statusBadge + '</td>' +
+        '</tr>'
+      );
+    }).join('');
+  };
+
+  const token = sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token');
+  if (token && typeof API_BASE !== 'undefined') {
+    fetch(API_BASE + '/api/acessos', { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (Array.isArray(data) && data.length > 0) {
+          window.listaAcessos = data;
+          renderTabelaUsuarios(data);
+        } else {
+          renderTabelaUsuarios(window.listaAcessos || []);
+        }
+      })
+      .catch(() => renderTabelaUsuarios(window.listaAcessos || []));
+  } else {
+    renderTabelaUsuarios(window.listaAcessos || []);
   }
 
   // 2. Atualizar Métricas Imediatamente
@@ -4844,41 +4867,28 @@ async function carregarPainelSistemaInfo() {
   // 3. Proativamente carregar dados dos módulos se ainda estiverem vazios
   try {
     const promises = [];
-    
-    // GDSM
     if (!window.processosCache || window.processosCache.length === 0) {
       if (typeof inicializarDados === 'function') promises.push(inicializarDados());
       else if (typeof carregarProcessos === 'function') promises.push(carregarProcessos());
       else if (typeof buscarDados === 'function') promises.push(buscarDados());
     }
-
-    // GMAC
     const modulosGMAC = ['aee', 'onibus', 'veiculos', 'reordenamento', 'cooperacao'];
     const precisaGMAC = !window.gmacCache || modulosGMAC.some(m => !window.gmacCache[m] || window.gmacCache[m].length === 0);
     if (precisaGMAC && typeof carregarGMAC === 'function') {
       modulosGMAC.forEach(m => promises.push(carregarGMAC(m, true)));
     }
-
-    // Escolas
     if ((!window._escolasCache || window._escolasCache.length === 0) && typeof carregarEscolasAPI === 'function') {
       promises.push(carregarEscolasAPI(true));
     }
-
-    // PROALFA
     if (!window.proalfaData && typeof carregarProalfa === 'function') {
       promises.push(carregarProalfa());
     }
-
-    // Orçamento
     if ((!window._orcFiltrado || window._orcFiltrado.length === 0) && typeof carregarOrcamentoData === 'function') {
       promises.push(carregarOrcamentoData());
     }
-
-    // Diárias
     if ((!window.DIARIAS_DATA || window.DIARIAS_DATA.length === 0) && typeof carregarDiariasData === 'function') {
       promises.push(carregarDiariasData());
     }
-
     if (promises.length > 0) {
       Promise.allSettled(promises).then(() => {
         atualizarMetricasSistemaInfo();
@@ -5033,50 +5043,53 @@ window.verificarInconsistenciasPlanilhaCMD = async function() {
   if (indStatus) indStatus.textContent = `STATUS: ${divergencias.length} DIVERGÊNCIAS DETECTADAS`;
 
   let tableHtml = `
-    <div style="margin-top:10px; color:#fbbf24; font-weight:bold;">
+    <div style="margin-top:10px; color:#fbbf24; font-weight:bold; font-size:13px;">
       > [ATENÇÃO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
     </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; margin:10px 0 6px; font-size:11px; color:#94a3b8;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 8px; font-size:12px; color:#94a3b8; flex-wrap:wrap; gap:10px;">
       <span>Selecione as linhas que deseja autorizar para correção:</span>
-      <label style="cursor:pointer; display:flex; align-items:center; gap:6px; color:#00ff66; font-weight:bold;">
-        <input type="checkbox" id="cmd-check-all" onchange="toggleAllCmdCheckboxes(this.checked)" checked style="cursor:pointer;">
+      <label style="cursor:pointer; display:flex; align-items:center; gap:8px; color:#00ff66; font-weight:bold; background:rgba(0,255,102,0.1); padding:5px 12px; border-radius:6px; border:1px solid rgba(0,255,102,0.3);">
+        <input type="checkbox" id="cmd-check-all" onchange="toggleAllCmdCheckboxes(this.checked)" checked style="cursor:pointer; transform:scale(1.2);">
         Selecionar Todos / Nenhum
       </label>
     </div>
-    <table style="width:100%; border-collapse:collapse; font-size:11px; text-align:left; background:rgba(0,0,0,0.5); border:1px solid rgba(0,255,102,0.2);">
-      <thead>
-        <tr style="border-bottom:1px solid rgba(0,255,102,0.3); background:rgba(0,255,102,0.08); color:#00ff66;">
-          <th style="padding:6px 10px; width:40px; text-align:center;">Sel.</th>
-          <th style="padding:6px 10px; width:130px;">Processo / ID</th>
-          <th style="padding:6px 10px; width:110px;">Campo</th>
-          <th style="padding:6px 10px;">Valor Atual</th>
-          <th style="padding:6px 10px; color:#34d399;">Sugestão Padronizada</th>
-        </tr>
-      </thead>
-      <tbody>
+    <div class="cmd-scrollable-table" style="max-height:550px; overflow-y:scroll; overflow-x:auto; border:1px solid rgba(0,255,102,0.3); border-radius:8px; background:rgba(0,0,0,0.7); box-shadow:inset 0 0 15px rgba(0,0,0,0.9);">
+      <table style="width:100%; border-collapse:collapse; font-size:11.5px; text-align:left;">
+        <thead>
+          <tr style="position:sticky; top:0; z-index:10; border-bottom:2px solid rgba(0,255,102,0.4); background:#06140b; color:#00ff66;">
+            <th style="padding:10px 12px; width:50px; text-align:center;">Sel.</th>
+            <th style="padding:10px 14px; width:220px; min-width:200px; white-space:nowrap;">Processo / ID</th>
+            <th style="padding:10px 14px; width:140px; min-width:130px;">Campo</th>
+            <th style="padding:10px 14px; min-width:240px;">Valor Atual</th>
+            <th style="padding:10px 14px; min-width:240px; color:#34d399;">Sugestão Padronizada</th>
+          </tr>
+        </thead>
+        <tbody>
   `;
 
-  divergencias.slice(0, 100).forEach((d, idx) => {
+  divergencias.forEach((d, idx) => {
     d.diffs.forEach((diff) => {
       tableHtml += `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:${idx % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent'};">
-          <td style="padding:6px 10px; text-align:center;">
-            <input type="checkbox" class="cmd-row-check" data-idx="${idx}" onchange="atualizarContadorSelecaoCMD()" checked style="cursor:pointer;">
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.06); background:${idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
+          <td style="padding:8px 12px; text-align:center;">
+            <input type="checkbox" class="cmd-row-check" data-idx="${idx}" onchange="atualizarContadorSelecaoCMD()" checked style="cursor:pointer; transform:scale(1.15);">
           </td>
-          <td style="padding:6px 10px; font-weight:bold; color:#60a5fa; font-family:monospace;">${d.numero}</td>
-          <td style="padding:6px 10px; color:#fbbf24;">${diff.campo}</td>
-          <td style="padding:6px 10px; color:#f87171; text-decoration:line-through; word-break:break-all;">${diff.anterior}</td>
-          <td style="padding:6px 10px; color:#00ff66; font-weight:bold; word-break:break-all;">${diff.sugerido}</td>
+          <td style="padding:8px 14px; font-weight:bold; color:#60a5fa; font-family:monospace; font-size:12px; white-space:nowrap;">${d.numero}</td>
+          <td style="padding:8px 14px; color:#fbbf24; font-weight:600;">${diff.campo}</td>
+          <td style="padding:8px 14px; color:#f87171; text-decoration:line-through; word-break:break-word;">${diff.anterior}</td>
+          <td style="padding:8px 14px; color:#00ff66; font-weight:bold; word-break:break-word;">${diff.sugerido}</td>
         </tr>
       `;
     });
   });
 
-  if (divergencias.length > 100) {
-    tableHtml += `<tr><td colspan="5" style="padding:8px; text-align:center; color:#fbbf24; font-weight:bold;">... e mais ${divergencias.length - 100} registros no lote ...</td></tr>`;
-  }
-
-  tableHtml += '</tbody></table>';
+  tableHtml += `
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:8px; font-size:11px; color:#64748b; text-align:right;">
+      Mostrando todas as ${divergencias.length} divergências detectadas no sistema.
+    </div>`;
 
   if (output) output.innerHTML = tableHtml;
 
@@ -5150,12 +5163,22 @@ window.confirmarContraNotificacaoPadronizacao = function() {
     btnExec.style.opacity = '0.5';
     btnExec.style.pointerEvents = 'none';
   }
-  if (modal) modal.style.display = 'flex';
+  if (modal) {
+    modal.classList.add('open');
+    modal.style.display = 'flex';
+    modal.style.opacity = '1';
+    modal.style.pointerEvents = 'all';
+  }
 };
 
 window.fecharContraNotificacao = function() {
   const modal = document.getElementById('modal-contra-notificacao');
-  if (modal) modal.style.display = 'none';
+  if (modal) {
+    modal.classList.remove('open');
+    modal.style.display = 'none';
+    modal.style.opacity = '0';
+    modal.style.pointerEvents = 'none';
+  }
 };
 
 window.toggleBotaoContraExecucao = function(isChecked) {

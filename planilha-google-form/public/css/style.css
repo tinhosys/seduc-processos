@@ -2316,3 +2316,26 @@ thead th {
   background: rgba(0, 255, 102, 0.3);
   border-radius: 3px;
 }
+
+/* Barra Lateral Retroiluminada do Terminal CMD (GBZ - v1.2.22) */
+.cmd-scrollable-table::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.cmd-scrollable-table::-webkit-scrollbar-track {
+  background: #020603;
+  border-left: 1px solid rgba(0, 255, 102, 0.2);
+}
+.cmd-scrollable-table::-webkit-scrollbar-thumb {
+  background: #00ff66;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(0, 255, 102, 0.6);
+}
+.cmd-scrollable-table::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+#modal-contra-notificacao.open {
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: all !important;
+}

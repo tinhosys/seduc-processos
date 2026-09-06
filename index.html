@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.21</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.22</div>
   </div>
 </div>
   
@@ -412,7 +412,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.21</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.22</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1611,7 +1611,7 @@
         <!-- CARD PARA PADRONIZAR DADOS DA PLANILHA (ADMIN ONLY) -->
         <div class="card action-adm" id="card-padronizacao-dados" style="margin-top: 24px; padding: 20px; border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.02);">
             <h3 style="font-size: 14px; margin-bottom: 12px; color: #34d399; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-              ✅ Corretor Ortográfico & Padronizador
+              ✅ Corretor Ortográfico / Padronizador
             </h3>
             <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; line-height: 1.5;">
               Esta ferramenta realiza uma varredura completa em todo o sistema (<strong>Status, Localização, Município, Objeto, Interessado, Categoria, Tipo, Prefixo e Agrupamento</strong>). Remove espaços extras, corrige letras minúsculas e padroniza todas as células da planilha em lote com acompanhamento interativo em tempo real. Nenhuma alteração é feita sem sua autorização.
@@ -1654,7 +1654,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.21
+              GBZ - v1.2.22
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="carregarPainelSistemaInfo()" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;">
               🔄 Atualizar Painel
@@ -1680,7 +1680,7 @@
               <div id="sysinfo-user-whats" style="font-size:12px; color:#60a5fa; font-family:monospace; margin-top:2px;">-</div>
             </div>
             <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:14px;">
-              <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-bottom:4px;">Perfil & Nível de Acesso</div>
+              <div style="font-size:11px; color:#94a3b8; text-transform:uppercase; font-weight:bold; margin-bottom:4px;">Perfil / Nível de Acesso</div>
               <div id="sysinfo-user-role" style="font-size:16px; font-weight:700; color:#34d399;">Admin (Acesso Total)</div>
               <div id="sysinfo-user-setor" style="font-size:12px; color:#cbd5e1; margin-top:2px;">CAM / SEDUC-RO</div>
             </div>
@@ -1888,7 +1888,7 @@
           </div>
         </div>
 
-        <!-- 4. CORRETOR ORTOGRÁFICO & PADRONIZADOR (TERMINAL CMD VERDE FÓSFORO) -->
+        <!-- 4. CORRETOR ORTOGRÁFICO / PADRONIZADOR (TERMINAL CMD VERDE FÓSFORO) -->
         <div class="card" id="card-terminal-padronizador" style="margin-bottom:24px; padding:20px; border-color:rgba(0,255,102,0.4); background:#050907; box-shadow:0 10px 30px rgba(0,0,0,0.6);">
           
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
@@ -1928,7 +1928,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.21] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.22] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -1961,7 +1961,7 @@
       </section>
 
       <!-- ============= MODAL: CONTRA-NOTIFICAÇÃO / CONFIRMAÇÃO DE SEGURANÇA ============= -->
-      <div class="modal-overlay" id="modal-contra-notificacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+      <div class="modal-overlay" id="modal-contra-notificacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:9999999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; opacity:1 !important; pointer-events:all !important;">
         <div style="background:#0f172a; border:2px solid #ef4444; width:100%; max-width:620px; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.8); overflow:hidden;">
           
           <div style="padding:20px 24px; background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(15,23,42,0.9)); border-bottom:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; gap:12px;">
