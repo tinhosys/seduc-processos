@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.10</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.11</div>
   </div>
 </div>
   
@@ -340,7 +340,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.10</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.11</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2683,13 +2683,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.10"></script>
-  <script src="js/app.js?v=1.2.10"></script>
-  <script src="js/auth-sap.js?v=1.2.10"></script>
-  <script src="js/escolas.js?v=1.2.10.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.11"></script>
+  <script src="js/app.js?v=1.2.11"></script>
+  <script src="js/auth-sap.js?v=1.2.11"></script>
+  <script src="js/escolas.js?v=1.2.11.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1.2.10"></script>
+<script src="js/mapa.js?v=1.2.11"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2833,14 +2833,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.10"></script>
+  <script src="js/multi-select.js?v=1.2.11"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.10"></script>
-  <script src="js/gmac.js?v=1.2.10"></script>
-  <script src="js/orcamento.js?v=1.2.10"></script>
-  <script src="js/print-proalfa.js?v=1.2.10"></script>
-  <script src="js/proalfa.js?v=1.2.10"></script>
+  <script src="js/diarias.js?v=1.2.11"></script>
+  <script src="js/gmac.js?v=1.2.11"></script>
+  <script src="js/orcamento.js?v=1.2.11"></script>
+  <script src="js/print-proalfa.js?v=1.2.11"></script>
+  <script src="js/proalfa.js?v=1.2.11"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
@@ -3389,6 +3389,38 @@ function mudarAbaDiarias(aba, el) {
   if(typeof renderizarDiarias === 'function') renderizarDiarias();
 }
 </script>
+
+  <!-- ============= MODAL: FORMULÁRIO GMAC ============= -->
+  <div class="modal-overlay" id="modal-gmac-form" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+    <div style="background:#0f172a; border:1px solid rgba(59,130,246,0.4); width:100%; max-width:780px; max-height:92vh; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.7); overflow:hidden;">
+      
+      <!-- Modal Header -->
+      <div style="padding:18px 24px; background:linear-gradient(135deg,#1e293b,#0f172a); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <h3 id="modal-gmac-titulo" style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">Registro GMAC</h3>
+          <p id="modal-gmac-subtitulo" style="margin:2px 0 0 0; font-size:12px; color:#94a3b8;">Preencha os campos para salvar na planilha</p>
+        </div>
+        <button type="button" onclick="fecharModalGMAC()" style="background:none; border:none; color:#94a3b8; font-size:26px; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Form) -->
+      <form id="form-gmac-modal-data" onsubmit="salvarFormularioGMAC(event)" style="display:flex; flex-direction:column; flex:1; overflow:hidden; margin:0;">
+        <div id="modal-gmac-fields" style="padding:22px; overflow-y:auto; flex:1; background:#0b1120;">
+          <!-- Campos gerados dinamicamente via gmac.js -->
+        </div>
+
+        <!-- Modal Footer -->
+        <div style="padding:14px 24px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+          <button type="button" onclick="fecharModalGMAC()" class="btn btn-ghost" style="padding:9px 18px;">Cancelar</button>
+          <button type="submit" id="btn-salvar-gmac" class="btn btn-primary" style="padding:9px 24px; font-weight:700; border-radius:8px; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:inline-flex; align-items:center; gap:6px;">
+            💾 Salvar na Planilha
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
 </body>
 </html>
 

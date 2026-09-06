@@ -129,20 +129,57 @@ function renderizarGMAC(modulo) {
     return;
   }
 
+// Estilização dinâmica por tipo de coluna para o GMAC
+function getColStyleGMAC(header) {
+  const h = (header || '').toLowerCase().trim();
+  if (h === '#' || h === 'item' || h === 'quant.' || h === 'quantidade') {
+    return 'width:55px; min-width:55px; max-width:70px; text-align:center; white-space:nowrap;';
+  }
+  if (h.includes('placa') || h.includes('renavam') || h.includes('chassi') || h.includes('crlv')) {
+    return 'min-width:115px; max-width:150px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600;';
+  }
+  if (h.includes('processo') || h.includes('sei')) {
+    return 'min-width:160px; max-width:210px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600;';
+  }
+  if (h.includes('data') || h.includes('vigência') || h.includes('vigencia')) {
+    return 'min-width:115px; max-width:140px; white-space:nowrap; text-align:center;';
+  }
+  if (h.includes('valor')) {
+    return 'min-width:120px; max-width:150px; white-space:nowrap; text-align:right;';
+  }
+  if (h.includes('status') || h.includes('situacao') || h.includes('situação')) {
+    return 'min-width:150px; max-width:210px; text-align:center; white-space:nowrap;';
+  }
+  if (h.includes('município') || h.includes('municipio')) {
+    return 'min-width:150px; max-width:220px; white-space:nowrap; font-weight:600;';
+  }
+  if (h.includes('escola') || h.includes('secretaria') || h.includes('localização') || h.includes('localizacao')) {
+    return 'min-width:220px; max-width:340px; line-height:1.4;';
+  }
+  if (h.includes('objeto') || h.includes('descrição') || h.includes('descricao')) {
+    return 'min-width:240px; max-width:380px; line-height:1.4;';
+  }
+  if (h.includes('observ') || h.includes('documento') || h.includes('parecer')) {
+    return 'min-width:240px; max-width:380px; line-height:1.4;';
+  }
+  return 'min-width:130px; max-width:280px; line-height:1.4;';
+}
+
   // Montar tabela
   let html = `
-    <div style="overflow-x:auto; max-height: calc(100vh - 310px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;">
-      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+    <div style="overflow-x:auto; max-height: calc(100vh - 310px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(15,23,42,0.6);">
+      <table style="width:max-content; min-width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
         <thead style="position:sticky; top:0; z-index:10; background:#0f172a; border-bottom:2px solid rgba(255,255,255,0.1);">
           <tr>
-            <th style="padding:12px 14px; color:#94a3b8; font-weight:700; width:60px; text-align:center;">#</th>`;
+            <th style="padding:12px 14px; color:#94a3b8; font-weight:700; width:55px; min-width:55px; text-align:center;">#</th>`;
 
   headers.forEach(h => {
-    html += `<th style="padding:12px 14px; color:#cbd5e1; font-weight:700; white-space:nowrap;">${h}</th>`;
+    const colStyle = getColStyleGMAC(h);
+    html += `<th style="padding:12px 14px; color:#cbd5e1; font-weight:700; ${colStyle}">${h}</th>`;
   });
 
   html += `
-            <th style="padding:12px 14px; color:#94a3b8; font-weight:700; text-align:center; width:90px;">Ações</th>
+            <th style="padding:12px 14px; color:#94a3b8; font-weight:700; text-align:center; width:90px; min-width:90px;">Ações</th>
           </tr>
         </thead>
         <tbody>`;
@@ -151,7 +188,7 @@ function renderizarGMAC(modulo) {
     const zebra = idx % 2 === 0 ? 'background:rgba(255,255,255,0.015);' : 'background:transparent;';
     html += `
           <tr style="${zebra} border-bottom:1px solid rgba(255,255,255,0.05); transition:background 0.15s;" onmouseover="this.style.background='rgba(59,130,246,0.08)'" onmouseout="this.style.background='${idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'transparent'}'">
-            <td style="padding:10px 14px; text-align:center; color:#64748b; font-size:11px; font-weight:600;">${idx + 1}</td>`;
+            <td style="padding:10px 14px; text-align:center; color:#64748b; font-size:11px; font-weight:600; width:55px; min-width:55px;">${idx + 1}</td>`;
 
     headers.forEach(h => {
       const val = r[h] !== undefined ? String(r[h]).trim() : '';
@@ -169,12 +206,13 @@ function renderizarGMAC(modulo) {
         rendered = `<span style="color:#34d399; font-weight:600;">${val}</span>`;
       }
 
-      html += `<td style="padding:10px 14px; color:#e2e8f0;">${rendered || '-'}</td>`;
+      const colStyle = getColStyleGMAC(h);
+      html += `<td style="padding:10px 14px; color:#e2e8f0; ${colStyle}">${rendered || '-'}</td>`;
     });
 
     html += `
-            <td style="padding:10px 14px; text-align:center;">
-              <button type="button" onclick="abrirModalGMAC('${modulo}', ${r._rowNumber})" class="btn btn-ghost" style="padding:6px 10px; font-size:12px; border:1px solid rgba(255,255,255,0.12); color:#60a5fa; border-radius:6px;" title="Editar Registro">
+            <td style="padding:10px 14px; text-align:center; width:90px; min-width:90px;">
+              <button type="button" onclick="abrirModalGMAC('${modulo}', ${r._rowNumber})" class="btn btn-ghost" style="padding:6px 10px; font-size:12px; border:1px solid rgba(255,255,255,0.12); color:#60a5fa; border-radius:6px; cursor:pointer;" title="Editar Registro">
                 ✏️ Editar
               </button>
             </td>
@@ -229,6 +267,11 @@ function abrirModalGMAC(modulo, rowNumber = null) {
   const subEl = document.getElementById('modal-gmac-subtitulo');
   const fieldsContainer = document.getElementById('modal-gmac-fields');
 
+  if (!modal || !fieldsContainer) {
+    console.error('Modal ou container de campos do GMAC não encontrado no DOM.');
+    return;
+  }
+
   if (tituloEl) tituloEl.textContent = rowNumber ? `✏️ Editar: ${cfg.titulo}` : `✨ Novo Registro: ${cfg.titulo}`;
   if (subEl) subEl.textContent = rowNumber ? `Editando linha ${rowNumber} da planilha` : `Preencha os campos para salvar na planilha`;
 
@@ -245,7 +288,7 @@ function abrirModalGMAC(modulo, rowNumber = null) {
       <div class="form-group" style="margin-bottom:0;">
         <label style="display:block; font-size:12.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">${h}</label>`;
 
-    if (hLow === 'observacões' || hLow === 'documentos') {
+    if (hLow === 'observacões' || hLow === 'observações' || hLow === 'documentos') {
       fieldsHtml += `
         <textarea name="${h}" class="input-gmac-field" rows="2" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.12); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; resize:vertical;">${val}</textarea>`;
     } else {
@@ -336,4 +379,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const mod = hash.replace('gmac-', '');
     carregarGMAC(mod);
   }
+
+  // Fechar modal ao clicar fora ou apertar ESC
+  const modalEl = document.getElementById('modal-gmac-form');
+  if (modalEl) {
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) fecharModalGMAC();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') fecharModalGMAC();
+  });
 });
+
