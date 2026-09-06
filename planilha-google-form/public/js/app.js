@@ -1,5 +1,5 @@
 
-// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.34)
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.35)
 window.copiarSeiLinha = function(btn) {
   const row = btn.closest('div');
   const input = row ? row.querySelector('.form-numero-item') : null;
@@ -1806,7 +1806,10 @@ function renderFormulario() {
   const dataDiv = document.getElementById('ultima-edicao-data');
   
   if (processo) {
-    if (legendDiv) legendDiv.style.display = 'flex';
+    if (legendDiv) {
+      legendDiv.style.setProperty('display', 'flex', 'important');
+      legendDiv.style.setProperty('flex-direction', 'column', 'important');
+    }
     const nomeEdicao = p.ultimaEdicao || '';
     const dataEdicao = p.dataHoraEdicao || '';
     
@@ -1821,7 +1824,7 @@ function renderFormulario() {
       if (sepDiv) sepDiv.style.display = 'none';
     }
   } else {
-    if (legendDiv) legendDiv.style.display = 'none';
+    if (legendDiv) legendDiv.style.setProperty('display', 'none', 'important');
   }
 
   const containerExcluir = document.getElementById('container-excluir-form');
@@ -5240,7 +5243,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.34)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.35)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -5320,7 +5323,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.34)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.35)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';

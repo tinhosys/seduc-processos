@@ -2388,19 +2388,57 @@ select#filtro-agrupamento.action-adm {
   flex-shrink: 0 !important;
 }
 
-/* Layout responsivo da linha de processo, agrupamento, última atualização e dígito (GBZ - v1.2.34) */
+
+
+/* Layout estritamente harmônico e alinhado na mesma linha: processo, agrupamento, última atualização e dígito (GBZ - v1.2.35) */
 .form-row-processo-grupo {
   display: flex !important;
-  gap: 14px !important;
-  width: 100% !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
   align-items: flex-start !important;
+  gap: 16px !important;
+  width: 100% !important;
+  grid-column: 1 / -1 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
 }
-@media (max-width: 900px) {
+
+.form-row-processo-grupo > .form-group {
+  margin: 0 !important;
+}
+
+#group-form-processo-num {
+  flex: 1 1 0 !important;
+  min-width: 260px !important;
+}
+
+#group-form-agrupamento {
+  flex: 0 0 180px !important;
+  min-width: 140px !important;
+}
+
+#legend-ultima-edicao {
+  flex: 0 0 280px !important;
+  min-width: 240px !important;
+}
+
+#group-form-digito {
+  flex: 0 0 90px !important;
+  width: 90px !important;
+  min-width: 80px !important;
+  max-width: 100px !important;
+}
+
+@media (max-width: 768px) {
   .form-row-processo-grupo {
     flex-wrap: wrap !important;
   }
-  .form-row-processo-grupo > div {
+  #group-form-processo-num,
+  #group-form-agrupamento,
+  #legend-ultima-edicao,
+  #group-form-digito {
     flex: 1 1 100% !important;
+    width: 100% !important;
     max-width: 100% !important;
   }
 }
