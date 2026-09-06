@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.11</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.12</div>
   </div>
 </div>
   
@@ -340,7 +340,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.11</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.12</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -389,7 +389,10 @@
               </div>
             </div>
           </div>
-          <div style="display:flex; gap:10px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
             <button type="button" onclick="carregarGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
@@ -399,11 +402,25 @@
           </div>
         </div>
 
-        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
-          <div style="flex:1; position:relative;">
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
             <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
-            <input type="text" placeholder="Pesquisar por município, processo, documento, status..." oninput="filtrarBuscaGMAC('aee', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+            <input type="text" id="filtro-busca-aee" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-aee" onchange="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-aee" onchange="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('aee')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
         </div>
 
         <div id="tabela-container-aee" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
@@ -428,7 +445,10 @@
               </div>
             </div>
           </div>
-          <div style="display:flex; gap:10px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
             <button type="button" onclick="carregarGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
@@ -438,11 +458,25 @@
           </div>
         </div>
 
-        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
-          <div style="flex:1; position:relative;">
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
             <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
-            <input type="text" placeholder="Pesquisar por placa, município, processo SEI, status..." oninput="filtrarBuscaGMAC('onibus', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+            <input type="text" id="filtro-busca-onibus" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-onibus" onchange="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-onibus" onchange="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('onibus')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
         </div>
 
         <div id="tabela-container-onibus" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
@@ -467,7 +501,10 @@
               </div>
             </div>
           </div>
-          <div style="display:flex; gap:10px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
             <button type="button" onclick="carregarGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
@@ -477,11 +514,25 @@
           </div>
         </div>
 
-        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
-          <div style="flex:1; position:relative;">
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
             <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
-            <input type="text" placeholder="Pesquisar por município, processo, status..." oninput="filtrarBuscaGMAC('veiculos', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+            <input type="text" id="filtro-busca-veiculos" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-veiculos" onchange="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-veiculos" onchange="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
         </div>
 
         <div id="tabela-container-veiculos" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
@@ -506,7 +557,10 @@
               </div>
             </div>
           </div>
-          <div style="display:flex; gap:10px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
             <button type="button" onclick="carregarGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
@@ -516,11 +570,25 @@
           </div>
         </div>
 
-        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
-          <div style="flex:1; position:relative;">
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
             <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
-            <input type="text" placeholder="Pesquisar por município, processo, escola, objeto, status..." oninput="filtrarBuscaGMAC('reordenamento', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+            <input type="text" id="filtro-busca-reordenamento" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-reordenamento" onchange="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-reordenamento" onchange="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
         </div>
 
         <div id="tabela-container-reordenamento" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
@@ -545,7 +613,10 @@
               </div>
             </div>
           </div>
-          <div style="display:flex; gap:10px;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button type="button" onclick="imprimirRelatorioGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
+              🖨️ Relatório
+            </button>
             <button type="button" onclick="carregarGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
@@ -555,11 +626,25 @@
           </div>
         </div>
 
-        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
-          <div style="flex:1; position:relative;">
+        <!-- Barra de Busca por Parâmetros -->
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:2; min-width:240px; position:relative;">
             <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
-            <input type="text" placeholder="Pesquisar por município, processo, objeto, status..." oninput="filtrarBuscaGMAC('cooperacao', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+            <input type="text" id="filtro-busca-cooperacao" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
+          <div style="flex:1; min-width:180px;">
+            <select id="filtro-mun-cooperacao" onchange="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">🏛️ Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <select id="filtro-status-cooperacao" onchange="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <button type="button" onclick="limparFiltrosGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
+            ✕ Limpar
+          </button>
         </div>
 
         <div id="tabela-container-cooperacao" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
@@ -2683,13 +2768,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.11"></script>
-  <script src="js/app.js?v=1.2.11"></script>
-  <script src="js/auth-sap.js?v=1.2.11"></script>
-  <script src="js/escolas.js?v=1.2.11.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.12"></script>
+  <script src="js/app.js?v=1.2.12"></script>
+  <script src="js/auth-sap.js?v=1.2.12"></script>
+  <script src="js/escolas.js?v=1.2.12.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1.2.11"></script>
+<script src="js/mapa.js?v=1.2.12"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2833,14 +2918,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.11"></script>
+  <script src="js/multi-select.js?v=1.2.12"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.11"></script>
-  <script src="js/gmac.js?v=1.2.11"></script>
-  <script src="js/orcamento.js?v=1.2.11"></script>
-  <script src="js/print-proalfa.js?v=1.2.11"></script>
-  <script src="js/proalfa.js?v=1.2.11"></script>
+  <script src="js/diarias.js?v=1.2.12"></script>
+  <script src="js/gmac.js?v=1.2.12"></script>
+  <script src="js/orcamento.js?v=1.2.12"></script>
+  <script src="js/print-proalfa.js?v=1.2.12"></script>
+  <script src="js/proalfa.js?v=1.2.12"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

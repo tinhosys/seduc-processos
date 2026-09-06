@@ -3678,7 +3678,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.11)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.12)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
