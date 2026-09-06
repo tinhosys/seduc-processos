@@ -1,3 +1,23 @@
+
+// ====== REGRA RESTRITA: DASHBOARD EXCLUSIVO ADMIN ELTON (69) 9 9922-1336 ======
+window.podeAcessarDashboard = function() {
+  try {
+    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
+    const nivel = String(uData.nivel || '').toLowerCase().trim();
+    const isAdmin = (nivel === 'adm' || nivel === 'admin');
+    if (!isAdmin) return false;
+
+    const nome = String(uData.nome || '').toLowerCase().trim();
+    const wa = String(uData.whatsapp || '').replace(/\D/g, '');
+
+    // Somente perfil ADMIN/ADM, usuário Elton, telefone (69) 9 9922-1336
+    const isElton = nome.includes('elton') || wa.includes('99221336') || wa === '69999221336' || wa === 'admin';
+    return isElton;
+  } catch (e) {
+    return false;
+  }
+};
+
 window.isUsuarioAdmin = function() {
   try {
     const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
@@ -217,12 +237,12 @@ window.fecharModalAlertas = () => {
 
 // ---- NAVEGAÇÃO ----
 function navegar(pagina) {
-  const isAdmin = (typeof window.isUsuarioAdmin === 'function') 
-    ? window.isUsuarioAdmin() 
-    : (document.body && document.body.classList.contains('role-adm'));
+  const canDash = (typeof window.podeAcessarDashboard === 'function')
+    ? window.podeAcessarDashboard()
+    : false;
 
-  // Dashboard é exclusivo para perfil ADMIN
-  if (pagina === 'dashboard' && !isAdmin) {
+  // Dashboard visível e acessível SOMENTE para perfil ADMIN/ADM, usuário Elton, (69) 9 9922-1336
+  if (pagina === 'dashboard' && !canDash) {
     pagina = 'processos';
   }
 

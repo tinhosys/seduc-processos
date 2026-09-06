@@ -1,4 +1,24 @@
 
+// ====== REGRA RESTRITA: DASHBOARD EXCLUSIVO ADMIN ELTON (69) 9 9922-1336 ======
+window.podeAcessarDashboard = function() {
+  try {
+    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
+    const nivel = String(uData.nivel || '').toLowerCase().trim();
+    const isAdmin = (nivel === 'adm' || nivel === 'admin');
+    if (!isAdmin) return false;
+
+    const nome = String(uData.nome || '').toLowerCase().trim();
+    const wa = String(uData.whatsapp || '').replace(/\D/g, '');
+
+    // Somente perfil ADMIN/ADM, usuário Elton, telefone (69) 9 9922-1336
+    const isElton = nome.includes('elton') || wa.includes('99221336') || wa === '69999221336' || wa === 'admin';
+    return isElton;
+  } catch (e) {
+    return false;
+  }
+};
+
+
 window.isUsuarioAdmin = function() {
   try {
     const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
@@ -111,8 +131,20 @@ function aplicarPermissoes(nivel) {
     el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
   });
 
-  // Se não for admin e estiver no Dashboard, redireciona para processos
-  if (!isAdminUser && typeof state !== 'undefined' && state && state.page === 'dashboard') {
+  // Controle restrito do Dashboard (somente Elton, Admin, 69 99922-1336)
+  const canDash = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
+  if (canDash) {
+    document.body.classList.add('can-access-dashboard');
+  } else {
+    document.body.classList.remove('can-access-dashboard');
+  }
+
+  document.querySelectorAll('.dashboard-only-elton').forEach(el => {
+    el.style.setProperty('display', canDash ? '' : 'none', 'important');
+  });
+
+  // Se não pode acessar Dashboard e estiver nele, redireciona para processos
+  if (!canDash && typeof state !== 'undefined' && state && state.page === 'dashboard') {
     if (typeof navegar === 'function') navegar('processos');
   }
 }
@@ -196,7 +228,8 @@ async function realizarLogin() {
     // Carrega dados
     await inicializarDados();
     const isAdminLog = (data.nivel === 'adm' || data.nivel === 'admin');
-    navegar(isAdminLog ? 'dashboard' : 'processos');
+    const canDashLog = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
+    navegar(canDashLog ? 'dashboard' : 'processos');
     atualizarContador();
 
   } catch (err) {
@@ -258,8 +291,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         atualizarContador();
         const isAdminSess = (usuario.nivel === 'adm' || usuario.nivel === 'admin');
-        navegar(isAdminSess ? 'dashboard' : 'processos');
-        if (isAdminSess) renderDashboard();
+        const canDashSess = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
+        navegar(canDashSess ? 'dashboard' : 'processos');
+        if (canDashSess) renderDashboard();
         
         if (typeof checkAlertasADM === 'function' && window.processosCache) {
            checkAlertasADM(window.processosCache);
@@ -334,7 +368,7 @@ async function salvarNovaSenhaPage() {
       document.getElementById('page-nova-senha').value = '';
       document.getElementById('page-confirma-senha').value = '';
       setTimeout(() => {
-        navegar(typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin() ? 'dashboard' : 'processos');
+        navegar(typeof window.podeAcessarDashboard === 'function' && window.podeAcessarDashboard() ? 'dashboard' : 'processos');
         msg.textContent = '';
       }, 1500);
     } else {

@@ -2353,3 +2353,8 @@ thead th {
   border-color: #818cf8 !important;
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25) !important;
 }
+
+/* ==================== DASHBOARD EXCLUSIVO ELTON (ADMIN) ==================== */
+body:not(.can-access-dashboard) .dashboard-only-elton {
+  display: none !important;
+}
