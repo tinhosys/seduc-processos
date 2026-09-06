@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.00</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.10</div>
   </div>
 </div>
   
@@ -283,11 +283,11 @@
                 <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </a>
               <div class="nav-submenu" id="sub-gmac" style="display: none; padding-left: 15px; border-left: 1px solid rgba(255,255,255,0.1); margin-left: 10px;">
-                <a href="#" class="nav-item sub-item" data-page="gmac-aee" onclick="navegar('gmac-aee')" style="font-size: 12px; padding: 8px 16px;"><span>Equipamento - AEE</span></a>
-                <a href="#" class="nav-item sub-item" data-page="gmac-onibus" onclick="navegar('gmac-onibus')" style="font-size: 12px; padding: 8px 16px;"><span>Doação do Ônibus Escolar</span></a>
-                <a href="#" class="nav-item sub-item" data-page="gmac-veiculos" onclick="navegar('gmac-veiculos')" style="font-size: 12px; padding: 8px 16px;"><span>Doação Definitiva de Veículos</span></a>
-                <a href="#" class="nav-item sub-item" data-page="gmac-reordenamento" onclick="navegar('gmac-reordenamento')" style="font-size: 12px; padding: 8px 16px;"><span>Municipalização e Reordenamento</span></a>
-                <a href="#" class="nav-item sub-item" data-page="gmac-cooperacao" onclick="navegar('gmac-cooperacao')" style="font-size: 12px; padding: 8px 16px;"><span>Termo de Cooperação</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-aee" onclick="navegar('gmac-aee'); if(typeof carregarGMAC==='function') carregarGMAC('aee');" style="font-size: 12px; padding: 8px 16px;"><span>Equipamento - AEE</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-onibus" onclick="navegar('gmac-onibus'); if(typeof carregarGMAC==='function') carregarGMAC('onibus');" style="font-size: 12px; padding: 8px 16px;"><span>Doação do Ônibus Escolar</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-veiculos" onclick="navegar('gmac-veiculos'); if(typeof carregarGMAC==='function') carregarGMAC('veiculos');" style="font-size: 12px; padding: 8px 16px;"><span>Doação Definitiva de Veículos</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-reordenamento" onclick="navegar('gmac-reordenamento'); if(typeof carregarGMAC==='function') carregarGMAC('reordenamento');" style="font-size: 12px; padding: 8px 16px;"><span>Municipalização e Reordenamento</span></a>
+                <a href="#" class="nav-item sub-item" data-page="gmac-cooperacao" onclick="navegar('gmac-cooperacao'); if(typeof carregarGMAC==='function') carregarGMAC('cooperacao');" style="font-size: 12px; padding: 8px 16px;"><span>Termo de Cooperação</span></a>
               </div>
               <a href="#" class="nav-item sub-item" data-page="proalfa" onclick="navegar('proalfa')" style="font-size: 13px; padding: 10px 16px;"><span>PROALFA</span></a>
               <a href="#" class="nav-item sub-item" data-page="contatos" onclick="navegar('contatos')" style="font-size: 13px; padding: 10px 16px;"><span>Municípios</span></a>
@@ -340,7 +340,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.00</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.10</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -375,7 +375,7 @@
 
             <!-- INICIO GMAC PAGES -->
       <!-- GMAC: EQUIPAMENTO - AEE -->
-      <section class="page" id="page-gmac-aee" style="display:none;">
+      <section class="page" id="page-gmac-aee">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
@@ -414,7 +414,7 @@
       </section>
 
       <!-- GMAC: DOAÇÃO DO ÔNIBUS ESCOLAR -->
-      <section class="page" id="page-gmac-onibus" style="display:none;">
+      <section class="page" id="page-gmac-onibus">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
@@ -453,7 +453,7 @@
       </section>
 
       <!-- GMAC: DOAÇÃO DEFINITIVA DE VEÍCULOS -->
-      <section class="page" id="page-gmac-veiculos" style="display:none;">
+      <section class="page" id="page-gmac-veiculos">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
@@ -492,7 +492,7 @@
       </section>
 
       <!-- GMAC: MUNICIPALIZAÇÃO E REORDENAMENTO -->
-      <section class="page" id="page-gmac-reordenamento" style="display:none;">
+      <section class="page" id="page-gmac-reordenamento">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
@@ -531,7 +531,7 @@
       </section>
 
       <!-- GMAC: TERMO DE COOPERAÇÃO -->
-      <section class="page" id="page-gmac-cooperacao" style="display:none;">
+      <section class="page" id="page-gmac-cooperacao">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
@@ -2683,13 +2683,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.00"></script>
-  <script src="js/app.js?v=1.3.00"></script>
-  <script src="js/auth-sap.js?v=1.3.00"></script>
-  <script src="js/escolas.js?v=1.3.00.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.10"></script>
+  <script src="js/app.js?v=1.2.10"></script>
+  <script src="js/auth-sap.js?v=1.2.10"></script>
+  <script src="js/escolas.js?v=1.2.10.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1.3.00"></script>
+<script src="js/mapa.js?v=1.2.10"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2833,14 +2833,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.3.00"></script>
+  <script src="js/multi-select.js?v=1.2.10"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.3.00"></script>
-  <script src="js/gmac.js?v=1.3.00"></script>
-  <script src="js/orcamento.js?v=1.3.00"></script>
-  <script src="js/print-proalfa.js?v=1.3.00"></script>
-  <script src="js/proalfa.js?v=1.3.00"></script>
+  <script src="js/diarias.js?v=1.2.10"></script>
+  <script src="js/gmac.js?v=1.2.10"></script>
+  <script src="js/orcamento.js?v=1.2.10"></script>
+  <script src="js/print-proalfa.js?v=1.2.10"></script>
+  <script src="js/proalfa.js?v=1.2.10"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

@@ -225,6 +225,10 @@ function navegar(pagina) {
     const mod = pagina.replace('gmac-', '');
     if (typeof carregarGMAC === 'function') {
       carregarGMAC(mod);
+    } else {
+      setTimeout(() => {
+        if (typeof carregarGMAC === 'function') carregarGMAC(mod);
+      }, 150);
     }
   }
 }
@@ -3674,7 +3678,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.3.00)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.10)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 

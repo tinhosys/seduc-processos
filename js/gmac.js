@@ -328,3 +328,12 @@ function filtrarBuscaGMAC(modulo, texto) {
   window.gmacFiltros[modulo].busca = (texto || '').trim();
   renderizarGMAC(modulo);
 }
+
+// Inicialização automática caso página ativa seja GMAC
+document.addEventListener('DOMContentLoaded', () => {
+  const hash = (window.location.hash || '').replace('#', '');
+  if (hash && hash.startsWith('gmac-')) {
+    const mod = hash.replace('gmac-', '');
+    carregarGMAC(mod);
+  }
+});
