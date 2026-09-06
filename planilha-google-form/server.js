@@ -328,7 +328,7 @@ async function getAllRows() {
   const ranges = processSheets.map(s => {
     const title = s.properties.title;
     const safeTitle = title.replace(/'/g, "''"); // escapar aspas simples dentro do nome
-    return `'${safeTitle}'!A1:Z`;
+    return `'${safeTitle}'!A1:ZZ`;
   });
 
   const batchResponse = await sheets.spreadsheets.values.batchGet({
@@ -424,7 +424,15 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     const hLow = hDef.toLowerCase();
     let val = undefined;
     
-    if (hLow.includes('prefixo')) val = data.prefixo;
+        if (hLow.includes('digito') || hLow.includes('dígito')) {
+      const d = data.DIGITO !== undefined ? data.DIGITO : (data.digito !== undefined ? data.digito : data['DÍGITO']);
+      if (d !== undefined && d !== null && String(d).trim() !== '') {
+        const clean = String(d).replace(/\D/g, '').slice(0, 3);
+        val = clean.startsWith('0') ? ("'" + clean) : clean;
+      } else {
+        val = "";
+      }
+    } else if (hLow.includes('prefixo')) val = data.prefixo;
     else if (hLow.includes('munic')) val = data.municipio;
     else if (hLow.includes('processo')) val = data.numero;
     else if (hLow.includes('interessado')) val = data.interessado;
@@ -495,13 +503,13 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
 
     const headerRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A${rowNumber}:Z${rowNumber}` // fetch existing row!
+      range: `${tabName}!A${rowNumber}:ZZ${rowNumber}` // fetch existing row!
     });
     const existingRow = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
 
     const headerDefRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A1:Z1`
+      range: `${tabName}!A1:ZZ1`
     });
     const headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
 
@@ -605,13 +613,13 @@ app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
 
     const headerDefRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A1:Z1`
+      range: `${tabName}!A1:ZZ1`
     });
     const headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
 
     const existingRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A${rowNumber}:Z${rowNumber}`
+      range: `${tabName}!A${rowNumber}:ZZ${rowNumber}`
     });
     const existingRow = (existingRes.data.values && existingRes.data.values[0]) ? existingRes.data.values[0] : [];
 
@@ -663,7 +671,7 @@ app.post("/api/registros", editorOnly, async (req, res) => {
 
     const headerRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A1:Z1`
+      range: `${tabName}!A1:ZZ1`
     });
     
     const headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
@@ -1263,7 +1271,7 @@ async function garantirColunasAdicionais() {
       const tabName = s.properties.title;
       const headerRes = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: `${tabName}!A1:Z1`
+        range: `${tabName}!A1:ZZ1`
       });
       let headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
       if (headers.length > 0) {

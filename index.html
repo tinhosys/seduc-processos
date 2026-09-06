@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.08</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.09</div>
   </div>
 </div>
   
@@ -340,7 +340,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.08</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.09</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -748,7 +748,7 @@
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
-              <input type="text" id="filtro-digito" placeholder="DÍGITO" style="flex:1; min-width:120px; max-width:150px; padding:10px 12px; background:transparent; border:1px solid rgba(99,102,241,0.5); border-radius:8px; color:#818cf8; font-size:13px; font-weight:600; outline:none;" autocomplete="off">
+              <input type="text" id="filtro-digito" placeholder="DÍGITO" maxlength="3" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 3);" style="flex:1; min-width:120px; max-width:150px; padding:10px 12px; background:transparent; border:1px solid rgba(99,102,241,0.5); border-radius:8px; color:#818cf8; font-size:13px; font-weight:600; outline:none;" autocomplete="off">
           </div>
 
           <!-- LINHA 4 -->
@@ -969,7 +969,7 @@
 
               <div class="form-group">
                 <label for="form-digito">Dígito</label>
-                <input type="text" id="form-digito" placeholder="000" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
+                <input type="text" id="form-digito" placeholder="000" maxlength="3" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 3);" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
               </div>
 
               <div class="form-group full">
@@ -2543,13 +2543,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.08"></script>
-  <script src="js/app.js?v=1.2.08"></script>
-  <script src="js/auth-sap.js?v=1.2.08"></script>
-  <script src="js/escolas.js?v=1.2.08.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.09"></script>
+  <script src="js/app.js?v=1.2.09"></script>
+  <script src="js/auth-sap.js?v=1.2.09"></script>
+  <script src="js/escolas.js?v=1.2.09.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1.2.08"></script>
+<script src="js/mapa.js?v=1.2.09"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2693,13 +2693,13 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.08"></script>
+  <script src="js/multi-select.js?v=1.2.09"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.08"></script>
-  <script src="js/orcamento.js?v=1.2.08"></script>
-  <script src="js/print-proalfa.js?v=1.2.08"></script>
-  <script src="js/proalfa.js?v=1.2.08"></script>
+  <script src="js/diarias.js?v=1.2.09"></script>
+  <script src="js/orcamento.js?v=1.2.09"></script>
+  <script src="js/print-proalfa.js?v=1.2.09"></script>
+  <script src="js/proalfa.js?v=1.2.09"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

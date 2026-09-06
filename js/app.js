@@ -1366,7 +1366,7 @@ function renderFormulario() {
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
-    document.getElementById('form-digito').value = p.digito || p.DIGITO || '';
+    document.getElementById('form-digito').value = String(p.digito || p.DIGITO || '').replace(/\D/g, '').slice(0, 3);
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
     document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
@@ -1598,8 +1598,8 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
-    digito: (document.getElementById('form-digito')?.value || '').trim(),
-    DIGITO: (document.getElementById('form-digito')?.value || '').trim(),
+    digito: (document.getElementById('form-digito')?.value || '').replace(/\D/g, '').slice(0, 3),
+    DIGITO: (document.getElementById('form-digito')?.value || '').replace(/\D/g, '').slice(0, 3),
     categoria:   document.getElementById('form-categoria').value,
     tipo:        document.getElementById('form-tipo').value,
     CAM:         document.getElementById('form-cam')?.checked ? '1' : '',
@@ -3663,7 +3663,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.08)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.09)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 

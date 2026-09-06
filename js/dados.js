@@ -190,8 +190,8 @@ const mapToSheet = (dados) => {
     return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   return {
-    'DIGITO': dados.digito || dados.DIGITO || '',
-    'DÍGITO': dados.digito || dados.DIGITO || '',
+    'DIGITO': String(dados.digito || dados.DIGITO || '').replace(/\D/g, '').slice(0, 3),
+    'DÍGITO': String(dados.digito || dados.DIGITO || '').replace(/\D/g, '').slice(0, 3),
     'Prefixo (codigo de prioridade)': dados.prefixo || '',
     'Município': dados.municipio || '',
     'Processo': dados.numero || '',
