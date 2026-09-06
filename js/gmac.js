@@ -59,13 +59,16 @@ function isColunaOcultaGMAC(header) {
   return h === '#' || h === 'item' || h === 'quant.' || h === 'quant' || h === 'quantidade';
 }
 
-// Retorna cabeçalhos visíveis com 'MUNICÍPIO' sempre na primeiríssima posição à esquerda
+// Retorna cabeçalhos visíveis organizados:
+// 1. 'MUNICÍPIO' sempre à primeira esquerda
+// 2. 'ID'/'IDS' trazido para a esquerda (logo após Município)
+// 3. 'TIPO OBJETO' trazido mais para o centro (logo após OBJETO)
 function getVisibleHeadersGMAC(rawHeaders) {
   const visiveis = (rawHeaders || []).filter(h => !isColunaOcultaGMAC(h));
   
-  // Localizar a coluna de Município
+  // 1. Localizar a coluna de Município e colocar na primeira posição (índice 0)
   const munIdx = visiveis.findIndex(h => {
-    const norm = h.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const norm = (h || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     return norm === 'municipio' || norm === 'municipios';
   });
 
@@ -74,48 +77,96 @@ function getVisibleHeadersGMAC(rawHeaders) {
     visiveis.unshift(colMun);
   }
 
+  // 2. Trazer a coluna de ID / IDS para a esquerda (posição 1, logo após Município)
+  const idIdx = visiveis.findIndex(h => {
+    const norm = (h || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return norm === 'id' || norm === 'ids';
+  });
+
+  if (idIdx > 1) {
+    const [colId] = visiveis.splice(idIdx, 1);
+    visiveis.splice(1, 0, colId);
+  }
+
+  // 3. Trazer 'TIPO OBJETO' mais para o centro (logo após a coluna de OBJETO)
+  const tipoObjIdx = visiveis.findIndex(h => {
+    const norm = (h || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return norm.includes('tipo') && norm.includes('objeto');
+  });
+
+  if (tipoObjIdx !== -1) {
+    const objIdx = visiveis.findIndex(h => {
+      const norm = (h || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      return norm === 'objeto' || (norm.includes('objeto') && !norm.includes('tipo'));
+    });
+
+    if (objIdx !== -1 && tipoObjIdx > objIdx) {
+      const [colTipoObj] = visiveis.splice(tipoObjIdx, 1);
+      const newObjIdx = visiveis.findIndex(h => {
+        const norm = (h || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return norm === 'objeto' || (norm.includes('objeto') && !norm.includes('tipo'));
+      });
+      visiveis.splice(newObjIdx + 1, 0, colTipoObj);
+    }
+  }
+
   return visiveis;
 }
 
-// Estilização dinâmica por tipo de coluna para o GMAC (evita sobreposição)
+// Estilização dinâmica e equilibrada por tipo de coluna (trazendo colunas para a esquerda e evitando vácuos)
 function getColStyleGMAC(header) {
   const h = (header || '').toLowerCase().trim();
   const norm = h.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   if (norm === 'municipio' || norm === 'municipios') {
-    return 'min-width:180px; max-width:240px; white-space:nowrap; font-weight:700; color:#f8fafc;';
+    return 'min-width:150px; max-width:190px; white-space:nowrap; font-weight:700; color:#f8fafc;';
   }
-  if (norm.includes('placa') || norm.includes('renavam') || norm.includes('chassi') || norm.includes('crlv')) {
-    return 'min-width:125px; max-width:160px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600; text-align:center;';
+  if (norm === 'id' || norm === 'ids') {
+    return 'min-width:75px; max-width:95px; text-align:center; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:700; color:#cbd5e1;';
   }
   if (norm.includes('processo') || norm.includes('sei')) {
-    return 'min-width:180px; max-width:220px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600;';
+    return 'min-width:235px; max-width:280px; white-space:nowrap;';
   }
-  if (norm.includes('data') || norm.includes('vigencia')) {
-    return 'min-width:120px; max-width:145px; white-space:nowrap; text-align:center;';
+  if (norm.includes('placa') || norm.includes('renavam') || norm.includes('chassi') || norm.includes('crlv')) {
+    return 'min-width:105px; max-width:130px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600; text-align:center;';
   }
-  if (norm.includes('valor')) {
-    return 'min-width:120px; max-width:150px; white-space:nowrap; text-align:right;';
+  if (norm.includes('status')) {
+    return 'min-width:125px; max-width:155px; text-align:center; white-space:nowrap;';
   }
-  if (norm.includes('status') || norm === 'situacao' || norm.includes('situacao')) {
-    return 'min-width:165px; max-width:235px; text-align:center; white-space:nowrap;';
+  if (norm === 'situacao' || norm.includes('situacao')) {
+    return 'min-width:180px; max-width:220px; text-align:center; white-space:normal; line-height:1.35; word-break:break-word;';
   }
-  if (norm.includes('termo ass') || norm.includes('termo de doacao') || norm.includes('forma') || norm.includes('tipo objeto')) {
-    return 'min-width:140px; max-width:210px; text-align:center; white-space:nowrap;';
+  if (norm.includes('termo ass') || norm.includes('termo de doacao')) {
+    return 'min-width:110px; max-width:140px; text-align:center; white-space:nowrap;';
+  }
+  if (norm === 'forma') {
+    return 'min-width:70px; max-width:90px; text-align:center; white-space:nowrap;';
+  }
+  if (norm.includes('tipo') && norm.includes('objeto')) {
+    return 'min-width:130px; max-width:160px; text-align:center; white-space:nowrap;';
+  }
+  if (norm === 'objeto' || (norm.includes('objeto') && !norm.includes('tipo'))) {
+    return 'min-width:160px; max-width:220px; line-height:1.35; white-space:normal; word-break:break-word;';
   }
   if (norm.includes('escola') || norm.includes('secretaria') || norm.includes('localizacao')) {
-    return 'min-width:240px; max-width:380px; line-height:1.45; white-space:normal; word-break:break-word;';
+    return 'min-width:180px; max-width:240px; line-height:1.35; white-space:normal; word-break:break-word;';
   }
-  if (norm.includes('objeto') || norm.includes('descricao')) {
-    return 'min-width:240px; max-width:400px; line-height:1.45; white-space:normal; word-break:break-word;';
+  if (norm.includes('data') || norm.includes('vigencia')) {
+    return 'min-width:110px; max-width:135px; white-space:nowrap; text-align:center;';
   }
-  if (norm.includes('observ') || norm.includes('documento') || norm.includes('parecer') || norm.includes('contato')) {
-    return 'min-width:240px; max-width:400px; line-height:1.45; white-space:normal; word-break:break-word;';
+  if (norm.includes('valor')) {
+    return 'min-width:110px; max-width:135px; white-space:nowrap; text-align:right;';
   }
-  return 'min-width:140px; max-width:280px; line-height:1.45; white-space:normal; word-break:break-word;';
+  if (norm.includes('contato')) {
+    return 'min-width:160px; max-width:210px; font-size:12px; line-height:1.35; white-space:normal; word-break:break-word;';
+  }
+  if (norm.includes('observ') || norm.includes('documento') || norm.includes('parecer')) {
+    return 'min-width:170px; max-width:230px; line-height:1.35; white-space:normal; word-break:break-word;';
+  }
+  return 'min-width:120px; max-width:200px; line-height:1.35; white-space:normal; word-break:break-word;';
 }
 
-// Badge visual para status no GMAC com cores específicas por status
+// Badge visual para status no GMAC com cores específicas por status (Imagem 1: Não Entregue Vermelho, Entregue Verde)
 function renderBadgeStatusGMAC(status) {
   if (!status) return `<span style="color:#64748b;">-</span>`;
   const s = String(status).trim();
@@ -125,44 +176,78 @@ function renderBadgeStatusGMAC(status) {
   let color = '#cbd5e1';
   let border = 'rgba(148,163,184,0.25)';
 
-  // 1. Sucesso / Concluído / Finalizado / Entregue / OK / Autorizado
-  if (sLow.includes('finalizado') || sLow.includes('concluido') || sLow.includes('entregue') || sLow === 'ok' || sLow.includes('autoriz')) {
-    bg = 'rgba(16,185,129,0.15)';
-    color = '#34d399';
-    border = 'rgba(16,185,129,0.35)';
-  }
-  // 2. Em trâmite / Em andamento / Tramitação
-  else if (sLow.includes('tramite') || sLow.includes('tramitacao') || sLow.includes('andamento')) {
-    bg = 'rgba(59,130,246,0.15)';
-    color = '#60a5fa';
-    border = 'rgba(59,130,246,0.35)';
-  }
-  // 3. Em instrução / Análise
-  else if (sLow.includes('instrucao') || sLow.includes('analise')) {
-    bg = 'rgba(245,158,11,0.15)';
-    color = '#fbbf24';
-    border = 'rgba(245,158,11,0.35)';
-  }
-  // 4. Pendência / Alerta / Não entregue / Cancelado / Rejeitado
-  else if (sLow.includes('nao entregue') || sLow.includes('nao assinaram') || sLow.includes('sem certidao') || sLow.includes('nao tem interesse') || sLow.includes('cancelad') || sLow.includes('rejeit')) {
-    bg = 'rgba(239,68,68,0.15)';
+  // 1. PRIMEIRO: Negativas / Pendências / Recusa / Alerta / Não Entregue (VERMELHO)
+  if (sLow.includes('nao entregue') || sLow.includes('nao assinaram') || sLow.includes('sem certidao') || sLow.includes('nao tem interesse') || sLow.includes('cancelad') || sLow.includes('rejeit') || sLow.includes('recusad') || sLow.includes('indeferid') || sLow.includes('inativ')) {
+    bg = 'rgba(239,68,68,0.2)';
     color = '#f87171';
-    border = 'rgba(239,68,68,0.35)';
+    border = 'rgba(239,68,68,0.5)';
   }
-  // 5. Pendente / Aguardando
+  // 2. Sucesso / Entregue / Concluído / Finalizado / OK / Autorizado / Aprovado (VERDE)
+  else if (sLow.includes('entregue') || sLow.includes('finalizado') || sLow.includes('concluido') || sLow === 'ok' || sLow.includes('autoriz') || sLow.includes('aprovad')) {
+    bg = 'rgba(16,185,129,0.2)';
+    color = '#34d399';
+    border = 'rgba(16,185,129,0.5)';
+  }
+  // 3. Em trâmite / Em andamento / Tramitação (AZUL)
+  else if (sLow.includes('tramite') || sLow.includes('tramitacao') || sLow.includes('andamento')) {
+    bg = 'rgba(59,130,246,0.2)';
+    color = '#60a5fa';
+    border = 'rgba(59,130,246,0.5)';
+  }
+  // 4. Em instrução / Análise (LARANJA / ÂMBAR)
+  else if (sLow.includes('instrucao') || sLow.includes('analise')) {
+    bg = 'rgba(245,158,11,0.2)';
+    color = '#fbbf24';
+    border = 'rgba(245,158,11,0.5)';
+  }
+  // 5. Pendente / Aguardando / Em espera (ROXO / PÚRPURA)
   else if (sLow.includes('pendente') || sLow.includes('aguardando') || sLow.includes('espera') || sLow.includes('diligencia')) {
-    bg = 'rgba(168,85,247,0.15)';
+    bg = 'rgba(168,85,247,0.2)';
     color = '#c084fc';
-    border = 'rgba(168,85,247,0.35)';
+    border = 'rgba(168,85,247,0.5)';
   }
-  // 6. Termo assinado / Publicado
+  // 6. Termo assinado / Publicado (CIANO)
   else if (sLow.includes('assinado') || sLow.includes('publicad')) {
-    bg = 'rgba(6,182,212,0.15)';
+    bg = 'rgba(6,182,212,0.2)';
     color = '#22d3ee';
-    border = 'rgba(6,182,212,0.35)';
+    border = 'rgba(6,182,212,0.5)';
   }
 
   return `<span style="display:inline-block; padding:4px 10px; font-size:11.5px; font-weight:700; border-radius:6px; background:${bg}; color:${color}; border:1px solid ${border}; white-space:nowrap;">${s}</span>`;
+}
+
+// Função para copiar o número do processo para o clipboard com feedback
+window.copiarTextoProcessoGMAC = function(texto) {
+  if (!texto || texto === '-') return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texto).then(() => {
+      if (typeof toast === 'function') toast('Processo copiado: ' + texto, 'success');
+      else if (typeof showToast === 'function') showToast('Processo copiado: ' + texto, 'success');
+      else alert('Processo copiado: ' + texto);
+    }).catch(() => {
+      copiarFallbackGMAC(texto);
+    });
+  } else {
+    copiarFallbackGMAC(texto);
+  }
+};
+
+function copiarFallbackGMAC(texto) {
+  const ta = document.createElement('textarea');
+  ta.value = texto;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    if (typeof toast === 'function') toast('Processo copiado: ' + texto, 'success');
+    else alert('Processo copiado: ' + texto);
+  } catch(e) {
+    prompt('Copie o processo:', texto);
+  }
+  document.body.removeChild(ta);
 }
 
 // Carregar dados de um módulo GMAC
@@ -326,11 +411,11 @@ function renderizarGMAC(modulo) {
 
   headers.forEach(h => {
     const colStyle = getColStyleGMAC(h);
-    html += `<th style="padding:12px 16px; color:#cbd5e1; font-weight:700; ${colStyle}">${h}</th>`;
+    html += `<th style="padding:12px 14px; color:#cbd5e1; font-weight:700; ${colStyle}">${h}</th>`;
   });
 
   html += `
-            <th style="padding:12px 16px; color:#94a3b8; font-weight:700; text-align:center; width:95px; min-width:95px;">Ações</th>
+            <th style="padding:12px 14px; color:#94a3b8; font-weight:700; text-align:center; width:85px; min-width:85px;">Ações</th>
           </tr>
         </thead>
         <tbody>`;
@@ -344,28 +429,55 @@ function renderizarGMAC(modulo) {
       const val = r[h] !== undefined ? String(r[h]).trim() : '';
       let rendered = val;
 
-      const hLow = h.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const norm = h.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-      // Badges para status ou situação
-      if (hLow.includes('status') || hLow === 'situacao' || hLow.includes('situacao')) {
+      // 1. Colunas de Processo (com Botão Copiar e Botão SEI)
+      if (norm.includes('processo') || norm.includes('sei')) {
+        if (val && val !== '-') {
+          const valEscaped = val.replace(/'/g, "\\'");
+          rendered = `
+            <div style="display:inline-flex; align-items:center; gap:6px; flex-wrap:nowrap;">
+              <span style="font-family:ui-monospace, monospace; color:#38bdf8; font-weight:700; font-size:12px; white-space:nowrap;">${val}</span>
+              <button type="button" onclick="copiarTextoProcessoGMAC('${valEscaped}')" style="padding:3px 7px; font-size:10px; display:inline-flex; align-items:center; gap:3px; border:none; border-radius:4px; background:#2563eb; color:#ffffff; cursor:pointer; font-weight:600; white-space:nowrap;" title="Copiar Número do Processo">
+                📋 Copiar
+              </button>
+              <a href="https://sei.sistemas.ro.gov.br/sip/login.php?sigla_orgao_sistema=RO&sigla_sistema=SEI" target="_blank" style="padding:2px 5px; height:19px; display:inline-flex; align-items:center; justify-content:center; background:#ffffff; border-radius:4px; text-decoration:none;" title="Acessar SEI Rondônia">
+                <img src="img/logo-sei.png" style="height:13px; object-fit:contain;" alt="SEI">
+              </a>
+            </div>`;
+        } else {
+          rendered = `<span style="color:#64748b;">-</span>`;
+        }
+      }
+      // 2. Colunas de Status
+      else if (norm.includes('status')) {
         rendered = renderBadgeStatusGMAC(val);
-      } else if (hLow.includes('termo ass')) {
+      }
+      // 3. Coluna de Situação (Imagem 2: quebra dentro da coluna e centralizada)
+      else if (norm === 'situacao' || norm.includes('situacao')) {
+        rendered = `
+          <div style="display:inline-block; width:100%; max-width:210px; text-align:center; white-space:normal; word-break:break-word; font-size:12px; line-height:1.35; color:#cbd5e1;">
+            ${val || '-'}
+          </div>`;
+      }
+      // 4. Termo Ass. Pref.
+      else if (norm.includes('termo ass')) {
         rendered = val.toLowerCase() === 'ok' 
           ? `<span style="display:inline-block; padding:3px 8px; font-size:11px; font-weight:700; border-radius:6px; background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3);">OK</span>`
           : (val || '-');
-      } else if (hLow.includes('processo')) {
-        rendered = `<span style="font-family:ui-monospace, monospace; color:#38bdf8; font-weight:600;">${val || '-'}</span>`;
-      } else if (hLow.includes('valor')) {
+      }
+      // 5. Valores
+      else if (norm.includes('valor')) {
         rendered = `<span style="color:#34d399; font-weight:600;">${val}</span>`;
       }
 
       const colStyle = getColStyleGMAC(h);
-      html += `<td style="padding:10px 16px; color:#e2e8f0; ${colStyle}">${rendered || '-'}</td>`;
+      html += `<td style="padding:10px 14px; color:#e2e8f0; ${colStyle}">${rendered || '-'}</td>`;
     });
 
     html += `
-            <td style="padding:10px 16px; text-align:center; width:95px; min-width:95px;">
-              <button type="button" onclick="abrirModalGMAC('${modulo}', ${r._rowNumber})" class="btn btn-ghost" style="padding:6px 12px; font-size:12px; border:1px solid rgba(255,255,255,0.12); color:#60a5fa; border-radius:6px; cursor:pointer;" title="Editar Registro">
+            <td style="padding:10px 14px; text-align:center; width:85px; min-width:85px;">
+              <button type="button" onclick="abrirModalGMAC('${modulo}', ${r._rowNumber})" class="btn btn-ghost" style="padding:6px 10px; font-size:12px; border:1px solid rgba(255,255,255,0.12); color:#60a5fa; border-radius:6px; cursor:pointer;" title="Editar Registro">
                 ✏️ Editar
               </button>
             </td>
@@ -445,7 +557,7 @@ function imprimirRelatorioGMAC(modulo) {
   const statusTexto = filtro.status ? filtro.status : 'Todos os Status';
   const buscaTexto = filtro.busca ? `"${filtro.busca}"` : 'Nenhum termo';
 
-  let theadHtml = '<tr><th style="width:40px; text-align:center;">#</th>';
+  let theadHtml = '<tr><th style="width:35px; text-align:center;">#</th>';
   headers.forEach(h => {
     theadHtml += `<th>${h}</th>`;
   });
@@ -481,7 +593,7 @@ function imprimirRelatorioGMAC(modulo) {
         }
         body {
           font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-          font-size: 9.5pt;
+          font-size: 9pt;
           color: #0f172a;
           margin: 0;
           padding: 14px;
@@ -496,13 +608,13 @@ function imprimirRelatorioGMAC(modulo) {
           align-items: center;
         }
         .header-title h1 {
-          font-size: 15pt;
+          font-size: 14pt;
           font-weight: 800;
           color: #0f172a;
           margin: 0 0 2px 0;
         }
         .header-title h2 {
-          font-size: 11pt;
+          font-size: 10.5pt;
           font-weight: 600;
           color: #0284c7;
           margin: 0 0 2px 0;
