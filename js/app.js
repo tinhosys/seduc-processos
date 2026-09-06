@@ -182,8 +182,9 @@ function navegar(pagina) {
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === pagina);
   });
+  const pageTarget = pagina.startsWith('proalfa') ? 'proalfa' : pagina;
   document.querySelectorAll('.page').forEach(el => {
-    el.classList.toggle('active', el.id === 'page-' + pagina);
+    el.classList.toggle('active', el.id === 'page-' + pageTarget);
   });
 
   const titles = {
@@ -193,11 +194,17 @@ function navegar(pagina) {
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
-        'gmac-aee': '🎒 Equipamento - AEE',
+    'gmac-aee': '🎒 Equipamento - AEE',
     'gmac-onibus': '🚌 Doação do Ônibus Escolar',
     'gmac-veiculos': '🚗 Doação Definitiva de Veículos',
     'gmac-reordenamento': '🏛️ Municipalização e Reordenamento',
     'gmac-cooperacao': '🤝 Termo de Cooperação',
+    proalfa: '📖 PROALFA',
+    'proalfa-professores': '👨‍🏫 PROALFA - Professores (Docentes)',
+    'proalfa-alunos': '🎒 PROALFA - Alunos (Matrículas)',
+    diarias: '✈️ Diárias',
+    orcamento: '💰 Controle Orçamentário',
+    contatos: '🏛️ Municípios',
     escolas: '🏫 Escolas',
     'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia',
     'todas-escolas': '🏫 Todas as Escolas'
@@ -221,6 +228,7 @@ function navegar(pagina) {
   }
   if (pagina === 'todas-escolas') iniciarPaginaTodasEscolas();
   if (pagina === 'orcamento' && typeof carregarOrcamento === 'function') carregarOrcamento();
+  if (pagina === 'diarias' && typeof carregarDiarias === 'function') carregarDiarias();
   if (pagina && pagina.startsWith('gmac-')) {
     const mod = pagina.replace('gmac-', '');
     if (typeof carregarGMAC === 'function') {
@@ -229,6 +237,14 @@ function navegar(pagina) {
       setTimeout(() => {
         if (typeof carregarGMAC === 'function') carregarGMAC(mod);
       }, 150);
+    }
+  }
+  if (pagina && pagina.startsWith('proalfa')) {
+    const tipo = pagina === 'proalfa-alunos' ? 'alunos' : (pagina === 'proalfa-professores' ? 'professores' : null);
+    if (typeof window.navegarProalfa === 'function' && tipo) {
+      window.navegarProalfa(tipo);
+    } else if (typeof carregarProalfa === 'function') {
+      carregarProalfa();
     }
   }
 }
@@ -3681,7 +3697,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.17)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.18)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 

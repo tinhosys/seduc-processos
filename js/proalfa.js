@@ -414,10 +414,32 @@ function renderTableProalfa(dados, isDoc) {
 }
 
 // ─── INICIALIZAR AO NAVEGAR ──────────────────────────────────────────────────
+window.navegarProalfa = function(tipo) {
+  const mapa = {
+    'professores': 'Docentes_Rede_Municipal_2025',
+    'docentes': 'Docentes_Rede_Municipal_2025',
+    'alunos': 'Matrículas_Municipal_2025',
+    'matriculas': 'Matrículas_Municipal_2025'
+  };
+  const tabId = mapa[tipo] || tipo || 'Docentes_Rede_Municipal_2025';
+
+  if (!proalfaData) {
+    carregarProalfa().then(() => {
+      selecionarTabProalfa(tabId);
+    });
+  } else {
+    selecionarTabProalfa(tabId);
+  }
+};
+
+window.carregarProalfa = carregarProalfa;
+window.selecionarTabProalfa = selecionarTabProalfa;
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.getAttribute('data-page') === 'proalfa' && !proalfaData) {
+      const page = btn.getAttribute('data-page');
+      if (page && page.startsWith('proalfa') && !proalfaData) {
         carregarProalfa();
       }
     });

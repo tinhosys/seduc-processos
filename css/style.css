@@ -147,13 +147,198 @@ body {
   color: var(--text-primary);
 }
 
-.nav-item.active {
-  background: rgba(59,130,246,0.15);
-  color: var(--blue);
-  border-left: 3px solid var(--blue);
+.nav-item:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.nav-item .nav-icon { font-size: 16px; min-width: 20px; text-align: center; }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
+  color: #60a5fa;
+  border-left: 3px solid #3b82f6;
+  font-weight: 600;
+  box-shadow: inset 0 0 12px rgba(59, 130, 246, 0.1);
+}
+
+.nav-item .nav-icon { 
+  font-size: 16px; 
+  min-width: 22px; 
+  text-align: center; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.nav-item:hover .nav-icon,
+.nav-item:focus-visible .nav-icon {
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+/* SUBMENUS & HIERARQUIA INSTITUCIONAL */
+.sub-cam-container {
+  background: rgba(15, 23, 42, 0.5);
+  border-left: 2px solid rgba(59, 130, 246, 0.35);
+  border-radius: 0 8px 8px 0;
+  margin: 4px 0 6px 10px;
+  padding: 4px 0 6px 4px;
+}
+
+/* Cabeçalhos de Gerência (GDSM, GMAC, PROALFA) */
+.nav-gerencia-header {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  padding: 8px 12px !important;
+  margin: 3px 0 !important;
+  border-radius: 6px !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 0.2s ease !important;
+  border: 1px solid transparent !important;
+}
+.nav-gerencia-header:hover {
+  transform: translateX(2px);
+}
+.nav-gerencia-header.open {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.header-gdsm { color: #38bdf8 !important; }
+.header-gdsm:hover, .header-gdsm:focus-visible {
+  background: rgba(56, 189, 248, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+  color: #7dd3fc !important;
+}
+
+.header-gmac { color: #34d399 !important; }
+.header-gmac:hover, .header-gmac:focus-visible {
+  background: rgba(52, 211, 153, 0.12) !important;
+  border-color: rgba(52, 211, 153, 0.3) !important;
+  color: #6ee7b7 !important;
+}
+
+.header-proalfa { color: #c084fc !important; }
+.header-proalfa:hover, .header-proalfa:focus-visible {
+  background: rgba(192, 132, 252, 0.12) !important;
+  border-color: rgba(192, 132, 252, 0.3) !important;
+  color: #e9d5ff !important;
+}
+
+/* Badges das Gerências */
+.menu-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.badge-gdsm {
+  background: rgba(14, 165, 233, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+}
+.badge-gmac {
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #34d399;
+}
+.badge-proalfa {
+  background: rgba(168, 85, 247, 0.18);
+  border: 1px solid rgba(192, 132, 252, 0.4);
+  color: #c084fc;
+}
+.badge-diarias {
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+}
+
+/* Sub-níveis de Formulários */
+.sub-level-gdsm {
+  border-left: 2px solid rgba(56, 189, 248, 0.35) !important;
+  margin-left: 14px !important;
+  padding-left: 8px !important;
+  margin-bottom: 4px;
+}
+.sub-level-gmac {
+  border-left: 2px solid rgba(52, 211, 153, 0.35) !important;
+  margin-left: 14px !important;
+  padding-left: 8px !important;
+  margin-bottom: 4px;
+}
+.sub-level-proalfa {
+  border-left: 2px solid rgba(192, 132, 252, 0.35) !important;
+  margin-left: 14px !important;
+  padding-left: 8px !important;
+  margin-bottom: 4px;
+}
+
+/* Formulários / Itens (Nível 3) */
+.nav-form-item {
+  font-size: 12px !important;
+  padding: 7px 10px !important;
+  margin: 2px 0 !important;
+  border-radius: 5px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  color: #cbd5e1 !important;
+  transition: all 0.2s ease !important;
+  text-decoration: none;
+  border-left: 2px solid transparent !important;
+}
+.nav-form-item svg {
+  flex-shrink: 0;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.nav-form-item:hover, .nav-form-item:focus-visible {
+  color: #ffffff !important;
+  transform: translateX(3px) !important;
+}
+.nav-form-item:hover svg, .nav-form-item:focus-visible svg {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 5px currentColor);
+}
+
+.sub-level-gdsm .nav-form-item:hover,
+.sub-level-gdsm .nav-form-item:focus-visible,
+.sub-level-gdsm .nav-form-item.active {
+  background: rgba(56, 189, 248, 0.14) !important;
+  color: #e0f2fe !important;
+  border-left-color: #38bdf8 !important;
+}
+
+.sub-level-gmac .nav-form-item:hover,
+.sub-level-gmac .nav-form-item:focus-visible,
+.sub-level-gmac .nav-form-item.active {
+  background: rgba(52, 211, 153, 0.14) !important;
+  color: #d1fae5 !important;
+  border-left-color: #34d399 !important;
+}
+
+.sub-level-proalfa .nav-form-item:hover,
+.sub-level-proalfa .nav-form-item:focus-visible,
+.sub-level-proalfa .nav-form-item.active {
+  background: rgba(192, 132, 252, 0.14) !important;
+  color: #fae8ff !important;
+  border-left-color: #c084fc !important;
+}
+
+.item-diarias:hover,
+.item-diarias:focus-visible,
+.item-diarias.active {
+  background: rgba(251, 191, 36, 0.14) !important;
+  color: #fef3c7 !important;
+  border-left: 2px solid #fbbf24 !important;
+}
 
 .sidebar-footer {
   padding: 16px;
