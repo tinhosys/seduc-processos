@@ -2275,22 +2275,55 @@ document.addEventListener('DOMContentLoaded', () => {
   // Importação
   setupImportacao();
 
-  // Preencher selects de filtro com status e localizacao
-    window.popularFiltrosProcessos = function() {
-      const fillSelectFiltro = (id, lista) => {
-        const s = document.getElementById(id);
-        if (!s) return;
-        
-        s.innerHTML = `<option value="****">Todos</option>` + lista.map(o => `<option value="${o}">${o}</option>`).join('');
-        
-        if (typeof window.initMultiSelect === 'function' && s.multiple) {
-           window.initMultiSelect(id);
-        }
+  // Preencher selects de filtro a partir da conexão de dados preservando as legendas
+  window.popularFiltrosProcessos = function() {
+    const todosProcs = window.processosCache || [];
+    if (!todosProcs || todosProcs.length === 0) return;
+
+    const distinctStatus = [...new Set([
+      ...todosProcs.map(p => p.status),
+      ...STATUS_LIST
+    ])].filter(s => s && s !== '.' && s !== '****').sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    const distinctLocalizacao = [...new Set([
+      ...todosProcs.map(p => p.localizacao),
+      ...LOCALIZACAO_LIST
+    ])].filter(l => l && l !== '.' && l !== '****').sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+    if (typeof preencherSelectFiltro === 'function') {
+      preencherSelectFiltro('filtro-status', distinctStatus);
+      preencherSelectFiltro('filtro-localizacao', distinctLocalizacao);
+      
+      const superList = [...new Set(todosProcs.map(p => typeof getSuperPorMunicipio === 'function' ? getSuperPorMunicipio(p.municipio) : '').filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+      preencherSelectFiltro('filtro-super', superList);
+
+      preencherSelectFiltro('filtro-municipio', [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
+      preencherSelectFiltro('filtro-prefixo', [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
+      preencherSelectFiltro('filtro-objeto', [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
+      preencherSelectFiltro('filtro-ano', [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b) => b - a));
+      preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
+
+      const MAPA_CATEGORIA = {
+        'C': 'C - Convênio', 'F': 'F - Fomento', 'T': 'T - Termo de Cooperação',
+        'Convenio': 'C - Convênio', 'Convênio': 'C - Convênio',
+        'Fomento': 'F - Fomento', 'Termo de Cooperação': 'T - Termo de Cooperação'
       };
-      fillSelectFiltro('filtro-status', STATUS_LIST.filter(s => s !== '.'));
-      fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
-    };
-    window.popularFiltrosProcessos();
+      const MAPA_TIPO = {
+        'OB': 'OB - Obras', 'MP': 'MP - Mat. Permanente', 'MC': 'MC - Mat. Consumo',
+        'SI': 'SI - Sistema', 'TR': 'TR - Treinamento', 'OUT': 'OUT - Outros',
+        'Obras': 'OB - Obras', 'Material Permanente': 'MP - Mat. Permanente',
+        'Material de Consumo': 'MC - Mat. Consumo', 'Sistema': 'SI - Sistema',
+        'Treinamento': 'TR - Treinamento', 'Outros': 'OUT - Outros'
+      };
+      const categoriasRaw = [...new Set(todosProcs.map(p => p.categoria).filter(Boolean))].sort();
+      const tiposRaw = [...new Set(todosProcs.map(p => p.tipo).filter(Boolean))].sort();
+      if (typeof preencherSelectFiltroMapeado === 'function') {
+        preencherSelectFiltroMapeado('filtro-categoria', categoriasRaw, MAPA_CATEGORIA);
+        preencherSelectFiltroMapeado('filtro-tipo', tiposRaw, MAPA_TIPO);
+      }
+    }
+  };
+  window.popularFiltrosProcessos();
 
   // Máscara de Celular (WhatsApp)
   const shareNum = document.getElementById("share-whatsapp-number");

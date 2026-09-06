@@ -289,31 +289,41 @@ function columnToLetter(column) {
 }
 
 const defaultHeaders = [
-  "Município",
-  "Processo",
-  "Interessado",
-  "Objeto",
-  "Valor Of.",
-  "Valor/Planilha",
-  "Diferença",
-  "Status",
-  "Localização",
-  "Observação",
-  "Data",
-  "Anotação",
-  "contatos",
-  "Apontamento",
+  "DIGITO",
+  "MUNICIPIO",
+  "PROCESSOS",
+  "INTERESSADO",
+  "OBJETO",
+  "VALOR OF",
+  "VLR PLANILHA",
+  "VLR DIFERENCA",
+  "STATUS",
+  "LOCALIZACAO",
+  "OBSERVACAO",
+  "DATA",
+  "ANOTACAO",
+  "CONTATO",
+  "APONTAMENTO",
   "ALERTA",
   "ULTIMA EDICAO LOGIN",
-  "DATA/HORA EDIÇAO",
-  "marca",
+  "DATA/HORA EDICAO",
+  "MARCA",
   "CATEGORIA",
   "TIPO",
   "CAM",
-  "GAB",
-  "CC",
+  "GAB-SEDUC",
+  "CASA CIVIL",
   "ANO",
-  "AGRUPAMENTO"
+  "AGRUPAMENTO",
+  "TIPO AUDITORIO",
+  "QUADRA",
+  "PATIO",
+  "REFEITORIO",
+  "BANHEIROS",
+  "OFICIO",
+  "METRAGEM (M²)",
+  "DETALHAMENTO ITENS",
+  "DEMAIS OBSERVACOES"
 ];
 
 async function getAllRows() {
@@ -424,7 +434,7 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     const hLow = hDef.toLowerCase();
     let val = undefined;
     
-        if (hLow.includes('digito') || hLow.includes('dígito')) {
+    if (hLow.includes('digito') || hLow.includes('dígito')) {
       const d = data.DIGITO !== undefined ? data.DIGITO : (data.digito !== undefined ? data.digito : data['DÍGITO']);
       if (d !== undefined && d !== null && String(d).trim() !== '') {
         const clean = String(d).replace(/\D/g, '').slice(0, 3);
@@ -432,29 +442,75 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
       } else {
         val = "";
       }
-    } else if (hLow.includes('prefixo')) val = data.prefixo;
-    else if (hLow.includes('munic')) val = data.municipio;
-    else if (hLow.includes('processo')) val = data.numero;
-    else if (hLow.includes('interessado')) val = data.interessado;
-    else if (hLow.includes('objeto')) val = data.objeto;
-    else if (hLow.includes('valor of') || hLow.includes('oficial')) val = formatMoney(data.valorOf);
-    else if (hLow.includes('planilha')) val = formatMoney(data.valorPlan);
-    else if (hLow.includes('diferen')) val = formatMoney(data.diferenca);
-    else if (hLow === 'status') val = data.status;
-    else if (hLow.includes('localiza')) val = data.localizacao;
-    else if (hLow.includes('obs')) val = data.obs;
-    else if (hLow === 'data') val = data.data;
-    else if (hLow.includes('anota')) val = data.anotacao;
-    else if (hLow.includes('apontamento') && data.apontamento !== undefined) val = data.apontamento;
-    else if (hLow === 'alerta' && data.alerta !== undefined) val = data.alerta;
-    else if ((hLow === 'marca' || hLow.includes('marcado')) && data.marca !== undefined) val = data.marca;
-    else if (hLow === 'categoria') val = data.categoria;
-    else if (hLow === 'tipo') val = data.tipo;
-    else if (hLow === 'ano') val = data.ano;
-    else if (hLow.includes('agrupamento')) val = data.agrupamento;
-    else if (hLow === 'cam') val = data.CAM !== undefined ? ((data.CAM === '1' || data.CAM === 1) ? '1' : '0') : undefined;
-    else if (hLow === 'gab') val = data.GAB !== undefined ? ((data.GAB === '1' || data.GAB === 1) ? '1' : '0') : undefined;
-    else if (hLow === 'cc') val = data.CC !== undefined ? ((data.CC === '1' || data.CC === 1) ? '1' : '0') : undefined;
+    } else if (hLow.includes('prefixo')) {
+      val = data.prefixo;
+    } else if (hLow === 'municipio' || hLow === 'município' || hLow.includes('munic')) {
+      val = data.municipio || data.MUNICIPIO;
+    } else if (hLow.includes('processo')) {
+      val = data.numero || data.PROCESSOS || data.processos || data.Processo;
+    } else if (hLow.includes('interessado')) {
+      val = data.interessado || data.INTERESSADO;
+    } else if (hLow.includes('objeto')) {
+      val = data.objeto || data.OBJETO;
+    } else if (hLow.includes('valor of') || hLow === 'valor of.' || hLow.includes('oficial')) {
+      val = formatMoney(data.valorOf !== undefined ? data.valorOf : data['VALOR OF']);
+    } else if (hLow.includes('planilha') || hLow === 'vlr planilha') {
+      val = formatMoney(data.valorPlan !== undefined ? data.valorPlan : data['VLR PLANILHA']);
+    } else if (hLow.includes('diferen') || hLow === 'vlr diferenca') {
+      val = formatMoney(data.diferenca !== undefined ? data.diferenca : data['VLR DIFERENCA']);
+    } else if (hLow === 'status') {
+      val = data.status || data.STATUS;
+    } else if (hLow.includes('localiza')) {
+      val = data.localizacao || data.LOCALIZACAO;
+    } else if (hLow.includes('observa') || hLow.includes('obs')) {
+      val = data.obs !== undefined ? data.obs : (data.OBSERVACAO !== undefined ? data.OBSERVACAO : data.observacao);
+    } else if (hLow === 'data') {
+      val = data.data || data.DATA;
+    } else if (hLow.includes('anota')) {
+      val = data.anotacao || data.ANOTACAO;
+    } else if (hLow.includes('apontamento')) {
+      val = data.apontamento !== undefined ? data.apontamento : data.APONTAMENTO;
+    } else if (hLow === 'alerta') {
+      val = data.alerta !== undefined ? data.alerta : data.ALERTA;
+    } else if (hLow === 'marca' || hLow.includes('marcado')) {
+      val = data.marca !== undefined ? data.marca : data.MARCA;
+    } else if (hLow === 'categoria') {
+      val = data.categoria || data.CATEGORIA;
+    } else if (hLow === 'tipo') {
+      val = data.tipo || data.TIPO;
+    } else if (hLow === 'cam') {
+      const c = (data.CAM !== undefined ? data.CAM : data.cam);
+      val = (c === '1' || c === 1 || c === true || String(c).toLowerCase() === 'sim') ? '1' : '0';
+    } else if (hLow === 'gab' || hLow.includes('gab-seduc') || hLow.includes('gabinete')) {
+      const g = (data.GAB !== undefined ? data.GAB : (data['GAB-SEDUC'] !== undefined ? data['GAB-SEDUC'] : data.gab));
+      val = (g === '1' || g === 1 || g === true || String(g).toLowerCase() === 'sim') ? '1' : '0';
+    } else if (hLow === 'cc' || hLow.includes('casa civil')) {
+      const cc = (data.CC !== undefined ? data.CC : (data['CASA CIVIL'] !== undefined ? data['CASA CIVIL'] : data.cc));
+      val = (cc === '1' || cc === 1 || cc === true || String(cc).toLowerCase() === 'sim') ? '1' : '0';
+    } else if (hLow === 'ano') {
+      val = data.ano || data.ANO;
+    } else if (hLow.includes('agrupamento')) {
+      val = data.agrupamento || data.AGRUPAMENTO;
+    } else if (hLow.includes('auditorio') || hLow.includes('auditório')) {
+      val = data.tipoAuditorio || data.auditorio || data['TIPO AUDITORIO'] || '';
+    } else if (hLow === 'quadra') {
+      val = data.quadra || data.QUADRA || '';
+    } else if (hLow === 'patio' || hLow === 'pátio') {
+      val = data.patio || data.PATIO || '';
+    } else if (hLow === 'refeitorio' || hLow === 'refeitório') {
+      val = data.refeitorio || data.REFEITORIO || '';
+    } else if (hLow === 'banheiros' || hLow === 'banheiro') {
+      val = data.banheiros || data.BANHEIROS || '';
+    } else if (hLow === 'oficio' || hLow === 'ofício') {
+      val = data.oficio || data.oficioNumero || data.OFICIO || '';
+    } else if (hLow.includes('metragem')) {
+      val = data.metragem || data.metragemM2 || data['METRAGEM (M²)'] || '';
+    } else if (hLow.includes('detalhamento')) {
+      val = data.detalhamentoItens || data['DETALHAMENTO ITENS'] || '';
+    } else if (hLow.includes('demais')) {
+      val = data.demaisObservacoes || data['DEMAIS OBSERVACOES'] || '';
+    }
+
     if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
         val = data.contatos.map(c => {
@@ -462,17 +518,22 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
           if (c.detalhes && tel) return `${c.detalhes.trim()} - ${tel.trim()}`;
           return (c.detalhes || tel || "").trim();
         }).filter(Boolean).join('; ');
+      } else if (typeof data.contatos === 'string') {
+        val = data.contatos;
+      } else if (data.CONTATO) {
+        val = data.CONTATO;
       } else {
         val = "";
       }
     }
 
     if (user && user.nivel !== 'leitor') {
-      if (hLow === 'ultima edicao' || hLow === 'última edição') val = user.nome || user.whatsapp;
-      if (hLow === 'data/hora edição' || hLow === 'data/hora edicao') {
+      if (hLow.includes('ultima edicao') || hLow.includes('última edição')) {
+        val = user.nome || user.whatsapp || data.ultimaEdicao;
+      }
+      if (hLow.includes('data/hora')) {
         const now = new Date();
-        const dh = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        val = dh;
+        val = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
       }
     }
 
