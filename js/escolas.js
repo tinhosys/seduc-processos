@@ -1111,13 +1111,20 @@ function imprimirRelatorioEscolas() {
         </style>
       </head>
       <body>
-        <div class="header-container">
-          <div class="header-title">Relatório de Escolas — SEDUC / RO (CAM)</div>
-          <div class="header-sub">Coordenadoria de Articulação com os Municípios</div>
-          <div class="badges-row">
-            <span class="badge">🏫 Escolas: ${pool.length.toLocaleString('pt-BR')}</span>
-            <span class="badge">🎓 Alunos: ${tMat.toLocaleString('pt-BR')}</span>
-            <span class="badge">📚 Salas: ${tSal.toLocaleString('pt-BR')}</span>
+        <div class="header-container" style="text-align: left; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 15px;">
+          <div>
+            <div style="font-size: 15px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
+            <div style="font-size: 13px; font-weight: 700; color: #0284c7; text-transform: uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+            <div style="font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Relatório Sintético: <strong>Painel e Levantamento Geral de Escolas</strong></div>
+          </div>
+          <div style="text-align: right;">
+            <div class="badges-row" style="justify-content: flex-end; margin-top: 0;">
+              <span class="badge">🏫 Escolas: ${pool.length.toLocaleString('pt-BR')}</span>
+              <span class="badge">🎓 Alunos: ${tMat.toLocaleString('pt-BR')}</span>
+              <span class="badge">📚 Salas: ${tSal.toLocaleString('pt-BR')}</span>
+            </div>
+            <div style="font-size: 10px; color: #64748b; margin-top: 5px;"><strong>Emissão:</strong> ${today}</div>
           </div>
         </div>
 
@@ -1178,8 +1185,8 @@ function imprimirRelatorioEscolas() {
           </tbody>
         </table>
         <div class="footer-info">
-          <span>SEDUC-RO — Sistema GDSM / CAM</span>
-          <span>Gerado em: ${today}</span>
+          <span><strong>GDSM - GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS</strong></span>
+          <span>Página 1 de 1 &bull; Gerado em: ${today}</span>
         </div>
       </body>
       </html>

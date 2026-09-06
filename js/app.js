@@ -1,4 +1,4 @@
-function cancelarPadronizacao() {
+﻿function cancelarPadronizacao() {
   const logDiv = document.getElementById('log-status-padronizacao');
   const btnExecutar = document.getElementById('btn-executar-padronizacao');
   const btnCancelar = document.getElementById('btn-cancelar-padronizacao');
@@ -2470,17 +2470,18 @@ function getFormattedDateForTitle() {
 
 function getCommonHeader(subtitle) {
   return `
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0f172a; padding-bottom:6px; margin-bottom:14px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left;">
-        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
+        <div style="font-size:11px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.5px; line-height:1.2;">GOVERNO DO ESTADO DE RONDÔNIA</div>
+        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase; line-height:1.2;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+        <div style="font-size:9.5px; font-weight:700; color:#334155; text-transform:uppercase; line-height:1.2;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>
+        <div style="font-size:10px; color:#475569; font-weight:bold; text-transform:uppercase; background:#f1f5f9; border:1px solid #cbd5e1; padding:3px 8px; border-radius:4px;">${subtitle.toUpperCase()}</div>
       </div>
     </div>
   `;
 }
-
 
 function injectFixedHeader(subtitle) {
   let header = document.getElementById('fixed-print-header');
@@ -2492,10 +2493,12 @@ function injectFixedHeader(subtitle) {
   }
   header.innerHTML = getCommonHeader(subtitle);
 }
-function getCommonFooter() {
+
+function getCommonFooter(gerenciaCustom) {
+  const gerenciaTexto = gerenciaCustom || 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS';
   return `
-    <div style="border-top:1px solid #ccc; padding-top:4px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:9px; font-weight:normal; color:#333; font-family: Arial, sans-serif; width:100%;">
-      <div style="flex:1; text-align:left; font-weight:bold; color:#000;">GBZ</div>
+    <div style="border-top:1px solid #cbd5e1; padding-top:5px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:8.5px; font-weight:normal; color:#475569; font-family: Arial, sans-serif; width:100%;">
+      <div style="flex:1; text-align:left; font-weight:bold; color:#0f172a;">${gerenciaTexto}</div>
       <div style="flex:1; text-align:right;" class="print-date-time-rodape"></div>
     </div>
   `;
@@ -3627,9 +3630,9 @@ function imprimirManifestoTCE() {
     '<title>Relat&oacute;rio de Monitoramento &mdash; ' + numero + '</title>\n' +
     '<style>' + css + '</style>\n</head>\n<body>\n' +
     '<div class="hdr"><div class="hdr-txt">' +
-    '<div class="hdr-gov">Governo do Estado de Rond&ocirc;nia</div>' +
-    '<div class="hdr-sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>' +
-    '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div></div></div>' +
+    '<div class="hdr-gov" style="font-weight:800; color:#0f172a; font-size:11pt; letter-spacing:0.5px;">GOVERNO DO ESTADO DE ROND&Ocirc;NIA</div>' +
+    '<div class="hdr-sec" style="font-weight:700; color:#0284c7; font-size:10pt;">SEDUC - SECRETARIA DE ESTADO DA EDUCA&Ccedil;&Atilde;O</div>' +
+    '<div class="hdr-dep" style="font-weight:700; color:#334155; font-size:9pt; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULA&Ccedil;&Atilde;O COM OS MUNIC&Iacute;PIOS</div></div></div>' +
     '<div class="tbar">RELAT&Oacute;RIO DE MONITORAMENTO</div>' +
     '<table class="info-table">' +
     '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>' +
@@ -3659,7 +3662,7 @@ function imprimirManifestoTCE() {
 
   // Bottom Fixed Container
   h += '<div class="bottom-container">' +
-       '<div class="ft"><span class="ft-logo">SEDUC-RO / CAM</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
+       '<div class="ft"><span class="ft-logo">CAM - COORDENADORIA DE ARTICULA&Ccedil;&Atilde;O COM OS MUNIC&Iacute;PIOS</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
        '</div>'; // end bottom-container
 
   h += '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
@@ -3678,7 +3681,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.13)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.14)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -4521,6 +4524,8 @@ window.getActiveBgColor = getActiveBgColor;
 window.getActiveBorderColor = getActiveBorderColor;
 window.getCategoryBadge = getCategoryBadge;
 window.getTypeBadge = getTypeBadge;
+
+
 
 
 

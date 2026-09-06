@@ -608,16 +608,26 @@ function imprimirRelatorioGMAC(modulo) {
           align-items: center;
         }
         .header-title h1 {
-          font-size: 14pt;
+          font-size: 13pt;
           font-weight: 800;
           color: #0f172a;
           margin: 0 0 2px 0;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
         .header-title h2 {
           font-size: 10.5pt;
-          font-weight: 600;
+          font-weight: 700;
           color: #0284c7;
           margin: 0 0 2px 0;
+          text-transform: uppercase;
+        }
+        .header-title h3 {
+          font-size: 9.5pt;
+          font-weight: 700;
+          color: #334155;
+          margin: 0 0 4px 0;
+          text-transform: uppercase;
         }
         .header-title p {
           font-size: 8.5pt;
@@ -666,10 +676,10 @@ function imprimirRelatorioGMAC(modulo) {
         }
         .footer-note {
           margin-top: 14px;
-          border-top: 1px solid #e2e8f0;
+          border-top: 1px solid #cbd5e1;
           padding-top: 6px;
           font-size: 8pt;
-          color: #64748b;
+          color: #475569;
           display: flex;
           justify-content: space-between;
         }
@@ -698,7 +708,8 @@ function imprimirRelatorioGMAC(modulo) {
       <div class="header-box">
         <div class="header-title">
           <h1>GOVERNO DO ESTADO DE RONDÔNIA</h1>
-          <h2>SECRETARIA DE ESTADO DA EDUCAÇÃO - SEDUC | GMAC</h2>
+          <h2>SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</h2>
+          <h3>CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</h3>
           <p>Relatório Gerencial de Controle: <strong>${cfg.titulo}</strong></p>
         </div>
         <div style="text-align:right; font-size:8.5pt; color:#475569;">
@@ -720,8 +731,8 @@ function imprimirRelatorioGMAC(modulo) {
       </table>
 
       <div class="footer-note">
-        <span>SEDUC-GMAC - Sistema de Acompanhamento Processual</span>
-        <span>Página 1 de 1 (Documento gerado eletronicamente)</span>
+        <span><strong>GMAC - GERÊNCIA DE MONITORAMENTO DAS AÇÕES DE COOPERAÇÃO</strong></span>
+        <span>Página 1 de 1 &bull; Documento gerado eletronicamente em ${dataHora}</span>
       </div>
 
       <script>

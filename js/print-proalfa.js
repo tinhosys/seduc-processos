@@ -28,33 +28,103 @@ function getFilteredProalfaData() {
   };
 }
 
-function openPrintWindow(contentHtml, title) {
+function openPrintWindow(contentHtml, title, subtituloCustom) {
   const printWindow = window.open('', '_blank');
+  const dataHora = new Date().toLocaleString('pt-BR');
+  const sub = subtituloCustom || title || 'RELATÓRIO';
   printWindow.document.write(`
-    <html>
+    <!DOCTYPE html>
+    <html lang="pt-BR">
     <head>
+      <meta charset="UTF-8">
       <title>${title}</title>
       <style>
         @media print {
           @page { size: A4 landscape; margin: 10mm; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .no-print { display: none !important; }
         }
-        body { font-family: Arial, sans-serif; font-size: 10px; margin: 0; padding: 20px; }
+        body { font-family: Arial, sans-serif; font-size: 10px; margin: 0; padding: 20px; color: #0f172a; }
+        .official-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          border-bottom: 2px solid #0f172a;
+          padding-bottom: 8px;
+          margin-bottom: 14px;
+        }
+        .official-header .titles {
+          text-align: left;
+        }
+        .official-header .titles h1 {
+          font-size: 13px;
+          font-weight: 800;
+          color: #0f172a;
+          margin: 0 0 2px 0;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .official-header .titles h2 {
+          font-size: 11px;
+          font-weight: 700;
+          color: #0284c7;
+          margin: 0 0 2px 0;
+          text-transform: uppercase;
+        }
+        .official-header .titles h3 {
+          font-size: 10px;
+          font-weight: 700;
+          color: #334155;
+          margin: 0;
+          text-transform: uppercase;
+        }
+        .official-header .sub-box {
+          text-align: right;
+          font-size: 9.5px;
+          color: #475569;
+          font-weight: bold;
+          text-transform: uppercase;
+          background: #f1f5f9;
+          border: 1px solid #cbd5e1;
+          padding: 4px 8px;
+          border-radius: 4px;
+        }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; page-break-inside: auto; }
         tr { page-break-inside: avoid; page-break-after: auto; }
         th, td { border: 1px solid #ccc; padding: 6px 4px; text-align: right; }
         th { background-color: #e2e8f0; font-weight: bold; text-align: center; }
         .text-left { text-align: left; }
         .text-center { text-align: center; }
-        .header-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; font-size: 16px; font-weight: bold; }
+        .header-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; font-size: 14px; font-weight: bold; }
         .sub-header { text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 5px; }
         .bg-blue { background-color: #93c5fd !important; }
         .bg-light-blue { background-color: #bfdbfe !important; }
         .striped tr:nth-child(even) { background-color: #f8fafc; }
+        .official-footer {
+          margin-top: 16px;
+          border-top: 1px solid #cbd5e1;
+          padding-top: 6px;
+          font-size: 8.5px;
+          color: #475569;
+          display: flex;
+          justify-content: space-between;
+        }
       </style>
     </head>
     <body>
+      <div class="official-header">
+        <div class="titles">
+          <h1>GOVERNO DO ESTADO DE RONDÔNIA</h1>
+          <h2>SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</h2>
+          <h3>CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</h3>
+        </div>
+        <div class="sub-box">${sub}</div>
+      </div>
       ${contentHtml}
+      <div class="official-footer">
+        <span><strong>PROALFA - PROGRAMA DE ALFABETIZAÇÃO DO ESTADO DE RONDÔNIA</strong></span>
+        <span>Página 1 de 1 &bull; Documento gerado eletronicamente em ${dataHora}</span>
+      </div>
       <script>
         setTimeout(() => { window.print(); }, 500);
       </script>
@@ -376,8 +446,7 @@ function imprimirMemoria() {
   const content = `
     <div style="text-align:center; margin-bottom:15px;"><img src="img/logos_proalfa.png" style="max-height: 60px;" /></div>
     <div class="header-title">
-      <span class="text-left" style="font-size:12px;">GOVERNO DO ESTADO DE RONDÔNIA<br>SECRETARIA DE ESTADO DA EDUCAÇÃO<br>COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</span>
-      <span style="font-size:16px;">Memória em 2025 p 2026</span>
+      <span style="font-size:14px; font-weight:bold;">Memória em 2025 para 2026</span>
     </div>
     <table class="striped">
       <thead>
@@ -453,9 +522,6 @@ function imprimirContatos() {
   });
   
   const content = `
-    <div class="header-title">
-      <span class="text-left" style="font-size:12px;">GOVERNO DO ESTADO DE RONDÔNIA<br>SECRETARIA DE ESTADO DA EDUCAÇÃO<br>COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</span>
-      </div>
     <table class="striped">
       <thead>
         <tr>
