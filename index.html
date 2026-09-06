@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.09</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.00</div>
   </div>
 </div>
   
@@ -340,7 +340,7 @@
 
 
       <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.09</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.00</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -374,58 +374,198 @@
       </header>
 
             <!-- INICIO GMAC PAGES -->
+      <!-- GMAC: EQUIPAMENTO - AEE -->
       <section class="page" id="page-gmac-aee" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <h2 style="font-size:22px; font-weight:700; color:#e2e8f0; margin:0;">Equipamento - AEE</h2>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🎒</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Equipamento - AEE</h2>
+                  <span id="badge-total-aee" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Doação de equipamento e mobiliário - AEE</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="button" onclick="carregarGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('aee')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
         </div>
-        <div class="card" style="padding:40px; text-align:center; color:#94a3b8;">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 15px; color:#3b82f6;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          <h3 style="color:#e2e8f0; font-size:18px; margin-bottom:10px;">Módulo em Construção</h3>
-          <p>Os formulários individualizados, relatórios e regras de edição para esta aba estão sendo desenvolvidos conforme a normatização do projeto.</p>
+
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:1; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" placeholder="Pesquisar por município, processo, documento, status..." oninput="filtrarBuscaGMAC('aee', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+        </div>
+
+        <div id="tabela-container-aee" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
         </div>
       </section>
-      
+
+      <!-- GMAC: DOAÇÃO DO ÔNIBUS ESCOLAR -->
       <section class="page" id="page-gmac-onibus" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <h2 style="font-size:22px; font-weight:700; color:#e2e8f0; margin:0;">Doação do Ônibus Escolar</h2>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🚌</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação do Ônibus Escolar</h2>
+                  <span id="badge-total-onibus" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Controle de doação e regularização patrimonial de frotas escolares</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="button" onclick="carregarGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('onibus')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
         </div>
-        <div class="card" style="padding:40px; text-align:center; color:#94a3b8;">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 15px; color:#3b82f6;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          <h3 style="color:#e2e8f0; font-size:18px; margin-bottom:10px;">Módulo em Construção</h3>
-          <p>Os formulários individualizados, relatórios e regras de edição para esta aba estão sendo desenvolvidos conforme a normatização do projeto.</p>
+
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:1; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" placeholder="Pesquisar por placa, município, processo SEI, status..." oninput="filtrarBuscaGMAC('onibus', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+        </div>
+
+        <div id="tabela-container-onibus" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
         </div>
       </section>
 
+      <!-- GMAC: DOAÇÃO DEFINITIVA DE VEÍCULOS -->
       <section class="page" id="page-gmac-veiculos" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <h2 style="font-size:22px; font-weight:700; color:#e2e8f0; margin:0;">Doação Definitiva de Veículos</h2>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🚗</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação Definitiva de Veículos</h2>
+                  <span id="badge-total-veiculos" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Acompanhamento processual de doação definitiva de veículos</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="button" onclick="carregarGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('veiculos')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
         </div>
-        <div class="card" style="padding:40px; text-align:center; color:#94a3b8;">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 15px; color:#3b82f6;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          <h3 style="color:#e2e8f0; font-size:18px; margin-bottom:10px;">Módulo em Construção</h3>
-          <p>Os formulários individualizados, relatórios e regras de edição para esta aba estão sendo desenvolvidos conforme a normatização do projeto.</p>
+
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:1; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" placeholder="Pesquisar por município, processo, status..." oninput="filtrarBuscaGMAC('veiculos', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+        </div>
+
+        <div id="tabela-container-veiculos" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
         </div>
       </section>
 
+      <!-- GMAC: MUNICIPALIZAÇÃO E REORDENAMENTO -->
       <section class="page" id="page-gmac-reordenamento" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <h2 style="font-size:22px; font-weight:700; color:#e2e8f0; margin:0;">Municipalização e Reordenamento</h2>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🏛️</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Municipalização e Reordenamento</h2>
+                  <span id="badge-total-reordenamento" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Controle de processos de municipalização e reordenamento escolar</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="button" onclick="carregarGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('reordenamento')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
         </div>
-        <div class="card" style="padding:40px; text-align:center; color:#94a3b8;">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 15px; color:#3b82f6;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          <h3 style="color:#e2e8f0; font-size:18px; margin-bottom:10px;">Módulo em Construção</h3>
-          <p>Os formulários individualizados, relatórios e regras de edição para esta aba estão sendo desenvolvidos conforme a normatização do projeto.</p>
+
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:1; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" placeholder="Pesquisar por município, processo, escola, objeto, status..." oninput="filtrarBuscaGMAC('reordenamento', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+        </div>
+
+        <div id="tabela-container-reordenamento" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
         </div>
       </section>
 
+      <!-- GMAC: TERMO DE COOPERAÇÃO -->
       <section class="page" id="page-gmac-cooperacao" style="display:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <h2 style="font-size:22px; font-weight:700; color:#e2e8f0; margin:0;">Termo de Cooperação</h2>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🤝</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Termo de Cooperação</h2>
+                  <span id="badge-total-cooperacao" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
+                </div>
+                <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Gestão de termos de cooperação técnica e administrativa com municípios</p>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="button" onclick="carregarGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+              🔄 Atualizar
+            </button>
+            <button type="button" onclick="abrirModalGMAC('cooperacao')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
+              ✨ + Novo Registro
+            </button>
+          </div>
         </div>
-        <div class="card" style="padding:40px; text-align:center; color:#94a3b8;">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin:0 auto 15px; color:#3b82f6;"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          <h3 style="color:#e2e8f0; font-size:18px; margin-bottom:10px;">Módulo em Construção</h3>
-          <p>Os formulários individualizados, relatórios e regras de edição para esta aba estão sendo desenvolvidos conforme a normatização do projeto.</p>
+
+        <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; gap:14px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="flex:1; position:relative;">
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
+            <input type="text" placeholder="Pesquisar por município, processo, objeto, status..." oninput="filtrarBuscaGMAC('cooperacao', this.value)" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
+          </div>
+        </div>
+
+        <div id="tabela-container-cooperacao" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
         </div>
       </section>
       <!-- FIM GMAC PAGES -->
@@ -2543,13 +2683,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.09"></script>
-  <script src="js/app.js?v=1.2.09"></script>
-  <script src="js/auth-sap.js?v=1.2.09"></script>
-  <script src="js/escolas.js?v=1.2.09.1.78" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.3.00"></script>
+  <script src="js/app.js?v=1.3.00"></script>
+  <script src="js/auth-sap.js?v=1.3.00"></script>
+  <script src="js/escolas.js?v=1.3.00.1.78" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
 <script src="js/open-location-code.js"></script>
-<script src="js/mapa.js?v=1.2.09"></script>
+<script src="js/mapa.js?v=1.3.00"></script>
   <script src="js/contatos.js"></script>
 
   <script>
@@ -2693,13 +2833,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.09"></script>
+  <script src="js/multi-select.js?v=1.3.00"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.09"></script>
-  <script src="js/orcamento.js?v=1.2.09"></script>
-  <script src="js/print-proalfa.js?v=1.2.09"></script>
-  <script src="js/proalfa.js?v=1.2.09"></script>
+  <script src="js/diarias.js?v=1.3.00"></script>
+  <script src="js/gmac.js?v=1.3.00"></script>
+  <script src="js/orcamento.js?v=1.3.00"></script>
+  <script src="js/print-proalfa.js?v=1.3.00"></script>
+  <script src="js/proalfa.js?v=1.3.00"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

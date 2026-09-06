@@ -1299,6 +1299,159 @@ async function garantirColunasAdicionais() {
   }
 }
 
+
+// ============================================================
+// GMAC - CONTROLE PROCESSUAL (Planilha SEDUC-GMAC)
+// ============================================================
+const GMAC_SPREADSHEET_ID = '1x4EYfevk59J02mxVpTgJtxAKTvvoWQWzukIciKvLfBU';
+
+const GMAC_CONFIG = {
+  'aee': {
+    title: 'Equipamento - AEE',
+    headerRow: 2,
+    dataStartRow: 3,
+    headers: ['Item', 'Municípios', 'Processos', 'Status', 'Contato', 'Documentos', 'IDs']
+  },
+  'onibus': {
+    title: 'Doação do Ônibus Escolar',
+    headerRow: 1,
+    dataStartRow: 2,
+    headers: ['Quant.', 'Placa', 'Municipio', 'Processo SEI', 'SITUACAO', 'TERMO ASS.PREF.', 'STATUS', 'CRLV']
+  },
+  'veiculos': {
+    title: 'Doação Definitiva de Veículos',
+    headerRow: 2,
+    dataStartRow: 3,
+    headers: ['Item', 'Municípios', 'Processos', 'Status', 'Contato']
+  },
+  'reordenamento': {
+    title: 'Municipalização e Reordenamento',
+    headerRow: 1,
+    dataStartRow: 2,
+    headers: ['Status', 'Processo SEI', 'Objeto', 'Municipio', 'Escola/Secretaria a ser atendida', 'Forma', 'Tipo Objeto', 'Valor', 'Autorização', 'Data Consulta', 'Observacões']
+  },
+  'cooperacao': {
+    title: 'Termo de Cooperação',
+    headerRow: 1,
+    dataStartRow: 2,
+    headers: ['Status', 'Processo SEI', 'Objeto', 'Municipio', 'Escola/Secretaria a ser atendida', 'Forma', 'Tipo Objeto', 'Autorização', 'Data Consulta', 'Observacões']
+  }
+};
+
+app.get('/api/gmac/:modulo', async (req, res) => {
+  try {
+    const modKey = (req.params.modulo || '').toLowerCase();
+    const cfg = GMAC_CONFIG[modKey];
+    if (!cfg) return res.status(404).json({ erro: 'Módulo GMAC não encontrado.' });
+
+    const safeTitle = cfg.title.replace(/'/g, "''");
+    const result = await sheets.spreadsheets.values.get({
+      spreadsheetId: GMAC_SPREADSHEET_ID,
+      range: `'${safeTitle}'!A${cfg.headerRow}:ZZ`
+    });
+
+    const values = result.data.values || [];
+    if (values.length === 0) {
+      return res.json({ modulo: modKey, title: cfg.title, headers: cfg.headers, rows: [] });
+    }
+
+    const rawHeaders = values[0] || [];
+    const headers = cfg.headers.map((h, i) => (rawHeaders[i] && rawHeaders[i].trim()) ? rawHeaders[i].trim() : h);
+
+    const rows = [];
+    values.slice(1).forEach((row, idx) => {
+      if (!row || row.length === 0 || row.every(c => !c || String(c).trim() === '')) return;
+      const item = { _rowNumber: cfg.dataStartRow + idx, _modulo: modKey };
+      headers.forEach((h, colIdx) => {
+        item[h] = row[colIdx] !== undefined ? String(row[colIdx]).trim() : '';
+      });
+      rows.push(item);
+    });
+
+    res.json({ modulo: modKey, title: cfg.title, headers, rows });
+  } catch(err) {
+    console.error('Erro GET /api/gmac:', err);
+    res.status(500).json({ erro: 'Erro ao carregar dados do GMAC: ' + err.message });
+  }
+});
+
+app.post('/api/gmac/:modulo', editorOnly, async (req, res) => {
+  try {
+    const modKey = (req.params.modulo || '').toLowerCase();
+    const cfg = GMAC_CONFIG[modKey];
+    if (!cfg) return res.status(404).json({ erro: 'Módulo GMAC não encontrado.' });
+
+    const safeTitle = cfg.title.replace(/'/g, "''");
+    const headerRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: GMAC_SPREADSHEET_ID,
+      range: `'${safeTitle}'!A${cfg.headerRow}:ZZ${cfg.headerRow}`
+    });
+    const headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : cfg.headers;
+
+    const newRow = headers.map(h => {
+      const cleanH = (h || '').trim();
+      if (req.body[cleanH] !== undefined) return req.body[cleanH];
+      return (req.body[cleanH.toLowerCase()] !== undefined ? req.body[cleanH.toLowerCase()] : '');
+    });
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: GMAC_SPREADSHEET_ID,
+      range: `'${safeTitle}'!A:ZZ`,
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: { values: [newRow] }
+    });
+
+    res.json({ sucesso: true, mensagem: 'Registro GMAC inserido com sucesso.' });
+  } catch(err) {
+    console.error('Erro POST /api/gmac:', err);
+    res.status(500).json({ erro: 'Erro ao inserir registro GMAC: ' + err.message });
+  }
+});
+
+app.put('/api/gmac/:modulo/:rowNumber', editorOnly, async (req, res) => {
+  try {
+    const modKey = (req.params.modulo || '').toLowerCase();
+    const rowNumber = Number(req.params.rowNumber);
+    const cfg = GMAC_CONFIG[modKey];
+    if (!cfg) return res.status(404).json({ erro: 'Módulo GMAC não encontrado.' });
+    if (!rowNumber || rowNumber < cfg.dataStartRow) return res.status(400).json({ erro: 'Linha inválida.' });
+
+    const safeTitle = cfg.title.replace(/'/g, "''");
+    const headerRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: GMAC_SPREADSHEET_ID,
+      range: `'${safeTitle}'!A${cfg.headerRow}:ZZ${cfg.headerRow}`
+    });
+    const headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : cfg.headers;
+
+    const existingRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: GMAC_SPREADSHEET_ID,
+      range: `'${safeTitle}'!A${rowNumber}:ZZ${rowNumber}`
+    });
+    const existingRow = (existingRes.data.values && existingRes.data.values[0]) ? existingRes.data.values[0] : [];
+
+    const updatedRow = headers.map((h, i) => {
+      const cleanH = (h || '').trim();
+      if (req.body[cleanH] !== undefined) return req.body[cleanH];
+      if (req.body[cleanH.toLowerCase()] !== undefined) return req.body[cleanH.toLowerCase()];
+      return existingRow[i] ?? '';
+    });
+
+    const lastCol = columnToLetter(headers.length);
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: GMAC_SPREADSHEET_ID,
+      range: `'${safeTitle}'!A${rowNumber}:${lastCol}${rowNumber}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [updatedRow] }
+    });
+
+    res.json({ sucesso: true, mensagem: 'Registro GMAC atualizado com sucesso.' });
+  } catch(err) {
+    console.error('Erro PUT /api/gmac:', err);
+    res.status(500).json({ erro: 'Erro ao atualizar registro GMAC: ' + err.message });
+  }
+});
+
 app.listen(PORT, async () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
   await garantirColunasAdicionais();

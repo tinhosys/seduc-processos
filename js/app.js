@@ -193,6 +193,11 @@ function navegar(pagina) {
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
+        'gmac-aee': '🎒 Equipamento - AEE',
+    'gmac-onibus': '🚌 Doação do Ônibus Escolar',
+    'gmac-veiculos': '🚗 Doação Definitiva de Veículos',
+    'gmac-reordenamento': '🏛️ Municipalização e Reordenamento',
+    'gmac-cooperacao': '🤝 Termo de Cooperação',
     escolas: '🏫 Escolas',
     'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia',
     'todas-escolas': '🏫 Todas as Escolas'
@@ -216,6 +221,12 @@ function navegar(pagina) {
   }
   if (pagina === 'todas-escolas') iniciarPaginaTodasEscolas();
   if (pagina === 'orcamento' && typeof carregarOrcamento === 'function') carregarOrcamento();
+  if (pagina && pagina.startsWith('gmac-')) {
+    const mod = pagina.replace('gmac-', '');
+    if (typeof carregarGMAC === 'function') {
+      carregarGMAC(mod);
+    }
+  }
 }
 
 // ---- TOAST ----
@@ -3663,7 +3674,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.09)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.3.00)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
