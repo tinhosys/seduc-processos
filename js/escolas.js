@@ -342,7 +342,7 @@ async function carregarEscolasAPI(silencioso) {
   const SHEET_ID = '1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08';
   
   // Aba estadual -> competencia forçada = 'Estadual'
-  const ABAS = [
+    const ABAS = [
       { sheet: 'estadual', competencia: 'Estadual' },
       { sheet: 'Porto Velho', competencia: 'Municipal' },
       { sheet: 'Ariquemes', competencia: 'Municipal' },

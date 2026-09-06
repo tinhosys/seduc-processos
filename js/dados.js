@@ -12,6 +12,9 @@ function getHeaders(extraHeaders = {}) {
     ...(token ? { 'Authorization': 'Bearer ' + token } : {})
   };
 }
+: {})
+  };
+}
 
 
 // Helper para incluir cabeçalho de autenticação
@@ -339,7 +342,8 @@ const mapToApp = (row) => {
     return {
       id: `${row._tabName}__${row._rowNumber}`,
       agrupamento: row.Agrupamento || row.agrupamento || agrupamentoCalculado,
-      digito: row.DIGITO || row.digito || row.Digito || '',
+      digito: row.DIGITO || row['DÍGITO'] || row.digito || row.Digito || '',
+      DIGITO: row.DIGITO || row['DÍGITO'] || row.digito || row.Digito || '',
     prefixo: row._tabName || row['Prefixo (codigo de prioridade)'] || row['Prefixo'] || '',
     municipio: row['Município'] || row['Municipio'] || '',
     numero: row['Processo'] || row['Nº Processo'] || '',
@@ -362,7 +366,8 @@ const mapToApp = (row) => {
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || row['DATA/HORA EDIÇÃO'] || '',
     ano: row['ANO'] || row['ano'] || '',
     agrupamento: row['AGRUPAMENTO'] || row['agrupamento'] || row['Agrupamento'] || '',
-    digito: row['DIGITO'] || row['digito'] || row['Digito'] || '',
+    digito: row['DIGITO'] || row['DÍGITO'] || row['digito'] || row['dígito'] || row.DIGITO || row.digito || '',
+      DIGITO: row['DIGITO'] || row['DÍGITO'] || row['digito'] || row['dígito'] || row.DIGITO || row.digito || '',
     CAM: row['CAM'] || '',
     GAB: row['GAB'] || '',
     CC: row['CC'] || '',
@@ -378,6 +383,8 @@ const mapToSheet = (dados) => {
     return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   return {
+    'DIGITO': dados.digito || dados.DIGITO || '',
+    'DÍGITO': dados.digito || dados.DIGITO || '',
     'Prefixo (codigo de prioridade)': dados.prefixo || '',
     'Município': dados.municipio || '',
     'Processo': dados.numero || '',
@@ -459,7 +466,7 @@ async function adicionarProcesso(dados) {
     await fetch(API_BASE + '/api/registros', {
       method: 'POST',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify(dados)
+      body: JSON.stringify({ ...dados, DIGITO: dados.digito || dados.DIGITO || '', 'DÍGITO': dados.digito || dados.DIGITO || '' })
     });
   } catch(err) {
     console.error(err);
@@ -479,7 +486,7 @@ async function atualizarProcesso(id, dados) {
     await fetch(API_BASE + `/api/registros/${id}`, {
       method: 'PUT',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify(dados)
+      body: JSON.stringify({ ...dados, DIGITO: dados.digito || dados.DIGITO || '', 'DÍGITO': dados.digito || dados.DIGITO || '' })
     });
   } catch(err) {
     console.error(err);

@@ -193,9 +193,9 @@ function navegar(pagina) {
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
-    escolas: '�� Escolas',
-    'mapa-escolas': '��️ Mapa de Escolas de Rondônia',
-    'todas-escolas': '�� Todas as Escolas'
+    escolas: '🏫 Escolas',
+    'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia',
+    'todas-escolas': '🏫 Todas as Escolas'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -318,7 +318,7 @@ function renderDashboard() {
           <a href="#" onclick="event.preventDefault(); state.filtros.busca='${(d.num||'').replace(/'/g,'')}'; navegar('processos');" 
              style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:2px 10px; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap; transition:background 0.2s;" 
              onmouseover="this.style.background='rgba(59,130,246,0.35)'" 
-             onmouseout="this.style.background='rgba(59,130,246,0.15)'">�� VER</a>
+             onmouseout="this.style.background='rgba(59,130,246,0.15)'">👁️ VER</a>
         </div>`;
       }).join('');
     }
@@ -1101,7 +1101,7 @@ function renderProcessos() {
           <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
-            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">��</span>' : ''}
+            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">📌</span>' : ''}
           </div>
           <!-- Linha 3: CAM; GAB; CC -->
           <div style="display: flex; gap: 6px; align-items: center; margin-top: 1px;">
@@ -1129,7 +1129,7 @@ function renderProcessos() {
   `).join('') || `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="11">
       <div class="empty-state">
-        <div class="empty-icon">��</div>
+        <div class="empty-icon">📂</div>
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente ajustar os filtros</p>
       </div>
@@ -1510,8 +1510,8 @@ function renderFormulario() {
     const dataEdicao = p.dataHoraEdicao || '';
     
     if (nomeEdicao || dataEdicao) {
-      if (nomeDiv) nomeDiv.innerHTML = `�� ${nomeEdicao}`;
-      if (dataDiv) dataDiv.innerHTML = `�� ${dataEdicao}`;
+      if (nomeDiv) nomeDiv.innerHTML = `👤 ${nomeEdicao}`;
+      if (dataDiv) dataDiv.innerHTML = `📅 ${dataEdicao}`;
     } else {
       if (nomeDiv) nomeDiv.innerHTML = `<span style="font-style: italic; color: var(--text-muted);">Sem registros</span>`;
       if (dataDiv) dataDiv.innerHTML = '—';
@@ -1598,7 +1598,8 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
-    digito: document.getElementById('form-digito').value.trim(),
+    digito: (document.getElementById('form-digito')?.value || '').trim(),
+    DIGITO: (document.getElementById('form-digito')?.value || '').trim(),
     categoria:   document.getElementById('form-categoria').value,
     tipo:        document.getElementById('form-tipo').value,
     CAM:         document.getElementById('form-cam')?.checked ? '1' : '',
@@ -1654,7 +1655,7 @@ function abrirDetalhe(id) {
   if (p.contatos && p.contatos.length > 0) {
     contatosHtml = `
       <div class="card" style="margin-bottom:16px">
-        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">�� Contatos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">📞 Contatos</h4>
         <div style="display:flex;flex-direction:column;gap:8px">
           ${p.contatos.map(c => {
             const numeroLimpo = c.whatsapp.replace(/\D/g, '');
@@ -1681,7 +1682,7 @@ function abrirDetalhe(id) {
   if (userNivel === 'leitor') {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">�� Novo Apontamento</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">✍️ Novo Apontamento</h4>
         <textarea id="modal-apontamento-texto" placeholder="Digite seu apontamento..." style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:12px;"></textarea>
         <button onclick="salvarApontamentoModal('${p.id}')" id="btn-salvar-apont" style="width:100%; padding:10px; border-radius:6px; border:none; background:#22c55e; color:#fff; font-weight:bold; cursor:pointer;">Salvar Apontamento</button>
       </div>
@@ -1689,7 +1690,7 @@ function abrirDetalhe(id) {
   } else if (userNivel === 'adm' && p.apontamento) {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">�� Histórico de Apontamentos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">📋 Histórico de Apontamentos</h4>
         <div style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; white-space:pre-wrap; min-height:60px;">${p.apontamento}</div>
       </div>
     `;
@@ -1763,7 +1764,7 @@ function abrirDetalhe(id) {
 
 
     <div class="card" style="margin-bottom:16px">
-      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">�� Execução Financeira</h4>
+      <h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:12px">💰 Execução Financeira</h4>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
         <div>
           <div style="font-size:11px;color:var(--text-muted)">Valor Oficial</div>
@@ -1782,7 +1783,7 @@ function abrirDetalhe(id) {
 
     ${p.marca === '1' || p.marca === 'SIM' ? `
       <div class="card" style="margin-bottom:16px; border: 2px solid var(--blue); background: rgba(59, 130, 246, 0.08); display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(59,130,246,0.15);">
-        <span style="font-size: 24px;">��</span>
+        <span style="font-size: 24px;">📜</span>
         <div>
           <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para Atenção!</strong>
           <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observações abaixo.</p>
@@ -1792,11 +1793,11 @@ function abrirDetalhe(id) {
 
     ${p.obs ? `
       <div class="card" style="margin-bottom:16px; ${p.marca === '1' || p.marca === 'SIM' ? 'border: 1px solid var(--blue); background: rgba(59, 130, 246, 0.03);' : ''}">
-        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">�� Observações</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:${p.marca === '1' || p.marca === 'SIM' ? 'var(--blue)' : 'var(--text-muted)'};letter-spacing:.5px;margin-bottom:8px">📝 Observações</h4>
         <p style="color:var(--text-secondary);font-size:14px">${p.obs}</p>
       </div>
     ` : ''}
-    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">��️ Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
+    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">📌 Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
     ${apontamentoHtml}
@@ -1867,7 +1868,7 @@ window.gravarApontamentoImediato = function() {
   .then(resData => {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>��</span> Gravar';
+      btn.innerHTML = '<span>💾</span> Gravar';
     }
     
     if (resData.sucesso) {
@@ -1899,7 +1900,7 @@ window.gravarApontamentoImediato = function() {
     console.error(err);
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<span>��</span> Gravar';
+      btn.innerHTML = '<span>💾</span> Gravar';
     }
     toast('Erro de conexão ao gravar apontamento.', 'error');
   });
@@ -2413,7 +2414,7 @@ function renderizarContatosForm() {
     const whatsappFormatado = maskCelular(numeroLimpo);
     
     div.innerHTML = "<div style=\"display:flex; flex-direction:column; gap:2px;\">" +
-      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">�� " + whatsappFormatado + "</span>" +
+      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">💬 " + whatsappFormatado + "</span>" +
       (c.detalhes ? "<span style=\"color:var(--text-secondary); font-size:12px;\">" + c.detalhes + "</span>" : "****") +
       "</div>" +
       "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">❌</button>";
@@ -3367,7 +3368,7 @@ function renderProcessosRepetidos() {
     tbody.innerHTML = `
       <tr>
         <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
-          <h3>�� Nenhum processo repetido encontrado!</h3>
+          <h3>🔍 Nenhum processo repetido encontrado!</h3>
           <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são úúnicos.</p>
         </td>
       </tr>
@@ -3662,7 +3663,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.0.47)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.07)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -3908,7 +3909,7 @@ function _tePopularFiltros() {
   // Popula badge de abas
   const abasBadge = document.getElementById('te-badge-abas');
   if (abasBadge) {
-    abasBadge.textContent = '�� ' + _teAbas.length + ' planilhas';
+    abasBadge.textContent = '📊 ' + _teAbas.length + ' planilhas';
     abasBadge.style.display = 'inline-flex';
   }
 }
@@ -3962,8 +3963,8 @@ function _teAtualizarUI() {
   const totalAlunos = _teFiltrados.reduce((s,e) => s + (parseInt(e.alunos)||0), 0);
   const badgeTotal  = document.getElementById('te-badge-total');
   const badgeAlunos = document.getElementById('te-badge-alunos');
-  if (badgeTotal)  badgeTotal.textContent  = '�� ' + total.toLocaleString('pt-BR') + ' Escolas';
-  if (badgeAlunos) badgeAlunos.textContent = '�� ' + totalAlunos.toLocaleString('pt-BR') + ' Alunos';
+  if (badgeTotal)  badgeTotal.textContent  = '🏫 ' + total.toLocaleString('pt-BR') + ' Escolas';
+  if (badgeAlunos) badgeAlunos.textContent = '👥 ' + totalAlunos.toLocaleString('pt-BR') + ' Alunos';
 
   if (total === 0) {
     if (wrap)    wrap.style.display    = 'none';
