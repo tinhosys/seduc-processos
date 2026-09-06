@@ -1,4 +1,39 @@
 
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.34)
+window.copiarSeiLinha = function(btn) {
+  const row = btn.closest('div');
+  const input = row ? row.querySelector('.form-numero-item') : null;
+  if (!input || !input.value.trim()) {
+    if (typeof showNotification === 'function') showNotification('Nenhum número de processo para copiar', 'warning');
+    return;
+  }
+  const val = input.value.trim();
+  const salvarOriginal = btn.innerHTML;
+
+  const feedbackSucesso = () => {
+    btn.innerHTML = '<span style="font-size:12px;font-weight:bold;color:#10b981;">✓</span>';
+    btn.style.borderColor = '#10b981';
+    if (typeof showNotification === 'function') showNotification('Processo copiado: ' + val, 'success');
+    setTimeout(() => {
+      btn.innerHTML = salvarOriginal;
+      btn.style.borderColor = 'var(--border)';
+    }, 1500);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(feedbackSucesso).catch(() => {
+      input.select();
+      document.execCommand('copy');
+      feedbackSucesso();
+    });
+  } else {
+    input.select();
+    document.execCommand('copy');
+    feedbackSucesso();
+  }
+};
+
+
 // ====== REGRA RESTRITA: DASHBOARD EXCLUSIVO ADMIN ELTON (69) 9 9922-1336 ======
 window.podeAcessarDashboard = function() {
   try {
@@ -1587,11 +1622,14 @@ function adicionarCampoNumero(val = '') {
   const container = document.getElementById('container-numeros');
   const div = document.createElement('div');
   div.style.display = 'flex';
-  div.style.gap = '8px';
+  div.style.gap = '6px';
   div.style.alignItems = 'center';
   div.innerHTML = `
-    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;" value="${val}">
-    <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0 8px;height:40px;" title="Remover">-</button>
+    <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0 12px;height:42px;border-radius:6px;font-weight:700;font-size:16px;flex-shrink:0;" title="Remover processo">-</button>
+    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;height:42px;" value="${val}">
+    <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+    </button>
   `;
   container.appendChild(div);
 }
@@ -1658,9 +1696,12 @@ function renderFormulario() {
     numeros.forEach((num, i) => {
       if (i === 0) {
         containerNum.innerHTML = `
-          <div style="display:flex;gap:8px;align-items:center;">
-            <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;" value="${num}">
-            <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar número">+</button>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 12px;height:42px;border:1px solid var(--border);border-radius:6px;font-weight:700;font-size:16px;color:#10b981;flex-shrink:0;" title="Adicionar número">+</button>
+            <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;height:42px;" value="${num}">
+            <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
           </div>
         `;
       } else {
@@ -1727,9 +1768,12 @@ function renderFormulario() {
     updateSegmentControl('categoria', '');
     updateSegmentControl('tipo', '');
     document.getElementById('container-numeros').innerHTML = `
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;">
-        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 8px;height:40px;border:1px solid var(--border);" title="Adicionar número">+</button>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 12px;height:42px;border:1px solid var(--border);border-radius:6px;font-weight:700;font-size:16px;color:#10b981;flex-shrink:0;" title="Adicionar número">+</button>
+        <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1;height:42px;">
+        <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        </button>
       </div>
     `;
     contatosTemporarios = [];
@@ -1762,16 +1806,19 @@ function renderFormulario() {
   const dataDiv = document.getElementById('ultima-edicao-data');
   
   if (processo) {
-    if (legendDiv) legendDiv.style.display = 'block';
+    if (legendDiv) legendDiv.style.display = 'flex';
     const nomeEdicao = p.ultimaEdicao || '';
     const dataEdicao = p.dataHoraEdicao || '';
     
+    const sepDiv = document.getElementById('ultima-edicao-sep');
     if (nomeEdicao || dataEdicao) {
-      if (nomeDiv) nomeDiv.innerHTML = `👤 ${nomeEdicao}`;
-      if (dataDiv) dataDiv.innerHTML = `📅 ${dataEdicao}`;
+      if (nomeDiv) nomeDiv.innerHTML = '👤 ' + (nomeEdicao || 'Sistema');
+      if (dataDiv) dataDiv.innerHTML = dataEdicao ? ('🗓️ ' + dataEdicao) : '';
+      if (sepDiv) sepDiv.style.display = (nomeEdicao && dataEdicao) ? 'inline' : 'none';
     } else {
-      if (nomeDiv) nomeDiv.innerHTML = `<span style="font-style: italic; color: var(--text-muted);">Sem registros</span>`;
-      if (dataDiv) dataDiv.innerHTML = '—';
+      if (nomeDiv) nomeDiv.innerHTML = '<span style="font-style: italic; color: var(--text-muted);">Sem registros</span>';
+      if (dataDiv) dataDiv.innerHTML = '';
+      if (sepDiv) sepDiv.style.display = 'none';
     }
   } else {
     if (legendDiv) legendDiv.style.display = 'none';
@@ -5193,7 +5240,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.33)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.34)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -5273,7 +5320,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.33)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.34)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';

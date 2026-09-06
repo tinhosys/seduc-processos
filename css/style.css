@@ -2387,3 +2387,20 @@ select#filtro-agrupamento.action-adm {
   align-items: center !important;
   flex-shrink: 0 !important;
 }
+
+/* Layout responsivo da linha de processo, agrupamento, última atualização e dígito (GBZ - v1.2.34) */
+.form-row-processo-grupo {
+  display: flex !important;
+  gap: 14px !important;
+  width: 100% !important;
+  align-items: flex-start !important;
+}
+@media (max-width: 900px) {
+  .form-row-processo-grupo {
+    flex-wrap: wrap !important;
+  }
+  .form-row-processo-grupo > div {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+  }
+}

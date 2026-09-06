@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.33">
+  <link rel="stylesheet" href="css/style.css?v=1.2.34">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.33</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.34</div>
   </div>
 </div>
   
@@ -412,7 +412,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.33</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.34</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1273,39 +1273,54 @@
                 <datalist id="list-municipios"></datalist>
               </div>
 
-              <div class="form-group">
+              <!-- LINHA HARMONIOSA: PROCESSO (COM SOBRAS), AGRUPAMENTO, ÚLTIMA ATUALIZAÇÃO E DÍGITO ESTREITO (GBZ - v1.2.34) -->
+            <div class="form-group full form-row-processo-grupo" style="display: flex; gap: 14px; width: 100%; align-items: flex-start; margin-bottom: 0;">
+              
+              <!-- Nº DO PROCESSO: RECEBE TODAS AS SOBRAS DO FORMULÁRIO -->
+              <div class="form-group" style="flex: 1 1 0; min-width: 250px;">
                 <label>Nº do Processo</label>
                 <div id="container-numeros" style="display:flex;flex-direction:column;gap:8px;">
-                  <div style="display:flex;gap:8px;align-items:center;">
-                    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47"
-                      style="flex:1;">
+                  <div style="display:flex;gap:6px;align-items:center;">
                     <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()"
-                      style="padding:0 8px;height:40px;border:1px solid var(--border);"
-                      title="Adicionar número">+</button>
+                      style="padding:0 12px;height:42px;border:1px solid var(--border);border-radius:6px;font-weight:700;font-size:16px;color:#10b981;flex-shrink:0;"
+                      title="Adicionar outro processo">+</button>
+                    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47"
+                      style="flex:1;height:42px;">
+                    <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)"
+                      style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;"
+                      title="Copiar número do processo (SEI)">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    </button>
                   </div>
                 </div>
               </div>
 
-              <div class="form-group action-adm" id="group-form-agrupamento">
+              <!-- AGRUPAMENTO -->
+              <div class="form-group action-adm" id="group-form-agrupamento" style="flex: 0 0 160px; min-width: 130px;">
                 <label for="form-agrupamento">Agrupamento</label>
-                <input type="text" id="form-agrupamento" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
+                <input type="text" id="form-agrupamento" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="width: 100%; height:42px; padding: 10px 12px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
                 <datalist id="list-agrupamentos"></datalist>
               </div>
 
-              <div class="form-group" id="legend-ultima-edicao" style="display:none;">
+              <!-- ÚLTIMA ATUALIZAÇÃO: LOGIN - DATA / HORA TUDO NA MESMA LINHA -->
+              <div class="form-group" id="legend-ultima-edicao" style="display:none; flex: 0 0 auto; min-width: 260px;">
                 <label>Última atualização</label>
-                <div style="padding: 10px 14px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: var(--radius-sm); font-size: 14px; color: var(--text-secondary); min-height: 42px; display: flex; flex-direction: column; justify-content: center; gap: 4px;">
-                  <span id="ultima-edicao-nome" style="font-weight: 600; color: var(--text-primary); font-size: 13.5px;">-</span>
-                  <span id="ultima-edicao-data" style="font-size: 11.5px; color: var(--text-muted);">-</span>
+                <div style="padding: 0 12px; height: 42px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary); display: flex; flex-direction: row; align-items: center; gap: 8px; white-space: nowrap; box-sizing: border-box;">
+                  <span id="ultima-edicao-nome" style="font-weight: 700; color: var(--text-primary); font-size: 13px; display:inline-flex; align-items:center; gap:4px;">-</span>
+                  <span id="ultima-edicao-sep" style="color: var(--text-muted); font-size: 12px;">—</span>
+                  <span id="ultima-edicao-data" style="font-size: 12px; color: #94a3b8; font-family: monospace; display:inline-flex; align-items:center; gap:4px;">-</span>
                 </div>
               </div>
 
-              <div class="form-group action-adm" id="group-form-digito">
-                <label for="form-digito">Dígito</label>
-                <input type="text" id="form-digito" placeholder="000" maxlength="3" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 3);" autocomplete="off" style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
+              <!-- DÍGITO BEM MAIS ESTREITO (3 DÍGITOS) -->
+              <div class="form-group action-adm" id="group-form-digito" style="flex: 0 0 80px; width: 80px; min-width: 70px; max-width: 85px;">
+                <label for="form-digito" style="text-align:center;">Dígito</label>
+                <input type="text" id="form-digito" placeholder="000" maxlength="3" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 3);" autocomplete="off" style="width: 100%; height:42px; text-align:center; font-weight:700; font-size:14px; padding: 10px 4px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary);">
               </div>
 
-              <div class="form-group full">
+            </div>
+
+            <div class="form-group full">
                 <label for="form-interessado">Interessado / Escola *</label>
                 <input type="text" id="form-interessado" placeholder="Nome da escola ou entidade" required
                   list="list-interessados">
@@ -1667,7 +1682,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.33
+              GBZ - v1.2.34
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -1941,7 +1956,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.33] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.34] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -3224,13 +3239,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.33"></script>
-  <script src="js/app.js?v=1.2.33"></script>
-  <script src="js/auth-sap.js?v=1.2.33"></script>
-  <script src="js/escolas.js?v=1.2.33" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.34"></script>
+  <script src="js/app.js?v=1.2.34"></script>
+  <script src="js/auth-sap.js?v=1.2.34"></script>
+  <script src="js/escolas.js?v=1.2.34" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.33"></script>
-  <script src="js/contatos.js?v=1.2.33"></script>
+  <script src="js/mapa.js?v=1.2.34"></script>
+  <script src="js/contatos.js?v=1.2.34"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3373,14 +3388,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.33"></script>
+  <script src="js/multi-select.js?v=1.2.34"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.33"></script>
-  <script src="js/gmac.js?v=1.2.33"></script>
-  <script src="js/orcamento.js?v=1.2.33"></script>
-  <script src="js/print-proalfa.js?v=1.2.33"></script>
-  <script src="js/proalfa.js?v=1.2.33"></script>
+  <script src="js/diarias.js?v=1.2.34"></script>
+  <script src="js/gmac.js?v=1.2.34"></script>
+  <script src="js/orcamento.js?v=1.2.34"></script>
+  <script src="js/print-proalfa.js?v=1.2.34"></script>
+  <script src="js/proalfa.js?v=1.2.34"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
