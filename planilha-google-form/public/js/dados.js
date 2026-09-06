@@ -495,25 +495,33 @@ async function importarGoogleSheets(url) {
 
 // ----- EXPORTAÇÃO EXCEL -----
 function exportarExcel(filtrados) {
-  const dados = filtrados.map(p => ({
-    'Prefixo':         p.prefixo      || '',
-    'Categoria':       p.categoria    || '',
-    'Tipo':            p.tipo         || '',
-    'Município':       p.municipio,
-    'Processo':        p.numero,
-    'Interessado':     p.interessado,
-    'Objeto':          p.objeto,
-    'Valor Oficial':   p.valorOf,
-    'Valor Planilha':  p.valorPlan,
-    'Diferença':       p.diferenca,
-    'Status':          p.status,
-    'Localização':     p.localizacao,
-    'Observações':     p.obs,
-    'Data':            p.data,
-    'Anotação':        p.anotacao,
-  }));
+  const isAdmin = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
+  const data = filtrados.map(p => {
+    const item = {
+      'Prefixo':         p.prefixo      || '',
+      'Categoria':       p.categoria    || '',
+      'Tipo':            p.tipo         || '',
+      'Município':       p.municipio,
+      'Processo':        p.numero,
+      'Interessado':     p.interessado,
+      'Objeto':          p.objeto,
+      'Valor Oficial':   p.valorOf,
+      'Valor Planilha':  p.valorPlan,
+      'Diferença':       p.diferenca,
+      'Status':          p.status,
+      'Localização':     p.localizacao,
+      'Observações':     p.obs,
+      'Data':            p.data,
+    };
+    if (isAdmin) {
+      item['Agrupamento'] = p.agrupamento || '';
+      item['Dígito'] = p.digito || p.DIGITO || '';
+      item['Anotação'] = p.anotacao || '';
+    }
+    return item;
+  });
 
-  const ws = XLSX.utils.json_to_sheet(dados);
+  const ws = XLSX.utils.json_to_sheet(data);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Processos');
   XLSX.writeFile(wb, `seduc_processos_${new Date().toISOString().slice(0,10)}.xlsx`);

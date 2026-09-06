@@ -1,3 +1,14 @@
+window.isUsuarioAdmin = function() {
+  try {
+    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
+    const nivel = String(uData.nivel || '').toLowerCase().trim();
+    if (nivel === 'admin' || nivel === 'adm') return true;
+    if (document.body && document.body.classList.contains('role-adm')) return true;
+    const elRole = document.getElementById('user-role');
+    if (elRole && elRole.textContent && elRole.textContent.toLowerCase().includes('admin')) return true;
+  } catch(e) {}
+  return false;
+};
 
 window.recarregarDadosGlobais = async function() {
   const btns = document.querySelectorAll('button[onclick*="recarregarDadosGlobais"]');
@@ -2029,7 +2040,7 @@ function abrirDetalhe(id) {
         <p style="color:var(--text-secondary);font-size:14px">${p.obs}</p>
       </div>
     ` : ''}
-    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">📌 Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
+    ${(typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin() && p.anotacao) ? `<div class="card action-adm" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">📌 Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
     ${apontamentoHtml}
@@ -2611,18 +2622,29 @@ function exportarExcel() {
     return;
   }
 
-  const data = filtrados.map(p => ({
-    "Prefixo": p.prefixo || '',
-    "Município": p.municipio || '',
-    "Nº Processo": p.numero || '',
-    "Interessado": p.interessado || '',
-    "Objeto": p.objeto || '',
-    "Status": p.status || '',
-    "Localização": p.localizacao || '',
-    "Valor Oficial": p.valorOf || 0,
-    "Valor Planilha": p.valorPlan || 0,
-    "Data": p.data ? formatDate(p.data) : ''
-  }));
+  const isAdmin = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
+
+  const data = filtrados.map(p => {
+    const row = {
+      "Prefixo": p.prefixo || '',
+      "Município": p.municipio || '',
+      "Nº Processo": p.numero || '',
+      "Interessado": p.interessado || '',
+      "Objeto": p.objeto || '',
+      "Status": p.status || '',
+      "Localização": p.localizacao || '',
+      "Valor Oficial": p.valorOf || 0,
+      "Valor Planilha": p.valorPlan || 0,
+      "Data": p.data ? formatDate(p.data) : ''
+    };
+    // Campos confidenciais: visíveis SOMENTE ao perfil ADMIN
+    if (isAdmin) {
+      row["Agrupamento"] = p.agrupamento || '';
+      row["Dígito"] = p.digito || p.DIGITO || '';
+      row["Anotação Interna"] = p.anotacao || '';
+    }
+    return row;
+  });
 
   const worksheet = XLSX.utils.json_to_sheet(data);
   const workbook = XLSX.utils.book_new();
@@ -3188,7 +3210,17 @@ function imprimirAnalise() {
   if (fLocalizacao && fLocalizacao !== 'Todos') filtrosAplicados.push("Localização: " + fLocalizacao);
   if (fPrefixo && fPrefixo !== 'Todos') filtrosAplicados.push("Prefixo: " + fPrefixo);
   if (fMunicipio && fMunicipio !== 'Todos') filtrosAplicados.push("Município: " + fMunicipio);
-  if (state.filtros.digitoCond && state.filtros.digitoCond !== 'todos') { const dVal = state.filtros.digito || '(vazio)'; filtrosAplicados.push(`Dígito: ${state.filtros.digitoCond} ${dVal}`); } else if (state.filtros.digito) { filtrosAplicados.push(`Dígito: = ${state.filtros.digito}`); }
+  // Parâmetros de Dígito e Agrupamento no relatório visíveis SOMENTE ao perfil ADMIN
+  if (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) {
+    const fAgrup = document.getElementById('filtro-agrupamento') ? document.getElementById('filtro-agrupamento').value : '';
+    if (fAgrup && fAgrup !== 'Todos') filtrosAplicados.push("Agrupamento: " + fAgrup);
+    if (state.filtros.digitoCond && state.filtros.digitoCond !== 'todos') { 
+      const dVal = state.filtros.digito || '(vazio)'; 
+      filtrosAplicados.push(`Dígito: ${state.filtros.digitoCond} ${dVal}`); 
+    } else if (state.filtros.digito) { 
+      filtrosAplicados.push(`Dígito: = ${state.filtros.digito}`); 
+    }
+  }
   
   const filtrosTexto = filtrosAplicados.length > 0 
     ? "Filtros aplicados (" + filtrosAplicados.join(', ') + ")" 

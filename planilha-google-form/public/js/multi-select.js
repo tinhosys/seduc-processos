@@ -5,7 +5,7 @@ class MultiSelect {
     this.placeholder = (this.options.find(o => o.value === "") || this.options[0])?.text || "Selecione...";
 
     this.wrapper = document.createElement("div");
-    this.wrapper.className = "custom-multiselect";
+    this.wrapper.className = "custom-multiselect" + (this.select.classList.contains("action-adm") ? " action-adm" : "");
 
     this.button = document.createElement("div");
     this.button.className = "custom-multiselect-btn";

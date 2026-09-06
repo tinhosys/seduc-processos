@@ -1,3 +1,16 @@
+
+window.isUsuarioAdmin = function() {
+  try {
+    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
+    const nivel = String(uData.nivel || '').toLowerCase().trim();
+    if (nivel === 'admin' || nivel === 'adm') return true;
+    if (document.body && document.body.classList.contains('role-adm')) return true;
+    const elRole = document.getElementById('user-role');
+    if (elRole && elRole.textContent && elRole.textContent.toLowerCase().includes('admin')) return true;
+  } catch(e) {}
+  return false;
+};
+
 // ============================================================
 // SAP — Módulo de Autenticação (Planilha Google Sheets)
 // ============================================================
