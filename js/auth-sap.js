@@ -105,6 +105,16 @@ function aplicarPermissoes(nivel) {
       elRole.style.color = nivel === 'gerente' ? '#a78bfa' : (nivel === 'editor' ? '#10b981' : '#f59e0b');
     }
   }
+
+  const isAdminUser = (nivel === 'adm' || nivel === 'admin');
+  document.querySelectorAll('.action-adm').forEach(el => {
+    el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  });
+
+  // Se não for admin e estiver no Dashboard, redireciona para processos
+  if (!isAdminUser && typeof state !== 'undefined' && state && state.page === 'dashboard') {
+    if (typeof navegar === 'function') navegar('processos');
+  }
 }
 
 // Exibe a tela de login
@@ -185,7 +195,8 @@ async function realizarLogin() {
 
     // Carrega dados
     await inicializarDados();
-    navegar('dashboard');
+    const isAdminLog = (data.nivel === 'adm' || data.nivel === 'admin');
+    navegar(isAdminLog ? 'dashboard' : 'processos');
     atualizarContador();
 
   } catch (err) {
@@ -246,8 +257,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           dl.innerHTML = muns.map(m => `<option value="${m}">`).join('');
         }
         atualizarContador();
-        navegar('dashboard');
-        renderDashboard();
+        const isAdminSess = (usuario.nivel === 'adm' || usuario.nivel === 'admin');
+        navegar(isAdminSess ? 'dashboard' : 'processos');
+        if (isAdminSess) renderDashboard();
         
         if (typeof checkAlertasADM === 'function' && window.processosCache) {
            checkAlertasADM(window.processosCache);
@@ -322,7 +334,7 @@ async function salvarNovaSenhaPage() {
       document.getElementById('page-nova-senha').value = '';
       document.getElementById('page-confirma-senha').value = '';
       setTimeout(() => {
-        navegar('dashboard');
+        navegar(typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin() ? 'dashboard' : 'processos');
         msg.textContent = '';
       }, 1500);
     } else {

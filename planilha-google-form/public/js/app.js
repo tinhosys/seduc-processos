@@ -217,6 +217,15 @@ window.fecharModalAlertas = () => {
 
 // ---- NAVEGAÇÃO ----
 function navegar(pagina) {
+  const isAdmin = (typeof window.isUsuarioAdmin === 'function') 
+    ? window.isUsuarioAdmin() 
+    : (document.body && document.body.classList.contains('role-adm'));
+
+  // Dashboard é exclusivo para perfil ADMIN
+  if (pagina === 'dashboard' && !isAdmin) {
+    pagina = 'processos';
+  }
+
   state.page = pagina;
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === pagina);
