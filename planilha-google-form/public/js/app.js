@@ -1064,15 +1064,15 @@ function getFiltrados() {
       : [];
 
     const numMatch = (procDig, alvo) => {
-      if (!procDig && !alvo) return true;
-      if (!procDig || !alvo) return false;
-      const s1 = String(procDig).trim();
-      const s2 = String(alvo).trim();
-      if (s1 === s2) return true;
-      const n1 = parseFloat(s1.replace(',', '.'));
-      const n2 = parseFloat(s2.replace(',', '.'));
-      if (!isNaN(n1) && !isNaN(n2) && n1 === n2) return true;
-      return false;
+      const d1 = (typeof window.formatarDigitoInteiro === 'function') 
+        ? window.formatarDigitoInteiro(procDig) 
+        : String(procDig || '').replace(/[,.]0+$/, '').replace(/\D/g, '');
+      const d2 = (typeof window.formatarDigitoInteiro === 'function') 
+        ? window.formatarDigitoInteiro(alvo) 
+        : String(alvo || '').replace(/[,.]0+$/, '').replace(/\D/g, '');
+      if (!d1 && !d2) return true;
+      if (!d1 || !d2) return false;
+      return d1 === d2;
     };
 
     if (condDigito === '=') {
@@ -1334,13 +1334,26 @@ window.setDigitoCondicao = function(cond, triggerFilter = true) {
   }
 };
 
+window.formatarDigitoInteiro = function(val) {
+  if (val === null || val === undefined) return '';
+  let s = String(val).trim();
+  if (!s) return '';
+  s = s.replace(/[,.]0+$/, '');
+  if (s.includes(',') || s.includes('.')) {
+    s = s.split(/[,.]/)[0].trim();
+  }
+  return s.replace(/\D/g, '');
+};
+
 window.popularDigitosDisponiveis = function() {
   const todosProcs = (typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []));
+  
+  // Normalizar todos os dígitos para inteiros puros (remove vírgulas, decimais e não-números)
   const distinctDigitos = [...new Set(
     todosProcs
-      .map(p => String(p.digito || p.DIGITO || '').trim())
+      .map(p => window.formatarDigitoInteiro(p.digito || p.DIGITO || ''))
       .filter(Boolean)
-  )].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  )].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
 
   const container = document.getElementById('lista-digitos-checkboxes');
   if (container) {
@@ -1348,14 +1361,16 @@ window.popularDigitosDisponiveis = function() {
       container.innerHTML = '<div style="padding:8px; color:#94a3b8; font-size:12px; text-align:center;">Nenhum dígito cadastrado</div>';
     } else {
       const inputVal = (document.getElementById('filtro-digito')?.value || '').trim();
-      const currentSelected = inputVal ? inputVal.split(/[,;\s]+/).map(v => v.trim()).filter(Boolean) : [];
+      const currentSelected = inputVal 
+        ? inputVal.split(/[,;\s]+/).map(v => window.formatarDigitoInteiro(v)).filter(Boolean) 
+        : [];
       
       container.innerHTML = distinctDigitos.map(dig => {
         const isChecked = currentSelected.includes(dig);
         return `
           <label class="custom-multiselect-item" style="display:flex; align-items:center; padding:6px 10px; cursor:pointer; font-size:12px; color:#e2e8f0; user-select:none; gap:8px;">
             <input type="checkbox" class="cb-digito-opcao" value="${dig}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:#3b82f6;">
-            <span style="font-weight:600;">Dígito ${dig}</span>
+            <span style="font-weight:600;">DÍGITO ${dig}</span>
           </label>
         `;
       }).join('');

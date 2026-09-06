@@ -1,3 +1,15 @@
+
+function formatarDigitoInteiro(val) {
+  if (val === null || val === undefined) return '';
+  let s = String(val).trim();
+  if (!s) return '';
+  s = s.replace(/[,.]0+$/, '');
+  if (s.includes(',') || s.includes('.')) {
+    s = s.split(/[,.]/)[0].trim();
+  }
+  return s.replace(/\D/g, '');
+}
+
 import express from "express";
 import dotenv from "dotenv";
 import { google } from "googleapis";

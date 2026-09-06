@@ -1,3 +1,15 @@
+
+function formatarDigitoInteiro(val) {
+  if (val === null || val === undefined) return '';
+  let s = String(val).trim();
+  if (!s) return '';
+  s = s.replace(/[,.]0+$/, '');
+  if (s.includes(',') || s.includes('.')) {
+    s = s.split(/[,.]/)[0].trim();
+  }
+  return s.replace(/\D/g, '');
+}
+
 // ============================================================
 // SEDUC - Módulo de Dados e Estado Global
 // ============================================================
@@ -152,8 +164,8 @@ const mapToApp = (row) => {
     _rowNumber: row._rowNumber,
     _tabName: row._tabName,
     prefixo: row._tabName || row['Prefixo'] || row['Prefixo (codigo de prioridade)'] || '',
-    digito: (row['DIGITO'] || row['DÍGITO'] || row.digito || row.Digito || '').toString().trim(),
-    DIGITO: (row['DIGITO'] || row['DÍGITO'] || row.digito || row.Digito || '').toString().trim(),
+    digito: formatarDigitoInteiro(row['DIGITO'] || row['DÍGITO'] || row.digito || row.Digito || ''),
+    DIGITO: formatarDigitoInteiro(row['DIGITO'] || row['DÍGITO'] || row.digito || row.Digito || ''),
     municipio: mun,
     numero: row['PROCESSOS'] || row['Processo'] || row['Nº Processo'] || row.numero || '',
     interessado: row['INTERESSADO'] || row['Interessado'] || row.interessado || '',
@@ -199,7 +211,7 @@ const mapToSheet = (dados) => {
     return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   return {
-    'DIGITO': String(dados.digito || dados.DIGITO || '').replace(/\D/g, '').slice(0, 3),
+    'DIGITO': formatarDigitoInteiro(dados.digito || dados.DIGITO || ''),
     'MUNICIPIO': dados.municipio || '',
     'PROCESSOS': dados.numero || '',
     'INTERESSADO': dados.interessado || '',
