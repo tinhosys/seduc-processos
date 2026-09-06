@@ -525,3 +525,32 @@ function getStatusBadgeClass(status) {
 
 
 
+
+
+// Função global para recarregar todos os dados do sistema
+window.recarregarDadosGlobais = async function() {
+  const btns = document.querySelectorAll('button[onclick*="recarregarDadosGlobais"]');
+  btns.forEach(b => {
+    b.disabled = true;
+    b.dataset.origHtml = b.innerHTML;
+    b.innerHTML = '🔄 Recarregando...';
+  });
+
+  try {
+    if (typeof inicializarDados === 'function') await inicializarDados();
+    if (typeof carregarAcessos === 'function') await carregarAcessos();
+    if (typeof carregarPainelSistemaInfo === 'function') await carregarPainelSistemaInfo();
+    if (typeof recarregarEscolas === 'function') recarregarEscolas();
+    if (typeof carregarOrcamentoData === 'function') carregarOrcamentoData();
+    if (typeof carregarDiariasData === 'function') carregarDiariasData();
+    if (typeof toast === 'function') toast('Dados atualizados com sucesso!', 'success');
+  } catch(e) {
+    console.error('Erro ao recarregar dados globais:', e);
+    if (typeof toast === 'function') toast('Erro ao sincronizar dados.', 'error');
+  } finally {
+    btns.forEach(b => {
+      b.disabled = false;
+      b.innerHTML = b.dataset.origHtml || '🔄 Recarregar';
+    });
+  }
+};

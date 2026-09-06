@@ -1,3 +1,31 @@
+
+window.recarregarDadosGlobais = async function() {
+  const btns = document.querySelectorAll('button[onclick*="recarregarDadosGlobais"]');
+  btns.forEach(b => {
+    b.disabled = true;
+    b.dataset.origHtml = b.innerHTML;
+    b.innerHTML = '🔄 Recarregando...';
+  });
+
+  try {
+    if (typeof inicializarDados === 'function') await inicializarDados();
+    if (typeof carregarAcessos === 'function') await carregarAcessos();
+    if (typeof carregarPainelSistemaInfo === 'function') await carregarPainelSistemaInfo();
+    if (typeof recarregarEscolas === 'function') recarregarEscolas();
+    if (typeof carregarOrcamentoData === 'function') carregarOrcamentoData();
+    if (typeof carregarDiariasData === 'function') carregarDiariasData();
+    if (typeof toast === 'function') toast('Dados atualizados com sucesso!', 'success');
+  } catch(e) {
+    console.error('Erro ao recarregar dados globais:', e);
+    if (typeof toast === 'function') toast('Erro ao sincronizar dados.', 'error');
+  } finally {
+    btns.forEach(b => {
+      b.disabled = false;
+      b.innerHTML = b.dataset.origHtml || '🔄 Recarregar';
+    });
+  }
+};
+
 function cancelarPadronizacao() {
   const logDiv = document.getElementById('log-status-padronizacao');
   const btnExecutar = document.getElementById('btn-executar-padronizacao');
@@ -4803,37 +4831,86 @@ async function carregarPainelSistemaInfo() {
     elTempo.textContent = 'Sessão: ' + hrs + ':' + mins + ':' + secs;
   }, 1000);
 
-  // Renderizar tabela de conexões/usuários com nomes reais
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos (GBZ - v1.2.23)
+  const isUsuarioAtivoHoje = (dataStr, isCurrent) => {
+    if (isCurrent) return true;
+    if (!dataStr) return false;
+    
+    // Suporta "06/09/2026, 11:46:34" ou "06/09/2026 11:46:34"
+    const m = String(dataStr).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+    if (!m) return false;
+    
+    const day = parseInt(m[1], 10);
+    const month = parseInt(m[2], 10) - 1;
+    const year = parseInt(m[3], 10);
+    const hour = m[4] ? parseInt(m[4], 10) : 0;
+    const min = m[5] ? parseInt(m[5], 10) : 0;
+    const sec = m[6] ? parseInt(m[6], 10) : 0;
+    
+    const loginDate = new Date(year, month, day, hour, min, sec);
+    const now = new Date();
+    
+    // Mesma data de hoje
+    const mesmoDia = (now.getFullYear() === year && now.getMonth() === month && now.getDate() === day);
+    const diffHours = (now.getTime() - loginDate.getTime()) / (1000 * 60 * 60);
+    
+    // Ativo se acessou hoje e a diferença for menor que 12 horas
+    return (mesmoDia && diffHours >= -1 && diffHours <= 12);
+  };
+
   const renderTabelaUsuarios = (lista) => {
     const tbodyLogados = document.getElementById('sysinfo-tbody-logados');
     if (!tbodyLogados) return;
 
     if (!lista || lista.length === 0) {
       tbodyLogados.innerHTML = 
-        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(16,185,129,0.05);">' +
+        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(16,185,129,0.08);">' +
           '<td style="padding:8px 12px; font-weight:700; color:#34d399;">' + userName + '</td>' +
           '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(userWhats) + '</td>' +
           '<td style="padding:8px 12px;"><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(userNivel).toUpperCase() + '</span></td>' +
           '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR') + '</td>' +
-          '<td style="padding:8px 12px; color:#34d399; font-weight:bold;">🟢 Conectado (Sessão Ativa)</td>' +
+          '<td style="padding:8px 12px;"><span style="color:#34d399; font-weight:bold; background:rgba(16,185,129,0.15); padding:3px 10px; border-radius:4px; border:1px solid rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:5px;">🟢 Ativo (Você)</span></td>' +
         '</tr>';
       return;
     }
 
-    tbodyLogados.innerHTML = lista.map((u) => {
+    // Ordena: ativos primeiro, depois por data mais recente
+    const ordenados = [...lista].sort((a, b) => {
+      const isCurA = (a.nome && a.nome.toLowerCase() === userName.toLowerCase()) || 
+                     (a.whatsapp && String(a.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
+      const isCurB = (b.nome && b.nome.toLowerCase() === userName.toLowerCase()) || 
+                     (b.whatsapp && String(b.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
+      if (isCurA && !isCurB) return -1;
+      if (!isCurA && isCurB) return 1;
+
+      const ativA = isUsuarioAtivoHoje(a.data, isCurA) ? 1 : 0;
+      const ativB = isUsuarioAtivoHoje(b.data, isCurB) ? 1 : 0;
+      if (ativA !== ativB) return ativB - ativA;
+
+      return 0;
+    });
+
+    tbodyLogados.innerHTML = ordenados.map((u) => {
       const isCurrent = (u.nome && u.nome.toLowerCase() === userName.toLowerCase()) || 
                         (u.whatsapp && String(u.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
-      const statusBadge = isCurrent 
-        ? '<span style="color:#34d399; font-weight:bold;">🟢 Ativo</span>' 
-        : '<span style="color:#94a3b8;">⚪ Registrado</span>';
+      const ativo = isUsuarioAtivoHoje(u.data, isCurrent);
+
+      let statusBadge = '';
+      if (isCurrent) {
+        statusBadge = '<span style="color:#34d399; font-weight:bold; background:rgba(16,185,129,0.15); padding:3px 10px; border-radius:4px; border:1px solid rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:5px;">🟢 Ativo (Você)</span>';
+      } else if (ativo) {
+        statusBadge = '<span style="color:#34d399; font-weight:bold; background:rgba(16,185,129,0.15); padding:3px 10px; border-radius:4px; border:1px solid rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:5px;">🟢 Ativo</span>';
+      } else {
+        statusBadge = '<span style="color:#94a3b8; font-weight:500; background:rgba(255,255,255,0.05); padding:3px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); display:inline-flex; align-items:center; gap:5px;">⚪ Offline</span>';
+      }
       
       const horaAcesso = isCurrent 
         ? (dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR'))
         : (u.data || u.ultimoAcesso || '--/--/---- --:--:--');
 
       return (
-        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:' + (isCurrent ? 'rgba(16,185,129,0.05)' : 'transparent') + ';">' +
-          '<td style="padding:8px 12px; font-weight:700; color:' + (isCurrent ? '#34d399' : '#f8fafc') + ';">' + (u.nome || 'Usuário') + '</td>' +
+        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:' + (ativo ? 'rgba(16,185,129,0.07)' : 'transparent') + ';">' +
+          '<td style="padding:8px 12px; font-weight:700; color:' + (ativo ? '#34d399' : '#f8fafc') + ';">' + (u.nome || 'Usuário') + '</td>' +
           '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(u.whatsapp || u.whats) + '</td>' +
           '<td style="padding:8px 12px;"><span style="background:rgba(59,130,246,0.15); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(u.nivel || u.perfil || 'EDITOR').toUpperCase() + '</span></td>' +
           '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + horaAcesso + '</td>' +
