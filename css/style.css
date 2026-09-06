@@ -2365,3 +2365,25 @@ select[multiple]._has-multiselect,
 select#filtro-agrupamento.action-adm {
   display: none !important;
 }
+
+/* Regras para manter campo DÍGITO e botões (= <>) estritamente na mesma linha (GBZ - v1.2.33) */
+.filtro-digito-container {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+.filtro-digito-container.action-adm {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+}
+.btn-group-param-digito {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+}
