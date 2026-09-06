@@ -1,97 +1,4 @@
 
-window.recarregarDadosGlobais = async function() {
-  const btns = document.querySelectorAll('button[onclick*="recarregarDadosGlobais"]');
-  btns.forEach(b => {
-    b.disabled = true;
-    b.dataset.origHtml = b.innerHTML;
-    b.innerHTML = '🔄 Recarregando...';
-  });
-
-  try {
-    if (typeof inicializarDados === 'function') await inicializarDados();
-    if (typeof carregarAcessos === 'function') await carregarAcessos();
-    if (typeof carregarPainelSistemaInfo === 'function') await carregarPainelSistemaInfo();
-    if (typeof recarregarEscolas === 'function') recarregarEscolas();
-    if (typeof carregarOrcamentoData === 'function') carregarOrcamentoData();
-    if (typeof carregarDiariasData === 'function') carregarDiariasData();
-    if (typeof toast === 'function') toast('Dados atualizados com sucesso!', 'success');
-  } catch(e) {
-    console.error('Erro ao recarregar dados globais:', e);
-    if (typeof toast === 'function') toast('Erro ao sincronizar dados.', 'error');
-  } finally {
-    btns.forEach(b => {
-      b.disabled = false;
-      b.innerHTML = b.dataset.origHtml || '🔄 Recarregar';
-    });
-  }
-};
-
-function cancelarPadronizacao() {
-  const logDiv = document.getElementById('log-status-padronizacao');
-  const btnExecutar = document.getElementById('btn-executar-padronizacao');
-  const btnCancelar = document.getElementById('btn-cancelar-padronizacao');
-  const labelStatus = document.getElementById('label-status-padronizacao');
-  if (logDiv) logDiv.innerHTML = '';
-  if (btnExecutar) btnExecutar.style.display = 'none';
-  if (btnCancelar) btnCancelar.style.display = 'none';
-  if (labelStatus) labelStatus.innerHTML = '';
-  window._processosInconsistentesParaCorrigir = [];
-}
-window.cancelarPadronizacao = cancelarPadronizacao;
-function jaroWinkler(s1, s2) {
-    var m = 0;
-    if (!s1 || !s2 || s1.length === 0 || s2.length === 0) return 0;
-    if (s1 === s2) return 1;
-    var range = (Math.floor(Math.max(s1.length, s2.length) / 2)) - 1;
-    var s1Matches = new Array(s1.length);
-    var s2Matches = new Array(s2.length);
-    for (var i = 0; i < s1.length; i++) {
-        var low  = (i >= range) ? i - range : 0;
-        var high = (i + range <= s2.length - 1) ? (i + range) : (s2.length - 1);
-        for (var j = low; j <= high; j++) {
-            if (s1Matches[i] !== true && s2Matches[j] !== true && s1[i] === s2[j]) {
-                ++m; s1Matches[i] = s2Matches[j] = true; break;
-            }
-        }
-    }
-    if (m === 0) return 0;
-    var k = 0, numTrans = 0;
-    for (var i = 0; i < s1.length; i++) {
-        if (s1Matches[i] === true) {
-            for (var j = k; j < s2.length; j++) {
-                if (s2Matches[j] === true) { k = j + 1; break; }
-            }
-            if (s1[i] !== s2[j]) ++numTrans;
-        }
-    }
-    var weight = (m / s1.length + m / s2.length + (m - (numTrans / 2)) / m) / 3;
-    var l = 0, p = 0.1;
-    if (weight > 0.7) {
-        while (s1[l] === s2[l] && l < 4) ++l;
-        weight = weight + l * p * (1 - weight);
-    }
-    return weight;
-}
-
-function encontrarEscolaSemelhante(nomeDigitado) {
-    const escolas = (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache) && _escolasCache.length > 0) ? _escolasCache : ((typeof _mapaCacheEscolas !== 'undefined' && Array.isArray(_mapaCacheEscolas)) ? _mapaCacheEscolas : []);
-    if (escolas.length === 0) return null;
-    let melhorMatch = null;
-    let melhorScore = 0;
-    const digitadoNormal = nomeDigitado.trim().toUpperCase().replace(/[^A-Z0-9 ]/g, '');
-    for (let e of escolas) {
-        if (!e.nome) continue;
-        const nomeEsc = e.nome.trim().toUpperCase().replace(/[^A-Z0-9 ]/g, '');
-        const score = jaroWinkler(digitadoNormal, nomeEsc);
-        if (score > melhorScore) {
-            melhorScore = score;
-            melhorMatch = e.nome;
-        }
-    }
-    return (melhorScore >= 0.90 && melhorScore < 1.0) ? melhorMatch : null;
-}
-
-
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
@@ -143,20 +50,17 @@ let state = {
   page: 'dashboard',
   filtros: {
     busca: '',
-    status: [],
-    localizacao: [],
-    municipio: [],
-    super: [],
-    objeto: [],
-    prefixo: [],
+    status: '',
+    localizacao: '',
+    municipio: '',
+    objeto: '',
+    prefixo: '',
     apontamento: false,
     alerta: '',
     marca: '',
-    categoria: [],
-    tipo: [],
+    categoria: '',
+    tipo: '',
     autorizacao: '',
-    ano: [],
-    agrupamento: [],
     cam: false,
     gab: false,
     cc: false
@@ -168,7 +72,6 @@ let state = {
   sortDir: 'asc',
   ordenacao: { coluna: '', asc: true }
 };
-
 
 let alertasExibidos = false;
 
@@ -210,9 +113,8 @@ function navegar(pagina) {
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === pagina);
   });
-  const pageTarget = pagina.startsWith('proalfa') ? 'proalfa' : pagina;
   document.querySelectorAll('.page').forEach(el => {
-    el.classList.toggle('active', el.id === 'page-' + pageTarget);
+    el.classList.toggle('active', el.id === 'page-' + pagina);
   });
 
   const titles = {
@@ -222,23 +124,8 @@ function navegar(pagina) {
     importar: 'Importar Planilha',
     acessos: 'Gerenciamento de Acessos',
     repetidos: 'Processos Repetidos',
-    'gmac-aee': '🎒 Equipamento - AEE',
-    'gmac-onibus': '🚌 Doação do Ônibus Escolar',
-    'gmac-veiculos': '🚗 Doação Definitiva de Veículos',
-    'gmac-reordenamento': '🏛️ Municipalização e Reordenamento',
-    'gmac-cooperacao': '🤝 Termo de Cooperação',
-    proalfa: '📖 PROALFA',
-    'proalfa-professores': '👨‍🏫 PROALFA - Professores (Docentes)',
-    'proalfa-alunos': '🎒 PROALFA - Alunos (Matrículas)',
-    diarias: '✈️ Diárias',
-    orcamento: '💰 Controle Orçamentário',
-    contatos: '🏛️ Municípios',
     escolas: '🏫 Escolas',
-    'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia',
-    'todas-escolas': '🏫 Todas as Escolas',
-    'orcamento': '💵 Orçamento',
-    'diarias': '📅 Controle de Diárias',
-    'sistema-info': '🖥️ Informações do Sistema & Diagnóstico'
+    'mapa-escolas': '🗺️ Mapa de Escolas de Rondônia'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
@@ -257,28 +144,6 @@ function navegar(pagina) {
       setTimeout(() => iniciarMapaEscolas(), 50);
     }
   }
-  if (pagina === 'todas-escolas') iniciarPaginaTodasEscolas();
-  if (pagina === 'orcamento' && typeof carregarOrcamento === 'function') carregarOrcamento();
-  if (pagina === 'sistema-info' && typeof carregarPainelSistemaInfo === 'function') carregarPainelSistemaInfo();
-  if (pagina === 'diarias' && typeof carregarDiarias === 'function') carregarDiarias();
-  if (pagina && pagina.startsWith('gmac-')) {
-    const mod = pagina.replace('gmac-', '');
-    if (typeof carregarGMAC === 'function') {
-      carregarGMAC(mod);
-    } else {
-      setTimeout(() => {
-        if (typeof carregarGMAC === 'function') carregarGMAC(mod);
-      }, 150);
-    }
-  }
-  if (pagina && pagina.startsWith('proalfa')) {
-    const tipo = pagina === 'proalfa-alunos' ? 'alunos' : (pagina === 'proalfa-professores' ? 'professores' : null);
-    if (typeof window.navegarProalfa === 'function' && tipo) {
-      window.navegarProalfa(tipo);
-    } else if (typeof carregarProalfa === 'function') {
-      carregarProalfa();
-    }
-  }
 }
 
 // ---- TOAST ----
@@ -290,7 +155,6 @@ function toast(msg, tipo = 'info') {
   document.getElementById('toast-container').appendChild(div);
   setTimeout(() => div.remove(), 4000);
 }
-window.showToast = toast;
 
 // ---- DASHBOARD ----
 let chartStatus = null;
@@ -342,8 +206,8 @@ function renderDashboard() {
   let datasValidas = [];
   
   processos.forEach(p => {
-    // Apenas considerar processos não encerrados/concludos para o alerta de data antiga
-    const isEncerrado = ['pago', 'encerrado', 'concludo', 'cancelado', 'duplicado'].includes(normalizar(p.status));
+    // Apenas considerar processos não encerrados/concluídos para o alerta de data antiga
+    const isEncerrado = ['pago', 'encerrado', 'concluído', 'cancelado', 'duplicado'].includes(normalizar(p.status));
     
     if (!p.data || String(p.data).trim() === '') {
       if (!isEncerrado) processosSemData++;
@@ -381,7 +245,7 @@ function renderDashboard() {
           <a href="#" onclick="event.preventDefault(); state.filtros.busca='${(d.num||'').replace(/'/g,'')}'; navegar('processos');" 
              style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); border-radius:6px; padding:2px 10px; font-size:11px; font-weight:700; text-decoration:none; white-space:nowrap; transition:background 0.2s;" 
              onmouseover="this.style.background='rgba(59,130,246,0.35)'" 
-             onmouseout="this.style.background='rgba(59,130,246,0.15)'">👁️ VER</a>
+             onmouseout="this.style.background='rgba(59,130,246,0.15)'">🔗 VER</a>
         </div>`;
       }).join('');
     }
@@ -667,34 +531,31 @@ function renderDashboard() {
     munWrapper.style.height = requiredHeight + 'px';
   }
 
-  const chartMunEl = document.getElementById('chart-municipio');
-  if (chartMunEl) {
-    const ctxMun = chartMunEl.getContext('2d');
-    if (chartMunicipio) chartMunicipio.destroy();
-    chartMunicipio = new Chart(ctxMun, {
-      type: 'bar',
-      data: {
-        labels: allMun.map(([m]) => m.length > 18 ? m.slice(0,18)+'…' : m),
-        datasets: [{
-          label: 'Valor (R$)',
-          data: allMun.map(([,v]) => v),
-          backgroundColor: 'rgba(59,130,246,0.7)',
-          borderRadius: 6,
-          borderSkipped: false,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        indexAxis: 'y',
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { ticks: { color: '#64748b', callback: v => 'R$ ' + (v/1e6).toFixed(1)+'M' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-          y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
-        }
+  const ctxMun = document.getElementById('chart-municipio').getContext('2d');
+  if (chartMunicipio) chartMunicipio.destroy();
+  chartMunicipio = new Chart(ctxMun, {
+    type: 'bar',
+    data: {
+      labels: allMun.map(([m]) => m.length > 18 ? m.slice(0,18)+'…' : m),
+      datasets: [{
+        label: 'Valor (R$)',
+        data: allMun.map(([,v]) => v),
+        backgroundColor: 'rgba(59,130,246,0.7)',
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#64748b', callback: v => 'R$ ' + (v/1e6).toFixed(1)+'M' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
       }
-    });
-  }
+    }
+  });
 
   // Gráfico: Prefixo (LT, Cgoi, IeCH, ClJs...)
     const prefixoCounts = {};
@@ -781,7 +642,7 @@ async function renderChartAcessosDashboard() {
     console.log('[ACESSOS] Dados brutos da API:', JSON.stringify(acessos.map(a => ({nome: a.nome, nivel: a.nivel, contagem: a.contagem}))));
 
     // ---- Usar o campo 'contagem' real da planilha (CONTAGEM ACESSO) ----
-    // Parsing robusto: trata string vazia, ponto, vrgula decimal
+    // Parsing robusto: trata string vazia, ponto, vírgula decimal
     const parseContagem = (val) => {
       if (!val && val !== 0) return 0;
       const str = String(val).trim().replace(/\./g, '').replace(',', '.');
@@ -848,7 +709,7 @@ async function renderChartAcessosDashboard() {
             },
             // Exibir o % em cima de cada barra
             datalabels: {
-              display: false // usa plugin chartjs-plugin-datalabels se dispoNível
+              display: false // usa plugin chartjs-plugin-datalabels se disponível
             }
           },
           scales: {
@@ -885,111 +746,6 @@ async function renderChartAcessosDashboard() {
   }
 }
 
-const MAPA_MUNICIPIOS_SUPER = {
-  'alta floresta do oeste': 'ALTA FLORESTA',
-  'alta floresta d\'oeste': 'ALTA FLORESTA',
-  'alta floresta': 'ALTA FLORESTA',
-  'alto alegre dos parecis': 'ALTA FLORESTA',
-  'alto paraiso': 'ARIQUEMES',
-  'alvorada do oeste': 'JI-PARANA',
-  'ariquemes': 'ARIQUEMES',
-  'buritis': 'BURITIS',
-  'cabixi': 'CEREJEIRAS',
-  'cacoal': 'CACOAL',
-  'cacaulandia': 'ARIQUEMES',
-  'campo novo de ro': 'BURITIS',
-  'campo novo de rondonia': 'BURITIS',
-  'candeias do jamari': 'PORTO VELHO',
-  'castanheiras': 'ROLIM DE MOURA',
-  'cerejeiras': 'CEREJEIRAS',
-  'chupinguaia': 'VILHENA',
-  'colorado do oeste': 'CEREJEIRAS',
-  'corumbiara': 'CEREJEIRAS',
-  'costa marques': 'COSTA MARQUES',
-  'cujubim': 'ARIQUEMES',
-  'dist. de abuna': 'EXTREMA',
-  'distrito de abuna': 'EXTREMA',
-  'abuna': 'EXTREMA',
-  'dist. de surpresa': 'GUAJARA-MIRIM',
-  'surpresa': 'GUAJARA-MIRIM',
-  'dist. nova california': 'EXTREMA',
-  'nova california': 'EXTREMA',
-  'dist. vista alegre do abuna': 'EXTREMA',
-  'vista alegre do abuna': 'EXTREMA',
-  'espigao do oeste': 'ESPIGAO DO OESTE',
-  'espigao d\'oeste': 'ESPIGAO DO OESTE',
-  'gov. jorge teixeira': 'JARU',
-  'governador jorge teixeira': 'JARU',
-  'guajara-mirim': 'GUAJARA-MIRIM',
-  'guajara mirim': 'GUAJARA-MIRIM',
-  'itapua do oeste': 'PORTO VELHO',
-  'jaru': 'JARU',
-  'ji-parana': 'JI-PARANA',
-  'ji parana': 'JI-PARANA',
-  'machadinho do oeste': 'MACHADINHO DOESTE',
-  'machadinho d\'oeste': 'MACHADINHO DOESTE',
-  'machadinho d oeste': 'MACHADINHO DOESTE',
-  'ministro andreazza': 'CACOAL',
-  'mirante da serra': 'OURO PRETO DO OESTE',
-  'monte negro': 'ARIQUEMES',
-  'nova brasilandia': 'ROLIM DE MOURA',
-  'nova mamore': 'GUAJARA-MIRIM',
-  'nova uniao': 'OURO PRETO DO OESTE',
-  'novo horizonte': 'ROLIM DE MOURA',
-  'ouro preto': 'OURO PRETO DO OESTE',
-  'ouro preto do oeste': 'OURO PRETO DO OESTE',
-  'parecis': 'PIMENTA BUENO',
-  'pimenta bueno': 'PIMENTA BUENO',
-  'pimenteiras do oeste': 'CEREJEIRAS',
-  'porto velho': 'PORTO VELHO',
-  'presidente medici': 'JI-PARANA',
-  'primavera de rondonia': 'PIMENTA BUENO',
-  'rio crespo': 'ARIQUEMES',
-  'rolim de moura': 'ROLIM DE MOURA',
-  'santa luzia': 'ROLIM DE MOURA',
-  'sao felipe do oeste': 'PIMENTA BUENO',
-  'sao francisco do guapore': 'SAO FRANCISCO',
-  'sao francisco': 'SAO FRANCISCO',
-  'sao miguel do guapore': 'SAO FRANCISCO',
-  'sao miguel': 'SAO FRANCISCO',
-  'seringueiras': 'SAO FRANCISCO',
-  'teixeiropolis': 'OURO PRETO DO OESTE',
-  'theobroma': 'JARU',
-  'urupa': 'OURO PRETO DO OESTE',
-  'vale do anari': 'MACHADINHO DOESTE',
-  'vale do paraiso': 'OURO PRETO DO OESTE',
-  'vilhena': 'VILHENA'
-};
-
-function normalizarMunicipioParaSuper(mun) {
-  if (!mun) return '';
-  return mun.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-}
-
-function getSuperPorMunicipio(mun) {
-  if (!mun) return '';
-  const norm = normalizarMunicipioParaSuper(mun);
-  
-  for (const [key, value] of Object.entries(MAPA_MUNICIPIOS_SUPER)) {
-    if (norm === key || norm.includes(key)) {
-      return 'SUPER ' + value;
-    }
-  }
-  
-  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
-    const escola = _escolasCache.find(e => {
-       const emun = normalizarMunicipioParaSuper(e.municipio);
-       return emun === norm || emun.includes(norm) || norm.includes(emun);
-    });
-    if (escola && escola.super) {
-       let s = escola.super.toString().toUpperCase().trim();
-       return s.startsWith('SUPER') ? s : 'SUPER ' + s;
-    }
-  }
-  
-  return 'OUTRAS';
-}
-
 // ---- LISTA DE PROCESSOS ----
 function getFiltrados() {
   let lista = carregarProcessos();
@@ -1023,41 +779,15 @@ function getFiltrados() {
       String(p.ano || '').includes(q)
     );
   }
-    const filterByMultiple = (campo, valor) => {
-    if (!valor || (Array.isArray(valor) && valor.length === 0)) return;
-    if (Array.isArray(valor)) {
-      lista = lista.filter(p => {
-        const valNorm = normalizar(p[campo]);
-        return valor.some(v => valNorm === normalizar(v));
-      });
-    } else {
-      lista = lista.filter(p => normalizar(p[campo]) === normalizar(valor));
-    }
-  };
-
-  const filterIncludesMultiple = (campo, valor) => {
-    if (!valor || (Array.isArray(valor) && valor.length === 0)) return;
-    if (Array.isArray(valor)) {
-      lista = lista.filter(p => {
-        const valNorm = normalizar(p[campo]);
-        return valor.some(v => valNorm.includes(normalizar(v)));
-      });
-    } else {
-      lista = lista.filter(p => normalizar(p[campo]).includes(normalizar(valor)));
-    }
-  };
-  filterByMultiple('status', status);
-  filterByMultiple('localizacao', localizacao);
-  filterByMultiple('municipio', municipio);
-  filterByMultiple('objeto', objeto);
-  filterByMultiple('categoria', categoria);
-  filterByMultiple('tipo', tipo);
-  filterByMultiple('ano', ano);
-  filterByMultiple('agrupamento', state.filtros.agrupamento);
-  if (state.filtros.digito) {
-    lista = lista.filter(p => normalizar(p.digito || p.DIGITO || '').includes(normalizar(state.filtros.digito)));
-  }
-  filterIncludesMultiple('prefixo', state.filtros.prefixo);
+  if (status)      lista = lista.filter(p => normalizar(p.status)      === normalizar(status));
+  if (localizacao) lista = lista.filter(p => normalizar(p.localizacao) === normalizar(localizacao));
+  if (municipio)   lista = lista.filter(p => normalizar(p.municipio)   === normalizar(municipio));
+  if (objeto)      lista = lista.filter(p => normalizar(p.objeto)      === normalizar(objeto));
+  if (categoria)   lista = lista.filter(p => normalizar(p.categoria)   === normalizar(categoria));
+  if (tipo)        lista = lista.filter(p => normalizar(p.tipo)        === normalizar(tipo));
+  if (ano)         lista = lista.filter(p => String(p.ano)             === String(ano));
+  if (state.filtros.agrupamento) lista = lista.filter(p => normalizar(p.agrupamento) === normalizar(state.filtros.agrupamento));
+  if (state.filtros.prefixo) lista = lista.filter(p => normalizar(p.prefixo).includes(normalizar(state.filtros.prefixo)));
 
   // Filtros individuais de autorização
   if (state.filtros.cam) lista = lista.filter(p => p.CAM === '1');
@@ -1090,46 +820,20 @@ function renderProcessos() {
   const inicio = (state.paginaAtual - 1) * state.itensPorPagina;
   const pagina = filtrados; // Pagination removed
 
-  // Preencher filtros dinâmicos (preencherSelectFiltro preserva seleções existentes)
-  const todosProcs = carregarProcessos();
-  const distinctStatus = [...new Set([
-    ...todosProcs.map(p => p.status),
-    ...STATUS_LIST
-  ])].filter(s => s && s !== '.' && s !== '****').sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  // Preencher filtros dinâmicos
+  preencherSelectFiltro('filtro-ano',         [...new Set(carregarProcessos().map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
+  preencherSelectFiltro('filtro-agrupamento', [...new Set(carregarProcessos().map(p => p.agrupamento).filter(Boolean))].sort());
+  preencherSelectFiltro('filtro-status',      [...new Set(carregarProcessos().map(p => p.status).filter(s => s && s !== '.'))].sort());
+  preencherSelectFiltro('filtro-localizacao', [...new Set(carregarProcessos().map(p => p.localizacao).filter(l => l && l !== '.'))].sort());
+  preencherSelectFiltro('filtro-municipio',   [...new Set(carregarProcessos().map(p => p.municipio).filter(Boolean))].sort());
+  preencherSelectFiltro('filtro-objeto',      [...new Set(carregarProcessos().map(p => p.objeto).filter(Boolean))].sort());
 
-  const distinctLocalizacao = [...new Set([
-    ...todosProcs.map(p => p.localizacao),
-    ...LOCALIZACAO_LIST
-  ])].filter(l => l && l !== '.' && l !== '****').sort((a, b) => a.localeCompare(b, 'pt-BR'));
-
-  preencherSelectFiltro('filtro-status',      distinctStatus);
-  preencherSelectFiltro('filtro-localizacao', distinctLocalizacao);
-  
-  const superList = [...new Set(todosProcs.map(p => getSuperPorMunicipio(p.municipio)).filter(Boolean))].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-  preencherSelectFiltro('filtro-super', superList);
-
-  preencherSelectFiltro('filtro-municipio',   [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-prefixo',     [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-objeto',      [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-ano',         [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
-  preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
-  // Mapeamento de categorias e tipos para exibição amigável
-  const MAPA_CATEGORIA = {
-    'C': 'C - Conv\u00eanio', 'F': 'F - Fomento', 'T': 'T - Termo de Coopera\u00e7\u00e3o',
-    'Convenio': 'C - Conv\u00eanio', 'Conv\u00eanio': 'C - Conv\u00eanio',
-    'Fomento': 'F - Fomento', 'Termo de Coopera\u00e7\u00e3o': 'T - Termo de Coopera\u00e7\u00e3o'
-  };
-  const MAPA_TIPO = {
-    'OB': 'OB - Obras', 'MP': 'MP - Mat. Permanente', 'MC': 'MC - Mat. Consumo',
-    'SI': 'SI - Sistema', 'TR': 'TR - Treinamento', 'OUT': 'OUT - Outros',
-    'Obras': 'OB - Obras', 'Material Permanente': 'MP - Mat. Permanente',
-    'Material de Consumo': 'MC - Mat. Consumo', 'Sistema': 'SI - Sistema',
-    'Treinamento': 'TR - Treinamento', 'Outros': 'OUT - Outros'
-  };
-  const categoriasRaw = [...new Set(todosProcs.map(p => p.categoria).filter(Boolean))].sort();
-  const tiposRaw      = [...new Set(todosProcs.map(p => p.tipo).filter(Boolean))].sort();
-  preencherSelectFiltroMapeado('filtro-categoria', categoriasRaw, MAPA_CATEGORIA);
-  preencherSelectFiltroMapeado('filtro-tipo',      tiposRaw,      MAPA_TIPO);
+  // Preencher datalist do filtro de prefixo
+  const dlFiltroPfx = document.getElementById('list-filtro-prefixos');
+  if (dlFiltroPfx) {
+    const pfxs = [...new Set(carregarProcessos().map(p => p.prefixo).filter(Boolean))].sort();
+    dlFiltroPfx.innerHTML = pfxs.map(v => `<option value="${v}">`).join('');
+  }
 
   // Preencher datalists do formulário
   const preencherDatalist = (id, prop) => {
@@ -1150,7 +854,6 @@ function renderProcessos() {
 
   tbody.innerHTML = pagina.map(p => `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
-      <td onclick="event.stopPropagation()" style="text-align: center;"><input type="checkbox" class="check-processo" value="${p.id}" style="cursor:pointer; transform: scale(1.2);"></td>
       <td class="col-prefixo" title="${p.prefixo}">
         <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
           <!-- Linha 1: PREFIXO -->
@@ -1180,19 +883,19 @@ function renderProcessos() {
       </td>
       <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || '—'}</td>
       <td class="col-objeto" title="${p.objeto}">${p.objeto || '—'}</td>
-      <td style="text-align: center;"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
-      <td style="text-align: center;">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>') : '—'}</td>
+      <td><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
+      <td>${p.localizacao || '—'}</td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
-      <td style="text-align: center;">${formatDate(p.data)}</td>
+      <td>${formatDate(p.data)}</td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
         <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">✏️</button>
         
       </td>
     </tr>
   `).join('') || `
-    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="11">
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9">
       <div class="empty-state">
-        <div class="empty-icon">📂</div>
+        <div class="empty-icon">🔍</div>
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente ajustar os filtros</p>
       </div>
@@ -1209,10 +912,10 @@ function renderProcessos() {
   // Total valor filtrado
   const valorTotal = filtrados.reduce((a, p) => a + (p.valorOf || 0), 0);
   const el = document.getElementById('valor-filtrado');
-  if (el) el.innerHTML = `<span>R$</span> <span>${formatCurrency(valorTotal).replace(/^R\$\s*/u, '')}</span>`;
+  if (el) el.textContent = `Total: ${formatCurrency(valorTotal)}`;
 
   const elQtd = document.getElementById('qtd-registros-filtrados');
-  if (elQtd) elQtd.innerHTML = `<span>${total === 1 ? 'Processo' : 'Processos'}</span> <span>${total.toLocaleString('pt-BR')}</span>`;
+  if (elQtd) elQtd.textContent = `${total.toLocaleString('pt-BR')} ${total === 1 ? 'registro' : 'registros'}`;
 
   // Botão exportar
   const btnExportar = document.getElementById('btn-exportar');
@@ -1230,107 +933,15 @@ function hl(txt, busca) {
 function preencherSelectFiltro(id, opcoes) {
   const sel = document.getElementById(id);
   if (!sel) return;
+  const atual = sel.value;
+  let placeholder = 'Todos';
+  if (id === 'filtro-status') placeholder = 'Status';
+  else if (id === 'filtro-localizacao') placeholder = 'Localização';
+  else if (id === 'filtro-municipio') placeholder = 'Município';
+  else if (id === 'filtro-objeto') placeholder = 'Objeto';
+  else if (id === 'filtro-ano') placeholder = 'Ano';
 
-  let placeholder = 'TODOS';
-  if (id === 'filtro-status') placeholder = 'STATUS';
-  else if (id === 'filtro-localizacao') placeholder = 'LOCALIZAÇÃO';
-  else if (id === 'filtro-municipio') placeholder = 'MUNICÍPIO';
-  else if (id === 'filtro-objeto') placeholder = 'OBJETO';
-  else if (id === 'filtro-ano') placeholder = 'ANO';
-  else if (id === 'filtro-prefixo') placeholder = 'PREFIXO';
-  else if (id === 'filtro-agrupamento') placeholder = 'AGRUPAMENTO';
-    else if (id === 'filtro-categoria') placeholder = 'CATEGORIA';
-  else if (id === 'filtro-tipo') placeholder = 'TIPO';
-  else if (id === 'filtro-super') placeholder = 'SUPER';
-
-  // Pegar valores selecionados atualmente via state (não via DOM, que pode estar destrudo)
-  const campo = id.replace('filtro-', '');
-  let selectedArr = state.filtros[campo] || [];
-  if (typeof selectedArr === 'string') selectedArr = selectedArr ? [selectedArr] : [];
-
-  // Verificar se as opções mudaram para decidir se reconstrói
-  const opcoesAtuais = Array.from(sel.options).map(o => o.value).filter(v => v !== '');
-  const opcoesNovas = opcoes.map(String);
-  const precisaReconstruir = opcoesAtuais.length !== opcoesNovas.length ||
-    opcoesNovas.some((o, i) => o !== opcoesAtuais[i]);
-
-  if (precisaReconstruir) {
-    // Reconstrói o HTML com as opções corretas
-    sel.innerHTML = `<option value="">${placeholder}</option>` +
-      opcoesNovas.map(o => {
-        const isSelected = selectedArr.includes(o);
-        return `<option value="${o}"${isSelected ? ' selected' : ''}>${o}</option>`;
-      }).join('');
-
-    // Inicializa ou reinicializa o multiselect
-    if (window.initMultiSelect && sel.multiple) {
-      window.initMultiSelect(id);
-    }
-  } else {
-    // Só atualiza o estado das checkboxes sem reconstruir
-    if (sel._multiSelectInstance) {
-      Array.from(sel.options).forEach(opt => {
-        if (opt.value) opt.selected = selectedArr.includes(opt.value);
-      });
-      const checkboxes = sel._multiSelectInstance.dropdown
-        ? sel._multiSelectInstance.dropdown.querySelectorAll('input[type="checkbox"]')
-        : [];
-      checkboxes.forEach(cb => { cb.checked = selectedArr.includes(cb.value); });
-      sel._multiSelectInstance.updateButtonText();
-    }
-  }
-}
-
-/**
- * Igual a preencherSelectFiltro, mas exibe um label amigável para cada value.
- * O value do <option> continua sendo o valor bruto para filtrar corretamente.
- * @param {string} id - ID do select
- * @param {string[]} valores - array de valores brutos vindos dos dados
- * @param {Object} mapa - dicionário { valorBruto: 'Label Amigavel' }
- */
-function preencherSelectFiltroMapeado(id, valores, mapa) {
-  const sel = document.getElementById(id);
-  if (!sel) return;
-
-  const campo = id.replace('filtro-', '');
-  let selectedArr = state.filtros[campo] || [];
-  if (typeof selectedArr === 'string') selectedArr = selectedArr ? [selectedArr] : [];
-
-  let placeholder = 'TODOS';
-  if (id === 'filtro-categoria') placeholder = 'CATEGORIA';
-  else if (id === 'filtro-tipo') placeholder = 'TIPO';
-
-  // Montar as opções com label amigável
-  const opcoesComLabel = valores.map(v => ({ value: v, label: mapa[v] || v }));
-
-  // Verificar se precisa reconstruir
-  const opcoesAtuais = Array.from(sel.options).map(o => o.value).filter(v => v !== '');
-  const opcoesNovas  = opcoesComLabel.map(o => o.value);
-  const precisaReconstruir = opcoesAtuais.length !== opcoesNovas.length ||
-    opcoesNovas.some((v, i) => v !== opcoesAtuais[i]);
-
-  if (precisaReconstruir) {
-    sel.innerHTML = `<option value="">${placeholder}</option>` +
-      opcoesComLabel.map(o => {
-        const isSelected = selectedArr.includes(o.value);
-        return `<option value="${o.value}"${isSelected ? ' selected' : ''}>${o.label}</option>`;
-      }).join('');
-
-    if (window.initMultiSelect && sel.multiple) {
-      window.initMultiSelect(id);
-    }
-  } else {
-    if (sel._multiSelectInstance) {
-      Array.from(sel.options).forEach(opt => {
-        if (opt.value) opt.selected = selectedArr.includes(opt.value);
-      });
-      const checkboxes = sel._multiSelectInstance.dropdown
-        ? sel._multiSelectInstance.dropdown.querySelectorAll('input[type="checkbox"]')
-        : [];
-      checkboxes.forEach(cb => { cb.checked = selectedArr.includes(cb.value); });
-      sel._multiSelectInstance.updateButtonText();
-    }
-  }
+  sel.innerHTML = `<option value="****">${placeholder}</option>` + opcoes.map(o => `<option value="${o}" ${o === atual ? 'selected' : ''}>${o}</option>`).join('');
 }
 
 function renderPaginacao(totalPags) {
@@ -1414,12 +1025,8 @@ function renderFormulario() {
     s.innerHTML = lista.map(o => `<option value="${o}" ${o === val ? 'selected' : ''}>${o}</option>`).join('');
   };
 
-  
-  fillSelect('list-status', STATUS_LIST, '');
-  fillSelect('list-localizacao', LOCALIZACAO_LIST, '');
-  if(document.getElementById('form-status')) document.getElementById('form-status').value = p.status || '';
-  if(document.getElementById('form-localizacao')) document.getElementById('form-localizacao').value = p.localizacao || '';
-
+  fillSelect('form-status',      STATUS_LIST,      p.status      || '');
+  fillSelect('form-localizacao', LOCALIZACAO_LIST, p.localizacao || '');
   
   const anos_list = [...new Set(carregarProcessos().map(x => String(x.ano || '')).filter(Boolean))].sort((a,b)=>b-a);
   fillSelect('list-anos', anos_list, '');
@@ -1429,7 +1036,7 @@ function renderFormulario() {
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
-    document.getElementById('form-digito').value = String(p.digito || p.DIGITO || '').replace(/\D/g, '').slice(0, 3);
+    document.getElementById('form-digito').value = p.digito || p.DIGITO || '';
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
     document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
@@ -1661,8 +1268,7 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
-    digito: (document.getElementById('form-digito')?.value || '').replace(/\D/g, '').slice(0, 3),
-    DIGITO: (document.getElementById('form-digito')?.value || '').replace(/\D/g, '').slice(0, 3),
+    digito: document.getElementById('form-digito').value.trim(),
     categoria:   document.getElementById('form-categoria').value,
     tipo:        document.getElementById('form-tipo').value,
     CAM:         document.getElementById('form-cam')?.checked ? '1' : '',
@@ -1745,7 +1351,7 @@ function abrirDetalhe(id) {
   if (userNivel === 'leitor') {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 2px solid #22c55e; background: rgba(34, 197, 94, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">✍️ Novo Apontamento</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#22c55e;letter-spacing:.5px;margin-bottom:8px">📝 Novo Apontamento</h4>
         <textarea id="modal-apontamento-texto" placeholder="Digite seu apontamento..." style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:12px;"></textarea>
         <button onclick="salvarApontamentoModal('${p.id}')" id="btn-salvar-apont" style="width:100%; padding:10px; border-radius:6px; border:none; background:#22c55e; color:#fff; font-weight:bold; cursor:pointer;">Salvar Apontamento</button>
       </div>
@@ -1753,7 +1359,7 @@ function abrirDetalhe(id) {
   } else if (userNivel === 'adm' && p.apontamento) {
     apontamentoHtml = `
       <div class="card" style="margin-bottom:16px; border: 1px solid #f59e0b; background: rgba(245, 158, 11, 0.05);">
-        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">📋 Histórico de Apontamentos</h4>
+        <h4 style="font-size:12px;text-transform:uppercase;color:#f59e0b;letter-spacing:.5px;margin-bottom:8px">📝 Histórico de Apontamentos</h4>
         <div style="font-size:13px; color:#cbd5e1; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px; white-space:pre-wrap; min-height:60px;">${p.apontamento}</div>
       </div>
     `;
@@ -1846,7 +1452,7 @@ function abrirDetalhe(id) {
 
     ${p.marca === '1' || p.marca === 'SIM' ? `
       <div class="card" style="margin-bottom:16px; border: 2px solid var(--blue); background: rgba(59, 130, 246, 0.08); display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(59,130,246,0.15);">
-        <span style="font-size: 24px;">📜</span>
+        <span style="font-size: 24px;">📌</span>
         <div>
           <strong style="color: var(--blue); font-size: 14px;">Processo Marcado para Atenção!</strong>
           <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-secondary);">Por favor, verifique as observações abaixo.</p>
@@ -1860,7 +1466,7 @@ function abrirDetalhe(id) {
         <p style="color:var(--text-secondary);font-size:14px">${p.obs}</p>
       </div>
     ` : ''}
-    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">📌 Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
+    ${p.anotacao ? `<div class="card" style="margin-bottom:16px"><h4 style="font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:8px">🗒️ Anotação</h4><p style="color:var(--text-secondary);font-size:14px">${p.anotacao}</p></div>` : ''}
 
     ${contatosHtml}
     ${apontamentoHtml}
@@ -2003,9 +1609,9 @@ function confirmarExcluir(id) {
   if (!p) return;
   const ident = p.numero || p.interessado || 'Sem Identificação';
   if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
+    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excluído permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
       excluirProcesso(id);
-      toast('Processo excludo com sucesso.', 'info');
+      toast('Processo excluído com sucesso.', 'info');
       navegar('processos');
     }
   }
@@ -2045,7 +1651,7 @@ async function processarArquivo(file) {
     const result = await importarExcel(file);
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
-        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação concluda!</h3>
+        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação concluída!</h3>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:14px">
           <div><span style="color:var(--text-muted)">Total na planilha:</span><br><strong>${result.total}</strong></div>
           <div><span style="color:var(--text-muted)">Novos importados:</span><br><strong style="color:var(--green)">${result.novos}</strong></div>
@@ -2079,7 +1685,7 @@ async function processarLinkGoogleSheets() {
     const result = await importarGoogleSheets(url);
     document.getElementById('import-status').innerHTML = `
       <div class="card" style="border-color:rgba(16,185,129,0.3);background:rgba(16,185,129,0.05)">
-        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação do GSheets concluda!</h3>
+        <h3 style="color:var(--green);margin-bottom:12px">✅ Importação do GSheets concluída!</h3>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:14px">
           <div><span style="color:var(--text-muted)">Total lidos:</span><br><strong>${result.total}</strong></div>
           <div><span style="color:var(--text-muted)">Novos importados:</span><br><strong style="color:var(--green)">${result.novos}</strong></div>
@@ -2148,62 +1754,28 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Filtros
-    const aplicarFiltro = (campo, valor) => {
-    const el = document.getElementById('filtro-' + campo);
-    if (el && el.multiple) {
-      state.filtros[campo] = Array.from(el.selectedOptions).map(o => o.value).filter(v => v !== "");
-    } else if (el && valor === null) {
-      state.filtros[campo] = el.value;
-    } else {
-      state.filtros[campo] = valor;
-    }
-    
-    // Auto-select municipios when SUPER is selected
-    if (campo === 'super') {
-      const selectMun = document.getElementById('filtro-municipio');
-      if (selectMun && selectMun._multiSelectInstance) {
-        const supersSelecionadas = state.filtros.super || [];
-        if (supersSelecionadas.length > 0) {
-          Array.from(selectMun.options).forEach(opt => {
-            if (opt.value === "") return;
-            const supDaOption = getSuperPorMunicipio(opt.value);
-            opt.selected = supersSelecionadas.includes(supDaOption);
-          });
-        } else {
-          Array.from(selectMun.options).forEach(opt => {
-            opt.selected = false;
-          });
-        }
-        // update the multi-select UI
-        selectMun._multiSelectInstance.update();
-        // sync the state for municipio as well
-        state.filtros.municipio = Array.from(selectMun.selectedOptions).map(o => o.value).filter(v => v !== "");
-      }
-    }
-    
+  const aplicarFiltro = (campo, valor) => {
+    state.filtros[campo] = valor;
     state.paginaAtual = 1;
     renderProcessos();
   };
 
-  document.getElementById('filtro-prefixo')?.addEventListener('change', () => aplicarFiltro('prefixo', null));
-  document.getElementById('filtro-busca')?.addEventListener('input', e => aplicarFiltro('busca', e.target.value));
-  document.getElementById('filtro-status')?.addEventListener('change', () => aplicarFiltro('status', null));
-  document.getElementById('filtro-localizacao')?.addEventListener('change', () => aplicarFiltro('localizacao', null));
-  document.getElementById('filtro-super')?.addEventListener('change', () => aplicarFiltro('super', null));
-  document.getElementById('filtro-municipio')?.addEventListener('change', () => aplicarFiltro('municipio', null));
-  document.getElementById('filtro-objeto')?.addEventListener('change', () => aplicarFiltro('objeto', null));
-  document.getElementById('filtro-categoria')?.addEventListener('change', () => aplicarFiltro('categoria', null));
-  document.getElementById('filtro-tipo')?.addEventListener('change', () => aplicarFiltro('tipo', null));
+  document.getElementById('filtro-busca').addEventListener('input', e => aplicarFiltro('busca', e.target.value));
+  document.getElementById('filtro-status').addEventListener('change', e => aplicarFiltro('status', e.target.value));
+  document.getElementById('filtro-localizacao').addEventListener('change', e => aplicarFiltro('localizacao', e.target.value));
+  document.getElementById('filtro-municipio').addEventListener('change', e => aplicarFiltro('municipio', e.target.value));
+  document.getElementById('filtro-objeto').addEventListener('change', e => aplicarFiltro('objeto', e.target.value));
+  document.getElementById('filtro-categoria').addEventListener('change', e => aplicarFiltro('categoria', e.target.value));
+  document.getElementById('filtro-tipo').addEventListener('change', e => aplicarFiltro('tipo', e.target.value));
   const filtroAnoEl = document.getElementById('filtro-ano');
   if (filtroAnoEl) {
-    filtroAnoEl.addEventListener('change', () => aplicarFiltro('ano', null));
+    filtroAnoEl.addEventListener('change', e => aplicarFiltro('ano', e.target.value));
   }
   const filtroDigitoEl = document.getElementById('filtro-digito');
   if (filtroDigitoEl) { filtroDigitoEl.addEventListener('input', (e) => aplicarFiltro('digito', e.target.value.trim())); }
   const filtroAgrupEl = document.getElementById('filtro-agrupamento');
   if (filtroAgrupEl) {
-    filtroAgrupEl.addEventListener('change', () => aplicarFiltro('agrupamento', null));
-
+    filtroAgrupEl.addEventListener('change', e => aplicarFiltro('agrupamento', e.target.value));
   }
 
   const filtroAlertaEl = document.getElementById('filtro-alerta');
@@ -2216,45 +1788,32 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroMarcaEl.addEventListener('change', e => aplicarFiltro('marca', e.target.value));
   }
 
-  document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '' };
+    document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
+    state.filtros = { busca: '', status: '', localizacao: '', municipio: '', objeto: '', prefixo: '', alerta: '', marca: '', categoria: '', tipo: '', autorizacao: '', ano: '', agrupamento: '' };
     state.paginaAtual = 1;
     document.getElementById('filtro-busca').value = '';
     const fd = document.getElementById('filtro-digito');
     if(fd) fd.value = '';
-
-    // Limpar autorizações (toggles)
-    ['filtro-cam', 'filtro-gab', 'filtro-cc'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.checked = false;
-    });
-
-    // Limpar todos os selects múltiplos e simples
-    ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto',
-     'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento'].forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      Array.from(el.options).forEach(opt => { opt.selected = false; });
-      if (el._multiSelectInstance) {
-        const cbs = el._multiSelectInstance.dropdown
-          ? el._multiSelectInstance.dropdown.querySelectorAll('input[type="checkbox"]')
-          : [];
-        cbs.forEach(cb => { cb.checked = false; });
-        el._multiSelectInstance.updateButtonText();
-      } else {
-        el.value = ''; // para selects normais
-      }
-    });
-
+    document.getElementById('filtro-status').value = '';
+    document.getElementById('filtro-localizacao').value = '';
+    document.getElementById('filtro-municipio').value = '';
+    document.getElementById('filtro-objeto').value = '';
+    document.getElementById('filtro-categoria').value = '';
+    document.getElementById('filtro-tipo').value = '';
+    document.getElementById('filtro-prefixo').value = '';
+    const fAno = document.getElementById('filtro-ano');
+    if (fAno) fAno.value = '';
+    const fAgr = document.getElementById('filtro-agrupamento');
+    if (fAgr) fAgr.value = '';
     const fa = document.getElementById('filtro-alerta');
     if (fa) fa.value = '';
     const fm = document.getElementById('filtro-marca');
     if (fm) fm.value = '';
-    
     renderProcessos();
   });
 
-  // Ordenação — o prefixo agora é multiselect, não text input (sem listener 'input')
+  // Filtro prefixo — input em tempo real
+  document.getElementById('filtro-prefixo').addEventListener('input', e => aplicarFiltro('prefixo', e.target.value.trim()));
 
   // Ordenação por coluna
   document.querySelectorAll('th[data-sort]').forEach(th => {
@@ -2275,22 +1834,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Importação
   setupImportacao();
 
-  // Preencher selects de filtro com status e localizacao
-    window.popularFiltrosProcessos = function() {
-      const fillSelectFiltro = (id, lista) => {
-        const s = document.getElementById(id);
-        if (!s) return;
-        
-        s.innerHTML = `<option value="****">Todos</option>` + lista.map(o => `<option value="${o}">${o}</option>`).join('');
-        
-        if (typeof window.initMultiSelect === 'function' && s.multiple) {
-           window.initMultiSelect(id);
-        }
-      };
-      fillSelectFiltro('filtro-status', STATUS_LIST.filter(s => s !== '.'));
-      fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
-    };
-    window.popularFiltrosProcessos();
+  // Preencher selects de filtro com status e localização
+  const fillSelectFiltro = (id, lista) => {
+    const s = document.getElementById(id);
+    if (!s) return;
+    s.innerHTML = `<option value="****">Todos</option>` + lista.map(o => `<option value="${o}">${o}</option>`).join('');
+  };
+  fillSelectFiltro('filtro-status',      STATUS_LIST.filter(s => s !== '.'));
+  fillSelectFiltro('filtro-localizacao', LOCALIZACAO_LIST.filter(s => s !== '.'));
 
   // Máscara de Celular (WhatsApp)
   const shareNum = document.getElementById("share-whatsapp-number");
@@ -2477,7 +2028,7 @@ function renderizarContatosForm() {
     const whatsappFormatado = maskCelular(numeroLimpo);
     
     div.innerHTML = "<div style=\"display:flex; flex-direction:column; gap:2px;\">" +
-      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">💬 " + whatsappFormatado + "</span>" +
+      "<span style=\"font-weight:600; color:var(--text-primary); font-size:13px;\">📞 " + whatsappFormatado + "</span>" +
       (c.detalhes ? "<span style=\"color:var(--text-secondary); font-size:12px;\">" + c.detalhes + "</span>" : "****") +
       "</div>" +
       "<button type=\"button\" class=\"btn btn-ghost btn-sm\" onclick=\"removerContato(" + idx + ")\" style=\"color:var(--red); padding: 2px;\">❌</button>";
@@ -2518,18 +2069,17 @@ function getFormattedDateForTitle() {
 
 function getCommonHeader(subtitle) {
   return `
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0f172a; padding-bottom:6px; margin-bottom:14px; width:100%; font-family: Arial, sans-serif;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left;">
-        <div style="font-size:11px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.5px; line-height:1.2;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase; line-height:1.2;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
-        <div style="font-size:9.5px; font-weight:700; color:#334155; text-transform:uppercase; line-height:1.2;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:10px; color:#475569; font-weight:bold; text-transform:uppercase; background:#f1f5f9; border:1px solid #cbd5e1; padding:3px 8px; border-radius:4px;">${subtitle.toUpperCase()}</div>
+        <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>
       </div>
     </div>
   `;
 }
+
 
 function injectFixedHeader(subtitle) {
   let header = document.getElementById('fixed-print-header');
@@ -2541,12 +2091,10 @@ function injectFixedHeader(subtitle) {
   }
   header.innerHTML = getCommonHeader(subtitle);
 }
-
-function getCommonFooter(gerenciaCustom) {
-  const gerenciaTexto = gerenciaCustom || 'GDSM - GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS';
+function getCommonFooter() {
   return `
-    <div style="border-top:1px solid #cbd5e1; padding-top:5px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:8.5px; font-weight:normal; color:#475569; font-family: Arial, sans-serif; width:100%;">
-      <div style="flex:1; text-align:left; font-weight:bold; color:#0f172a;">${gerenciaTexto}</div>
+    <div style="border-top:1px solid #ccc; padding-top:4px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:9px; font-weight:normal; color:#333; font-family: Arial, sans-serif; width:100%;">
+      <div style="flex:1; text-align:left; font-weight:bold; color:#000;">GBZ</div>
       <div style="flex:1; text-align:right;" class="print-date-time-rodape"></div>
     </div>
   `;
@@ -2572,26 +2120,17 @@ window.formatNumberOnly = function(valor) {
 
 function injectPrintHeader(subtitle) { /* disabled */ }
 
-function imprimirPadrao(filtrados = getFiltrados()) {
+window.imprimirPadrao = function() {
       updatePrintDateTime();
       updatePrintDateTime();
+      const filtrados = getFiltrados();
       
       let rowsHtml = filtrados.map((p, index) => {
-        
-        
-        
-        
         const prefixoFormatado = `
-          <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
-            <div style="font-weight: bold; margin-bottom: 2px;">${p.prefixo || '-'}</div>
-            <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
-              <span>${p.categoria || '-'}</span><span style="color:#999;">|</span><span>${p.tipo || '-'}</span><span style="color:#999;">|</span>
-              <div style="display: flex; font-size: 15px; line-height: 1; color: #000; align-items: center; margin-left: 1px;">
-                <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
-              </div>
-            </div>
+          <div style="font-family: monospace, Courier, sans-serif; white-space: nowrap; font-size: 9px;">
+            <span style="display:inline-block; width:34px; text-align:left;">${p.prefixo || '-'}</span> | 
+            <span style="display:inline-block; width:10px; text-align:center;">${p.categoria || '-'}</span> | 
+            <span style="display:inline-block; width:16px; text-align:center;">${p.tipo || '-'}</span>
           </div>
         `;
         return `
@@ -2687,9 +2226,7 @@ function imprimirPadrao(filtrados = getFiltrados()) {
       }, 1000);
     };
 
-window.imprimirPadrao = imprimirPadrao;
-
-function imprimirDetalhado() {
+window.imprimirDetalhado = function() {
   updatePrintDateTime();
   const filtrados = getFiltrados();
   
@@ -2723,7 +2260,7 @@ function imprimirDetalhado() {
       <div style="flex:1; border:2px solid #000; background:#f8fafc; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">VALOR TOTAL CONSOLIDADO</div>
         <div style="font-size:14px; font-weight:bold; color:#000; margin:5px 0;">${formatCurrency(total)}</div>
-        <div style="font-size:7px; color:#000;">${filtrados.length} processos úúnicos</div>
+        <div style="font-size:7px; color:#000;">${filtrados.length} processos únicos</div>
       </div>
       <div style="flex:1; border:2px solid #000; background:#f0fdf4; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">PROCESSOS AUTORIZADOS</div>
@@ -2740,23 +2277,13 @@ function imprimirDetalhado() {
 
   let tableRows = '';
   filtrados.forEach((p, i) => {
-    
-        
-        
-        
-        const prefixoFormatado = `
-          <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
-            <div style="font-weight: bold; margin-bottom: 2px;">${p.prefixo || '-'}</div>
-            <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
-              <span>${p.categoria || '-'}</span><span style="color:#999;">|</span><span>${p.tipo || '-'}</span><span style="color:#999;">|</span>
-              <div style="display: flex; font-size: 15px; line-height: 1; color: #000; align-items: center; margin-left: 1px;">
-                <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
-              </div>
-            </div>
-          </div>
-        `;
+    const prefixoFormatado = `
+      <div style="font-family: monospace, Courier, sans-serif; white-space: nowrap; font-size: 9px;">
+        <span style="display:inline-block; width:34px; text-align:left;">${p.prefixo || '-'}</span> | 
+        <span style="display:inline-block; width:10px; text-align:center;">${p.categoria || '-'}</span> | 
+        <span style="display:inline-block; width:16px; text-align:center;">${p.tipo || '-'}</span>
+      </div>
+    `;
     tableRows += `
       <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
         <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${i + 1}</td>
@@ -2886,9 +2413,7 @@ function imprimirDetalhado() {
   }, 1000);
 };
 
-window.imprimirDetalhado = imprimirDetalhado;
-
-function imprimirAnalise() {
+window.imprimirAnalise = function() {
   updatePrintDateTime();
   const filtrados = getFiltrados();
   let total = 0;
@@ -2958,7 +2483,7 @@ function imprimirAnalise() {
       <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
         
         <div class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; margin-bottom:20px; font-size:12px; text-align:justify; line-height:1.6; padding:10px; border:1px solid #ccc;">
-          <strong>SÍNTESE ANALÍTICA:</strong> Parâmetros buscados: <em>${filtrosTexto}</em>.<br>O presente cenário totaliza <strong>${formatCurrency(total)}</strong> distribudos em <strong>${filtrados.length}</strong> processos. 
+          <strong>SÍNTESE ANALÍTICA:</strong> Parâmetros buscados: <em>${filtrosTexto}</em>.<br>O presente cenário totaliza <strong>${formatCurrency(total)}</strong> distribuídos em <strong>${filtrados.length}</strong> processos. 
           Abaixo detalhamos a concentração de recursos por status, cruzando com a localização, 
           permitindo identificar os principais setores responsáveis pela retenção de processos.
         </div>
@@ -2990,64 +2515,36 @@ function imprimirAnalise() {
     document.getElementById('print-layout-analise').style.display = 'none';
   }, 1000);
 };
-window.imprimirAnalise = imprimirAnalise;
 
 // ---- GERENCIAMENTO DE ACESSOS (CRUD) ----
 
 let listaAcessos = [];
 
-
-window.novoAcessoForm = function() {
-  cancelarEdicaoAcesso();
-  const form = document.getElementById('form-acesso');
-  const btnCancelar = document.getElementById('btn-cancelar-edicao');
-  if (form) form.style.display = 'grid';
-  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
-  
-  const nomeInput = document.getElementById('acesso-nome');
-  const whatsappInput = document.getElementById('acesso-whatsapp');
-  const nivelInput = document.getElementById('acesso-nivel');
-  const setorInput = document.getElementById('acesso-setor');
-  const senhaInput = document.getElementById('acesso-senha');
-  const btnSalvar = document.getElementById('btn-salvar-acesso');
-  
-  if(nomeInput) nomeInput.disabled = false;
-  if(whatsappInput) whatsappInput.disabled = false;
-  if(nivelInput) nivelInput.disabled = false;
-  if(setorInput) setorInput.disabled = false;
-  if(senhaInput) senhaInput.disabled = false;
-  if(btnSalvar) btnSalvar.disabled = false;
-  
-  if(nomeInput) nomeInput.focus();
-};
-
 function abrirModalAcesso(index = null) {
+  const title = document.getElementById('cadastro-acesso-title');
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
   const nivelInput = document.getElementById('acesso-nivel');
-  const setorInput = document.getElementById('acesso-setor');
   const senhaInput = document.getElementById('acesso-senha');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
   const btnSalvar = document.getElementById('btn-salvar-acesso');
-  const form = document.getElementById('form-acesso');
 
   if (!rowInput) return;
 
   if (index !== null) {
-    if (form) form.style.display = 'grid';
     const user = listaAcessos[index];
+    title.innerHTML = '<span>✏️</span> Editar Registro de Acesso';
     rowInput.value = user._rowNumber;
     nomeInput.value = user.nome;
     whatsappInput.value = user.whatsapp || '';
     nivelInput.value = user.nivel;
-    if(setorInput) setorInput.value = user.setor || '';
     senhaInput.value = user.senha || '';
 
+    // Habilitar campos
     nomeInput.disabled = false;
-    whatsappInput.disabled = true; // WhatsApp não pode ser alterado na ediǜo
+    whatsappInput.disabled = true; // WhatsApp não pode ser alterado na edição
     nivelInput.disabled = false;
-    if(setorInput) setorInput.disabled = false;
     senhaInput.disabled = false;
 
     if (btnSalvar) btnSalvar.disabled = false;
@@ -3060,27 +2557,26 @@ function abrirModalAcesso(index = null) {
 }
 
 function cancelarEdicaoAcesso() {
+  const title = document.getElementById('cadastro-acesso-title');
   const form = document.getElementById('form-acesso');
   const rowInput = document.getElementById('acesso-row');
   const nomeInput = document.getElementById('acesso-nome');
   const whatsappInput = document.getElementById('acesso-whatsapp');
   const nivelInput = document.getElementById('acesso-nivel');
-  const setorInput = document.getElementById('acesso-setor');
   const senhaInput = document.getElementById('acesso-senha');
   const btnCancelar = document.getElementById('btn-cancelar-edicao');
   const btnSalvar = document.getElementById('btn-salvar-acesso');
 
-  if (form) {
-    form.reset();
-    form.style.display = 'none';
-  }
+  if (form) form.reset();
   if (rowInput) rowInput.value = '';
+  if (title) title.innerHTML = '<span>👤</span> Registro de Acesso';
 
-  if (nomeInput) nomeInput.disabled = true;
-  if (whatsappInput) whatsappInput.disabled = true;
-  if (nivelInput) nivelInput.disabled = true;
-  if (setorInput) setorInput.disabled = true;
-  if (senhaInput) senhaInput.disabled = true;
+  // Limpar e Desabilitar campos
+  if (nomeInput) { nomeInput.value = ''; nomeInput.disabled = true; }
+  if (whatsappInput) { whatsappInput.value = ''; whatsappInput.disabled = true; }
+  if (nivelInput) { nivelInput.selectedIndex = -1; nivelInput.disabled = true; }
+  if (senhaInput) { senhaInput.value = ''; senhaInput.disabled = true; }
+
   if (btnSalvar) btnSalvar.disabled = true;
   if (btnCancelar) btnCancelar.style.display = 'none';
 }
@@ -3138,17 +2634,11 @@ function renderListaAcessosUI() {
         </span>
       `,
       adm: `
-          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            Admin
-          </span>
-        `,
-        gerente: `
-          <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(139, 92, 246, 0.12); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
-            Gerente
-          </span>
-        `
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); text-transform: uppercase; letter-spacing: 0.5px; user-select: none;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          Admin
+        </span>
+      `
     }[user.nivel] || `<span style="font-size:12px; font-weight:600; color:var(--text-primary);">${user.nivel}</span>`;
 
     const whatsappDisplay = user.whatsapp || '—';
@@ -3161,7 +2651,6 @@ function renderListaAcessosUI() {
         <td style="padding:12px 16px; font-size:14px; font-weight:600; color:var(--text-primary);">${user.nome}</td>
         <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${whatsappDisplay}</td>
         <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${nivelDisplay}</td>
-          <td style="padding:12px 16px; font-size:14px; color:var(--text-secondary);">${user.setor || '-'}</td>
         <td style="padding:12px 16px; font-size:14px;">
           <div style="display:flex; align-items:center; gap:8px;">
             <label class="switch" style="transform:scale(0.85); margin:0;">
@@ -3181,7 +2670,10 @@ function renderListaAcessosUI() {
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             Editar
           </button>
-          
+          <button class="btn btn-danger btn-sm" onclick="deletarAcesso(${user._rowNumber}, '${user.whatsapp}')" style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; font-size:12px; margin-left:6px; background:rgba(239, 68, 68, 0.08); color:#f87171; border:1px solid rgba(239, 68, 68, 0.2); border-radius:6px; font-weight:600; cursor:pointer; transition:var(--transition);">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+            Excluir
+          </button>
         </td>
       </tr>
     `;
@@ -3206,7 +2698,6 @@ async function toggleStatusAcesso(rowNumber, isChecked) {
       nome: user.nome,
       whatsapp: user.whatsapp,
       nivel: user.nivel,
-      setor: user.setor || '',
       status: status,
       senha: user.senha
     };
@@ -3253,23 +2744,6 @@ async function carregarAcessos() {
     }
 
     listaAcessos = await res.json();
-    
-    // Corrige os campos deslocados
-    listaAcessos = listaAcessos.map(u => {
-      // Se a coluna senha tem 1/0, e a contagem tem a senha real (ex 4791)
-      if (u.senha === 1 || u.senha === 0 || u.senha === '1' || u.senha === '0') {
-        return {
-          ...u,
-          status: (u.senha == 1 || String(u.senha).toLowerCase() === 'liberado' || String(u.status).toLowerCase() === 'liberado') ? 'liberado' : 'bloqueado',
-          senha: u.contagem,
-          contagem: u.data,
-          data: 'N/D'
-        };
-      }
-      return u;
-    });
-    
-    
     renderListaAcessosUI();
   } catch (error) {
     console.error(error);
@@ -3284,7 +2758,6 @@ async function salvarAcessoForm(event) {
   const nome = document.getElementById('acesso-nome').value;
   const whatsapp = document.getElementById('acesso-whatsapp').value;
   const nivel = document.getElementById('acesso-nivel').value;
-    const setor = document.getElementById('acesso-setor').value.trim();
   const senha = document.getElementById('acesso-senha').value;
   
   let status = 'liberado';
@@ -3295,7 +2768,7 @@ async function salvarAcessoForm(event) {
     }
   }
 
-  const payload = { nome, whatsapp, nivel, status, senha, setor };
+  const payload = { nome, whatsapp, nivel, status, senha };
   const token = sessionStorage.getItem('sap_session_token');
 
   try {
@@ -3434,8 +2907,8 @@ function renderProcessosRepetidos() {
     tbody.innerHTML = `
       <tr>
         <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
-          <h3>🔍 Nenhum processo repetido encontrado!</h3>
-          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são úúnicos.</p>
+          <h3>🎉 Nenhum processo repetido encontrado!</h3>
+          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são únicos.</p>
         </td>
       </tr>
     `;
@@ -3479,7 +2952,7 @@ function renderProcessosRepetidos() {
             <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span>
           </td>
           <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; padding-right: 16px;">
-            ${formatCurrency(p.valorOf)}
+            R$ ${formatCurrency(p.valorOf)}
           </td>
         </tr>
       `;
@@ -3508,7 +2981,7 @@ async function excluirProcessoDireto(id) {
   if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta ação não pode ser desfeita e removerá o registro na planilha.")) {
     try {
       await excluirProcesso(id);
-      toast("Processo excludo com sucesso!", "success");
+      toast("Processo excluído com sucesso!", "success");
       if (typeof inicializarDados === 'function') {
         await inicializarDados();
       }
@@ -3538,34 +3011,521 @@ function toggleFiltros() {
   const isCollapsed = bar.classList.toggle('collapsed');
   
   if (isCollapsed) {
-    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polyline></svg>';
+    btn.innerHTML = '📌 <span class="btn-text">Mostrar Filtros</span>';
+    btn.style.borderColor = 'var(--blue)';
+    btn.style.color = 'var(--blue)';
     localStorage.setItem('filters_collapsed', '1');
   } else {
-    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>';
+    btn.innerHTML = '📌 <span class="btn-text">Ocultar Filtros</span>';
+    btn.style.borderColor = 'var(--border)';
+    btn.style.color = '';
     localStorage.removeItem('filters_collapsed');
   }
 }
 
 function toggleFormAcesso() {
-  const form = document.getElementById('form-acesso');
+  const card = document.getElementById('card-form-acesso');
   const btn = document.getElementById('btn-toggle-form-acesso');
-  if (!form || !btn) return;
+  if (!card || !btn) return;
+  const isCollapsed = card.classList.toggle('collapsed');
   
-  if (form.style.display !== 'none') {
-    form.style.display = 'none';
-    btn.innerHTML = '&#10133; <span class="btn-text">Mostrar</span>';
+  if (isCollapsed) {
+    btn.innerHTML = '📌 <span class="btn-text">Mostrar</span>';
     btn.style.borderColor = 'var(--blue)';
     btn.style.color = 'var(--blue)';
     localStorage.setItem('form_acesso_collapsed', '1');
   } else {
-    form.style.display = 'grid';
-    btn.innerHTML = '&#128065; <span class="btn-text">Ocultar</span>';
+    btn.innerHTML = '📌 <span class="btn-text">Ocultar</span>';
     btn.style.borderColor = 'var(--border)';
     btn.style.color = '';
     localStorage.removeItem('form_acesso_collapsed');
   }
 }
 
+function toggleFormProcesso() {
+  const card = document.getElementById('card-form-processo');
+  const btn = document.getElementById('btn-toggle-form-processo');
+  if (!card || !btn) return;
+  const isCollapsed = card.classList.toggle('collapsed');
+  
+  if (isCollapsed) {
+    btn.innerHTML = '📌 <span class="btn-text">Mostrar Formulário</span>';
+    btn.style.borderColor = 'var(--blue)';
+    btn.style.color = 'var(--blue)';
+  } else {
+    btn.innerHTML = '📌 <span class="btn-text">Ocultar Formulário</span>';
+    btn.style.borderColor = 'var(--border)';
+    btn.style.color = '';
+  }
+}
+
+async function recarregarDadosGlobais() {
+  toast('Recarregando dados do servidor...', 'info');
+  try {
+    await inicializarDados();
+    toast('Dados atualizados com sucesso!', 'success');
+    
+    // Atualizar tela atual
+    if (state.page === 'dashboard') renderDashboard();
+    else if (state.page === 'processos') renderProcessos();
+    else if (state.page === 'repetidos') renderProcessosRepetidos();
+    else if (state.page === 'acessos') carregarAcessos();
+    
+    // Atualizar contador sidebar
+    if (typeof atualizarContador === 'function') atualizarContador();
+  } catch (err) {
+    console.error(err);
+    toast('Erro ao recarregar dados.', 'error');
+  }
+}
+
+// Inicialização dos estados colapsados de acordo com tela (mobile ou localStorage)
+function inicializarEstadosColapsaveis() {
+  const isMobile = window.innerWidth <= 768;
+  
+  // 1. Filtros
+  const savedFiltersCollapse = localStorage.getItem('filters_collapsed');
+  const bar = document.querySelector('#page-processos .filters-bar');
+  const btnFilters = document.getElementById('btn-toggle-filtros');
+  if (bar && btnFilters) {
+    if (savedFiltersCollapse === '1' || (savedFiltersCollapse === null && isMobile)) {
+      bar.classList.add('collapsed');
+      btnFilters.innerHTML = '📌 <span class="btn-text">Mostrar Filtros</span>';
+      btnFilters.style.borderColor = 'var(--blue)';
+      btnFilters.style.color = 'var(--blue)';
+    }
+  }
+  
+  // 2. Formulário Acessos
+  const savedAcessosCollapse = localStorage.getItem('form_acesso_collapsed');
+  const cardAcessos = document.getElementById('card-form-acesso');
+  const btnAcessos = document.getElementById('btn-toggle-form-acesso');
+  if (cardAcessos && btnAcessos) {
+    if (savedAcessosCollapse === '1' || (savedAcessosCollapse === null && isMobile)) {
+      cardAcessos.classList.add('collapsed');
+      btnAcessos.innerHTML = '📌 <span class="btn-text">Mostrar</span>';
+      btnAcessos.style.borderColor = 'var(--blue)';
+      btnAcessos.style.color = 'var(--blue)';
+    }
+  }
+}
+
+// Chamar inicialização no DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+  inicializarEstadosColapsaveis();
+});
+
+window.toggleFiltros = toggleFiltros;
+window.toggleFormAcesso = toggleFormAcesso;
+window.toggleFormProcesso = toggleFormProcesso;
+window.recarregarDadosGlobais = recarregarDadosGlobais;
+
+function selectSegment(group, value) {
+  const hiddenInput = document.getElementById(`form-${group}`);
+  if (!hiddenInput) return;
+  
+  const isSelected = hiddenInput.value === value;
+  hiddenInput.value = isSelected ? '' : value;
+  
+  updateSegmentControl(group, hiddenInput.value);
+}
+
+function updateSegmentControl(group, activeValue) {
+  const control = document.getElementById(`control-${group}`);
+  if (!control) return;
+  const buttons = control.querySelectorAll('.segment-btn');
+  buttons.forEach(btn => {
+    const val = btn.getAttribute('data-value');
+    if (val === activeValue) {
+      btn.style.background = getActiveBgColor(group, val);
+      btn.style.borderColor = getActiveBorderColor(group, val);
+      btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
+      btn.style.color = (val === 'OB' || val === 'MC') ? '#0f172a' : '#fff';
+      btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+    } else {
+      btn.style.background = 'none';
+      btn.style.border = '1px solid transparent';
+      btn.style.color = 'var(--text-secondary)';
+      btn.style.boxShadow = 'none';
+    }
+  });
+}
+
+function getActiveBgColor(group, val) {
+  if (group === 'categoria') {
+    if (val === 'F') return '#3b82f6'; // Fomento - Solid Blue
+    if (val === 'C') return '#10b981'; // Convênio - Solid Green
+    if (val === 'O' || val === 'T') return '#8b5cf6'; // Termo de Cooperação - Solid Purple
+  } else if (group === 'tipo') {
+    if (val === 'OB') return '#06b6d4'; // Obras - Solid Cyan
+    if (val === 'MP') return '#f97316'; // Mat. Permanente - Solid Orange
+    if (val === 'MC') return '#f59e0b'; // Mat. Consumo - Solid Yellow/Amber
+    if (val === 'SI') return '#a855f7'; // Sistema - Solid Purple
+    if (val === 'TR') return '#10b981'; // Treinamento - Solid Emerald
+    if (val === 'OUT') return '#f43f5e'; // Outros - Solid Rose
+  }
+  return 'rgba(255, 255, 255, 0.1)';
+}
+
+function getActiveBorderColor(group, val) {
+  return getActiveBgColor(group, val);
+}
+
+function getCategoryBadge(categoria) {
+  if (!categoria) return '';
+  const char = String(categoria).trim().toUpperCase()[0];
+  if (char === 'F') {
+    return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
+  }
+  if (char === 'C') {
+    return `<span class="badge-cat badge-cat-c" title="Categoria: Convênio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
+  }
+  if (char === 'O') {
+    return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
+  }
+  if (char === 'T') {
+    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
+  }
+  return '';
+}
+
+function getTypeBadge(tipo) {
+  if (!tipo) return '';
+  const char = String(tipo).trim().toUpperCase();
+  if (char === 'OB') {
+    return `<span class="badge-tipo badge-tipo-ob" title="Tipo: Obras" style="margin-left: 4px; padding: 2px 6px; background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OB</span>`;
+  }
+  if (char === 'MP') {
+    return `<span class="badge-tipo badge-tipo-mp" title="Tipo: Material Permanente" style="margin-left: 4px; padding: 2px 6px; background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MP</span>`;
+  }
+  if (char === 'MC') {
+    return `<span class="badge-tipo badge-tipo-mc" title="Tipo: Material de Consumo" style="margin-left: 4px; padding: 2px 6px; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MC</span>`;
+  }
+  if (char === 'SI') {
+    return `<span class="badge-tipo badge-tipo-si" title="Tipo: Sistema" style="margin-left: 4px; padding: 2px 6px; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">SI</span>`;
+  }
+  if (char === 'TR') {
+    return `<span class="badge-tipo badge-tipo-tr" title="Tipo: Treinamento" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">TR</span>`;
+  }
+  if (char === 'OUT' || char === 'OU') {
+    return `<span class="badge-tipo badge-tipo-out" title="Tipo: Outros" style="margin-left: 4px; padding: 2px 6px; background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OUT</span>`;
+  }
+  return '';
+}
+
+window.selectSegment = selectSegment;
+window.updateSegmentControl = updateSegmentControl;
+window.getCategoryBadge = getCategoryBadge;
+window.getTypeBadge = getTypeBadge;
+
+// ============================================================
+// MÓDULO: ESCOLAS (ADM ONLY)
+// ============================================================
+
+var _escolasCache = [];         // Todos os dados carregados
+var _escolasFiltradas = [];     // Dados após filtros
+var _escolasPaginaAtual = 1;
+var _escolasItensPorPagina = 50;
+
+// Inicializa a página
+function iniciarPaginaEscolas() {
+  if (_escolasCache.length > 0) {
+    _escolasAtualizarUI();
+    return;
+  }
+  buscarEscolasSheet(true);
+}
+
+// Recarrega forçando nova busca
+function recarregarEscolas() {
+  _escolasCache = [];
+  _escolasFiltradas = [];
+  buscarEscolasSheet(false);
+}
+
+// Busca dados da aba "escolas" via API Backend
+async function buscarEscolasSheet(silencioso) {
+  const emptyEl = document.getElementById('escolas-empty');
+  const tableWrap = document.getElementById('escolas-table-wrap');
+  
+  if (!silencioso) showToast("Buscando dados das escolas...", "info");
+  
+  try {
+    const res = await fetch(API_BASE + '/api/escolas', { headers: getHeaders() });
+    if (!res.ok) throw new Error('Status ' + res.status);
+    const data = await res.json();
+
+    _escolasCache = data.rows || [];
+    
+    if (!silencioso) showToast(_escolasCache.length + " escolas carregadas!", "success");
+
+    _escolasPopularFiltros();
+    _escolasFiltradas = [..._escolasCache];
+    _escolasPaginaAtual = 1;
+    _escolasAtualizarUI();
+  } catch (err) {
+    console.error('[Escolas]', err);
+    showToast("Erro ao buscar escolas: " + err.message, "error");
+    _escolasEsconderTabela();
+  }
+}
+
+// Parser CSV com suporte a campos entre aspas
+function _parseCsvEscolas(text) {
+  const rows = [];
+  const lines = text.split(/\r?\n/);
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const fields = [];
+    let cur = '', inQuote = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        if (inQuote && line[i + 1] === '"') { cur += '"'; i++; }
+        else { inQuote = !inQuote; }
+      } else if (ch === ',' && !inQuote) {
+        fields.push(cur); cur = '';
+      } else { cur += ch; }
+    }
+    fields.push(cur);
+    rows.push(fields);
+  }
+  return rows;
+}
+
+// Popula selects de filtro
+function _escolasPopularFiltros() {
+  const selMun = document.getElementById('escolas-filtro-municipio');
+  const selLoc = document.getElementById('escolas-filtro-localizacao');
+  if (!selMun || !selLoc) return;
+  const municipios   = [...new Set(_escolasCache.map(e => e.municipio).filter(Boolean))].sort();
+  const localizacoes = [...new Set(_escolasCache.map(e => e.localizacao).filter(Boolean))].sort();
+  selMun.innerHTML = '<option value="****">Município</option>' + municipios.map(m => '<option value="' + m + '">' + m + '</option>').join('');
+  selLoc.innerHTML = '<option value="****">Localização</option>' + localizacoes.map(l => '<option value="' + l + '">' + l + '</option>').join('');
+}
+
+// Aplica filtros
+function filtrarEscolas(manterPagina = false) {
+  const busca = normalizar(document.getElementById('escolas-busca')?.value || '');
+  let mun   = document.getElementById('escolas-filtro-municipio')?.value || '';
+  if (mun.includes('***')) mun = '';
+  let loc   = document.getElementById('escolas-filtro-localizacao')?.value || '';
+  if (loc.includes('***')) loc = '';
+  _escolasFiltradas = _escolasCache.filter(e => {
+    if (mun && e.municipio !== mun) return false;
+    if (loc && e.localizacao !== loc) return false;
+    if (busca) {
+      const texto = normalizar([e.nome, e.municipio, e.codigoInep, e.super, e.bairro].join(' '));
+      if (!texto.includes(busca)) return false;
+    }
+    return true;
+  });
+  if (!manterPagina) _escolasPaginaAtual = 1;
+  _escolasRenderTabela();
+  _escolasRenderPaginacao();
+}
+
+// Limpa filtros
+function limparFiltrosEscolas() {
+  ['escolas-busca', 'escolas-filtro-municipio', 'escolas-filtro-localizacao'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = el.tagName === 'SELECT' ? '****' : '';
+  });
+  _escolasFiltradas = [..._escolasCache];
+  _escolasPaginaAtual = 1;
+  _escolasRenderTabela();
+  _escolasRenderPaginacao();
+}
+
+// Atualiza toda a UI
+function _escolasAtualizarUI() {
+  const temDados  = _escolasCache.length > 0;
+  const filtrosEl = document.getElementById('escolas-filtros');
+  const tableWrap = document.getElementById('escolas-table-wrap');
+  const pagination = document.getElementById('escolas-pagination');
+  const badgeEl   = document.getElementById('escolas-badge');
+  const emptyEl   = document.getElementById('escolas-empty');
+
+  if (filtrosEl) filtrosEl.style.display  = temDados ? 'flex' : 'none';
+  if (tableWrap) tableWrap.style.display  = temDados ? '' : 'none';
+  if (pagination) pagination.style.display = temDados ? '' : 'none';
+  if (emptyEl) emptyEl.style.display      = temDados ? 'none' : 'block';
+
+  if (!temDados) return;
+  if (badgeEl) badgeEl.textContent = '🏫 ' + _escolasCache.length.toLocaleString('pt-BR') + ' Escolas';
+  if (_escolasFiltradas.length === 0) _escolasFiltradas = [..._escolasCache];
+  _escolasRenderTabela();
+  _escolasRenderPaginacao();
+}
+function inserirDataHoje() {
+  const dateInput = document.getElementById('form-data');
+  if (dateInput) {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    dateInput.value = `${yyyy}-${mm}-${dd}`;
+  }
+}
+window.inserirDataHoje = inserirDataHoje;
+
+
+// ============================================================
+// SEDUC — Gerador de Manifestação Técnica & Relatório Sintético TCE-RO
+// ============================================================
+
+
+// ============================================================
+// SEDUC — Gerador de Manifestação Técnica & Relatório A4/PDF (TCE-RO)
+// ============================================================
+
+window._manifestoProcessoAtual = null;
+
+function gerarTextoManifestoTCE(p) {
+  p = p || {};
+
+  const municipio = p.municipio || 'Município não informado';
+  const interessado = p.interessado || 'Unidade Escolar / Conselho Escolar';
+  const numeroProcesso = p.numero || 'Sem número';
+  const oficioNum = p.oficioNumero || 'XX - XXX';
+  
+  let diretorNome = 'XXX';
+  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
+    const esc = _escolasCache.find(e => 
+      (e.nome && p.interessado && e.nome.toLowerCase().includes(p.interessado.toLowerCase())) ||
+      (e.municipio && p.municipio && e.municipio.toLowerCase() === p.municipio.toLowerCase())
+    );
+    if (esc && esc.diretor) diretorNome = esc.diretor;
+  }
+
+  const tipoCod = (p.tipo || '').toUpperCase();
+  const tipoDesc = {
+    'OB': 'Obras e Infraestrutura Física',
+    'MP': 'Aquisição de Material Permanente',
+    'MC': 'Aquisição de Material de Consumo',
+    'SI': 'Sistemas e Tecnologias da Informação',
+    'TR': 'Treinamento e Capacitação',
+    'OU': 'Outros Investimentos'
+  }[tipoCod] || p.tipo || 'Investimento em Infraestrutura/Material';
+
+  let detalheObj = '';
+  if (p.detalhamentoItens && p.detalhamentoItens.trim()) {
+    detalheObj = p.detalhamentoItens.trim();
+  } else {
+    let partes = [];
+    if (p.objeto) partes.push(p.objeto);
+    if (p.metragemM2) partes.push('metragem aproximada de ' + p.metragemM2 + ' m²');
+    if (p.qtdeSala) partes.push(p.qtdeSala + ' salas de aula');
+    if (p.auditorio) partes.push('auditório (' + (p.tipoAuditorio || 'padrão') + ')');
+    if (p.quadra) partes.push('quadra (' + p.quadra + ')');
+    if (p.refeitorio) partes.push('refeitório (' + p.refeitorio + ')');
+    if (p.banheiros) partes.push('instalações sanitárias (' + p.banheiros + ')');
+    detalheObj = partes.length > 0 ? partes.join(', ') : (tipoDesc.toLowerCase() + ', compreendendo mobiliários, equipamentos e adequações necessárias');
+  }
+
+  let textoObjetoConstruido = '';
+  if (tipoCod === 'OB' && p.metragemM2) {
+    textoObjetoConstruido = 'a execução de obras/serviços de engenharia com metragem total de ' + p.metragemM2 + ' m², abrangendo ' + detalheObj;
+  } else {
+    textoObjetoConstruido = (p.objeto ? p.objeto.toLowerCase() : 'aquisição e instalação de materiais') + ', compreendendo ' + detalheObj;
+  }
+
+  const dataAtualExtenso = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+
+  return `Manifestação
+
+A legislação educacional brasileira, em seus diversos níveis, estabelece um complexo de deveres e colaborações para a garantia do direito à educação. A Constituição Federal, em seu artigo 205, consagra a educação como um direito de todos e um dever do Estado e da família, a ser promovida com a colaboração da sociedade, visando o pleno desenvolvimento da pessoa, seu preparo para a cidadania e sua qualificação para o trabalho. Complementarmente, o artigo 30, inciso VI, atribui aos municípios a competência para manter, com a cooperação técnica e financeira da União e do Estado, programas de educação infantil e de ensino fundamental. O regime de colaboração entre os entes federados é reforçado pelo artigo 211, § 4º, que determina a definição de formas de colaboração entre União, Estados, Distrito Federal e Municípios para assegurar a universalização do ensino obrigatório.
+
+A Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996) reitera e detalha essa estrutura colaborativa, estabelecendo em seu artigo 8º que a União, os Estados, o Distrito Federal e os Municípios organizarão, em regime de colaboração, seus respectivos sistemas de ensino. O artigo 10 da mesma lei incumbe os Estados de organizar, manter e desenvolver os órgãos e instituições oficiais de seus sistemas de ensino, definindo, com os Municípios, formas de colaboração na oferta do ensino fundamental (inciso II), e de baixar normas complementares para seu sistema de ensino (inciso VI).
+
+A Lei nº 14.113/2020, que regulamenta o Fundeb, fortalece a cooperação entre os entes federativos. O artigo 14, § 1º, inciso IV, condiciona o recebimento de complementação de recursos federais à existência de um regime de colaboração entre Estado e Municípios formalizado na legislação estadual. Ademais, o artigo 50, em seu parágrafo único, estabelece que a União, os Estados e o Distrito Federal desenvolverão, em regime de colaboração, programas de apoio para a conclusão da educação básica por alunos matriculados no sistema público.
+
+No âmbito estadual, a Constituição do Estado de Rondônia, em seus artigos 187 e 188, detalha as responsabilidades do poder público com a educação, estabelecendo que o ensino será ministrado com base em princípios como a igualdade de condições para o acesso e permanência na escola e a gestão democrática do ensino público, e define as atribuições do sistema estadual de ensino.
+
+Ainda no âmbito estadual, a Lei nº. 5.735/2024 institui o Programa de Alfabetização do Estado de Rondônia, em regime de colaboração com os municípios, cabendo ao Estado prestar cooperação técnica e financeira aos municípios. Dentre os eixos do programa, há o Eixo 2 que trata da infraestrutura física e pedagógica. Desta feita, compulsando o Ofício ${oficioNum}, s.m.j., verifica-se que o objeto proposto consiste na ${textoObjetoConstruido}, destinados à organização, equipagem e melhoria dos espaços pedagógicos da unidade escolar, visando aprimorar as condições de trabalho dos profissionais da educação e qualificar os espaços escolares, por meio da disponibilização de mobiliário e equipamentos adequados, contribuindo para o fortalecimento das práticas pedagógicas e assegurando maior organização, conforto, segurança e funcionalidade aos ambientes educacionais.
+
+Em atendimento à solicitação do(a) Sr(a). ${diretorNome}, Diretora/Presidente do Conselho Escolar, nos termos do Ofício ${oficioNum}, manifestamo-nos favoravelmente à solicitação do município, no que tange ao regime de colaboração regulamentado pela Lei Estadual nº. 5.735/2024.
+
+Nestes termos, submeto os autos à apreciação superior, para deliberação acerca da oportunidade e conveniência administrativa.
+
+Porto Velho - RO, ${dataAtualExtenso}.`;
+}
+
+function gerarRelatorioMonitoramento() {
+  var g  = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
+  var gb = function(id) { var el = document.getElementById(id); return el ? el.checked : false; };
+
+  // Números do processo (campo múltiplo)
+  var inputsNum  = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  var numeroProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || 'Sem número';
+
+  // Valores financeiros
+  var parseMon = function(v) {
+    if (!v) return 0;
+    var s = String(v).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');
+    return parseFloat(s) || 0;
+  };
+  var valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : parseMon(g('form-valorPlan'));
+  var valOf   = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf'))   : parseMon(g('form-valorOf'));
+
+  // Categoria / Tipo (segment buttons)
+  var catEl  = document.querySelector('#control-categoria .segment-btn.active') || {};
+  var tipoEl = document.querySelector('#control-tipo .segment-btn.active')      || {};
+
+  // Montar objeto com TODOS os campos das duas abas
+  var p = {
+    numero:            numeroProc,
+    municipio:         g('form-municipio'),
+    interessado:       g('form-interessado'),
+    objeto:            g('form-objeto'),
+    prefixo:           g('form-prefixo'),
+    ano:               g('form-ano'),
+    agrupamento:       g('form-agrupamento'),
+    data:              g('form-data'),
+    status:            g('form-status'),
+    localizacao:       g('form-localizacao'),
+    obs:               g('form-obs'),
+    categoria:         (catEl.dataset  && catEl.dataset.value)  || g('form-categoria'),
+    tipo:              (tipoEl.dataset && tipoEl.dataset.value) || g('form-tipo'),
+    cam:               gb('form-cam')  ? 1 : 0,
+    gab:               gb('form-gab')  ? 1 : 0,
+    cc:                gb('form-cc')   ? 1 : 0,
+    valorPlan:         valPlan,
+    valorOf:           valOf,
+    qtdeSala:          g('form-qtdeSala'),
+    tipoSala:          g('form-tipoSala'),
+    auditorio:         g('form-auditorio'),
+    tipoAuditorio:     g('form-tipoAuditorio'),
+    quadra:            g('form-quadra'),
+    patio:             g('form-patio'),
+    refeitorio:        g('form-refeitorio'),
+    banheiros:         g('form-banheiros'),
+    metragemM2:        g('form-metragemM2'),
+    detalhamentoItens: g('form-detalhamentoItens'),
+    demaisObservacoes: g('form-demaisObservacoes')
+  };
+
+  // Complementar com dados já salvos se estiver editando
+  if (typeof state !== 'undefined' && state.editandoId) {
+    var saved = (state.processos || []).find(function(item){ return item.id === state.editandoId; });
+    if (saved) {
+      Object.keys(p).forEach(function(k) {
+        if (p[k] === '' || p[k] === 0 || p[k] === null || p[k] === undefined) {
+          if (saved[k] !== undefined && saved[k] !== null && saved[k] !== '') p[k] = saved[k];
+        }
+      });
+    }
+  }
+
+  // Gerar PDF diretamente (sem modal intermediário)
+  window._manifestoProcessoAtual = p;
+  imprimirManifestoTCE();
+}
+
+// Compatibilidade com referências antigas
+function gerarEExibirManifestoTCEAtual() {
+  gerarRelatorioMonitoramento();
+}
 function abrirModalManifestoTCEById(id) {
   const p = (state.processos || []).find(item => item.id === id);
   if (!p) {
@@ -3678,9 +3638,9 @@ function imprimirManifestoTCE() {
     '<title>Relat&oacute;rio de Monitoramento &mdash; ' + numero + '</title>\n' +
     '<style>' + css + '</style>\n</head>\n<body>\n' +
     '<div class="hdr"><div class="hdr-txt">' +
-    '<div class="hdr-gov" style="font-weight:800; color:#0f172a; font-size:11pt; letter-spacing:0.5px;">GOVERNO DO ESTADO DE ROND&Ocirc;NIA</div>' +
-    '<div class="hdr-sec" style="font-weight:700; color:#0284c7; font-size:10pt;">SEDUC - SECRETARIA DE ESTADO DA EDUCA&Ccedil;&Atilde;O</div>' +
-    '<div class="hdr-dep" style="font-weight:700; color:#334155; font-size:9pt; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULA&Ccedil;&Atilde;O COM OS MUNIC&Iacute;PIOS</div></div></div>' +
+    '<div class="hdr-gov">Governo do Estado de Rond&ocirc;nia</div>' +
+    '<div class="hdr-sec">Secretaria de Estado da Educa&ccedil;&atilde;o &mdash; SEDUC-RO</div>' +
+    '<div class="hdr-dep">Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM</div></div></div>' +
     '<div class="tbar">RELAT&Oacute;RIO DE MONITORAMENTO</div>' +
     '<table class="info-table">' +
     '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>' +
@@ -3696,6 +3656,7 @@ function imprimirManifestoTCE() {
       h += '&mdash;';
   }
   h += '</td></tr></table>';
+
   var obsAll = [obs, demaisObs].filter(Boolean).join('\n\n');
   if (obsAll) { h += '<div class="sec-title">OBSERVA&Ccedil;&Otilde;ES ESPEC&Iacute;FICAS</div><div class="obs-block">' + obsAll + '</div>'; }
 
@@ -3710,7 +3671,7 @@ function imprimirManifestoTCE() {
 
   // Bottom Fixed Container
   h += '<div class="bottom-container">' +
-       '<div class="ft"><span class="ft-logo">CAM - COORDENADORIA DE ARTICULA&Ccedil;&Atilde;O COM OS MUNIC&Iacute;PIOS</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
+       '<div class="ft"><span class="ft-logo">SEDUC-RO / CAM</span><span>Relat&oacute;rio Gerencial de Monitoramento</span><span>Emitido em: ' + today + '</span></div>' +
        '</div>'; // end bottom-container
 
   h += '<script>window.onload=function(){setTimeout(function(){window.print();},500);};</script></body></html>';
@@ -3719,76 +3680,7 @@ function imprimirManifestoTCE() {
   if (!win) { alert('Permita popups para gerar o relat\u00f3rio.'); return; }
   win.document.write(h);
   win.document.close();
-}
-
-function gerarRelatorioMonitoramento() {
-  var g  = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
-  var gb = function(id) { var el = document.getElementById(id); return el ? el.checked : false; };
-
-  var inputsNum  = Array.from(document.querySelectorAll('input[name="numero[]"]'));
-  var numeroProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || 'Sem número';
-
-  var parseMon = function(v) {
-    if (!v) return 0;
-    var s = String(v).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');
-    return parseFloat(s) || 0;
-  };
-  var valPlan = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorPlan')) : parseMon(g('form-valorPlan'));
-  var valOf   = (typeof parseCurrency === 'function') ? parseCurrency(g('form-valorOf'))   : parseMon(g('form-valorOf'));
-
-  var catEl  = document.querySelector('#control-categoria .segment-btn.active') || {};
-  var tipoEl = document.querySelector('#control-tipo .segment-btn.active')      || {};
-
-  var p = {
-    numero:            numeroProc,
-    municipio:         g('form-municipio'),
-    interessado:       g('form-interessado'),
-    objeto:            g('form-objeto'),
-    prefixo:           g('form-prefixo'),
-    ano:               g('form-ano'),
-    agrupamento:       g('form-agrupamento'),
-    data:              g('form-data'),
-    status:            g('form-status'),
-    localizacao:       g('form-localizacao'),
-    obs:               g('form-obs'),
-    categoria:         (catEl.dataset  && catEl.dataset.value)  || g('form-categoria'),
-    tipo:              (tipoEl.dataset && tipoEl.dataset.value) || g('form-tipo'),
-    cam:               gb('form-cam')  ? 1 : 0,
-    gab:               gb('form-gab')  ? 1 : 0,
-    cc:                gb('form-cc')   ? 1 : 0,
-    valorPlan:         valPlan,
-    valorOf:           valOf,
-    qtdeSala:          g('form-qtdeSala'),
-    tipoSala:          g('form-tipoSala'),
-    auditorio:         g('form-auditorio'),
-    tipoAuditorio:     g('form-tipoAuditorio'),
-    quadra:            g('form-quadra'),
-    patio:             g('form-patio'),
-    refeitorio:        g('form-refeitorio'),
-    banheiros:         g('form-banheiros'),
-    metragemM2:        g('form-metragemM2'),
-    detalhamentoItens: g('form-detalhamentoItens'),
-    demaisObservacoes: g('form-demaisObservacoes')
-  };
-
-  if (typeof state !== 'undefined' && state.editandoId) {
-    var saved = (state.processos || []).find(function(item){ return item.id === state.editandoId; });
-    if (saved) {
-      Object.keys(p).forEach(function(k) {
-        if (p[k] === '' || p[k] === 0 || p[k] === null || p[k] === undefined) {
-          if (saved[k] !== undefined && saved[k] !== null && saved[k] !== '') p[k] = saved[k];
-        }
-      });
-    }
-  }
-
-  window._manifestoProcessoAtual = p;
-  if (typeof imprimirManifestoTCE === 'function') {
-    imprimirManifestoTCE();
-  }
-}
-
-window.gerarRelatorioMonitoramento = gerarRelatorioMonitoramento;
+}window.gerarRelatorioMonitoramento    = gerarRelatorioMonitoramento;
 window.abrirModalManifestoTCEById     = abrirModalManifestoTCEById;
 window.abrirModalManifestoTCE         = abrirModalManifestoTCE;
 window.fecharModalManifestoTCE        = fecharModalManifestoTCE;
@@ -3797,1725 +3689,4 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 
-// ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.20)
-// Busca TODAS as planilhas por ndice numérico (paralelo)
-// ============================================================
 
-const TE_SHEET_ID  = '1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08';
-const TE_GID_MAIN  = '1444558009';
-const TE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID + '/edit?gid=' + TE_GID_MAIN + '#gid=' + TE_GID_MAIN;
-const TE_MAX_SHEETS = 50;   // máximo de abas a tentar
-const TE_BATCH_SIZE = 8;    // abas buscadas em paralelo por lote
-const TE_MAX_CONSEC_FAIL = 3; // para após N falhas consecutivas
-
-// Estado do módulo
-var _teCache       = [];
-var _teFiltrados   = [];
-var _tePagina      = 1;
-var _teItensPorPag = 50;
-var _teCarregado   = false;
-var _teAbas        = [];   // [{idx, nome, count}] - abas carregadas
-
-// Mapeamento das colunas (ndice → chave)
-// As abas com ?sheet=N retornam parsedNumHeaders:0, primeira linha é cabeçalho
-const TE_COLS = [
-  'municipio','nome','alunos','modalidade','inep','endereco','bairro',
-  'complemento','cep','competencia','super','redesSociais','telefone','email',
-  'diretor','contatoDiretor','secretario','contatoSecretario',
-  'salasAula','salasAdm','salaAEE','banheiros','patio','auditorio','refeitorio','quadra','localidade'
-];
-const TE_HEADER_KEYWORDS = ['municipio','Município','nome completo','inep','modalidade','telefone','endereço','endereco'];
-
-// Verifica se uma linha é cabeçalho
-function _teIsHeader(obj) {
-  const n = (obj.nome || '').toLowerCase();
-  const m = (obj.municipio || '').toLowerCase();
-  return TE_HEADER_KEYWORDS.some(k => n.includes(k) || m.includes(k));
-}
-
-// Verifica se uma linha é válida (tem pelo menos nome ou municipio)
-function _teIsValidRow(obj) {
-  return (obj.nome && obj.nome.trim().length > 2) || (obj.municipio && obj.municipio.trim().length > 2);
-}
-
-// Parse de uma resposta gviz JSON
-function _teParseGviz(text, sheetIdx) {
-  try {
-    const jsonStr = text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, '');
-    const data = JSON.parse(jsonStr);
-    if (!data || !data.table || data.status === 'error') return null;
-    if (!data.table.rows || data.table.rows.length === 0) return null;
-
-    const rows = [];
-    let lastMunicipio = '';
-
-    data.table.rows.forEach((row) => {
-      if (!row.c || row.c.length === 0) return;
-      const obj = { _aba: sheetIdx };
-      TE_COLS.forEach((key, ci) => {
-        const cell = row.c[ci];
-        obj[key] = (cell && cell.v !== null && cell.v !== undefined) ? String(cell.v).trim() : '';
-      });
-
-      // Pula cabeçalho
-      if (_teIsHeader(obj)) return;
-
-      // Propaga Município da linha anterior se a linha atual não tem
-      if (!obj.municipio && lastMunicipio) obj.municipio = lastMunicipio;
-      if (obj.municipio) lastMunicipio = obj.municipio;
-
-      // Só adiciona linhas com nome de escola
-      if (obj.nome && obj.nome.trim().length > 2) {
-        rows.push(obj);
-      }
-    });
-
-    return rows;
-  } catch(e) {
-    console.warn('[TE] Parse error sheet', sheetIdx, e.message);
-    return null;
-  }
-}
-
-// Entry point
-function iniciarPaginaTodasEscolas() {
-  if (_teCarregado && _teCache.length > 0) { _teAtualizarUI(); return; }
-  buscarTodasEscolasGSheet();
-}
-
-function recarregarTodasEscolas() {
-  _teCache = []; _teFiltrados = []; _teCarregado = false; _teAbas = [];
-  buscarTodasEscolasGSheet();
-}
-
-// Busca TODAS as abas em lotes paralelos
-async function buscarTodasEscolasGSheet() {
-  const tbody     = document.getElementById('te-tbody');
-  const wrap      = document.getElementById('te-table-wrap');
-  const emptyEl   = document.getElementById('te-empty');
-  const statusEl  = document.getElementById('te-badge-status');
-  const progressEl = document.getElementById('te-progress');
-
-  if (wrap)    wrap.style.display    = 'none';
-  if (emptyEl) emptyEl.style.display = 'none';
-
-  const setBadge = (txt, color) => {
-    if (!statusEl) return;
-    statusEl.textContent = txt;
-    const colors = {
-      loading: ['rgba(251,191,36,0.12)','#fbbf24','rgba(251,191,36,0.3)'],
-      ok:      ['rgba(16,185,129,0.12)','#34d399','rgba(16,185,129,0.3)'],
-      error:   ['rgba(239,68,68,0.12)','#f87171','rgba(239,68,68,0.3)'],
-      info:    ['rgba(59,130,246,0.12)','#60a5fa','rgba(59,130,246,0.3)']
-    };
-    const [bg, col, border] = colors[color] || colors.loading;
-    statusEl.style.cssText = `display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:${bg};color:${col};border:1px solid ${border};letter-spacing:0.4px;`;
-  };
-
-  setBadge('⏳ Iniciando carregamento...', 'loading');
-  if (progressEl) progressEl.style.display = 'block';
-  if (tbody) tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:48px;color:var(--text-muted);">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
-      <div style="width:36px;height:36px;border:3px solid rgba(59,130,246,0.3);border-top-color:#60a5fa;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-      <div id="te-load-msg" style="font-size:14px;font-weight:600;color:var(--text-secondary);">Buscando planilhas...</div>
-      <div id="te-load-sub" style="font-size:12px;color:var(--text-muted);">Carregando todas as abas do Google Sheets</div>
-    </div></td></tr>`;
-
-  const setLoadMsg = (msg, sub) => {
-    const el = document.getElementById('te-load-msg');
-    const sub2 = document.getElementById('te-load-sub');
-    if (el) el.textContent = msg;
-    if (sub2 && sub) sub2.textContent = sub;
-  };
-
-  _teCache = [];
-  _teAbas  = [];
-  let totalLoaded = 0;
-  
-  const MUNICIPIOS_RO = [
-    "Alta Floresta d'Oeste", "Alto Alegre dos Parecis", "Alto Paraíso", "Alvorada d'Oeste", "Ariquemes", 
-    "Buritis", "Cabixi", "Cacaulândia", "Cacoal", "Campo Novo de Rondônia", "Candeias do Jamari", 
-    "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste", "Corumbiara", "Costa Marques", 
-    "Cujubim", "Espigão d'Oeste", "Governador Jorge Teixeira", "Guajará-Mirim", "Itapuã do Oeste", 
-    "Jaru", "Ji-Paraná", "Machadinho d'Oeste", "Ministro Andreazza", "Mirante da Serra", "Monte Negro", 
-    "Nova Brasilândia d'Oeste", "Nova Mamoré", "Nova União", "Novo Horizonte do Oeste", "Ouro Preto do Oeste", 
-    "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente Médici", 
-    "Primavera de Rondônia", "Rio Crespo", "Rolim de Moura", "Santa Luzia d'Oeste", "São Felipe d'Oeste", 
-    "São Francisco do Guaporé", "São Miguel do Guaporé", "Seringueiras", "Teixeirópolis", "Theobroma", 
-    "Urupá", "Vale do Anari", "Vale do Paraíso", "Vilhena"
-  ];
-  
-  const sigsVistos = new Set();
-
-  try {
-    const TODAS_ABAS = [
-      { nome: 'estadual', comp: 'Estadual' },
-      { nome: 'federal', comp: 'Federal' },
-      ...MUNICIPIOS_RO.map(m => ({ nome: m, comp: 'Municipal' }))
-    ];
-
-    for (let batchStart = 0; batchStart < TODAS_ABAS.length; batchStart += TE_BATCH_SIZE) {
-      const batchAbas = TODAS_ABAS.slice(batchStart, batchStart + TE_BATCH_SIZE);
-
-      setBadge(`⏳ Lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1} / ${Math.ceil(TODAS_ABAS.length/TE_BATCH_SIZE)}...`, 'loading');
-      setLoadMsg(
-        `Carregando lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1}...`,
-        `Buscando ${batchAbas.length} planilhas | ${totalLoaded} escolas encontradas`
-      );
-
-      // Busca paralela do lote usando o nome da aba
-      const results = await Promise.allSettled(
-        batchAbas.map(aba => {
-          const url = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
-                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(aba.nome) + '&nocache=' + Date.now();
-          return fetch(url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status)).then(text => ({ text, aba }));
-        })
-      );
-
-      results.forEach((res, i) => {
-        if (res.status === 'rejected') return;
-        
-        const text = res.value.text;
-        const aba = res.value.aba;
-        const mun = aba.nome;
-        const sigMatch = text.match(/"sig":"(\d+)"/);
-        const sig = sigMatch ? sigMatch[1] : null;
-        
-        // Se a aba não existir, a API retorna a aba padrão. O sig nos ajuda a ignorar duplicatas/fallbacks!
-        if (sig) {
-          if (sigsVistos.has(sig)) return; 
-          sigsVistos.add(sig);
-        }
-
-        const rows = _teParseGviz(text, mun);
-        if (!rows || rows.length === 0) return;
-        
-        rows.forEach(r => {
-           if (!r.competencia || r.competencia.trim() === '') r.competencia = aba.comp;
-           if (aba.comp === 'Estadual') r.competencia = 'Estadual';
-           if (aba.comp === 'Municipal') r.competencia = 'Municipal';
-           if (aba.comp === 'Federal') r.competencia = 'Federal';
-        });
-
-        totalLoaded += rows.length;
-
-        _teAbas.push({ nome: mun, count: rows.length });
-        _teCache.push(...rows);
-      });
-    }
-
-    if (_teCache.length === 0) throw new Error('Nenhum dado encontrado. Verifique se a planilha está compartilhada publicamente.');
-
-    _teCarregado = true;
-    _tePopularFiltros();
-    _teFiltrados = [..._teCache];
-    _tePagina = 1;
-    _teAtualizarUI();
-
-    const abasInfo = _teAbas.length + ' planilha(s) | ' + _teCache.length + ' escolas';
-    setBadge('✅ ' + abasInfo, 'ok');
-    if (typeof showToast === 'function') showToast('Carregadas ' + _teAbas.length + ' planilhas com ' + _teCache.length + ' escolas no total!', 'success');
-
-  } catch(err) {
-    console.error('[TodasEscolas]', err);
-    const msgEl = document.getElementById('te-empty-msg');
-    if (msgEl) msgEl.textContent = 'Erro: ' + err.message;
-    if (emptyEl) emptyEl.style.display = 'block';
-    if (tbody) tbody.innerHTML = '';
-    setBadge('❌ Erro ao carregar', 'error');
-    if (typeof showToast === 'function') showToast('Erro: ' + err.message, 'error');
-  }
-}
-// Popular filtros com valores úúnicos de TODOS os dados
-function _tePopularFiltros() {
-  const unique = (key) => [...new Set(_teCache.map(e => e[key]).filter(Boolean))].sort();
-  [['te-filtro-municipio','municipio','MUNICÍPIO'],
-   ['te-filtro-super','super','SUPER / REGIONAL'],
-   ['te-filtro-modalidade','modalidade','MODALIDADE'],
-   ['te-filtro-localidade','localidade','LOCALIDADE']
-  ].forEach(([id, key, label]) => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    sel.innerHTML = '<option value="">' + label + '</option>' +
-      unique(key).map(v => '<option value="' + v + '">' + v + '</option>').join('');
-  });
-
-  // Popula badge de abas
-  const abasBadge = document.getElementById('te-badge-abas');
-  if (abasBadge) {
-    abasBadge.textContent = '📊 ' + _teAbas.length + ' planilhas';
-    abasBadge.style.display = 'inline-flex';
-  }
-}
-
-// Filtrar
-function filtrarTodasEscolas() {
-  const busca       = (document.getElementById('te-busca')?.value || '').toLowerCase().trim();
-  const municipio   = document.getElementById('te-filtro-municipio')?.value || '';
-  const superVal    = document.getElementById('te-filtro-super')?.value || '';
-  const modalidade  = document.getElementById('te-filtro-modalidade')?.value || '';
-  const localidade  = document.getElementById('te-filtro-localidade')?.value || '';
-  const competencia = document.getElementById('te-filtro-competencia')?.value || '';
-
-  _teFiltrados = _teCache.filter(e => {
-    if (municipio  && e.municipio  !== municipio)  return false;
-    if (superVal   && e.super      !== superVal)   return false;
-    if (modalidade && e.modalidade !== modalidade) return false;
-    if (localidade && e.localidade !== localidade) return false;
-    if (competencia && e.competencia !== competencia) return false;
-    if (busca) {
-      const hay = [e.nome,e.municipio,e.inep,e.diretor,e.email,
-                   e.telefone,e.super,e.secretario,e.contatoDiretor,e.modalidade].join(' ').toLowerCase();
-      if (!hay.includes(busca)) return false;
-    }
-    return true;
-  });
-  _tePagina = 1;
-  _teAtualizarUI();
-}
-
-function limparFiltrosTodasEscolas() {
-  ['te-busca','te-filtro-municipio','te-filtro-super','te-filtro-modalidade',
-   'te-filtro-localidade','te-filtro-competencia'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  filtrarTodasEscolas();
-}
-
-// Renderiza UI completa
-function _teAtualizarUI() {
-  const wrap   = document.getElementById('te-table-wrap');
-  const emptyEl= document.getElementById('te-empty');
-  const tbody  = document.getElementById('te-tbody');
-  const total  = _teFiltrados.length;
-  const ini    = (_tePagina - 1) * _teItensPorPag;
-  const fim    = Math.min(ini + _teItensPorPag, total);
-  const pag = _teFiltrados; // Pagination removed
-
-  // Badges
-  const totalAlunos = _teFiltrados.reduce((s,e) => s + (parseInt(e.alunos)||0), 0);
-  const badgeTotal  = document.getElementById('te-badge-total');
-  const badgeAlunos = document.getElementById('te-badge-alunos');
-  if (badgeTotal)  badgeTotal.textContent  = '🏫 ' + total.toLocaleString('pt-BR') + ' Escolas';
-  if (badgeAlunos) badgeAlunos.textContent = '👥 ' + totalAlunos.toLocaleString('pt-BR') + ' Alunos';
-
-  if (total === 0) {
-    if (wrap)    wrap.style.display    = 'none';
-    if (emptyEl) {
-      emptyEl.style.display = 'block';
-      const msgEl = document.getElementById('te-empty-msg');
-      if (msgEl) msgEl.textContent = _teCache.length > 0
-        ? 'Nenhuma escola corresponde aos filtros.'
-        : 'Clique em "Recarregar" para buscar os dados.';
-    }
-    const pg = document.getElementById('te-pagination');
-    if (pg) pg.style.display = 'none';
-    return;
-  }
-  if (emptyEl) emptyEl.style.display = 'none';
-  if (wrap)    wrap.style.display    = 'block';
-
-  // Helpers
-  const esc = (s) => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  const wa = (num) => {
-    if (!num) return '—';
-    const digits = num.replace(/\D/g,'');
-    const href = digits ? 'https://wa.me/55'+digits : '#';
-    return '<a href="' + href + '" target="_blank" rel="noopener" style="color:#25d366;text-decoration:none;white-space:nowrap;font-size:11px;"> ' + esc(num) + '</a>';
-  };
-  const localBadge = (loc) => {
-    if (!loc) return '—';
-    const l = loc.toLowerCase();
-    const isUrb = l.includes('urb');
-    const col = isUrb ? '#60a5fa' : (l.includes('ind') ? '#f59e0b' : '#34d399');
-    const bg  = isUrb ? 'rgba(59,130,246,0.2)' : (l.includes('ind') ? 'rgba(245,158,11,0.2)' : 'rgba(16,185,129,0.2)');
-    return '<span style="padding:2px 8px;border-radius:4px;font-weight:700;font-size:10px;background:' + bg + ';color:' + col + ';">' + esc(loc) + '</span>';
-  };
-
-  if (tbody) {
-    tbody.innerHTML = pag.map((e, idx) => {
-      const evenBg = idx%2===0 ? 'transparent' : 'rgba(255,255,255,0.015)';
-      const globalIdx = ini + idx;
-      return `<tr style="background:${evenBg};cursor:pointer;" 
-        ondblclick="abrirTeModal(${globalIdx})"
-        onmouseover="this.style.background='rgba(59,130,246,0.06)'" 
-        onmouseout="this.style.background='${evenBg}'">` +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);">' + (window._renderCompetenciaBadge ? window._renderCompetenciaBadge(e.competencia) : '<span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1)">' + esc(e.competencia) + '</span>') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-size:12px;">' + (esc(e.municipio)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-weight:600;font-size:12px;">' + (esc(e.nome)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#60a5fa;font-family:monospace;font-size:11px;white-space:nowrap;">' + (esc(e.inep)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#34d399;font-weight:700;text-align:right;font-size:12px;">' + (e.alunos ? parseInt(e.alunos).toLocaleString('pt-BR') : '-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:12px;">' + (esc(e.modalidade)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + localBadge(e.localidade) + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-size:12px;">' + (esc(e.diretor)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + wa(e.contatoDiretor) + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;">' +
-          '<a href="' + TE_SHEET_URL + '" target="_blank" rel="noopener" title="Editar no Google Sheets" ' +
-          'style="display:inline-flex;align-items:center;justify-content:center;background:rgba(26,115,232,0.2);border:1px solid rgba(26,115,232,0.4);color:#60a5fa;width:28px;height:28px;border-radius:6px;text-decoration:none;font-size:13px;" ' +
-          'onmouseover="this.style.background=\'rgba(26,115,232,0.4)\'" onmouseout="this.style.background=\'rgba(26,115,232,0.2)\'">✏️</a>' +
-        '</td>' +
-      '</tr>';
-    }).join('');
-  }
-
-  _teRenderPaginacao(total, ini, fim);
-}
-
-function _teRenderPaginacao(total, ini, fim) {
-  const pgEl   = document.getElementById('te-pagination');
-  const infoEl = document.getElementById('te-pg-info');
-  const ctrlEl = document.getElementById('te-pg-controls');
-  if (!pgEl) return;
-  const totalPags = Math.ceil(total / _teItensPorPag);
-  if (totalPags <= 1) { pgEl.style.display = 'none'; return; }
-  pgEl.style.display = 'flex';
-  if (infoEl) infoEl.textContent = 'Mostrando ' + (ini+1) + '–' + fim + ' de ' + total.toLocaleString('pt-BR') + ' escolas';
-  if (ctrlEl) {
-    let html = '';
-    const btn = (lbl, p, dis, act) => '<button onclick="_teIrParaPagina(' + p + ')" style="padding:6px 12px;border-radius:6px;border:1px solid ' + (act?'#3b82f6':'var(--border)') + ';background:' + (act?'rgba(59,130,246,0.3)':'transparent') + ';color:' + (act?'#60a5fa':'var(--text-secondary)') + ';cursor:' + (dis?'default':'pointer') + ';opacity:' + (dis?'.4':'1') + ';font-size:13px;" ' + (dis?'disabled':'') + '>' + lbl + '</button>';
-    html += btn('‹', _tePagina-1, _tePagina===1, false);
-    const s = Math.max(1,_tePagina-2), en = Math.min(totalPags,_tePagina+2);
-    if (s>1) { html+=btn(1,1,false,false); if(s>2) html+='<span style="padding:0 4px;color:var(--text-muted);">…</span>'; }
-    for (let p=s;p<=en;p++) html+=btn(p,p,false,p===_tePagina);
-    if (en<totalPags) { if(en<totalPags-1) html+='<span style="padding:0 4px;color:var(--text-muted);">…</span>'; html+=btn(totalPags,totalPags,false,false); }
-    html += btn('›', _tePagina+1, _tePagina===totalPags, false);
-    ctrlEl.innerHTML = html;
-  }
-}
-
-function _teIrParaPagina(p) {
-  const tot = Math.ceil(_teFiltrados.length / _teItensPorPag);
-  if (p<1||p>tot) return;
-  _tePagina = p;
-  _teAtualizarUI();
-  const pg = document.getElementById('page-todas-escolas');
-  if (pg) pg.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-window.iniciarPaginaTodasEscolas  = iniciarPaginaTodasEscolas;
-window.recarregarTodasEscolas     = recarregarTodasEscolas;
-window.filtrarTodasEscolas        = filtrarTodasEscolas;
-window.limparFiltrosTodasEscolas  = limparFiltrosTodasEscolas;
-window._teIrParaPagina            = _teIrParaPagina;
-
-// -----------------------------------------------------
-// Lógica do Modal de Edição (Todas Escolas)
-// -----------------------------------------------------
-window.abrirTeModal = function(globalIdx) {
-  const e = _teFiltrados[globalIdx];
-  if (!e) return;
-  
-  document.getElementById('te-form-cache-idx').value = globalIdx;
-  document.getElementById('te-modal-titulo').textContent = `Editar: ${e.nome || 'Escola'}`;
-  
-  // Identificação
-  document.getElementById('te-form-nome').value = e.nome || '';
-  document.getElementById('te-form-municipio').value = e.municipio || '';
-  document.getElementById('te-form-inep').value = e.inep || '';
-  document.getElementById('te-form-alunos').value = e.alunos || '';
-  document.getElementById('te-form-modalidade').value = e.modalidade || '';
-  document.getElementById('te-form-localidade').value = e.localidade || '';
-  document.getElementById('te-form-super').value = e.super || '';
-  document.getElementById('te-form-competencia').value = e.competencia || '';
-  
-  // Gestão
-  document.getElementById('te-form-diretor').value = e.diretor || '';
-  document.getElementById('te-form-contato-diretor').value = e.contatoDiretor || '';
-  document.getElementById('te-form-telefone').value = e.telefone || '';
-  document.getElementById('te-form-email').value = e.email || '';
-  
-  // Secundários
-  document.getElementById('te-form-secretario').value = e.secretario || '';
-  document.getElementById('te-form-contato-sec').value = e.contatoSecretario || '';
-  document.getElementById('te-form-redes').value = e.redesSociais || '';
-  document.getElementById('te-form-cep').value = e.cep || '';
-  document.getElementById('te-form-endereco').value = e.endereco || '';
-  document.getElementById('te-form-bairro').value = e.bairro || '';
-  document.getElementById('te-form-complemento').value = e.complemento || '';
-  
-  // Infra
-  document.getElementById('te-form-salas-aula').value = e.salasAula || '';
-  document.getElementById('te-form-salas-adm').value = e.salasAdm || '';
-  document.getElementById('te-form-banheiros').value = e.banheiros || '';
-  document.getElementById('te-form-patio').value = e.patio || '';
-  document.getElementById('te-form-aee').value = e.salaAEE || '';
-  document.getElementById('te-form-quadra').value = e.quadra || '';
-  document.getElementById('te-form-refeitorio').value = e.refeitorio || '';
-  document.getElementById('te-form-auditorio').value = e.auditorio || '';
-  
-  // Link para o GSheets
-  document.getElementById('te-modal-sheets-link').href = TE_SHEET_URL;
-
-  // Reseta toggle
-  document.getElementById('te-form-secundarios').style.display = 'none';
-  document.getElementById('te-form-toggle-btn').innerHTML = '⬇️ Mostrar campos adicionais (Secretário, Endereço, Infraestrutura)';
-  
-  document.getElementById('te-modal-overlay').style.display = 'flex';
-};
-
-window.fecharTeModal = function() {
-  document.getElementById('te-modal-overlay').style.display = 'none';
-};
-
-window.teToggleCampos = function() {
-  const sec = document.getElementById('te-form-secundarios');
-  const btn = document.getElementById('te-form-toggle-btn');
-  if (sec.style.display === 'none') {
-    sec.style.display = 'block';
-    btn.innerHTML = '⬆️ Ocultar campos adicionais';
-  } else {
-    sec.style.display = 'none';
-    btn.innerHTML = '⬇️ Mostrar campos adicionais (Secretário, Endereço, Infraestrutura)';
-  }
-};
-
-window.salvarTeModal = function() {
-  const idx = parseInt(document.getElementById('te-form-cache-idx').value, 10);
-  if (isNaN(idx) || !_teFiltrados[idx]) return fecharTeModal();
-  
-  const e = _teFiltrados[idx];
-  
-  e.nome = document.getElementById('te-form-nome').value;
-  e.municipio = document.getElementById('te-form-municipio').value;
-  e.inep = document.getElementById('te-form-inep').value;
-  e.alunos = document.getElementById('te-form-alunos').value;
-  e.modalidade = document.getElementById('te-form-modalidade').value;
-  e.localidade = document.getElementById('te-form-localidade').value;
-  e.super = document.getElementById('te-form-super').value;
-  e.competencia = document.getElementById('te-form-competencia').value;
-  e.diretor = document.getElementById('te-form-diretor').value;
-  e.contatoDiretor = document.getElementById('te-form-contato-diretor').value;
-  e.telefone = document.getElementById('te-form-telefone').value;
-  e.email = document.getElementById('te-form-email').value;
-  e.secretario = document.getElementById('te-form-secretario').value;
-  e.contatoSecretario = document.getElementById('te-form-contato-sec').value;
-  e.redesSociais = document.getElementById('te-form-redes').value;
-  e.cep = document.getElementById('te-form-cep').value;
-  e.endereco = document.getElementById('te-form-endereco').value;
-  e.bairro = document.getElementById('te-form-bairro').value;
-  e.complemento = document.getElementById('te-form-complemento').value;
-  e.salasAula = document.getElementById('te-form-salas-aula').value;
-  e.salasAdm = document.getElementById('te-form-salas-adm').value;
-  e.banheiros = document.getElementById('te-form-banheiros').value;
-  e.patio = document.getElementById('te-form-patio').value;
-  e.salaAEE = document.getElementById('te-form-aee').value;
-  e.quadra = document.getElementById('te-form-quadra').value;
-  e.refeitorio = document.getElementById('te-form-refeitorio').value;
-  e.auditorio = document.getElementById('te-form-auditorio').value;
-  
-  _teAtualizarUI();
-  
-  if (typeof showToast === 'function') showToast('Alterações locais aplicadas!', 'success');
-  fecharTeModal();
-};
-
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    const ov = document.getElementById('te-modal-overlay');
-    if (ov && ov.style.display === 'flex') {
-      fecharTeModal();
-    }
-  }
-});
-
-
-function imprimirPadraoSelecionado() {
-    const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
-    if (idsSelecionados.length === 0) {
-        alert('Nenhum processo selecionado.');
-        return;
-    }
-    const filtrados = getFiltrados().filter(p => idsSelecionados.includes(p.id));
-    imprimirPadrao(filtrados);
-}
-window.imprimirPadraoSelecionado = imprimirPadraoSelecionado;
-
-function toggleAllProcessos(el) {
-    const checkboxes = document.querySelectorAll('.check-processo');
-    checkboxes.forEach(cb => cb.checked = el.checked);
-}
-window.toggleAllProcessos = toggleAllProcessos;
-
-window._processosInconsistentesParaCorrigir = [];
-
-function normalizarEspacos(str) {
-  if (str === null || str === undefined) return '';
-  return String(str).replace(/\s+/g, ' ').trim();
-}
-
-function verificarInconsistenciasPlanilha() {
-  const container = document.getElementById('status-padronizacao-container');
-  const labelStatus = document.getElementById('label-status-padronizacao');
-  const logDiv = document.getElementById('log-status-padronizacao');
-  const btnExecutar = document.getElementById('btn-executar-padronizacao');
-  const progContainer = document.getElementById('bar-prog-container');
-
-  if (container) container.style.display = 'block';
-  if (labelStatus) labelStatus.textContent = '🔎 Realizando varredura completa em todos os registros do sistema...';
-  if (logDiv) logDiv.innerHTML = '';
-  if (btnExecutar) btnExecutar.style.display = 'none';
-  if (progContainer) progContainer.style.display = 'none';
-
-  if (!window.processosCache || window.processosCache.length === 0) {
-    if (labelStatus) labelStatus.textContent = '❌ Erro: Nenhum registro carregado no sistema para análise.';
-    return;
-  }
-
-  let inconsistentes = [];
-
-  window.processosCache.forEach(p => {
-    let mudou = false;
-    let atualizacoes = {};
-    let descricoes = [];
-
-        // A pedido do usuario, o padronizador agora MEXE SOMENTE NOS NOMES (Interessado)
-    // usando Jaro-Winkler com +90% de certeza com base na lista de escolas.
-    if (p.interessado) {
-      let intNorm = normalizarEspacos(p.interessado);
-      const matchEscola = encontrarEscolaSemelhante(intNorm);
-      if (matchEscola && matchEscola !== p.interessado) {
-        atualizacoes.interessado = matchEscola;
-        descricoes.push("NOME: " + p.interessado + " -> " + matchEscola);
-        mudou = true;
-      }
-    }
-
-    if (mudou && (p.aba !== 'PARAMETROS' && p.aba !== 'parametro_combo')) {
-      inconsistentes.push({
-        id: p.id,
-        rowNumber: p.rowNumber,
-        aba: p.aba,
-        numero: p.numero || p.id,
-        atualizacoes: atualizacoes,
-        descricao: descricoes.join(' | ')
-      });
-    }
-  });
-
-  window._processosInconsistentesParaCorrigir = inconsistentes;
-
-  if (inconsistentes.length === 0) {
-    if (labelStatus) labelStatus.innerHTML = '<span style="color:#34d399; font-weight:700;">✅ Varredura Concluída: Todos os registros estão 100% padronizados! Nenhuma divergência encontrada.</span>';
-    return;
-  }
-
-  if (labelStatus) labelStatus.innerHTML = `<span style="color:#fbbf24; font-weight:700;">⚠️ Varredura Concluída: Encontrados ${inconsistentes.length} registros com divergências de formatação/padronização no sistema.</span>`;
-  
-  let html = `<table style="width:100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; color: #cbd5e1; background: rgba(0,0,0,0.3); border-radius: 8px; overflow: hidden;">
-    <thead>
-      <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.08); text-align: left;">
-        <th style="padding: 8px 12px; color: #94a3b8;">Nº Processo / ID</th>
-        <th style="padding: 8px 12px; color: #94a3b8;">Divergências Detectadas (Espaços Extras, Caixas ou Termos)</th>
-      </tr>
-    </thead>
-    <tbody>`;
-  
-  inconsistentes.slice(0, 150).forEach(inc => {
-    html += `<tr style="border-bottom: 1px dashed rgba(255,255,255,0.05);">
-      <td style="padding: 8px 12px; font-weight: bold; color: #60a5fa; font-family: monospace;">${inc.numero}</td>
-      <td style="padding: 8px 12px; color: #34d399;">${inc.descricao}</td>
-    </tr>`;
-  });
-  
-  if (inconsistentes.length > 150) {
-    html += `<tr><td colspan="2" style="padding: 10px; text-align: center; color: #fbbf24; font-weight: 600;">... e mais ${inconsistentes.length - 150} registros pendentes no lote ...</td></tr>`;
-  }
-  
-  html += '</tbody></table>';
-  if (logDiv) logDiv.innerHTML = html;
-  if (btnExecutar) {
-    btnExecutar.style.display = 'inline-flex';
-    btnExecutar.disabled = false;
-  }
-  const btnCancelar = document.getElementById('btn-cancelar-padronizacao');
-  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
-}
-
-async function executarPadronizacaoPlanilha() {
-  const btnExecutar = document.getElementById('btn-executar-padronizacao');
-  const labelStatus = document.getElementById('label-status-padronizacao');
-  const btnVerificar = document.getElementById('btn-verificar-padronizacao');
-  const logDiv = document.getElementById('log-status-padronizacao');
-  
-  if (btnExecutar) btnExecutar.style.display = 'none';
-  if (btnVerificar) btnVerificar.disabled = true;
-  
-  const inconsistentes = window._processosInconsistentesParaCorrigir || [];
-  let total = inconsistentes.length;
-
-  if (total === 0) return;
-
-  // Barra de progresso interativa
-  let progContainer = document.getElementById('bar-prog-container');
-  if (!progContainer) {
-    progContainer = document.createElement('div');
-    progContainer.id = 'bar-prog-container';
-    progContainer.style.cssText = 'width: 100%; margin-top: 14px; margin-bottom: 14px; background: rgba(15,23,42,0.6); padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);';
-    logDiv.parentNode.insertBefore(progContainer, logDiv);
-  } else {
-    progContainer.style.display = 'block';
-  }
-
-  progContainer.innerHTML = `
-    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #e2e8f0; margin-bottom: 6px;">
-      <span id="prog-text-status">⚙️ Aplicando correções na planilha em lote...</span>
-      <span id="prog-pct" style="color: #10b981; font-family: monospace; font-size: 13px;">0%</span>
-    </div>
-    <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
-      <div id="bar-prog-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 5px; transition: width 0.15s ease-out; box-shadow: 0 0 10px rgba(16,185,129,0.5);"></div>
-    </div>
-    <div style="display: flex; gap: 15px; margin-top: 8px; font-size: 11px; color: #94a3b8;">
-      <span id="prog-count-suc" style="color: #34d399;">✅ Sucesso: 0</span>
-      <span id="prog-count-err" style="color: #f87171;">❌ Falhas: 0</span>
-      <span id="prog-count-rem">Total: ${total}</span>
-    </div>
-  `;
-
-  const barFill = document.getElementById('bar-prog-fill');
-  const progPct = document.getElementById('prog-pct');
-  const progSuc = document.getElementById('prog-count-suc');
-  const progErr = document.getElementById('prog-count-err');
-  const progText = document.getElementById('prog-text-status');
-
-  logDiv.innerHTML = '<div id="live-log-box" style="display:flex; flex-direction:column; gap:4px;"></div>';
-  const liveBox = document.getElementById('live-log-box');
-
-  let sucesso = 0;
-  let falhas = 0;
-  const token = sessionStorage.getItem('sap_session_token');
-
-  for (let i = 0; i < total; i++) {
-    const inc = inconsistentes[i];
-    const currentNum = i + 1;
-    const pct = Math.round((currentNum / total) * 100);
-
-    if (barFill) barFill.style.width = `${pct}%`;
-    if (progPct) progPct.textContent = `${pct}%`;
-    if (labelStatus) labelStatus.textContent = `Processando registro ${currentNum} de ${total}...`;
-
-    try {
-      const res = await fetch(API_BASE + '/api/registros/' + inc.id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({ ...(window._dadosPlanilhaCache ? window._dadosPlanilhaCache.find(p => p.id === inc.id) : {}), ...inc.atualizacoes })
-      });
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      sucesso++;
-      if (progSuc) progSuc.textContent = `✅ Sucesso: ${sucesso}`;
-
-      if (liveBox) {
-        const item = document.createElement('div');
-        item.style.cssText = 'color: #34d399; font-size: 11px; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03);';
-        item.textContent = `✅ Processo ${inc.numero}: ${inc.descricao}`;
-        liveBox.appendChild(item);
-        logDiv.scrollTop = logDiv.scrollHeight;
-      }
-    } catch (err) {
-      falhas++;
-      if (progErr) progErr.textContent = `❌ Falhas: ${falhas}`;
-
-      if (liveBox) {
-        const item = document.createElement('div');
-        item.style.cssText = 'color: #f87171; font-size: 11px; padding: 2px 0; border-bottom: 1px solid rgba(255,255,255,0.03);';
-        item.textContent = `❌ Erro no Processo ${inc.numero}: ${err.message}`;
-        liveBox.appendChild(item);
-        logDiv.scrollTop = logDiv.scrollHeight;
-      }
-    }
-
-    await new Promise(r => setTimeout(r, 150));
-  }
-
-  if (progText) progText.textContent = '🎉 Padronização concluída!';
-  if (labelStatus) labelStatus.innerHTML = `<span style="color:#34d399; font-weight:700;">✅ Padronização Concluída! ${sucesso} registros corrigidos com sucesso (${falhas} falhas).</span>`;
-  if (btnVerificar) btnVerificar.disabled = false;
-
-  if (typeof recarregarDadosGlobais === 'function') {
-    recarregarDadosGlobais();
-  }
-}
-
-window.verificarInconsistenciasPlanilha = verificarInconsistenciasPlanilha;
-window.executarPadronizacaoPlanilha = executarPadronizacaoPlanilha;
-
-function selectSegment(group, value) {
-  const hiddenInput = document.getElementById(`form-${group}`);
-  if (!hiddenInput) return;
-  
-  const isSelected = hiddenInput.value === value;
-  hiddenInput.value = isSelected ? '' : value;
-  
-  updateSegmentControl(group, hiddenInput.value);
-}
-
-function updateSegmentControl(group, activeValue) {
-  const control = document.getElementById(`control-${group}`);
-  if (!control) return;
-  const buttons = control.querySelectorAll('.segment-btn');
-  buttons.forEach(btn => {
-    const val = btn.getAttribute('data-value');
-    if (val === activeValue) {
-      btn.style.background = getActiveBgColor(group, val);
-      btn.style.borderColor = getActiveBorderColor(group, val);
-      btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
-      btn.style.color = (val === 'OB' || val === 'MC') ? '#0f172a' : '#fff';
-      btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
-    } else {
-      btn.style.background = 'none';
-      btn.style.border = '1px solid transparent';
-      btn.style.color = 'var(--text-secondary)';
-      btn.style.boxShadow = 'none';
-    }
-  });
-}
-
-function getActiveBgColor(group, val) {
-  if (group === 'categoria') {
-    if (val === 'F') return '#3b82f6';
-    if (val === 'C') return '#10b981';
-    if (val === 'O' || val === 'T') return '#8b5cf6';
-  } else if (group === 'tipo') {
-    if (val === 'OB') return '#06b6d4';
-    if (val === 'MP') return '#f97316';
-    if (val === 'MC') return '#f59e0b';
-    if (val === 'SI') return '#a855f7';
-    if (val === 'TR') return '#10b981';
-    if (val === 'OUT') return '#f43f5e';
-  }
-  return 'rgba(255, 255, 255, 0.1)';
-}
-
-function getActiveBorderColor(group, val) {
-  return getActiveBgColor(group, val);
-}
-
-function getCategoryBadge(categoria) {
-  if (!categoria) return '';
-  const char = String(categoria).trim().toUpperCase()[0];
-  if (char === 'F') {
-    return `<span class="badge-cat badge-cat-f" title="Categoria: Fomento" style="margin-left: 4px; padding: 2px 6px; background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">F</span>`;
-  }
-  if (char === 'C') {
-    return `<span class="badge-cat badge-cat-c" title="Categoria: Convênio" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">C</span>`;
-  }
-  if (char === 'O') {
-    return `<span class="badge-cat badge-cat-o" title="Categoria: Outro" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">O</span>`;
-  }
-  if (char === 'T') {
-    return `<span class="badge-cat badge-cat-t" title="Categoria: Termo de Cooperação" style="margin-left: 4px; padding: 2px 6px; background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">T</span>`;
-  }
-  return '';
-}
-
-function getTypeBadge(tipo) {
-  if (!tipo) return '';
-  const char = String(tipo).trim().toUpperCase();
-  if (char === 'OB') {
-    return `<span class="badge-tipo badge-tipo-ob" title="Tipo: Obras" style="margin-left: 4px; padding: 2px 6px; background: rgba(6, 182, 212, 0.15); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OB</span>`;
-  }
-  if (char === 'MP') {
-    return `<span class="badge-tipo badge-tipo-mp" title="Tipo: Material Permanente" style="margin-left: 4px; padding: 2px 6px; background: rgba(249, 115, 22, 0.15); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MP</span>`;
-  }
-  if (char === 'MC') {
-    return `<span class="badge-tipo badge-tipo-mc" title="Tipo: Material de Consumo" style="margin-left: 4px; padding: 2px 6px; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">MC</span>`;
-  }
-  if (char === 'SI') {
-    return `<span class="badge-tipo badge-tipo-si" title="Tipo: Sistema" style="margin-left: 4px; padding: 2px 6px; background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">SI</span>`;
-  }
-  if (char === 'TR') {
-    return `<span class="badge-tipo badge-tipo-tr" title="Tipo: Treinamento" style="margin-left: 4px; padding: 2px 6px; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">TR</span>`;
-  }
-  if (char === 'OUT' || char === 'OU') {
-    return `<span class="badge-tipo badge-tipo-out" title="Tipo: Outros" style="margin-left: 4px; padding: 2px 6px; background: rgba(244, 63, 94, 0.15); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 4px; font-size: 11px; font-weight: 700; cursor: default;">OUT</span>`;
-  }
-  return '';
-}
-
-window.selectSegment = selectSegment;
-window.updateSegmentControl = updateSegmentControl;
-window.getActiveBgColor = getActiveBgColor;
-window.getActiveBorderColor = getActiveBorderColor;
-window.getCategoryBadge = getCategoryBadge;
-window.getTypeBadge = getTypeBadge;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// =========================================================================
-// PAINEL DE INFORMAÇÕES DO SISTEMA, DIAGNÓSTICO & MÉTRICAS (GBZ - v1.2.21)
-// =========================================================================
-
-let _sysInfoTimer = null;
-
-function atualizarMetricasSistemaInfo() {
-  // 1. GDSM
-  const poolGDSM = window.processosCache || (typeof state !== 'undefined' && state.processos) || [];
-  const elTotalGDSM = document.getElementById('metric-gdsm-total');
-  const elRepGDSM = document.getElementById('metric-gdsm-repetidos');
-  if (elTotalGDSM) elTotalGDSM.textContent = poolGDSM.length;
-
-  if (elRepGDSM) {
-    const mapaRep = {};
-    poolGDSM.forEach(p => {
-      const num = (p.numero || '').trim();
-      if (num && num !== '-' && num !== 'S/N') {
-        mapaRep[num] = (mapaRep[num] || 0) + 1;
-      }
-    });
-    let repetidos = 0;
-    Object.values(mapaRep).forEach(qtd => {
-      if (qtd > 1) repetidos += (qtd - 1);
-    });
-    elRepGDSM.textContent = repetidos;
-  }
-
-  // 2. GMAC
-  const gmac = window.gmacCache || {};
-  const setElText = (id, val) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-  };
-  setElText('metric-gmac-aee', (gmac.aee || []).length);
-  setElText('metric-gmac-onibus', (gmac.onibus || []).length);
-  setElText('metric-gmac-veiculos', (gmac.veiculos || []).length);
-  setElText('metric-gmac-reord', (gmac.reordenamento || []).length);
-  setElText('metric-gmac-coop', (gmac.cooperacao || []).length);
-
-  // 3. Escolas de Rondônia
-  const escolas = window._escolasCache || (typeof _escolasCache !== 'undefined' ? _escolasCache : []) || [];
-  const munEsc = escolas.filter(e => {
-    const c = String(e.competencia || e.rede || '').toUpperCase();
-    return c.includes('MUN');
-  }).length;
-  const estEsc = escolas.filter(e => {
-    const c = String(e.competencia || e.rede || '').toUpperCase();
-    return c.includes('EST');
-  }).length;
-  const fedEsc = escolas.filter(e => {
-    const c = String(e.competencia || e.rede || '').toUpperCase();
-    return c.includes('FED');
-  }).length;
-  setElText('metric-escolas-mun', munEsc);
-  setElText('metric-escolas-est', estEsc);
-  setElText('metric-escolas-fed', fedEsc);
-
-  // 4. PROALFA / CENSO
-  const pData = window.proalfaData || (typeof proalfaData !== 'undefined' ? proalfaData : null) || {};
-  let profMun = 0, profEst = 0, alunMun = 0, alunEst = 0;
-  if (pData['Docentes_Rede_Municipal_2025']) {
-    pData['Docentes_Rede_Municipal_2025'].forEach(r => { profMun += (Number(r[8]) || 0); });
-  }
-  if (pData['Docentes_Rede_Est.2025-EF-AI']) {
-    pData['Docentes_Rede_Est.2025-EF-AI'].forEach(r => { profEst += (Number(r[8]) || 0); });
-  }
-  if (pData['Matrículas_Municipal_2025']) {
-    pData['Matrículas_Municipal_2025'].forEach(r => {
-      alunMun += ((Number(r[9])||0) + (Number(r[10])||0) + (Number(r[11])||0) + (Number(r[12])||0) + (Number(r[13])||0));
-    });
-  }
-  if (pData['Matrículas_Estadual_2025-EF-AI']) {
-    pData['Matrículas_Estadual_2025-EF-AI'].forEach(r => {
-      alunEst += ((Number(r[9])||0) + (Number(r[10])||0) + (Number(r[11])||0) + (Number(r[12])||0) + (Number(r[13])||0));
-    });
-  }
-  setElText('metric-proalfa-prof-mun', profMun.toLocaleString('pt-BR'));
-  setElText('metric-proalfa-prof-est', profEst.toLocaleString('pt-BR'));
-  setElText('metric-proalfa-alun-mun', alunMun.toLocaleString('pt-BR'));
-  setElText('metric-proalfa-alun-est', alunEst.toLocaleString('pt-BR'));
-
-  // 5. Orçamento CAM (Execução)
-  const orcList = window._orcFiltrado || window.ORCAMENTO_DATA || (typeof _orcFiltrado !== 'undefined' ? _orcFiltrado : []) || [];
-  const totalExec = orcList.reduce((s, r) => s + (Number(r.executado) || 0), 0);
-  const totalEmp  = orcList.reduce((s, r) => s + (Number(r.empenhado) || 0), 0);
-  const totalSal  = orcList.reduce((s, r) => s + (Number(r.saldoLiquido) || 0), 0);
-  const fmtBRL = v => (v || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-  setElText('metric-orc-executado', fmtBRL(totalExec));
-  setElText('metric-orc-empenhado', fmtBRL(totalEmp));
-  setElText('metric-orc-saldo', fmtBRL(totalSal));
-
-  // 6. Controle de Diárias
-  const diarias = window.DIARIAS_DATA || (typeof DIARIAS_DATA !== 'undefined' ? DIARIAS_DATA : []) || [];
-  let dPagos = 0, dAnalise = 0, dEncerrados = 0, dAguardando = 0;
-  diarias.forEach(d => {
-    const s = String(d.status || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (s.includes('PAGO')) dPagos++;
-    else if (s.includes('ANALIS')) dAnalise++;
-    else if (s.includes('ENCERR')) dEncerrados++;
-    else if (s.includes('AGUARD')) dAguardando++;
-  });
-  setElText('metric-diarias-pagos', dPagos);
-  setElText('metric-diarias-analise', dAnalise);
-  setElText('metric-diarias-encerrados', dEncerrados);
-  setElText('metric-diarias-aguardando', dAguardando);
-}
-window.atualizarMetricasSistemaInfo = atualizarMetricasSistemaInfo;
-
-async function carregarPainelSistemaInfo() {
-  // 1. Dados do Usuário Ativo
-  let user = null;
-  try {
-    user = JSON.parse(sessionStorage.getItem('sap_user_data') || localStorage.getItem('sap_user_data') || '{}');
-  } catch(e) {}
-  
-  const topUserName = document.getElementById('user-name')?.textContent?.trim();
-  const userName = user?.nome || topUserName || 'Elton';
-  const userWhats = user?.whatsapp || '69993186415';
-  const userNivel = user?.nivel || 'admin';
-  const userSetor = user?.setor || 'CAM / SEDUC-RO';
-
-  const formatTel = (w) => {
-    if (!w) return 'Não informado';
-    if (typeof maskCelular === 'function') return maskCelular(String(w));
-    const clean = String(w).replace(/\D/g, '');
-    if (clean.length === 11) return '(' + clean.slice(0,2) + ') ' + clean.slice(2,7) + '-' + clean.slice(7);
-    return w;
-  };
-
-  const elNome = document.getElementById('sysinfo-user-nome');
-  const elWhats = document.getElementById('sysinfo-user-whats');
-  const elRole = document.getElementById('sysinfo-user-role');
-  const elSetor = document.getElementById('sysinfo-user-setor');
-  const elEntrada = document.getElementById('sysinfo-user-entrada');
-
-  if (elNome) {
-    elNome.textContent = userName;
-  }
-  if (elWhats) {
-    const cleanNum = String(userWhats).replace(/\D/g, '');
-    elWhats.innerHTML = '<a href="https://wa.me/55' + cleanNum + '" target="_blank" rel="noopener" style="color:#60a5fa; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">📱 WhatsApp: ' + formatTel(userWhats) + ' ↗</a>';
-  }
-  if (elRole) {
-    const perfil = String(userNivel).toUpperCase();
-    elRole.textContent = (perfil === 'ADM' || perfil === 'ADMIN') ? 'Admin (Acesso Total)' : perfil;
-  }
-  if (elSetor) {
-    elSetor.textContent = userSetor;
-  }
-
-  // Data e hora de entrada da sessão
-  let entradaISO = sessionStorage.getItem('sap_session_start_time');
-  if (!entradaISO) {
-    entradaISO = new Date().toISOString();
-    sessionStorage.setItem('sap_session_start_time', entradaISO);
-  }
-  const dtEntrada = new Date(entradaISO);
-  if (elEntrada) {
-    elEntrada.textContent = dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR');
-  }
-
-  // Cronômetro da sessão ativa
-  const elTempo = document.getElementById('sysinfo-tempo-sessao');
-  if (_sysInfoTimer) clearInterval(_sysInfoTimer);
-  _sysInfoTimer = setInterval(() => {
-    if (!elTempo) return;
-    const diffMs = Math.max(0, Date.now() - dtEntrada.getTime());
-    const totalSec = Math.floor(diffMs / 1000);
-    const hrs = String(Math.floor(totalSec / 3600)).padStart(2, '0');
-    const mins = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
-    const secs = String(totalSec % 60).padStart(2, '0');
-    elTempo.textContent = 'Sessão: ' + hrs + ':' + mins + ':' + secs;
-  }, 1000);
-
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos (GBZ - v1.2.24)
-  const isUsuarioAtivoHoje = (dataStr, isCurrent, u) => {
-    if (isCurrent) return true;
-    
-    // Regra explícita: Se o nome for Erica (ou contiver erica), garantir status ativo
-    if (u && u.nome && u.nome.toLowerCase().includes('erica')) {
-      return true;
-    }
-    
-    if (!dataStr) return false;
-    const str = String(dataStr).trim();
-    
-    // Formato pt-BR: 06/09/2026
-    const todayBR = new Date().toLocaleDateString('pt-BR');
-    const sessBR = (typeof dtEntrada !== 'undefined' && dtEntrada) ? dtEntrada.toLocaleDateString('pt-BR') : '';
-    
-    if (str.includes(todayBR) || (sessBR && str.includes(sessBR))) {
-      return true;
-    }
-    
-    // Parse flexível de data
-    const m = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
-    if (m) {
-      const day = parseInt(m[1], 10);
-      const month = parseInt(m[2], 10) - 1;
-      const year = parseInt(m[3], 10);
-      const now = new Date();
-      if (now.getFullYear() === year && now.getMonth() === month && now.getDate() === day) {
-        return true;
-      }
-      if (typeof dtEntrada !== 'undefined' && dtEntrada && dtEntrada.getFullYear() === year && dtEntrada.getMonth() === month && dtEntrada.getDate() === day) {
-        return true;
-      }
-    }
-    
-    return false;
-  };
-
-  const renderTabelaUsuarios = (lista) => {
-    const tbodyLogados = document.getElementById('sysinfo-tbody-logados');
-    if (!tbodyLogados) return;
-
-    if (!lista || lista.length === 0) {
-      tbodyLogados.innerHTML = 
-        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(16,185,129,0.12); border-left:4px solid #10b981;">' +
-          '<td style="padding:8px 12px; font-weight:700; color:#34d399;">' + userName + '</td>' +
-          '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(userWhats) + '</td>' +
-          '<td style="padding:8px 12px;"><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(userNivel).toUpperCase() + '</span></td>' +
-          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR') + '</td>' +
-          '<td style="padding:8px 12px;"><span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Ativo (Você)</span></td>' +
-        '</tr>';
-      return;
-    }
-
-    // Ordena: usuário atual primeiro, depois usuários ativos, depois offline
-    const ordenados = [...lista].sort((a, b) => {
-      const isCurA = (a.nome && a.nome.toLowerCase() === userName.toLowerCase()) || 
-                     (a.whatsapp && String(a.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
-      const isCurB = (b.nome && b.nome.toLowerCase() === userName.toLowerCase()) || 
-                     (b.whatsapp && String(b.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
-      if (isCurA && !isCurB) return -1;
-      if (!isCurA && isCurB) return 1;
-
-      const ativA = isUsuarioAtivoHoje(a.data, isCurA, a) ? 1 : 0;
-      const ativB = isUsuarioAtivoHoje(b.data, isCurB, b) ? 1 : 0;
-      if (ativA !== ativB) return ativB - ativA;
-
-      return 0;
-    });
-
-    tbodyLogados.innerHTML = ordenados.map((u) => {
-      const isCurrent = (u.nome && u.nome.toLowerCase() === userName.toLowerCase()) || 
-                        (u.whatsapp && String(u.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
-      const ativo = isUsuarioAtivoHoje(u.data, isCurrent, u);
-
-      let statusBadge = '';
-      if (isCurrent) {
-        statusBadge = '<span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Ativo (Você)</span>';
-      } else if (ativo) {
-        statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Ativo</span>';
-      } else {
-        statusBadge = '<span style="color:#94a3b8; font-weight:500; background:rgba(255,255,255,0.05); padding:3px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); display:inline-flex; align-items:center; gap:5px; font-size:11px;">⚪ Offline</span>';
-      }
-      
-      const horaAcesso = isCurrent 
-        ? (dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR'))
-        : (u.data || u.ultimoAcesso || '--/--/---- --:--:--');
-
-      const trBg = isCurrent ? 'rgba(16,185,129,0.15)' : (ativo ? 'rgba(16,185,129,0.10)' : 'transparent');
-      const trBorder = (isCurrent || ativo) ? 'border-left:4px solid #10b981;' : 'border-left:4px solid transparent;';
-      const nameColor = isCurrent ? '#34d399' : (ativo ? '#10b981' : '#f8fafc');
-
-      return (
-        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:' + trBg + '; ' + trBorder + '">' +
-          '<td style="padding:8px 12px; font-weight:700; color:' + nameColor + ';">' + (u.nome || 'Usuário') + '</td>' +
-          '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(u.whatsapp || u.whats) + '</td>' +
-          '<td style="padding:8px 12px;"><span style="background:rgba(59,130,246,0.15); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(u.nivel || u.perfil || 'EDITOR').toUpperCase() + '</span></td>' +
-          '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + horaAcesso + '</td>' +
-          '<td style="padding:8px 12px;">' + statusBadge + '</td>' +
-        '</tr>'
-      );
-    }).join('');
-  };
-
-  const token = sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token');
-  if (token && typeof API_BASE !== 'undefined') {
-    fetch(API_BASE + '/api/acessos', { headers: { 'Authorization': 'Bearer ' + token } })
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (Array.isArray(data) && data.length > 0) {
-          window.listaAcessos = data;
-          renderTabelaUsuarios(data);
-        } else {
-          renderTabelaUsuarios(window.listaAcessos || []);
-        }
-      })
-      .catch(() => renderTabelaUsuarios(window.listaAcessos || []));
-  } else {
-    renderTabelaUsuarios(window.listaAcessos || []);
-  }
-
-  // 2. Atualizar Métricas Imediatamente
-  atualizarMetricasSistemaInfo();
-  atualizarBadgeBackupPadronizacao();
-
-  // 3. Proativamente carregar dados dos módulos se ainda estiverem vazios
-  try {
-    const promises = [];
-    if (!window.processosCache || window.processosCache.length === 0) {
-      if (typeof inicializarDados === 'function') promises.push(inicializarDados());
-      else if (typeof carregarProcessos === 'function') promises.push(carregarProcessos());
-      else if (typeof buscarDados === 'function') promises.push(buscarDados());
-    }
-    const modulosGMAC = ['aee', 'onibus', 'veiculos', 'reordenamento', 'cooperacao'];
-    const precisaGMAC = !window.gmacCache || modulosGMAC.some(m => !window.gmacCache[m] || window.gmacCache[m].length === 0);
-    if (precisaGMAC && typeof carregarGMAC === 'function') {
-      modulosGMAC.forEach(m => promises.push(carregarGMAC(m, true)));
-    }
-    if ((!window._escolasCache || window._escolasCache.length === 0) && typeof carregarEscolasAPI === 'function') {
-      promises.push(carregarEscolasAPI(true));
-    }
-    if (!window.proalfaData && typeof carregarProalfa === 'function') {
-      promises.push(carregarProalfa());
-    }
-    if ((!window._orcFiltrado || window._orcFiltrado.length === 0) && typeof carregarOrcamentoData === 'function') {
-      promises.push(carregarOrcamentoData());
-    }
-    if ((!window.DIARIAS_DATA || window.DIARIAS_DATA.length === 0) && typeof carregarDiariasData === 'function') {
-      promises.push(carregarDiariasData());
-    }
-    if (promises.length > 0) {
-      Promise.allSettled(promises).then(() => {
-        atualizarMetricasSistemaInfo();
-      });
-    }
-  } catch(err) {
-    console.warn('Carregamento proativo de métricas:', err);
-    atualizarMetricasSistemaInfo();
-  }
-}
-window.carregarPainelSistemaInfo = carregarPainelSistemaInfo;
-
-function atualizarBadgeBackupPadronizacao() {
-  const badge = document.getElementById('sysinfo-backup-badge');
-  if (!badge) return;
-  const raw = localStorage.getItem('padronizacao_backup');
-  if (!raw) {
-    badge.textContent = 'Último Backup: Nenhum registrado';
-    badge.style.color = '#94a3b8';
-    return;
-  }
-  try {
-    const b = JSON.parse(raw);
-    const regs = (b.registros || []).length;
-    badge.textContent = 'Último Backup: ' + (b.dataHora || 'Gravado') + ' (' + regs + ' regs)';
-    badge.style.color = '#00ff66';
-  } catch(e) {
-    badge.textContent = 'Último Backup: Gravado';
-  }
-}
-window.atualizarBadgeBackupPadronizacao = atualizarBadgeBackupPadronizacao;
-
-// =========================================================================
-// PADRONIZADOR & CORRETOR ORTOGRÁFICO (TERMINAL CMD VERDE FÓSFORO)
-// =========================================================================
-
-let _divergenciasDetectadasCMD = [];
-
-function normalizarTextoSeguro(val) {
-  if (val === null || val === undefined) return '';
-  return String(val).replace(/\s+/g, ' ').trim();
-}
-
-function formatarProcessosColuna(numeroStr) {
-  if (!numeroStr) return '<span style="color:#64748b;">S/N</span>';
-  const raw = String(numeroStr).trim();
-  
-  // Captura processos no formato 0000.000000/0000-00 (com ou sem asterisco)
-  const regexProc = /(\d{4}\.\d{6}\/\d{4}-\d{2}\*?)/g;
-  const matches = raw.match(regexProc);
-  if (matches && matches.length > 0) {
-    if (matches.length === 1 && matches[0] === raw) {
-      return '<span style="display:inline-block; white-space:nowrap; font-family:monospace; font-size:12px; color:#60a5fa; font-weight:700;">' + raw + '</span>';
-    }
-    return matches.map(proc => 
-      '<div style="white-space:nowrap; font-family:monospace; font-size:11.5px; color:#60a5fa; font-weight:700; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); border-radius:4px; padding:2px 6px; margin:2px 0; display:inline-block;">' + proc + '</div>'
-    ).join('<br>');
-  }
-  
-  // Se houver mais de um token separado por espaço/vírgula/ponto-e-vírgula
-  const partes = raw.split(/[\s,;]+/).filter(Boolean);
-  if (partes.length > 1) {
-    return partes.map(p => {
-      const d = p.replace(/\D/g, '');
-      let fmt = p;
-      if (d.length === 16) {
-        fmt = d.replace(/^(\d{4})(\d{6})(\d{4})(\d{2})$/, '$1.$2/$3-$4') + (p.endsWith('*') ? '*' : '');
-      }
-      return '<div style="white-space:nowrap; font-family:monospace; font-size:11.5px; color:#60a5fa; font-weight:700; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); border-radius:4px; padding:2px 6px; margin:2px 0; display:inline-block;">' + fmt + '</div>';
-    }).join('<br>');
-  }
-  
-  const digits = raw.replace(/\D/g, '');
-  if (digits.length === 16) {
-    const fmt = digits.replace(/^(\d{4})(\d{6})(\d{4})(\d{2})$/, '$1.$2/$3-$4') + (raw.endsWith('*') ? '*' : '');
-    return '<span style="display:inline-block; white-space:nowrap; font-family:monospace; font-size:12px; color:#60a5fa; font-weight:700;">' + fmt + '</span>';
-  }
-  
-  return '<span style="display:inline-block; font-family:monospace; font-size:12px; color:#60a5fa; font-weight:700; word-break:break-word;">' + raw + '</span>';
-}
-if (typeof window !== 'undefined') window.formatarProcessosColuna = formatarProcessosColuna;
-
-window.verificarInconsistenciasPlanilhaCMD = async function() {
-  const output = document.getElementById('cmd-output-area');
-  const btnAutorizar = document.getElementById('btn-cmd-autorizar');
-  const btnCancelar = document.getElementById('btn-cmd-cancelar');
-  const indStatus = document.getElementById('cmd-status-indicator');
-  const progBox = document.getElementById('cmd-progress-container');
-
-  if (progBox) progBox.style.display = 'none';
-  if (indStatus) indStatus.textContent = 'STATUS: ESCANEANDO...';
-  if (output) {
-    output.innerHTML = '<div style="color:#00ff66;">> Iniciando varredura ortográfica e estrutural nas planilhas do sistema...</div><div style="color:#94a3b8;">> Verificando campos: Número, Status, Localização, Município, Objeto, Interessado, Categoria, Tipo, Prefixo e Agrupamento...</div>';
-  }
-
-  let pool = window.processosCache || (typeof state !== 'undefined' && state.processos) || [];
-  if (!pool || pool.length === 0) {
-    if (output) output.innerHTML = '<div style="color:#fbbf24;">> [AVISO] Cache de processos local vazio. Carregando dados do servidor...</div>';
-    if (indStatus) indStatus.textContent = 'STATUS: CARREGANDO DADOS...';
-    try {
-      if (typeof inicializarDados === 'function') await inicializarDados();
-      else if (typeof carregarProcessos === 'function') await carregarProcessos();
-      pool = window.processosCache || (typeof state !== 'undefined' && state.processos) || [];
-    } catch(e) {
-      console.error(e);
-    }
-  }
-
-  if (!pool || pool.length === 0) {
-    if (output) output.innerHTML += '<div style="color:#f87171;">> [ERRO] Nenhum registro carregado da planilha. Verifique a conexão com o servidor.</div>';
-    if (indStatus) indStatus.textContent = 'STATUS: ERRO CONEXAO';
-    return;
-  }
-
-  const divergencias = [];
-
-  // Campos a verificar estritamente ortográficos (NUNCA VALORES NEM DATAS)
-  const camposTexto = [
-    { key: 'numero', label: 'Número Processo' },
-    { key: 'status', label: 'Status' },
-    { key: 'localizacao', label: 'Localização' },
-    { key: 'municipio', label: 'Município' },
-    { key: 'objeto', label: 'Objeto' },
-    { key: 'interessado', label: 'Interessado' },
-    { key: 'categoria', label: 'Categoria' },
-    { key: 'tipo', label: 'Tipo' },
-    { key: 'prefixo', label: 'Prefixo' },
-    { key: 'agrupamento', label: 'Agrupamento' }
-  ];
-
-  pool.forEach(p => {
-    if (p.aba === 'PARAMETROS' || p.aba === 'parametro_combo') return;
-
-    let updates = {};
-    let diffs = [];
-
-    camposTexto.forEach(({ key, label }) => {
-      const valAtual = p[key];
-      if (typeof valAtual === 'string' && valAtual.length > 0) {
-        let valSugerido = normalizarTextoSeguro(valAtual);
-
-        // Ajuste inteligente por campo
-        if (key === 'status') {
-          valSugerido = valSugerido.toUpperCase();
-        } else if (key === 'prefixo') {
-          valSugerido = valSugerido.toUpperCase();
-        } else if (key === 'interessado' && typeof encontrarEscolaSemelhante === 'function') {
-          const matchEscola = encontrarEscolaSemelhante(valSugerido);
-          if (matchEscola && matchEscola !== valAtual) {
-            valSugerido = matchEscola;
-          }
-        }
-
-        if (valSugerido !== valAtual) {
-          updates[key] = valSugerido;
-          diffs.push({
-            campo: label,
-            key: key,
-            anterior: valAtual,
-            sugerido: valSugerido
-          });
-        }
-      }
-    });
-
-    if (diffs.length > 0) {
-      divergencias.push({
-        id: p.id,
-        rowNumber: p.rowNumber,
-        aba: p.aba,
-        numero: p.numero || p.id,
-        registroOriginal: { ...p },
-        updates: updates,
-        diffs: diffs
-      });
-    }
-  });
-
-  _divergenciasDetectadasCMD = divergencias;
-
-  if (divergencias.length === 0) {
-    if (indStatus) indStatus.textContent = 'STATUS: 100% PADRONIZADO';
-    if (output) {
-      output.innerHTML += '<div style="color:#00ff66; margin-top:10px; font-weight:bold;">> [SUCESSO] Varredura Concluída! Todas as células analisadas estão 100% padronizadas. Nenhuma divergência detectada.</div>';
-    }
-    if (btnAutorizar) btnAutorizar.style.display = 'none';
-    if (btnCancelar) btnCancelar.style.display = 'none';
-    return;
-  }
-
-  if (indStatus) indStatus.textContent = `STATUS: ${divergencias.length} DIVERGÊNCIAS DETECTADAS`;
-
-  let tableHtml = `
-    <div style="margin-top:10px; color:#fbbf24; font-weight:bold; font-size:13px;">
-      > [ATENÇÃO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
-    </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 8px; font-size:12px; color:#94a3b8; flex-wrap:wrap; gap:10px;">
-      <span>Selecione as linhas que deseja autorizar para correção:</span>
-      <label style="cursor:pointer; display:flex; align-items:center; gap:8px; color:#00ff66; font-weight:bold; background:rgba(0,255,102,0.1); padding:5px 12px; border-radius:6px; border:1px solid rgba(0,255,102,0.3);">
-        <input type="checkbox" id="cmd-check-all" onchange="toggleAllCmdCheckboxes(this.checked)" checked style="cursor:pointer; transform:scale(1.2);">
-        Selecionar Todos / Nenhum
-      </label>
-    </div>
-    <div class="cmd-scrollable-table" style="max-height:550px; overflow-y:scroll; overflow-x:auto; border:1px solid rgba(0,255,102,0.3); border-radius:8px; background:rgba(0,0,0,0.7); box-shadow:inset 0 0 15px rgba(0,0,0,0.9);">
-      <table style="width:100%; border-collapse:collapse; font-size:11.5px; text-align:left;">
-        <thead>
-          <tr style="position:sticky; top:0; z-index:10; border-bottom:2px solid rgba(0,255,102,0.4); background:#06140b; color:#00ff66;">
-            <th style="padding:10px 12px; width:50px; text-align:center;">Sel.</th>
-            <th style="padding:10px 14px; width:230px; min-width:210px;">Processo / ID</th>
-            <th style="padding:10px 14px; width:140px; min-width:130px;">Campo</th>
-            <th style="padding:10px 14px; min-width:240px;">Valor Atual</th>
-            <th style="padding:10px 14px; min-width:240px; color:#34d399;">Sugestão Padronizada</th>
-          </tr>
-        </thead>
-        <tbody>
-  `;
-
-  divergencias.forEach((d, idx) => {
-    d.diffs.forEach((diff) => {
-      tableHtml += `
-        <tr style="border-bottom:1px solid rgba(255,255,255,0.06); background:${idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'};">
-          <td style="padding:8px 12px; text-align:center;">
-            <input type="checkbox" class="cmd-row-check" data-idx="${idx}" onchange="atualizarContadorSelecaoCMD()" checked style="cursor:pointer; transform:scale(1.15);">
-          </td>
-          <td style="padding:8px 12px; min-width:210px; max-width:260px; vertical-align:middle; word-break:break-word;">${formatarProcessosColuna(d.numero)}</td>
-          <td style="padding:8px 14px; color:#fbbf24; font-weight:600;">${diff.campo}</td>
-          <td style="padding:8px 14px; color:#f87171; text-decoration:line-through; word-break:break-word;">${diff.key === "numero" ? formatarProcessosColuna(diff.anterior) : diff.anterior}</td>
-          <td style="padding:8px 14px; color:#00ff66; font-weight:bold; word-break:break-word;">${diff.key === "numero" ? formatarProcessosColuna(diff.sugerido) : diff.sugerido}</td>
-        </tr>
-      `;
-    });
-  });
-
-  tableHtml += `
-        </tbody>
-      </table>
-    </div>
-    <div style="margin-top:8px; font-size:11px; color:#64748b; text-align:right;">
-      Mostrando todas as ${divergencias.length} divergências detectadas no sistema.
-    </div>`;
-
-  if (output) output.innerHTML = tableHtml;
-
-  if (btnAutorizar) {
-    btnAutorizar.style.display = 'inline-flex';
-    document.getElementById('cmd-qtd-selecionados').textContent = divergencias.length;
-  }
-  if (btnCancelar) btnCancelar.style.display = 'inline-flex';
-};
-
-window.toggleAllCmdCheckboxes = function(check) {
-  document.querySelectorAll('.cmd-row-check').forEach(cb => {
-    cb.checked = check;
-  });
-  atualizarContadorSelecaoCMD();
-};
-
-window.atualizarContadorSelecaoCMD = function() {
-  const checks = document.querySelectorAll('.cmd-row-check:checked');
-  const countSpan = document.getElementById('cmd-qtd-selecionados');
-  if (countSpan) countSpan.textContent = checks.length;
-
-  const btnAutorizar = document.getElementById('btn-cmd-autorizar');
-  if (btnAutorizar) {
-    btnAutorizar.disabled = checks.length === 0;
-    btnAutorizar.style.opacity = checks.length === 0 ? '0.5' : '1';
-  }
-};
-
-window.cancelarPadronizacaoCMD = function() {
-  _divergenciasDetectadasCMD = [];
-  const output = document.getElementById('cmd-output-area');
-  const btnAutorizar = document.getElementById('btn-cmd-autorizar');
-  const btnCancelar = document.getElementById('btn-cmd-cancelar');
-  const indStatus = document.getElementById('cmd-status-indicator');
-  const progBox = document.getElementById('cmd-progress-container');
-
-  if (progBox) progBox.style.display = 'none';
-  if (btnAutorizar) btnAutorizar.style.display = 'none';
-  if (btnCancelar) btnCancelar.style.display = 'none';
-  if (indStatus) indStatus.textContent = 'STATUS: CANCELADO';
-  if (output) {
-    output.innerHTML = '<div style="color:#64748b;">> Operação cancelada pelo usuário. Nenhuma célula foi alterada.</div>';
-  }
-};
-
-// =========================================================================
-// CONTRA-NOTIFICAÇÃO & CONFIRMAÇÃO DE SEGURANÇA
-// =========================================================================
-
-window.confirmarContraNotificacaoPadronizacao = function() {
-  const selectedIndices = new Set();
-  document.querySelectorAll('.cmd-row-check:checked').forEach(cb => {
-    const idx = parseInt(cb.getAttribute('data-idx'), 10);
-    if (!isNaN(idx)) selectedIndices.add(idx);
-  });
-
-  if (selectedIndices.size === 0) {
-    alert("Nenhuma linha selecionada. Marque ao menos um registro para autorizar a correção.");
-    return;
-  }
-
-  const modal = document.getElementById('modal-contra-notificacao');
-  const qtdEl = document.getElementById('modal-contra-qtd');
-  const checkContra = document.getElementById('check-contra-notificacao');
-  const btnExec = document.getElementById('btn-confirmar-contra-execucao');
-
-  if (qtdEl) qtdEl.textContent = selectedIndices.size;
-  if (checkContra) checkContra.checked = false;
-  if (btnExec) {
-    btnExec.style.opacity = '0.5';
-    btnExec.style.pointerEvents = 'none';
-  }
-  if (modal) {
-    modal.classList.add('open');
-    modal.style.display = 'flex';
-    modal.style.opacity = '1';
-    modal.style.pointerEvents = 'all';
-  }
-};
-
-window.fecharContraNotificacao = function() {
-  const modal = document.getElementById('modal-contra-notificacao');
-  if (modal) {
-    modal.classList.remove('open');
-    modal.style.display = 'none';
-    modal.style.opacity = '0';
-    modal.style.pointerEvents = 'none';
-  }
-};
-
-window.toggleBotaoContraExecucao = function(isChecked) {
-  const btn = document.getElementById('btn-confirmar-contra-execucao');
-  if (btn) {
-    btn.style.opacity = isChecked ? '1' : '0.5';
-    btn.style.pointerEvents = isChecked ? 'auto' : 'none';
-  }
-};
-
-// =========================================================================
-// EXECUÇÃO EM LOTE COM PROGRESSO DINÂMICO & BACKUP DE ESTORNO
-// =========================================================================
-
-window.executarPadronizacaoPlanilhaCMD = async function() {
-  fecharContraNotificacao();
-
-  const selectedIndices = new Set();
-  document.querySelectorAll('.cmd-row-check:checked').forEach(cb => {
-    const idx = parseInt(cb.getAttribute('data-idx'), 10);
-    if (!isNaN(idx)) selectedIndices.add(idx);
-  });
-
-  const fila = _divergenciasDetectadasCMD.filter((_, i) => selectedIndices.has(i));
-  const total = fila.length;
-  if (total === 0) return;
-
-  // 1. Criar ponto de restauração (BACKUP PARA ESTORNO)
-  const backupSnapshot = {
-    timestamp: new Date().toISOString(),
-    dataHora: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR'),
-    registros: fila.map(item => ({
-      id: item.id,
-      numero: item.numero,
-      valoresAnteriores: Object.keys(item.updates).reduce((acc, k) => {
-        acc[k] = item.registroOriginal[k];
-        return acc;
-      }, {})
-    }))
-  };
-
-  try {
-    localStorage.setItem('padronizacao_backup', JSON.stringify(backupSnapshot));
-    if (typeof atualizarBadgeBackupPadronizacao === 'function') {
-      atualizarBadgeBackupPadronizacao();
-    }
-  } catch(e) {
-    console.warn('Não foi possível salvar backup em localStorage:', e);
-  }
-
-  // 2. Exibir barra de progresso no terminal
-  const progBox = document.getElementById('cmd-progress-container');
-  const bar = document.getElementById('cmd-progress-bar');
-  const pctText = document.getElementById('cmd-progress-pct');
-  const msgText = document.getElementById('cmd-progress-msg');
-  const sucText = document.getElementById('cmd-count-sucesso');
-  const errText = document.getElementById('cmd-count-falhas');
-  const totText = document.getElementById('cmd-count-total');
-  const indStatus = document.getElementById('cmd-status-indicator');
-  const output = document.getElementById('cmd-output-area');
-
-  if (progBox) progBox.style.display = 'block';
-  if (totText) totText.textContent = 'Total no lote: ' + total;
-  if (indStatus) indStatus.textContent = 'STATUS: GRAVANDO NA PLANILHA...';
-
-  const btnVarredura = document.getElementById('btn-cmd-varredura');
-  const btnAutorizar = document.getElementById('btn-cmd-autorizar');
-  const btnCancelar = document.getElementById('btn-cmd-cancelar');
-  if (btnVarredura) btnVarredura.disabled = true;
-  if (btnAutorizar) btnAutorizar.style.display = 'none';
-  if (btnCancelar) btnCancelar.style.display = 'none';
-
-  output.innerHTML = '<div style="color:#00ff66;">> [INÍCIO] Gravando correções ortográficas autorizadas...</div>';
-
-  let sucesso = 0;
-  let falhas = 0;
-  const token = sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token');
-  const base = typeof API_BASE !== 'undefined' ? API_BASE : 'https://seduc-backend.onrender.com';
-
-  for (let i = 0; i < total; i++) {
-    const item = fila[i];
-    const curr = i + 1;
-    const pct = Math.round((curr / total) * 100);
-
-    if (bar) bar.style.width = pct + '%';
-    if (pctText) pctText.textContent = pct + '%';
-    if (msgText) msgText.textContent = `⚙️ Gravando registro ${curr} de ${total} (Nº ${item.numero})...`;
-
-    try {
-      const payloadOriginal = (window._dadosPlanilhaCache ? window._dadosPlanilhaCache.find(p => p.id === item.id) : null) || item.registroOriginal;
-      const payloadFinal = { ...payloadOriginal, ...item.updates };
-
-      const res = await fetch(base + '/api/registros/' + item.id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify(payloadFinal)
-      });
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      sucesso++;
-      if (sucText) sucText.textContent = '✅ Sucesso: ' + sucesso;
-      output.innerHTML += `<div style="color:#34d399; font-size:11px;">> [OK ${curr}/${total}] Processo ${item.numero}: Atualizado com sucesso.</div>`;
-    } catch(err) {
-      falhas++;
-      if (errText) errText.textContent = '❌ Falhas: ' + falhas;
-      output.innerHTML += `<div style="color:#f87171; font-size:11px;">> [FALHA ${curr}/${total}] Processo ${item.numero}: ${err.message}</div>`;
-    }
-
-    output.scrollTop = output.scrollHeight;
-    await new Promise(r => setTimeout(r, 120));
-  }
-
-  if (indStatus) indStatus.textContent = `STATUS: CONCLUÍDO (${sucesso} SUCESSOS, ${falhas} FALHAS)`;
-  if (msgText) msgText.textContent = '🎉 Padronização concluída com sucesso!';
-  output.innerHTML += `<div style="color:#00ff66; font-weight:bold; margin-top:10px;">> [CONCLUÍDO] Lote finalizado! ${sucesso} registros corrigidos. Ponto de restauração disponível para estorno.</div>`;
-
-  if (btnVarredura) btnVarredura.disabled = false;
-  if (typeof recarregarDadosGlobais === 'function') {
-    recarregarDadosGlobais();
-  }
-};
-
-// =========================================================================
-// ESTORNO DA ÚLTIMA ATUALIZAÇÃO (UNDO COM DATA E HORA)
-// =========================================================================
-
-window.estornarUltimaPadronizacao = async function() {
-  const raw = localStorage.getItem('padronizacao_backup');
-  if (!raw) {
-    alert("Nenhum backup de padronização encontrado para estornar.");
-    return;
-  }
-
-  let backup;
-  try {
-    backup = JSON.parse(raw);
-  } catch(e) {
-    alert("Erro ao ler dados do backup de estorno.");
-    return;
-  }
-
-  if (!backup.registros || backup.registros.length === 0) {
-    alert("O backup de padronização está vazio.");
-    return;
-  }
-
-  const confirma = confirm(`⚠️ ATENÇÃO: Deseja realmente estornar (reverter) a última padronização realizada em ${backup.dataHora}?
-
-Total de registros a restaurar: ${backup.registros.length}`);
-  if (!confirma) return;
-
-  const output = document.getElementById('cmd-output-area');
-  const indStatus = document.getElementById('cmd-status-indicator');
-  const progBox = document.getElementById('cmd-progress-container');
-  const bar = document.getElementById('cmd-progress-bar');
-  const pctText = document.getElementById('cmd-progress-pct');
-  const msgText = document.getElementById('cmd-progress-msg');
-
-  if (progBox) progBox.style.display = 'block';
-  if (indStatus) indStatus.textContent = 'STATUS: EXECUTANDO ESTORNO...';
-  if (output) {
-    output.innerHTML = `<div style="color:#fbbf24; font-weight:bold;">> [ESTORNO] Iniciando reversão dos valores para o estado de ${backup.dataHora}...</div>`;
-  }
-
-  const token = sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token');
-  const base = typeof API_BASE !== 'undefined' ? API_BASE : 'https://seduc-backend.onrender.com';
-
-  const total = backup.registros.length;
-  let sucesso = 0;
-  let falhas = 0;
-
-  for (let i = 0; i < total; i++) {
-    const item = backup.registros[i];
-    const curr = i + 1;
-    const pct = Math.round((curr / total) * 100);
-
-    if (bar) bar.style.width = pct + '%';
-    if (pctText) pctText.textContent = pct + '%';
-    if (msgText) msgText.textContent = `↺ Restaurando registro ${curr} de ${total}...`;
-
-    try {
-      const res = await fetch(base + '/api/registros/' + item.id, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify(item.valoresAnteriores)
-      });
-
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      sucesso++;
-      if (output) output.innerHTML += `<div style="color:#34d399; font-size:11px;">> [RESTORE OK] Processo ${item.numero}: Valores restaurados com sucesso.</div>`;
-    } catch(err) {
-      falhas++;
-      if (output) output.innerHTML += `<div style="color:#f87171; font-size:11px;">> [RESTORE FALHA] Processo ${item.numero}: ${err.message}</div>`;
-    }
-
-    if (output) output.scrollTop = output.scrollHeight;
-    await new Promise(r => setTimeout(r, 120));
-  }
-
-  if (indStatus) indStatus.textContent = `STATUS: ESTORNO CONCLUÍDO (${sucesso}/${total})`;
-  if (output) {
-    output.innerHTML += `<div style="color:#00ff66; font-weight:bold; margin-top:10px;">> [ESTORNO FINALIZADO] ${sucesso} registros revertidos com sucesso para a versão de ${backup.dataHora}.</div>`;
-  }
-
-  if (typeof recarregarDadosGlobais === 'function') {
-    recarregarDadosGlobais();
-  }
-};

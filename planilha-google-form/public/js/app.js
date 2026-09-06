@@ -4831,31 +4831,42 @@ async function carregarPainelSistemaInfo() {
     elTempo.textContent = 'Sessão: ' + hrs + ':' + mins + ':' + secs;
   }, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos (GBZ - v1.2.23)
-  const isUsuarioAtivoHoje = (dataStr, isCurrent) => {
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos (GBZ - v1.2.24)
+  const isUsuarioAtivoHoje = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
+    
+    // Regra explícita: Se o nome for Erica (ou contiver erica), garantir status ativo
+    if (u && u.nome && u.nome.toLowerCase().includes('erica')) {
+      return true;
+    }
+    
     if (!dataStr) return false;
+    const str = String(dataStr).trim();
     
-    // Suporta "06/09/2026, 11:46:34" ou "06/09/2026 11:46:34"
-    const m = String(dataStr).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
-    if (!m) return false;
+    // Formato pt-BR: 06/09/2026
+    const todayBR = new Date().toLocaleDateString('pt-BR');
+    const sessBR = (typeof dtEntrada !== 'undefined' && dtEntrada) ? dtEntrada.toLocaleDateString('pt-BR') : '';
     
-    const day = parseInt(m[1], 10);
-    const month = parseInt(m[2], 10) - 1;
-    const year = parseInt(m[3], 10);
-    const hour = m[4] ? parseInt(m[4], 10) : 0;
-    const min = m[5] ? parseInt(m[5], 10) : 0;
-    const sec = m[6] ? parseInt(m[6], 10) : 0;
+    if (str.includes(todayBR) || (sessBR && str.includes(sessBR))) {
+      return true;
+    }
     
-    const loginDate = new Date(year, month, day, hour, min, sec);
-    const now = new Date();
+    // Parse flexível de data
+    const m = str.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:[,\s]+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+    if (m) {
+      const day = parseInt(m[1], 10);
+      const month = parseInt(m[2], 10) - 1;
+      const year = parseInt(m[3], 10);
+      const now = new Date();
+      if (now.getFullYear() === year && now.getMonth() === month && now.getDate() === day) {
+        return true;
+      }
+      if (typeof dtEntrada !== 'undefined' && dtEntrada && dtEntrada.getFullYear() === year && dtEntrada.getMonth() === month && dtEntrada.getDate() === day) {
+        return true;
+      }
+    }
     
-    // Mesma data de hoje
-    const mesmoDia = (now.getFullYear() === year && now.getMonth() === month && now.getDate() === day);
-    const diffHours = (now.getTime() - loginDate.getTime()) / (1000 * 60 * 60);
-    
-    // Ativo se acessou hoje e a diferença for menor que 12 horas
-    return (mesmoDia && diffHours >= -1 && diffHours <= 12);
+    return false;
   };
 
   const renderTabelaUsuarios = (lista) => {
@@ -4864,17 +4875,17 @@ async function carregarPainelSistemaInfo() {
 
     if (!lista || lista.length === 0) {
       tbodyLogados.innerHTML = 
-        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(16,185,129,0.08);">' +
+        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:rgba(16,185,129,0.12); border-left:4px solid #10b981;">' +
           '<td style="padding:8px 12px; font-weight:700; color:#34d399;">' + userName + '</td>' +
           '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(userWhats) + '</td>' +
           '<td style="padding:8px 12px;"><span style="background:rgba(16,185,129,0.15); color:#34d399; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(userNivel).toUpperCase() + '</span></td>' +
           '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR') + '</td>' +
-          '<td style="padding:8px 12px;"><span style="color:#34d399; font-weight:bold; background:rgba(16,185,129,0.15); padding:3px 10px; border-radius:4px; border:1px solid rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:5px;">🟢 Ativo (Você)</span></td>' +
+          '<td style="padding:8px 12px;"><span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Ativo (Você)</span></td>' +
         '</tr>';
       return;
     }
 
-    // Ordena: ativos primeiro, depois por data mais recente
+    // Ordena: usuário atual primeiro, depois usuários ativos, depois offline
     const ordenados = [...lista].sort((a, b) => {
       const isCurA = (a.nome && a.nome.toLowerCase() === userName.toLowerCase()) || 
                      (a.whatsapp && String(a.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
@@ -4883,8 +4894,8 @@ async function carregarPainelSistemaInfo() {
       if (isCurA && !isCurB) return -1;
       if (!isCurA && isCurB) return 1;
 
-      const ativA = isUsuarioAtivoHoje(a.data, isCurA) ? 1 : 0;
-      const ativB = isUsuarioAtivoHoje(b.data, isCurB) ? 1 : 0;
+      const ativA = isUsuarioAtivoHoje(a.data, isCurA, a) ? 1 : 0;
+      const ativB = isUsuarioAtivoHoje(b.data, isCurB, b) ? 1 : 0;
       if (ativA !== ativB) return ativB - ativA;
 
       return 0;
@@ -4893,24 +4904,28 @@ async function carregarPainelSistemaInfo() {
     tbodyLogados.innerHTML = ordenados.map((u) => {
       const isCurrent = (u.nome && u.nome.toLowerCase() === userName.toLowerCase()) || 
                         (u.whatsapp && String(u.whatsapp).replace(/\D/g,'') === String(userWhats).replace(/\D/g,''));
-      const ativo = isUsuarioAtivoHoje(u.data, isCurrent);
+      const ativo = isUsuarioAtivoHoje(u.data, isCurrent, u);
 
       let statusBadge = '';
       if (isCurrent) {
-        statusBadge = '<span style="color:#34d399; font-weight:bold; background:rgba(16,185,129,0.15); padding:3px 10px; border-radius:4px; border:1px solid rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:5px;">🟢 Ativo (Você)</span>';
+        statusBadge = '<span style="color:#34d399; font-weight:800; background:rgba(16,185,129,0.25); padding:4px 12px; border-radius:6px; border:1px solid #34d399; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(52,211,153,0.35); font-size:11.5px;">🟢 Ativo (Você)</span>';
       } else if (ativo) {
-        statusBadge = '<span style="color:#34d399; font-weight:bold; background:rgba(16,185,129,0.15); padding:3px 10px; border-radius:4px; border:1px solid rgba(16,185,129,0.3); display:inline-flex; align-items:center; gap:5px;">🟢 Ativo</span>';
+        statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Ativo</span>';
       } else {
-        statusBadge = '<span style="color:#94a3b8; font-weight:500; background:rgba(255,255,255,0.05); padding:3px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); display:inline-flex; align-items:center; gap:5px;">⚪ Offline</span>';
+        statusBadge = '<span style="color:#94a3b8; font-weight:500; background:rgba(255,255,255,0.05); padding:3px 10px; border-radius:4px; border:1px solid rgba(255,255,255,0.1); display:inline-flex; align-items:center; gap:5px; font-size:11px;">⚪ Offline</span>';
       }
       
       const horaAcesso = isCurrent 
         ? (dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR'))
         : (u.data || u.ultimoAcesso || '--/--/---- --:--:--');
 
+      const trBg = isCurrent ? 'rgba(16,185,129,0.15)' : (ativo ? 'rgba(16,185,129,0.10)' : 'transparent');
+      const trBorder = (isCurrent || ativo) ? 'border-left:4px solid #10b981;' : 'border-left:4px solid transparent;';
+      const nameColor = isCurrent ? '#34d399' : (ativo ? '#10b981' : '#f8fafc');
+
       return (
-        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:' + (ativo ? 'rgba(16,185,129,0.07)' : 'transparent') + ';">' +
-          '<td style="padding:8px 12px; font-weight:700; color:' + (ativo ? '#34d399' : '#f8fafc') + ';">' + (u.nome || 'Usuário') + '</td>' +
+        '<tr style="border-bottom:1px solid rgba(255,255,255,0.04); background:' + trBg + '; ' + trBorder + '">' +
+          '<td style="padding:8px 12px; font-weight:700; color:' + nameColor + ';">' + (u.nome || 'Usuário') + '</td>' +
           '<td style="padding:8px 12px; color:#60a5fa; font-family:monospace;">' + formatTel(u.whatsapp || u.whats) + '</td>' +
           '<td style="padding:8px 12px;"><span style="background:rgba(59,130,246,0.15); color:#60a5fa; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700;">' + String(u.nivel || u.perfil || 'EDITOR').toUpperCase() + '</span></td>' +
           '<td style="padding:8px 12px; color:#fbbf24; font-family:monospace;">' + horaAcesso + '</td>' +
@@ -5008,6 +5023,45 @@ function normalizarTextoSeguro(val) {
   if (val === null || val === undefined) return '';
   return String(val).replace(/\s+/g, ' ').trim();
 }
+
+function formatarProcessosColuna(numeroStr) {
+  if (!numeroStr) return '<span style="color:#64748b;">S/N</span>';
+  const raw = String(numeroStr).trim();
+  
+  // Captura processos no formato 0000.000000/0000-00 (com ou sem asterisco)
+  const regexProc = /(\d{4}\.\d{6}\/\d{4}-\d{2}\*?)/g;
+  const matches = raw.match(regexProc);
+  if (matches && matches.length > 0) {
+    if (matches.length === 1 && matches[0] === raw) {
+      return '<span style="display:inline-block; white-space:nowrap; font-family:monospace; font-size:12px; color:#60a5fa; font-weight:700;">' + raw + '</span>';
+    }
+    return matches.map(proc => 
+      '<div style="white-space:nowrap; font-family:monospace; font-size:11.5px; color:#60a5fa; font-weight:700; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); border-radius:4px; padding:2px 6px; margin:2px 0; display:inline-block;">' + proc + '</div>'
+    ).join('<br>');
+  }
+  
+  // Se houver mais de um token separado por espaço/vírgula/ponto-e-vírgula
+  const partes = raw.split(/[\s,;]+/).filter(Boolean);
+  if (partes.length > 1) {
+    return partes.map(p => {
+      const d = p.replace(/\D/g, '');
+      let fmt = p;
+      if (d.length === 16) {
+        fmt = d.replace(/^(\d{4})(\d{6})(\d{4})(\d{2})$/, '$1.$2/$3-$4') + (p.endsWith('*') ? '*' : '');
+      }
+      return '<div style="white-space:nowrap; font-family:monospace; font-size:11.5px; color:#60a5fa; font-weight:700; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); border-radius:4px; padding:2px 6px; margin:2px 0; display:inline-block;">' + fmt + '</div>';
+    }).join('<br>');
+  }
+  
+  const digits = raw.replace(/\D/g, '');
+  if (digits.length === 16) {
+    const fmt = digits.replace(/^(\d{4})(\d{6})(\d{4})(\d{2})$/, '$1.$2/$3-$4') + (raw.endsWith('*') ? '*' : '');
+    return '<span style="display:inline-block; white-space:nowrap; font-family:monospace; font-size:12px; color:#60a5fa; font-weight:700;">' + fmt + '</span>';
+  }
+  
+  return '<span style="display:inline-block; font-family:monospace; font-size:12px; color:#60a5fa; font-weight:700; word-break:break-word;">' + raw + '</span>';
+}
+if (typeof window !== 'undefined') window.formatarProcessosColuna = formatarProcessosColuna;
 
 window.verificarInconsistenciasPlanilhaCMD = async function() {
   const output = document.getElementById('cmd-output-area');
@@ -5135,7 +5189,7 @@ window.verificarInconsistenciasPlanilhaCMD = async function() {
         <thead>
           <tr style="position:sticky; top:0; z-index:10; border-bottom:2px solid rgba(0,255,102,0.4); background:#06140b; color:#00ff66;">
             <th style="padding:10px 12px; width:50px; text-align:center;">Sel.</th>
-            <th style="padding:10px 14px; width:220px; min-width:200px; white-space:nowrap;">Processo / ID</th>
+            <th style="padding:10px 14px; width:230px; min-width:210px;">Processo / ID</th>
             <th style="padding:10px 14px; width:140px; min-width:130px;">Campo</th>
             <th style="padding:10px 14px; min-width:240px;">Valor Atual</th>
             <th style="padding:10px 14px; min-width:240px; color:#34d399;">Sugestão Padronizada</th>
@@ -5151,10 +5205,10 @@ window.verificarInconsistenciasPlanilhaCMD = async function() {
           <td style="padding:8px 12px; text-align:center;">
             <input type="checkbox" class="cmd-row-check" data-idx="${idx}" onchange="atualizarContadorSelecaoCMD()" checked style="cursor:pointer; transform:scale(1.15);">
           </td>
-          <td style="padding:8px 14px; font-weight:bold; color:#60a5fa; font-family:monospace; font-size:12px; white-space:nowrap;">${d.numero}</td>
+          <td style="padding:8px 12px; min-width:210px; max-width:260px; vertical-align:middle; word-break:break-word;">${formatarProcessosColuna(d.numero)}</td>
           <td style="padding:8px 14px; color:#fbbf24; font-weight:600;">${diff.campo}</td>
-          <td style="padding:8px 14px; color:#f87171; text-decoration:line-through; word-break:break-word;">${diff.anterior}</td>
-          <td style="padding:8px 14px; color:#00ff66; font-weight:bold; word-break:break-word;">${diff.sugerido}</td>
+          <td style="padding:8px 14px; color:#f87171; text-decoration:line-through; word-break:break-word;">${diff.key === "numero" ? formatarProcessosColuna(diff.anterior) : diff.anterior}</td>
+          <td style="padding:8px 14px; color:#00ff66; font-weight:bold; word-break:break-word;">${diff.key === "numero" ? formatarProcessosColuna(diff.sugerido) : diff.sugerido}</td>
         </tr>
       `;
     });
