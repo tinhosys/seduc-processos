@@ -3062,7 +3062,149 @@ function imprimirPadrao(filtrados = getFiltrados()) {
       }, 1000);
     };
 
+
 window.imprimirPadrao = imprimirPadrao;
+
+// ============= RELATÓRIO PADRÃO ADM (SEM INFORMAÇÕES DE ORIGEM) =============
+function imprimirPadraoAdm(filtrados = getFiltrados()) {
+  if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
+    alert('Acesso restrito ao perfil Administrador.');
+    return;
+  }
+
+  let rowsHtml = filtrados.map((p, index) => {
+    const prefixoFormatado = `
+      <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
+        <div style="font-weight: bold; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
+        <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+          <span style="font-weight:600;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:600;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
+          <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
+            <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
+            <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+            <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    const zebraBg = index % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
+    return `
+      <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:bold; color:#475569; width:3%;">${index + 1}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; width:7%;">${prefixoFormatado}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:600; width:11%;">${p.municipio || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; width:15%;">${p.interessado || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:600; width:8%;">${p.status || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; width:7%;">${p.localizacao || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; width:7%;">${formatDate(p.data)}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:right; font-size:9.5px; font-weight:600; width:8%;">${formatNumberOnly(p.valorOf)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+  const totalRow = `
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; font-weight:bold; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a; text-transform:uppercase;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a;">${formatNumberOnly(totalValor)}</td>
+    </tr>`;
+  rowsHtml += totalRow;
+
+  const html = `
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2.5px solid #0f172a; padding-bottom: 6px; margin-bottom: 10px; font-family: Arial, sans-serif;">
+              <div>
+                <div style="font-size: 13px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSOS</div>
+              </div>
+              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: 600;">
+                <span>Total: <strong style="color:#0f172a;">${filtrados.length} processos</strong></span>
+                <span style="margin: 0 8px; color: #cbd5e1;">|</span>
+                <span>Valor Total: <strong style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</strong></span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
+              <colgroup>
+                <col style="width: 3%;">
+                <col style="width: 7%;">
+                <col style="width: 11%;">
+                <col style="width: 12%;">
+                <col style="width: 15%;">
+                <col style="width: 22%;">
+                <col style="width: 8%;">
+                <col style="width: 7%;">
+                <col style="width: 7%;">
+                <col style="width: 8%;">
+              </colgroup>
+              <thead>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:bold;">Nº</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">PREFIXO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:15%; font-size:10px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:bold;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:bold;">DATA</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:right; width:8%; font-size:10px; font-weight:bold;">VALOR R$</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || '<tr><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  `;
+
+  let container = document.getElementById('print-layout-padrao-adm');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'print-layout-padrao-adm';
+    container.className = 'print-only-layout';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = html;
+
+  if (document.getElementById('print-layout-padrao')) document.getElementById('print-layout-padrao').style.display = 'none';
+  if (document.getElementById('print-layout-detalhado')) document.getElementById('print-layout-detalhado').style.display = 'none';
+  if (document.getElementById('print-layout-analise')) document.getElementById('print-layout-analise').style.display = 'none';
+  container.style.display = 'block';
+
+  document.body.classList.add('print-mode-padrao-adm');
+  document.body.classList.remove('print-mode-padrao', 'print-mode-detalhado', 'print-mode-analise');
+
+  const origTitle = document.title;
+  document.title = 'RELATORIO_PROCESSOS_' + getFormattedDateForTitle();
+
+  const style = document.createElement('style');
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
+  document.head.appendChild(style);
+
+  window.print();
+
+  setTimeout(() => {
+    document.title = origTitle;
+    if (document.head.contains(style)) document.head.removeChild(style);
+    document.body.classList.remove('print-mode-padrao-adm');
+    container.style.display = 'none';
+  }, 1000);
+}
+
+window.imprimirPadraoAdm = imprimirPadraoAdm;
+
 
 function imprimirDetalhado() {
   updatePrintDateTime();

@@ -2339,3 +2339,28 @@ thead th {
   opacity: 1 !important;
   pointer-events: all !important;
 }
+
+
+@media print {
+  body.print-mode-padrao-adm .sidebar,
+  body.print-mode-padrao-adm .topbar,
+  body.print-mode-padrao-adm .section-header,
+  body.print-mode-padrao-adm .filters-bar,
+  body.print-mode-padrao-adm .table-wrap,
+  body.print-mode-padrao-adm .pagination,
+  body.print-mode-padrao-adm #export-buttons,
+  body.print-mode-padrao-adm .charts-grid,
+  body.print-mode-padrao-adm .dashboard,
+  body.print-mode-padrao-adm > section:not(#page-processos) {
+    display: none !important;
+  }
+
+  body.print-mode-padrao-adm #print-layout-padrao-adm {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+  }
+}

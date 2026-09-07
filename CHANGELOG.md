@@ -5,6 +5,23 @@
 
 ---
 
+## [v1.2.44] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.44` · **Versão do Sistema:** `GBZ - v1.2.44`
+
+### 📄 Novo Relatório Padrão sem Origem (Exclusivo Admin)
+
+- **Novo Botão "PADRÃO ADM":**
+  - Adicionado à barra de ações superiores de Processos (posicionado à esquerda de ANÁLISE, conforme solicitado).
+  - Visibilidade restrita exclusivamente aos usuários com perfil **Admin** (classe `action-adm`).
+- **Novo Layout de Impressão:**
+  - Mantém a mesma amostragem de dados do relatório Padrão (Nº, PREFIXO com badges e indicadores, MUNICÍPIO, PROCESSO SEI, INTERESSADO, OBJETO/FINALIDADE, STATUS, LOCAL, DATA, VALOR R$ e TOTAL GERAL).
+  - **Sem informações de origem:** Remoção de cabeçalhos e rodapés institucionais (Governo do Estado de Rondônia, SEDUC, CAM, SISEDU, GDSM e carimbo de documento eletrônico).
+  - **Novo Design:** Estilo executivo clean, cabeçalho moderno com barra ardósia (`#0f172a`), zebrado alternado nas linhas (`#ffffff` / `#f8fafc`), bordas refinadas e linha de totais em destaque.
+
+---
+
+
 ## [v1.1.13] — 2026-08-24 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.1.13` · **Cache-buster:** `1787625716691`
