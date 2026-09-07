@@ -3268,11 +3268,11 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
     const procs = grupos[chave];
     const totalGrupo = procs.reduce((acc, p) => acc + (p.valorOf || 0), 0);
 
-    // Linha de Cabeçalho do Grupo (DÍGITO) com cor padrão #008080 e letra branca
+    // Linha de Cabeçalho do Grupo com cor padrão #008080, sem palavra DÍGITO e sem negrito
     rowsHtml += `
       <tr class="no-page-break group-header-digito" style="page-break-inside: avoid; break-inside: avoid; background-color: #008080 !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <td colspan="10" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: bold; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-          <span style="color: #ffffff !important; font-weight: 800; letter-spacing: 0.5px;">DÍGITO: ${chave}</span>
+        <td colspan="10" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <span style="color: #ffffff !important; font-weight: normal; letter-spacing: 0.5px;">${chave}</span>
           <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #ffffff !important;">(${procs.length} processos &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
         </td>
       </tr>
@@ -3335,9 +3335,9 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
 
   const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
   const totalRow = `
-    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; font-weight:bold; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
-      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a; text-transform:uppercase;">TOTAL GERAL (${filtrados.length} processos):</td>
-      <td style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a;">${formatNumberOnly(totalValor)}</td>
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; font-weight:normal; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a; text-transform:uppercase; font-weight:normal;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a; font-weight:normal;">${formatNumberOnly(totalValor)}</td>
     </tr>`;
   rowsHtml += totalRow;
 
@@ -3348,12 +3348,12 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
           <td>
             <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2.5px solid #0f172a; padding-bottom: 6px; margin-bottom: 10px; font-family: Arial, sans-serif;">
               <div>
-                <div style="font-size: 13px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSOS (AGRUPADO POR DÍGITO)</div>
+                <div style="font-size: 13px; font-weight: normal; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSO | GRUPO</div>
               </div>
-              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: 600;">
-                <span>Total: <strong style="color:#0f172a;">${filtrados.length} processos</strong></span>
+              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: normal;">
+                <span>Total: <span style="color:#0f172a;">${filtrados.length} processos</span></span>
                 <span style="margin: 0 8px; color: #cbd5e1;">|</span>
-                <span>Valor Total: <strong style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</strong></span>
+                <span>Valor Total: <span style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</span></span>
               </div>
             </div>
           </td>
@@ -3377,16 +3377,16 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
               </colgroup>
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:bold;">Nº</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">PREFIXO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:bold;">MUNICÍPIO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:bold;">PROCESSO SEI</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:15%; font-size:10px; font-weight:bold;">INTERESSADO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:bold;">STATUS</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">LOCAL</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:bold;">DATA</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:right; width:8%; font-size:10px; font-weight:bold;">VALOR R$</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:normal;">Nº</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:normal;">PREFIXO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:normal;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:normal;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:15%; font-size:10px; font-weight:normal;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:normal;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:normal;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:normal;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:normal;">DATA</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:right; width:8%; font-size:10px; font-weight:normal;">VALOR R$</th>
                 </tr>
               </thead>
               <tbody>
@@ -3402,11 +3402,11 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
             <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
               <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <div style="display: flex; align-items: center; gap: 4px;">
-                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">LEGENDA:</strong>
+                  <span style="color: #0f172a; text-transform: uppercase; font-weight: normal;">LEGENDA:</span>
                   <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 4px;">
-                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">AUTORIZAÇÕES:</strong>
+                  <span style="color: #0f172a; text-transform: uppercase; font-weight: normal;">AUTORIZAÇÕES:</span>
                   <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
                 </div>
               </div>

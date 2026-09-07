@@ -5,6 +5,22 @@
 
 ---
 
+## [v1.2.50] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.50` · **Versão do Sistema:** `GBZ - v1.2.50`
+
+### 📑 Ajustes no Relatório ADM 2 (Lista de processo | Grupo)
+
+- **Ajuste de Título:**
+  - Substituído o título de `LISTA DE PROCESSOS (AGRUPADO POR DÍGITO)` para `LISTA DE PROCESSO | GRUPO`.
+- **Remoção da Palavra "DÍGITO":**
+  - Removido o prefixo `DÍGITO:` das faixas separadoras verdes (`#008080`), exibindo diretamente o nome/código do grupo (ex.: `ALINH (6 PROCESSOS • R$ 4.800.000,00)`, `CANCEL (20 PROCESSOS • R$ 11.711.850,00)`).
+- **Remoção Geral de Negritos:**
+  - Aplicada tipografia uniforme e sem negrito (`font-weight: normal`) no título, nos totais do cabeçalho, nas linhas de grupo, no cabeçalho das colunas (`th`), na linha de totais e na legenda do rodapé.
+
+---
+
+
 ## [v1.2.49] — 2026-09-07 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.2.49` · **Versão do Sistema:** `GBZ - v1.2.49`
