@@ -5,7 +5,23 @@
 
 ---
 
-## [v1.2.50] — 2026-09-07 🟢 VERSÃO ATUAL
+## [v1.2.51] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.51` · **Versão do Sistema:** `GBZ - v1.2.51`
+
+### 🚀 Campo Dígito / Grupo Livre & Expansão de Largura
+
+- **Dígito / Grupo Livre sem Limite de Caracteres:**
+  - Removida a restrição de 8 caracteres (`maxlength="8"` e `slice(0,8)`). Agora o campo aceita qualquer quantidade de caracteres livres (letras, números, códigos).
+  - Rotulado como **Grupo (Dígito)** no formulário e filtro, comunicando-se perfeitamente com a coluna de dígito da planilha Google Sheets/Excel.
+- **Aumento de Largura dos Campos:**
+  - O campo de filtro de Dígito/Grupo foi ampliado (de 175px para 220px) mantendo os parâmetros rápidos `=` e `<>`.
+  - O campo de **busca geral** (`#filtro-busca`) foi ampliado com flex aumentado e `min-width: 320px` para melhor visualização e digitação confortável.
+  - No formulário de edição/criação de processo, o campo **Grupo (Dígito)** foi ampliado para `min-width: 200px` com flex expandido.
+
+---
+
+## [v1.2.50] — 2026-09-07
 
 **Tag:** `v1.2.50` · **Versão do Sistema:** `GBZ - v1.2.50`
 

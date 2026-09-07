@@ -5,9 +5,9 @@ window.limparDigitoValor = function(val) {
   if (val === null || val === undefined) return '';
   let s = String(val).trim();
   if (!s) return '';
-  // Se terminar com ,00 ou .00 ou ,0 ou .0 (ex: 2,00 vira 2; texto como 'CC' ou 'LOTE1' permanece intacto)
+  // Se terminar com ,00 ou .00 ou ,0 ou .0 (ex: 2,00 vira 2; texto livre/alfanumérico sem limite)
   s = s.replace(/[,.]0+$/, '');
-  return s.slice(0, 8).trim();
+  return s.trim();
 };
 window.formatarDigitoInteiro = window.limparDigitoValor;
 
@@ -1405,7 +1405,7 @@ window.setDigitoCondicao = function(cond, triggerFilter = true) {
 
 window.formatarDigitoInteiro = function(val) {
   if (val === null || val === undefined) return '';
-  return String(val).trim().slice(0, 8);
+  return window.limparDigitoValor(val);
 };
 
 window._antigoFormatarDigito = function(s) {
