@@ -1,5 +1,18 @@
 
-// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.37)
+// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.38)
+// Remove ,00 ou .00 se for formatação numérica de planilha, preserva texto livre e limita a 8 caracteres
+window.limparDigitoValor = function(val) {
+  if (val === null || val === undefined) return '';
+  let s = String(val).trim();
+  if (!s) return '';
+  // Se terminar com ,00 ou .00 ou ,0 ou .0 (ex: 2,00 vira 2; texto como 'CC' ou 'LOTE1' permanece intacto)
+  s = s.replace(/[,.]0+$/, '');
+  return s.slice(0, 8).trim();
+};
+window.formatarDigitoInteiro = window.limparDigitoValor;
+
+
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.38)
 window.copiarSeiLinha = function(btn) {
   const row = btn.closest('div');
   const input = row ? row.querySelector('.form-numero-item') : null;
@@ -1139,8 +1152,8 @@ function getFiltrados() {
       : [];
 
     const numMatch = (procDig, alvo) => {
-      const d1 = String(procDig || '').trim().toLowerCase();
-      const d2 = String(alvo || '').trim().toLowerCase();
+      const d1 = window.limparDigitoValor(procDig).toLowerCase();
+      const d2 = window.limparDigitoValor(alvo).toLowerCase();
       if (!d1 && !d2) return true;
       if (!d1 || !d2) return false;
       return d1 === d2;
@@ -1402,29 +1415,30 @@ window._antigoFormatarDigito = function(s) {
 window.popularDigitosDisponiveis = function() {
   const todosProcs = (typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []));
   
-  // Normalizar todos os dígitos para inteiros puros (remove vírgulas, decimais e não-números)
+  // Limpar e manter apenas valores únicos reais da célula (sem duplicatas como 2 e 2,00)
   const distinctDigitos = [...new Set(
     todosProcs
-      .map(p => String(p.digito || p.DIGITO || '').trim().slice(0, 8))
+      .map(p => window.limparDigitoValor(p.digito || p.DIGITO || ''))
       .filter(Boolean)
   )].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
 
   const container = document.getElementById('lista-digitos-checkboxes');
   if (container) {
     if (distinctDigitos.length === 0) {
-      container.innerHTML = '<div style="padding:8px; color:#94a3b8; font-size:12px; text-align:center;">Nenhum dígito cadastrado</div>';
+      container.innerHTML = '<div style="padding:8px; color:#94a3b8; font-size:12px; text-align:center;">Nenhum valor cadastrado</div>';
     } else {
       const inputVal = (document.getElementById('filtro-digito')?.value || '').trim();
       const currentSelected = inputVal 
-        ? inputVal.split(/[,;\s]+/).map(v => window.formatarDigitoInteiro(v)).filter(Boolean) 
+        ? inputVal.split(/[,;\s]+/).map(v => window.limparDigitoValor(v)).filter(Boolean) 
         : [];
       
+      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.38)
       container.innerHTML = distinctDigitos.map(dig => {
         const isChecked = currentSelected.includes(dig);
         return `
-          <label class="custom-multiselect-item" style="display:flex; align-items:center; padding:6px 10px; cursor:pointer; font-size:12px; color:#e2e8f0; user-select:none; gap:8px;">
+          <label class="custom-multiselect-item" style="display:flex; align-items:center; padding:6px 10px; cursor:pointer; font-size:12.5px; color:#e2e8f0; user-select:none; gap:8px;">
             <input type="checkbox" class="cb-digito-opcao" value="${dig}" ${isChecked ? 'checked' : ''} style="cursor:pointer; accent-color:#3b82f6;">
-            <span style="font-weight:600;">DÍGITO ${dig}</span>
+            <span style="font-weight:600; font-family:inherit;">${dig}</span>
           </label>
         `;
       }).join('');
@@ -1655,7 +1669,7 @@ function renderFormulario() {
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
-    document.getElementById('form-digito').value = String(p.digito || p.DIGITO || '').trim().slice(0, 8);
+    document.getElementById('form-digito').value = window.limparDigitoValor(p.digito || p.DIGITO || '');
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
     document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
@@ -1899,8 +1913,8 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
-    digito: String(document.getElementById('form-digito')?.value || '').trim().slice(0, 8),
-    DIGITO: String(document.getElementById('form-digito')?.value || '').trim().slice(0, 8),
+    digito: window.limparDigitoValor(document.getElementById('form-digito')?.value || ''),
+    DIGITO: window.limparDigitoValor(document.getElementById('form-digito')?.value || ''),
     categoria:   document.getElementById('form-categoria').value,
     tipo:        document.getElementById('form-tipo').value,
     CAM:         document.getElementById('form-cam')?.checked ? '1' : '',
@@ -5237,7 +5251,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.37)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.38)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -5317,7 +5331,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.37)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.38)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';
