@@ -5,6 +5,21 @@
 
 ---
 
+## [v1.2.47] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.47` · **Versão do Sistema:** `GBZ - v1.2.47`
+
+### 📑 Melhorias no Relatório Padrão ADM
+
+- **Remoção de Negritos nas Células:**
+  - Removido o peso em negrito das colunas da tabela de processos (Nº, Categoria/Tipo, Município, Status, Valor), mantendo tipografia limpa, leve e uniforme (`font-weight: normal`).
+- **Nova Legenda Completa no Rodapé (`tfoot`):**
+  - **Prefixos:** `C = Convênio | F = Fomento | OB = Obras | MP = Material Permanente | MC = Material Consumo`
+  - **Autorizações:** Detalhamento da ordem das 3 bolinhas: `(1ª CAM | 2ª GAB SEDUC | 3ª CASA CIVIL)` e indicação visual de status: `● Autorizado | ○ Pendente`.
+
+---
+
+
 ## [v1.2.46] — 2026-09-07 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.2.46` · **Versão do Sistema:** `GBZ - v1.2.46`

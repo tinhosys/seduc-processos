@@ -3077,7 +3077,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
       <div style="font-family: Arial, sans-serif; line-height: 1.2;">
         <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
         <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
-          <span style="font-weight:600;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:600;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
+          <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
           <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
             <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
             <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
@@ -3089,16 +3089,16 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
     const zebraBg = index % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
     return `
       <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:bold; color:#475569; width:3%;">${index + 1}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; width:7%;">${prefixoFormatado}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:600; width:11%;">${p.municipio || '-'}</td>
-        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; width:15%;">${p.interessado || '-'}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:600; width:8%;">${p.status || '-'}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; width:7%;">${p.localizacao || '-'}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; width:7%;">${formatDate(p.data)}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:right; font-size:9.5px; font-weight:600; width:8%;">${formatNumberOnly(p.valorOf)}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${index + 1}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:15%;">${p.interessado || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:right; font-size:9.5px; font-weight:normal; width:8%;">${formatNumberOnly(p.valorOf)}</td>
       </tr>
     `;
   }).join('');
@@ -3166,6 +3166,24 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">LEGENDA:</strong>
+                  <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">AUTORIZAÇÕES:</strong>
+                  <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
     </table>
   `;
 
