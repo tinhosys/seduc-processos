@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.36">
+  <link rel="stylesheet" href="css/style.css?v=1.2.37">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.36</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.37</div>
   </div>
 </div>
   
@@ -412,7 +412,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.36</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.37</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1047,8 +1047,8 @@
             </select>
               <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÃO -->
             <div class="filtro-digito-container action-adm" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; gap:6px; flex:0 0 auto; width:auto;">
-              <div style="position:relative; width:120px; flex-shrink:0;">
-                <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 8px; height:38px; box-sizing:border-box;">
+              <div style="position:relative; width:175px; flex-shrink:0;">
+                <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 10px; height:38px; box-sizing:border-box;">
                   <input type="text" id="filtro-digito" placeholder="DÍGITO" maxlength="20" autocomplete="off"
                     style="width:100%; background:transparent; border:none; color:#c7d2fe; font-size:13px; font-weight:600; outline:none; padding:0;">
                   <button type="button" id="btn-digito-dropdown-toggle" title="Ver dígitos disponíveis na planilha"
@@ -1273,17 +1273,17 @@
                   <datalist id="list-anos"></datalist>
                 </div>
 
-                <!-- MUNICÍPIO: O DOBRO DO TAMANHO (AMPLO) -->
-                <div class="form-group" style="flex: 2.8 1 350px; min-width: 260px;">
+                <!-- MUNICÍPIO: AJUSTADO PARA CEDER ESPAÇO AO DÍGITO -->
+                <div class="form-group" style="flex: 2.2 1 270px; min-width: 220px;">
                   <label for="form-municipio">MUNICÍPIO *</label>
                   <input type="text" id="form-municipio" placeholder="Ex: Porto Velho" required list="list-municipios" style="height: 42px; width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); box-sizing: border-box;">
                   <datalist id="list-municipios"></datalist>
                 </div>
 
-                <!-- DÍGITO: SUBIU PARA A LINHA DO ANO E MUNICÍPIO (COMPACTO) -->
-                <div class="form-group action-adm" id="group-form-digito" style="flex: 0 0 90px; width: 90px; min-width: 80px; max-width: 100px;">
-                  <label for="form-digito" style="text-align:center;">Dígito</label>
-                  <input type="text" id="form-digito" placeholder="000" maxlength="3" inputmode="numeric" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 3);" autocomplete="off" style="width: 100%; height: 42px; text-align: center; font-weight: 700; font-size: 14px; padding: 10px 4px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); box-sizing: border-box;">
+                <!-- DÍGITO: +100% DE LARGURA (180px), LIVRE PARA LETRAS E NÚMEROS ATÉ 8 CARACTERES -->
+                <div class="form-group action-adm" id="group-form-digito" style="flex: 0 0 180px; width: 180px; min-width: 160px; max-width: 200px;">
+                  <label for="form-digito" style="text-align:center;">Dígito (até 8 carac.)</label>
+                  <input type="text" id="form-digito" placeholder="Ex: A1234B" maxlength="8" autocomplete="off" style="width: 100%; height: 42px; text-align: center; font-weight: 700; font-size: 14px; padding: 10px 8px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); box-sizing: border-box; letter-spacing: 0.5px;">
                 </div>
 
               </div>
@@ -1691,7 +1691,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.36
+              GBZ - v1.2.37
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -1965,7 +1965,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.36] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.37] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -3248,13 +3248,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.36"></script>
-  <script src="js/app.js?v=1.2.36"></script>
-  <script src="js/auth-sap.js?v=1.2.36"></script>
-  <script src="js/escolas.js?v=1.2.36" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.37"></script>
+  <script src="js/app.js?v=1.2.37"></script>
+  <script src="js/auth-sap.js?v=1.2.37"></script>
+  <script src="js/escolas.js?v=1.2.37" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.36"></script>
-  <script src="js/contatos.js?v=1.2.36"></script>
+  <script src="js/mapa.js?v=1.2.37"></script>
+  <script src="js/contatos.js?v=1.2.37"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3397,14 +3397,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.36"></script>
+  <script src="js/multi-select.js?v=1.2.37"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.36"></script>
-  <script src="js/gmac.js?v=1.2.36"></script>
-  <script src="js/orcamento.js?v=1.2.36"></script>
-  <script src="js/print-proalfa.js?v=1.2.36"></script>
-  <script src="js/proalfa.js?v=1.2.36"></script>
+  <script src="js/diarias.js?v=1.2.37"></script>
+  <script src="js/gmac.js?v=1.2.37"></script>
+  <script src="js/orcamento.js?v=1.2.37"></script>
+  <script src="js/print-proalfa.js?v=1.2.37"></script>
+  <script src="js/proalfa.js?v=1.2.37"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

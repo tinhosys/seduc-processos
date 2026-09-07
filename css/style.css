@@ -2423,3 +2423,10 @@ select#filtro-agrupamento.action-adm {
     max-width: 100% !important;
   }
 }
+
+#group-form-digito {
+  flex: 0 0 180px !important;
+  width: 180px !important;
+  min-width: 160px !important;
+  max-width: 200px !important;
+}

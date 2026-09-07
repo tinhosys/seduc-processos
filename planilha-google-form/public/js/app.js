@@ -1,5 +1,5 @@
 
-// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.36)
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.37)
 window.copiarSeiLinha = function(btn) {
   const row = btn.closest('div');
   const input = row ? row.querySelector('.form-numero-item') : null;
@@ -1139,12 +1139,8 @@ function getFiltrados() {
       : [];
 
     const numMatch = (procDig, alvo) => {
-      const d1 = (typeof window.formatarDigitoInteiro === 'function') 
-        ? window.formatarDigitoInteiro(procDig) 
-        : String(procDig || '').replace(/[,.]0+$/, '').replace(/\D/g, '');
-      const d2 = (typeof window.formatarDigitoInteiro === 'function') 
-        ? window.formatarDigitoInteiro(alvo) 
-        : String(alvo || '').replace(/[,.]0+$/, '').replace(/\D/g, '');
+      const d1 = String(procDig || '').trim().toLowerCase();
+      const d2 = String(alvo || '').trim().toLowerCase();
       if (!d1 && !d2) return true;
       if (!d1 || !d2) return false;
       return d1 === d2;
@@ -1396,12 +1392,10 @@ window.setDigitoCondicao = function(cond, triggerFilter = true) {
 
 window.formatarDigitoInteiro = function(val) {
   if (val === null || val === undefined) return '';
-  let s = String(val).trim();
-  if (!s) return '';
-  s = s.replace(/[,.]0+$/, '');
-  if (s.includes(',') || s.includes('.')) {
-    s = s.split(/[,.]/)[0].trim();
-  }
+  return String(val).trim().slice(0, 8);
+};
+
+window._antigoFormatarDigito = function(s) {
   return s.replace(/\D/g, '');
 };
 
@@ -1411,9 +1405,9 @@ window.popularDigitosDisponiveis = function() {
   // Normalizar todos os dígitos para inteiros puros (remove vírgulas, decimais e não-números)
   const distinctDigitos = [...new Set(
     todosProcs
-      .map(p => window.formatarDigitoInteiro(p.digito || p.DIGITO || ''))
+      .map(p => String(p.digito || p.DIGITO || '').trim().slice(0, 8))
       .filter(Boolean)
-  )].sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+  )].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }));
 
   const container = document.getElementById('lista-digitos-checkboxes');
   if (container) {
@@ -1661,7 +1655,7 @@ function renderFormulario() {
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
-    document.getElementById('form-digito').value = String(p.digito || p.DIGITO || '').replace(/\D/g, '').slice(0, 3);
+    document.getElementById('form-digito').value = String(p.digito || p.DIGITO || '').trim().slice(0, 8);
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
     document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
@@ -1905,8 +1899,8 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
-    digito: (document.getElementById('form-digito')?.value || '').replace(/\D/g, '').slice(0, 3),
-    DIGITO: (document.getElementById('form-digito')?.value || '').replace(/\D/g, '').slice(0, 3),
+    digito: String(document.getElementById('form-digito')?.value || '').trim().slice(0, 8),
+    DIGITO: String(document.getElementById('form-digito')?.value || '').trim().slice(0, 8),
     categoria:   document.getElementById('form-categoria').value,
     tipo:        document.getElementById('form-tipo').value,
     CAM:         document.getElementById('form-cam')?.checked ? '1' : '',
@@ -5243,7 +5237,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.36)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.37)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -5323,7 +5317,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.36)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.37)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';
