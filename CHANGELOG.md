@@ -5,6 +5,24 @@
 
 ---
 
+## [v1.2.48] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.48` · **Versão do Sistema:** `GBZ - v1.2.48`
+
+### 📊 Novo "RELATÓRIO ADM 2" (Agrupamento por Dígito + Linha Memorando)
+
+- **Novo Botão no Painel de Processos:**
+  - Botão **RELATÓRIO ADM 2** adicionado ao lado de **PADRÃO ADM**, visível exclusivamente ao perfil **Admin** (`action-adm`).
+- **Agrupamento por Dígito:**
+  - Processos organizados em grupos separados por `DÍGITO` (1, 2, 3... e sem dígito), com barra de subtotais (quantidade de processos e valor total do grupo).
+- **Linha Memorando na Largura Total:**
+  - Abaixo de cada processo com apontamento, é inserida uma linha dedicada em itálico vermelho (`#dc2626`) contendo `AGRUPAMENTO - ANOTAÇÃO INTERNA`.
+- **Estrutura Visual:**
+  - Mantém a identidade descaracterizada (sem cabeçalhos/rodapés de origem governamental), tabela sem negritos e legenda completa de prefixos e autorizações no rodapé.
+
+---
+
+
 ## [v1.2.47] — 2026-09-07 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.2.47` · **Versão do Sistema:** `GBZ - v1.2.47`

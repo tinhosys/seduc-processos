@@ -3232,6 +3232,239 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
 
 window.imprimirPadraoAdm = imprimirPadraoAdm;
 
+window.imprimirPadraoAdm = imprimirPadraoAdm;
+
+// ============= RELATÓRIO ADM 2 (AGRUPADO POR DÍGITO C/ LINHA MEMORANDO) =============
+function imprimirPadraoAdm2(filtrados = getFiltrados()) {
+  if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
+    alert('Acesso restrito ao perfil Administrador.');
+    return;
+  }
+
+  // Agrupamento por Dígito
+  const grupos = {};
+  filtrados.forEach(p => {
+    const dRaw = typeof window.limparDigitoValor === 'function' 
+      ? window.limparDigitoValor(p.digito || p.DIGITO || '') 
+      : String(p.digito || p.DIGITO || '').trim();
+    const chave = dRaw || 'SEM DÍGITO';
+    if (!grupos[chave]) grupos[chave] = [];
+    grupos[chave].push(p);
+  });
+
+  const chavesOrdenadas = Object.keys(grupos).sort((a, b) => {
+    if (a === 'SEM DÍGITO') return 1;
+    if (b === 'SEM DÍGITO') return -1;
+    const numA = parseFloat(a);
+    const numB = parseFloat(b);
+    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+  });
+
+  let globalIndex = 0;
+  let rowsHtml = '';
+
+  chavesOrdenadas.forEach(chave => {
+    const procs = grupos[chave];
+    const totalGrupo = procs.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+
+    // Linha de Cabeçalho do Grupo (DÍGITO)
+    rowsHtml += `
+      <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color: #1e293b; color: #ffffff;">
+        <td colspan="10" style="border: 1px solid #334155; padding: 4px 8px; font-size: 10px; font-weight: bold; text-transform: uppercase;">
+          <span style="color: #38bdf8; font-weight: 800; letter-spacing: 0.5px;">DÍGITO: ${chave}</span>
+          <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #94a3b8;">(${procs.length} processos &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
+        </td>
+      </tr>
+    `;
+
+    procs.forEach(p => {
+      globalIndex++;
+      const prefixoFormatado = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.2;">
+          <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
+          <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+            <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
+            <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
+              <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
+              <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+              <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      const zebraBg = globalIndex % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
+
+      // Linha Principal do Processo (sem negritos)
+      rowsHtml += `
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:15%;">${p.interessado || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:right; font-size:9.5px; font-weight:normal; width:8%;">${formatNumberOnly(p.valorOf)}</td>
+        </tr>
+      `;
+
+      // Linha Memorando: "AGRUPAMENTO" - "ANOTAÇÃO INTERNA" (itálico vermelho na largura da tabela)
+      const partesMemo = [];
+      if (p.agrupamento && String(p.agrupamento).trim()) {
+        partesMemo.push(String(p.agrupamento).trim());
+      }
+      if (p.anotacao && String(p.anotacao).trim()) {
+        partesMemo.push(String(p.anotacao).trim());
+      }
+
+      if (partesMemo.length > 0) {
+        const memoTexto = partesMemo.join(' - ');
+        rowsHtml += `
+          <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color: #fff9f9;">
+            <td colspan="10" style="border: 1px solid #cbd5e1; border-top: none; padding: 2px 8px 3px 12px; font-size: 8.5px; font-style: italic; color: #dc2626; line-height: 1.3;">
+              ${memoTexto}
+            </td>
+          </tr>
+        `;
+      }
+    });
+  });
+
+  const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+  const totalRow = `
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; font-weight:bold; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a; text-transform:uppercase;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a;">${formatNumberOnly(totalValor)}</td>
+    </tr>`;
+  rowsHtml += totalRow;
+
+  const html = `
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2.5px solid #0f172a; padding-bottom: 6px; margin-bottom: 10px; font-family: Arial, sans-serif;">
+              <div>
+                <div style="font-size: 13px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSOS (AGRUPADO POR DÍGITO)</div>
+              </div>
+              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: 600;">
+                <span>Total: <strong style="color:#0f172a;">${filtrados.length} processos</strong></span>
+                <span style="margin: 0 8px; color: #cbd5e1;">|</span>
+                <span>Valor Total: <strong style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</strong></span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
+              <colgroup>
+                <col style="width: 3%;">
+                <col style="width: 7%;">
+                <col style="width: 11%;">
+                <col style="width: 12%;">
+                <col style="width: 15%;">
+                <col style="width: 22%;">
+                <col style="width: 8%;">
+                <col style="width: 7%;">
+                <col style="width: 7%;">
+                <col style="width: 8%;">
+              </colgroup>
+              <thead>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:bold;">Nº</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">PREFIXO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:15%; font-size:10px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:bold;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:bold;">DATA</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:right; width:8%; font-size:10px; font-weight:bold;">VALOR R$</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || '<tr><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">LEGENDA:</strong>
+                  <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">AUTORIZAÇÕES:</strong>
+                  <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+
+  let container = document.getElementById('print-layout-padrao-adm-2');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'print-layout-padrao-adm-2';
+    container.className = 'print-only-layout';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = html;
+
+  // Oculta os outros layouts
+  ['print-layout-padrao', 'print-layout-padrao-adm', 'print-layout-detalhado', 'print-layout-analise'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  container.style.display = 'block';
+
+  const pageProcessos = document.getElementById('page-processos');
+  if (pageProcessos) pageProcessos.style.display = 'none';
+
+  document.body.classList.add('print-mode-padrao-adm-2');
+  document.body.classList.remove('print-mode-padrao', 'print-mode-padrao-adm', 'print-mode-detalhado', 'print-mode-analise');
+
+  const origTitle = document.title;
+  document.title = 'RELATORIO_ADM2_' + getFormattedDateForTitle();
+
+  const style = document.createElement('style');
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm-2 { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
+  document.head.appendChild(style);
+
+  const cleanupPrint = () => {
+    document.title = origTitle;
+    if (document.head.contains(style)) document.head.removeChild(style);
+    document.body.classList.remove('print-mode-padrao-adm-2');
+    container.style.display = 'none';
+    if (pageProcessos) pageProcessos.style.display = '';
+    window.removeEventListener('afterprint', cleanupPrint);
+  };
+
+  window.addEventListener('afterprint', cleanupPrint);
+
+  window.print();
+
+  setTimeout(cleanupPrint, 1000);
+}
+
+window.imprimirPadraoAdm2 = imprimirPadraoAdm2;
+
+
 
 function imprimirDetalhado() {
   updatePrintDateTime();

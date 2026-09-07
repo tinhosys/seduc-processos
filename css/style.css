@@ -2557,3 +2557,27 @@ span.badge {
     background: white !important;
   }
 }
+
+@media print {
+  body.print-mode-padrao-adm-2 .sidebar,
+  body.print-mode-padrao-adm-2 .topbar,
+  body.print-mode-padrao-adm-2 .section-header,
+  body.print-mode-padrao-adm-2 .filters-bar,
+  body.print-mode-padrao-adm-2 .table-wrap,
+  body.print-mode-padrao-adm-2 .pagination,
+  body.print-mode-padrao-adm-2 #export-buttons,
+  body.print-mode-padrao-adm-2 .charts-grid,
+  body.print-mode-padrao-adm-2 .dashboard,
+  body.print-mode-padrao-adm-2 .modal-overlay,
+  body.print-mode-padrao-adm-2 #page-processos,
+  body.print-mode-padrao-adm-2 .page {
+    display: none !important;
+  }
+
+  body.print-mode-padrao-adm-2 #print-layout-padrao-adm-2 {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    background: white !important;
+  }
+}
