@@ -3183,8 +3183,8 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   if (document.getElementById('print-layout-analise')) document.getElementById('print-layout-analise').style.display = 'none';
   container.style.display = 'block';
 
-  const appLayout = document.querySelector('.app-layout');
-  if (appLayout) appLayout.style.display = 'none';
+  const pageProcessos = document.getElementById('page-processos');
+  if (pageProcessos) pageProcessos.style.display = 'none';
 
   document.body.classList.add('print-mode-padrao-adm');
   document.body.classList.remove('print-mode-padrao', 'print-mode-detalhado', 'print-mode-analise');
@@ -3193,17 +3193,23 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   document.title = 'RELATORIO_PROCESSOS_' + getFormattedDateForTitle();
 
   const style = document.createElement('style');
-  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .app-layout, .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .main-content, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: absolute; top: 0; left: 0; width: 100%; background: white; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
   document.head.appendChild(style);
 
-  window.print();
-
-  setTimeout(() => {
+  const cleanupPrint = () => {
     document.title = origTitle;
     if (document.head.contains(style)) document.head.removeChild(style);
     document.body.classList.remove('print-mode-padrao-adm');
     container.style.display = 'none';
-  }, 1000);
+    if (pageProcessos) pageProcessos.style.display = '';
+    window.removeEventListener('afterprint', cleanupPrint);
+  };
+
+  window.addEventListener('afterprint', cleanupPrint);
+
+  window.print();
+
+  setTimeout(cleanupPrint, 1000);
 }
 
 window.imprimirPadraoAdm = imprimirPadraoAdm;

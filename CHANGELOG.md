@@ -5,6 +5,22 @@
 
 ---
 
+## [v1.2.46] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.46` · **Versão do Sistema:** `GBZ - v1.2.46`
+
+### 🐛 Fix Crítico — Impressão do Relatório Padrão ADM
+
+- **Correção da Folha em Branco:**
+  - Corrigido o seletor de ocultamento na impressão: removido o bloqueio sobre `.app-layout` (que encapsulava o próprio container de impressão `#print-layout-padrao-adm`), permitindo que a tabela seja impressa corretamente.
+  - Ocultamento direcionado estritamente ao elemento ativo `#page-processos` durante a chamada de impressão, garantindo que nenhuma página anterior residual seja gerada.
+- **Correção de Travamento / Tela Escura ao Fechar Impressão:**
+  - Adicionado listener para o evento nativo `afterprint`, restaurando a visibilidade da interface imediatamente assim que a janela de impressão é fechada ou confirmada.
+  - Limpeza síncrona de estilos e classes de impressão.
+
+---
+
+
 ## [v1.2.45] — 2026-09-07 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.2.45` · **Versão do Sistema:** `GBZ - v1.2.45`

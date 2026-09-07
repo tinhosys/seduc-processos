@@ -2340,7 +2340,6 @@ thead th {
   pointer-events: all !important;
 }
 
-
 @media print {
   body.print-mode-padrao-adm .sidebar,
   body.print-mode-padrao-adm .topbar,
@@ -2351,45 +2350,16 @@ thead th {
   body.print-mode-padrao-adm #export-buttons,
   body.print-mode-padrao-adm .charts-grid,
   body.print-mode-padrao-adm .dashboard,
-  body.print-mode-padrao-adm > section:not(#page-processos) {
-    display: none !important;
-  }
-
-  body.print-mode-padrao-adm #print-layout-padrao-adm {
-    display: block !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-  }
-}
-
-
-@media print {
-  body.print-mode-padrao-adm .app-layout,
-  body.print-mode-padrao-adm .sidebar,
-  body.print-mode-padrao-adm .topbar,
-  body.print-mode-padrao-adm .section-header,
-  body.print-mode-padrao-adm .filters-bar,
-  body.print-mode-padrao-adm .table-wrap,
-  body.print-mode-padrao-adm .pagination,
-  body.print-mode-padrao-adm #export-buttons,
-  body.print-mode-padrao-adm .charts-grid,
-  body.print-mode-padrao-adm .dashboard,
-  body.print-mode-padrao-adm .main-content,
+  body.print-mode-padrao-adm .modal-overlay,
   body.print-mode-padrao-adm #page-processos,
-  body.print-mode-padrao-adm .page,
-  body.print-mode-padrao-adm > section {
+  body.print-mode-padrao-adm .page {
     display: none !important;
   }
 
   body.print-mode-padrao-adm #print-layout-padrao-adm {
     display: block !important;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: white;
+    position: static !important;
+    width: 100% !important;
+    background: white !important;
   }
 }
