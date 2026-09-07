@@ -3093,21 +3093,21 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
         <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:15%;">${p.interessado || '-'}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:right; font-size:9.5px; font-weight:normal; width:8%;">${formatNumberOnly(p.valorOf)}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 4px; text-align:right; font-size:9.5px; font-weight:normal; width:12%; white-space:nowrap;">${formatNumberOnly(p.valorOf)}</td>
       </tr>
     `;
   }).join('');
 
   const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
   const totalRow = `
-    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; font-weight:bold; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
-      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a; text-transform:uppercase;">TOTAL GERAL (${filtrados.length} processos):</td>
-      <td style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a;">${formatNumberOnly(totalValor)}</td>
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
     </tr>`;
   rowsHtml += totalRow;
 
@@ -3138,12 +3138,12 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
                 <col style="width: 7%;">
                 <col style="width: 11%;">
                 <col style="width: 12%;">
-                <col style="width: 15%;">
-                <col style="width: 22%;">
+                <col style="width: 14%;">
+                <col style="width: 19%;">
                 <col style="width: 8%;">
                 <col style="width: 7%;">
                 <col style="width: 7%;">
-                <col style="width: 8%;">
+                <col style="width: 12%;">
               </colgroup>
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
@@ -3151,12 +3151,12 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">PREFIXO</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:bold;">MUNICÍPIO</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:bold;">PROCESSO SEI</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:15%; font-size:10px; font-weight:bold;">INTERESSADO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:14%; font-size:10px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:19%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:bold;">STATUS</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">LOCAL</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:bold;">DATA</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:right; width:8%; font-size:10px; font-weight:bold;">VALOR R$</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 3px; text-align:right; width:12%; font-size:10px; font-weight:bold; white-space:nowrap;">VALOR R$</th>
                 </tr>
               </thead>
               <tbody>
@@ -3211,7 +3211,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   document.title = 'RELATORIO_PROCESSOS_' + getFormattedDateForTitle();
 
   const style = document.createElement('style');
-  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr.group-header-digito, table.print-table-adm tr.group-header-digito td { background-color: #008080 !important; color: #ffffff !important; border-color: #005f5f !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } table.print-table-adm tr.group-header-digito, table.print-table-adm tr.group-header-digito td { background-color: #008080 !important; color: #ffffff !important; border-color: #005f5f !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
   document.head.appendChild(style);
 
   const cleanupPrint = () => {
@@ -3302,12 +3302,12 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
           <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:15%;">${p.interessado || '-'}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:right; font-size:9.5px; font-weight:normal; width:8%;">${formatNumberOnly(p.valorOf)}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 4px; text-align:right; font-size:9.5px; font-weight:normal; width:12%; white-space:nowrap;">${formatNumberOnly(p.valorOf)}</td>
         </tr>
       `;
 
@@ -3335,9 +3335,9 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
 
   const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
   const totalRow = `
-    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; font-weight:normal; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
-      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a; text-transform:uppercase; font-weight:normal;">TOTAL GERAL (${filtrados.length} processos):</td>
-      <td style="border: 1px solid #cbd5e1; padding: 4px 6px; text-align:right; font-size:10px; color:#0f172a; font-weight:normal;">${formatNumberOnly(totalValor)}</td>
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
     </tr>`;
   rowsHtml += totalRow;
 
@@ -3368,12 +3368,12 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
                 <col style="width: 7%;">
                 <col style="width: 11%;">
                 <col style="width: 12%;">
-                <col style="width: 15%;">
-                <col style="width: 22%;">
+                <col style="width: 14%;">
+                <col style="width: 19%;">
                 <col style="width: 8%;">
                 <col style="width: 7%;">
                 <col style="width: 7%;">
-                <col style="width: 8%;">
+                <col style="width: 12%;">
               </colgroup>
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
@@ -3381,12 +3381,12 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:normal;">PREFIXO</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:normal;">MUNICÍPIO</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:normal;">PROCESSO SEI</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:15%; font-size:10px; font-weight:normal;">INTERESSADO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:normal;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:14%; font-size:10px; font-weight:normal;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:19%; font-size:10px; font-weight:normal;">OBJETO / FINALIDADE</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:normal;">STATUS</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:normal;">LOCAL</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:normal;">DATA</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:right; width:8%; font-size:10px; font-weight:normal;">VALOR R$</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 3px; text-align:right; width:12%; font-size:10px; font-weight:normal; white-space:nowrap;">VALOR R$</th>
                 </tr>
               </thead>
               <tbody>
@@ -3443,7 +3443,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
   document.title = 'RELATORIO_ADM2_' + getFormattedDateForTitle();
 
   const style = document.createElement('style');
-  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm-2 { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm-2 { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } }';
   document.head.appendChild(style);
 
   const cleanupPrint = () => {

@@ -5,7 +5,24 @@
 
 ---
 
-## [v1.2.51] — 2026-09-07 🟢 VERSÃO ATUAL
+## [v1.2.52] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.52` · **Versão do Sistema:** `GBZ - v1.2.52`
+
+### 📊 Otimização do Total e Layout de Impressão (Relatórios ADM e ADM 2)
+
+- **Total Geral sem Quebra de Linha (`white-space: nowrap`):**
+  - Acomodado o valor total na linha sem quebra de dígitos (ex.: `211.414.202,72` exibido integralmente em linha única).
+  - Largura da coluna `VALOR R$` expandida de 8% para **12%** (+50% de espaço útil).
+  - Ajustada a proporção das colunas com texto longo (`INTERESSADO` para 14% e `OBJETO` para 19%).
+- **Destaque e Aumento do Tamanho do Total:**
+  - Aumentado o tamanho da fonte do total para **12.5px** com peso em negrito (`font-weight: bold`) e padding aprimorado para destaque visual.
+  - O rótulo `TOTAL GERAL (X processos)` ampliado para **11.5px** em negrito com `white-space: nowrap`.
+  - Regra CSS `white-space: nowrap !important` aplicada diretamente nas células e na folha de impressão `@media print`.
+
+---
+
+## [v1.2.51] — 2026-09-07
 
 **Tag:** `v1.2.51` · **Versão do Sistema:** `GBZ - v1.2.51`
 
