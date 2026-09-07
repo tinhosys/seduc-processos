@@ -1072,7 +1072,7 @@ function imprimirRelatorioEscolas() {
     }
 
     const dt = new Date();
-    const today = dt.toLocaleDateString('pt-BR') + ' ' + dt.toLocaleTimeString('pt-BR');
+    const today = dt.toLocaleDateString('pt-BR') + ', ' + dt.toLocaleTimeString('pt-BR');
 
     let tMat = 0, tSal = 0;
     pool.forEach(e => {
@@ -1082,114 +1082,238 @@ function imprimirRelatorioEscolas() {
 
     let h = `
       <!DOCTYPE html>
-      <html>
+      <html lang="pt-BR">
       <head>
         <meta charset="utf-8">
-        <title>Relatorio_Escolas_CAM</title>
+        <title>Relatório - Escolas (SEDUC/RO)</title>
         <style>
           @media print {
-            @page { size: A4 landscape; margin: 10mm; }
+            @page { size: A4 landscape !important; margin: 10mm !important; }
             body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .no-print { display: none !important; }
           }
-          body { font-family: "Segoe UI", Arial, sans-serif; font-size: 11px; color: #1e293b; background: #fff; margin: 0; padding: 20px; }
-          .header-container { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 15px; }
-          .header-title { font-size: 18px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-          .header-sub { font-size: 13px; color: #64748b; font-weight: 600; }
-          .badges-row { display: flex; justify-content: center; gap: 15px; margin-top: 10px; font-size: 12px; font-weight: 700; }
-          .badge { padding: 4px 12px; border-radius: 6px; background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; }
-          table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 11px; }
-          tr { page-break-inside: avoid; }
-          th { background-color: #0f172a; color: #ffffff; font-weight: 700; font-size: 10px; text-transform: uppercase; padding: 8px 6px; border: 1px solid #334155; text-align: left; }
-          td { border: 1px solid #cbd5e1; padding: 6px; vertical-align: middle; }
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 8.5pt;
+            color: #0f172a;
+            background: #fff;
+            margin: 0;
+            padding: 10mm;
+          }
+          .official-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 2px solid #0284c7;
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            width: 100%;
+          }
+          .official-header .titles {
+            text-align: left;
+            line-height: 1.25;
+          }
+          .official-header .titles .line-1 {
+            font-size: 10px;
+            font-weight: 800;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+          }
+          .official-header .titles .line-2 {
+            font-size: 10px;
+            font-weight: 700;
+            color: #0284c7;
+            text-transform: uppercase;
+          }
+          .official-header .titles .line-3 {
+            font-size: 10px;
+            font-weight: 700;
+            color: #334155;
+            text-transform: uppercase;
+          }
+          .official-header .header-sisedu {
+            text-align: right;
+            font-size: 6pt;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+          }
+          .badges-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 10px;
+            font-size: 8.5pt;
+            font-weight: 700;
+          }
+          .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8pt;
+            page-break-inside: auto;
+          }
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+          th {
+            background-color: #1e3a8a !important;
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 8pt;
+            text-transform: uppercase;
+            padding: 5px 6px;
+            border: 1px solid #93c5fd !important;
+            text-align: left;
+          }
+          td {
+            border: 1px solid #cbd5e1;
+            padding: 4px 6px;
+            vertical-align: middle;
+            color: #0f172a;
+          }
           tr:nth-child(even) { background-color: #f8fafc; }
-          .num { text-align: center; font-weight: bold; width: 35px; }
+          .num { text-align: center; font-weight: bold; width: 30px; }
           .center { text-align: center; }
           .right { text-align: right; }
-          .bold { font-weight: 700; }
-          .tag-comp { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 700; display: inline-block; }
+          .tag-comp { padding: 2px 6px; border-radius: 4px; font-size: 8pt; font-weight: 700; display: inline-block; }
           .comp-est { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
           .comp-mun { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
-          .footer-info { margin-top: 20px; display: flex; justify-content: space-between; font-size: 10px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 10px; }
+          .official-footer {
+            margin-top: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 8pt;
+            color: #475569;
+            border-top: 1px solid #cbd5e1;
+            padding-top: 6px;
+            width: 100%;
+          }
+          .official-footer .f-left {
+            flex: 1;
+            text-align: left;
+            font-weight: 700;
+            color: #0f172a;
+          }
+          .official-footer .f-center {
+            flex: 1;
+            text-align: center;
+            font-weight: 600;
+            color: #64748b;
+          }
+          .official-footer .f-right {
+            flex: 1;
+            text-align: right;
+            font-weight: 500;
+            color: #64748b;
+          }
+          .btn-print-action {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            background: #0284c7;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 10pt;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            z-index: 9999;
+          }
         </style>
       </head>
       <body>
-        <div class="header-container" style="text-align: left; display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 15px;">
-          <div>
-            <div style="font-size: 15px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-            <div style="font-size: 13px; font-weight: 700; color: #0284c7; text-transform: uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
-            <div style="font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
-            <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Relatório Sintético: <strong>Painel e Levantamento Geral de Escolas</strong></div>
+        <button class="btn-print-action no-print" onclick="window.print()">🖨️ Imprimir Relatório</button>
+
+        <div class="official-header">
+          <div class="titles">
+            <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
+            <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+            <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
           </div>
-          <div style="text-align: right;">
-            <div class="badges-row" style="justify-content: flex-end; margin-top: 0;">
-              <span class="badge">🏫 Escolas: ${pool.length.toLocaleString('pt-BR')}</span>
-              <span class="badge">🎓 Alunos: ${tMat.toLocaleString('pt-BR')}</span>
-              <span class="badge">📚 Salas: ${tSal.toLocaleString('pt-BR')}</span>
-            </div>
-            <div style="font-size: 10px; color: #64748b; margin-top: 5px;"><strong>Emissão:</strong> ${today}</div>
-          </div>
+          <div class="header-sisedu">SISEDU</div>
+        </div>
+
+        <div style="font-size:11px; font-weight:700; color:#1e3a8a; text-transform:uppercase; margin-bottom:6px;">
+          Relatório Sintético: Levantamento Geral de Escolas de Rondônia
+        </div>
+
+        <div class="badges-row">
+          <span class="badge">🏫 Escolas: ${pool.length.toLocaleString('pt-BR')}</span>
+          <span class="badge">🎓 Alunos: ${tMat.toLocaleString('pt-BR')}</span>
+          <span class="badge">📚 Salas: ${tSal.toLocaleString('pt-BR')}</span>
         </div>
 
         <table>
           <thead>
             <tr>
               <th class="num">Nº</th>
-              <th class="center">Competência</th>
+              <th class="center" style="width:75px;">Competência</th>
               <th>Município</th>
               <th>Nome da Escola</th>
-              <th class="center">INEP</th>
-              <th class="center">Localização</th>
+              <th class="center" style="width:65px;">INEP</th>
+              <th class="center" style="width:75px;">Localização</th>
               <th>SUPER</th>
               <th>Modalidades</th>
-              <th class="right">Alunos</th>
-              <th class="center">Salas</th>
+              <th class="right" style="width:60px;">Alunos</th>
+              <th class="center" style="width:50px;">Salas</th>
               <th>Diretor(a)</th>
               <th>Telefone</th>
             </tr>
           </thead>
           <tbody>
-    `;
+            ${pool.map((e, idx) => {
+              const comp = (e.competencia || 'Estadual').toLowerCase();
+              const compTag = comp.includes('est')
+                ? '<span class="tag-comp comp-est">Estadual</span>'
+                : '<span class="tag-comp comp-mun">Municipal</span>';
+              const alu = typeof _calcTotalAlunos === 'function' ? _calcTotalAlunos(e) : (Number(e.alunos) || 0);
 
-    pool.forEach((e, i) => {
-      const comp = e.competencia || 'Municipal';
-      const compClass = comp.toLowerCase().includes('est') ? 'comp-est' : 'comp-mun';
-      const totalA = typeof _calcTotalAlunos === 'function' ? _calcTotalAlunos(e) : (Number(e.alunos) || 0);
-      const matStr = totalA > 0 ? totalA.toLocaleString('pt-BR') : '-';
-      const salasStr = Number(e.salas) > 0 ? e.salas : '-';
-      
-      let modsStr = '-';
-      if (typeof _getModalidades === 'function') {
-        const mList = _getModalidades(e);
-        if (mList && mList.length > 0) {
-          modsStr = mList.map(m => m.modalidade + (m.alunos ? ` (${Number(m.alunos).toLocaleString('pt-BR')})` : '')).join(', ');
-        }
-      }
-
-      h += `
-        <tr>
-          <td class="num">${i + 1}</td>
-          <td class="center"><span class="tag-comp ${compClass}">${comp}</span></td>
-          <td class="bold">${e.municipio || '-'}</td>
-          <td class="bold" style="color:#0f172a;">${e.nome || '-'}</td>
-          <td class="center">${e.codigoInep || '-'}</td>
-          <td class="center">${e.localizacao || '-'}</td>
-          <td>${e.super || '-'}</td>
-          <td style="font-size:10px;">${modsStr}</td>
-          <td class="right bold" style="color:#047857;">${matStr}</td>
-          <td class="center">${salasStr}</td>
-          <td>${e.diretor || '-'}</td>
-          <td>${e.telefone || '-'}</td>
-        </tr>
-      `;
-    });
-
-    h += `
+              return `
+                <tr>
+                  <td class="num">${idx + 1}</td>
+                  <td class="center">${compTag}</td>
+                  <td>${e.municipio || '-'}</td>
+                  <td><strong>${e.nome || '-'}</strong></td>
+                  <td class="center">${e.inep || '-'}</td>
+                  <td class="center">${e.localizacao || '-'}</td>
+                  <td>${e.super || '-'}</td>
+                  <td>${e.modalidades || '-'}</td>
+                  <td class="right">${alu.toLocaleString('pt-BR')}</td>
+                  <td class="center">${e.salas || '-'}</td>
+                  <td>${e.diretor || '-'}</td>
+                  <td>${e.tel || '-'}</td>
+                </tr>
+              `;
+            }).join('')}
           </tbody>
         </table>
-        <div class="footer-info">
-          <span><strong>GDSM - GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS</strong></span>
-          <span>Página 1 de 1 &bull; Gerado em: ${today}</span>
+
+        <div class="official-footer">
+          <div class="f-left">GDSM - GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS</div>
+          <div class="f-center">Página 1 de 1</div>
+          <div class="f-right">Documento gerado eletronicamente em ${today}</div>
         </div>
+
+        <script>
+          window.addEventListener('load', () => {
+            setTimeout(() => { window.print(); }, 400);
+          });
+        </script>
       </body>
       </html>
     `;
@@ -1202,10 +1326,6 @@ function imprimirRelatorioEscolas() {
 
     printWin.document.write(h);
     printWin.document.close();
-    setTimeout(() => {
-      printWin.focus();
-      printWin.print();
-    }, 400);
 
   } catch (err) {
     console.error('Erro ao gerar relatório de escolas:', err);

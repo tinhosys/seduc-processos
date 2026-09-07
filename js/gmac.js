@@ -541,7 +541,8 @@ function imprimirRelatorioGMAC(modulo) {
     return;
   }
 
-  const dataHora = new Date().toLocaleString('pt-BR');
+  const agora = new Date();
+  const dataHora = agora.toLocaleDateString('pt-BR') + ', ' + agora.toLocaleTimeString('pt-BR');
   const munTexto = filtro.municipio ? filtro.municipio : 'Todos os Municípios';
   const statusTexto = filtro.status ? filtro.status : 'Todos os Status';
   const buscaTexto = filtro.busca ? `"${filtro.busca}"` : 'Nenhum termo';
@@ -576,71 +577,77 @@ function imprimirRelatorioGMAC(modulo) {
       <title>Relatório - ${cfg.titulo} (SEDUC/RO)</title>
       <style>
         @media print {
-          @page { size: A4 landscape; margin: 8mm; }
+          @page { size: A4 landscape !important; margin: 10mm !important; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           .no-print { display: none !important; }
         }
         body {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-          font-size: 9pt;
+          font-family: Arial, sans-serif;
+          font-size: 8.5pt;
           color: #0f172a;
           margin: 0;
-          padding: 14px;
+          padding: 10mm;
           background: #ffffff;
         }
-        .header-box {
-          border-bottom: 2px solid #0284c7;
-          padding-bottom: 10px;
-          margin-bottom: 12px;
+        .official-header {
           display: flex;
           justify-content: space-between;
-          align-items: center;
+          align-items: flex-end;
+          border-bottom: 2px solid #0284c7;
+          padding-bottom: 6px;
+          margin-bottom: 10px;
+          width: 100%;
         }
-        .header-title h1 {
-          font-size: 13pt;
+        .official-header .titles {
+          text-align: left;
+          line-height: 1.25;
+        }
+        .official-header .titles .line-1 {
+          font-size: 10px;
           font-weight: 800;
           color: #0f172a;
-          margin: 0 0 2px 0;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.4px;
         }
-        .header-title h2 {
-          font-size: 10.5pt;
+        .official-header .titles .line-2 {
+          font-size: 10px;
           font-weight: 700;
           color: #0284c7;
-          margin: 0 0 2px 0;
           text-transform: uppercase;
         }
-        .header-title h3 {
-          font-size: 9.5pt;
+        .official-header .titles .line-3 {
+          font-size: 10px;
           font-weight: 700;
           color: #334155;
-          margin: 0 0 4px 0;
           text-transform: uppercase;
         }
-        .header-title p {
-          font-size: 8.5pt;
-          color: #64748b;
-          margin: 0;
+        .official-header .header-sisedu {
+          text-align: right;
+          font-size: 6pt;
+          font-weight: 700;
+          color: #94a3b8;
+          letter-spacing: 1px;
+          text-transform: uppercase;
         }
         .filter-badge-bar {
-          background: #f1f5f9;
-          border: 1px solid #cbd5e1;
+          background: #eff6ff;
+          border: 1px solid #bfdbfe;
           border-radius: 6px;
-          padding: 8px 12px;
-          margin-bottom: 12px;
+          padding: 6px 12px;
+          margin-bottom: 10px;
           display: flex;
           flex-wrap: wrap;
           gap: 16px;
           font-size: 8.5pt;
+          color: #1e40af;
         }
         .filter-item strong {
-          color: #0f172a;
+          color: #1e3a8a;
         }
         table {
           width: 100%;
           border-collapse: collapse;
-          font-size: 8.5pt;
+          font-size: 8pt;
           page-break-inside: auto;
         }
         tr {
@@ -649,21 +656,25 @@ function imprimirRelatorioGMAC(modulo) {
         }
         th, td {
           border: 1px solid #cbd5e1;
-          padding: 5px 7px;
+          padding: 5px 6px;
           text-align: left;
           vertical-align: middle;
+          box-sizing: border-box;
+          word-break: break-word;
+          overflow-wrap: break-word;
         }
         th {
-          background-color: #0f172a;
-          color: #ffffff;
+          background-color: #1e3a8a !important;
+          color: #ffffff !important;
           font-weight: 700;
           text-transform: uppercase;
           font-size: 8pt;
+          border: 1px solid #93c5fd !important;
         }
         tbody tr:nth-child(even) {
           background-color: #f8fafc;
         }
-        .footer-note {
+        .official-footer {
           margin-top: 14px;
           border-top: 1px solid #cbd5e1;
           padding-top: 6px;
@@ -671,40 +682,61 @@ function imprimirRelatorioGMAC(modulo) {
           color: #475569;
           display: flex;
           justify-content: space-between;
+          align-items: center;
+          width: 100%;
+        }
+        .official-footer .f-left {
+          flex: 1;
+          text-align: left;
+          font-weight: 700;
+          color: #0f172a;
+        }
+        .official-footer .f-center {
+          flex: 1;
+          text-align: center;
+          font-weight: 600;
+          color: #64748b;
+        }
+        .official-footer .f-right {
+          flex: 1;
+          text-align: right;
+          font-weight: 500;
+          color: #64748b;
         }
         .btn-print-action {
           position: fixed;
-          top: 15px;
-          right: 15px;
+          top: 12px;
+          right: 12px;
           background: #0284c7;
           color: white;
           border: none;
-          padding: 10px 20px;
-          border-radius: 8px;
+          padding: 8px 16px;
+          border-radius: 6px;
           font-weight: bold;
-          font-size: 11pt;
+          font-size: 10pt;
           cursor: pointer;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+          box-shadow: 0 4px 10px rgba(0,0,0,0.15);
           display: flex;
           align-items: center;
           gap: 6px;
+          z-index: 9999;
         }
       </style>
     </head>
     <body>
       <button class="btn-print-action no-print" onclick="window.print()">🖨️ Imprimir Relatório</button>
 
-      <div class="header-box">
-        <div class="header-title">
-          <h1>GOVERNO DO ESTADO DE RONDÔNIA</h1>
-          <h2>SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</h2>
-          <h3>CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</h3>
-          <p>Relatório Gerencial de Controle: <strong>${cfg.titulo}</strong></p>
+      <div class="official-header">
+        <div class="titles">
+          <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
+          <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
         </div>
-        <div style="text-align:right; font-size:8.5pt; color:#475569;">
-          <div><strong>Emissão:</strong> ${dataHora}</div>
-          <div><strong>Registros Listados:</strong> ${filtrados.length}</div>
-        </div>
+        <div class="header-sisedu">SISEDU</div>
+      </div>
+
+      <div style="font-size:11px; font-weight:700; color:#1e3a8a; text-transform:uppercase; margin-bottom:6px;">
+        Relatório Gerencial de Controle: ${cfg.titulo}
       </div>
 
       <div class="filter-badge-bar">
@@ -719,14 +751,15 @@ function imprimirRelatorioGMAC(modulo) {
         <tbody>${tbodyHtml}</tbody>
       </table>
 
-      <div class="footer-note">
-        <span><strong>GMAC - GERÊNCIA DE MONITORAMENTO DAS AÇÕES DE COOPERAÇÃO</strong></span>
-        <span>Página 1 de 1 &bull; Documento gerado eletronicamente em ${dataHora}</span>
+      <div class="official-footer">
+        <div class="f-left">GMAC - GERÊNCIA DE MONITORAMENTO DAS AÇÕES DE COOPERAÇÃO</div>
+        <div class="f-center">Página 1 de 1</div>
+        <div class="f-right">Documento gerado eletronicamente em ${dataHora}</div>
       </div>
 
       <script>
         window.addEventListener('load', () => {
-          setTimeout(() => { window.print(); }, 500);
+          setTimeout(() => { window.print(); }, 400);
         });
       </script>
     </body>

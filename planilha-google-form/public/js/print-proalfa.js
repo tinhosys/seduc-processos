@@ -28,105 +28,197 @@ function getFilteredProalfaData() {
   };
 }
 
-function openPrintWindow(contentHtml, title, subtituloCustom) {
+function openPrintWindow(contentHtml, title, subtituloCustom, gerenciaCustom) {
   const printWindow = window.open('', '_blank');
-  const dataHora = new Date().toLocaleString('pt-BR');
-  const sub = subtituloCustom || title || 'RELATÓRIO';
+  if (!printWindow) {
+    alert('Por favor, permita pop-ups para visualizar o relatório de impressão.');
+    return;
+  }
+  const agora = new Date();
+  const dataHora = agora.toLocaleDateString('pt-BR') + ', ' + agora.toLocaleTimeString('pt-BR');
+  const gerencia = gerenciaCustom || (title && (title.includes('Governo') || title.includes('Contatos') || title.includes('Municípios')) ? 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS' : 'PROALFA - PROGRAMA DE ALFABETIZAÇÃO DO ESTADO DE RONDÔNIA');
+
   printWindow.document.write(`
     <!DOCTYPE html>
     <html lang="pt-BR">
     <head>
       <meta charset="UTF-8">
-      <title>${title}</title>
+      <title>${title || 'Relatório'}</title>
       <style>
         @media print {
-          @page { size: A4 landscape; margin: 10mm; }
+          @page { size: A4 landscape !important; margin: 10mm !important; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           .no-print { display: none !important; }
         }
-        body { font-family: Arial, sans-serif; font-size: 10px; margin: 0; padding: 20px; color: #0f172a; }
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 8.5pt;
+          margin: 0;
+          padding: 10mm;
+          color: #0f172a;
+          background: #ffffff;
+        }
         .official-header {
           display: flex;
           justify-content: space-between;
           align-items: flex-end;
-          border-bottom: 2px solid #0f172a;
-          padding-bottom: 8px;
-          margin-bottom: 14px;
+          border-bottom: 2px solid #0284c7;
+          padding-bottom: 6px;
+          margin-bottom: 12px;
+          width: 100%;
         }
         .official-header .titles {
           text-align: left;
+          line-height: 1.25;
         }
-        .official-header .titles h1 {
-          font-size: 13px;
+        .official-header .titles .line-1 {
+          font-size: 10px;
           font-weight: 800;
           color: #0f172a;
-          margin: 0 0 2px 0;
           text-transform: uppercase;
-          letter-spacing: 0.5px;
+          letter-spacing: 0.4px;
         }
-        .official-header .titles h2 {
-          font-size: 11px;
+        .official-header .titles .line-2 {
+          font-size: 10px;
           font-weight: 700;
           color: #0284c7;
-          margin: 0 0 2px 0;
           text-transform: uppercase;
         }
-        .official-header .titles h3 {
+        .official-header .titles .line-3 {
           font-size: 10px;
           font-weight: 700;
           color: #334155;
-          margin: 0;
           text-transform: uppercase;
         }
-        .official-header .sub-box {
+        .official-header .header-sisedu {
           text-align: right;
-          font-size: 9.5px;
-          color: #475569;
-          font-weight: bold;
+          font-size: 6pt;
+          font-weight: 700;
+          color: #94a3b8;
+          letter-spacing: 1px;
           text-transform: uppercase;
-          background: #f1f5f9;
-          border: 1px solid #cbd5e1;
-          padding: 4px 8px;
-          border-radius: 4px;
         }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; page-break-inside: auto; }
-        tr { page-break-inside: avoid; page-break-after: auto; }
-        th, td { border: 1px solid #ccc; padding: 6px 4px; text-align: right; }
-        th { background-color: #e2e8f0; font-weight: bold; text-align: center; }
+        .report-subtitle {
+          font-size: 11px;
+          font-weight: 700;
+          color: #1e3a8a;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 6px;
+          font-size: 8.5pt;
+          page-break-inside: auto;
+        }
+        tr {
+          page-break-inside: avoid;
+          page-break-after: auto;
+        }
+        th, td {
+          border: 1px solid #cbd5e1;
+          padding: 5px 6px;
+          box-sizing: border-box;
+          word-break: break-word;
+          overflow-wrap: break-word;
+        }
+        th {
+          background-color: #1e3a8a !important;
+          color: #ffffff !important;
+          font-weight: 700;
+          font-size: 8pt;
+          text-transform: uppercase;
+          text-align: center;
+          border: 1px solid #93c5fd !important;
+        }
+        td {
+          color: #0f172a;
+        }
         .text-left { text-align: left; }
         .text-center { text-align: center; }
-        .header-title { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; font-size: 14px; font-weight: bold; }
-        .sub-header { text-align: center; font-weight: bold; font-size: 12px; margin-bottom: 5px; }
-        .bg-blue { background-color: #93c5fd !important; }
-        .bg-light-blue { background-color: #bfdbfe !important; }
+        .text-right { text-align: right; }
+        .bg-blue { background-color: #1e3a8a !important; color: #ffffff !important; border: 1px solid #93c5fd !important; }
+        .bg-light-blue { background-color: #eff6ff !important; color: #1e3a8a !important; font-weight: bold; }
         .striped tr:nth-child(even) { background-color: #f8fafc; }
         .official-footer {
-          margin-top: 16px;
+          margin-top: 14px;
           border-top: 1px solid #cbd5e1;
           padding-top: 6px;
-          font-size: 8.5px;
+          font-size: 8pt;
           color: #475569;
           display: flex;
           justify-content: space-between;
+          align-items: center;
+          width: 100%;
+        }
+        .official-footer .f-left {
+          flex: 1;
+          text-align: left;
+          font-weight: 700;
+          color: #0f172a;
+        }
+        .official-footer .f-center {
+          flex: 1;
+          text-align: center;
+          font-weight: 600;
+          color: #64748b;
+        }
+        .official-footer .f-right {
+          flex: 1;
+          text-align: right;
+          font-weight: 500;
+          color: #64748b;
+        }
+        .btn-print-action {
+          position: fixed;
+          top: 12px;
+          right: 12px;
+          background: #0284c7;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-weight: bold;
+          font-size: 10pt;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          z-index: 9999;
         }
       </style>
     </head>
     <body>
+      <button class="btn-print-action no-print" onclick="window.print()">🖨️ Imprimir Relatório</button>
+
       <div class="official-header">
         <div class="titles">
-          <h1>GOVERNO DO ESTADO DE RONDÔNIA</h1>
-          <h2>SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</h2>
-          <h3>CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</h3>
+          <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
+          <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
         </div>
-        <div class="sub-box">${sub}</div>
+        <div class="header-sisedu">SISEDU</div>
       </div>
+
+      ${title ? `<div class="report-subtitle"><span>${title}</span></div>` : ''}
+
       ${contentHtml}
+
       <div class="official-footer">
-        <span><strong>PROALFA - PROGRAMA DE ALFABETIZAÇÃO DO ESTADO DE RONDÔNIA</strong></span>
-        <span>Página 1 de 1 &bull; Documento gerado eletronicamente em ${dataHora}</span>
+        <div class="f-left">${gerencia}</div>
+        <div class="f-center">Página 1 de 1</div>
+        <div class="f-right">Documento gerado eletronicamente em ${dataHora}</div>
       </div>
+
       <script>
-        setTimeout(() => { window.print(); }, 500);
+        window.addEventListener('load', () => {
+          setTimeout(() => { window.print(); }, 400);
+        });
       </script>
     </body>
     </html>
@@ -539,5 +631,5 @@ function imprimirContatos() {
     </table>
   `;
 
-  openPrintWindow(content, 'Relatório Governo + CAM');
+  openPrintWindow(content, 'RELATÓRIO DE CONTATOS MUNICIPAIS (PREFEITOS E SECRETÁRIOS)', null, 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS');
 }

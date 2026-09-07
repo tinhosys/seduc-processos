@@ -1,5 +1,5 @@
 
-// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.41)
+// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.42)
 // Remove ,00 ou .00 se for formatação numérica de planilha, preserva texto livre e limita a 8 caracteres
 window.limparDigitoValor = function(val) {
   if (val === null || val === undefined) return '';
@@ -12,7 +12,7 @@ window.limparDigitoValor = function(val) {
 window.formatarDigitoInteiro = window.limparDigitoValor;
 
 
-// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.41)
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.42)
 window.copiarSeiLinha = function(btn) {
   const row = btn.closest('div');
   const input = row ? row.querySelector('.form-numero-item') : null;
@@ -1432,7 +1432,7 @@ window.popularDigitosDisponiveis = function() {
         ? inputVal.split(/[,;\s]+/).map(v => window.limparDigitoValor(v)).filter(Boolean) 
         : [];
       
-      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.41)
+      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.42)
       container.innerHTML = distinctDigitos.map(dig => {
         const isChecked = currentSelected.includes(dig);
         return `
@@ -2890,16 +2890,17 @@ function getFormattedDateForTitle() {
 
 function getCommonHeader(subtitle) {
   return `
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0f172a; padding-bottom:6px; margin-bottom:14px; width:100%; font-family: Arial, sans-serif;">
-      <div style="text-align:left;">
-        <div style="font-size:11px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.5px; line-height:1.2;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase; line-height:1.2;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
-        <div style="font-size:9.5px; font-weight:700; color:#334155; text-transform:uppercase; line-height:1.2;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+    <div class="official-print-header" style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0284c7; padding-bottom:6px; margin-bottom:10px; width:100%; font-family: Arial, sans-serif;">
+      <div style="text-align:left; line-height:1.25;">
+        <div style="font-size:10px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
+        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
-        <div style="font-size:10px; color:#475569; font-weight:bold; text-transform:uppercase; background:#f1f5f9; border:1px solid #cbd5e1; padding:3px 8px; border-radius:4px;">${subtitle.toUpperCase()}</div>
+        <span style="font-size:6pt; font-weight:700; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;">SISEDU</span>
       </div>
     </div>
+    ${subtitle ? `<div style="font-size:11px; font-weight:700; color:#1e3a8a; text-transform:uppercase; margin-bottom:8px; font-family: Arial, sans-serif;">${subtitle}</div>` : ''}
   `;
 }
 
@@ -2916,10 +2917,13 @@ function injectFixedHeader(subtitle) {
 
 function getCommonFooter(gerenciaCustom) {
   const gerenciaTexto = gerenciaCustom || 'GDSM - GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS';
+  const agora = new Date();
+  const dataHora = agora.toLocaleDateString('pt-BR') + ', ' + agora.toLocaleTimeString('pt-BR');
   return `
-    <div style="border-top:1px solid #cbd5e1; padding-top:5px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:8.5px; font-weight:normal; color:#475569; font-family: Arial, sans-serif; width:100%;">
-      <div style="flex:1; text-align:left; font-weight:bold; color:#0f172a;">${gerenciaTexto}</div>
-      <div style="flex:1; text-align:right;" class="print-date-time-rodape"></div>
+    <div class="official-print-footer" style="border-top:1px solid #cbd5e1; padding-top:6px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-family: Arial, sans-serif; font-size:8pt; width:100%; color:#475569;">
+      <div style="flex:1; text-align:left; font-weight:700; color:#0f172a;">${gerenciaTexto}</div>
+      <div style="flex:1; text-align:center; font-weight:600; color:#64748b;">Página 1 de 1</div>
+      <div style="flex:1; text-align:right; font-weight:500; color:#64748b;">Documento gerado eletronicamente em <span class="print-date-time-rodape">${dataHora}</span></div>
     </div>
   `;
 }
@@ -3006,17 +3010,16 @@ function imprimirPadrao(filtrados = getFiltrados()) {
                 <col style="width: 8%;">
               </colgroup>
               <thead>
-                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:8%; font-size:10.5px; font-weight:bold;">STATUS</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">LOCAL</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:7%; font-size:10.5px; font-weight:bold;">DATA</th>
-                  <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:right; width:8%; font-size:10.5px; font-weight:bold;">VALOR R$</th>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#1e3a8a;"><th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:8%; font-size:10.5px; font-weight:bold;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:center; width:7%; font-size:10.5px; font-weight:bold;">DATA</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:right; width:8%; font-size:10.5px; font-weight:bold;">VALOR R$</th>
                 </tr>
               </thead>
               ${rowsHtml || '<tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr></tbody>'}
@@ -3046,7 +3049,7 @@ function imprimirPadrao(filtrados = getFiltrados()) {
       document.title = 'CAM_PADRAO_' + getFormattedDateForTitle();
 
       const style = document.createElement('style');
-      style.innerHTML = '@media print { @page { size: A4 landscape !important; } }';
+      style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 10mm !important; } table.print-table-detalhado th { background-color: #1e3a8a !important; color: #ffffff !important; border: 1px solid #93c5fd !important; } }';
       document.head.appendChild(style);
 
       window.print();
@@ -3166,17 +3169,16 @@ function imprimirDetalhado() {
             </colgroup>
   
             <thead>
-            <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:8%; font-size:10.5px; font-weight:bold;">STATUS</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">LOCAL</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:center; width:7%; font-size:10.5px; font-weight:bold;">DATA</th>
-              <th style="color:#000000; border: 1px solid #ccc; border-top: none; padding: 2px; text-align:right; width:8%; font-size:10.5px; font-weight:bold;">VALOR R$</th>
+            <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#1e3a8a;"><th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:8%; font-size:10.5px; font-weight:bold;">STATUS</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">LOCAL</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:center; width:7%; font-size:10.5px; font-weight:bold;">DATA</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:right; width:8%; font-size:10.5px; font-weight:bold;">VALOR R$</th>
             </tr></thead>
       ${tableRows}
     </table>
@@ -5251,7 +5253,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.41)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.42)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -5331,7 +5333,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.41)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.42)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';

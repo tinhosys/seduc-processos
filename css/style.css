@@ -2432,7 +2432,7 @@ select#filtro-agrupamento.action-adm {
 }
 
 /* ============================================================
-   REGRA DE OURO DO SISTEMA: DADOS SEMPRE DENTRO DA COLUNA (GBZ - v1.2.41)
+   REGRA DE OURO DO SISTEMA: DADOS SEMPRE DENTRO DA COLUNA (GBZ - v1.2.42)
    Em hipótese alguma informações podem vazar ou sobrepor colunas vizinhas
    ============================================================ */
 table {
@@ -2496,4 +2496,40 @@ span.badge {
   overflow-x: auto !important;
   -webkit-overflow-scrolling: touch;
   max-width: 100%;
+}
+
+/* ============================================================
+   PADRONIZAÇÃO UNIVERSAL DE RELATÓRIOS (GBZ - v1.2.42)
+   Paisagem, cabeçalho institucional, SISEDU fonte 6, rodapé 3 colunas
+   ============================================================ */
+@media print {
+  @page {
+    size: A4 landscape !important;
+    margin: 10mm !important;
+  }
+  * {
+    font-family: Arial, sans-serif !important;
+  }
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+  }
+  .no-print, .btn, .btn-print-action, .sidebar, .topbar, .filters-bar, .pagination, #export-buttons {
+    display: none !important;
+  }
+  table th {
+    background-color: #1e3a8a !important;
+    color: #ffffff !important;
+    border: 1px solid #93c5fd !important;
+    font-weight: bold !important;
+  }
+  table td {
+    border: 1px solid #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+  tbody tr:nth-child(even) {
+    background-color: #f8fafc !important;
+  }
 }
