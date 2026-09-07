@@ -1,5 +1,5 @@
 
-// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.38)
+// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.39)
 // Remove ,00 ou .00 se for formatação numérica de planilha, preserva texto livre e limita a 8 caracteres
 window.limparDigitoValor = function(val) {
   if (val === null || val === undefined) return '';
@@ -12,7 +12,7 @@ window.limparDigitoValor = function(val) {
 window.formatarDigitoInteiro = window.limparDigitoValor;
 
 
-// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.38)
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.39)
 window.copiarSeiLinha = function(btn) {
   const row = btn.closest('div');
   const input = row ? row.querySelector('.form-numero-item') : null;
@@ -1312,8 +1312,8 @@ function renderProcessos() {
       </td>
       <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || '—'}</td>
       <td class="col-objeto" title="${p.objeto}">${p.objeto || '—'}</td>
-      <td style="text-align: center;"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
-      <td style="text-align: center;">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>') : '—'}</td>
+      <td class="col-status" style="text-align: center;"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
+      <td class="col-localizacao" style="text-align: center;">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>').replace(/\|/g, '|<wbr>') : '—'}</td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
       <td style="text-align: center;">${formatDate(p.data)}</td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
@@ -1432,7 +1432,7 @@ window.popularDigitosDisponiveis = function() {
         ? inputVal.split(/[,;\s]+/).map(v => window.limparDigitoValor(v)).filter(Boolean) 
         : [];
       
-      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.38)
+      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.39)
       container.innerHTML = distinctDigitos.map(dig => {
         const isChecked = currentSelected.includes(dig);
         return `
@@ -5251,7 +5251,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.38)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.39)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -5331,7 +5331,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.38)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.39)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';

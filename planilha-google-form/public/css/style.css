@@ -2430,3 +2430,47 @@ select#filtro-agrupamento.action-adm {
   min-width: 160px !important;
   max-width: 200px !important;
 }
+
+/* Quebra de linha e confinamento estrito de dados nas colunas da tabela (GBZ - v1.2.39) */
+table {
+  table-layout: fixed !important;
+}
+
+td, th {
+  box-sizing: border-box !important;
+}
+
+.col-status {
+  text-align: center !important;
+  vertical-align: middle !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  box-sizing: border-box !important;
+  padding: 6px 4px !important;
+}
+
+.col-status .badge,
+.badge.badge-wrap {
+  display: inline-block !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 100% !important;
+  line-height: 1.25 !important;
+  padding: 4px 8px !important;
+  border-radius: 10px !important;
+  text-align: center !important;
+  box-sizing: border-box !important;
+}
+
+.col-localizacao {
+  text-align: center !important;
+  vertical-align: middle !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.3 !important;
+  box-sizing: border-box !important;
+  padding: 6px 4px !important;
+}
