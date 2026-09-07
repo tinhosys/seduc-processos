@@ -2432,7 +2432,7 @@ select#filtro-agrupamento.action-adm {
 }
 
 /* ============================================================
-   REGRA DE OURO DO SISTEMA: DADOS SEMPRE DENTRO DA COLUNA (GBZ - v1.2.42)
+   REGRA DE OURO DO SISTEMA: DADOS SEMPRE DENTRO DA COLUNA (GBZ - v1.2.43)
    Em hipótese alguma informações podem vazar ou sobrepor colunas vizinhas
    ============================================================ */
 table {
@@ -2499,7 +2499,7 @@ span.badge {
 }
 
 /* ============================================================
-   PADRONIZAÇÃO UNIVERSAL DE RELATÓRIOS (GBZ - v1.2.42)
+   PADRONIZAÇÃO UNIVERSAL DE RELATÓRIOS (GBZ - v1.2.43)
    Paisagem, cabeçalho institucional, SISEDU fonte 6, rodapé 3 colunas
    ============================================================ */
 @media print {

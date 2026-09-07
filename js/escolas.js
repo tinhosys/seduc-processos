@@ -799,7 +799,7 @@ function _escolasRenderTabela() {
       '<td style="font-size:12px">' + tel + '</td>' +
       '<td style="text-align:center;" onclick="event.stopPropagation()">' +
         '<div style="display:flex;gap:6px;justify-content:center;">' +
-          '<button onclick="abrirFormEscolaByInepOrId(\'' + idKey + '\')" title="Editar Dados da Escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;border-radius:6px;color:#ffffff;padding:6px 14px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(139,92,246,0.3);"><span style="font-family:sans-serif">✏️</span> Editar</button>' +
+          '<button onclick="abrirFormEscolaByInepOrId(\'' + idKey + '\')" title="Editar Dados da Escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;border-radius:6px;color:#ffffff;width:32px;height:32px;padding:0;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(139,92,246,0.3);transition:transform 0.1s,opacity 0.2s;"><span style="font-family:sans-serif;font-size:15px;line-height:1;">✏️</span></button>' +
         '</div>' +
       '</td>' +
       '</tr>';
@@ -853,7 +853,7 @@ function abrirModalEscola(idx) {
   _preencherFormEscola(escola);
 }
 
-function abrirFormEscolaById(id) {
+function abrirModalEscolaById(id) {
   let escola = _escolasCache.find(e => e.id === id);
   if (!escola && typeof _mapaCacheEscolas !== 'undefined' && Array.isArray(_mapaCacheEscolas)) {
     escola = _mapaCacheEscolas.find(e => e.id === id);

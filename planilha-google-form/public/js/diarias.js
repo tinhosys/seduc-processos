@@ -556,34 +556,451 @@ window.inserirDiaria = function() {
 };
 
 window.gerarRelatorioDiarias = function() {
-  if (!window.jspdf) {
-    alert("Biblioteca jsPDF não carregada.");
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) {
+    alert('Por favor, permita pop-ups para visualizar o relatório de impressão.');
     return;
   }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  
-  doc.setFontSize(14);
-  doc.text("RELATÓRIO DE DIÁRIAS - SEDUC/RO", 14, 15);
-  doc.setFontSize(10);
-  doc.text("Gerado em: " + new Date().toLocaleString('pt-BR'), 14, 21);
-  doc.text("Saldo Atual: " + DIARIAS_SALDO_ATUAL.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}), 14, 27);
-  
-  const head = [['Data', 'Beneficiário', 'Motivo', 'Valor']];
-  const body = DIARIAS_DATA.map(d => [
-    d.data, d.nome, d.motivo, 'R$ ' + d.valor.toLocaleString('pt-BR', {minimumFractionDigits:2})
-  ]);
-  
-  doc.autoTable({
-    startY: 35,
-    head: head,
-    body: body,
-    styles: { fontSize: 9 },
-    headStyles: { fillColor: [14, 165, 233] }
-  });
-  
-  doc.save(`Relatorio_Diarias.pdf`);
+
+  const aba = window._filtroDiariasAba || 'estadual';
+  const agora = new Date();
+  const dataHora = agora.toLocaleDateString('pt-BR') + ', ' + agora.toLocaleTimeString('pt-BR');
+  const gerencia = 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS';
+
+  let title = 'RELATÓRIO DE DIÁRIAS - ' + (aba === 'federal' ? 'RECURSO FEDERAL' : (aba === 'consolidado' ? 'CONSOLIDADO ORÇAMENTÁRIO' : 'EXECUÇÃO ORÇAMENTÁRIA ESTADUAL'));
+  let contentHtml = '';
+
+  if (aba === 'consolidado') {
+    // Relatório Consolidado
+    let setoresHtml = '';
+    if (typeof CONSOL_DATA_SETORES !== 'undefined' && CONSOL_DATA_SETORES && CONSOL_DATA_SETORES.length > 0) {
+      setoresHtml = CONSOL_DATA_SETORES.map(s => `
+        <tr>
+          <td class="text-left" style="font-weight:600;">${s.setor}</td>
+          <td class="text-right" style="color:#ef4444;">${s.dentroAnulacao}</td>
+          <td class="text-right" style="color:#10b981; font-weight:bold;">${s.dentroPago}</td>
+          <td class="text-right" style="color:#f59e0b;">${s.dentroReserva}</td>
+          <td class="text-right" style="color:#10b981; font-weight:bold;">${s.foraPago}</td>
+          <td class="text-right" style="color:#f59e0b;">${s.foraReserva}</td>
+        </tr>
+      `).join('');
+    }
+
+    let notasHtml = '';
+    if (typeof CONSOL_DATA_NOTAS !== 'undefined' && CONSOL_DATA_NOTAS && CONSOL_DATA_NOTAS.length > 0) {
+      notasHtml = CONSOL_DATA_NOTAS.map(n => `
+        <tr>
+          <td class="text-left" style="font-weight:bold; color:#1e3a8a;">${n.nome}</td>
+          <td class="text-right">${n.empenhado}</td>
+          <td class="text-right">${n.reforco}</td>
+          <td class="text-right" style="color:#ef4444;">${n.anulacao}</td>
+          <td class="text-right" style="font-weight:bold;">${n.valorAtualizado}</td>
+          <td class="text-right" style="color:#10b981; font-weight:bold;">${n.pago}</td>
+          <td class="text-right" style="color:#f59e0b;">${n.reserva}</td>
+          <td class="text-right" style="font-weight:bold; color:#0284c7;">${n.saldoLiquido}</td>
+        </tr>
+      `).join('');
+    }
+
+    contentHtml = `
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:10pt; color:#1e3a8a; margin:0 0 6px 0; text-transform:uppercase;">1. Detalhamento por Setor (Dentro e Fora do Estado)</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th style="text-align:left;">Setor</th>
+              <th style="text-align:right;">Anulação (Dentro)</th>
+              <th style="text-align:right;">Pago (Dentro)</th>
+              <th style="text-align:right;">Reserva (Dentro)</th>
+              <th style="text-align:right;">Pago (Fora)</th>
+              <th style="text-align:right;">Reserva (Fora)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${setoresHtml || '<tr><td colspan="6" class="text-center">Nenhum dado consolidado de setor encontrado.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top:15px;">
+        <h3 style="font-size:10pt; color:#1e3a8a; margin:0 0 6px 0; text-transform:uppercase;">2. Execução das Notas de Empenho (Consolidação Orçamentária)</h3>
+        <table class="striped">
+          <thead>
+            <tr>
+              <th style="text-align:left;">Nota / Finalidade</th>
+              <th style="text-align:right;">Empenhado</th>
+              <th style="text-align:right;">Reforço</th>
+              <th style="text-align:right;">Anulação</th>
+              <th style="text-align:right;">Valor Atualizado</th>
+              <th style="text-align:right;">Pago</th>
+              <th style="text-align:right;">Reserva</th>
+              <th style="text-align:right;">Saldo Líquido</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${notasHtml || '<tr><td colspan="8" class="text-center">Nenhuma nota de empenho encontrada.</td></tr>'}
+          </tbody>
+        </table>
+      </div>
+    `;
+  } else {
+    // Relatório de Diárias Listadas (Estadual ou Federal) com todos os filtros aplicados
+    const busca = (document.getElementById('busca-diarias') ? document.getElementById('busca-diarias').value.toLowerCase().trim() : '');
+    const vMes = document.getElementById('diaria-filtro-mes') ? document.getElementById('diaria-filtro-mes').value : 'Todos';
+    const vStatus = document.getElementById('diaria-filtro-status') ? document.getElementById('diaria-filtro-status').value : 'Todos';
+    const vSetor = document.getElementById('diaria-filtro-setor') ? document.getElementById('diaria-filtro-setor').value : 'Todos';
+    const vNota = document.getElementById('diaria-filtro-nota') ? document.getElementById('diaria-filtro-nota').value : 'Todos';
+    const vDataIni = document.getElementById('diaria-filtro-data-ini') ? document.getElementById('diaria-filtro-data-ini').value : '';
+    const vDataFim = document.getElementById('diaria-filtro-data-fim') ? document.getElementById('diaria-filtro-data-fim').value : '';
+
+    let filtrados = DIARIAS_DATA || [];
+
+    if (aba === 'federal') {
+      filtrados = filtrados.filter(d => d.origem === 'federal');
+    } else {
+      filtrados = filtrados.filter(d => d.origem === 'estadual');
+    }
+
+    if (busca) {
+      filtrados = filtrados.filter(d => 
+        (d.nome && d.nome.toLowerCase().includes(busca)) ||
+        (d.motivo && d.motivo.toLowerCase().includes(busca)) ||
+        (d.processo && d.processo.toLowerCase().includes(busca)) ||
+        (d.cidade && d.cidade.toLowerCase().includes(busca)) ||
+        (d.cpf && d.cpf.toLowerCase().includes(busca))
+      );
+    }
+
+    if (vMes && vMes !== 'Todos') filtrados = filtrados.filter(d => d.mes === vMes);
+    if (vStatus && vStatus !== 'Todos') filtrados = filtrados.filter(d => d.status === vStatus);
+    if (vSetor && vSetor !== 'Todos') filtrados = filtrados.filter(d => d.setorOriginal === vSetor);
+    if (vNota && vNota !== 'Todos') filtrados = filtrados.filter(d => d.nota === vNota);
+
+    if (vDataIni || vDataFim) {
+      let dIni = null;
+      let dFim = null;
+      if (vDataIni) {
+        const p = vDataIni.split('-');
+        if (p.length === 3) dIni = new Date(p[0], p[1] - 1, p[2]);
+      }
+      if (vDataFim) {
+        const p = vDataFim.split('-');
+        if (p.length === 3) dFim = new Date(p[0], p[1] - 1, p[2]);
+      }
+      filtrados = filtrados.filter(d => {
+        if (!d.dateObj) {
+          if (d.data) {
+            const parts = d.data.split('/');
+            if (parts.length === 3) {
+              const dt = new Date(parts[2], parts[1] - 1, parts[0]);
+              if (dIni && dt < dIni) return false;
+              if (dFim && dt > dFim) return false;
+            }
+          }
+          return true;
+        }
+        if (dIni && d.dateObj < dIni) return false;
+        if (dFim && d.dateObj > dFim) return false;
+        return true;
+      });
+    }
+
+    let totalGeral = 0;
+    let totalPago = 0;
+    let totalReserva = 0;
+
+    filtrados.forEach(d => {
+      const val = Number(d.valor) || 0;
+      totalGeral += val;
+      const st = (d.status || '').toLowerCase();
+      if (st.includes('pago')) totalPago += val;
+      else if (st.includes('reserva')) totalReserva += val;
+    });
+
+    const isFederal = (aba === 'federal');
+
+    const rowsHtml = filtrados.map((d, idx) => {
+      let corStatus = '#0284c7';
+      const stLow = (d.status || '').toLowerCase();
+      if (stLow.includes('pago')) corStatus = '#16a34a';
+      else if (stLow.includes('anula') || stLow.includes('encerra')) corStatus = '#dc2626';
+      else if (stLow.includes('reserva')) corStatus = '#d97706';
+
+      let destinoExtra = '';
+      if (d.cidade) destinoExtra += ' Destino: ' + d.cidade;
+      if (d.cpf) destinoExtra += (destinoExtra ? ' | ' : '') + 'CPF: ' + d.cpf;
+
+      return `
+        <tr>
+          <td class="text-center" style="font-weight:600; color:#64748b;">${idx + 1}</td>
+          <td class="text-center" style="white-space:nowrap;">${d.data || '-'}</td>
+          <td class="text-center" style="font-weight:700; color:${corStatus}; font-size:7.5pt; text-transform:uppercase;">${d.status || '-'}</td>
+          <td class="text-center" style="font-weight:700; font-family:monospace; color:#0f172a; white-space:nowrap;">${d.processo || '-'}</td>
+          ${isFederal ? `<td class="text-center" style="font-weight:600;">${d.nota || '-'}</td>` : ''}
+          <td class="text-left" style="font-weight:600; color:#0f172a;">
+            ${d.nome || '-'}
+            ${d.setorOriginal && d.setorOriginal !== d.nome ? `<div style="font-size:7.5pt; color:#64748b; font-weight:normal;">Setor: ${d.setorOriginal}</div>` : ''}
+          </td>
+          <td class="text-left" style="line-height:1.3; color:#334155;">
+            ${d.motivo || '-'}
+            ${destinoExtra ? `<div style="font-size:7.5pt; color:#64748b; margin-top:2px;">${destinoExtra}</div>` : ''}
+          </td>
+          <td class="text-right" style="font-weight:700; color:#0f172a; white-space:nowrap;">
+            R$ ${(Number(d.valor) || 0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    const filtrosAplicados = [];
+    if (vMes !== 'Todos') filtrosAplicados.push('Mês: ' + vMes);
+    if (vStatus !== 'Todos') filtrosAplicados.push('Status: ' + vStatus);
+    if (vSetor !== 'Todos') filtrosAplicados.push('Setor: ' + vSetor);
+    if (isFederal && vNota !== 'Todos') filtrosAplicados.push('Nota: ' + vNota);
+    if (busca) filtrosAplicados.push('Busca: "' + busca + '"');
+    if (vDataIni || vDataFim) filtrosAplicados.push('Período: ' + (vDataIni || 'Início') + ' até ' + (vDataFim || 'Hoje'));
+
+    const filtrosTexto = filtrosAplicados.length > 0 ? filtrosAplicados.join(' | ') : 'Todos os Registros';
+
+    contentHtml = `
+      <div style="margin-bottom:10px; padding:6px 10px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; font-size:8pt; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+        <div>
+          <span style="font-weight:bold; color:#1e3a8a; text-transform:uppercase;">Filtros:</span>
+          <span style="color:#475569;"> ${filtrosTexto}</span>
+        </div>
+        <div>
+          <span style="font-weight:bold; color:#1e3a8a;">Total Listadas:</span>
+          <span style="font-weight:700; color:#0f172a;"> ${filtrados.length}</span>
+          &nbsp;|&nbsp;
+          <span style="font-weight:bold; color:#16a34a;">Pago:</span>
+          <span style="font-weight:700; color:#16a34a;"> R$ ${totalPago.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+          &nbsp;|&nbsp;
+          <span style="font-weight:bold; color:#1e3a8a;">Total:</span>
+          <span style="font-weight:800; color:#1e3a8a;"> R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>
+        </div>
+      </div>
+
+      <table class="striped">
+        <thead>
+          <tr>
+            <th style="width: 3%; text-align:center;">Nº</th>
+            <th style="width: 8%; text-align:center;">Data</th>
+            <th style="width: 9%; text-align:center;">Status</th>
+            <th style="width: 14%; text-align:center;">Processo SEI</th>
+            ${isFederal ? '<th style="width: 10%; text-align:center;">Nota Empenho</th>' : ''}
+            <th style="width: 20%; text-align:left;">Beneficiário / Setor</th>
+            <th style="width: ${isFederal ? '24%' : '34%'}; text-align:left;">Motivo da Viagem / Destino</th>
+            <th style="width: 12%; text-align:right;">Valor (R$)</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml || `<tr><td colspan="${isFederal ? '8' : '7'}" class="text-center" style="padding:20px; color:#94a3b8;">Nenhum registro de diária encontrado para os filtros selecionados.</td></tr>`}
+        </tbody>
+        <tfoot>
+          <tr style="background-color:#1e3a8a !important; color:#ffffff !important; font-weight:800;">
+            <td colspan="${isFederal ? '5' : '4'}" style="color:#ffffff !important; font-weight:800; text-align:left; padding:6px 8px; border:1px solid #93c5fd !important;">
+              TOTAL GERAL: ${filtrados.length} registro(s) listado(s)
+              ${totalPago > 0 ? ` &nbsp;|&nbsp; <span style="color:#86efac;">Executado (Pago): R$ ${totalPago.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>` : ''}
+              ${totalReserva > 0 ? ` &nbsp;|&nbsp; <span style="color:#fde047;">Reserva: R$ ${totalReserva.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}</span>` : ''}
+            </td>
+            <td colspan="2" style="color:#ffffff !important; font-weight:800; text-align:right; padding:6px 8px; border:1px solid #93c5fd !important;">
+              VALOR TOTAL FILTRADO:
+            </td>
+            <td style="color:#ffffff !important; font-weight:800; text-align:right; padding:6px 8px; border:1px solid #93c5fd !important; white-space:nowrap;">
+              R$ ${totalGeral.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    `;
+  }
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8">
+      <title>${title}</title>
+      <style>
+        @media print {
+          @page { size: A4 landscape !important; margin: 10mm !important; }
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .no-print { display: none !important; }
+        }
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 8.5pt;
+          margin: 0;
+          padding: 10mm;
+          color: #0f172a;
+          background: #ffffff;
+        }
+        .official-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          border-bottom: 2px solid #0284c7;
+          padding-bottom: 6px;
+          margin-bottom: 12px;
+          width: 100%;
+        }
+        .official-header .titles {
+          text-align: left;
+          line-height: 1.25;
+        }
+        .official-header .titles .line-1 {
+          font-size: 10px;
+          font-weight: 800;
+          color: #0f172a;
+          text-transform: uppercase;
+          letter-spacing: 0.4px;
+        }
+        .official-header .titles .line-2 {
+          font-size: 10px;
+          font-weight: 700;
+          color: #0284c7;
+          text-transform: uppercase;
+        }
+        .official-header .titles .line-3 {
+          font-size: 10px;
+          font-weight: 700;
+          color: #334155;
+          text-transform: uppercase;
+        }
+        .official-header .header-sisedu {
+          text-align: right;
+          font-size: 6pt;
+          font-weight: 700;
+          color: #94a3b8;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+        }
+        .report-subtitle {
+          font-size: 11px;
+          font-weight: 700;
+          color: #1e3a8a;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 6px;
+          font-size: 8.5pt;
+          page-break-inside: auto;
+        }
+        tr {
+          page-break-inside: avoid;
+          page-break-after: auto;
+        }
+        th, td {
+          border: 1px solid #cbd5e1;
+          padding: 5px 6px;
+          box-sizing: border-box;
+          word-break: break-word;
+          overflow-wrap: break-word;
+        }
+        th {
+          background-color: #1e3a8a !important;
+          color: #ffffff !important;
+          font-weight: 700;
+          font-size: 8pt;
+          text-transform: uppercase;
+          text-align: center;
+          border: 1px solid #93c5fd !important;
+        }
+        td {
+          color: #0f172a;
+        }
+        .text-left { text-align: left; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .striped tr:nth-child(even) { background-color: #f8fafc; }
+        .official-footer {
+          margin-top: 14px;
+          border-top: 1px solid #cbd5e1;
+          padding-top: 6px;
+          font-size: 8pt;
+          color: #475569;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+        }
+        .official-footer .f-left {
+          flex: 1;
+          text-align: left;
+          font-weight: 700;
+          color: #0f172a;
+        }
+        .official-footer .f-center {
+          flex: 1;
+          text-align: center;
+          font-weight: 600;
+          color: #64748b;
+        }
+        .official-footer .f-right {
+          flex: 1;
+          text-align: right;
+          font-weight: 500;
+          color: #64748b;
+        }
+        .btn-print-action {
+          position: fixed;
+          top: 12px;
+          right: 12px;
+          background: #0284c7;
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          font-weight: bold;
+          font-size: 10pt;
+          cursor: pointer;
+          box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          z-index: 9999;
+        }
+      </style>
+    </head>
+    <body>
+      <button class="btn-print-action no-print" onclick="window.print()">🖨️ Imprimir Relatório</button>
+
+      <div class="official-header">
+        <div class="titles">
+          <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
+          <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+        </div>
+        <div class="header-sisedu">SISEDU</div>
+      </div>
+
+      <div class="report-subtitle"><span>${title}</span></div>
+
+      ${contentHtml}
+
+      <div class="official-footer">
+        <div class="f-left">${gerencia}</div>
+        <div class="f-center">Página 1 de 1</div>
+        <div class="f-right">Documento gerado eletronicamente em ${dataHora}</div>
+      </div>
+
+      <script>
+        window.addEventListener('load', () => {
+          setTimeout(() => { window.print(); }, 400);
+        });
+      </script>
+    </body>
+    </html>
+  `);
+  printWindow.document.close();
 };
+window.imprimirRelatorioDiarias = window.gerarRelatorioDiarias;
 
 setTimeout(() => { window.carregarDiariasData(); }, 1000);
 
