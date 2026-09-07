@@ -3211,7 +3211,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   document.title = 'RELATORIO_PROCESSOS_' + getFormattedDateForTitle();
 
   const style = document.createElement('style');
-  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr.group-header-digito, table.print-table-adm tr.group-header-digito td { background-color: #008080 !important; color: #ffffff !important; border-color: #005f5f !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
   document.head.appendChild(style);
 
   const cleanupPrint = () => {
@@ -3268,12 +3268,12 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
     const procs = grupos[chave];
     const totalGrupo = procs.reduce((acc, p) => acc + (p.valorOf || 0), 0);
 
-    // Linha de Cabeçalho do Grupo (DÍGITO)
+    // Linha de Cabeçalho do Grupo (DÍGITO) com cor padrão #008080 e letra branca
     rowsHtml += `
-      <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color: #1e293b; color: #ffffff;">
-        <td colspan="10" style="border: 1px solid #334155; padding: 4px 8px; font-size: 10px; font-weight: bold; text-transform: uppercase;">
-          <span style="color: #38bdf8; font-weight: 800; letter-spacing: 0.5px;">DÍGITO: ${chave}</span>
-          <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #94a3b8;">(${procs.length} processos &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
+      <tr class="no-page-break group-header-digito" style="page-break-inside: avoid; break-inside: avoid; background-color: #008080 !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <td colspan="10" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: bold; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <span style="color: #ffffff !important; font-weight: 800; letter-spacing: 0.5px;">DÍGITO: ${chave}</span>
+          <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #ffffff !important;">(${procs.length} processos &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
         </td>
       </tr>
     `;

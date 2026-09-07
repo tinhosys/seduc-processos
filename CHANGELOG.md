@@ -5,6 +5,19 @@
 
 ---
 
+## [v1.2.49] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.49` · **Versão do Sistema:** `GBZ - v1.2.49`
+
+### 🎨 Ajuste Visual — Separador de Grupos no Relatório ADM 2
+
+- **Cor Padrão #008080 com Letras Brancas:**
+  - A linha separadora de cada grupo de `DÍGITO` (ex.: `DÍGITO: 31`, `DÍGITO: SEM DÍGITO`) agora utiliza fundo verde-azulado padrão (`#008080`) com tipografia 100% branca (`#ffffff`).
+  - Forçado suporte a impressão exata com `-webkit-print-color-adjust: exact` para garantir fidelidade visual tanto em tela quanto em PDF impresso.
+
+---
+
+
 ## [v1.2.48] — 2026-09-07 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.2.48` · **Versão do Sistema:** `GBZ - v1.2.48`

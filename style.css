@@ -2387,3 +2387,14 @@ thead th {
     background: white !important;
   }
 }
+
+@media print {
+  body.print-mode-padrao-adm-2 tr.group-header-digito,
+  body.print-mode-padrao-adm-2 tr.group-header-digito td {
+    background-color: #008080 !important;
+    color: #ffffff !important;
+    border-color: #005f5f !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
