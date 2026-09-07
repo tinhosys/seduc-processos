@@ -299,7 +299,7 @@ function renderTableProalfa(dados, isDoc) {
   let sumDoc = 0, sumEF = 0, sumAI = 0;
   let sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0, sum5 = 0, sumTot = 0;
 
-  const td  = 'padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); color:#e2e8f0; font-size:12px;';
+  const td  = 'padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); color:#e2e8f0; font-size:12px; box-sizing:border-box; word-break:break-word; overflow-wrap:break-word;';
   const tdc = td + ' text-align:center;';
 
   // ── LINHAS ─────────────────────────────────────────────────────────────────

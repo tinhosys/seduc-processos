@@ -119,51 +119,51 @@ function getColStyleGMAC(header) {
   const norm = h.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   if (norm === 'municipio' || norm === 'municipios') {
-    return 'min-width:150px; max-width:190px; white-space:nowrap; font-weight:700; color:#f8fafc;';
+    return 'width:160px; min-width:140px; word-break:break-word; overflow-wrap:break-word; white-space:normal; font-weight:700; color:#f8fafc;';
   }
   if (norm === 'id' || norm === 'ids') {
-    return 'min-width:75px; max-width:95px; text-align:center; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:700; color:#cbd5e1;';
+    return 'width:85px; min-width:75px; text-align:center; font-family:ui-monospace, monospace; font-weight:700; color:#cbd5e1;';
   }
   if (norm.includes('processo') || norm.includes('sei')) {
-    return 'min-width:235px; max-width:280px; white-space:nowrap;';
+    return 'width:245px; min-width:230px; white-space:nowrap;';
   }
   if (norm.includes('placa') || norm.includes('renavam') || norm.includes('chassi') || norm.includes('crlv')) {
-    return 'min-width:105px; max-width:130px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600; text-align:center;';
+    return 'width:110px; min-width:95px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600; text-align:center;';
   }
   if (norm.includes('status')) {
-    return 'min-width:125px; max-width:155px; text-align:center; white-space:nowrap;';
+    return 'width:145px; min-width:130px; text-align:center; word-break:break-word; overflow-wrap:break-word; white-space:normal;';
   }
   if (norm === 'situacao' || norm.includes('situacao')) {
-    return 'min-width:180px; max-width:220px; text-align:center; white-space:normal; line-height:1.35; word-break:break-word;';
+    return 'width:230px; min-width:190px; text-align:center; white-space:normal; line-height:1.35; word-break:break-word; overflow-wrap:break-word;';
   }
-  if (norm.includes('termo ass') || norm.includes('termo de doacao')) {
-    return 'min-width:110px; max-width:140px; text-align:center; white-space:nowrap;';
+  if (norm.includes('termo ass') || norm.includes('termo de doacao') || norm.includes('termo')) {
+    return 'width:210px; min-width:170px; text-align:center; white-space:normal; line-height:1.35; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm === 'forma') {
-    return 'min-width:70px; max-width:90px; text-align:center; white-space:nowrap;';
+    return 'width:90px; min-width:80px; text-align:center;';
   }
   if (norm.includes('tipo') && norm.includes('objeto')) {
-    return 'min-width:130px; max-width:160px; text-align:center; white-space:nowrap;';
+    return 'width:150px; min-width:130px; text-align:center; word-break:break-word; overflow-wrap:break-word; white-space:normal;';
   }
   if (norm === 'objeto' || (norm.includes('objeto') && !norm.includes('tipo'))) {
-    return 'min-width:160px; max-width:220px; line-height:1.35; white-space:normal; word-break:break-word;';
+    return 'width:230px; min-width:180px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm.includes('escola') || norm.includes('secretaria') || norm.includes('localizacao')) {
-    return 'min-width:180px; max-width:240px; line-height:1.35; white-space:normal; word-break:break-word;';
+    return 'width:210px; min-width:170px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm.includes('data') || norm.includes('vigencia')) {
-    return 'min-width:110px; max-width:135px; white-space:nowrap; text-align:center;';
+    return 'width:115px; min-width:105px; white-space:nowrap; text-align:center;';
   }
   if (norm.includes('valor')) {
-    return 'min-width:110px; max-width:135px; white-space:nowrap; text-align:right;';
+    return 'width:120px; min-width:110px; white-space:nowrap; text-align:right;';
   }
   if (norm.includes('contato')) {
-    return 'min-width:160px; max-width:210px; font-size:12px; line-height:1.35; white-space:normal; word-break:break-word;';
+    return 'width:180px; min-width:150px; font-size:12px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm.includes('observ') || norm.includes('documento') || norm.includes('parecer')) {
-    return 'min-width:170px; max-width:230px; line-height:1.35; white-space:normal; word-break:break-word;';
+    return 'width:220px; min-width:180px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
   }
-  return 'min-width:120px; max-width:200px; line-height:1.35; white-space:normal; word-break:break-word;';
+  return 'width:170px; min-width:140px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
 }
 
 // Badge visual para status no GMAC com cores específicas por status (Imagem 1: Não Entregue Vermelho, Entregue Verde)
@@ -180,40 +180,25 @@ function renderBadgeStatusGMAC(status) {
   if (sLow.includes('nao entregue') || sLow.includes('nao assinaram') || sLow.includes('sem certidao') || sLow.includes('nao tem interesse') || sLow.includes('cancelad') || sLow.includes('rejeit') || sLow.includes('recusad') || sLow.includes('indeferid') || sLow.includes('inativ')) {
     bg = 'rgba(239,68,68,0.2)';
     color = '#f87171';
-    border = 'rgba(239,68,68,0.5)';
+    border = 'rgba(239,68,68,0.45)';
   }
-  // 2. Sucesso / Entregue / Concluído / Finalizado / OK / Autorizado / Aprovado (VERDE)
-  else if (sLow.includes('entregue') || sLow.includes('finalizado') || sLow.includes('concluido') || sLow === 'ok' || sLow.includes('autoriz') || sLow.includes('aprovad')) {
+  // 2. SEGUNDO: Positivas / Concluído / Regular / Entregue (VERDE)
+  else if (sLow.includes('entregue') || sLow.includes('concluid') || sLow.includes('vigente') || sLow.includes('publicad') || sLow.includes('efetivad') || sLow.includes('aprovad') || sLow.includes('ativo') || sLow.includes('regular') || sLow.includes('assinado')) {
     bg = 'rgba(16,185,129,0.2)';
     color = '#34d399';
-    border = 'rgba(16,185,129,0.5)';
+    border = 'rgba(16,185,129,0.45)';
   }
-  // 3. Em trâmite / Em andamento / Tramitação (AZUL)
-  else if (sLow.includes('tramite') || sLow.includes('tramitacao') || sLow.includes('andamento')) {
-    bg = 'rgba(59,130,246,0.2)';
-    color = '#60a5fa';
-    border = 'rgba(59,130,246,0.5)';
-  }
-  // 4. Em instrução / Análise (LARANJA / ÂMBAR)
-  else if (sLow.includes('instrucao') || sLow.includes('analise')) {
+  // 3. TERCEIRO: Em Andamento / Análise / Pendente (AMARELO / LARANJA)
+  else if (sLow.includes('analise') || sLow.includes('tramit') || sLow.includes('pendent') || sLow.includes('aguard') || sLow.includes('em andamento') || sLow.includes('solicitad')) {
     bg = 'rgba(245,158,11,0.2)';
     color = '#fbbf24';
-    border = 'rgba(245,158,11,0.5)';
-  }
-  // 5. Pendente / Aguardando / Em espera (ROXO / PÚRPURA)
-  else if (sLow.includes('pendente') || sLow.includes('aguardando') || sLow.includes('espera') || sLow.includes('diligencia')) {
-    bg = 'rgba(168,85,247,0.2)';
-    color = '#c084fc';
-    border = 'rgba(168,85,247,0.5)';
-  }
-  // 6. Termo assinado / Publicado (CIANO)
-  else if (sLow.includes('assinado') || sLow.includes('publicad')) {
-    bg = 'rgba(6,182,212,0.2)';
-    color = '#22d3ee';
-    border = 'rgba(6,182,212,0.5)';
+    border = 'rgba(245,158,11,0.45)';
   }
 
-  return `<span style="display:inline-block; padding:4px 10px; font-size:11.5px; font-weight:700; border-radius:6px; background:${bg}; color:${color}; border:1px solid ${border}; white-space:nowrap;">${s}</span>`;
+  return `
+    <span style="display:inline-block; padding:4px 10px; font-size:11px; font-weight:700; border-radius:6px; background:${bg}; color:${color}; border:1px solid ${border}; box-shadow:0 1px 4px rgba(0,0,0,0.2); white-space:normal; word-break:break-word; overflow-wrap:break-word; max-width:100%; line-height:1.25; text-align:center; box-sizing:border-box;">
+      ${s}
+    </span>`;
 }
 
 // Função para copiar o número do processo para o clipboard com feedback
@@ -405,17 +390,17 @@ function renderizarGMAC(modulo) {
   // Montar tabela sem as colunas ocultadas e com MUNICÍPIO na primeira coluna
   let html = `
     <div style="overflow-x:auto; max-height: calc(100vh - 310px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(15,23,42,0.6);">
-      <table style="width:max-content; min-width:100%; border-collapse:separate; border-spacing:0; text-align:left; font-size:13px;">
+      <table style="width:100%; min-width:1250px; table-layout:fixed; border-collapse:separate; border-spacing:0; text-align:left; font-size:13px;">
         <thead style="position:sticky; top:0; z-index:10; background:#0f172a; border-bottom:2px solid rgba(255,255,255,0.1);">
           <tr>`;
 
   headers.forEach(h => {
     const colStyle = getColStyleGMAC(h);
-    html += `<th style="padding:12px 14px; color:#cbd5e1; font-weight:700; ${colStyle}">${h}</th>`;
+    html += `<th style="padding:12px 14px; color:#cbd5e1; font-weight:700; box-sizing:border-box; ${colStyle}">${h}</th>`;
   });
 
   html += `
-            <th style="padding:12px 14px; color:#94a3b8; font-weight:700; text-align:center; width:85px; min-width:85px;">Ações</th>
+            <th style="padding:12px 14px; color:#94a3b8; font-weight:700; text-align:center; width:85px; min-width:85px; box-sizing:border-box;">Ações</th>
           </tr>
         </thead>
         <tbody>`;
@@ -460,11 +445,15 @@ function renderizarGMAC(modulo) {
             ${val || '-'}
           </div>`;
       }
-      // 4. Termo Ass. Pref.
-      else if (norm.includes('termo ass')) {
-        rendered = val.toLowerCase() === 'ok' 
-          ? `<span style="display:inline-block; padding:3px 8px; font-size:11px; font-weight:700; border-radius:6px; background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3);">OK</span>`
-          : (val || '-');
+      // 4. Termo Ass. Pref. / Termo de Doação (Regra de Ouro: quebra dentro da coluna, sem sobrepor)
+      else if (norm.includes('termo ass') || norm.includes('termo de doacao') || norm.includes('termo')) {
+        if (val.toLowerCase() === 'ok') {
+          rendered = `<span style="display:inline-block; padding:3px 8px; font-size:11px; font-weight:700; border-radius:6px; background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3);">OK</span>`;
+        } else if (val && val !== '-') {
+          rendered = `<div style="display:inline-block; width:100%; text-align:center; white-space:normal; word-break:break-word; overflow-wrap:break-word; font-size:12px; line-height:1.35; color:#cbd5e1;">${val}</div>`;
+        } else {
+          rendered = `<span style="color:#64748b;">-</span>`;
+        }
       }
       // 5. Valores
       else if (norm.includes('valor')) {
@@ -472,7 +461,7 @@ function renderizarGMAC(modulo) {
       }
 
       const colStyle = getColStyleGMAC(h);
-      html += `<td style="padding:10px 14px; color:#e2e8f0; ${colStyle}">${rendered || '-'}</td>`;
+      html += `<td style="padding:10px 12px; color:#e2e8f0; vertical-align:middle; box-sizing:border-box; word-break:break-word; overflow-wrap:break-word; ${colStyle}">${rendered || '-'}</td>`;
     });
 
     html += `
