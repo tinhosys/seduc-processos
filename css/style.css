@@ -2431,7 +2431,7 @@ select#filtro-agrupamento.action-adm {
   max-width: 200px !important;
 }
 
-/* Quebra de linha e confinamento estrito de dados nas colunas da tabela (GBZ - v1.2.39) */
+/* Quebra de linha e confinamento estrito de dados nas colunas da tabela (GBZ - v1.2.40) */
 table {
   table-layout: fixed !important;
 }

@@ -1,11 +1,11 @@
-
 let proalfaData = null;
 let currentTabProalfa = 'Docentes_Rede_Municipal_2025';
+let currentProalfaModulo = 'professores'; // 'professores' | 'alunos'
 
 const TAB_CONFIG = [
   { id: 'Docentes_Rede_Municipal_2025',    title: 'Docentes Municipais',  type: 'docentes'   },
-  { id: 'Matrículas_Municipal_2025',       title: 'Alunos Municipais',    type: 'matriculas' },
   { id: 'Docentes_Rede_Est.2025-EF-AI',   title: 'Docentes Estaduais',   type: 'docentes'   },
+  { id: 'Matrículas_Municipal_2025',       title: 'Alunos Municipais',    type: 'matriculas' },
   { id: 'Matrículas_Estadual_2025-EF-AI', title: 'Alunos Estaduais',     type: 'matriculas' }
 ];
 
@@ -68,54 +68,89 @@ async function carregarProalfa() {
   }
 }
 
-// ─── ABAS (tab buttons) ──────────────────────────────────────────────────────
+// ─── ABAS (tab buttons organizados por módulo: Professores x Alunos - GBZ v1.2.40) ─
 function renderProalfaTabs() {
   const container = document.getElementById('proalfa-tabs');
+  if (!container) return;
   container.innerHTML = '';
+  container.style.display = 'flex';
   container.style.flexDirection = 'column';
+  container.style.gap = '10px';
+  container.style.width = '250px';
+  container.style.minWidth = '220px';
 
-  const row1 = document.createElement('div');
-  row1.style.cssText = 'display:flex; gap:10px; flex:1;';
-  const row2 = document.createElement('div');
-  row2.style.cssText = 'display:flex; gap:10px; flex:1;';
+  // Filtra as abas conforme o módulo ativo (Professores/Docentes vs Alunos/Matrículas)
+  const tabsFiltradas = TAB_CONFIG.filter(tab => {
+    if (currentProalfaModulo === 'alunos') {
+      return tab.type === 'matriculas';
+    } else {
+      return tab.type === 'docentes';
+    }
+  });
 
-  TAB_CONFIG.forEach((tab, idx) => {
-    const rows  = proalfaData[tab.id] || [];
+  tabsFiltradas.forEach(tab => {
+    const rows  = (proalfaData && proalfaData[tab.id]) ? proalfaData[tab.id] : [];
     const isDoc = tab.type === 'docentes';
     let sum = 0;
 
     rows.forEach(r => {
       if (isDoc) {
-        // Docentes (Municipal e Estadual) usam r[8] para o total principal (DOCENTES)
         sum += Number(r[8]) || 0;
       } else {
         sum += _somaMatriculas(r);
       }
     });
 
+    const isAtivo = tab.id === currentTabProalfa;
     const btn = document.createElement('button');
     btn.className     = 'tab-btn proalfa-tab-btn';
     btn.dataset.tab   = tab.id;
-    btn.style.cssText = 'padding:8px 10px; border:1px solid var(--border-color); border-radius:8px; background:rgba(255,255,255,0.05); color:#fff; cursor:pointer; font-weight:bold; flex:1;';
-    btn.innerHTML     = `${tab.title} <br><span style="font-size:16px; color:#10b981;">${sum.toLocaleString('pt-BR')}</span>`;
-    btn.onclick       = () => selecionarTabProalfa(tab.id);
+    btn.style.cssText = `padding:8px 12px; border:1px solid ${isAtivo ? '#6366f1' : 'var(--border-color)'}; border-radius:8px; background:${isAtivo ? '#6366f1' : 'rgba(255,255,255,0.05)'}; color:#fff; cursor:pointer; font-weight:bold; flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:48px; transition:all 0.2s ease; ${isAtivo ? 'box-shadow:0 4px 12px rgba(99,102,241,0.35);' : ''}`;
+    
+    btn.innerHTML = `
+      <span class="proalfa-tab-title" style="font-size:13px; font-weight:600; letter-spacing:0.3px; color:${isAtivo ? '#ffffff' : '#cbd5e1'};">${tab.title}</span>
+      <span class="proalfa-tab-num" style="font-size:18px; font-weight:800; color:${isAtivo ? '#ffffff' : '#10b981'}; margin-top:2px;">${sum.toLocaleString('pt-BR')}</span>
+    `;
 
-    (idx < 2 ? row1 : row2).appendChild(btn);
+    btn.onmouseenter = () => {
+      if (btn.dataset.tab !== currentTabProalfa) {
+        btn.style.background = 'rgba(255,255,255,0.09)';
+      }
+    };
+    btn.onmouseleave = () => {
+      if (btn.dataset.tab !== currentTabProalfa) {
+        btn.style.background = 'rgba(255,255,255,0.05)';
+      }
+    };
+
+    btn.onclick = () => selecionarTabProalfa(tab.id);
+
+    container.appendChild(btn);
   });
-
-  container.appendChild(row1);
-  container.appendChild(row2);
 }
 
 // ─── SELECIONAR ABA ──────────────────────────────────────────────────────────
 function selecionarTabProalfa(tabId) {
   currentTabProalfa = tabId;
+  const tabConf = TAB_CONFIG.find(t => t.id === tabId);
+  if (tabConf) {
+    const novoModulo = (tabConf.type === 'matriculas') ? 'alunos' : 'professores';
+    if (novoModulo !== currentProalfaModulo) {
+      currentProalfaModulo = novoModulo;
+      renderProalfaTabs();
+      return;
+    }
+  }
+
   document.querySelectorAll('.proalfa-tab-btn').forEach(b => {
-    const span = b.querySelector('span');
-    const ativo = b.dataset.tab === tabId;
-    b.style.background  = ativo ? '#6366f1' : 'rgba(255,255,255,0.05)';
-    b.style.borderColor = ativo ? '#6366f1' : 'var(--border-color)';
-    if (span) span.style.color = ativo ? '#ffffff' : '#10b981';
+    const isAtivo = b.dataset.tab === tabId;
+    const numSpan = b.querySelector('.proalfa-tab-num');
+    const titleSpan = b.querySelector('.proalfa-tab-title');
+    b.style.background  = isAtivo ? '#6366f1' : 'rgba(255,255,255,0.05)';
+    b.style.borderColor = isAtivo ? '#6366f1' : 'var(--border-color)';
+    b.style.boxShadow   = isAtivo ? '0 4px 12px rgba(99,102,241,0.35)' : 'none';
+    if (titleSpan) titleSpan.style.color = isAtivo ? '#ffffff' : '#cbd5e1';
+    if (numSpan)   numSpan.style.color   = isAtivo ? '#ffffff' : '#10b981';
   });
 
   preencherCombosProalfa();
@@ -415,27 +450,51 @@ function renderTableProalfa(dados, isDoc) {
   }
 }
 
-// ─── INICIALIZAR AO NAVEGAR ──────────────────────────────────────────────────
+// ─── INICIALIZAR AO NAVEGAR (GBZ v1.2.40) ─────────────────────────────────────
 window.navegarProalfa = function(tipo) {
-  const mapa = {
-    'professores': 'Docentes_Rede_Municipal_2025',
-    'docentes': 'Docentes_Rede_Municipal_2025',
-    'alunos': 'Matrículas_Municipal_2025',
-    'matriculas': 'Matrículas_Municipal_2025'
+  const modulo = (tipo === 'alunos' || tipo === 'matriculas' || tipo === 'proalfa-alunos') ? 'alunos' : 'professores';
+  currentProalfaModulo = modulo;
+
+  const targetPage = modulo === 'alunos' ? 'proalfa-alunos' : 'proalfa-professores';
+  const defaultTab = modulo === 'alunos' ? 'Matrículas_Municipal_2025' : 'Docentes_Rede_Municipal_2025';
+
+  const tabConf = TAB_CONFIG.find(t => t.id === currentTabProalfa);
+  if (!tabConf || ((tabConf.type === 'matriculas') !== (modulo === 'alunos'))) {
+    currentTabProalfa = defaultTab;
+  }
+
+  if (typeof state !== 'undefined') {
+    state.page = targetPage;
+  }
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.page === targetPage);
+  });
+  const titles = {
+    'proalfa-professores': '👨‍🏫 PROALFA - Professores (Docentes)',
+    'proalfa-alunos': '🎒 PROALFA - Alunos (Matrículas)'
   };
-  const tabId = mapa[tipo] || tipo || 'Docentes_Rede_Municipal_2025';
+  const titleEl = document.getElementById('topbar-title');
+  if (titleEl && titles[targetPage]) {
+    titleEl.textContent = titles[targetPage];
+  }
+  document.querySelectorAll('.page').forEach(el => {
+    el.classList.toggle('active', el.id === 'page-proalfa');
+  });
 
   if (!proalfaData) {
     carregarProalfa().then(() => {
-      selecionarTabProalfa(tabId);
+      renderProalfaTabs();
+      selecionarTabProalfa(currentTabProalfa);
     });
   } else {
-    selecionarTabProalfa(tabId);
+    renderProalfaTabs();
+    selecionarTabProalfa(currentTabProalfa);
   }
 };
 
 window.carregarProalfa = carregarProalfa;
 window.selecionarTabProalfa = selecionarTabProalfa;
+window.renderProalfaTabs = renderProalfaTabs;
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.nav-item').forEach(btn => {
