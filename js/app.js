@@ -3074,8 +3074,8 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
 
   let rowsHtml = filtrados.map((p, index) => {
     const prefixoFormatado = `
-      <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
-        <div style="font-weight: bold; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
+      <div style="font-family: Arial, sans-serif; line-height: 1.2;">
+        <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
         <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
           <span style="font-weight:600;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:600;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
           <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
@@ -3183,6 +3183,9 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   if (document.getElementById('print-layout-analise')) document.getElementById('print-layout-analise').style.display = 'none';
   container.style.display = 'block';
 
+  const appLayout = document.querySelector('.app-layout');
+  if (appLayout) appLayout.style.display = 'none';
+
   document.body.classList.add('print-mode-padrao-adm');
   document.body.classList.remove('print-mode-padrao', 'print-mode-detalhado', 'print-mode-analise');
 
@@ -3190,7 +3193,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   document.title = 'RELATORIO_PROCESSOS_' + getFormattedDateForTitle();
 
   const style = document.createElement('style');
-  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .app-layout, .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .main-content, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: absolute; top: 0; left: 0; width: 100%; background: white; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }';
   document.head.appendChild(style);
 
   window.print();

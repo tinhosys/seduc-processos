@@ -5,6 +5,24 @@
 
 ---
 
+## [v1.2.45] — 2026-09-07 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.45` · **Versão do Sistema:** `GBZ - v1.2.45`
+
+### 🖨️ Ajustes no Relatório Padrão ADM
+
+- **Eliminação da Página 1 residual na Impressão:**
+  - Ocultamento explícito do container `.app-layout` e seus componentes na impressão (`@media print` e manipulação direta do layout).
+  - Garante que a impressão inicie diretamente no relatório descaracterizado, sem folhas em branco ou telas do sistema residuais antes da tabela.
+- **Ajuste Tipográfico na Coluna PREFIXO:**
+  - Fonte do prefixo reduzida em -2px (para `7px`).
+  - Remoção do estilo negrito (`font-weight: normal`), conforme solicitado.
+- **Sincronização de CSS:**
+  - Regras de impressão aplicadas tanto em `css/style.css` quanto em `style.css`.
+
+---
+
+
 ## [v1.2.44] — 2026-09-07 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.2.44` · **Versão do Sistema:** `GBZ - v1.2.44`
