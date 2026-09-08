@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.53">
+  <link rel="stylesheet" href="css/style.css?v=1.2.54">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -219,7 +219,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.53</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.54</div>
   </div>
 </div>
   
@@ -359,12 +359,12 @@
           </a>
           <div class="nav-submenu sub-orcamento-container" id="sub-orcamento" style="display: none;">
             <a href="#" class="nav-item nav-form-item item-orcamento" data-page="orcamento" onclick="navegar('orcamento')">
-              <!-- Barra de Ouro / Lingote -->
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 13l3-6h10l3 6H4z"></path>
-                <path d="M4 13v4l3 2h10l3-2v-4"></path>
-                <line x1="7" y1="7" x2="7" y2="19"></line>
-                <line x1="17" y1="7" x2="17" y2="19"></line>
+              <!-- Moedas de Ouro (Coins) -->
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="6"></circle>
+                <path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path>
+                <circle cx="8" cy="8" r="2"></circle>
+                <circle cx="15" cy="15" r="2"></circle>
               </svg>
               <span>Orçamento</span>
             </a>
@@ -426,7 +426,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.53</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.54</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1712,7 +1712,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.53
+              GBZ - v1.2.54
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -1986,7 +1986,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.53] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.54] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -3269,13 +3269,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.53"></script>
-  <script src="js/app.js?v=1.2.53"></script>
-  <script src="js/auth-sap.js?v=1.2.53"></script>
-  <script src="js/escolas.js?v=1.2.53" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.54"></script>
+  <script src="js/app.js?v=1.2.54"></script>
+  <script src="js/auth-sap.js?v=1.2.54"></script>
+  <script src="js/escolas.js?v=1.2.54" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.53"></script>
-  <script src="js/contatos.js?v=1.2.53"></script>
+  <script src="js/mapa.js?v=1.2.54"></script>
+  <script src="js/contatos.js?v=1.2.54"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3424,14 +3424,14 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.53"></script>
+  <script src="js/multi-select.js?v=1.2.54"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.53"></script>
-  <script src="js/gmac.js?v=1.2.53"></script>
-  <script src="js/orcamento.js?v=1.2.53"></script>
-  <script src="js/print-proalfa.js?v=1.2.53"></script>
-  <script src="js/proalfa.js?v=1.2.53"></script>
+  <script src="js/diarias.js?v=1.2.54"></script>
+  <script src="js/gmac.js?v=1.2.54"></script>
+  <script src="js/orcamento.js?v=1.2.54"></script>
+  <script src="js/print-proalfa.js?v=1.2.54"></script>
+  <script src="js/proalfa.js?v=1.2.54"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

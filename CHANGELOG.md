@@ -5,7 +5,19 @@
 
 ---
 
-## [v1.2.53] — 2026-09-08 🟢 VERSÃO ATUAL
+## [v1.2.54] — 2026-09-08 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.54` · **Versão do Sistema:** `GBZ - v1.2.54`
+
+### 🪙 Ícone de Moedas no Submenu Orçamento
+
+- **Novo Ícone de Moedas de Ouro (`Coins`):**
+  - Substituído o ícone do submenu **Orçamento** (`#sub-orcamento`) por um par de **moedas douradas estilizadas** (`#facc15`), proporcionando excelente legibilidade e harmonia com o **Baú de Tesouro** do menu principal.
+  - Otimização do traçado vetorial em 14x14px para nitidez máxima na navegação lateral escura.
+
+---
+
+## [v1.2.53] — 2026-09-08
 
 **Tag:** `v1.2.53` · **Versão do Sistema:** `GBZ - v1.2.53`
 
