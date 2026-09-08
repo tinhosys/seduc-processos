@@ -326,6 +326,11 @@ function navegar(pagina) {
     'todas-escolas': '🏫 Todas as Escolas',
     'orcamento': '💵 Orçamento',
     'diarias': '📅 Controle de Diárias',
+    'gdsm-regimes': '📋 GDSM — 32 Regimes de Colaboração',
+    'gdsm-parametros': '⚙️ GDSM — Parâmetros',
+    'gdsm-demais': '📁 GDSM — Demais Processos',
+    'gdsm-doacoes': '🎁 GDSM — [Temporário] Doações',
+    'gdsm-novoregime': '🚀 GDSM — Novo Regime',
     'sistema-info': '🖥️ Informações do Sistema & Diagnóstico'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
@@ -356,6 +361,16 @@ function navegar(pagina) {
     } else {
       setTimeout(() => {
         if (typeof carregarGMAC === 'function') carregarGMAC(mod);
+      }, 150);
+    }
+  }
+  if (pagina && pagina.startsWith('gdsm-')) {
+    const tabKey = pagina.replace('gdsm-', '');
+    if (typeof carregarGDSM === 'function') {
+      carregarGDSM(tabKey);
+    } else {
+      setTimeout(() => {
+        if (typeof carregarGDSM === 'function') carregarGDSM(tabKey);
       }, 150);
     }
   }

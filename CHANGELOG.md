@@ -5,7 +5,35 @@
 
 ---
 
-## [v1.2.54] — 2026-09-08 🟢 VERSÃO ATUAL
+## [v1.2.55] — 2026-09-08 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.55` · **Versão do Sistema:** `GBZ - v1.2.55`
+
+### 📑 Integração das 5 Abas da Planilha GDSM (Regimes de Colaboração)
+
+- **Novos Botões no Menu GDSM (Sidebar):**
+  - **32 Regimes:** Consulta completa dos regimes de colaboração com somatório financeiro (`R# CHANGELOG — SEDUC Processos (CAM/SEDUC-RO)
+
+> Sistema de Acompanhamento de Convênios, Contratos e Escolas
+> Repositório: `seduc-processos` · Branch: `main`
+
+) e badges de status.
+  - **Parâmetros:** Tabelas de referência de municípios, tipos, formas, entidades, superintendências e situações.
+  - **Demais Processos:** Acompanhamento de processos e solicitações municipalistas.
+  - **Doações [Temporário]:** Processos de doações definitivas, equipamentos escolares e obras de ampliação.
+  - **Novo Regime:** Gestão dos novos regimes de colaboração.
+- **Formulários de Consulta com Padrão de Processos:**
+  - Barra de parâmetros com busca textual geral e filtros suspensos dinâmicos (Município, Status, Tipo e Situação).
+  - Tabela paginada (50 itens por página com navegação rápida) e ordenação dinâmica por clique nas colunas.
+  - Formatação inteligente de valores monetários (`R$ 0,00`), status coloridos e processos SEI.
+- **Acesso Direto à Planilha Google:**
+  - Botão **PLANILHA** em cada aba direcionando exatamente para a respectiva guia por seu `gid` (`gid=0`, `gid=398820041`, `gid=1655419194`, `gid=810185720`, `gid=134249734`).
+- **2 Relatórios por Aba (Simplificado e Detalhado):**
+  - **Relatório Simplificado:** Formato paisagem A4 com colunas estratégicas condensadas e total geral.
+  - **Relatório Detalhado:** Formato paisagem A4 contendo todas as colunas originais e dados cadastrais completos.
+  - Botão de exportação **EXCEL** (.xlsx) em todas as abas.
+
+## [v1.2.54] — 2026-09-08
 
 **Tag:** `v1.2.54` · **Versão do Sistema:** `GBZ - v1.2.54`
 
