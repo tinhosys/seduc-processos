@@ -5,7 +5,22 @@
 
 ---
 
-## [v1.2.52] — 2026-09-07 🟢 VERSÃO ATUAL
+## [v1.2.53] — 2026-09-08 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.53` · **Versão do Sistema:** `GBZ - v1.2.53`
+
+### 🔓 Acesso Universal ao "Limpar Parâmetros" & Novos Ícones de Orçamento
+
+- **Acesso ao Botão "Limpar Parâmetros" para Todos os Perfis:**
+  - O botão **LIMPAR PARÂMETROS** no painel de Processos agora está disponível para todos os perfis de usuário (**Leitor, Editor, Gerente e Administrador**).
+  - Removida a restrição de classe que o ocultava para usuários sem perfil administrativo/gerencial.
+- **Novos Ícones Temáticos no Menu Orçamento:**
+  - **Menu Principal "Orçamento":** Novo ícone vetorial exclusivo em formato de **Baú de Tesouro** com fechadura central e tiras de reforço metálicas em tom dourado/âmbar (`#f59e0b`).
+  - **Submenu "Orçamento":** Novo ícone vetorial temático em formato de **Barra de Ouro / Lingote** (`#eab308`), diferenciando visualmente o agrupador principal do item de execução orçamentária com as melhores práticas de SVG.
+
+---
+
+## [v1.2.52] — 2026-09-07
 
 **Tag:** `v1.2.52` · **Versão do Sistema:** `GBZ - v1.2.52`
 
