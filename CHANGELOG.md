@@ -3,6 +3,26 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
+## [v1.2.61] — 2026-09-08
+
+**Tag:** `v1.2.61` · **Versão do Sistema:** `GBZ - v1.2.61`
+
+### 📏 Confinamento Estrito no Limite da Tela (Borda Direita) e Barra de Rolagem Horizontal na Base dos Forms
+
+- **Limite Estrito no Limite da Tela (Borda Direita / Linha Amarela):**
+  - Aplicação de `max-width: calc(100vw - var(--sidebar-w)) !important` e `width: calc(100vw - var(--sidebar-w)) !important` em `.main-content`, com `overflow-x: hidden !important; min-width: 0 !important;`.
+  - Fixação de `width: 100% !important; max-width: 100% !important; box-sizing: border-box !important;` em todos os formulários (`#page-processos`, `#page-repetidos`, `#page-gdsm-regimes`, `#page-gdsm-demais`, `#page-gdsm-doacoes`, `#page-gdsm-novoregime`) e em seus containers de tabela (`#gdsm-table-container-*` e `.table-wrap`), eliminando qualquer vazamento lateral para fora da tela.
+- **Barra de Rolagem Horizontal Perfeita na Base das Tabelas:**
+  - Posicionamento da barra de rolagem horizontal exatamente na base da área de dados da tabela (`overflow-x: auto !important; overflow-y: auto !important`), com design de alto contraste e thumb gradiente azul (`#2563eb` a `#3b82f6`) com largura mínima de 50px para arrasto fácil e ágil.
+  - Dimensionamento dinâmico da largura das tabelas (`min-width: Math.max(1600, colunasExibidas.length * 135)px`) para que todas as 15 a 26 colunas da planilha Google possam ser percorridas fluidamente de ponta a ponta.
+  - Tabela de Processos com largura mínima garantida de 1700px e Repetidos com 1400px.
+- **Coluna Município Fixa Lateralmente (Sticky):**
+  - Mantém a identificação do município sempre visível à esquerda durante toda a navegação horizontal pelas colunas da planilha.
+- **Conformidade em Todos os Formulários:**
+  - `Todos os Processos`, `Processos Repetidos`, `Regime de Colaboração`, `Demais Processos`, `Doações [Temporário]` e `Novo Regime`.
+
+---
+
 ## [v1.2.60] — 2026-09-08
 
 **Tag:** `v1.2.60` · **Versão do Sistema:** `GBZ - v1.2.60`
