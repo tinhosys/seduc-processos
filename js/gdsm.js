@@ -1,6 +1,7 @@
 // ============================================================
 // SEDUC - Módulo GDSM (Regimes de Colaboração & Processos)
-// Integração das 5 Abas da Planilha Google de Regimes
+// Integração das Abas da Planilha Google de Regimes
+// Versão Otimizada com Município Primeiro e Layout Responsivo
 // ============================================================
 
 const GDSM_SPREADSHEET_ID = '10v6t1Lma7AOfLn3XmlG85PMoOa2D_MzEONAeUgg0j6Q';
@@ -9,7 +10,7 @@ const GDSM_TABS = {
   'regimes': {
     key: 'regimes',
     gid: '0',
-    titulo: '32 Regimes de Colaboração',
+    titulo: 'Regime de Colaboração',
     subtitulo: 'Acompanhamento de convênios e termos de regime de colaboração',
     icone: '📋',
     temValor: true,
@@ -17,18 +18,7 @@ const GDSM_TABS = {
     colValorConcedente: 'Valor\nCONCEDENTE',
     colContrapartida: 'Contrapartida\nCONVENENTE',
     colunasSimplificado: [
-      'Status', 'Processo SEI', 'Tipo', 'Município', 'Convenente', 'Objeto', 'Situação SEDUC', 'Vigência FINAL', 'Valor TOTAL do Convênio'
-    ]
-  },
-  'parametros': {
-    key: 'parametros',
-    gid: '398820041',
-    titulo: 'Parâmetros de Regime',
-    subtitulo: 'Tabelas de referência: municípios, tipos, formas, entidades e situações',
-    icone: '⚙️',
-    temValor: false,
-    colunasSimplificado: [
-      'MUNICÍPIOS', 'TIPO', 'FORMA', 'ENTIDADE', 'MUNICÍPIO', 'SUPER', 'SITUAÇÃO SEDUC', 'SITUAÇÃO CONVENENTE', 'FORMA DE CONTRATAÇÃO'
+      'Município', 'Processo SEI', 'Status', 'Tipo', 'Convenente', 'Objeto', 'Situação SEDUC', 'Vigência FINAL', 'Valor TOTAL do Convênio'
     ]
   },
   'demais': {
@@ -39,7 +29,7 @@ const GDSM_TABS = {
     icone: '📁',
     temValor: false,
     colunasSimplificado: [
-      'Status', 'Processo SEI', 'Categoria', 'Municipio', 'Objeto', 'Escola/Secretaria a ser atendida', 'Autorização', 'Data\nConsulta'
+      'Municipio', 'Processo SEI', 'Status', 'Categoria', 'Objeto', 'Escola/Secretaria a ser atendida', 'Autorização', 'Data\nConsulta'
     ]
   },
   'doacoes': {
@@ -53,7 +43,7 @@ const GDSM_TABS = {
     colValorConcedente: 'Valor\nCONCEDENTE',
     colContrapartida: 'Contrapartida\nCONVENENTE',
     colunasSimplificado: [
-      'Status', 'Processo SEI', 'Município', 'Convenente', 'Objeto', 'Situação SEDUC', 'Vigência FINAL', 'Valor TOTAL do Convênio', 'Técnico'
+      'Município', 'Processo SEI', 'Status', 'Convenente', 'Objeto', 'Situação SEDUC', 'Vigência FINAL', 'Valor TOTAL do Convênio', 'Técnico'
     ]
   },
   'novoregime': {
@@ -67,7 +57,7 @@ const GDSM_TABS = {
     colValorConcedente: 'Valor\nCONCEDENTE',
     colContrapartida: 'Contrapartida\nCONVENENTE',
     colunasSimplificado: [
-      'Status', 'Processo SEI', 'Tipo', 'Município', 'Convenente', 'Objeto', 'Situação SEDUC', 'Vigência FINAL', 'Valor TOTAL do Convênio'
+      'Município', 'Processo SEI', 'Status', 'Tipo', 'Convenente', 'Objeto', 'Situação SEDUC', 'Vigência FINAL', 'Valor TOTAL do Convênio'
     ]
   }
 };
@@ -141,6 +131,59 @@ function formatMoedaGDSM(num) {
   return 'R$ ' + Number(num).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+// Reordena colunas para iniciar SEMPRE por Município
+function reordenarColunasMunicipioPrimeiro(headers) {
+  const munIdx = headers.findIndex(h => /^(munic[ií]pio|munic[ií]pios)$/i.test(String(h).trim()));
+  if (munIdx > 0) {
+    const munCol = headers[munIdx];
+    const resto = headers.filter((_, idx) => idx !== munIdx);
+    return [munCol, ...resto];
+  }
+  return headers;
+}
+
+// Retorna estilo e largura ideal por tipo de coluna
+function getColunaStyleGDSM(colName) {
+  const c = String(colName).toLowerCase();
+  
+  if (c.includes('munic')) {
+    return { width: '160px', minWidth: '150px', align: 'left', whiteSpace: 'nowrap' };
+  }
+  if (c.includes('processo sei')) {
+    return { width: '190px', minWidth: '180px', align: 'left', whiteSpace: 'nowrap' };
+  }
+  if (c === 'status') {
+    return { width: '130px', minWidth: '120px', align: 'center', whiteSpace: 'nowrap' };
+  }
+  if (c.includes('tipo objeto') || c === 'tipo' || c === 'categoria') {
+    return { width: '130px', minWidth: '110px', align: 'left', whiteSpace: 'nowrap' };
+  }
+  if (c.includes('valor') || c.includes('contrapartida')) {
+    return { width: '140px', minWidth: '130px', align: 'right', whiteSpace: 'nowrap' };
+  }
+  if (c.includes('data') || c.includes('vigência') || c.includes('vigencia')) {
+    return { width: '110px', minWidth: '100px', align: 'center', whiteSpace: 'nowrap' };
+  }
+  if (c.includes('situação') || c.includes('situacao')) {
+    return { width: '170px', minWidth: '150px', align: 'left', whiteSpace: 'normal' };
+  }
+  if (c.includes('convenente') || c.includes('escola') || c.includes('entidade')) {
+    return { width: '220px', minWidth: '180px', align: 'left', whiteSpace: 'normal' };
+  }
+  if (c.includes('objeto')) {
+    return { width: '280px', minWidth: '220px', align: 'left', whiteSpace: 'normal' };
+  }
+  if (c === 'autorização' || c === 'autorizacao') {
+    return { width: '130px', minWidth: '120px', align: 'center', whiteSpace: 'nowrap' };
+  }
+  if (c === 'termo' || c === 'regional' || c === 'setor' || c === 'técnico' || c === 'tecnico' || c === 'forma') {
+    return { width: '130px', minWidth: '110px', align: 'left', whiteSpace: 'nowrap' };
+  }
+
+  // Padrão
+  return { width: '160px', minWidth: '140px', align: 'left', whiteSpace: 'normal' };
+}
+
 // Abrir link direto na planilha oficial
 function abrirPlanilhaGDSM(tabKey) {
   const tab = GDSM_TABS[tabKey];
@@ -158,7 +201,7 @@ function toggleFiltrosGDSM(tabKey) {
   }
 }
 
-// Carregamento de dados de uma aba do GDSM
+// Carregar dados de uma aba específica
 async function carregarGDSM(tabKey, forcar = false) {
   const tab = GDSM_TABS[tabKey];
   if (!tab) return;
@@ -166,7 +209,7 @@ async function carregarGDSM(tabKey, forcar = false) {
   const container = document.getElementById(`gdsm-table-container-${tabKey}`);
   if (!container) return;
 
-  // Se já temos em cache e não foi forçado recarregamento, apenas renderiza
+  // Se já tiver dados em cache e não forçar, reutiliza
   if (!forcar && window.gdsmData[tabKey] && window.gdsmData[tabKey].length > 0) {
     aplicarFiltrosGDSM(tabKey);
     return;
@@ -198,7 +241,9 @@ async function carregarGDSM(tabKey, forcar = false) {
       return clean !== '' ? clean : `Coluna_${i + 1}`;
     });
 
-    window.gdsmHeaders[tabKey] = headers;
+    // Reorganiza cabeçalhos: Município sempre em primeiro
+    const headersOrdenados = reordenarColunasMunicipioPrimeiro(headers);
+    window.gdsmHeaders[tabKey] = headersOrdenados;
 
     // Processar registros em objetos
     const dados = [];
@@ -265,18 +310,18 @@ function popularFiltrosSelectsGDSM(tabKey) {
     if (sit.trim()) sitSet.add(sit.trim());
   });
 
-  if (selStatus) {
-    const valAtual = selStatus.value;
-    selStatus.innerHTML = '<option value="">📌 Todos os Status</option>' + 
-      Array.from(statusSet).sort().map(s => `<option value="${s}">${s}</option>`).join('');
-    selStatus.value = valAtual;
-  }
-
   if (selMun) {
     const valAtual = selMun.value;
     selMun.innerHTML = '<option value="">🏛️ Todos os Municípios</option>' + 
       Array.from(munSet).sort().map(m => `<option value="${m}">${m}</option>`).join('');
     selMun.value = valAtual;
+  }
+
+  if (selStatus) {
+    const valAtual = selStatus.value;
+    selStatus.innerHTML = '<option value="">📌 Todos os Status</option>' + 
+      Array.from(statusSet).sort().map(s => `<option value="${s}">${s}</option>`).join('');
+    selStatus.value = valAtual;
   }
 
   if (selTipo) {
@@ -321,16 +366,16 @@ function aplicarFiltrosGDSM(tabKey) {
       if (!matchTexto) return false;
     }
 
-    // Status
-    if (filtros.status) {
-      const st = String(d['Status'] || d['STATUS'] || '').toLowerCase();
-      if (st !== filtros.status) return false;
-    }
-
     // Município
     if (filtros.municipio) {
       const mun = String(d['Município'] || d['Municipio'] || d['MUNICÍPIO'] || d['MUNICÍPIOS'] || '').toLowerCase();
       if (mun !== filtros.municipio) return false;
+    }
+
+    // Status
+    if (filtros.status) {
+      const st = String(d['Status'] || d['STATUS'] || '').toLowerCase();
+      if (st !== filtros.status) return false;
     }
 
     // Tipo / Categoria
@@ -359,7 +404,7 @@ function aplicarFiltrosGDSM(tabKey) {
         const nb = parseMoedaGDSM(vb);
         return filtros.sortAsc ? na - nb : nb - na;
       }
-      return filtros.sortAsc ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+      return filtros.sortAsc ? String(va).localeCompare(String(vb), 'pt-BR') : String(vb).localeCompare(String(va), 'pt-BR');
     });
   }
 
@@ -382,13 +427,13 @@ function aplicarFiltrosGDSM(tabKey) {
   renderTabelaGDSM(tabKey, filtrados);
 }
 
-// Renderiza a tabela paginada
+// Renderiza a tabela paginada com colunas limpas e Município primeiro
 function renderTabelaGDSM(tabKey, filtrados) {
   const container = document.getElementById(`gdsm-table-container-${tabKey}`);
   if (!container) return;
 
   const tab = GDSM_TABS[tabKey];
-  const headers = window.gdsmHeaders[tabKey] || [];
+  const rawHeaders = window.gdsmHeaders[tabKey] || [];
   const filtros = window.gdsmFiltros[tabKey];
 
   if (!filtrados || filtrados.length === 0) {
@@ -413,16 +458,21 @@ function renderTabelaGDSM(tabKey, filtrados) {
   const fim = Math.min(inicio + porPagina, total);
   const paginaDados = filtrados.slice(inicio, fim);
 
-  // Determinar cabeçalhos para exibição na tabela de tela
-  const colunasExibidas = headers.filter(h => !h.startsWith('Coluna_') || tabKey === 'parametros');
+  // Determinar cabeçalhos filtrados (remove colunas vazias) e garante Município em primeiro
+  const colunasExibidas = reordenarColunasMunicipioPrimeiro(
+    rawHeaders.filter(h => !h.startsWith('Coluna_'))
+  );
 
   let theadHtml = colunasExibidas.map(col => {
     const isSorted = filtros.sortCol === col;
     const arrow = isSorted ? (filtros.sortAsc ? ' ↑' : ' ↓') : '';
-    const styleAlign = String(col).toLowerCase().includes('valor') ? 'text-align:right;' : 'text-align:left;';
+    const st = getColunaStyleGDSM(col);
+    const styleAlign = `text-align:${st.align};`;
+    const colDisplay = col.replace(/\n/g, ' ');
+
     return `
-      <th onclick="ordenarGDSM('${tabKey}', '${col}')" style="padding:12px 14px; font-size:11px; text-transform:uppercase; color:#94a3b8; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.08); position:sticky; top:0; z-index:10; cursor:pointer; user-select:none; white-space:nowrap; ${styleAlign}" title="Clique para ordenar">
-        ${col}${arrow}
+      <th onclick="ordenarGDSM('${tabKey}', '${col}')" style="padding:10px 14px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.08); position:sticky; top:0; z-index:10; cursor:pointer; user-select:none; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap; ${styleAlign}" title="Clique para ordenar por ${colDisplay}">
+        ${colDisplay}${arrow}
       </th>
     `;
   }).join('');
@@ -432,58 +482,68 @@ function renderTabelaGDSM(tabKey, filtrados) {
     const cells = colunasExibidas.map(col => {
       let val = row[col] || '-';
       const colNorm = col.toLowerCase();
+      const st = getColunaStyleGDSM(col);
 
-      // Formatação de status
+      // 1. MUNICÍPIO (Destaque institucional)
+      if (colNorm.includes('munic')) {
+        return `
+          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-weight:700; color:#f8fafc; font-size:13px; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
+            ${val}
+          </td>
+        `;
+      }
+
+      // 2. STATUS (Badge estilizado)
       if (colNorm === 'status') {
         const stLower = String(val).toLowerCase();
         let badgeBg = 'background:rgba(148,163,184,0.15); color:#94a3b8; border:1px solid rgba(148,163,184,0.3);';
-        if (stLower.includes('concluso')) badgeBg = 'background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3);';
-        else if (stLower.includes('trâmite') || stLower.includes('tramite')) badgeBg = 'background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3);';
+        if (stLower.includes('concluso') || stLower.includes('conclu')) badgeBg = 'background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3);';
+        else if (stLower.includes('trâmite') || stLower.includes('tramite') || stLower.includes('andamento')) badgeBg = 'background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3);';
         else if (stLower.includes('encerrado') || stLower.includes('cancelado')) badgeBg = 'background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3);';
-        else if (stLower.includes('suspenso')) badgeBg = 'background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);';
+        else if (stLower.includes('suspenso') || stLower.includes('notificar') || stLower.includes('pendente')) badgeBg = 'background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);';
         return `
-          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); white-space:nowrap;">
-            <span style="display:inline-block; padding:3px 8px; border-radius:6px; font-size:11px; font-weight:700; text-transform:uppercase; ${badgeBg}">
+          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:center; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
+            <span style="display:inline-block; padding:3px 10px; border-radius:6px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; ${badgeBg}">
               ${val}
             </span>
           </td>
         `;
       }
 
-      // Formatação de valores monetários
+      // 3. PROCESSO SEI
+      if (colNorm.includes('processo sei') || colNorm === 'processo') {
+        return `
+          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-family:monospace; font-weight:700; color:#38bdf8; font-size:12.5px; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
+            ${val}
+          </td>
+        `;
+      }
+
+      // 4. VALORES MONETÁRIOS
       if (colNorm.includes('valor') || colNorm.includes('contrapartida')) {
         const num = parseMoedaGDSM(val);
         const formatado = num > 0 ? formatMoedaGDSM(num) : (val.trim() === '0,00' ? 'R$ 0,00' : val);
         return `
-          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:right; font-family:monospace; font-weight:600; color:#34d399; white-space:nowrap;">
+          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:right; font-family:monospace; font-weight:700; color:#34d399; font-size:12.5px; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
             ${formatado}
           </td>
         `;
       }
 
-      // Formatação de autorização
+      // 5. AUTORIZAÇÃO
       if (colNorm === 'autorização' || colNorm === 'autorizacao') {
         const aut = String(val).toUpperCase();
-        const autCor = aut.includes('AUTORIZADO') ? 'color:#34d399;' : (aut.includes('NÃO') ? 'color:#f87171;' : 'color:#94a3b8;');
+        const autCor = aut.includes('AUTORIZADO') ? 'color:#34d399;' : (aut.includes('NÃO') || aut.includes('PENDENTE') ? 'color:#fbbf24;' : 'color:#94a3b8;');
         return `
-          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-weight:700; font-size:11px; ${autCor} white-space:nowrap;">
+          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:center; font-weight:700; font-size:11px; ${autCor} width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
             ${val}
           </td>
         `;
       }
 
-      // Processo SEI
-      if (colNorm.includes('processo sei')) {
-        return `
-          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-family:monospace; font-weight:700; color:#60a5fa; white-space:nowrap;">
-            ${val}
-          </td>
-        `;
-      }
-
-      // Texto normal
+      // 6. DEMAIS COLUNAS DE TEXTO
       return `
-        <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:#e2e8f0; font-size:12.5px; max-width:320px; word-break:break-word;">
+        <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:#cbd5e1; font-size:12px; line-height:1.45; width:${st.width}; min-width:${st.minWidth}; white-space:${st.whiteSpace};">
           ${val}
         </td>
       `;
@@ -509,8 +569,8 @@ function renderTabelaGDSM(tabKey, filtrados) {
   `;
 
   container.innerHTML = `
-    <div class="table-wrap" style="overflow-x:auto; overflow-y:auto; max-height:calc(100vh - 280px); width:100%;">
-      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:12.5px;">
+    <div class="table-wrap" style="overflow-x:auto; overflow-y:auto; max-height:calc(100vh - 275px); width:100%; border-radius:8px;">
+      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:12px;">
         <thead>
           <tr>${theadHtml}</tr>
         </thead>
@@ -577,23 +637,19 @@ function exportarExcelGDSM(tabKey) {
   const tab = GDSM_TABS[tabKey];
   if (!tab) return;
   const dados = window.gdsmData[tabKey] || [];
-  const headers = window.gdsmHeaders[tabKey] || [];
+  const rawHeaders = window.gdsmHeaders[tabKey] || [];
 
   if (dados.length === 0) {
     alert('Nenhum dado disponível para exportação.');
     return;
   }
 
+  const headers = reordenarColunasMunicipioPrimeiro(
+    rawHeaders.filter(h => !h.startsWith('Coluna_'))
+  );
+
   // Coleta dados filtrados no momento
-  const filtros = window.gdsmFiltros[tabKey];
-  const filtrados = dados.filter(d => {
-    if (filtros.busca && !Object.values(d).some(v => String(v || '').toLowerCase().includes(filtros.busca))) return false;
-    if (filtros.status && String(d['Status'] || d['STATUS'] || '').toLowerCase() !== filtros.status) return false;
-    if (filtros.municipio && String(d['Município'] || d['Municipio'] || d['MUNICÍPIO'] || d['MUNICÍPIOS'] || '').toLowerCase() !== filtros.municipio) return false;
-    if (filtros.tipo && String(d['Tipo'] || d['TIPO'] || d['Categoria'] || d['Tipo Objeto'] || '').toLowerCase() !== filtros.tipo) return false;
-    if (filtros.situacaoSeduc && String(d['Situação SEDUC'] || d['SITUAÇÃO SEDUC'] || '').toLowerCase() !== filtros.situacaoSeduc) return false;
-    return true;
-  });
+  const filtrados = obterDadosFiltradosGDSM(tabKey);
 
   if (typeof XLSX === 'undefined') {
     alert('Biblioteca XLSX não carregada no momento.');
@@ -603,7 +659,7 @@ function exportarExcelGDSM(tabKey) {
   const exportRows = filtrados.map(item => {
     const rowObj = {};
     headers.forEach(h => {
-      if (!h.startsWith('Coluna_')) rowObj[h] = item[h] || '';
+      rowObj[h] = item[h] || '';
     });
     return rowObj;
   });
@@ -625,15 +681,15 @@ function obterDadosFiltradosGDSM(tabKey) {
   const filtros = window.gdsmFiltros[tabKey] || {};
   return dados.filter(d => {
     if (filtros.busca && !Object.values(d).some(v => String(v || '').toLowerCase().includes(filtros.busca))) return false;
-    if (filtros.status && String(d['Status'] || d['STATUS'] || '').toLowerCase() !== filtros.status) return false;
     if (filtros.municipio && String(d['Município'] || d['Municipio'] || d['MUNICÍPIO'] || d['MUNICÍPIOS'] || '').toLowerCase() !== filtros.municipio) return false;
+    if (filtros.status && String(d['Status'] || d['STATUS'] || '').toLowerCase() !== filtros.status) return false;
     if (filtros.tipo && String(d['Tipo'] || d['TIPO'] || d['Categoria'] || d['Tipo Objeto'] || '').toLowerCase() !== filtros.tipo) return false;
     if (filtros.situacaoSeduc && String(d['Situação SEDUC'] || d['SITUAÇÃO SEDUC'] || '').toLowerCase() !== filtros.situacaoSeduc) return false;
     return true;
   });
 }
 
-// RELATÓRIO 1: SIMPLIFICADO
+// RELATÓRIO 1: SIMPLIFICADO (MUNICÍPIO PRIMEIRO)
 function imprimirGDSMSimplificado(tabKey) {
   const tab = GDSM_TABS[tabKey];
   if (!tab) return;
@@ -643,7 +699,10 @@ function imprimirGDSMSimplificado(tabKey) {
     return;
   }
 
-  const colunas = tab.colunasSimplificado || (window.gdsmHeaders[tabKey] || []).slice(0, 8);
+  const colunas = reordenarColunasMunicipioPrimeiro(
+    tab.colunasSimplificado || (window.gdsmHeaders[tabKey] || []).slice(0, 8)
+  );
+
   const totalValor = tab.temValor
     ? filtrados.reduce((acc, p) => acc + parseMoedaGDSM(p[tab.colValor]), 0)
     : 0;
@@ -651,7 +710,9 @@ function imprimirGDSMSimplificado(tabKey) {
   let theadHtml = '<th style="border: 1px solid #334155; padding: 4px 6px; font-size: 9px; text-align: center; width: 3%;">Nº</th>';
   colunas.forEach(col => {
     const isValor = String(col).toLowerCase().includes('valor');
-    theadHtml += `<th style="border: 1px solid #334155; padding: 4px 6px; font-size: 9px; text-align: ${isValor ? 'right' : 'left'};">${col.replace(/\n/g, ' ')}</th>`;
+    const isMun = String(col).toLowerCase().includes('munic');
+    const textAlign = isValor ? 'right' : (isMun ? 'left; font-weight:bold;' : 'left');
+    theadHtml += `<th style="border: 1px solid #334155; padding: 4px 6px; font-size: 9px; text-align: ${textAlign};">${col.replace(/\n/g, ' ')}</th>`;
   });
 
   let rowsHtml = filtrados.map((row, idx) => {
@@ -659,12 +720,14 @@ function imprimirGDSMSimplificado(tabKey) {
     let tds = `<td style="border: 1px solid #cbd5e1; padding: 3px 6px; font-size: 9px; text-align: center; color: #64748b;">${idx + 1}</td>`;
     colunas.forEach(col => {
       const isValor = String(col).toLowerCase().includes('valor');
+      const isMun = String(col).toLowerCase().includes('munic');
       let val = row[col] || '-';
       if (isValor) {
         const num = parseMoedaGDSM(val);
         val = num > 0 ? formatMoedaGDSM(num) : val;
       }
-      tds += `<td style="border: 1px solid #cbd5e1; padding: 3px 6px; font-size: 9px; text-align: ${isValor ? 'right; font-weight: bold; white-space: nowrap;' : 'left;'}">${val}</td>`;
+      const fontStyle = isMun ? 'font-weight:bold; color:#0f172a;' : '';
+      tds += `<td style="border: 1px solid #cbd5e1; padding: 3px 6px; font-size: 9px; text-align: ${isValor ? 'right; font-weight: bold; white-space: nowrap;' : 'left;'}; ${fontStyle}">${val}</td>`;
     });
     return `<tr style="${zebraBg} page-break-inside: avoid; break-inside: avoid;">${tds}</tr>`;
   }).join('');
@@ -720,7 +783,7 @@ function imprimirGDSMSimplificado(tabKey) {
       <!-- Rodapé -->
       <div style="margin-top: 12px; border-top: 1.5px solid #cbd5e1; padding-top: 6px; font-size: 8.5px; color: #64748b; display:flex; justify-content:space-between;">
         <span>SEDUC Processos · CAM / GDSM · Relatório Oficial</span>
-        <span>Aba: ${tab.titulo} · Planilha Integrada</span>
+        <span>Aba: ${tab.titulo} · Ordenado por Município</span>
       </div>
     </div>
   `;
@@ -728,7 +791,7 @@ function imprimirGDSMSimplificado(tabKey) {
   executarImpressaoGDSM(html, `RELATORIO_SIMPLIFICADO_${tabKey.toUpperCase()}`);
 }
 
-// RELATÓRIO 2: DETALHADO (TODAS AS COLUNAS FORMATADAS)
+// RELATÓRIO 2: DETALHADO (MUNICÍPIO PRIMEIRO)
 function imprimirGDSMDetalhado(tabKey) {
   const tab = GDSM_TABS[tabKey];
   if (!tab) return;
@@ -739,7 +802,9 @@ function imprimirGDSMDetalhado(tabKey) {
   }
 
   const rawHeaders = window.gdsmHeaders[tabKey] || [];
-  const colunas = rawHeaders.filter(h => !h.startsWith('Coluna_') || tabKey === 'parametros');
+  const colunas = reordenarColunasMunicipioPrimeiro(
+    rawHeaders.filter(h => !h.startsWith('Coluna_'))
+  );
 
   const totalValor = tab.temValor
     ? filtrados.reduce((acc, p) => acc + parseMoedaGDSM(p[tab.colValor]), 0)
@@ -748,7 +813,9 @@ function imprimirGDSMDetalhado(tabKey) {
   let theadHtml = '<th style="border: 1px solid #334155; padding: 4px 4px; font-size: 8.5px; text-align: center; width: 2.5%;">Nº</th>';
   colunas.forEach(col => {
     const isValor = String(col).toLowerCase().includes('valor');
-    theadHtml += `<th style="border: 1px solid #334155; padding: 4px 4px; font-size: 8.5px; text-align: ${isValor ? 'right' : 'left'};">${col.replace(/\n/g, ' ')}</th>`;
+    const isMun = String(col).toLowerCase().includes('munic');
+    const textAlign = isValor ? 'right' : (isMun ? 'left; font-weight:bold;' : 'left');
+    theadHtml += `<th style="border: 1px solid #334155; padding: 4px 4px; font-size: 8.5px; text-align: ${textAlign};">${col.replace(/\n/g, ' ')}</th>`;
   });
 
   let rowsHtml = filtrados.map((row, idx) => {
@@ -756,12 +823,14 @@ function imprimirGDSMDetalhado(tabKey) {
     let tds = `<td style="border: 1px solid #cbd5e1; padding: 3px 4px; font-size: 8px; text-align: center; color: #64748b;">${idx + 1}</td>`;
     colunas.forEach(col => {
       const isValor = String(col).toLowerCase().includes('valor');
+      const isMun = String(col).toLowerCase().includes('munic');
       let val = row[col] || '-';
       if (isValor) {
         const num = parseMoedaGDSM(val);
         val = num > 0 ? formatMoedaGDSM(num) : val;
       }
-      tds += `<td style="border: 1px solid #cbd5e1; padding: 3px 4px; font-size: 8px; text-align: ${isValor ? 'right; font-weight: bold; white-space: nowrap;' : 'left;'}">${val}</td>`;
+      const fontStyle = isMun ? 'font-weight:bold; color:#0f172a;' : '';
+      tds += `<td style="border: 1px solid #cbd5e1; padding: 3px 4px; font-size: 8px; text-align: ${isValor ? 'right; font-weight: bold; white-space: nowrap;' : 'left;'}; ${fontStyle}">${val}</td>`;
     });
     return `<tr style="${zebraBg} page-break-inside: avoid; break-inside: avoid;">${tds}</tr>`;
   }).join('');
@@ -816,7 +885,7 @@ function imprimirGDSMDetalhado(tabKey) {
       <!-- Rodapé -->
       <div style="margin-top: 12px; border-top: 1.5px solid #cbd5e1; padding-top: 6px; font-size: 8.5px; color: #64748b; display:flex; justify-content:space-between;">
         <span>SEDUC Processos · CAM / GDSM · Relatório Detalhado de Auditoria</span>
-        <span>Aba: ${tab.titulo} · Planilha Integrada</span>
+        <span>Aba: ${tab.titulo} · Ordenado por Município</span>
       </div>
     </div>
   `;

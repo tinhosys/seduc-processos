@@ -326,9 +326,8 @@ function navegar(pagina) {
     'todas-escolas': '🏫 Todas as Escolas',
     'orcamento': '💵 Orçamento',
     'diarias': '📅 Controle de Diárias',
-    'gdsm-regimes': '📋 GDSM — 32 Regimes de Colaboração',
-    'gdsm-parametros': '⚙️ GDSM — Parâmetros',
-    'gdsm-demais': '📁 GDSM — Demais Processos',
+    'gdsm-regimes': '📋 GDSM — Regime de Colaboração',
+        'gdsm-demais': '📁 GDSM — Demais Processos',
     'gdsm-doacoes': '🎁 GDSM — [Temporário] Doações',
     'gdsm-novoregime': '🚀 GDSM — Novo Regime',
     'sistema-info': '🖥️ Informações do Sistema & Diagnóstico'
