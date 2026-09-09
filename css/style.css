@@ -2592,3 +2592,73 @@ span.badge {
     print-color-adjust: exact !important;
   }
 }
+
+
+/* ============================================================
+   ACTION TOOLBAR SCROLL & HORIZONTAL BAR COMPENSATIONS (v1.2.57)
+   ============================================================ */
+.action-toolbar-scroll {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 4px 2px 10px 2px;
+  margin-bottom: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.6);
+  -webkit-overflow-scrolling: touch;
+}
+
+.action-toolbar-scroll::-webkit-scrollbar {
+  height: 7px;
+}
+
+.action-toolbar-scroll::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.action-toolbar-scroll::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 4px;
+}
+
+.action-toolbar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #60a5fa;
+}
+
+.action-toolbar-scroll .btn {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Compensacao de scroll horizontal nos forms e filtros */
+.filters-bar {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #475569 rgba(15, 23, 42, 0.4);
+  -webkit-overflow-scrolling: touch;
+}
+
+.filters-bar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.filters-bar::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.4);
+  border-radius: 4px;
+}
+
+.filters-bar::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+.filters-bar::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}

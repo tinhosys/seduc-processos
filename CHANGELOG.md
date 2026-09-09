@@ -3,9 +3,37 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
+## [v1.2.57] — 2026-09-08
+
+**Tag:** `v1.2.57` · **Versão do Sistema:** `GBZ - v1.2.57`
+
+### 📊 Barra Horizontal de Ações na Base dos Formulários & Compensação com Scroll
+
+- **Botões de Ação na Página:**
+  - Realocados todos os botões de ação (`SIMPLIFICADO`, `DETALHADO`, `EXCEL`, `PLANILHA`, `ATUALIZAR`, `LIMPAR PARÂMETROS` e relatórios de `Processos`) do canto superior direito para uma **barra horizontal dedicada na base dos formulários** da seção, logo antes das tabelas.
+  - Distribuição ampla ao longo da largura da página (`width: 100%`), melhorando a ergonomia de uso e visibilidade.
+- **Garantia de Visibilidade & Compensação com Rolagem Horizontal (`overflow-x: auto`):**
+  - Implementada a classe `.action-toolbar-scroll` com suporte a rolagem horizontal suave, garantindo que nenhum botão seja espremido ou cortado em telas menores, notebooks ou com zoom ativado.
+  - Barra de rolagem estilizada na base do componente (`scrollbar-width: thin`, cor personalizada e efeito hover).
+  - Adicionada compensação com barra horizontal nas seções de filtros (`.filters-bar`), evitando quebras no layout.
+  - Aplicação universal nos formulários de **Processos** e em todas as abas **GDSM** (**Regime**, **Demais Processos**, **Doações [Temporário]** e **Novo Regime**).
+
 ---
 
-## [v1.2.55] — 2026-09-08
+## [v1.2.56] — 2026-09-08
+
+**Tag:** `v1.2.56` · **Versão do Sistema:** `GBZ - v1.2.56`
+
+### 🧭 Reorganização de Formulários, Rótulos e Menu GDSM
+
+- **Município como Primeiro Campo:**
+  - Em todas as abas GDSM, o filtro de Município foi posicionado estrategicamente no início para acelerar a busca municipalista.
+- **Renomeação de Menu:**
+  - Atualizado o rótulo do menu de `32 Regimes` para `Regime`.
+- **Exclusão de Aba Parâmetros:**
+  - Removido o item e formulário da aba `Parâmetros`, otimizando a interface.
+
+---
 
 **Tag:** `v1.2.55` · **Versão do Sistema:** `GBZ - v1.2.55`
 
