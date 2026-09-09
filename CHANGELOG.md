@@ -3,6 +3,23 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
+## [v1.2.59] — 2026-09-08
+
+**Tag:** `v1.2.59` · **Versão do Sistema:** `GBZ - v1.2.59`
+
+### ♊ Barras de Rolagem Gêmeas (Vertical e Horizontal Idênticas) e Responsividade Confinada
+
+- **Barras de Rolagem Idênticas (Gêmeas):**
+  - Implementada barra de rolagem horizontal perfeitamente idêntica à barra de rolagem vertical (ambas com 12px de largura/altura, cursor gradiente azul `#2563eb` a `#3b82f6`, borda refinada e trilho contrastante escuro `#090e1a`).
+  - Rolagem horizontal permanente (`overflow-x: scroll !important`) em todas as tabelas, assegurando que o controle de scroll lateral esteja sempre visível e responsivo no rodapé.
+- **Responsividade e Confinamento das Barras dentro da Página:**
+  - O término inferior e lateral das barras respeita estritamente o layout e padding dos containers (`box-sizing: border-box; width: 100%; max-width: 100%`), com canto de junção (`::-webkit-scrollbar-corner`) limpo e escuro.
+  - Largura mínima dinâmica com cálculo proporcional nas tabelas GDSM (`min-width: Math.max(1600, colunas * 150)px`), Processos (1500px), Repetidos (1350px) e GMAC, assegurando espaçamento confortável e legibilidade máxima.
+- **Aplicação em Todos os Formulários Necessários:**
+  - `Todos os Processos`, `Processos Repetidos`, `Regime`, `Demais Processos`, `Doações [Temporário]`, `Novo Regime` e módulos `GMAC`.
+
+---
+
 ## [v1.2.58] — 2026-09-08
 
 **Tag:** `v1.2.58` · **Versão do Sistema:** `GBZ - v1.2.58`

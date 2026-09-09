@@ -389,7 +389,7 @@ function renderizarGMAC(modulo) {
 
   // Montar tabela sem as colunas ocultadas e com MUNICÍPIO na primeira coluna
   let html = `
-    <div style="overflow-x:auto; max-height: calc(100vh - 310px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(15,23,42,0.6);">
+    <div class="table-wrap gmac-table-wrap" style="overflow-x:scroll !important; overflow-y:auto !important; max-height: calc(100vh - 310px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; background: rgba(15,23,42,0.6); width:100%; box-sizing:border-box;">
       <table style="width:100%; min-width:1250px; table-layout:fixed; border-collapse:separate; border-spacing:0; text-align:left; font-size:13px;">
         <thead style="position:sticky; top:0; z-index:10; background:#0f172a; border-bottom:2px solid rgba(255,255,255,0.1);">
           <tr>`;

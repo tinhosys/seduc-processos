@@ -571,8 +571,8 @@ function renderTabelaGDSM(tabKey, filtrados) {
   `;
 
   container.innerHTML = `
-    <div class="table-wrap gdsm-table-wrap" style="flex:1; min-height:0; overflow-x:auto !important; overflow-y:auto !important; width:100%; border-radius:8px;">
-      <table style="width:max-content; min-width:100%; border-collapse:separate; border-spacing:0; text-align:left; font-size:12px;">
+    <div class="table-wrap gdsm-table-wrap" style="flex:1; min-height:0; overflow-x:scroll !important; overflow-y:auto !important; width:100%; max-width:100%; box-sizing:border-box; border-radius:8px;">
+      <table style="width:max-content; min-width:${Math.max(1600, colunasExibidas.length * 150)}px; border-collapse:separate; border-spacing:0; text-align:left; font-size:12px;">
         <thead>
           <tr>${theadHtml}</tr>
         </thead>

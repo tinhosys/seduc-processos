@@ -2787,3 +2787,76 @@ span.badge {
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 12px !important;
 }
+
+
+/* ============================================================
+   BARRAS GÊMEAS: VERTICAL E HORIZONTAL IDÊNTICAS E RESPONSIVAS (v1.2.59)
+   ============================================================ */
+
+/* Confinamento estrito e scroll horizontal permanente em todos os forms */
+.table-wrap,
+.gdsm-table-wrap,
+.gmac-table-wrap,
+.data-table-wrap {
+  overflow-x: scroll !important;
+  overflow-y: auto !important;
+  scrollbar-width: auto !important;
+  scrollbar-color: #3b82f6 #090e1a !important;
+  -webkit-overflow-scrolling: touch !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Dimensões idênticas: 12px de altura (horizontal) e 12px de largura (vertical) */
+.table-wrap::-webkit-scrollbar,
+.gdsm-table-wrap::-webkit-scrollbar,
+.gmac-table-wrap::-webkit-scrollbar,
+.data-table-wrap::-webkit-scrollbar {
+  height: 12px !important;
+  width: 12px !important;
+}
+
+.table-wrap::-webkit-scrollbar-track,
+.gdsm-table-wrap::-webkit-scrollbar-track,
+.gmac-table-wrap::-webkit-scrollbar-track,
+.data-table-wrap::-webkit-scrollbar-track {
+  background: #090e1a !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.table-wrap::-webkit-scrollbar-thumb,
+.gdsm-table-wrap::-webkit-scrollbar-thumb,
+.gmac-table-wrap::-webkit-scrollbar-thumb,
+.data-table-wrap::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+  border-radius: 6px !important;
+  border: 2px solid #090e1a !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+}
+
+.table-wrap::-webkit-scrollbar-thumb:hover,
+.gdsm-table-wrap::-webkit-scrollbar-thumb:hover,
+.gmac-table-wrap::-webkit-scrollbar-thumb:hover,
+.data-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa) !important;
+}
+
+/* Canto de encontro perfeitamente alinhado e responsivo dentro da página */
+.table-wrap::-webkit-scrollbar-corner,
+.gdsm-table-wrap::-webkit-scrollbar-corner,
+.gmac-table-wrap::-webkit-scrollbar-corner,
+.data-table-wrap::-webkit-scrollbar-corner {
+  background: #090e1a !important;
+}
+
+/* Garantia de largura das tabelas para rolagem lateral completa */
+#page-processos .table-wrap table {
+  min-width: 1500px !important;
+}
+
+#page-repetidos .table-wrap table {
+  min-width: 1350px !important;
+}
