@@ -2662,3 +2662,128 @@ span.badge {
 .filters-bar::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
+
+
+/* ============================================================
+   ESTILIZAÇÃO E ROLAGEM HORIZONTAL DAS TABELAS (v1.2.58)
+   ============================================================ */
+
+/* Suporte universal a rolagem horizontal nos containers de tabela */
+.table-wrap,
+.gdsm-table-wrap {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  scrollbar-width: auto;
+  scrollbar-color: #3b82f6 #090e1a;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Barra de rolagem horizontal destacada (Altura de 12px com contraste) */
+.table-wrap::-webkit-scrollbar,
+.gdsm-table-wrap::-webkit-scrollbar {
+  height: 12px !important;
+  width: 10px !important;
+}
+
+.table-wrap::-webkit-scrollbar-track,
+.gdsm-table-wrap::-webkit-scrollbar-track {
+  background: #090e1a !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.table-wrap::-webkit-scrollbar-thumb,
+.gdsm-table-wrap::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #2563eb, #3b82f6) !important;
+  border-radius: 6px !important;
+  border: 2px solid #090e1a !important;
+}
+
+.table-wrap::-webkit-scrollbar-thumb:hover,
+.gdsm-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa) !important;
+}
+
+/* Fixação da coluna Município nas tabelas GDSM no Scroll Horizontal */
+.gdsm-table-wrap th.col-municipio-sticky {
+  position: sticky !important;
+  left: 0 !important;
+  top: 0 !important;
+  z-index: 25 !important;
+  background: #1e293b !important;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+.gdsm-table-wrap td.col-municipio-sticky {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 5 !important;
+  background: #0f172a !important;
+  font-weight: 700 !important;
+  color: #f8fafc !important;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.4) !important;
+}
+
+.gdsm-table-wrap tr:hover td.col-municipio-sticky {
+  background: #1e293b !important;
+}
+
+/* Confinamento de viewport nas páginas de formulários GDSM */
+#page-gdsm-regimes,
+#page-gdsm-demais,
+#page-gdsm-doacoes,
+#page-gdsm-novoregime {
+  display: none;
+}
+
+#page-gdsm-regimes.active,
+#page-gdsm-demais.active,
+#page-gdsm-doacoes.active,
+#page-gdsm-novoregime.active {
+  display: flex !important;
+  flex-direction: column !important;
+  height: calc(100vh - 68px) !important;
+  box-sizing: border-box !important;
+  padding: 16px 28px 10px !important;
+  overflow: hidden !important;
+}
+
+#page-gdsm-regimes .section-header,
+#page-gdsm-demais .section-header,
+#page-gdsm-doacoes .section-header,
+#page-gdsm-novoregime .section-header {
+  flex-shrink: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+#page-gdsm-regimes .filters-bar,
+#page-gdsm-demais .filters-bar,
+#page-gdsm-doacoes .filters-bar,
+#page-gdsm-novoregime .filters-bar {
+  flex-shrink: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+#page-gdsm-regimes .action-toolbar-scroll,
+#page-gdsm-demais .action-toolbar-scroll,
+#page-gdsm-doacoes .action-toolbar-scroll,
+#page-gdsm-novoregime .action-toolbar-scroll {
+  flex-shrink: 0 !important;
+  margin-bottom: 8px !important;
+  padding: 2px 2px 6px 2px !important;
+}
+
+#gdsm-table-container-regimes,
+#gdsm-table-container-demais,
+#gdsm-table-container-doacoes,
+#gdsm-table-container-novoregime {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  margin-bottom: 4px !important;
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 12px !important;
+}

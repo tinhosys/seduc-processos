@@ -3,6 +3,27 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
+## [v1.2.58] — 2026-09-08
+
+**Tag:** `v1.2.58` · **Versão do Sistema:** `GBZ - v1.2.58`
+
+### 🔄 Barra Horizontal Fixa nas Tabelas de Todos os Formulários & Fixação de Município
+
+- **Barra de Rolagem Horizontal Destacada na Base da Tela:**
+  - Implementada barra de rolagem horizontal destacada com altura de 12px, contraste acentuado e cursor ergonômico na base das tabelas em todos os formulários da seção GDSM e Processos.
+  - Confinamento inteligente de viewport (`height: calc(100vh - 68px)` com `overflow: hidden`), garantindo que a barra de rolagem horizontal permaneça **sempre visível e fixada no rodapé da visualização**, sem que o usuário precise descer até o final dos 50 registros para rolar lateralmente.
+- **Aplicação Universal nos Formulários Marcados:**
+  - **Todos os Processos (`#page-processos`):** Largura mínima de 1400px com scroll horizontal e vertical integrados.
+  - **Processos Repetidos (`#page-repetidos`):** Largura mínima de 1250px com scroll horizontal suave.
+  - **Regime (`#page-gdsm-regimes`):** Acesso lateral completo a todas as 26 colunas originais da planilha.
+  - **Demais Processos (`#page-gdsm-demais`):** Visualização integral das 15 colunas.
+  - **Doações [Temporário] (`#page-gdsm-doacoes`):** Acesso a todas as 12 colunas cadastrais e financeiras.
+  - **Novo Regime (`#page-gdsm-novoregime`):** Visualização completa das 16 colunas.
+- **Coluna Município Fixa no Scroll Lateral:**
+  - Adicionado congelamento institucional da primeira coluna (**Município**) com `position: sticky; left: 0` e sombra de profundidade (`box-shadow: 2px 0 6px rgba(0,0,0,0.4)`), permitindo navegar por dezenas de colunas à direita mantendo sempre visível o município de referência.
+
+---
+
 ## [v1.2.57] — 2026-09-08
 
 **Tag:** `v1.2.57` · **Versão do Sistema:** `GBZ - v1.2.57`

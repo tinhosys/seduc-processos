@@ -469,9 +469,11 @@ function renderTabelaGDSM(tabKey, filtrados) {
     const st = getColunaStyleGDSM(col);
     const styleAlign = `text-align:${st.align};`;
     const colDisplay = col.replace(/\n/g, ' ');
+    const isMun = col.toLowerCase().includes('munic');
+    const stickyClass = isMun ? 'class="col-municipio-sticky"' : '';
 
     return `
-      <th onclick="ordenarGDSM('${tabKey}', '${col}')" style="padding:10px 14px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.08); position:sticky; top:0; z-index:10; cursor:pointer; user-select:none; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap; ${styleAlign}" title="Clique para ordenar por ${colDisplay}">
+      <th ${stickyClass} onclick="ordenarGDSM('${tabKey}', '${col}')" style="padding:10px 14px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.08); position:sticky; top:0; z-index:${isMun ? 25 : 10}; cursor:pointer; user-select:none; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap; ${styleAlign}" title="Clique para ordenar por ${colDisplay}">
         ${colDisplay}${arrow}
       </th>
     `;
@@ -484,10 +486,10 @@ function renderTabelaGDSM(tabKey, filtrados) {
       const colNorm = col.toLowerCase();
       const st = getColunaStyleGDSM(col);
 
-      // 1. MUNICÍPIO (Destaque institucional)
+      // 1. MUNICÍPIO (Destaque institucional e fixação lateral)
       if (colNorm.includes('munic')) {
         return `
-          <td style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-weight:700; color:#f8fafc; font-size:13px; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
+          <td class="col-municipio-sticky" style="padding:10px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-weight:700; color:#f8fafc; font-size:13px; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
             ${val}
           </td>
         `;
@@ -554,7 +556,7 @@ function renderTabelaGDSM(tabKey, filtrados) {
 
   // Barra de Paginação
   const paginacaoHtml = `
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:12px 18px; background:rgba(15,23,42,0.9); border-top:1px solid rgba(255,255,255,0.08); font-size:12.5px; color:#94a3b8;">
+    <div style="flex-shrink:0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; padding:10px 18px; background:rgba(15,23,42,0.95); border-top:1px solid rgba(255,255,255,0.08); font-size:12.5px; color:#94a3b8;">
       <div>
         Exibindo <strong style="color:#f8fafc;">${inicio + 1}</strong> a <strong style="color:#f8fafc;">${fim}</strong> de <strong style="color:#f8fafc;">${total}</strong> registros
       </div>
@@ -569,8 +571,8 @@ function renderTabelaGDSM(tabKey, filtrados) {
   `;
 
   container.innerHTML = `
-    <div class="table-wrap" style="overflow-x:auto; overflow-y:auto; max-height:calc(100vh - 275px); width:100%; border-radius:8px;">
-      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:12px;">
+    <div class="table-wrap gdsm-table-wrap" style="flex:1; min-height:0; overflow-x:auto !important; overflow-y:auto !important; width:100%; border-radius:8px;">
+      <table style="width:max-content; min-width:100%; border-collapse:separate; border-spacing:0; text-align:left; font-size:12px;">
         <thead>
           <tr>${theadHtml}</tr>
         </thead>
