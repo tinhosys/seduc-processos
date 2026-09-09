@@ -248,28 +248,28 @@
       
             <!-- 4 BOTÕES DE MÓDULOS RÁPIDOS COM CONTROLE DE PERFIL (GDSM, GMAC, PROALFA, ORÇAMENTO) -->
       <div class="sidebar-quick-modules" id="sidebar-quick-modules">
-        <a href="#" class="quick-module-btn btn-mod-gdsm" id="btn-quick-gdsm" onclick="navegar('processos'); toggleSubmenu('sub-cam'); toggleSubmenu('sub-gdsm'); return false;" title="Acessar Módulo GDSM">
+        <a href="#" class="quick-module-btn btn-mod-gdsm" id="btn-quick-gdsm" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-gdsm'); navegar('processos'); return false;" title="Acessar Módulo GDSM">
           <span style="display:flex; align-items:center; gap:8px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
             <span>GDSM</span>
           </span>
           <span style="font-size:10px; opacity:0.85;">▶</span>
         </a>
-        <a href="#" class="quick-module-btn btn-mod-gmac" id="btn-quick-gmac" onclick="navegar('gmac-aee'); toggleSubmenu('sub-cam'); toggleSubmenu('sub-gmac'); if(typeof carregarGMAC==='function') carregarGMAC('aee'); return false;" title="Acessar Módulo GMAC">
+        <a href="#" class="quick-module-btn btn-mod-gmac" id="btn-quick-gmac" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-gmac'); navegar('gmac-aee'); if(typeof carregarGMAC==='function') carregarGMAC('aee'); return false;" title="Acessar Módulo GMAC">
           <span style="display:flex; align-items:center; gap:8px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line></svg>
             <span>GMAC</span>
           </span>
           <span style="font-size:10px; opacity:0.85;">▶</span>
         </a>
-        <a href="#" class="quick-module-btn btn-mod-proalfa" id="btn-quick-proalfa" onclick="navegarProalfa('professores'); toggleSubmenu('sub-cam'); toggleSubmenu('sub-proalfa'); return false;" title="Acessar Módulo PROALFA">
+        <a href="#" class="quick-module-btn btn-mod-proalfa" id="btn-quick-proalfa" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-proalfa'); navegarProalfa('professores'); return false;" title="Acessar Módulo PROALFA">
           <span style="display:flex; align-items:center; gap:8px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
             <span>PROALFA</span>
           </span>
           <span style="font-size:10px; opacity:0.85;">▶</span>
         </a>
-        <a href="#" class="quick-module-btn btn-mod-orcamento action-report" id="btn-quick-orcamento" onclick="navegar('orcamento'); toggleSubmenu('sub-orcamento'); return false;" title="Acessar Módulo Orçamento">
+        <a href="#" class="quick-module-btn btn-mod-orcamento action-report" id="btn-quick-orcamento" onclick="abrirSubmenu('sub-orcamento'); navegar('orcamento'); return false;" title="Acessar Módulo Orçamento">
           <span style="display:flex; align-items:center; gap:8px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path></svg>
             <span>ORÇAMENTO</span>
@@ -3383,18 +3383,42 @@
       }
 
       const menu = document.getElementById(id);
-      const indicator = el.querySelector('.submenu-indicator');
-      if (menu.style.display === 'none') {
+      if (!menu) return;
+
+      if (!el) {
+        el = document.querySelector(`[onclick*="'${id}'"]`) || document.querySelector(`[onclick*='"${id}"']`);
+      }
+      const indicator = el ? el.querySelector('.submenu-indicator') : null;
+      const isClosed = (menu.style.display === 'none' || !menu.style.display);
+      if (isClosed) {
         menu.style.display = 'block';
         if (indicator) indicator.style.transform = 'rotate(180deg)';
-        el.classList.add('open');
+        if (el) el.classList.add('open');
       } else {
         menu.style.display = 'none';
         if (indicator) indicator.style.transform = 'rotate(0deg)';
-        el.classList.remove('open');
+        if (el) el.classList.remove('open');
       }
     }
-    
+
+    function abrirSubmenu(id) {
+      const sidebar = document.getElementById('app-sidebar');
+      if (sidebar && sidebar.classList.contains('collapsed')) {
+        toggleDesktopSidebar();
+      }
+      const menu = document.getElementById(id);
+      if (!menu) return;
+      menu.style.display = 'block';
+      const el = document.querySelector(`[onclick*="'${id}'"]`) || document.querySelector(`[onclick*='"${id}"']`);
+      if (el) {
+        el.classList.add('open');
+        const indicator = el.querySelector('.submenu-indicator');
+        if (indicator) indicator.style.transform = 'rotate(180deg)';
+      }
+    }
+    window.toggleSubmenu = toggleSubmenu;
+    window.abrirSubmenu = abrirSubmenu;
+
     function fecharSubmenus() {
       document.querySelectorAll('.nav-submenu').forEach(m => m.style.display = 'none');
       document.querySelectorAll('.submenu-indicator').forEach(i => i.style.transform = 'rotate(0deg)');
