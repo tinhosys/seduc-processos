@@ -33,11 +33,34 @@ class MultiSelect {
     this.select.style.setProperty("display", "none", "important");
     this.select.classList.add("custom-multiselect-hidden");
 
+    // Ao clicar no botão, posicionar dropdown com position:fixed
+    // para sair do fluxo e não ser cortado por overflow:hidden dos ancestrais
     this.button.addEventListener("click", (e) => {
       e.stopPropagation();
       const isVisible = this.dropdown.style.display === "block";
-      document.querySelectorAll(".custom-multiselect-dropdown").forEach(el => el.style.display = "none");
-      if (!isVisible) this.dropdown.style.display = "block";
+      // Fechar todos os outros dropdowns
+      document.querySelectorAll(".custom-multiselect-dropdown").forEach(el => {
+        el.style.display = "none";
+      });
+      if (!isVisible) {
+        const rect = this.button.getBoundingClientRect();
+        this.dropdown.style.position = "fixed";
+        this.dropdown.style.top = (rect.bottom + 4) + "px";
+        this.dropdown.style.left = rect.left + "px";
+        this.dropdown.style.width = Math.max(rect.width, 180) + "px";
+        this.dropdown.style.zIndex = "99999";
+        this.dropdown.style.display = "block";
+        // Ajustar posição se sair da tela
+        requestAnimationFrame(() => {
+          const dropRect = this.dropdown.getBoundingClientRect();
+          if (dropRect.right > window.innerWidth - 8) {
+            this.dropdown.style.left = Math.max(0, rect.right - dropRect.width) + "px";
+          }
+          if (dropRect.bottom > window.innerHeight - 8) {
+            this.dropdown.style.top = Math.max(0, rect.top - dropRect.height - 4) + "px";
+          }
+        });
+      }
     });
 
     document.addEventListener("click", (e) => {
@@ -46,6 +69,7 @@ class MultiSelect {
       }
     });
   }
+
 
   buildOptions() {
     this.dropdown.innerHTML = "";
@@ -166,3 +190,16 @@ window.initMultiSelect = function(selectId) {
   }
   select._multiSelectInstance = new MultiSelect(select);
 };
+
+// Fechar dropdowns ao rolar ou redimensionar
+window.addEventListener("scroll", () => {
+  document.querySelectorAll(".custom-multiselect-dropdown").forEach(el => {
+    el.style.display = "none";
+  });
+}, true);
+
+window.addEventListener("resize", () => {
+  document.querySelectorAll(".custom-multiselect-dropdown").forEach(el => {
+    el.style.display = "none";
+  });
+});
