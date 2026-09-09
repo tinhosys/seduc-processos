@@ -2398,3 +2398,136 @@ thead th {
     print-color-adjust: exact !important;
   }
 }
+
+/* MultiSelect Focus & Scrollbar Enhancements */
+.custom-multiselect-btn:focus,
+.custom-multiselect-btn:focus-visible {
+  outline: none !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+.custom-multiselect-dropdown {
+  overflow-x: hidden !important;
+}
+
+.custom-multiselect-items-container::-webkit-scrollbar,
+.custom-multiselect-dropdown::-webkit-scrollbar {
+  width: 7px;
+}
+.custom-multiselect-items-container::-webkit-scrollbar-track,
+.custom-multiselect-dropdown::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+.custom-multiselect-items-container::-webkit-scrollbar-thumb,
+.custom-multiselect-dropdown::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+.custom-multiselect-items-container::-webkit-scrollbar-thumb:hover,
+.custom-multiselect-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* 4 Botões de Módulos Rápidos na Barra Lateral */
+.sidebar-quick-modules {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0 12px 18px 12px;
+  padding: 10px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+}
+.quick-module-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 11.5px;
+  font-weight: 750;
+  letter-spacing: 0.8px;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.quick-module-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  filter: brightness(1.15);
+}
+.quick-module-btn:active {
+  transform: translateY(0);
+}
+.quick-module-btn.btn-mod-gdsm {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(14, 165, 233, 0.15) 100%);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.35);
+}
+.quick-module-btn.btn-mod-gdsm:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+}
+.quick-module-btn.btn-mod-gmac {
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.25) 0%, rgba(16, 185, 129, 0.15) 100%);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.35);
+}
+.quick-module-btn.btn-mod-gmac:hover {
+  border-color: #34d399;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.3);
+}
+.quick-module-btn.btn-mod-proalfa {
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.25) 0%, rgba(168, 85, 247, 0.15) 100%);
+  color: #c084fc;
+  border-color: rgba(192, 132, 252, 0.35);
+}
+.quick-module-btn.btn-mod-proalfa:hover {
+  border-color: #c084fc;
+  box-shadow: 0 0 14px rgba(192, 132, 252, 0.3);
+}
+.quick-module-btn.btn-mod-orcamento {
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.25) 0%, rgba(245, 158, 11, 0.15) 100%);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.35);
+}
+.quick-module-btn.btn-mod-orcamento:hover {
+  border-color: #fbbf24;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.3);
+}
+
+/* Item Financeiro e Efeito de Foco */
+.nav-item.item-financeiro {
+  position: relative;
+  transition: all 0.25s ease;
+}
+.nav-item.item-financeiro:hover,
+.nav-item.item-financeiro:focus-visible,
+.nav-item.item-financeiro.active {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
+  color: #34d399 !important;
+  box-shadow: inset 3px 0 0 #10b981, 0 0 16px rgba(16, 185, 129, 0.25) !important;
+}
+.nav-item.item-financeiro:focus {
+  outline: none;
+}
+.nav-item.item-financeiro svg {
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.nav-item.item-financeiro:hover svg,
+.nav-item.item-financeiro.active svg {
+  transform: scale(1.15);
+  filter: drop-shadow(0 0 6px #34d399);
+}
+
+/* Efeito de Destaque no Formulário Financeiro */
+.financeiro-input-focus:focus {
+  border-color: #10b981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
+  background: #0f172a !important;
+}

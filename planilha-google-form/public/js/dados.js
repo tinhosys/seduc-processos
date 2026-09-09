@@ -3,11 +3,9 @@ function formatarDigitoInteiro(val) {
   if (val === null || val === undefined) return '';
   let s = String(val).trim();
   if (!s) return '';
+  // Se for valor vindo com formatação decimal pura de planilha (ex: 2,00 ou 2.00)
   s = s.replace(/[,.]0+$/, '');
-  if (s.includes(',') || s.includes('.')) {
-    s = s.split(/[,.]/)[0].trim();
-  }
-  return s.replace(/\D/g, '');
+  return s.trim();
 }
 
 // ============================================================

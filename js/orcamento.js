@@ -711,7 +711,7 @@ window.imprimirOrcamento = function() {
     <div class="official-print-header" style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0284c7; padding-bottom:6px; margin-bottom:10px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left; line-height:1.25;">
         <div style="font-size:10px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
+        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
         <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
@@ -761,7 +761,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
   
   doc.setFontSize(14);
   const anoRelativo = new Date().getFullYear();
-    doc.text('EXECUÇÁO ORÇAMENTÁRIA ' + anoRelativo, 14, 15);
+    doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo, 14, 15);
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text('CAM - Coordenadoria de Articulações com os Municípios | SEDUC - RO', 14, 20);
@@ -811,7 +811,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
     const perc = _pctExec(tInicial, tExecutado);
     let statusText = "STATUS GERAL: ";
     if (perc > 80) statusText += "CRÍTICO (Alta Execução)";
-    else if (perc > 50) statusText += "ATENÇÁO (Execução Mediana)";
+    else if (perc > 50) statusText += "ATENÇÃO (Execução Mediana)";
     else statusText += "NORMAL (Baixa Execução)";
     
     doc.setFontSize(11);

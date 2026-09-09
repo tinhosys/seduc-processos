@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS | SEDUC - RO</title>
+  <title>CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</title>
   <meta name="description" content="Acompanhamento de processos">
   
   <!-- OpenGraph Meta Tags para redes sociais e WhatsApp -->
-  <meta property="og:title" content="CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS | SEDUC - RO">
+  <meta property="og:title" content="CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO">
   <meta property="og:description" content="Acompanhamento de processos">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tinhosys.github.io/seduc-processos/">
@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.64">
+  <link rel="stylesheet" href="css/style.css?v=1.2.65">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -176,7 +176,7 @@
     text-align: center;
   ">
     <h2 style="color:#f0f4ff; font-size:15px; font-weight:800; margin-bottom:40px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">
-      CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS<br>
+      CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS<br>
       <span style="font-size: 22px;">SEDUC - RO</span>
     </h2>
     
@@ -220,7 +220,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.64</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.65</div>
   </div>
 </div>
   
@@ -241,11 +241,43 @@
           CAM
         </div>
         <div style="font-size: 11px; font-weight: 600; color: #cbd5e1; line-height: 1.4; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-          COORDENADORIA DE ARTICULAÇÁO<br>COM OS MUNICÍPIOS<br>SEDUC - RO
+          COORDENADORIA DE ARTICULAÇÃO<br>COM OS MUNICÍPIOS<br>SEDUC - RO
         </div>
       </div>
 
       
+            <!-- 4 BOTÕES DE MÓDULOS RÁPIDOS COM CONTROLE DE PERFIL (GDSM, GMAC, PROALFA, ORÇAMENTO) -->
+      <div class="sidebar-quick-modules" id="sidebar-quick-modules">
+        <a href="#" class="quick-module-btn btn-mod-gdsm" id="btn-quick-gdsm" onclick="navegar('processos'); toggleSubmenu('sub-cam'); toggleSubmenu('sub-gdsm'); return false;" title="Acessar Módulo GDSM">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span>GDSM</span>
+          </span>
+          <span style="font-size:10px; opacity:0.85;">▶</span>
+        </a>
+        <a href="#" class="quick-module-btn btn-mod-gmac" id="btn-quick-gmac" onclick="navegar('gmac-aee'); toggleSubmenu('sub-cam'); toggleSubmenu('sub-gmac'); if(typeof carregarGMAC==='function') carregarGMAC('aee'); return false;" title="Acessar Módulo GMAC">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line></svg>
+            <span>GMAC</span>
+          </span>
+          <span style="font-size:10px; opacity:0.85;">▶</span>
+        </a>
+        <a href="#" class="quick-module-btn btn-mod-proalfa" id="btn-quick-proalfa" onclick="navegarProalfa('professores'); toggleSubmenu('sub-cam'); toggleSubmenu('sub-proalfa'); return false;" title="Acessar Módulo PROALFA">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <span>PROALFA</span>
+          </span>
+          <span style="font-size:10px; opacity:0.85;">▶</span>
+        </a>
+        <a href="#" class="quick-module-btn btn-mod-orcamento action-report" id="btn-quick-orcamento" onclick="navegar('orcamento'); toggleSubmenu('sub-orcamento'); return false;" title="Acessar Módulo Orçamento">
+          <span style="display:flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path></svg>
+            <span>ORÇAMENTO</span>
+          </span>
+          <span style="font-size:10px; opacity:0.85;">▶</span>
+        </a>
+      </div>
+
       <nav class="sidebar-nav">
         <div class="nav-section-label">Menu Principal</div>
 
@@ -390,6 +422,17 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               <span>Diárias</span>
             </a>
+            <!-- Item Financeiro com chamada ao formulário e efeito no foco -->
+            <a href="#" class="nav-item nav-form-item item-financeiro" data-page="financeiro" onclick="navegar('financeiro')" title="Gestão Financeira e Lançamentos">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                <line x1="1" y1="10" x2="23" y2="10"></line>
+                <circle cx="6" cy="15" r="1" fill="#10b981"></circle>
+                <circle cx="10" cy="15" r="1" fill="#10b981"></circle>
+                <path d="M16 15h3"></path>
+              </svg>
+              <span>Financeiro</span>
+            </a>
           </div>
         </div>
 
@@ -444,7 +487,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.64</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.65</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -534,7 +577,7 @@
         </div>
       </section>
 
-      <!-- GMAC: DOAÇÁO DO Á”NIBUS ESCOLAR -->
+      <!-- GMAC: DOAÇÃO DO ÔNIBUS ESCOLAR -->
       <section class="page" id="page-gmac-onibus">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
@@ -590,7 +633,7 @@
         </div>
       </section>
 
-      <!-- GMAC: DOAÇÁO DEFINITIVA DE VEÍCULOS -->
+      <!-- GMAC: DOAÇÃO DEFINITIVA DE VEÍCULOS -->
       <section class="page" id="page-gmac-veiculos">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
@@ -646,7 +689,7 @@
         </div>
       </section>
 
-      <!-- GMAC: MUNICIPALIZAÇÁO E REORDENAMENTO -->
+      <!-- GMAC: MUNICIPALIZAÇÃO E REORDENAMENTO -->
       <section class="page" id="page-gmac-reordenamento">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
@@ -702,7 +745,7 @@
         </div>
       </section>
 
-      <!-- GMAC: TERMO DE COOPERAÇÁO -->
+      <!-- GMAC: TERMO DE COOPERAÇÃO -->
       <section class="page" id="page-gmac-cooperacao">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
@@ -989,7 +1032,7 @@
               <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, MUNICÍPIO...">
             </div>
             <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
-              <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÁO:</span>
+              <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÃO:</span>
               <div class="toggle-item">
                 <label class="toggle-switch">
                   <input type="checkbox" id="filtro-cam">
@@ -1033,12 +1076,12 @@
               <option value="">PREFIXO</option>
             </select>
             <select id="filtro-localizacao" multiple>
-              <option value="">LOCALIZAÇÁO</option>
+              <option value="">LOCALIZAÇÃO</option>
             </select>
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
-              <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÁO -->
+              <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÃO -->
             <div class="filtro-digito-container action-adm" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; gap:6px; flex:0 0 auto; width:auto;">
               <div style="position:relative; width:220px; flex-shrink:0;">
                 <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 10px; height:38px; box-sizing:border-box;">
@@ -1108,25 +1151,25 @@
           
         </div>
 
-        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÃO -->
         <div class="action-toolbar-scroll" id="processos-actions-toolbar">
           <button class="btn action-report action-adm" id="btn-relatorio-padrao-adm" onclick="if(typeof window.imprimirPadraoAdm==='function'){window.imprimirPadraoAdm();}else if(typeof imprimirPadraoAdm==='function'){imprimirPadraoAdm();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:#0f172a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Relatório Padrão sem Origem (Exclusivo Admin)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÁO ADM</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÃO ADM</span>
           </button>
           <button class="btn action-report action-adm" id="btn-relatorio-padrao-adm-2" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:#0f172a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÁ“RIO ADM 2</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÓRIO ADM 2</span>
           </button>
           <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">ANÁLISE</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">ANÁLISE</span>
           </button>
           <button class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Relatório Detalhado">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> <span class="btn-text">DETALHADO</span>
           </button>
           <button class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Lista Atual">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÁO</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÃO</span>
           </button>
           <button class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Selecionados">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÁO SEL.</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÃO SEL.</span>
           </button>
           <button class="btn action-report" onclick="exportarExcel()" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> <span class="btn-text">EXCEL</span>
@@ -1149,11 +1192,11 @@
                 <th style="width: 40px; text-align: center;"><input type="checkbox" id="check-all-processos" onchange="toggleAllProcessos(this)" style="cursor:pointer; transform: scale(1.2);"></th>
                 <th data-sort="prefixo" style="width: 140px; min-width: 140px;">Prefixo</th>
                 <th data-sort="MUNICÍPIO" style="width: 120px;">MUNICÍPIO</th>
-                <th data-sort="numero" style="width: 165px; min-width: 165px;">NÂº Processo</th>
+                <th data-sort="numero" style="width: 165px; min-width: 165px;">Nº Processo</th>
                 <th data-sort="interessado" style="width: 25%;">Interessado</th>
                 <th data-sort="objeto" style="width: 25%;">Objeto</th>
                 <th data-sort="status" class="col-status" style="width: 135px; text-align: center;">Status</th>
-                <th data-sort="localizacao" class="col-localizacao" style="width: 115px; text-align: center;">LOCALIZAÇÁO</th>
+                <th data-sort="localizacao" class="col-localizacao" style="width: 115px; text-align: center;">LOCALIZAÇÃO</th>
                 <th data-sort="valorOf" style="text-align:right; width: 130px;">Valor Oficial</th>
                 <th data-sort="data" style="width: 80px; text-align: center;">Data</th>
                 <th style="width: 60px; text-align:center;">Ações</th>
@@ -1223,7 +1266,7 @@
         <div class="card" id="card-form-processo">
           <form id="form-processo">
             
-            <!-- GUIAS DE NAVEGAÇÁO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
+            <!-- GUIAS DE NAVEGAÇÃO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; width:100%;">
               <div style="display:flex; gap:12px; align-items:center;">
                 <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📋 OBJETO</button>
@@ -1246,7 +1289,7 @@
             <div class="form-group full card-autorizacoes-header" style="position: relative; margin-bottom: 20px; padding: 14px 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%;">
                 <label style="margin: 0; text-align: left; color: var(--text-primary); font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;">AUTORIZAÇÕES</label>
-                <!-- MARCAR PROCESSO NO CANTO SUPERIOR DIREITO NA LINHA DA AUTORIZAÇÁO -->
+                <!-- MARCAR PROCESSO NO CANTO SUPERIOR DIREITO NA LINHA DA AUTORIZAÇÃO -->
                 <div id="container-form-marca" style="display: flex; align-items: center; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.28); border-radius: 6px; padding: 5px 12px; transition: all 0.2s;">
                   <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #fca5a5; user-select: none; margin: 0; font-size: 12px;">
                     <input type="checkbox" id="form-marca" style="width: 16px; height: 16px; cursor: pointer; accent-color: #ef4444;">
@@ -1317,7 +1360,7 @@
               <!-- LINHA 2 HARMONIOSA: PROCESSO (REDUZIDO COM COPIAR JUNTO), AGRUPAMENTO (EXPANDIDO), ÚLTIMA ATUALIZAÇÃO (EXPANDIDO) -->
               <div class="form-row-meio full" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: flex-start !important; gap: 16px !important; width: 100% !important; grid-column: 1 / -1 !important; margin-bottom: 0 !important; box-sizing: border-box !important;">
                 
-                <!-- 1. NÂº DO PROCESSO: REDUZIDO, COM BOTÁO COPIAR TRAZIDO PARA JUNTO DO INPUT -->
+                <!-- 1. Nº DO PROCESSO: REDUZIDO, COM BOTÃO COPIAR TRAZIDO PARA JUNTO DO INPUT -->
                 <div class="form-group" id="group-form-processo-num" style="flex: 0 0 auto; width: 330px; min-width: 310px; max-width: 350px;">
                   <label>Nº do Processo</label>
                   <div id="container-numeros" style="display:flex; flex-direction:column; gap:8px;">
@@ -1618,7 +1661,7 @@
           </div>
         </div>
 
-        <!-- FORM DE CADASTRO/EDIÇÁO DIRETO NA TELA -->
+        <!-- FORM DE CADASTRO/EDIÇÃO DIRETO NA TELA -->
         <div class="card" id="card-form-acesso" style="margin-bottom: 24px; padding: 20px;">
           <h3 id="cadastro-acesso-title" style="font-size: 14px; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
             <span style="display: flex; align-items: center; gap: 8px;">👤 Registro de Acesso</span>
@@ -1717,7 +1760,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.64
+              GBZ - v1.2.65
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -1725,7 +1768,7 @@
           </div>
         </div>
 
-        <!-- 1. USUÁRIOS LOGADOS & SESSÁO ATIVA -->
+        <!-- 1. USUÁRIOS LOGADOS & SESSÃO ATIVA -->
         <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(59,130,246,0.3); background:linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.5));">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
             <h3 style="margin:0; font-size:15px; font-weight:700; color:#60a5fa; display:flex; align-items:center; gap:8px;">
@@ -1950,7 +1993,7 @@
           </div>
         </div>
 
-        <!-- 4. CORRETOR ORTOGRÁFICO / PADRONIZADOR (TERMINAL CMD VERDE FÁ“SFORO) -->
+        <!-- 4. CORRETOR ORTOGRÁFICO / PADRONIZADOR (TERMINAL CMD VERDE FÓSFORO) -->
         <div class="card" id="card-terminal-padronizador" style="margin-bottom:24px; padding:20px; border-color:rgba(0,255,102,0.4); background:#050907; box-shadow:0 10px 30px rgba(0,0,0,0.6);">
           
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
@@ -1990,7 +2033,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.64] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.65] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -2022,14 +2065,14 @@
 
       </section>
 
-      <!-- ============= MODAL: CONTRA-NOTIFICAÇÁO / CONFIRMAÇÁO DE SEGURANÇA ============= -->
+      <!-- ============= MODAL: CONTRA-NOTIFICAÇÃO / CONFIRMAÇÃO DE SEGURANÇA ============= -->
       <div class="modal-overlay" id="modal-contra-notificacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:9999999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; opacity:1 !important; pointer-events:all !important;">
         <div style="background:#0f172a; border:2px solid #ef4444; width:100%; max-width:620px; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.8); overflow:hidden;">
           
           <div style="padding:20px 24px; background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(15,23,42,0.9)); border-bottom:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; gap:12px;">
             <span style="font-size:28px;">⚠️</span>
             <div>
-              <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">CONTRA-NOTIFICAÇÁO: Confirmação de Segurança</h3>
+              <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">CONTRA-NOTIFICAÇÃO: Confirmação de Segurança</h3>
               <p style="margin:2px 0 0 0; font-size:12px; color:#fca5a5;">Autorização expressa para padronização em lote</p>
             </div>
           </div>
@@ -2119,7 +2162,7 @@
               Acessar Planilha
             </a>
             <button class="btn action-report" onclick="if(typeof window.imprimirRelatorioEscolas==='function'){window.imprimirRelatorioEscolas();}else if(typeof imprimirRelatorioEscolas==='function'){imprimirRelatorioEscolas();}" style="padding:10px 16px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Relatório de Escolas">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÁ“RIO</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÓRIO</span>
             </button>
           </div>
         </div>
@@ -2183,11 +2226,11 @@
               </div>
             </div>
 
-            <!-- LOCALIZAÇÁO -->
+            <!-- LOCALIZAÇÃO -->
             <div class="esc-chk-wrap" id="chk-wrap-localizacao" style="position:relative;flex:1;min-width:150px;">
               <button type="button" class="esc-chk-btn" id="chk-btn-localizacao" onclick="_escolasToggleDropdown('localizacao')"
                 style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
-                <span id="chk-label-localizacao">LOCALIZAÇÁO</span>
+                <span id="chk-label-localizacao">LOCALIZAÇÃO</span>
                 <span style="font-size:10px;opacity:0.6;">▼</span>
               </button>
               <div id="chk-drop-localizacao" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:200px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
@@ -2284,7 +2327,7 @@
       <form id="form-escola-page-data" onsubmit="salvarFormularioEscolaPage(event)">
         <input type="hidden" id="page-escola-id">
 
-        <!-- 1. IDENTIFICAÇÁO INSTITUCIONAL DA ESCOLA -->
+        <!-- 1. IDENTIFICAÇÃO INSTITUCIONAL DA ESCOLA -->
         <div style="padding:22px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.25); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:#a78bfa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
             🏫 <span>1. Identificação Institucional da Escola</span>
@@ -2333,7 +2376,7 @@
           </div>
         </div>
 
-        <!-- 2. GESTÁO DA ESCOLA & DIREÇÁO -->
+        <!-- 2. GESTÃO DA ESCOLA & DIREÇÃO -->
         <div style="padding:22px; background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.06)); border:1px solid rgba(16,185,129,0.35); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
             👤 <span>2. Gestão da Escola & Contatos</span>
@@ -2402,7 +2445,7 @@
 
           <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:18px; margin-bottom:18px;">
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📝 Endereço e NÂº</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📝 Endereço e Nº</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
                 <button type="button" onclick="const end=document.getElementById('page-escola-endereco').value; const mun=document.getElementById('page-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📝</button>
@@ -2457,7 +2500,7 @@
 
 
   <!-- ============= MODAL FORMULÁRIO DE ESCOLA ============= -->
-  <!-- ============= MODAL FORMULÁRIO/EDIÇÁO ESCOLA ============= -->
+  <!-- ============= MODAL FORMULÁRIO/EDIÇÃO ESCOLA ============= -->
   <div class="modal-overlay" id="modal-form-escola" style="display:none; align-items:flex-start; padding-top:4vh; overflow-y:auto; z-index:99999;">
     <div class="modal card" style="width:95%; max-width:840px; margin:auto; margin-bottom:4vh; padding:0; border:1px solid rgba(139,92,246,0.35); border-radius:14px; overflow:hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.5);">
       
@@ -2475,7 +2518,7 @@
         <form id="form-escola-data" onsubmit="salvarEscola(event)">
           <input type="hidden" id="form-escola-id">
           
-          <!-- SEÇÁO 1: IDENTIFICAÇÁO DA ESCOLA -->
+          <!-- SEÇÃO 1: IDENTIFICAÇÃO DA ESCOLA -->
           <div style="padding:18px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.2); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#a78bfa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
               🏫 <span>Identificação da Escola</span>
@@ -2524,7 +2567,7 @@
             </div>
           </div>
 
-          <!-- SEÇÁO 2: GESTÁO DA ESCOLA & CONTATOS -->
+          <!-- SEÇÃO 2: GESTÃO DA ESCOLA & CONTATOS -->
           <div style="padding:18px; background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.06)); border:1px solid rgba(16,185,129,0.3); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
               👤 <span>Gestão da Escola & Contatos</span>
@@ -2585,7 +2628,7 @@
             </div>
           </div>
 
-          <!-- SEÇÁO 3: ENDEREÇO & INFRAESTRUTURA -->
+          <!-- SEÇÃO 3: ENDEREÇO & INFRAESTRUTURA -->
           <div style="padding:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:20px;">
             <div style="font-size:12px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
               📝 <span>Endereço & Infraestrutura</span>
@@ -2593,7 +2636,7 @@
 
             <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:14px; margin-bottom:14px;">
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📝 Endereço e NÂº</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📝 Endereço e Nº</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
                   <button type="button" onclick="const end=document.getElementById('form-escola-endereco').value; const mun=document.getElementById('form-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📝</button>
@@ -2625,7 +2668,7 @@
             </div>
           </div>
 
-          <!-- SEÇÁO MODALIDADES (só para Municipal) -->
+          <!-- SEÇÃO MODALIDADES (só para Municipal) -->
           <div id="secao-modalidades-modal" style="display:none; padding:18px; background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.03)); border:1px solid rgba(239,68,68,0.3); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#f87171; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
               🎓 <span>Modalidades e Matrículas (Municipal)</span>
@@ -2705,7 +2748,7 @@
         </select>
         <select id="mapa-filtro-localizacao" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
           style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-          <option value="">LOCALIZAÇÁO</option>
+          <option value="">LOCALIZAÇÃO</option>
           <option value="Urbana">Urbana</option>
           <option value="Rural">Rural</option>
           <option value="Indígena">Indígena</option>
@@ -2946,7 +2989,7 @@
         </button>
         <button onclick="imprimirMemoria()" style="flex:1; min-width:130px; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.5); color:#60a5fa; padding:0 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:4px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-          III - MEMÁ“RIA CÁLC.
+          III - MEMÓRIA CÁLC.
         </button>
         <button onclick="window.open('https://docs.google.com/spreadsheets/d/12w-tBU6lMlKR7mncvbfoKjKGcvCZftd12CFKxdtf7ac/edit?gid=392130906#gid=392130906', '_blank')" style="flex:1; min-width:130px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.5); color:#10b981; padding:0 16px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.3)'" onmouseout="this.style.background='rgba(16,185,129,0.15)'">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -2965,7 +3008,7 @@
         <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">SUPER</label><select id="proalfa-super" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
         <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">MUNICÍPIO</label><select id="proalfa-municipio" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
         <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">DISTRITO</label><select id="proalfa-distrito" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
-        <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOCALIZAÇÁO</label><select id="proalfa-localizacao" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOCALIZAÇÃO</label><select id="proalfa-localizacao" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
         <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOC. DIFERENCIADA</label><select id="proalfa-loc-dif" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
       </div>
       <div style="margin-top: 15px; display:flex; justify-content:space-between; align-items:stretch; gap: 20px;">
@@ -3100,11 +3143,11 @@
       <div style="overflow-y:auto;flex:1;padding:20px 24px;">
         <input type="hidden" id="te-form-cache-idx"/>
 
-        <!-- SEÇÁO 1: Identificação -->
+        <!-- SEÇÃO 1: Identificação -->
         <div style="margin-bottom:20px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">
             <span style="background:rgba(99,102,241,0.2);color:#818cf8;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">1</span>
-            <span style="font-size:13px;font-weight:700;color:#c7d2fe;letter-spacing:0.5px;">IDENTIFICAÇÁO INSTITUCIONAL</span>
+            <span style="font-size:13px;font-weight:700;color:#c7d2fe;letter-spacing:0.5px;">IDENTIFICAÇÃO INSTITUCIONAL</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
             <div style="grid-column:1/-1;">
@@ -3120,7 +3163,7 @@
               <input id="te-form-inep" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#60a5fa;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">NÂº DE ALUNOS</label>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">Nº DE ALUNOS</label>
               <input id="te-form-alunos" type="number" min="0" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#34d399;font-size:13px;font-weight:700;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
             </div>
             <div>
@@ -3147,11 +3190,11 @@
           </div>
         </div>
 
-        <!-- SEÇÁO 2: Gestão & Contatos -->
+        <!-- SEÇÃO 2: Gestão & Contatos -->
         <div style="margin-bottom:20px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">
             <span style="background:rgba(16,185,129,0.2);color:#34d399;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">2</span>
-            <span style="font-size:13px;font-weight:700;color:#6ee7b7;letter-spacing:0.5px;">GESTÁO & CONTATOS</span>
+            <span style="font-size:13px;font-weight:700;color:#6ee7b7;letter-spacing:0.5px;">GESTÃO & CONTATOS</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
             <div>
@@ -3273,13 +3316,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.64"></script>
-  <script src="js/app.js?v=1.2.64"></script>
-  <script src="js/auth-sap.js?v=1.2.64"></script>
-  <script src="js/escolas.js?v=1.2.64" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.65"></script>
+  <script src="js/app.js?v=1.2.65"></script>
+  <script src="js/auth-sap.js?v=1.2.65"></script>
+  <script src="js/escolas.js?v=1.2.65" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.64"></script>
-  <script src="js/contatos.js?v=1.2.64"></script>
+  <script src="js/mapa.js?v=1.2.65"></script>
+  <script src="js/contatos.js?v=1.2.65"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3413,33 +3456,140 @@
     </div>
   </div>
 
-  <!-- ============= PRINT LAYOUT: PADRÁO ADM 2 (AGRUPADO POR DÍGITO C/ MEMORANDO) ============= -->
+  <!-- ============= PRINT LAYOUT: PADRÃO ADM 2 (AGRUPADO POR DÍGITO C/ MEMORANDO) ============= -->
   <div id="print-layout-padrao-adm-2" class="print-only-layout" style="display:none; padding:15px; font-family:sans-serif; background:white;"></div>
 
-  <!-- ============= PRINT LAYOUT: PADRÁO ADM (SEM ORIGEM) ============= -->
+  <!-- ============= PRINT LAYOUT: PADRÃO ADM (SEM ORIGEM) ============= -->
   <div id="print-layout-padrao-adm" class="print-only-layout" style="display:none; padding:15px; font-family:sans-serif; background:white;"></div>
 
-  <!-- ============= PRINT LAYOUT: PADRÁO ============= -->
+  <!-- ============= PRINT LAYOUT: PADRÃO ============= -->
   <div id="print-layout-padrao" style="display:none; padding:20px; font-family:sans-serif; background:white;"></div>
   
   <!-- ============= PRINT LAYOUT: DETALHADO ============= -->
   <div id="print-layout-detalhado" class="print-only-layout" style="display:none;"></div>
 
-  <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
+  <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.64"></script>
+  <script src="js/multi-select.js?v=1.2.65"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.64"></script>
-  <script src="js/gmac.js?v=1.2.64"></script>
-  <script src="js/orcamento.js?v=1.2.64"></script>
-  <script src="js/gdsm.js?v=1.2.64"></script>
-  <script src="js/print-proalfa.js?v=1.2.64"></script>
-  <script src="js/proalfa.js?v=1.2.64"></script>
+  <script src="js/diarias.js?v=1.2.65"></script>
+  <script src="js/gmac.js?v=1.2.65"></script>
+  <script src="js/orcamento.js?v=1.2.65"></script>
+  <script src="js/gdsm.js?v=1.2.65"></script>
+  <script src="js/print-proalfa.js?v=1.2.65"></script>
+  <script src="js/proalfa.js?v=1.2.65"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
+
+      <!-- ============= PAGE: FINANCEIRO (LANÇAMENTOS E CONTROLE) ============= -->
+      <section class="page" id="page-financeiro">
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px;">
+              <span style="font-size:24px;">💳</span>
+              <h2 style="margin:0; font-size:20px; font-weight:800; color:#f8fafc;">Gestão Financeira & Lançamentos</h2>
+            </div>
+            <p style="margin:0; font-size:13px; color:#94a3b8;">Formulário de Controle de Despesas, Lançamentos e Movimentações Financeiras - CAM SEDUC-RO</p>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <button type="button" onclick="navegar('orcamento')" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#1e293b; border:1px solid #334155; border-radius:8px; color:#e2e8f0; font-weight:700; font-size:12px; text-transform:uppercase; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#1e293b'">
+              📊 Ver Painel Orçamentário
+            </button>
+            <button type="button" onclick="window.open('https://docs.google.com/spreadsheets/d/1NQuN9icUm8RL08pqkPia3ZrgoC5zEka99mK43sUJm3o/edit?gid=807660383','_blank')" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#10b981; border:none; border-radius:8px; color:white; font-weight:700; font-size:12px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Planilha Financeira
+            </button>
+          </div>
+        </div>
+
+        <!-- FORMULÁRIO FINANCEIRO COM EFEITOS DE FOCO -->
+        <div class="card" style="margin-bottom:24px; padding:22px; background:linear-gradient(145deg, rgba(30,41,59,0.7) 0%, rgba(15,23,42,0.85) 100%); border:1px solid rgba(16,185,129,0.3); border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.35);">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:18px;">📝</span>
+              <h3 style="margin:0; font-size:15px; font-weight:750; color:#34d399; text-transform:uppercase; letter-spacing:0.5px;">Registro / Lançamento de Movimentação Financeira</h3>
+            </div>
+            <span style="font-size:11px; color:#94a3b8; background:rgba(255,255,255,0.06); padding:4px 8px; border-radius:6px;">Formulário Integrado</span>
+          </div>
+
+          <form id="form-financeiro" onsubmit="event.preventDefault(); alert('Lançamento registrado com sucesso!'); this.reset();" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px; align-items:flex-end;">
+            
+            <div class="form-group" style="margin:0;">
+              <label style="display:block; font-size:11.5px; font-weight:700; margin-bottom:6px; color:#cbd5e1; text-transform:uppercase;">Processo SEI</label>
+              <input type="text" id="fin-input-processo" class="financeiro-input-focus" placeholder="Ex: 0029.123456/2026-01" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; font-size:13px; background:#0f172a; color:#fff; outline:none; transition:all 0.2s;">
+            </div>
+
+            <div class="form-group" style="margin:0;">
+              <label style="display:block; font-size:11.5px; font-weight:700; margin-bottom:6px; color:#cbd5e1; text-transform:uppercase;">Programa de Ação (PA)</label>
+              <input type="text" id="fin-input-pa" class="financeiro-input-focus" placeholder="Ex: 2045 - Fortalecimento" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; font-size:13px; background:#0f172a; color:#fff; outline:none; transition:all 0.2s;">
+            </div>
+
+            <div class="form-group" style="margin:0;">
+              <label style="display:block; font-size:11.5px; font-weight:700; margin-bottom:6px; color:#cbd5e1; text-transform:uppercase;">Fonte de Recurso</label>
+              <input type="text" id="fin-input-fonte" class="financeiro-input-focus" placeholder="Ex: 1500 - Recursos Próprios" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; font-size:13px; background:#0f172a; color:#fff; outline:none; transition:all 0.2s;">
+            </div>
+
+            <div class="form-group" style="margin:0;">
+              <label style="display:block; font-size:11.5px; font-weight:700; margin-bottom:6px; color:#cbd5e1; text-transform:uppercase;">Natureza da Despesa</label>
+              <select id="fin-input-despesa" class="financeiro-input-focus" required style="width:100%; height:40px; box-sizing:border-box; padding:8px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; font-size:13px; background:#0f172a; color:#fff; outline:none; transition:all 0.2s; cursor:pointer;">
+                <option value="">Selecione a Natureza...</option>
+                <option value="339030">339030 - Material de Consumo</option>
+                <option value="339036">339036 - Outros Serviços Terceiros - PF</option>
+                <option value="339039">339039 - Outros Serviços Terceiros - PJ</option>
+                <option value="339048">339048 - Auxílio Financeiro a PF</option>
+                <option value="449052">449052 - Equipamentos e Material Permanente</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin:0;">
+              <label style="display:block; font-size:11.5px; font-weight:700; margin-bottom:6px; color:#cbd5e1; text-transform:uppercase;">Valor (R$)</label>
+              <input type="text" id="fin-input-valor" class="financeiro-input-focus" placeholder="0,00" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; font-size:13px; background:#0f172a; color:#34d399; font-weight:bold; outline:none; transition:all 0.2s;">
+            </div>
+
+            <div class="form-group" style="margin:0;">
+              <label style="display:block; font-size:11.5px; font-weight:700; margin-bottom:6px; color:#cbd5e1; text-transform:uppercase;">Setor Solicitante</label>
+              <select id="fin-input-setor" class="financeiro-input-focus" style="width:100%; height:40px; box-sizing:border-box; padding:8px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; font-size:13px; background:#0f172a; color:#fff; outline:none; transition:all 0.2s; cursor:pointer;">
+                <option value="GDSM">GDSM</option>
+                <option value="GMAC">GMAC</option>
+                <option value="PROALFA">PROALFA</option>
+                <option value="CAM">CAM Geral</option>
+                <option value="ORÇAMENTO">Orçamento / Financeiro</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin:0; grid-column:span 2;">
+              <label style="display:block; font-size:11.5px; font-weight:700; margin-bottom:6px; color:#cbd5e1; text-transform:uppercase;">Descrição / Favorecido / Objeto</label>
+              <input type="text" id="fin-input-descricao" class="financeiro-input-focus" placeholder="Descreva sucintamente o favorecido e finalidade do recurso..." required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; font-size:13px; background:#0f172a; color:#fff; outline:none; transition:all 0.2s;">
+            </div>
+
+            <div style="display:flex; gap:10px; align-items:center; height:40px;">
+              <button type="submit" style="flex:1; height:40px; background:#10b981; border:none; border-radius:8px; color:white; font-weight:750; font-size:12.5px; text-transform:uppercase; letter-spacing:0.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; box-shadow:0 4px 12px rgba(16,185,129,0.3);" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                <span>💾</span> Salvar Lançamento
+              </button>
+              <button type="reset" style="height:40px; padding:0 14px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:8px; color:#cbd5e1; font-weight:600; font-size:12px; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='rgba(255,255,255,0.06)'">
+                Limpar
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- TABELA DE DESPESAS REALIZADAS RECENTES -->
+        <div class="card" style="padding:20px; background:#1e293b; border-radius:12px; border:1px solid #334155;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3 style="margin:0; font-size:14px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.5px;">📑 Despesas Realizadas & Execução Registrada</h3>
+            <button onclick="if(typeof mudarGuiaOrcamento==='function') { navegar('orcamento'); setTimeout(() => mudarGuiaOrcamento('Despesas Realizadas', '807660383'), 100); }" style="background:none; border:none; color:#38bdf8; font-size:12px; font-weight:600; cursor:pointer; text-decoration:underline;">Ver Lista Completa de Despesas Realizadas →</button>
+          </div>
+          <div style="color:#94a3b8; font-size:13px;">
+            Acesse os relatórios consolidados e detalhados de execução na aba <strong>Controle Orçamentário</strong>.
+          </div>
+        </div>
+
+      </section>
+
   <section class="page" id="page-orcamento">
 
     <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
@@ -3627,7 +3777,7 @@
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         <button onclick="gerarRelatorioDiarias()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;">
-          IMPRIMIR RELATÁ“RIO
+          IMPRIMIR RELATÓRIO
         </button>
         <button onclick="window.open('https://docs.google.com/spreadsheets/d/1WunsuLAAIUAAo1q65qmSVMIH0qLJu_TjDsb_u9LO304/edit?gid=807660383','_blank')" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#10b981; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;">
           PLANILHA DE DIÁRIAS
@@ -3843,7 +3993,7 @@
   </section>
 
 
-        <!-- ============= PAGE: GDSM - 32 REGIMES DE COLABORAÇÁO ============= -->
+        <!-- ============= PAGE: GDSM - 32 REGIMES DE COLABORAÇÃO ============= -->
       <section class="page" id="page-gdsm-regimes">
         <div class="section-header" style="display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:14px;">
           <!-- Left Badges (Layout Horizontal Compacto) -->
@@ -3887,7 +4037,7 @@
           </div>
         </div>
 
-        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÃO -->
         <div class="action-toolbar-scroll" id="gdsm-actions-toolbar-regimes">
           <button type="button" onclick="imprimirGDSMSimplificado('regimes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Relatório Simplificado">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
@@ -3959,7 +4109,7 @@
           </div>
         </div>
 
-        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÃO -->
         <div class="action-toolbar-scroll" id="gdsm-actions-toolbar-demais">
           <button type="button" onclick="imprimirGDSMSimplificado('demais')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Relatório Simplificado">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
@@ -4034,7 +4184,7 @@
           </div>
         </div>
 
-        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÃO -->
         <div class="action-toolbar-scroll" id="gdsm-actions-toolbar-doacoes">
           <button type="button" onclick="imprimirGDSMSimplificado('doacoes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Relatório Simplificado">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
@@ -4109,7 +4259,7 @@
           </div>
         </div>
 
-        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÃO -->
         <div class="action-toolbar-scroll" id="gdsm-actions-toolbar-novoregime">
           <button type="button" onclick="imprimirGDSMSimplificado('novoregime')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Relatório Simplificado">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO

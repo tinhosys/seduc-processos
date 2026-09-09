@@ -3,6 +3,35 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
+## [v1.2.65] — 2026-09-09 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.65` · **Versão do Sistema:** `GBZ - v1.2.65`
+
+### 🛠️ Correção Completa de Dropdowns/Comboboxes, Scroll Vertical, Foco e Busca
+- **Correção da Rolagem Vertical (Causa Raiz Resolvida):** O ouvinte global de `scroll` em fase de captura (`useCapture = true`) em `multi-select.js` estava fechando o dropdown imediatamente ao clicar ou rolar a barra de rolagem interna. Agora rolagens originadas no próprio dropdown são permitidas normalmente.
+- **Acessibilidade e Foco em Comboboxes:** Adição de `tabindex="0"`, roles ARIA (`combobox`, `listbox`), suporte a navegação por teclado (`Enter`, `Space`, `Escape`, setas) e estilização de foco com halo luminoso azul.
+- **Barra de Busca Rápida Interna:** Cada dropdown agora possui um campo de pesquisa no topo (`custom-multiselect-search`) com foco automático ao abrir, facilitando a filtragem instantânea entre mais de 52 municípios, dezenas de prefixos e status.
+- **Eliminação de Rolagem Horizontal:** Aplicação estrita de `overflow-x: hidden !important;`, largura mínima de 240px e alinhamento espaçado para evitar colisões entre o título e os botões "Todos | Nenhum".
+
+### 🧹 Remoção Cirúrgica de Caracteres Zumbis em Todos os Formulários
+- Correção de textos corrompidos por dupla codificação UTF-8 em botões, tabelas e cabeçalhos:
+  - `RELATÓRIO ADM 2` (era exibido com caracteres corrompidos).
+  - `ANÁLISE` (eliminado espaço fantasma e caractere corrompido).
+  - `PADRÃO ADM`, `PADRÃO`, `PADRÃO SEL.`.
+  - `LOCALIZAÇÃO`, `MULTI-SELEÇÃO`, `SEÇÃO`, `DOAÇÃO DO ÔNIBUS ESCOLAR`, `Nº`.
+
+### 🔘 4 Botões de Módulos Rápidos na Barra Lateral ('GDSM', 'GMAC', 'PROALFA', 'ORÇAMENTO')
+- Criação de container estilizado (`.sidebar-quick-modules`) em sequência vertical logo abaixo da logo da CAM.
+- Cores temáticas, badges de alta definição e efeitos hover com elevação e brilho.
+- **Respeito aos Acessos e Regras de Perfil:** Implementação de `podeAcessarModulo(modulo)` em `auth-sap.js`, garantindo que usuários Admin acessem todos os módulos, usuários de setores específicos visualizem apenas suas áreas atribuídas e usuários Leitor respeitem suas restrições operacionais.
+
+### 💳 Novo Item 'Financeiro' no Menu Orçamento com Formulário Dedicado
+- Adição da opção **Financeiro** no submenu `#sub-orcamento` com ícone vetorial monetário exclusivo (`item-financeiro`).
+- Efeito de foco luminescente esmeralda no hover e estado ativo (`box-shadow` neon e transição suave).
+- Nova tela e formulário integrado (`#page-financeiro`) para lançamento e consulta de despesas, processos SEI, naturezas e dotações orçamentárias.
+
+---
+
 ## [v1.2.61] — 2026-09-08
 
 **Tag:** `v1.2.61` · **Versão do Sistema:** `GBZ - v1.2.61`

@@ -283,7 +283,7 @@ window.fecharModalAlertas = () => {
   if (m) m.style.display = 'none';
 };
 
-// ---- NAVEGAÇÁO ----
+// ---- NAVEGAÇÃO ----
 function navegar(pagina) {
   const canDash = (typeof window.podeAcessarDashboard === 'function')
     ? window.podeAcessarDashboard()
@@ -304,6 +304,7 @@ function navegar(pagina) {
   });
 
   const titles = {
+    financeiro: '💳 Gestão Financeira & Lançamentos',
     dashboard: 'Dashboard',
     processos: 'Processos',
     novo: state.editandoId ? 'Editar Processo' : 'Novo Processo',
@@ -336,6 +337,7 @@ function navegar(pagina) {
 
   // Atualizar conteúdo
   if (pagina === 'dashboard') renderDashboard();
+  if (pagina === 'financeiro') carregarFinanceiro();
   if (pagina === 'processos') renderProcessos();
   if (pagina === 'novo') renderFormulario();
   if (pagina === 'acessos') {
@@ -577,11 +579,11 @@ function renderDashboard() {
   processos.forEach(p => {
     let c = String(p.categoria || '').trim().toUpperCase();
     if (!c) {
-      c = 'NÁO INFORMADO';
+      c = 'NÃO INFORMADO';
     } else {
       if (c === 'F') c = 'FOMENTO';
       else if (c === 'C') c = 'CONVÊNIO';
-      else if (c === 'T') c = 'TERMO DE COOPERAÇÁO';
+      else if (c === 'T') c = 'TERMO DE COOPERAÇÃO';
       else if (c === 'O') c = 'OUTRO';
     }
     catCounts[c] = (catCounts[c] || 0) + 1;
@@ -593,9 +595,9 @@ function renderDashboard() {
   const colorsCatMap = {
     'FOMENTO': '#3b82f6',
     'CONVÊNIO': '#10b981',
-    'TERMO DE COOPERAÇÁO': '#8b5cf6',
+    'TERMO DE COOPERAÇÃO': '#8b5cf6',
     'OUTRO': '#06b6d4',
-    'NÁO INFORMADO': '#64748b'
+    'NÃO INFORMADO': '#64748b'
   };
   const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
 
@@ -667,7 +669,7 @@ function renderDashboard() {
   processos.forEach(p => {
     let t = String(p.tipo || '').trim().toUpperCase();
     if (!t) {
-      t = 'NÁO INFORMADO';
+      t = 'NÃO INFORMADO';
     } else {
       if (t === 'OB') t = 'OBRAS';
       else if (t === 'MP') t = 'MATERIAL PERMANENTE';
@@ -689,7 +691,7 @@ function renderDashboard() {
     'SISTEMA': '#a855f7',
     'TREINAMENTO': '#10b981',
     'OUTROS': '#f43f5e',
-    'NÁO INFORMADO': '#64748b'
+    'NÃO INFORMADO': '#64748b'
   };
   const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
 
@@ -2273,7 +2275,7 @@ function confirmarExcluir(id) {
   if (!p) return;
   const ident = p.numero || p.interessado || 'Sem Identificação';
   if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`⚠️ ATENÇÁO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
+    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
       excluirProcesso(id);
       toast('Processo excludo com sucesso.', 'info');
       navegar('processos');
@@ -2281,7 +2283,7 @@ function confirmarExcluir(id) {
   }
 }
 
-// ---- IMPORTAÇÁO ----
+// ---- IMPORTAÇÃO ----
 function setupImportacao() {
   const zone = document.getElementById('import-zone');
   const input = document.getElementById('import-input');
@@ -2368,7 +2370,7 @@ async function processarLinkGoogleSheets() {
   }
 }
 
-// ---- INICIALIZAÇÁO ----
+// ---- INICIALIZAÇÃO ----
 document.addEventListener('DOMContentLoaded', () => {
   // Navegação
   document.querySelectorAll('[data-page]').forEach(el => {
@@ -2700,7 +2702,7 @@ document.addEventListener('DOMContentLoaded', () => {
   navegar('dashboard');
 });
 
-// ---- EXPORTAÇÁO ----
+// ---- EXPORTAÇÃO ----
 function exportarExcel() {
   const filtrados = getFiltrados();
   if (filtrados.length === 0) {
@@ -2879,7 +2881,7 @@ function renderizarContatosForm() {
 
 
 
-// ---- FUNÇÁO PARA COPIAR PROCESSO SELECIONADO ----
+// ---- FUNÇÃO PARA COPIAR PROCESSO SELECIONADO ----
 window.copiarProcessoSelecionado = function() {
   const radio = document.querySelector('input[name="modal_processo_radio"]:checked');
   if (radio) {
@@ -2911,7 +2913,7 @@ function getCommonHeader(subtitle) {
     <div class="official-print-header" style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0284c7; padding-bottom:6px; margin-bottom:10px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left; line-height:1.25;">
         <div style="font-size:10px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
+        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
         <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
@@ -3083,7 +3085,7 @@ function imprimirPadrao(filtrados = getFiltrados()) {
 
 window.imprimirPadrao = imprimirPadrao;
 
-// ============= RELATÓRIO PADRÁO ADM (SEM INFORMAÇÕES DE ORIGEM) =============
+// ============= RELATÓRIO PADRÃO ADM (SEM INFORMAÇÕES DE ORIGEM) =============
 function imprimirPadraoAdm(filtrados = getFiltrados()) {
   if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
     alert('Acesso restrito ao perfil Administrador.');
@@ -3329,7 +3331,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
         </tr>
       `;
 
-      // Linha Memorando: "AGRUPAMENTO" - "ANOTAÇÁO INTERNA" (itálico vermelho na largura da tabela)
+      // Linha Memorando: "AGRUPAMENTO" - "ANOTAÇÃO INTERNA" (itálico vermelho na largura da tabela)
       const partesMemo = [];
       if (p.agrupamento && String(p.agrupamento).trim()) {
         partesMemo.push(String(p.agrupamento).trim());
@@ -6051,7 +6053,7 @@ window.verificarInconsistenciasPlanilhaCMD = async function() {
 
   let tableHtml = `
     <div style="margin-top:10px; color:#fbbf24; font-weight:bold; font-size:13px;">
-      > [ATENÇÁO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
+      > [ATENÇÃO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
     </div>
     <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 8px; font-size:12px; color:#94a3b8; flex-wrap:wrap; gap:10px;">
       <span>Selecione as linhas que deseja autorizar para correção:</span>
@@ -6144,7 +6146,7 @@ window.cancelarPadronizacaoCMD = function() {
 };
 
 // =========================================================================
-// CONTRA-NOTIFICAÇÁO & CONFIRMAÇÁO DE SEGURANÇA
+// CONTRA-NOTIFICAÇÃO & CONFIRMAÇÃO DE SEGURANÇA
 // =========================================================================
 
 window.confirmarContraNotificacaoPadronizacao = function() {
@@ -6197,7 +6199,7 @@ window.toggleBotaoContraExecucao = function(isChecked) {
 };
 
 // =========================================================================
-// EXECUÇÁO EM LOTE COM PROGRESSO DINÂMICO & BACKUP DE ESTORNO
+// EXECUÇÃO EM LOTE COM PROGRESSO DINÂMICO & BACKUP DE ESTORNO
 // =========================================================================
 
 window.executarPadronizacaoPlanilhaCMD = async function() {
@@ -6310,7 +6312,7 @@ window.executarPadronizacaoPlanilhaCMD = async function() {
 };
 
 // =========================================================================
-// ESTORNO DA ÚLTIMA ATUALIZAÇÁO (UNDO COM DATA E HORA)
+// ESTORNO DA ÚLTIMA ATUALIZAÇÃO (UNDO COM DATA E HORA)
 // =========================================================================
 
 window.estornarUltimaPadronizacao = async function() {
@@ -6333,7 +6335,7 @@ window.estornarUltimaPadronizacao = async function() {
     return;
   }
 
-  const confirma = confirm(`⚠️ ATENÇÁO: Deseja realmente estornar (reverter) a última padronização realizada em ${backup.dataHora}?
+  const confirma = confirm(`⚠️ ATENÇÃO: Deseja realmente estornar (reverter) a última padronização realizada em ${backup.dataHora}?
 
 Total de registros a restaurar: ${backup.registros.length}`);
   if (!confirma) return;
@@ -6393,5 +6395,19 @@ Total de registros a restaurar: ${backup.registros.length}`);
 
   if (typeof recarregarDadosGlobais === 'function') {
     recarregarDadosGlobais();
+  }
+};
+
+
+// ====== TELA FINANCEIRA ======
+window.carregarFinanceiro = function() {
+  const form = document.getElementById('form-financeiro');
+  if (form) {
+    form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const firstInput = form.querySelector('input, select');
+    if (firstInput) setTimeout(() => firstInput.focus(), 150);
+  }
+  if (typeof window.carregarOrcamentoData === 'function') {
+    window.carregarOrcamentoData();
   }
 };

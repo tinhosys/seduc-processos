@@ -51,11 +51,11 @@ function normalizarLocalizacao(loc) {
 }
 
 const OBJETO_LIST = [
-  'AQUISIÇÁO DE MATERIAL PERMANENTE',
+  'AQUISIÇÃO DE MATERIAL PERMANENTE',
   'PINTURA INTERNA E EXTERNA',
   'REFORMA',
-  'CONSTRUÇÁO',
-  'AMPLIAÇÁO',
+  'CONSTRUÇÃO',
+  'AMPLIAÇÃO',
   'EQUIPAMENTOS',
   'MOBILIÁRIO',
   'OUTRO'
@@ -346,7 +346,7 @@ function buscarProcessoPorId(id) {
   return carregarProcessos().find(p => p.id === id) || null;
 }
 
-// ----- IMPORTAÇÁO EXCEL -----
+// ----- IMPORTAÇÃO EXCEL -----
 async function importarExcel(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -376,7 +376,7 @@ async function importarExcel(file) {
           "Apontamento",
           "ALERTA",
           "ULTIMA EDICAO LOGIN",
-          "DATA/HORA EDIÇÁO",
+          "DATA/HORA EDIÇÃO",
           "marca",
           "CATEGORIA",
           "TIPO"
@@ -472,7 +472,7 @@ async function importarExcel(file) {
   });
 }
 
-// ----- IMPORTAÇÁO GOOGLE SHEETS -----
+// ----- IMPORTAÇÃO GOOGLE SHEETS -----
 async function importarGoogleSheets(url) {
   const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
   if (!match) throw new Error('URL da planilha inválida. Use o link completo do Google Sheets.');
@@ -491,7 +491,7 @@ async function importarGoogleSheets(url) {
   return importarExcel(file);
 }
 
-// ----- EXPORTAÇÁO EXCEL -----
+// ----- EXPORTAÇÃO EXCEL -----
 function exportarExcel(filtrados) {
   const isAdmin = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
   const data = filtrados.map(p => {

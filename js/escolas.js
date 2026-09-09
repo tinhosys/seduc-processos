@@ -806,7 +806,7 @@ function _escolasRenderTabela() {
   }).join('');
 }
 
-// ---- PAGINAÇÁO ----
+// ---- PAGINAÇÃO ----
 function _escolasRenderPaginacao() {
   const infoEl = document.getElementById('escolas-pg-info');
   const ctrlEl = document.getElementById('escolas-pg-controls');
@@ -1242,7 +1242,7 @@ function imprimirRelatorioEscolas() {
         <div class="official-header">
           <div class="titles">
             <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
-            <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
+            <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
             <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
           </div>
           <div class="header-sisedu">SISEDU</div>

@@ -155,6 +155,7 @@ function aplicarPermissoes(nivel) {
   }
 
   const isAdminUser = (nivel === 'adm' || nivel === 'admin');
+  if (typeof window.atualizarBotoesModulos === "function") window.atualizarBotoesModulos();
   document.querySelectorAll('.action-adm').forEach(el => {
     if (el.tagName === 'SELECT' && (el.classList.contains('custom-multiselect-hidden') || el.multiple)) {
       el.style.setProperty('display', 'none', 'important');
@@ -205,7 +206,7 @@ function ocultarLogin() {
   if (app) app.style.display = '';
 }
 
-// ====== CHAMADO PELO BOTÁO "ENTRAR" ======
+// ====== CHAMADO PELO BOTÃO "ENTRAR" ======
 async function realizarLogin() {
   const whatsappInput = document.getElementById('login-whatsapp');
   const senhaInput = document.getElementById('login-senha');
@@ -273,7 +274,7 @@ async function realizarLogin() {
   }
 }
 
-// ====== CHAMADO PELO BOTÁO "SAIR" ======
+// ====== CHAMADO PELO BOTÃO "SAIR" ======
 async function fazerLogout() {
   const token = getSessionToken();
   if (token) {
@@ -288,7 +289,7 @@ async function fazerLogout() {
   mostrarLogin();
 }
 
-// ====== INICIALIZAÇÁO: verifica se já tem sessão válida ======
+// ====== INICIALIZAÇÃO: verifica se já tem sessão válida ======
 document.addEventListener('DOMContentLoaded', async () => {
   // Sempre inicie limpo (sem pre-enchimento)
   const whatsappInput = document.getElementById('login-whatsapp');
@@ -419,3 +420,55 @@ async function salvarNovaSenhaPage() {
 
 
 
+
+
+// ====== CONTROLE DE ACESSO POR MÓDULOS (GDSM, GMAC, PROALFA, ORÇAMENTO) ======
+window.podeAcessarModulo = function(modulo) {
+  try {
+    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
+    const nivel = String(uData.nivel || '').toLowerCase().trim();
+    if (nivel === 'admin' || nivel === 'adm') return true;
+
+    const mod = String(modulo || '').toLowerCase().trim();
+
+    // Orçamento é restrito a Admin, Gerente ou quem tem setor Orçamento
+    if (mod === 'orcamento' || mod === 'orçamento' || mod === 'financeiro') {
+      if (nivel === 'gerente') return true;
+      const setor = String(uData.setor || '').toLowerCase();
+      return setor.includes('orcamento') || setor.includes('orçamento') || setor.includes('financeiro');
+    }
+
+    // Restrições setoriais se o usuário tiver setor específico
+    const userSetor = String(uData.setor || '').toLowerCase().trim();
+    if (userSetor && !['cam', 'seduc', 'todos', 'geral', ''].includes(userSetor)) {
+      if (mod === 'gdsm' && !userSetor.includes('gdsm')) return false;
+      if (mod === 'gmac' && !userSetor.includes('gmac')) return false;
+      if (mod === 'proalfa' && !userSetor.includes('proalfa')) return false;
+    }
+
+    return true;
+  } catch (e) {
+    return true;
+  }
+};
+
+window.atualizarBotoesModulos = function() {
+  const modulos = [
+    { id: 'btn-quick-gdsm', mod: 'gdsm' },
+    { id: 'btn-quick-gmac', mod: 'gmac' },
+    { id: 'btn-quick-proalfa', mod: 'proalfa' },
+    { id: 'btn-quick-orcamento', mod: 'orcamento' }
+  ];
+
+  modulos.forEach(({ id, mod }) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const temAcesso = window.podeAcessarModulo(mod);
+    el.style.display = temAcesso ? 'flex' : 'none';
+  });
+
+  const elFin = document.querySelector('.item-financeiro');
+  if (elFin) {
+    elFin.style.display = window.podeAcessarModulo('orcamento') ? 'flex' : 'none';
+  }
+};
