@@ -283,7 +283,7 @@ window.fecharModalAlertas = () => {
   if (m) m.style.display = 'none';
 };
 
-// ---- NAVEGAÇÃO ----
+// ---- NAVEGAÇÁO ----
 function navegar(pagina) {
   const canDash = (typeof window.podeAcessarDashboard === 'function')
     ? window.podeAcessarDashboard()
@@ -577,11 +577,11 @@ function renderDashboard() {
   processos.forEach(p => {
     let c = String(p.categoria || '').trim().toUpperCase();
     if (!c) {
-      c = 'NÃO INFORMADO';
+      c = 'NÁO INFORMADO';
     } else {
       if (c === 'F') c = 'FOMENTO';
       else if (c === 'C') c = 'CONVÊNIO';
-      else if (c === 'T') c = 'TERMO DE COOPERAÇÃO';
+      else if (c === 'T') c = 'TERMO DE COOPERAÇÁO';
       else if (c === 'O') c = 'OUTRO';
     }
     catCounts[c] = (catCounts[c] || 0) + 1;
@@ -593,9 +593,9 @@ function renderDashboard() {
   const colorsCatMap = {
     'FOMENTO': '#3b82f6',
     'CONVÊNIO': '#10b981',
-    'TERMO DE COOPERAÇÃO': '#8b5cf6',
+    'TERMO DE COOPERAÇÁO': '#8b5cf6',
     'OUTRO': '#06b6d4',
-    'NÃO INFORMADO': '#64748b'
+    'NÁO INFORMADO': '#64748b'
   };
   const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
 
@@ -667,7 +667,7 @@ function renderDashboard() {
   processos.forEach(p => {
     let t = String(p.tipo || '').trim().toUpperCase();
     if (!t) {
-      t = 'NÃO INFORMADO';
+      t = 'NÁO INFORMADO';
     } else {
       if (t === 'OB') t = 'OBRAS';
       else if (t === 'MP') t = 'MATERIAL PERMANENTE';
@@ -689,7 +689,7 @@ function renderDashboard() {
     'SISTEMA': '#a855f7',
     'TREINAMENTO': '#10b981',
     'OUTROS': '#f43f5e',
-    'NÃO INFORMADO': '#64748b'
+    'NÁO INFORMADO': '#64748b'
   };
   const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
 
@@ -1306,7 +1306,7 @@ function renderProcessos() {
             </span>
             ${p.ano ? `<span style="padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 10px; color: #cbd5e1; flex-shrink: 0;">${p.ano}</span>` : ''}
           </div>
-          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÃO -->
+          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÁO -->
           <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
@@ -1484,7 +1484,7 @@ function preencherSelectFiltro(id, opcoes) {
 
   let placeholder = 'TODOS';
   if (id === 'filtro-status') placeholder = 'STATUS';
-  else if (id === 'filtro-localizacao') placeholder = 'LOCALIZAÇÃO';
+  else if (id === 'filtro-localizacao') placeholder = 'LOCALIZAÇÁO';
   else if (id === 'filtro-municipio') placeholder = 'MUNICÍPIO';
   else if (id === 'filtro-objeto') placeholder = 'OBJETO';
   else if (id === 'filtro-ano') placeholder = 'ANO';
@@ -2269,7 +2269,7 @@ function confirmarExcluir(id) {
   if (!p) return;
   const ident = p.numero || p.interessado || 'Sem Identificação';
   if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
+    if (confirm(`⚠️ ATENÇÁO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
       excluirProcesso(id);
       toast('Processo excludo com sucesso.', 'info');
       navegar('processos');
@@ -2277,7 +2277,7 @@ function confirmarExcluir(id) {
   }
 }
 
-// ---- IMPORTAÇÃO ----
+// ---- IMPORTAÇÁO ----
 function setupImportacao() {
   const zone = document.getElementById('import-zone');
   const input = document.getElementById('import-input');
@@ -2364,7 +2364,7 @@ async function processarLinkGoogleSheets() {
   }
 }
 
-// ---- INICIALIZAÇÃO ----
+// ---- INICIALIZAÇÁO ----
 document.addEventListener('DOMContentLoaded', () => {
   // Navegação
   document.querySelectorAll('[data-page]').forEach(el => {
@@ -2696,7 +2696,7 @@ document.addEventListener('DOMContentLoaded', () => {
   navegar('dashboard');
 });
 
-// ---- EXPORTAÇÃO ----
+// ---- EXPORTAÇÁO ----
 function exportarExcel() {
   const filtrados = getFiltrados();
   if (filtrados.length === 0) {
@@ -2780,7 +2780,7 @@ function exportarPDF() {
     didDrawPage: function (data) {
       doc.setFontSize(12);
       doc.setTextColor(40);
-      doc.text("CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
+      doc.text("CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
       
       const str = "Página " + data.pageNumber + " de " + totalPagesExp;
       doc.setFontSize(8);
@@ -2875,7 +2875,7 @@ function renderizarContatosForm() {
 
 
 
-// ---- FUNÇÃO PARA COPIAR PROCESSO SELECIONADO ----
+// ---- FUNÇÁO PARA COPIAR PROCESSO SELECIONADO ----
 window.copiarProcessoSelecionado = function() {
   const radio = document.querySelector('input[name="modal_processo_radio"]:checked');
   if (radio) {
@@ -2907,8 +2907,8 @@ function getCommonHeader(subtitle) {
     <div class="official-print-header" style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0284c7; padding-bottom:6px; margin-bottom:10px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left; line-height:1.25;">
         <div style="font-size:10px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
-        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
+        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
         <span style="font-size:6pt; font-weight:700; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;">SISEDU</span>
@@ -3079,7 +3079,7 @@ function imprimirPadrao(filtrados = getFiltrados()) {
 
 window.imprimirPadrao = imprimirPadrao;
 
-// ============= RELATÓRIO PADRÃO ADM (SEM INFORMAÇÕES DE ORIGEM) =============
+// ============= RELATÓRIO PADRÁO ADM (SEM INFORMAÇÕES DE ORIGEM) =============
 function imprimirPadraoAdm(filtrados = getFiltrados()) {
   if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
     alert('Acesso restrito ao perfil Administrador.');
@@ -3325,7 +3325,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
         </tr>
       `;
 
-      // Linha Memorando: "AGRUPAMENTO" - "ANOTAÇÃO INTERNA" (itálico vermelho na largura da tabela)
+      // Linha Memorando: "AGRUPAMENTO" - "ANOTAÇÁO INTERNA" (itálico vermelho na largura da tabela)
       const partesMemo = [];
       if (p.agrupamento && String(p.agrupamento).trim()) {
         partesMemo.push(String(p.agrupamento).trim());
@@ -6047,7 +6047,7 @@ window.verificarInconsistenciasPlanilhaCMD = async function() {
 
   let tableHtml = `
     <div style="margin-top:10px; color:#fbbf24; font-weight:bold; font-size:13px;">
-      > [ATENÇÃO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
+      > [ATENÇÁO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
     </div>
     <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 8px; font-size:12px; color:#94a3b8; flex-wrap:wrap; gap:10px;">
       <span>Selecione as linhas que deseja autorizar para correção:</span>
@@ -6140,7 +6140,7 @@ window.cancelarPadronizacaoCMD = function() {
 };
 
 // =========================================================================
-// CONTRA-NOTIFICAÇÃO & CONFIRMAÇÃO DE SEGURANÇA
+// CONTRA-NOTIFICAÇÁO & CONFIRMAÇÁO DE SEGURANÇA
 // =========================================================================
 
 window.confirmarContraNotificacaoPadronizacao = function() {
@@ -6193,7 +6193,7 @@ window.toggleBotaoContraExecucao = function(isChecked) {
 };
 
 // =========================================================================
-// EXECUÇÃO EM LOTE COM PROGRESSO DINÂMICO & BACKUP DE ESTORNO
+// EXECUÇÁO EM LOTE COM PROGRESSO DINÂMICO & BACKUP DE ESTORNO
 // =========================================================================
 
 window.executarPadronizacaoPlanilhaCMD = async function() {
@@ -6306,7 +6306,7 @@ window.executarPadronizacaoPlanilhaCMD = async function() {
 };
 
 // =========================================================================
-// ESTORNO DA ÚLTIMA ATUALIZAÇÃO (UNDO COM DATA E HORA)
+// ESTORNO DA ÚLTIMA ATUALIZAÇÁO (UNDO COM DATA E HORA)
 // =========================================================================
 
 window.estornarUltimaPadronizacao = async function() {
@@ -6329,7 +6329,7 @@ window.estornarUltimaPadronizacao = async function() {
     return;
   }
 
-  const confirma = confirm(`⚠️ ATENÇÃO: Deseja realmente estornar (reverter) a última padronização realizada em ${backup.dataHora}?
+  const confirma = confirm(`⚠️ ATENÇÁO: Deseja realmente estornar (reverter) a última padronização realizada em ${backup.dataHora}?
 
 Total de registros a restaurar: ${backup.registros.length}`);
   if (!confirma) return;

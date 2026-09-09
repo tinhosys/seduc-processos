@@ -20,7 +20,7 @@ let state = {
   sortDir: 'asc',
 };
 
-// ---- NAVEGAÇÃO ----
+// ---- NAVEGAÇÁO ----
 function navegar(pagina) {
   const user = Auth.getCurrentUser();
   if (!user) {
@@ -653,7 +653,7 @@ function confirmarExcluir(id) {
   }
 }
 
-// ---- IMPORTAÇÃO ----
+// ---- IMPORTAÇÁO ----
 function setupImportacao() {
   const zone = document.getElementById('import-zone');
   const input = document.getElementById('import-input');
@@ -769,7 +769,7 @@ function renderLogs() {
   `).join('');
 }
 
-// ---- INICIALIZAÇÃO ----
+// ---- INICIALIZAÇÁO ----
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('form-login').addEventListener('submit', e => {
     e.preventDefault();

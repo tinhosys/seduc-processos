@@ -205,7 +205,7 @@ function ocultarLogin() {
   if (app) app.style.display = '';
 }
 
-// ====== CHAMADO PELO BOTÃO "ENTRAR" ======
+// ====== CHAMADO PELO BOTÁO "ENTRAR" ======
 async function realizarLogin() {
   const whatsappInput = document.getElementById('login-whatsapp');
   const senhaInput = document.getElementById('login-senha');
@@ -273,7 +273,7 @@ async function realizarLogin() {
   }
 }
 
-// ====== CHAMADO PELO BOTÃO "SAIR" ======
+// ====== CHAMADO PELO BOTÁO "SAIR" ======
 async function fazerLogout() {
   const token = getSessionToken();
   if (token) {
@@ -288,7 +288,7 @@ async function fazerLogout() {
   mostrarLogin();
 }
 
-// ====== INICIALIZAÇÃO: verifica se já tem sessão válida ======
+// ====== INICIALIZAÇÁO: verifica se já tem sessão válida ======
 document.addEventListener('DOMContentLoaded', async () => {
   // Sempre inicie limpo (sem pre-enchimento)
   const whatsappInput = document.getElementById('login-whatsapp');

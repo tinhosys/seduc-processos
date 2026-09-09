@@ -640,7 +640,7 @@ textarea { resize: vertical; min-height: 80px; }
 .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
 /* ============================================
-   SEÇÃO DE IMPORTAÇÃO
+   SEÇÁO DE IMPORTAÇÁO
    ============================================ */
 .import-zone {
   border: 2px dashed var(--border);
@@ -659,7 +659,7 @@ textarea { resize: vertical; min-height: 80px; }
 .import-zone p { color: var(--text-muted); font-size: 13px; }
 
 /* ============================================
-   NOTIFICAÇÃO TOAST
+   NOTIFICAÇÁO TOAST
    ============================================ */
 #toast-container {
   position: fixed;
@@ -846,7 +846,7 @@ textarea { resize: vertical; min-height: 80px; }
 .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state h3 { font-size: 16px; color: var(--text-secondary); margin-bottom: 6px; }
 
-/* HEADER SEÇÃO */
+/* HEADER SEÇÁO */
 .section-header {
   display: flex;
   align-items: center;
@@ -924,7 +924,7 @@ textarea { resize: vertical; min-height: 80px; }
   white-space: nowrap;
 }
 
-/* INDICAÇÃO — discreto, quase invisível */
+/* INDICAÇÁO — discreto, quase invisível */
 .indicado-txt {
   font-size: 11px;
   color: var(--text-muted);
@@ -945,7 +945,7 @@ mark {
 }
 
 /* ============================================
-   AUTENTICAÇÃO E NOVOS LAYOUTS
+   AUTENTICAÇÁO E NOVOS LAYOUTS
    ============================================ */
 .login-container {
   position: fixed;

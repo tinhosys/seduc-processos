@@ -7,7 +7,7 @@ const DB_KEY = 'seduc_processos_v1';
 let STATUS_LIST = [
   '.', 'AUTORIZADO', 'CANCELADO', 'CONCLUÍDO', 'DUPLICADO',
   'ENCERRADO', 'Não autorizado', 'Não chegou na CAM',
-  'NÃO PRIORIDADE', 'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO',
+  'NÁO PRIORIDADE', 'NOTIFICADO', 'NOTIFICAR', 'P/ AUTORIZO',
   'P/AUTORIZO', 'PAGO', 'para autorizo', 'PENDENTE',
   'PRIORIDADE', 'REABERTO'
 ];
@@ -19,11 +19,11 @@ let LOCALIZACAO_LIST = [
 ];
 
 const OBJETO_LIST = [
-  'AQUISIÇÃO DE MATERIAL PERMANENTE',
+  'AQUISIÇÁO DE MATERIAL PERMANENTE',
   'PINTURA INTERNA E EXTERNA',
   'REFORMA',
-  'CONSTRUÇÃO',
-  'AMPLIAÇÃO',
+  'CONSTRUÇÁO',
+  'AMPLIAÇÁO',
   'EQUIPAMENTOS',
   'MOBILIÁRIO',
   'OUTRO'
@@ -73,7 +73,7 @@ function buscarProcessoPorId(id) {
   return carregarProcessos().find(p => p.id === id) || null;
 }
 
-// ----- IMPORTAÇÃO EXCEL -----
+// ----- IMPORTAÇÁO EXCEL -----
 async function importarExcel(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -173,7 +173,7 @@ async function importarExcel(file) {
   });
 }
 
-// ----- EXPORTAÇÃO EXCEL -----
+// ----- EXPORTAÇÁO EXCEL -----
 function exportarExcel(filtrados) {
   const dados = filtrados.map(p => ({
     'Prefixo':         p.prefixo      || '',
@@ -197,7 +197,7 @@ function exportarExcel(filtrados) {
   XLSX.writeFile(wb, `seduc_processos_${new Date().toISOString().slice(0,10)}.xlsx`);
 }
 
-// ----- EXPORTAÇÃO PDF -----
+// ----- EXPORTAÇÁO PDF -----
 function exportarPDF(filtrados) {
   if (!window.jspdf) {
     alert('Biblioteca PDF ainda carregando. Aguarde e tente novamente.');

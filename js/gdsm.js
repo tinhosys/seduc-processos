@@ -312,7 +312,7 @@ function popularFiltrosSelectsGDSM(tabKey) {
     if (tp.trim()) tipoSet.add(tp.trim());
 
     // Situação SEDUC
-    const sit = d['Situação SEDUC'] || d['SITUAÇÃO SEDUC'] || '';
+    const sit = d['Situação SEDUC'] || d['SITUAÇÁO SEDUC'] || '';
     if (sit.trim()) sitSet.add(sit.trim());
   });
 
@@ -392,7 +392,7 @@ function aplicarFiltrosGDSM(tabKey) {
 
     // Situação SEDUC
     if (filtros.situacaoSeduc) {
-      const sit = String(d['Situação SEDUC'] || d['SITUAÇÃO SEDUC'] || '').toLowerCase();
+      const sit = String(d['Situação SEDUC'] || d['SITUAÇÁO SEDUC'] || '').toLowerCase();
       if (sit !== filtros.situacaoSeduc) return false;
     }
 
@@ -538,10 +538,10 @@ function renderTabelaGDSM(tabKey, filtrados) {
         `;
       }
 
-      // 5. AUTORIZAÇÃO
+      // 5. AUTORIZAÇÁO
       if (colNorm === 'autorização' || colNorm === 'autorizacao') {
         const aut = String(val).toUpperCase();
-        const autCor = aut.includes('AUTORIZADO') ? 'color:#34d399;' : (aut.includes('NÃO') || aut.includes('PENDENTE') ? 'color:#fbbf24;' : 'color:#94a3b8;');
+        const autCor = aut.includes('AUTORIZADO') ? 'color:#34d399;' : (aut.includes('NÁO') || aut.includes('PENDENTE') ? 'color:#fbbf24;' : 'color:#94a3b8;');
         return `
           <td style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:center; font-weight:700; font-size:10.5px; ${autCor} width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
             ${val}
@@ -694,7 +694,7 @@ function obterDadosFiltradosGDSM(tabKey) {
     if (filtros.municipio && String(d['Município'] || d['Municipio'] || d['MUNICÍPIO'] || d['MUNICÍPIOS'] || '').toLowerCase() !== filtros.municipio) return false;
     if (filtros.status && String(d['Status'] || d['STATUS'] || '').toLowerCase() !== filtros.status) return false;
     if (filtros.tipo && String(d['Tipo'] || d['TIPO'] || d['Categoria'] || d['Tipo Objeto'] || '').toLowerCase() !== filtros.tipo) return false;
-    if (filtros.situacaoSeduc && String(d['Situação SEDUC'] || d['SITUAÇÃO SEDUC'] || '').toLowerCase() !== filtros.situacaoSeduc) return false;
+    if (filtros.situacaoSeduc && String(d['Situação SEDUC'] || d['SITUAÇÁO SEDUC'] || '').toLowerCase() !== filtros.situacaoSeduc) return false;
     return true;
   });
 }

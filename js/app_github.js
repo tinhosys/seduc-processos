@@ -107,7 +107,7 @@ window.fecharModalAlertas = () => {
   if (m) m.style.display = 'none';
 };
 
-// ---- NAVEGAÇÃO ----
+// ---- NAVEGAÇÁO ----
 function navegar(pagina) {
   state.page = pagina;
   document.querySelectorAll('.nav-item').forEach(el => {
@@ -339,11 +339,11 @@ function renderDashboard() {
   processos.forEach(p => {
     let c = String(p.categoria || '').trim().toUpperCase();
     if (!c) {
-      c = 'NÃO INFORMADO';
+      c = 'NÁO INFORMADO';
     } else {
       if (c === 'F') c = 'FOMENTO';
       else if (c === 'C') c = 'CONVÊNIO';
-      else if (c === 'T') c = 'TERMO DE COOPERAÇÃO';
+      else if (c === 'T') c = 'TERMO DE COOPERAÇÁO';
       else if (c === 'O') c = 'OUTRO';
     }
     catCounts[c] = (catCounts[c] || 0) + 1;
@@ -355,9 +355,9 @@ function renderDashboard() {
   const colorsCatMap = {
     'FOMENTO': '#3b82f6',
     'CONVÊNIO': '#10b981',
-    'TERMO DE COOPERAÇÃO': '#8b5cf6',
+    'TERMO DE COOPERAÇÁO': '#8b5cf6',
     'OUTRO': '#06b6d4',
-    'NÃO INFORMADO': '#64748b'
+    'NÁO INFORMADO': '#64748b'
   };
   const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
 
@@ -429,7 +429,7 @@ function renderDashboard() {
   processos.forEach(p => {
     let t = String(p.tipo || '').trim().toUpperCase();
     if (!t) {
-      t = 'NÃO INFORMADO';
+      t = 'NÁO INFORMADO';
     } else {
       if (t === 'OB') t = 'OBRAS';
       else if (t === 'MP') t = 'MATERIAL PERMANENTE';
@@ -451,7 +451,7 @@ function renderDashboard() {
     'SISTEMA': '#a855f7',
     'TREINAMENTO': '#10b981',
     'OUTROS': '#f43f5e',
-    'NÃO INFORMADO': '#64748b'
+    'NÁO INFORMADO': '#64748b'
   };
   const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
 
@@ -863,7 +863,7 @@ function renderProcessos() {
             </span>
             ${p.ano ? `<span style="padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 10px; color: #cbd5e1; flex-shrink: 0;">${p.ano}</span>` : ''}
           </div>
-          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÃO -->
+          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÁO -->
           <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
@@ -1609,7 +1609,7 @@ function confirmarExcluir(id) {
   if (!p) return;
   const ident = p.numero || p.interessado || 'Sem Identificação';
   if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excluído permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
+    if (confirm(`⚠️ ATENÇÁO: ISSO É IRREVERSÍVEL!\n\nEste registro será excluído permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
       excluirProcesso(id);
       toast('Processo excluído com sucesso.', 'info');
       navegar('processos');
@@ -1617,7 +1617,7 @@ function confirmarExcluir(id) {
   }
 }
 
-// ---- IMPORTAÇÃO ----
+// ---- IMPORTAÇÁO ----
 function setupImportacao() {
   const zone = document.getElementById('import-zone');
   const input = document.getElementById('import-input');
@@ -1704,7 +1704,7 @@ async function processarLinkGoogleSheets() {
   }
 }
 
-// ---- INICIALIZAÇÃO ----
+// ---- INICIALIZAÇÁO ----
 document.addEventListener('DOMContentLoaded', () => {
   // Navegação
   document.querySelectorAll('[data-page]').forEach(el => {
@@ -1872,7 +1872,7 @@ document.addEventListener('DOMContentLoaded', () => {
   navegar('dashboard');
 });
 
-// ---- EXPORTAÇÃO ----
+// ---- EXPORTAÇÁO ----
 function exportarExcel() {
   const filtrados = getFiltrados();
   if (filtrados.length === 0) {
@@ -1945,7 +1945,7 @@ function exportarPDF() {
     didDrawPage: function (data) {
       doc.setFontSize(12);
       doc.setTextColor(40);
-      doc.text("CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
+      doc.text("CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
       
       const str = "Página " + data.pageNumber + " de " + totalPagesExp;
       doc.setFontSize(8);
@@ -2040,7 +2040,7 @@ function renderizarContatosForm() {
 
 
 
-// ---- FUNÇÃO PARA COPIAR PROCESSO SELECIONADO ----
+// ---- FUNÇÁO PARA COPIAR PROCESSO SELECIONADO ----
 window.copiarProcessoSelecionado = function() {
   const radio = document.querySelector('input[name="modal_processo_radio"]:checked');
   if (radio) {
@@ -2071,7 +2071,7 @@ function getCommonHeader(subtitle) {
   return `
     <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:1px solid #000; padding-bottom:5px; margin-bottom:15px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left;">
-        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</h2>
+        <h2 style="margin:0; font-size:11px; color:#000; font-weight:bold;">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS | SEDUC - RO</h2>
       </div>
       <div style="text-align:right;">
         <div style="font-size:11px; color:#000; font-weight:bold;">${subtitle.toUpperCase()}</div>

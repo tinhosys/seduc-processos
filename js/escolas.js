@@ -584,7 +584,7 @@ function _escolasFiltrarOpcoes(field, query) {
 function _chkUpdateLabel(field) {
   const labelEl = document.getElementById('chk-label-' + field);
   if (!labelEl) return;
-  const LABELS = { super: 'SUPER', municipio: 'MUNICÍPIO', competencia: 'COMPETÊNCIA', localizacao: 'LOCALIZAÇÃO', modalidade: 'MODALIDADE' };
+  const LABELS = { super: 'SUPER', municipio: 'MUNICÍPIO', competencia: 'COMPETÊNCIA', localizacao: 'LOCALIZAÇÁO', modalidade: 'MODALIDADE' };
   const count = _chkSelected[field].size;
   const btn = document.getElementById('chk-btn-' + field);
   if (count === 0) {
@@ -645,7 +645,7 @@ function filtrarEscolas(manterPagina = false) {
     if (_chkSelected.competencia.size > 0) {
       if (!_chkSelected.competencia.has((e.competencia||'').trim())) return false;
     }
-    // --- LOCALIZAÇÃO
+    // --- LOCALIZAÇÁO
     if (_chkSelected.localizacao.size > 0) {
       const eLoc = (e.localidade || e.localizacao || '').trim();
       if (!_chkSelected.localizacao.has(eLoc)) return false;
@@ -806,7 +806,7 @@ function _escolasRenderTabela() {
   }).join('');
 }
 
-// ---- PAGINAÇÃO ----
+// ---- PAGINAÇÁO ----
 function _escolasRenderPaginacao() {
   const infoEl = document.getElementById('escolas-pg-info');
   const ctrlEl = document.getElementById('escolas-pg-controls');
@@ -1242,8 +1242,8 @@ function imprimirRelatorioEscolas() {
         <div class="official-header">
           <div class="titles">
             <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
-            <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
-            <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+            <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
+            <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
           </div>
           <div class="header-sisedu">SISEDU</div>
         </div>

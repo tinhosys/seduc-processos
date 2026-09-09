@@ -521,7 +521,7 @@ function filtrarBuscaGMAC(modulo, texto) {
 }
 
 // ============================================================
-// RELATÓRIO PADRÃO DE IMPRESSÃO GMAC (A4 PAISAGEM)
+// RELATÓRIO PADRÁO DE IMPRESSÁO GMAC (A4 PAISAGEM)
 // ============================================================
 function imprimirRelatorioGMAC(modulo) {
   const cfg = GMAC_MODULOS[modulo];
@@ -729,8 +729,8 @@ function imprimirRelatorioGMAC(modulo) {
       <div class="official-header">
         <div class="titles">
           <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
-          <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
-          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+          <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
+          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
         </div>
         <div class="header-sisedu">SISEDU</div>
       </div>
@@ -752,7 +752,7 @@ function imprimirRelatorioGMAC(modulo) {
       </table>
 
       <div class="official-footer">
-        <div class="f-left">GMAC - GERÊNCIA DE MONITORAMENTO DAS AÇÕES DE COOPERAÇÃO</div>
+        <div class="f-left">GMAC - GERÊNCIA DE MONITORAMENTO DAS AÇÕES DE COOPERAÇÁO</div>
         <div class="f-center">Página 1 de 1</div>
         <div class="f-right">Documento gerado eletronicamente em ${dataHora}</div>
       </div>
@@ -769,7 +769,7 @@ function imprimirRelatorioGMAC(modulo) {
 }
 
 // ============================================================
-// MODAL DE FORMULÁRIO (NOVO OU EDIÇÃO)
+// MODAL DE FORMULÁRIO (NOVO OU EDIÇÁO)
 // ============================================================
 function abrirModalGMAC(modulo, rowNumber = null) {
   const cfg = GMAC_MODULOS[modulo];

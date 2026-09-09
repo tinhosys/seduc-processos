@@ -711,8 +711,8 @@ window.imprimirOrcamento = function() {
     <div class="official-print-header" style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0284c7; padding-bottom:6px; margin-bottom:10px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left; line-height:1.25;">
         <div style="font-size:10px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
-        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
+        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
         <span style="font-size:6pt; font-weight:700; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;">SISEDU</span>
@@ -732,7 +732,7 @@ window.imprimirOrcamento = function() {
 
   printFooter.innerHTML = `
     <div class="official-print-footer" style="border-top:1px solid #cbd5e1; padding-top:6px; margin-top:14px; display:flex; justify-content:space-between; align-items:center; font-family: Arial, sans-serif; font-size:8pt; width:100%; color:#475569;">
-      <div style="flex:1; text-align:left; font-weight:700; color:#0f172a;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+      <div style="flex:1; text-align:left; font-weight:700; color:#0f172a;">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
       <div style="flex:1; text-align:center; font-weight:600; color:#64748b;">Página 1 de 1</div>
       <div style="flex:1; text-align:right; font-weight:500; color:#64748b;">Documento gerado eletronicamente em ${dataHora}</div>
     </div>
@@ -761,7 +761,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
   
   doc.setFontSize(14);
   const anoRelativo = new Date().getFullYear();
-    doc.text('EXECUÇÃO ORÇAMENTÁRIA ' + anoRelativo, 14, 15);
+    doc.text('EXECUÇÁO ORÇAMENTÁRIA ' + anoRelativo, 14, 15);
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text('CAM - Coordenadoria de Articulações com os Municípios | SEDUC - RO', 14, 20);
@@ -811,7 +811,7 @@ window.gerarRelatorioOrcamento = function(modelo) {
     const perc = _pctExec(tInicial, tExecutado);
     let statusText = "STATUS GERAL: ";
     if (perc > 80) statusText += "CRÍTICO (Alta Execução)";
-    else if (perc > 50) statusText += "ATENÇÃO (Execução Mediana)";
+    else if (perc > 50) statusText += "ATENÇÁO (Execução Mediana)";
     else statusText += "NORMAL (Baixa Execução)";
     
     doc.setFontSize(11);
