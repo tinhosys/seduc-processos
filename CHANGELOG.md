@@ -3,6 +3,27 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
+## [v1.2.60] — 2026-09-08
+
+**Tag:** `v1.2.60` · **Versão do Sistema:** `GBZ - v1.2.60`
+
+### 📐 Limite e Confinamento na Tela com Otimização de Espaço Vertical e Colunas Proporcionais
+
+- **Ajuste Estrito ao Limite da Tela (Viewport Confinado):**
+  - Confinamento estrutural da área ativa (`height: calc(100vh - 68px)` com `overflow: hidden`), impedindo o estouro da janela principal do navegador e eliminando rolagem fantasma no body.
+  - Redução cirúrgica dos paddings da página de `16px 28px` para `8px 20px 6px 20px`, liberando dezenas de pixels úteis verticalmente para a tabela.
+- **Header e Badges em Linha Horizontal Compacta:**
+  - Migração dos cards de Valor Filtrado e Qtd Registros de empilhamento vertical (que consumiam ~100px) para **linha horizontal única** com altura de 34px (`display: flex; flex-direction: row; gap: 10px; align-items: center;`).
+  - Economia imediata de mais de 65px no cabeçalho dos formulários de `Processos`, `Regime`, `Demais Processos`, `Doações` e `Novo Regime`.
+- **Dimensões e Proporções de Planilha Otimizadas (Mais Linhas e Mais Colunas Visíveis):**
+  - **Altura de Linha Reduzida (Mais Linhas):** Padding das células recalculado para `6px 10px` e fonte `11.5px` (altura de linha ~31px), permitindo visualizar **15 a 20+ linhas diretamente na tela** (contra apenas 5 antes).
+  - **Largura Proporcional das Colunas (Mais Colunas):** Calibração das colunas (`Município`: 130px com congelamento lateral, `Status`: 95px, `Processo SEI`: 150px, `Tipo`: 95px, `Quant`: 60px, `Objeto`: 220px, `Valores`: 115px, `Datas`: 90px), passando de apenas 5 colunas para **10 a 12 colunas simultâneas visíveis** sem necessidade de rolagem lateral imediata.
+- **Navegação pelas Barras de Rolagem Gêmeas e Paginação Sempre Acessível:**
+  - A barra de paginação agora fica perfeitamente visível e fixada no rodapé da visualização (`flex-shrink: 0; padding: 6px 14px`), sem ser cortada da tela.
+  - Navegação suave e fluida pelas barras gêmeas azul elétrico (vertical e horizontal) em todos os formulários.
+
+---
+
 ## [v1.2.59] — 2026-09-08
 
 **Tag:** `v1.2.59` · **Versão do Sistema:** `GBZ - v1.2.59`
