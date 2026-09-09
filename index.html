@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.62">
+  <link rel="stylesheet" href="css/style.css?v=1.2.64">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -220,7 +220,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.63</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.64</div>
   </div>
 </div>
   
@@ -444,24 +444,24 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.63</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.64</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
 
-    <!-- ===================== CONTEÁšDO ===================== -->
+    <!-- ===================== CONTEÚDO ===================== -->
     <main class="main-content">
 
       <!-- TOPBAR -->
       <header class="topbar">
         <div style="display:flex;align-items:center;gap:12px;">
-          <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">â˜°</button>
+          <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;">
 
-          <button class="btn btn-ghost btn-sm" data-page="processos" onclick="navegar('processos')">🏠“‹ Processos</button>
-          <button class="btn btn-ghost btn-sm" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha">🏠”„ Recarregar</button>
+          <button class="btn btn-ghost btn-sm" data-page="processos" onclick="navegar('processos')">📋 Processos</button>
+          <button class="btn btn-ghost btn-sm" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha">🔄 Recarregar</button>
 
           <div class="user-profile"
             style="display:flex;align-items:center;gap:8px;margin-left:16px;padding-left:16px;border-left:1px solid var(--border)">
@@ -483,7 +483,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🏠Ž’</span>
+              <span style="font-size:26px;">📦</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
                   <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Equipamento - AEE</h2>
@@ -495,13 +495,13 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🏠–¨ï¸ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-              🏠”„ Atualizar
+              🔄 Atualizar
             </button>
             <button type="button" onclick="abrirModalGMAC('aee')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
-              âœ¨ + Novo Registro
+              ✨ + Novo Registro
             </button>
           </div>
         </div>
@@ -509,21 +509,21 @@
         <!-- Barra de Busca por Parâmetros -->
         <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
           <div style="flex:2; min-width:240px; position:relative;">
-            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🏠”</span>
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
             <input type="text" id="filtro-busca-aee" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-aee" onchange="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
             <select id="filtro-status-aee" onchange="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('aee')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            âœ• Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -539,7 +539,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🏠šŒ</span>
+              <span style="font-size:26px;">🎁</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
                   <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação do Á”nibus Escolar</h2>
@@ -551,13 +551,13 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🏠–¨ï¸ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-              🏠”„ Atualizar
+              🔄 Atualizar
             </button>
             <button type="button" onclick="abrirModalGMAC('onibus')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
-              âœ¨ + Novo Registro
+              ✨ + Novo Registro
             </button>
           </div>
         </div>
@@ -565,21 +565,21 @@
         <!-- Barra de Busca por Parâmetros -->
         <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
           <div style="flex:2; min-width:240px; position:relative;">
-            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🏠”</span>
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
             <input type="text" id="filtro-busca-onibus" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-onibus" onchange="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
             <select id="filtro-status-onibus" onchange="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('onibus')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            âœ• Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -595,7 +595,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🏠š—</span>
+              <span style="font-size:26px;">🔄</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
                   <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação Definitiva de Veículos</h2>
@@ -607,13 +607,13 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🏠–¨ï¸ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-              🏠”„ Atualizar
+              🔄 Atualizar
             </button>
             <button type="button" onclick="abrirModalGMAC('veiculos')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
-              âœ¨ + Novo Registro
+              ✨ + Novo Registro
             </button>
           </div>
         </div>
@@ -621,21 +621,21 @@
         <!-- Barra de Busca por Parâmetros -->
         <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
           <div style="flex:2; min-width:240px; position:relative;">
-            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🏠”</span>
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
             <input type="text" id="filtro-busca-veiculos" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-veiculos" onchange="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
             <select id="filtro-status-veiculos" onchange="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            âœ• Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -651,7 +651,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🏠›ï¸</span>
+              <span style="font-size:26px;">🏛️</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
                   <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Municipalização e Reordenamento</h2>
@@ -663,13 +663,13 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🏠–¨ï¸ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-              🏠”„ Atualizar
+              🔄 Atualizar
             </button>
             <button type="button" onclick="abrirModalGMAC('reordenamento')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
-              âœ¨ + Novo Registro
+              ✨ + Novo Registro
             </button>
           </div>
         </div>
@@ -677,21 +677,21 @@
         <!-- Barra de Busca por Parâmetros -->
         <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
           <div style="flex:2; min-width:240px; position:relative;">
-            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🏠”</span>
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
             <input type="text" id="filtro-busca-reordenamento" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-reordenamento" onchange="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
             <select id="filtro-status-reordenamento" onchange="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            âœ• Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -707,7 +707,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🏠¤</span>
+              <span style="font-size:26px;">📋</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
                   <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Termo de Cooperação</h2>
@@ -719,13 +719,13 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🏠–¨ï¸ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
-              🏠”„ Atualizar
+              🔄 Atualizar
             </button>
             <button type="button" onclick="abrirModalGMAC('cooperacao')" class="btn btn-primary" style="padding:10px 20px; font-weight:700; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(59,130,246,0.4);">
-              âœ¨ + Novo Registro
+              ✨ + Novo Registro
             </button>
           </div>
         </div>
@@ -733,21 +733,21 @@
         <!-- Barra de Busca por Parâmetros -->
         <div class="card" style="padding:14px 18px; margin-bottom:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
           <div style="flex:2; min-width:240px; position:relative;">
-            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🏠”</span>
+            <span style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b; font-size:14px;">🔍</span>
             <input type="text" id="filtro-busca-cooperacao" placeholder="Pesquisar por texto em qualquer coluna..." oninput="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px 10px 36px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none;">
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-cooperacao" onchange="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
             <select id="filtro-status-cooperacao" onchange="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            âœ• Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -764,7 +764,7 @@
 
         <div class="stats-grid">
           <div class="stat-card blue">
-            <div class="stat-icon">🏠“‹</div>
+            <div class="stat-icon">📋</div>
             <div class="stat-label">Total de Processos</div>
             <div class="stat-value" id="stat-total">0</div>
           </div>
@@ -774,22 +774,22 @@
             <div class="stat-value" id="stat-pendente">0</div>
           </div>
           <div class="stat-card green">
-            <div class="stat-icon">âœ…</div>
+            <div class="stat-icon">✅</div>
             <div class="stat-label">Autorizados</div>
             <div class="stat-value" id="stat-autorizado">0</div>
           </div>
           <div class="stat-card red">
-            <div class="stat-icon">🏠”´</div>
+            <div class="stat-icon">🔴</div>
             <div class="stat-label">Prioridade</div>
             <div class="stat-value" id="stat-prioridade">0</div>
           </div>
           <div class="stat-card blue" style="border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.04); cursor: pointer;" id="card-stat-marcados">
-            <div class="stat-icon">🏠“Œ</div>
+            <div class="stat-icon">📌</div>
             <div class="stat-label">Processos Marcados</div>
             <div class="stat-value" id="stat-marcado" style="color: #60a5fa;">0</div>
           </div>
           <div class="stat-card blue">
-            <div class="stat-icon">🏠’³</div>
+            <div class="stat-icon">💳</div>
             <div class="stat-label">Pagos</div>
             <div class="stat-value" id="stat-pago">0</div>
           </div>
@@ -815,7 +815,7 @@
             <h4>â° Alertas de Prazos (Datas)</h4>
             <div class="alerts-content" id="data-alertas-content" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 15px; padding: 10px 0;">
               <div class="alert-item warning">
-                <span class="alert-icon">âš ï¸</span>
+                <span class="alert-icon">⚠️</span>
                 <div class="alert-text">
                   <div class="alert-title">Processos sem Data</div>
                   <div class="alert-value" id="alert-sem-data">0</div>
@@ -837,7 +837,7 @@
           </div>
           
           <div class="chart-card" style="display: flex; flex-direction: column; min-height: 380px;">
-            <h4>🏠‘¥ ACESSOS</h4>
+            <h4>👥 ACESSOS</h4>
             <!-- Barra de acessos por usuário (vertical, proporcional) -->
             <div style="flex: 1; position: relative; width: 100%; min-height: 300px;" id="chart-acessos-bar-container">
               <canvas id="chart-acessos-bar"></canvas>
@@ -849,19 +849,19 @@
         <!-- Cards de Distribuição Principal (Status, Categoria, Tipo) -->
         <div class="main-charts-grid">
           <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
-            <h4>🏠“ˆ Distribuição por Status</h4>
+            <h4>📊 Distribuição por Status</h4>
             <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
               <canvas id="chart-status"></canvas>
             </div>
           </div>
           <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
-            <h4>🏠·ï¸ Distribuição por Categoria</h4>
+            <h4>🏷️Distribuição por Categoria</h4>
             <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
               <canvas id="chart-categoria"></canvas>
             </div>
           </div>
           <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
-            <h4>🏠› ï¸ Distribuição por Tipo</h4>
+            <h4>📁Distribuição por Tipo</h4>
             <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
               <canvas id="chart-tipo"></canvas>
             </div>
@@ -871,7 +871,7 @@
         <div class="prefixo-loc-grid">
           <div class="card" style="display: flex; flex-direction: column; height: 500px;">
             <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
-              🏠™ï¸ MUNICÍPIOs por Valor</h4>
+              ℹ️MUNICÍPIOs por Valor</h4>
             <div style="flex: 1; overflow-y: auto; height: 100%; min-height: 0; padding-right: 4px;">
               <div id="chart-municipio-wrapper" style="position: relative; height: 100%;">
                 <canvas id="chart-municipio"></canvas>
@@ -881,7 +881,7 @@
 
           <div class="card" style="display: flex; flex-direction: column; height: 500px;">
             <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
-              🏠“ Por Localização</h4>
+              📝 Por Localização</h4>
             <div id="loc-list" style="flex: 1; overflow-y: auto;"></div>
           </div>
         </div>
@@ -890,7 +890,7 @@
           <div class="card">
             <div class="section-header" style="margin-bottom:16px">
               <div>
-                <h2 style="font-size:15px">🏠“Š Processos por Prefixo</h2>
+                <h2 style="font-size:15px">📊 Processos por Prefixo</h2>
                 <p>Distribuição baseada no prefixo do processo</p>
               </div>
             </div>
@@ -903,7 +903,7 @@
         <!-- Seção Compartilhar Link (QR Code e WhatsApp) -->
         <div class="sharing-grid action-adm">
           <div class="sharing-card">
-            <h3>🏠“± Compartilhar por QR Code</h3>
+            <h3>📱 Compartilhar por QR Code</h3>
             <p>Escaneie o código para abrir o sistema diretamente no celular</p>
             <div class="qrcode-container">
               <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://tinhosys.github.io/seduc-processos/" alt="QR Code do Sistema">
@@ -912,7 +912,7 @@
           </div>
 
           <div class="sharing-card" style="align-items: flex-start; text-align: left;">
-            <h3>🏠’¬ Enviar Link via WhatsApp</h3>
+            <h3>💬 Enviar Link via WhatsApp</h3>
             <p>Digite o número de celular para enviar o link de acesso ao sistema pelo WhatsApp</p>
             <div class="phone-share-form">
               <div class="form-group" style="margin-bottom: 16px;">
@@ -945,7 +945,7 @@
             </div>
 
             <div style="text-align:left; margin-bottom:16px;">
-              <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">NOVA SENHA (4 NÁšMEROS)</label>
+              <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">NOVA SENHA (4 NÚMEROS)</label>
               <input type="password" id="page-nova-senha" placeholder="****" maxlength="4" oninput="this.value = this.value.replace(/\D/g, '')" style="width:100%; padding:12px 16px; border-radius:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;">
             </div>
 
@@ -985,7 +985,7 @@
           <!-- LINHA 1 -->
           <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
             <div class="search-box" style="flex: 2 1 380px; min-width: 320px;">
-              <span class="search-icon">🏠”</span>
+              <span class="search-icon">🔍</span>
               <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, MUNICÍPIO...">
             </div>
             <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
@@ -1053,7 +1053,7 @@
                 <div id="dropdown-digitos-opcoes" class="custom-multiselect-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; min-width:180px; z-index:9999; margin-top:4px; max-height:220px; overflow-y:auto; background:#1e293b; border:1px solid #334155; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.5); padding:4px;">
                   <div class="custom-multiselect-header" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; border-bottom:1px solid #334155;">
                     <span style="font-weight:700; font-size:10px; text-transform:uppercase; color:#94a3b8; display:flex; align-items:center; gap:4px;">
-                      <span style="font-size:10px; color:#38bdf8;">🏠“Œ</span> DISPONÍVEIS NA PLANILHA
+                      <span style="font-size:10px; color:#38bdf8;">📌</span> DISPONÍVEIS NA PLANILHA
                     </span>
                     <span id="btn-digito-limpar-checks" style="color:#38bdf8; cursor:pointer; font-size:11px; font-weight:500;">Limpar</span>
                   </div>
@@ -1226,13 +1226,13 @@
             <!-- GUIAS DE NAVEGAÇÁO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; width:100%;">
               <div style="display:flex; gap:12px; align-items:center;">
-                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">🏠“¦ OBJETO</button>
-                <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">🏠Ž¯ OBJETIVO</button>
+                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📋 OBJETO</button>
+                <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">🎯 OBJETIVO</button>
               </div>
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
-                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">🏠“Š Gerar Relatório</button>
+                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">📄 Gerar Relatório</button>
                 <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">Cancelar</button>
-                <button type="submit" class="btn btn-success" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">🏠’¾ Salvar Processo</button>
+                <button type="submit" class="btn btn-success" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">💾 Salvar Processo</button>
               </div>
             </div>
   
@@ -1250,7 +1250,7 @@
                 <div id="container-form-marca" style="display: flex; align-items: center; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.28); border-radius: 6px; padding: 5px 12px; transition: all 0.2s;">
                   <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #fca5a5; user-select: none; margin: 0; font-size: 12px;">
                     <input type="checkbox" id="form-marca" style="width: 16px; height: 16px; cursor: pointer; accent-color: #ef4444;">
-                    <span>🏠“Œ Marcar Processo (Chamar Atenção)</span>
+                    <span>📌 Marcar Processo (Chamar Atenção)</span>
                   </label>
                 </div>
               </div>
@@ -1314,12 +1314,12 @@
 
               </div>
 
-              <!-- LINHA 2 HARMONIOSA: PROCESSO (REDUZIDO COM COPIAR JUNTO), AGRUPAMENTO (EXPANDIDO), ÁšLTIMA ATUALIZAÇÁO (EXPANDIDO) -->
+              <!-- LINHA 2 HARMONIOSA: PROCESSO (REDUZIDO COM COPIAR JUNTO), AGRUPAMENTO (EXPANDIDO), ÚLTIMA ATUALIZAÇÃO (EXPANDIDO) -->
               <div class="form-row-meio full" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: flex-start !important; gap: 16px !important; width: 100% !important; grid-column: 1 / -1 !important; margin-bottom: 0 !important; box-sizing: border-box !important;">
                 
                 <!-- 1. NÂº DO PROCESSO: REDUZIDO, COM BOTÁO COPIAR TRAZIDO PARA JUNTO DO INPUT -->
                 <div class="form-group" id="group-form-processo-num" style="flex: 0 0 auto; width: 330px; min-width: 310px; max-width: 350px;">
-                  <label>NÂº do Processo</label>
+                  <label>Nº do Processo</label>
                   <div id="container-numeros" style="display:flex; flex-direction:column; gap:8px;">
                     <div style="display:flex; gap:6px; align-items:center;">
                       <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()"
@@ -1343,9 +1343,9 @@
                   <datalist id="list-agrupamentos"></datalist>
                 </div>
 
-                <!-- 3. ÁšLTIMA ATUALIZAÇÁO: RECEBE A OUTRA METADE DA SOBRA -->
+                <!-- 3. ÚLTIMA ATUALIZAÇÃO: RECEBE A OUTRA METADE DA SOBRA -->
                 <div class="form-group" id="legend-ultima-edicao" style="display:none; flex: 1.2 1 260px; min-width: 240px;">
-                  <label>Ášltima atualização</label>
+                  <label>Última atualização</label>
                   <div style="padding: 0 14px; height: 42px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary); display: flex; flex-direction: row; align-items: center; gap: 8px; white-space: nowrap; box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; width: 100%;">
                     <span id="ultima-edicao-nome" style="font-weight: 700; color: var(--text-primary); font-size: 13px; display:inline-flex; align-items:center; gap:4px;">-</span>
                     <span id="ultima-edicao-sep" style="color: var(--text-muted); font-size: 12px;">—</span>
@@ -1404,7 +1404,7 @@
               <!-- Contatos / WhatsApp -->
               <div class="form-group full"
                 style="margin-top: 8px; background: rgba(0,0,0,0.1); padding: 12px; border-radius: 8px;">
-                <label style="margin-bottom: 8px; display: block; color: var(--blue);">🏠“ž Contatos WhatsApp</label>
+                <label style="margin-bottom: 8px; display: block; color: var(--blue);">📞 Contatos WhatsApp</label>
 
                 <div id="lista-contatos" style="display:flex; flex-direction:column; gap:8px; margin-bottom: 8px;">
                 </div>
@@ -1436,7 +1436,7 @@
                   <label style="color:#f59e0b; font-weight:bold; font-size:13px; display:block; margin-bottom:10px;">&#128203; HIST&Oacute;RICO DE APONTAMENTOS</label>
                   <textarea id="form-historico-acumulado-texto" style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.3); color:#fff; font-size:13px; outline:none; margin-bottom:16px; line-height:1.5; font-family:inherit; resize:vertical;" placeholder="Nenhum histórico de apontamentos registrado." readonly></textarea>
                   
-                  <label style="color:#10b981; font-weight:bold; font-size:13px; display:block; margin-bottom:8px;">🏠“ NOVO APONTAMENTO</label>
+                  <label style="color:#10b981; font-weight:bold; font-size:13px; display:block; margin-bottom:8px;">📝 NOVO APONTAMENTO</label>
                   <textarea id="form-novo-apontamento" style="width:100%; min-height:50px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:16px; font-family:inherit; resize:vertical;" placeholder="Digite um novo apontamento aqui..."></textarea>
                   
                   <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:8px;">
@@ -1448,12 +1448,12 @@
                     
                     <!-- Botão Gravar Apontamento (Grava imediatamente via API) -->
                     <button type="button" class="btn" style="background:#2563eb; color:#fff; padding:0 16px; height:38px; font-size:13px; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;" id="btn-gravar-apontamento-edicao" onclick="gravarApontamentoImediato()">
-                      <span>🏠’¾</span> Gravar
+                      <span>💾</span> Gravar
                     </button>
                     
                     <!-- Botão Limpar Apontamento (Limpa histórico e desativa alarme) -->
                     <button type="button" class="btn" style="background:#ef4444; color:#fff; padding:0 16px; height:38px; font-size:13px; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;" onclick="limparApontamentoEdicao()">
-                      <span>🏠§¹</span> Limpar Apontamento
+                      <span>🧹</span> Limpar Apontamento
                     </button>
                   </div>
                 </div>
@@ -1468,68 +1468,68 @@
             <div id="tab-content-objetivo" style="display:none; padding:24px; background:rgba(255,255,255,0.02); border:1px solid rgba(16,185,129,0.25); border-radius:14px; margin-bottom:24px; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
               
               <div style="font-size:13px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
-                <span>🏠Ž¯</span> <span>Campos de Infraestrutura da Planilha & Demais Observações (Guia Objetivo)</span>
+                <span>🎯</span> <span>Campos de Infraestrutura da Planilha & Demais Observações (Guia Objetivo)</span>
               </div>
 
               <!-- Grid de Infraestrutura da Planilha -->
               <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:18px; margin-bottom:20px;">
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠šª QTDE SALA</label>
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🚪 QTDE SALA</label>
                   <input type="text" id="form-qtdeSala" class="form-control" placeholder="Ex: 10" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“ TIPO SALA</label>
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📍TIPO SALA</label>
                   <input type="text" id="form-tipoSala" class="form-control" placeholder="Ex: Convencional / Climatizada" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠Ž­ Auditório</label>
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🎭 Auditório</label>
                   <input type="text" id="form-Auditório" class="form-control" placeholder="Ex: Sim / Não" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“‹ TIPO Auditório</label>
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📋 TIPO Auditório</label>
                   <input type="text" id="form-tipoAuditório" class="form-control" placeholder="Ex: Climatizado / Com Palco" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠€ QUADRA</label>
+<label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏀 QUADRA</label>
                   <input type="text" id="form-quadra" class="form-control" placeholder="Ex: Coberta / Poliesportiva" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠Œ³ Pátio</label>
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌳 Pátio</label>
                   <input type="text" id="form-Pátio" class="form-control" placeholder="Ex: Coberto / Descoberto" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠½ï¸ Refeitório</label>
+<label style="color:#f0f4ff; font-weight:600; font-size:13px;">🍽️ Refeitório</label>
                   <input type="text" id="form-Refeitório" class="form-control" placeholder="Ex: Completo / Cozinha" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠š» BANHEIROS</label>
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🚻 BANHEIROS</label>
                   <input type="text" id="form-banheiros" class="form-control" placeholder="Ex: Masc / Fem / Acessível" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
               </div>
 
-              <!-- SEÇÁO: DETALHAMENTO DO PEDIDO & MONITORAMENTO -->
+              <!-- SEÇÃO: DETALHAMENTO DO PEDIDO & MONITORAMENTO -->
               <div style="margin-top:24px; padding:20px; background:linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.05)); border:1px solid rgba(59,130,246,0.3); border-radius:12px; margin-bottom:20px;">
                 <div style="font-size:13px; font-weight:800; color:#60a5fa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
                   <div style="display:flex; align-items:center; gap:8px;">
-                    <span>🏠“Š</span> <span>Detalhamento do Pedido - Relatório de Monitoramento</span>
+                    <span>📊</span> <span>Detalhamento do Pedido - Relatório de Monitoramento</span>
                   </div>
                 </div>
 
                 <div class="form-group" style="margin-bottom:14px;">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“ Metragem mÂ² (Obras / Ampliação / Reforma)</label>
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📍Metragem mÂ² (Obras / Ampliação / Reforma)</label>
                   <input type="text" id="form-metragemM2" class="form-control" placeholder="Ex: 450 mÂ²" style="border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
                   <label style="color:#f0f4ff; font-weight:700; font-size:13px; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                    <span>🏠“¦</span> <span>Detalhamento dos Itens & Quantidades Pedidas (Móveis, Equipamentos, Obras...)</span>
+                    <span>📝</span> <span>Detalhamento dos Itens & Quantidades Pedidas (Móveis, Equipamentos, Obras...)</span>
                   </label>
                   <textarea id="form-detalhamentoItens" class="form-control" rows="3" placeholder="Ex: 10 mesas para sala de aula, 2 caixas de som, 4 armÂ²rios, 5 poltronas para sala dos professores..." style="width:100%; border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:500; padding:10px 12px; border-radius:8px; line-height:1.4; box-sizing:border-box;"></textarea>
                 </div>
@@ -1538,7 +1538,7 @@
 <!-- DEMAIS OBSERVAÇÕES -->
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px; margin-bottom:8px;">
-                  <span>🏠“</span> <span>DEMAIS OBSERVAÇÕES</span>
+                  <span>📝</span> <span>DEMAIS OBSERVAÇÕES</span>
                 </label>
                 <textarea id="form-demaisObservacoes" class="form-control" rows="4" placeholder="Digite aqui demais observações específicas sobre o objetivo e infraestrutura deste processo..." style="width:100%; border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:500; padding:12px; border-radius:8px; line-height:1.5; box-sizing:border-box;"></textarea>
               </div>
@@ -1548,7 +1548,7 @@
             <!-- Seção de Ação Crítica no Final do Formulário -->
             <div id="container-excluir-form" style="display:none; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(239, 68, 68, 0.25); display: flex; justify-content: flex-end; width: 100%;">
               <button type="button" class="btn btn-danger" id="btn-excluir-form" onclick="confirmarExcluirForm()" style="background-color: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'">
-                🏠—‘ï¸ Excluir definitivamente este registro da planilha
+                🗑️ Excluir definitivamente este registro da planilha
               </button>
             </div>
   
@@ -1568,7 +1568,7 @@
         </div>
 
         <div class="card" style="margin-bottom:20px">
-          <h4 style="margin-bottom:12px;font-size:14px">🏠“‹ Colunas esperadas na planilha:</h4>
+          <h4 style="margin-bottom:12px;font-size:14px">📋 Colunas esperadas na planilha:</h4>
           <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">
             <div class="badge badge-AUTORIZADO">Prefixo</div>
             <div class="badge badge-AUTORIZADO">MUNICÍPIO</div>
@@ -1585,12 +1585,12 @@
             <div class="badge badge-AUTORIZADO">Anotação</div>
           </div>
           <p style="color:var(--text-muted);font-size:12px;margin-top:12px">
-            âš ï¸ Processos com número já existente serão ignorados (sem sobrescrever).
+            ⚠️ Processos com número já existente serão ignorados (sem sobrescrever).
           </p>
         </div>
 
         <div class="import-zone" id="import-zone">
-          <div class="import-icon">🏠“Š</div>
+          <div class="import-icon">📊</div>
           <h3>Arraste o arquivo .xlsx aqui</h3>
           <p>ou clique para selecionar do computador</p>
           <input type="file" id="import-input" accept=".xlsx,.xls" style="display:none">
@@ -1599,11 +1599,11 @@
         <div id="import-status" style="margin-top:20px"></div>
 
         <div class="card" style="margin-top:20px">
-          <h4 style="margin-bottom:12px;font-size:14px">âš ï¸ Atenção: Resetar Banco de Dados</h4>
+          <h4 style="margin-bottom:12px;font-size:14px">⚠️ Atenção: Resetar Banco de Dados</h4>
           <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">
             Isso apagará <strong>todos</strong> os processos cadastrados e não pode ser desfeito.
           </p>
-          <button class="btn btn-danger btn-sm" onclick="resetarBanco()">🏠—‘ï¸ Apagar todos os dados</button>
+            <button class="btn btn-danger btn-sm" onclick="resetarBanco()">🗑️ Apagar todos os dados</button>
         </div>
 
       </section>
@@ -1621,7 +1621,7 @@
         <!-- FORM DE CADASTRO/EDIÇÁO DIRETO NA TELA -->
         <div class="card" id="card-form-acesso" style="margin-bottom: 24px; padding: 20px;">
           <h3 id="cadastro-acesso-title" style="font-size: 14px; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-            <span style="display: flex; align-items: center; gap: 8px;">🏠‘¤ Registro de Acesso</span>
+            <span style="display: flex; align-items: center; gap: 8px;">👤 Registro de Acesso</span>
             <button type="button" id="btn-toggle-form-acesso" onclick="toggleFormAcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 4px 10px; font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: normal; cursor: pointer;">
               &#128065; <span class="btn-text">Ocultar</span>
             </button>
@@ -1642,10 +1642,10 @@
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nivel" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nível de Acesso</label>
               <select id="acesso-nivel" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" disabled>
-                <option value="leitor">🏠‘ï¸ LEITOR</option>
-                <option value="editor">âœï¸ EDITOR</option>
-                  <option value="gerente">🏠’¼ GERENTE</option>
-                <option value="adm">🏠›¡ï¸ ADMIN</option>
+              <option value="leitor">👁️ LEITOR</option>
+              <option value="editor">✏️ EDITOR</option>
+                  <option value="gerente">📊 GERENTE</option>
+              <option value="adm">👑 ADMIN</option>
               </select>
             </div>
 
@@ -1664,7 +1664,7 @@
               <label style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary); visibility: hidden;">Ações</label>
               <div class="form-actions" style="margin: 0; display:flex; gap:8px; height: 40px; align-items: center; min-width: 250px;">
                 <button type="button" class="btn" id="btn-novo-acesso" style="background:#f59e0b; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height:40px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; gap:6px; margin:0;" onclick="novoAcessoForm()">
-                  <span>âž•</span> Novo
+                  <span>➕</span> Novo
                 </button>
                 <button type="submit" class="btn btn-primary" id="btn-salvar-acesso" style="flex:1; background:#10b981; border:none; padding:0 16px; border-radius:6px; font-weight:600; color:#fff; cursor:pointer; height:40px; box-sizing:border-box; display:flex; align-items:center; justify-content:center; margin:0;" disabled>Salvar</button>
                 <button type="button" id="btn-cancelar-edicao" class="btn btn-ghost" onclick="cancelarEdicaoAcesso()" style="background:rgba(255,255,255,0.05); border:1px solid var(--border); padding:0 12px; border-radius:6px; font-weight:600; color:var(--text-primary); cursor:pointer; height:40px; box-sizing:border-box; align-items:center; justify-content:center; display:none; margin:0;">Cancelar</button>
@@ -1684,7 +1684,7 @@
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Status</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 10%;">Senha</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 8%;">Acessos</th>
-                <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Ášltimo Acesso</th>
+                <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; width: 12%;">Último Acesso</th>
                 <th style="padding:12px 16px; font-weight:600; color:var(--text-secondary); font-size:13px; text-align:right; width: 10%;">Ações</th>
               </tr>
             </thead>
@@ -1705,7 +1705,7 @@
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
           <div>
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-              <span style="font-size:26px;">🏠–¥ï¸</span>
+            <span style="font-size:26px;">📊</span>
               <h2 style="margin:0; font-size:22px; font-weight:800; color:#f8fafc;">Informações do Sistema & Diagnóstico Operacional</h2>
             </div>
             <p style="margin:0; font-size:13px; color:#94a3b8; line-height:1.5;">
@@ -1714,13 +1714,13 @@
           </div>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              🏠Ÿ¢ Sistema Online
+              🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.63
+              GBZ - v1.2.64
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
-              🏠”„ Atualizar Painel
+              🔄 Atualizar Painel
             </button>
           </div>
         </div>
@@ -1729,7 +1729,7 @@
         <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(59,130,246,0.3); background:linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.5));">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
             <h3 style="margin:0; font-size:15px; font-weight:700; color:#60a5fa; display:flex; align-items:center; gap:8px;">
-              <span>🏠‘¤</span> Usuários Conectados no Momento & Sessões Ativas
+              <span>👤</span> Usuários Conectados no Momento & Sessões Ativas
             </h3>
             <span id="sysinfo-tempo-sessao" style="font-family:monospace; font-size:12.5px; color:#10b981; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.35); padding:5px 12px; border-radius:6px; font-weight:700; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.2);">
               â±ï¸ Tempo Ativo: 00:00:00
@@ -1756,7 +1756,7 @@
 
           <!-- Histórico / Lista de Usuários Logados -->
           <div style="border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
-            <div style="font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:8px;">Ášltimos Acessos Registrados na Planilha:</div>
+            <div style="font-size:12px; font-weight:700; color:#cbd5e1; margin-bottom:8px;">Últimos Acessos Registrados na Planilha:</div>
             <div style="max-height:180px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:6px;">
               <table style="width:100%; border-collapse:collapse; font-size:12px;">
                 <thead>
@@ -1776,10 +1776,10 @@
           </div>
         </div>
 
-        <!-- 2. PAINEL EXECUTIVO COM NÁšMEROS DO SISTEMA -->
+        <!-- 2. PAINEL EXECUTIVO COM NÚMEROS DO SISTEMA -->
         <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(16,185,129,0.3);">
           <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#34d399; display:flex; align-items:center; gap:8px;">
-            <span>🏠“Š</span> Painel de Indicadores Globais do Sistema (Tempo Real)
+            <span>📊</span> Painel de Indicadores Globais do Sistema (Tempo Real)
           </h3>
 
           <!-- Grade de Grupos -->
@@ -1789,7 +1789,7 @@
             <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(56,189,248,0.25); border-left:4px solid #38bdf8; border-radius:8px; padding:16px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <span style="font-size:13px; font-weight:700; color:#38bdf8;">GDSM (Processos Gerais)</span>
-                <span style="font-size:18px;">🏠“‹</span>
+                <span style="font-size:18px;">📋</span>
               </div>
               <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                 <span style="font-size:12px; color:#cbd5e1;">Processos GDSM Cadastrados:</span>
@@ -1805,14 +1805,14 @@
             <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(52,211,153,0.25); border-left:4px solid #34d399; border-radius:8px; padding:16px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <span style="font-size:13px; font-weight:700; color:#34d399;">GMAC (Gestão Municipal)</span>
-                <span style="font-size:18px;">🏠›ï¸</span>
+                <span style="font-size:18px;">🏛️</span>
               </div>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
-                <div>🏠Ž’ Equipamento AEE: <strong id="metric-gmac-aee" style="color:#34d399; font-family:monospace;">0</strong></div>
-                <div>🏠šŒ Doação Á”nibus: <strong id="metric-gmac-onibus" style="color:#f59e0b; font-family:monospace;">0</strong></div>
-                <div>🏠š— Doação Veículos: <strong id="metric-gmac-veiculos" style="color:#10b981; font-family:monospace;">0</strong></div>
-                <div>🏠›ï¸ Reordenamento: <strong id="metric-gmac-reord" style="color:#8b5cf6; font-family:monospace;">0</strong></div>
-                <div style="grid-column: span 2;">🏠¤ Termo de Cooperação: <strong id="metric-gmac-coop" style="color:#ec4899; font-family:monospace;">0</strong></div>
+                <div>📦 Equipamento AEE: <strong id="metric-gmac-aee" style="color:#34d399; font-family:monospace;">0</strong></div>
+                <div>🎁 Doação Á”nibus: <strong id="metric-gmac-onibus" style="color:#f59e0b; font-family:monospace;">0</strong></div>
+                <div>🔄 Doação Veículos: <strong id="metric-gmac-veiculos" style="color:#10b981; font-family:monospace;">0</strong></div>
+                <div>🏛️Reordenamento: <strong id="metric-gmac-reord" style="color:#8b5cf6; font-family:monospace;">0</strong></div>
+                <div style="grid-column: span 2;">📋 Termo de Cooperação: <strong id="metric-gmac-coop" style="color:#ec4899; font-family:monospace;">0</strong></div>
               </div>
             </div>
 
@@ -1820,7 +1820,7 @@
             <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(251,146,60,0.25); border-left:4px solid #fb923c; border-radius:8px; padding:16px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <span style="font-size:13px; font-weight:700; color:#fb923c;">Rede Escolar de Rondônia</span>
-                <span style="font-size:18px;">🏠«</span>
+                <span style="font-size:18px;">🏫</span>
               </div>
               <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
                 <span style="color:#cbd5e1;">Escolas Municipais (52 Mun.):</span>
@@ -1844,8 +1844,8 @@
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
                 <div>👨 Prof. Municipais: <strong id="metric-proalfa-prof-mun" style="color:#c084fc; font-family:monospace;">0</strong></div>
                 <div>👩 Prof. Estaduais: <strong id="metric-proalfa-prof-est" style="color:#a78bfa; font-family:monospace;">0</strong></div>
-                <div>🏠Ž’ Alunos Municipais: <strong id="metric-proalfa-alun-mun" style="color:#38bdf8; font-family:monospace;">0</strong></div>
-                <div>🏠“š Alunos Estaduais: <strong id="metric-proalfa-alun-est" style="color:#818cf8; font-family:monospace;">0</strong></div>
+                <div>📚 Alunos Municipais: <strong id="metric-proalfa-alun-mun" style="color:#38bdf8; font-family:monospace;">0</strong></div>
+                <div>🎓 Alunos Estaduais: <strong id="metric-proalfa-alun-est" style="color:#818cf8; font-family:monospace;">0</strong></div>
               </div>
             </div>
 
@@ -1853,7 +1853,7 @@
             <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(34,197,94,0.25); border-left:4px solid #22c55e; border-radius:8px; padding:16px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <span style="font-size:13px; font-weight:700; color:#22c55e;">Orçamento CAM (Execução)</span>
-                <span style="font-size:18px;">🏠’°</span>
+                <span style="font-size:18px;">💰</span>
               </div>
               <div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
                 <span style="color:#cbd5e1;">Executado (Liquidado):</span>
@@ -1873,13 +1873,13 @@
             <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(251,191,36,0.25); border-left:4px solid #fbbf24; border-radius:8px; padding:16px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <span style="font-size:13px; font-weight:700; color:#fbbf24;">Controle de Diárias</span>
-                <span style="font-size:18px;">🏠“…</span>
+                <span style="font-size:18px;">⏳</span>
               </div>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
-                <div>🏠Ÿ¢ Pagos: <strong id="metric-diarias-pagos" style="color:#34d399; font-family:monospace;">0</strong></div>
-                <div>🏠Ÿ¡ Em Análise: <strong id="metric-diarias-analise" style="color:#fbbf24; font-family:monospace;">0</strong></div>
-                <div>🏠”µ Encerrados: <strong id="metric-diarias-encerrados" style="color:#60a5fa; font-family:monospace;">0</strong></div>
-                <div>🏠Ÿ  Aguardando: <strong id="metric-diarias-aguardando" style="color:#f97316; font-family:monospace;">0</strong></div>
+                <div>🟢 Pagos: <strong id="metric-diarias-pagos" style="color:#34d399; font-family:monospace;">0</strong></div>
+                <div>🟡 Em Análise: <strong id="metric-diarias-analise" style="color:#fbbf24; font-family:monospace;">0</strong></div>
+                <div>🔍µ Encerrados: <strong id="metric-diarias-encerrados" style="color:#60a5fa; font-family:monospace;">0</strong></div>
+                <div>🟠 Aguardando: <strong id="metric-diarias-aguardando" style="color:#f97316; font-family:monospace;">0</strong></div>
               </div>
             </div>
 
@@ -1889,7 +1889,7 @@
         <!-- 3. MAPA DE CONEXÕES DAS PLANILHAS DO GOOGLE SHEETS -->
         <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(59,130,246,0.3);">
           <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#60a5fa; display:flex; align-items:center; gap:8px;">
-            <span>🏠—ºï¸</span> Mapa de Conexões das Planilhas Google Sheets em Uso
+            <span>🔗</span> Mapa de Conexões das Planilhas Google Sheets em Uso
           </h3>
           <p style="font-size:13px; color:#94a3b8; margin-bottom:16px;">
             Acesso direto Á s bases de dados que alimentam os módulos da aplicação em tempo real:
@@ -1900,8 +1900,8 @@
             <a href="https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
               <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">🏠“‹ Planilha Principal (Processos)</span>
-                  <span style="font-size:11px; color:#38bdf8;">Abrir â†—</span>
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">📋 Planilha Principal (Processos)</span>
+                  <span style="font-size:11px; color:#38bdf8;">Abrir ↗</span>
                 </div>
                 <div style="font-size:11px; color:#94a3b8; line-height:1.4;">GDSM, GMAC e Gerenciamento de Acessos do Sistema.</div>
               </div>
@@ -1910,8 +1910,8 @@
             <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
               <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">🏠« Planilha de Escolas de RO</span>
-                  <span style="font-size:11px; color:#fb923c;">Abrir â†—</span>
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">🏫 Planilha de Escolas de RO</span>
+                  <span style="font-size:11px; color:#fb923c;">Abrir ↗</span>
                 </div>
                 <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Rede Estadual, Federal e 52 Municípios de Rondônia.</div>
               </div>
@@ -1920,8 +1920,8 @@
             <a href="https://docs.google.com/spreadsheets/d/12w-tBU6lMlKR7mncvbfoKjKGcvCZftd12CFKxdtf7ac/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
               <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">🏠Ž“ Planilha PROALFA / CENSO</span>
-                  <span style="font-size:11px; color:#c084fc;">Abrir â†—</span>
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">🎓 Planilha PROALFA / CENSO</span>
+                  <span style="font-size:11px; color:#c084fc;">Abrir ↗</span>
                 </div>
                 <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Matrículas de Alunos e Docentes Municipais e Estaduais.</div>
               </div>
@@ -1930,8 +1930,8 @@
             <a href="https://docs.google.com/spreadsheets/d/1NQuN9icUm8RL08pqkPia3ZrgoC5zEka99mK43sUJm3o/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
               <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">🏠’° Planilha de Orçamento CAM</span>
-                  <span style="font-size:11px; color:#22c55e;">Abrir â†—</span>
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">💰 Planilha de Orçamento CAM</span>
+                  <span style="font-size:11px; color:#22c55e;">Abrir ↗</span>
                 </div>
                 <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Execução Orçamentária, Dotação, Naturezas e Despesas.</div>
               </div>
@@ -1940,8 +1940,8 @@
             <a href="https://docs.google.com/spreadsheets/d/1WunsuLAAIUAAo1q65qmSVMIH0qLJu_TjDsb_u9LO304/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
               <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">âœˆï¸ Planilha de Diárias</span>
-                  <span style="font-size:11px; color:#fbbf24;">Abrir â†—</span>
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">✈️ Planilha de Diárias</span>
+                  <span style="font-size:11px; color:#fbbf24;">Abrir ↗</span>
                 </div>
                 <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Controle de Concessão de Diárias Estadual e Federal.</div>
               </div>
@@ -1955,13 +1955,13 @@
           
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#00ff66; font-size:18px;">🏠“Ÿ</span>
+              <span style="color:#00ff66; font-size:18px;">💻</span>
               <h3 style="margin:0; font-size:16px; font-weight:800; color:#00ff66; font-family:'Consolas', monospace; letter-spacing:0.5px; text-shadow:0 0 8px rgba(0,255,102,0.4);">
                 CORRETOR ORTOGRÁFICO & PADRONIZADOR
               </h3>
             </div>
             <div id="sysinfo-backup-badge" style="font-family:'Consolas', monospace; font-size:11px; color:#34d399; background:rgba(0,255,102,0.1); border:1px solid rgba(0,255,102,0.25); padding:4px 10px; border-radius:4px;">
-              Ášltimo Backup: Nenhum registrado
+              Último Backup: Nenhum registrado
             </div>
           </div>
 
@@ -1972,16 +1972,16 @@
           <!-- Barra de Ações do Padronizador -->
           <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px;">
             <button type="button" class="btn" id="btn-cmd-varredura" onclick="verificarInconsistenciasPlanilhaCMD()" style="background:#00ff66; color:#050907; font-weight:800; border:none; padding:10px 20px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; box-shadow:0 0 14px rgba(0,255,102,0.4);">
-              🏠” Buscar Divergências em Todo o Sistema
+              🔍 Buscar Divergências em Todo o Sistema
             </button>
             <button type="button" class="btn" id="btn-cmd-autorizar" onclick="confirmarContraNotificacaoPadronizacao()" style="background:#10b981; color:#fff; font-weight:700; border:none; padding:10px 20px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:none; align-items:center; gap:8px;">
-              âœ“ Autorizar e Corrigir Linhas Selecionadas (<span id="cmd-qtd-selecionados">0</span>)
+              ✓ Autorizar e Corrigir Linhas Selecionadas (<span id="cmd-qtd-selecionados">0</span>)
             </button>
             <button type="button" class="btn" id="btn-cmd-cancelar" onclick="cancelarPadronizacaoCMD()" style="background:rgba(239,68,68,0.2); color:#f87171; border:1px solid rgba(239,68,68,0.4); padding:10px 16px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:none; align-items:center; gap:6px;">
-              âœ• Cancelar
+              ✖ Cancelar
             </button>
             <button type="button" class="btn" id="btn-cmd-estornar" onclick="estornarUltimaPadronizacao()" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.4); padding:10px 16px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px;">
-              â†º Estornar Ášltima Atualização
+              ↺ Estornar Última Atualização
             </button>
           </div>
 
@@ -1990,21 +1990,21 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.63] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.64] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
             <!-- Barra de Progresso Dinâmica Verde Fósforo -->
             <div id="cmd-progress-container" style="display:none; margin-bottom:16px; background:rgba(0,0,0,0.5); padding:12px; border-radius:6px; border:1px solid rgba(0,255,102,0.2);">
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#00ff66; margin-bottom:6px;">
-                <span id="cmd-progress-msg">âš™ï¸ Processando correções nas células selecionadas...</span>
+                <span id="cmd-progress-msg">⚙️ Processando correções nas células selecionadas...</span>
                 <span id="cmd-progress-pct" style="font-weight:bold; font-size:14px; text-shadow:0 0 6px #00ff66;">0%</span>
               </div>
               <div style="width:100%; height:12px; background:rgba(255,255,255,0.06); border-radius:6px; overflow:hidden; border:1px solid rgba(0,255,102,0.3);">
                 <div id="cmd-progress-bar" style="width:0%; height:100%; background:linear-gradient(90deg, #059669, #00ff66); box-shadow:0 0 10px #00ff66; transition:width 0.15s ease;"></div>
               </div>
               <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:#94a3b8;">
-                <span id="cmd-count-sucesso" style="color:#00ff66;">âœ… Sucesso: 0</span>
+                <span id="cmd-count-sucesso" style="color:#00ff66;">✅ Sucesso: 0</span>
                 <span id="cmd-count-falhas" style="color:#f87171;">âŒ Falhas: 0</span>
                 <span id="cmd-count-total">Total no lote: 0</span>
               </div>
@@ -2027,7 +2027,7 @@
         <div style="background:#0f172a; border:2px solid #ef4444; width:100%; max-width:620px; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.8); overflow:hidden;">
           
           <div style="padding:20px 24px; background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(15,23,42,0.9)); border-bottom:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; gap:12px;">
-            <span style="font-size:28px;">âš ï¸</span>
+            <span style="font-size:28px;">⚠️</span>
             <div>
               <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">CONTRA-NOTIFICAÇÁO: Confirmação de Segurança</h3>
               <p style="margin:2px 0 0 0; font-size:12px; color:#fca5a5;">Autorização expressa para padronização em lote</p>
@@ -2059,7 +2059,7 @@
           <div style="padding:16px 24px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
             <button type="button" onclick="fecharContraNotificacao()" class="btn btn-ghost" style="padding:10px 18px; color:#94a3b8;">Voltar / Cancelar</button>
             <button type="button" id="btn-confirmar-contra-execucao" onclick="executarPadronizacaoPlanilhaCMD()" class="btn" style="background:#10b981; color:#fff; font-weight:700; padding:10px 24px; border-radius:8px; cursor:pointer; opacity:0.5; pointer-events:none; display:flex; align-items:center; gap:6px;">
-              🏠š€ Sim, Executar Padronização
+              🚀 Sim, Executar Padronização
             </button>
           </div>
 
@@ -2102,9 +2102,9 @@
         <!-- Cabeçalho -->
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <span id="escolas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">🏠« 0 Escolas</span>
-            <span id="escolas-alunos-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🏠Ž“ 0 Alunos</span>
-            <span id="escolas-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🏠šª 0 Salas</span>
+            <span id="escolas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">🏫 0 Escolas</span>
+            <span id="escolas-alunos-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
+            <span id="escolas-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
           </div>
           <div style="display:flex;align-items:stretch;gap:10px;height:38px;">
             <button onclick="if(typeof carregarEscolasAPI==='function') carregarEscolasAPI(false)" title="Recarregar dados"
@@ -2133,7 +2133,7 @@
                 placeholder="Buscar por nome, MUNICÍPIO, INEP, diretor..."
                 oninput="filtrarEscolas()"
                 style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
-              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🏠”</span>
+              <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
             </div>
           </div>
           <!-- Linha 2: checklist combos -->
@@ -2144,7 +2144,7 @@
               <button type="button" class="esc-chk-btn" id="chk-btn-super" onclick="_escolasToggleDropdown('super')"
                 style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;font-weight:600;text-align:left;">
                 <span id="chk-label-super">SUPER</span>
-                <span style="font-size:10px;opacity:0.6;">â–¼</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
               </button>
               <div id="chk-drop-super" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:240px;max-width:340px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
                 <div style="padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.08);">
@@ -2160,7 +2160,7 @@
               <button type="button" class="esc-chk-btn" id="chk-btn-municipio" onclick="_escolasToggleDropdown('municipio')"
                 style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
                 <span id="chk-label-municipio">MUNICÍPIO</span>
-                <span style="font-size:10px;opacity:0.6;">â–¼</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
               </button>
               <div id="chk-drop-municipio" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:240px;max-width:340px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
                 <div style="padding:6px 12px;border-bottom:1px solid rgba(255,255,255,0.08);">
@@ -2176,7 +2176,7 @@
               <button type="button" class="esc-chk-btn" id="chk-btn-competencia" onclick="_escolasToggleDropdown('competencia')"
                 style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
                 <span id="chk-label-competencia">COMPETÊNCIA</span>
-                <span style="font-size:10px;opacity:0.6;">â–¼</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
               </button>
               <div id="chk-drop-competencia" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:200px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
                 <div id="chk-list-competencia" style="padding:4px 0;"></div>
@@ -2188,7 +2188,7 @@
               <button type="button" class="esc-chk-btn" id="chk-btn-localizacao" onclick="_escolasToggleDropdown('localizacao')"
                 style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
                 <span id="chk-label-localizacao">LOCALIZAÇÁO</span>
-                <span style="font-size:10px;opacity:0.6;">â–¼</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
               </button>
               <div id="chk-drop-localizacao" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:200px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
                 <div id="chk-list-localizacao" style="padding:4px 0;"></div>
@@ -2200,7 +2200,7 @@
               <button type="button" class="esc-chk-btn" id="chk-btn-modalidade" onclick="_escolasToggleDropdown('modalidade')"
                 style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
                 <span id="chk-label-modalidade">MODALIDADE</span>
-                <span style="font-size:10px;opacity:0.6;">â–¼</span>
+                <span style="font-size:10px;opacity:0.6;">▼</span>
               </button>
               <div id="chk-drop-modalidade" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:220px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
                 <div id="chk-list-modalidade" style="padding:4px 0;"></div>
@@ -2249,7 +2249,7 @@
 
         <!-- Estado vazio -->
         <div id="escolas-empty" style="display:none;text-align:center;padding:80px 20px;">
-          <div style="font-size:52px;margin-bottom:16px;">🏠«</div>
+          <div style="font-size:52px;margin-bottom:16px;">🏫</div>
           <div style="font-size:17px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">Nenhuma escola encontrada</div>
           <div id="escolas-empty-msg" style="font-size:13px;color:var(--text-muted);">Clique em "Recarregar" para buscar os dados.</div>
         </div>
@@ -2268,14 +2268,14 @@
     <!-- Header / Nav bar -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>
-        <button type="button" data-page="escolas" onclick="navegar('escolas')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-secondary); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;">â† Voltar para Lista de Escolas</button>
-        <h2 id="form-escola-page-titulo" style="margin:0; font-size:22px; color:#f0f4ff; display:flex; align-items:center; gap:10px;">🏠« Editar Cadastro da Escola</h2>
+      <button type="button" data-page="escolas" onclick="navegar('escolas')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-secondary); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;">← Voltar para Lista de Escolas</button>
+        <h2 id="form-escola-page-titulo" style="margin:0; font-size:22px; color:#f0f4ff; display:flex; align-items:center; gap:10px;">🏫 Editar Cadastro da Escola</h2>
         <p id="form-escola-page-subtitulo" style="margin:4px 0 0 0; color:#a78bfa; font-weight:600; font-size:14px;">Preencha os dados individualizados da unidade escolar</p>
       </div>
 
       <div style="display:flex; gap:12px;">
         <button type="button" data-page="escolas" onclick="navegar('escolas')" class="btn btn-ghost" style="padding:10px 20px;">Cancelar</button>
-        <button type="button" onclick="salvarFormularioEscolaPage(event)" class="btn btn-primary" id="btn-salvar-escola-page" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:12px 28px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">🏠’¾ Salvar Escola</button>
+        <button type="button" onclick="salvarFormularioEscolaPage(event)" class="btn btn-primary" id="btn-salvar-escola-page" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:12px 28px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">💾 Salvar Escola</button>
       </div>
     </div>
 
@@ -2287,7 +2287,7 @@
         <!-- 1. IDENTIFICAÇÁO INSTITUCIONAL DA ESCOLA -->
         <div style="padding:22px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.25); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:#a78bfa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
-            🏠« <span>1. Identificação Institucional da Escola</span>
+            🏫 <span>1. Identificação Institucional da Escola</span>
           </div>
 
           <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:18px; margin-bottom:18px;">
@@ -2336,29 +2336,29 @@
         <!-- 2. GESTÁO DA ESCOLA & DIREÇÁO -->
         <div style="padding:22px; background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.06)); border:1px solid rgba(16,185,129,0.35); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
-            🏠‘¤ <span>2. Gestão da Escola & Contatos</span>
+            👤 <span>2. Gestão da Escola & Contatos</span>
           </div>
 
           <div class="form-group" style="margin-bottom:18px;">
             <label style="color:#f0f4ff; font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-              <span>🏠‘¤</span> <span>Nome do Diretor(a) / Gestor(a)</span>
+              <span>👤</span> <span>Nome do Diretor(a) / Gestor(a)</span>
             </label>
             <input type="text" id="page-escola-diretor" class="form-control" placeholder="Digite o nome completo do diretor(a) responsável" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:16px; padding:12px 14px;">
           </div>
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px;">
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“ž Contato do Diretor (WhatsApp / Celular)</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Diretor (WhatsApp / Celular)</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-contatoDiretor" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
-                <button type="button" onclick="const v=document.getElementById('page-escola-contatoDiretor').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">🏠’¬</button>
+                <button type="button" onclick="const v=document.getElementById('page-escola-contatoDiretor').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
               </div>
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">â˜Žï¸ Telefone Geral da Escola / Secretaria</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">☎️ Telefone Geral da Escola / Secretaria</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-telefone" class="form-control" placeholder="Ex: (69) 3222-0000" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
-                <button type="button" onclick="const v=document.getElementById('page-escola-telefone').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">🏠’¬</button>
+                <button type="button" onclick="const v=document.getElementById('page-escola-telefone').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
               </div>
             </div>
           </div>
@@ -2366,29 +2366,29 @@
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px;">
             <div class="form-group">
               <label style="color:#f0f4ff; font-weight:700; font-size:14px; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-                <span>🏠‘¤</span> <span>Nome do Secretário(a)</span>
+                <span>👤</span> <span>Nome do Secretário(a)</span>
               </label>
               <input type="text" id="page-escola-Secretário" class="form-control" placeholder="Digite o nome completo do Secretário(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:16px; padding:12px 14px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“ž Contato do Secretário(a) (WhatsApp)</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Secretário(a) (WhatsApp)</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-contatoSecretário" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
-                <button type="button" onclick="const v=document.getElementById('page-escola-contatoSecretário').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">🏠’¬</button>
+                <button type="button" onclick="const v=document.getElementById('page-escola-contatoSecretário').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
               </div>
             </div>
           </div>
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“§ E-mail da Escola</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">✉️ E-mail da Escola</label>
               <input type="email" id="page-escola-email" class="form-control" placeholder="Ex: contato@escola.com.br" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠Œ Redes Sociais (Instagram/Facebook)</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌐Redes Sociais (Instagram/Facebook)</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-redesSociais" class="form-control" placeholder="Ex: @escola ou link do perfil" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
-                <button type="button" onclick="const v=document.getElementById('page-escola-redesSociais').value; if(v){ const url=v.startsWith('@') ? 'https://instagram.com/'+v.substring(1) : (v.startsWith('http') ? v : 'https://'+v); window.open(url, '_blank'); }" style="background:#db2777; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Abrir Rede Social">🏠“±</button>
+                <button type="button" onclick="const v=document.getElementById('page-escola-redesSociais').value; if(v){ const url=v.startsWith('@') ? 'https://instagram.com/'+v.substring(1) : (v.startsWith('http') ? v : 'https://'+v); window.open(url, '_blank'); }" style="background:#db2777; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Abrir Rede Social">📱</button>
               </div>
             </div>
           </div>
@@ -2397,23 +2397,23 @@
         <!-- 3. ENDEREÇO & INFRAESTRUTURA -->
         <div style="padding:22px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
-            🏠“ <span>3. Endereço & Capacidade de Infraestrutura</span>
+            📝 <span>3. Endereço & Capacidade de Infraestrutura</span>
           </div>
 
           <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:18px; margin-bottom:18px;">
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“ Endereço e NÂº</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📝 Endereço e NÂº</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
-                <button type="button" onclick="const end=document.getElementById('page-escola-endereco').value; const mun=document.getElementById('page-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Ver no Google Maps">🏠“</button>
+                <button type="button" onclick="const end=document.getElementById('page-escola-endereco').value; const mun=document.getElementById('page-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📝</button>
               </div>
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠™ï¸ Bairro</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">ℹ️Bairro</label>
               <input type="text" id="page-escola-bairro" class="form-control" placeholder="Ex: Centro" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠¢ Complemento</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">⚡ Complemento</label>
               <input type="text" id="page-escola-complemento" class="form-control" placeholder="Ex: Próximo Á  praça central" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
             </div>
           </div>
@@ -2424,11 +2424,11 @@
               <input type="text" id="page-escola-cep" class="form-control" placeholder="Ex: 76800-000" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠Ž“ Total de Matrículas (Alunos)</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🎓 Total de Matrículas (Alunos)</label>
               <input type="number" id="page-escola-matriculas" class="form-control" placeholder="0" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#34d399; font-weight:700; padding:10px 12px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠šª Salas de Aula Utilizadas</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🚪 Salas de Aula Utilizadas</label>
               <input type="number" id="page-escola-salas" class="form-control" placeholder="0" style="border-color:rgba(96,165,250,0.4); background:rgba(0,0,0,0.3); color:#60a5fa; font-weight:700; padding:10px 12px;">
             </div>
           </div>
@@ -2437,7 +2437,7 @@
         <!-- 4. OBSERVAÇÕES INDIVIDUALIZADAS -->
         <div style="padding:22px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-            🏠“ <span>4. Observações Individualizadas da Escola</span>
+            📝 <span>4. Observações Individualizadas da Escola</span>
           </div>
           <div class="form-group">
             <textarea id="page-escola-obs" class="form-control" rows="4" placeholder="Digite aqui observações adicionais específicas sobre esta unidade escolar..." style="width:100%; border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:500; padding:14px; border-radius:10px; line-height:1.5; box-sizing:border-box;"></textarea>
@@ -2447,7 +2447,7 @@
         <!-- Action Footer -->
         <div style="display:flex; justify-content:space-between; align-items:center; padding-top:20px; border-top:1px solid var(--border);">
           <button type="button" onclick="if(confirm('Deseja cancelar as alterações?')) navegar('escolas')" class="btn btn-ghost" style="padding:12px 24px;">Cancelar</button>
-          <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:12px 32px; font-size:15px; box-shadow:0 4px 18px rgba(139,92,246,0.45);">🏠’¾ Salvar Escola</button>
+          <button type="submit" class="btn btn-primary" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:12px 32px; font-size:15px; box-shadow:0 4px 18px rgba(139,92,246,0.45);">💾 Salvar Escola</button>
         </div>
       </form>
     </div>
@@ -2464,10 +2464,10 @@
       <!-- Modal Header -->
       <div style="background:linear-gradient(135deg,#1e1b4b,#0f172a); padding:20px 24px; border-bottom:1px solid rgba(139,92,246,0.25); display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <h3 id="form-escola-titulo" style="margin:0; font-size:18px; color:#f0f4ff; display:flex; align-items:center; gap:8px;">âœï¸ Editar Dados da Escola</h3>
+      <h3 id="form-escola-titulo" style="margin:0; font-size:18px; color:#f0f4ff; display:flex; align-items:center; gap:8px;">✏️ Editar Dados da Escola</h3>
           <span id="form-escola-subtitulo" style="font-size:13px; color:#a78bfa; font-weight:600;">Atualize as informações institucionais, contatos e gestáo da unidade escolar</span>
         </div>
-        <button class="modal-close" onclick="fecharModalFormEscola()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">âœ•</button>
+        <button class="modal-close" onclick="fecharModalFormEscola()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">✖</button>
       </div>
 
       <!-- Modal Body -->
@@ -2478,7 +2478,7 @@
           <!-- SEÇÁO 1: IDENTIFICAÇÁO DA ESCOLA -->
           <div style="padding:18px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.2); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#a78bfa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-              🏠« <span>Identificação da Escola</span>
+              🏫 <span>Identificação da Escola</span>
             </div>
 
             <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:14px; margin-bottom:14px;">
@@ -2527,29 +2527,29 @@
           <!-- SEÇÁO 2: GESTÁO DA ESCOLA & CONTATOS -->
           <div style="padding:18px; background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.06)); border:1px solid rgba(16,185,129,0.3); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-              🏠‘¤ <span>Gestão da Escola & Contatos</span>
+              👤 <span>Gestão da Escola & Contatos</span>
             </div>
 
             <div class="form-group" style="margin-bottom:14px;">
               <label style="color:#f0f4ff; font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px;">
-                <span>🏠‘¤</span> <span>Nome do Diretor / Gestor</span>
+                <span>👤</span> <span>Nome do Diretor / Gestor</span>
               </label>
               <input type="text" id="form-escola-diretor" class="form-control" placeholder="Digite o nome completo do diretor(a) ou gestor(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:15px; padding:12px 14px;">
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“ž Contato do Diretor (WhatsApp)</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Diretor (WhatsApp)</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-contatoDiretor" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
-                  <button type="button" onclick="const v=document.getElementById('form-escola-contatoDiretor').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">🏠’¬</button>
+                  <button type="button" onclick="const v=document.getElementById('form-escola-contatoDiretor').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
                 </div>
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">â˜Žï¸ Telefone Geral da Escola</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">☎️ Telefone Geral da Escola</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-telefone" class="form-control" placeholder="Ex: (69) 3222-0000" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
-                  <button type="button" onclick="const v=document.getElementById('form-escola-telefone').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">🏠’¬</button>
+                  <button type="button" onclick="const v=document.getElementById('form-escola-telefone').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
                 </div>
               </div>
             </div>
@@ -2557,29 +2557,29 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
               <div class="form-group">
                 <label style="color:#f0f4ff; font-weight:700; font-size:14px; display:flex; align-items:center; gap:6px;">
-                  <span>🏠‘¤</span> <span>Nome do Secretário(a)</span>
+                  <span>👤</span> <span>Nome do Secretário(a)</span>
                 </label>
                 <input type="text" id="form-escola-Secretário" class="form-control" placeholder="Digite o nome completo do Secretário(a)" style="border-color:rgba(16,185,129,0.5); background:rgba(0,0,0,0.4); color:#34d399; font-weight:700; font-size:15px; padding:12px 14px;">
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“ž Contato do Secretário(a) (WhatsApp)</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📞 Contato do Secretário(a) (WhatsApp)</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-contatoSecretário" class="form-control" placeholder="Ex: (69) 99999-9999" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
-                  <button type="button" onclick="const v=document.getElementById('form-escola-contatoSecretário').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">🏠’¬</button>
+                  <button type="button" onclick="const v=document.getElementById('form-escola-contatoSecretário').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
                 </div>
               </div>
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“§ E-mail da Escola</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">✉️ E-mail da Escola</label>
                 <input type="email" id="form-escola-email" class="form-control" placeholder="Ex: contato@escola.com.br" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠Œ Redes Sociais (Instagram/Facebook)</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌐Redes Sociais (Instagram/Facebook)</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-redesSociais" class="form-control" placeholder="Ex: @escola ou link do perfil" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
-                  <button type="button" onclick="const v=document.getElementById('form-escola-redesSociais').value; if(v){ const url=v.startsWith('@') ? 'https://instagram.com/'+v.substring(1) : (v.startsWith('http') ? v : 'https://'+v); window.open(url, '_blank'); }" style="background:#db2777; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Abrir Rede Social">🏠“±</button>
+                  <button type="button" onclick="const v=document.getElementById('form-escola-redesSociais').value; if(v){ const url=v.startsWith('@') ? 'https://instagram.com/'+v.substring(1) : (v.startsWith('http') ? v : 'https://'+v); window.open(url, '_blank'); }" style="background:#db2777; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Abrir Rede Social">📱</button>
                 </div>
               </div>
             </div>
@@ -2588,23 +2588,23 @@
           <!-- SEÇÁO 3: ENDEREÇO & INFRAESTRUTURA -->
           <div style="padding:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:20px;">
             <div style="font-size:12px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-              🏠“ <span>Endereço & Infraestrutura</span>
+              📝 <span>Endereço & Infraestrutura</span>
             </div>
 
             <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:14px; margin-bottom:14px;">
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠“ Endereço e NÂº</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📝 Endereço e NÂº</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
-                  <button type="button" onclick="const end=document.getElementById('form-escola-endereco').value; const mun=document.getElementById('form-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Ver no Google Maps">🏠“</button>
+                  <button type="button" onclick="const end=document.getElementById('form-escola-endereco').value; const mun=document.getElementById('form-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📝</button>
                 </div>
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠™ï¸ Bairro</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">ℹ️Bairro</label>
                 <input type="text" id="form-escola-bairro" class="form-control" placeholder="Ex: Centro" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏠¢ Complemento</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">⚡ Complemento</label>
                 <input type="text" id="form-escola-complemento" class="form-control" placeholder="Ex: Ao lado do posto" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
             </div>
@@ -2628,7 +2628,7 @@
           <!-- SEÇÁO MODALIDADES (só para Municipal) -->
           <div id="secao-modalidades-modal" style="display:none; padding:18px; background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.03)); border:1px solid rgba(239,68,68,0.3); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#f87171; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-              🏠“š <span>Modalidades e Matrículas (Municipal)</span>
+              🎓 <span>Modalidades e Matrículas (Municipal)</span>
             </div>
             <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
               Informe a quantidade de alunos por modalidade de ensino desta escola municipal.
@@ -2652,7 +2652,7 @@
           <!-- Buttons -->
           <div style="display:flex; justify-content:flex-end; gap:12px; padding-top:16px; border-top:1px solid var(--border);">
             <button type="button" class="btn btn-ghost" onclick="fecharModalFormEscola()" style="padding:10px 20px;">Cancelar</button>
-            <button type="submit" class="btn btn-primary" id="btn-salvar-escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:10px 26px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">🏠’¾ Salvar Alterações</button>
+            <button type="submit" class="btn btn-primary" id="btn-salvar-escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); border:none; font-weight:700; padding:10px 26px; font-size:14px; box-shadow:0 4px 15px rgba(139,92,246,0.4);">💾 Salvar Alterações</button>
           </div>
 
         </form>
@@ -2665,12 +2665,12 @@
     <!-- Cabeçalho -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span id="mapa-escolas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">🏠« 0 Escolas</span>
-        <span id="mapa-alunos-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🏠Ž“ 0 Alunos</span>
-        <span id="mapa-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🏠šª 0 Salas</span>
+        <span id="mapa-escolas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">🏫 0 Escolas</span>
+        <span id="mapa-alunos-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
+        <span id="mapa-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
-        <button onclick="if(typeof iniciarMapaEscolas==='function') iniciarMapaEscolas()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">🏠”„ Recarregar Mapa</button>
+        <button onclick="if(typeof iniciarMapaEscolas==='function') iniciarMapaEscolas()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">🔄 Recarregar Mapa</button>
       </div>
     </div>
 
@@ -2683,7 +2683,7 @@
             placeholder="Buscar escola no mapa..."
             oninput="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
             style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
-          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🏠”</span>
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
         </div>
       </div>
       <!-- Linha 2 -->
@@ -2737,9 +2737,9 @@
     <!-- Cabeçalho -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span id="te-badge-total" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.3);font-family:monospace;letter-spacing:0.5px;">🏠‘¥ 0 Escolas</span>
-        <span id="te-badge-alunos" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🏠Ž“ 0 Alunos</span>
-        <span id="te-badge-abas" style="display:none;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(139,92,246,0.12);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);letter-spacing:0.4px;">🏠“ 0 planilhas</span>
+        <span id="te-badge-total" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.3);font-family:monospace;letter-spacing:0.5px;">👥 0 Escolas</span>
+        <span id="te-badge-alunos" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
+        <span id="te-badge-abas" style="display:none;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(139,92,246,0.12);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);letter-spacing:0.4px;">📍 0 planilhas</span>
         <span id="te-badge-status" style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);letter-spacing:0.4px;">â³ Aguardando carregamento</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
@@ -2766,7 +2766,7 @@
             placeholder="Buscar por nome, MUNICÍPIO, INEP, diretor, email..."
             oninput="filtrarTodasEscolas()"
             style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
-          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🏠”</span>
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
         </div>
       </div>
       <!-- Linha 2: selects -->
@@ -2837,10 +2837,10 @@
 
     <!-- Estado vazio -->
     <div id="te-empty" style="display:none;text-align:center;padding:80px 20px;">
-      <div style="font-size:52px;margin-bottom:16px;">🏠‘¥</div>
+      <div style="font-size:52px;margin-bottom:16px;">👥</div>
       <div style="font-size:17px;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">Nenhuma escola encontrada</div>
       <div id="te-empty-msg" style="font-size:13px;color:var(--text-muted);">Verifique se a planilha está compartilhada publicamente e clique em "Recarregar".</div>
-      <button onclick="recarregarTodasEscolas()" style="margin-top:20px;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.4);color:#60a5fa;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;">🏠”„ Tentar novamente</button>
+      <button onclick="recarregarTodasEscolas()" style="margin-top:20px;background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.4);color:#60a5fa;padding:10px 24px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;">🔄 Tentar novamente</button>
     </div>
 
     <!-- Paginação -->
@@ -2861,7 +2861,7 @@
         <button type="button" onclick="document.getElementById('contatos-municipio-dropdown').style.display = document.getElementById('contatos-municipio-dropdown').style.display==='none'?'block':'none'"
           style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:6px; padding:9px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer; font-weight:600; text-align:left;">
           <span id="contatos-municipio-label">MUNICÍPIO (Todos)</span>
-          <span style="font-size:10px;opacity:0.6;">â–¼</span>
+          <span style="font-size:10px;opacity:0.6;">▼</span>
         </button>
         <div id="contatos-municipio-dropdown" style="display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:260px; background:#1a1f35; border:1px solid rgba(255,255,255,0.15); border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.5); padding:8px 0; max-height:300px; overflow-y:auto; z-index:9999;">
           <div style="padding:6px 12px 10px 12px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; flex-direction:column; gap:8px;">
@@ -2879,9 +2879,9 @@
       <!-- Right side: Badges and Actions -->
       <div style="display:flex;align-items:stretch;gap:16px;flex-wrap:wrap;margin-left:auto;">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <span id="contatos-badge-total" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">🏠‘¥ 0 Municípios</span>
-          <span id="contatos-badge-escolas" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);font-family:monospace;letter-spacing:0.5px;">🏠« 0 Escolas</span>
-          <span id="contatos-badge-alunos" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);font-family:monospace;letter-spacing:0.5px;">🏠Ž“ 0 Alunos</span>
+          <span id="contatos-badge-total" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(139,92,246,0.15);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);font-family:monospace;letter-spacing:0.5px;">👥 0 Municípios</span>
+          <span id="contatos-badge-escolas" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);font-family:monospace;letter-spacing:0.5px;">🏫 0 Escolas</span>
+          <span id="contatos-badge-alunos" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
         </div>
         <div style="display:flex;align-items:stretch;gap:10px;height:38px;">
           <button onclick="imprimirContatos()" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.5);color:#60a5fa;padding:9px 16px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:100%;transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
@@ -2905,7 +2905,7 @@
             placeholder="Buscar por município, nome, email..."
             oninput="filtrarContatos()"
             style="width:100%;padding:10px 38px 10px 14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;outline:none;box-sizing:border-box;">
-          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🏠”</span>
+          <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:15px;pointer-events:none;">🔍</span>
         </div>
       </div>
     </div>
@@ -2998,7 +2998,7 @@
   <div class="modal-overlay" id="modal-contato-overlay" onclick="if(event.target===this)fecharModalContato()">
     <div class="modal" style="max-width:550px; width:95%;">
       <div class="modal-header">
-        <h3 id="modal-contato-titulo" style="display:flex; align-items:center; gap:8px;"><span>âœï¸</span> Editar Contato</h3>
+      <h3 id="modal-contato-titulo" style="display:flex; align-items:center; gap:8px;"><span>✏️</span> Editar Contato</h3>
         <button class="modal-close" onclick="fecharModalContato()">?</button>
       </div>
       <div class="modal-body" style="padding:20px;">
@@ -3064,8 +3064,8 @@
   <div class="modal-overlay" id="modal-escola-overlay" onclick="if(event.target===this)fecharModalEscola()">
     <div class="modal" style="max-width:680px; width:95%;">
       <div class="modal-header">
-        <h3 style="display:flex; align-items:center; gap:8px;"><span>🏠«</span> Detalhes da Escola</h3>
-        <button class="modal-close" onclick="fecharModalEscola()">âœ•</button>
+        <h3 style="display:flex; align-items:center; gap:8px;"><span>🏫</span> Detalhes da Escola</h3>
+        <button class="modal-close" onclick="fecharModalEscola()">✖</button>
       </div>
       <div class="modal-body" id="modal-escola-content" style="padding:0;">
         <!-- Preenchido via JS -->
@@ -3080,7 +3080,7 @@
       <!-- Header -->
       <div style="display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid rgba(255,255,255,0.07);">
         <div style="display:flex;align-items:center;gap:12px;">
-          <span style="font-size:22px;">🏠«</span>
+          <span style="font-size:22px;">🏫</span>
           <div>
             <h3 id="te-modal-titulo" style="margin:0;font-size:16px;font-weight:700;color:#f0f4ff;">Editar Escola</h3>
             <p id="te-modal-sub" style="margin:0;font-size:12px;color:var(--text-muted);">Alterações salvas localmente — edite no Google Sheets para persistir</p>
@@ -3093,7 +3093,7 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             Google Sheets
           </a>
-          <button onclick="fecharTeModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">âœ•</button>
+          <button onclick="fecharTeModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">✖</button>
         </div>
       </div>
       <!-- Body -->
@@ -3173,7 +3173,7 @@
           </div>
           <!-- Toggle campos secundários -->
           <button id="te-form-toggle-btn" onclick="teToggleCampos()" style="margin-top:14px;background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);color:var(--text-muted);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;width:100%;text-align:center;transition:all 0.15s;">
-            â–¼ Mostrar campos adicionais (Secretário, Endereço, Infraestrutura)
+            ▼ Mostrar campos adicionais (Secretário, Endereço, Infraestrutura)
           </button>
           <!-- Campos secundários (ocultos) -->
           <div id="te-form-secundarios" style="display:none;margin-top:14px;">
@@ -3233,12 +3233,12 @@
       <!-- Footer -->
       <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid rgba(255,255,255,0.07);gap:10px;flex-wrap:wrap;">
         <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
-          âš ï¸ Salvar aqui atualiza apenas a <strong>visualização local</strong>. Use o Google Sheets para persistir.
+          ⚠️ Salvar aqui atualiza apenas a <strong>visualização local</strong>. Use o Google Sheets para persistir.
         </div>
         <div style="display:flex;gap:10px;">
           <button onclick="fecharTeModal()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Cancelar</button>
           <button onclick="salvarTeModal()" style="background:linear-gradient(135deg,#4f46e5,#6366f1);border:none;color:white;padding:9px 24px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;box-shadow:0 4px 15px rgba(99,102,241,0.4);transition:all 0.15s;"
-            onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">🏠’¾ Salvar (local)</button>
+            onmouseover="this.style.transform='translateY(-1px)'" onmouseout="this.style.transform=''">💾 Salvar (local)</button>
         </div>
       </div>
     </div>
@@ -3249,7 +3249,7 @@
     <div class="modal">
       <div class="modal-header">
         <h3>Detalhes do Processo</h3>
-        <button class="modal-close" onclick="fecharModal()">âœ•</button>
+        <button class="modal-close" onclick="fecharModal()">✖</button>
       </div>
       <div class="modal-body" id="modal-content"></div>
     </div>
@@ -3273,13 +3273,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.56"></script>
-  <script src="js/app.js?v=1.2.56"></script>
-  <script src="js/auth-sap.js?v=1.2.56"></script>
-  <script src="js/escolas.js?v=1.2.56" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.64"></script>
+  <script src="js/app.js?v=1.2.64"></script>
+  <script src="js/auth-sap.js?v=1.2.64"></script>
+  <script src="js/escolas.js?v=1.2.64" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.56"></script>
-  <script src="js/contatos.js?v=1.2.56"></script>
+  <script src="js/mapa.js?v=1.2.64"></script>
+  <script src="js/contatos.js?v=1.2.64"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3311,7 +3311,7 @@
 
     // Resetar banco
     function resetarBanco() {
-      if (confirm('âš ï¸ Isso apagará TODOS os processos. Tem certeza?')) {
+      if (confirm('⚠️ Isso apagará TODOS os processos. Tem certeza?')) {
         if (confirm('Confirme novamente: apagar todos os dados?')) {
           localStorage.removeItem('seduc_processos_v1');
           toast('Banco de dados resetado.', 'info');
@@ -3402,8 +3402,8 @@
   <div class="modal-overlay" id="modal-alertas-overlay">
     <div class="modal" style="max-width: 450px;">
       <div class="modal-header">
-        <h2 style="color: #f59e0b; display: flex; align-items: center; gap: 8px;"><span>âš ï¸</span> Apontamentos Pendentes</h2>
-        <button class="modal-close" onclick="fecharModalAlertas()">âœ•</button>
+        <h2 style="color: #f59e0b; display: flex; align-items: center; gap: 8px;"><span>⚠️</span> Apontamentos Pendentes</h2>
+        <button class="modal-close" onclick="fecharModalAlertas()">✖</button>
       </div>
       <div class="modal-body" id="modal-alertas-content">
       </div>
@@ -3428,15 +3428,15 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.62"></script>
+  <script src="js/multi-select.js?v=1.2.64"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.56"></script>
-  <script src="js/gmac.js?v=1.2.56"></script>
-  <script src="js/orcamento.js?v=1.2.56"></script>
-  <script src="js/gdsm.js?v=1.2.56"></script>
-  <script src="js/print-proalfa.js?v=1.2.56"></script>
-  <script src="js/proalfa.js?v=1.2.56"></script>
+  <script src="js/diarias.js?v=1.2.64"></script>
+  <script src="js/gmac.js?v=1.2.64"></script>
+  <script src="js/orcamento.js?v=1.2.64"></script>
+  <script src="js/gdsm.js?v=1.2.64"></script>
+  <script src="js/print-proalfa.js?v=1.2.64"></script>
+  <script src="js/proalfa.js?v=1.2.64"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
@@ -3523,14 +3523,14 @@
     <!-- Legenda das colunas de natureza da despesa – click to filter -->
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px 16px;background:#1e293b;border-radius:10px;border:1px solid rgba(255,255,255,0.05);">
       <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;align-self:center;margin-right:4px;">Filtrar por Natureza:</span>
-      <button class="orc-badge-filter" data-code="339014" data-cor="#60a5fa" onclick="filtrarOrcamentoPorNatureza('339014')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);cursor:pointer;transition:all 0.2s;" title="Diárias Pessoal Civil">🏠¨ Diárias Pessoal</button>
-      <button class="orc-badge-filter" data-code="339030" data-cor="#fbbf24" onclick="filtrarOrcamentoPorNatureza('339030')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Consumo">🏠“¦ Material Consumo</button>
-      <button class="orc-badge-filter" data-code="339033" data-cor="#38bdf8" onclick="filtrarOrcamentoPorNatureza('339033')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);cursor:pointer;transition:all 0.2s;" title="Passagens e Locomoção">âœˆï¸ Passagens</button>
-      <button class="orc-badge-filter" data-code="339039" data-cor="#818cf8" onclick="filtrarOrcamentoPorNatureza('339039')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(129,140,248,0.12);color:#818cf8;border:1px solid rgba(129,140,248,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PJ">🏠¢ Serv. Terceiros PJ</button>
-      <button class="orc-badge-filter" data-code="339048" data-cor="#4ade80" onclick="filtrarOrcamentoPorNatureza('339048')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílio Financeiro a Pessoa Física">🏠’³ Aux. Financeiro PF</button>
-      <button class="orc-badge-filter" data-code="335031" data-cor="#a78bfa" onclick="filtrarOrcamentoPorNatureza('335031')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílios / Premiação">🏠† Auxílios/Prêmio</button>
-      <button class="orc-badge-filter" data-code="339032" data-cor="#f472b6" onclick="filtrarOrcamentoPorNatureza('339032')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(244,114,182,0.12);color:#f472b6;border:1px solid rgba(244,114,182,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Distribuição Gratuita">🏠Ž Distrib. Gratuita</button>
-      <button class="orc-badge-filter" data-code="339036" data-cor="#fb923c" onclick="filtrarOrcamentoPorNatureza('339036')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,146,60,0.12);color:#fb923c;border:1px solid rgba(251,146,60,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PF">🏠‘¤ Serv. Terceiros PF</button>
+      <button class="orc-badge-filter" data-code="339014" data-cor="#60a5fa" onclick="filtrarOrcamentoPorNatureza('339014')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);cursor:pointer;transition:all 0.2s;" title="Diárias Pessoal Civil">💼 Diárias Pessoal</button>
+      <button class="orc-badge-filter" data-code="339030" data-cor="#fbbf24" onclick="filtrarOrcamentoPorNatureza('339030')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Consumo">📦 Material Consumo</button>
+      <button class="orc-badge-filter" data-code="339033" data-cor="#38bdf8" onclick="filtrarOrcamentoPorNatureza('339033')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);cursor:pointer;transition:all 0.2s;" title="Passagens e Locomoção">✈️ Passagens</button>
+      <button class="orc-badge-filter" data-code="339039" data-cor="#818cf8" onclick="filtrarOrcamentoPorNatureza('339039')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(129,140,248,0.12);color:#818cf8;border:1px solid rgba(129,140,248,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PJ">⚡ Serv. Terceiros PJ</button>
+      <button class="orc-badge-filter" data-code="339048" data-cor="#4ade80" onclick="filtrarOrcamentoPorNatureza('339048')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílio Financeiro a Pessoa Física">💳 Aux. Financeiro PF</button>
+      <button class="orc-badge-filter" data-code="335031" data-cor="#a78bfa" onclick="filtrarOrcamentoPorNatureza('335031')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílios / Premiação">🤝 Auxílios/Prêmio</button>
+      <button class="orc-badge-filter" data-code="339032" data-cor="#f472b6" onclick="filtrarOrcamentoPorNatureza('339032')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(244,114,182,0.12);color:#f472b6;border:1px solid rgba(244,114,182,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Distribuição Gratuita">🎁 Distrib. Gratuita</button>
+      <button class="orc-badge-filter" data-code="339036" data-cor="#fb923c" onclick="filtrarOrcamentoPorNatureza('339036')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,146,60,0.12);color:#fb923c;border:1px solid rgba(251,146,60,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PF">👤 Serv. Terceiros PF</button>
     </div>
 
     <!-- Tabela -->
@@ -3712,7 +3712,7 @@
               <input type="date" id="diaria-data-saida" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;">
             </div>
             <div>
-              <label style="font-size:11px; color:#94a3b8; text-transform:uppercase;">NÂº do Processo SEI</label>
+              <label style="font-size:11px; color:#94a3b8; text-transform:uppercase;">Nº do Processo SEI</label>
               <input type="text" id="diaria-proc" maxlength="20" oninput="let v=this.value.replace(/\D/g,''); v=v.replace(/(\d{4})(\d)/, '$1.$2'); v=v.replace(/(\d{4}\.\d{6})(\d)/, '$1/$2'); v=v.replace(/(\d{4}\.\d{6}\/\d{4})(\d)/, '$1-$2'); this.value=v;" style="width:100%; padding:10px; border-radius:6px; border:1px solid #334155; background:#0f172a; color:#f8fafc;" placeholder="0000.000000/0000-00">
             </div>
           </div>
@@ -3862,27 +3862,27 @@
 
         <div class="filters-bar" id="gdsm-filters-bar-regimes" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; margin-bottom:14px; background:rgba(15,23,42,0.6); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <div class="search-box" style="flex: 2 1 300px; min-width: 260px; position:relative;">
-            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🏠”</span>
+            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🔍</span>
             <input type="text" id="gdsm-filtro-busca-regimes" placeholder="Buscar por qualquer termo nesta aba..." oninput="aplicarFiltrosGDSM('regimes')" style="width:100%; padding:9px 12px 9px 36px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12.5px; outline:none;">
           </div>
           <div style="flex: 1 1 180px; min-width: 160px;">
             <select id="gdsm-filtro-mun-regimes" onchange="aplicarFiltrosGDSM('regimes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-status-regimes" onchange="aplicarFiltrosGDSM('regimes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-tipo-regimes" onchange="aplicarFiltrosGDSM('regimes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠·ï¸ Todos os Tipos</option>
+              <option value="">🏷️Todos os Tipos</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-sit-regimes" onchange="aplicarFiltrosGDSM('regimes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠“‘ Todas as Situações</option>
+              <option value="">📋 Todas as Situações</option>
             </select>
           </div>
         </div>
@@ -3934,27 +3934,27 @@
 
         <div class="filters-bar" id="gdsm-filters-bar-demais" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; margin-bottom:14px; background:rgba(15,23,42,0.6); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <div class="search-box" style="flex: 2 1 300px; min-width: 260px; position:relative;">
-            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🏠”</span>
+            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🔍</span>
             <input type="text" id="gdsm-filtro-busca-demais" placeholder="Buscar por qualquer termo nesta aba..." oninput="aplicarFiltrosGDSM('demais')" style="width:100%; padding:9px 12px 9px 36px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12.5px; outline:none;">
           </div>
           <div style="flex: 1 1 180px; min-width: 160px;">
             <select id="gdsm-filtro-mun-demais" onchange="aplicarFiltrosGDSM('demais')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-status-demais" onchange="aplicarFiltrosGDSM('demais')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-tipo-demais" onchange="aplicarFiltrosGDSM('demais')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠·ï¸ Todos os Tipos</option>
+              <option value="">🏷️Todos os Tipos</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-sit-demais" onchange="aplicarFiltrosGDSM('demais')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠“‘ Todas as Situações</option>
+              <option value="">📋 Todas as Situações</option>
             </select>
           </div>
         </div>
@@ -4009,27 +4009,27 @@
 
         <div class="filters-bar" id="gdsm-filters-bar-doacoes" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; margin-bottom:14px; background:rgba(15,23,42,0.6); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <div class="search-box" style="flex: 2 1 300px; min-width: 260px; position:relative;">
-            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🏠”</span>
+            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🔍</span>
             <input type="text" id="gdsm-filtro-busca-doacoes" placeholder="Buscar por qualquer termo nesta aba..." oninput="aplicarFiltrosGDSM('doacoes')" style="width:100%; padding:9px 12px 9px 36px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12.5px; outline:none;">
           </div>
           <div style="flex: 1 1 180px; min-width: 160px;">
             <select id="gdsm-filtro-mun-doacoes" onchange="aplicarFiltrosGDSM('doacoes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-status-doacoes" onchange="aplicarFiltrosGDSM('doacoes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-tipo-doacoes" onchange="aplicarFiltrosGDSM('doacoes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠·ï¸ Todos os Tipos</option>
+              <option value="">🏷️Todos os Tipos</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-sit-doacoes" onchange="aplicarFiltrosGDSM('doacoes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠“‘ Todas as Situações</option>
+              <option value="">📋 Todas as Situações</option>
             </select>
           </div>
         </div>
@@ -4084,27 +4084,27 @@
 
         <div class="filters-bar" id="gdsm-filters-bar-novoregime" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; margin-bottom:14px; background:rgba(15,23,42,0.6); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
           <div class="search-box" style="flex: 2 1 300px; min-width: 260px; position:relative;">
-            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🏠”</span>
+            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🔍</span>
             <input type="text" id="gdsm-filtro-busca-novoregime" placeholder="Buscar por qualquer termo nesta aba..." oninput="aplicarFiltrosGDSM('novoregime')" style="width:100%; padding:9px 12px 9px 36px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12.5px; outline:none;">
           </div>
           <div style="flex: 1 1 180px; min-width: 160px;">
             <select id="gdsm-filtro-mun-novoregime" onchange="aplicarFiltrosGDSM('novoregime')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠›ï¸ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-status-novoregime" onchange="aplicarFiltrosGDSM('novoregime')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠“Œ Todos os Status</option>
+              <option value="">📌 Todos os Status</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-tipo-novoregime" onchange="aplicarFiltrosGDSM('novoregime')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠·ï¸ Todos os Tipos</option>
+              <option value="">🏷️Todos os Tipos</option>
             </select>
           </div>
           <div style="flex: 1 1 160px; min-width: 150px;">
             <select id="gdsm-filtro-sit-novoregime" onchange="aplicarFiltrosGDSM('novoregime')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
-              <option value="">🏠“‘ Todas as Situações</option>
+              <option value="">📋 Todas as Situações</option>
             </select>
           </div>
         </div>
@@ -4305,7 +4305,7 @@ function mudarAbaDiarias(aba, el) {
         <div style="padding:14px 24px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
           <button type="button" onclick="fecharModalGMAC()" class="btn btn-ghost" style="padding:9px 18px;">Cancelar</button>
           <button type="submit" id="btn-salvar-gmac" class="btn btn-primary" style="padding:9px 24px; font-weight:700; border-radius:8px; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:inline-flex; align-items:center; gap:6px;">
-            🏠’¾ Salvar na Planilha
+            💾 Salvar na Planilha
           </button>
         </div>
       </form>
@@ -4323,7 +4323,7 @@ function mudarAbaDiarias(aba, el) {
       <!-- Modal Header -->
       <div style="padding:20px 24px; background:linear-gradient(135deg,#1e293b,#0f172a); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
         <div style="display:flex; align-items:center; gap:10px;">
-          <span style="font-size:24px;">🏠“œ</span>
+          <span style="font-size:24px;">📜</span>
           <div>
             <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">Manifestação Técnica & Relatório Sintético (TCE-RO)</h3>
             <p style="margin:2px 0 0 0; font-size:12px; color:#94a3b8;">Fundamentação Legal (CF Art. 205/211, LDB 9394/96, Fundeb 14113/20, Lei Est. 5735/24)</p>
@@ -4341,8 +4341,8 @@ function mudarAbaDiarias(aba, el) {
       <div style="padding:16px 24px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
         <button type="button" onclick="fecharModalManifestoTCE()" class="btn btn-ghost" style="padding:10px 20px;">Fechar</button>
         <div style="display:flex; gap:12px;">
-          <button type="button" onclick="copiarManifestoTCE()" style="background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.15); font-weight:700; padding:10px 20px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">🏠“‹ Copiar Texto</button>
-          <button type="button" onclick="imprimirManifestoTCE()" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; font-weight:700; padding:10px 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:inline-flex; align-items:center; gap:6px;">🏠–¨ï¸ Imprimir / Gerar PDF</button>
+          <button type="button" onclick="copiarManifestoTCE()" style="background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.15); font-weight:700; padding:10px 20px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">📋 Copiar Texto</button>
+          <button type="button" onclick="imprimirManifestoTCE()" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; font-weight:700; padding:10px 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:inline-flex; align-items:center; gap:6px;">🖨️Imprimir / Gerar PDF</button>
         </div>
       </div>
 

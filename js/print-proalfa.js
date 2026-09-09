@@ -36,7 +36,7 @@ function openPrintWindow(contentHtml, title, subtituloCustom, gerenciaCustom) {
   }
   const agora = new Date();
   const dataHora = agora.toLocaleDateString('pt-BR') + ', ' + agora.toLocaleTimeString('pt-BR');
-  const gerencia = gerenciaCustom || (title && (title.includes('Governo') || title.includes('Contatos') || title.includes('Municípios')) ? 'CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS' : 'PROALFA - PROGRAMA DE ALFABETIZAÇÁO DO ESTADO DE RONDÔNIA');
+  const gerencia = gerenciaCustom || (title && (title.includes('Governo') || title.includes('Contatos') || title.includes('Municípios')) ? 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS' : 'PROALFA - PROGRAMA DE ALFABETIZAÇÁO DO ESTADO DE RONDÔNIA');
 
   printWindow.document.write(`
     <!DOCTYPE html>
@@ -200,7 +200,7 @@ function openPrintWindow(contentHtml, title, subtituloCustom, gerenciaCustom) {
         <div class="titles">
           <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
           <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
-          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
+          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
         </div>
         <div class="header-sisedu">SISEDU</div>
       </div>
@@ -631,5 +631,5 @@ function imprimirContatos() {
     </table>
   `;
 
-  openPrintWindow(content, 'RELATÓRIO DE CONTATOS MUNICIPAIS (PREFEITOS E SECRETÁRIOS)', null, 'CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS');
+  openPrintWindow(content, 'RELATÓRIO DE CONTATOS MUNICIPAIS (PREFEITOS E SECRETÁRIOS)', null, 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS');
 }

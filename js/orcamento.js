@@ -712,7 +712,7 @@ window.imprimirOrcamento = function() {
       <div style="text-align:left; line-height:1.25;">
         <div style="font-size:10px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
         <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
-        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
+        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
         <span style="font-size:6pt; font-weight:700; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;">SISEDU</span>
@@ -732,7 +732,7 @@ window.imprimirOrcamento = function() {
 
   printFooter.innerHTML = `
     <div class="official-print-footer" style="border-top:1px solid #cbd5e1; padding-top:6px; margin-top:14px; display:flex; justify-content:space-between; align-items:center; font-family: Arial, sans-serif; font-size:8pt; width:100%; color:#475569;">
-      <div style="flex:1; text-align:left; font-weight:700; color:#0f172a;">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
+      <div style="flex:1; text-align:left; font-weight:700; color:#0f172a;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       <div style="flex:1; text-align:center; font-weight:600; color:#64748b;">Página 1 de 1</div>
       <div style="flex:1; text-align:right; font-weight:500; color:#64748b;">Documento gerado eletronicamente em ${dataHora}</div>
     </div>

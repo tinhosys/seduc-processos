@@ -4,11 +4,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</title>
+  <title>CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS | SEDUC - RO</title>
   <meta name="description" content="Acompanhamento de processos">
   
   <!-- OpenGraph Meta Tags para redes sociais e WhatsApp -->
-  <meta property="og:title" content="CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO">
+  <meta property="og:title" content="CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS | SEDUC - RO">
   <meta property="og:description" content="Acompanhamento de processos">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tinhosys.github.io/seduc-processos/">
@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.43">
+  <link rel="stylesheet" href="css/style.css?v=1.2.64">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -64,8 +64,6 @@
     /* CSS for infinite scroll tables and sticky headers */
     .pagination { display: none !important; }
     .page .table-wrap {
-      max-height: calc(100vh - 280px);
-      overflow-y: auto !important;
       overflow-x: auto !important;
     }
     .page .table-wrap table thead th {
@@ -76,8 +74,9 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
     .page .filters-bar.collapsed + .table-wrap {
-      max-height: calc(100vh - 180px);
+      /* sem max-height limitante */
     }
+
 
 
     /* ---- Controle Orçamentário Styles ---- */
@@ -117,6 +116,8 @@
     .main-content { transition: margin-left 0.3s ease; }
     .app-layout:has(.sidebar.collapsed) .main-content {
       margin-left: 70px !important;
+      max-width: calc(100vw - 70px) !important;
+      width: calc(100vw - 70px) !important;
     }
     .app-layout:has(.sidebar.collapsed) .topbar {
       left: 70px !important;
@@ -175,7 +176,7 @@
     text-align: center;
   ">
     <h2 style="color:#f0f4ff; font-size:15px; font-weight:800; margin-bottom:40px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">
-      CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS<br>
+      CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS<br>
       <span style="font-size: 22px;">SEDUC - RO</span>
     </h2>
     
@@ -219,7 +220,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.43</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.64</div>
   </div>
 </div>
   
@@ -240,7 +241,7 @@
           CAM
         </div>
         <div style="font-size: 11px; font-weight: 600; color: #cbd5e1; line-height: 1.4; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
-          COORDENADORIA DE ARTICULAÇÃO<br>COM OS MUNICÍPIOS<br>SEDUC - RO
+          COORDENADORIA DE ARTICULAÇÁO<br>COM OS MUNICÍPIOS<br>SEDUC - RO
         </div>
       </div>
 
@@ -289,6 +290,23 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
                 <span>Processos Repetidos</span>
               </a>
+              <!-- Abas da Planilha Regimes GDSM -->
+              <a href="#" class="nav-item nav-form-item" data-page="gdsm-regimes" onclick="navegar('gdsm-regimes')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="m9 14 2 2 4-4"/></svg>
+                <span>Regime</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="gdsm-demais" onclick="navegar('gdsm-demais')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                <span>Demais Processos</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="gdsm-doacoes" onclick="navegar('gdsm-doacoes')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+                <span>Doações [Temporário]</span>
+              </a>
+              <a href="#" class="nav-item nav-form-item" data-page="gdsm-novoregime" onclick="navegar('gdsm-novoregime')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span>Novo Regime</span>
+              </a>
             </div>
 
             <!-- 2. GMAC (Submenu) -->
@@ -304,7 +322,7 @@
               </a>
               <a href="#" class="nav-item nav-form-item" data-page="gmac-onibus" onclick="navegar('gmac-onibus'); if(typeof carregarGMAC==='function') carregarGMAC('onibus');">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="2"></rect><path d="M4 11h16"></path><path d="M8 15h.01"></path><path d="M16 15h.01"></path><path d="M6 18v2"></path><path d="M18 18v2"></path></svg>
-                <span>Doação do Ônibus Escolar</span>
+                <span>Doação do Á”nibus Escolar</span>
               </a>
               <a href="#" class="nav-item nav-form-item" data-page="gmac-veiculos" onclick="navegar('gmac-veiculos'); if(typeof carregarGMAC==='function') carregarGMAC('veiculos');">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></svg>
@@ -343,15 +361,29 @@
         <!-- Menu Orçamento (Container Principal) -->
         <div class="nav-group action-report">
           <a href="#" class="nav-item" onclick="toggleSubmenu('sub-orcamento', this)">
-            <span class="nav-icon" style="color: #22c55e;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            <span class="nav-icon" style="color: #f59e0b;" title="Orçamento">
+              <!-- Baú de Tesouro -->
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 10a4 4 0 0 1 4-4h12a4 4 0 0 1 4 4v1H2v-1z"></path>
+                <rect x="2" y="11" width="20" height="10" rx="1"></rect>
+                <circle cx="12" cy="15" r="1.5" fill="currentColor"></circle>
+                <path d="M12 16.5v2"></path>
+                <line x1="6" y1="6" x2="6" y2="21"></line>
+                <line x1="18" y1="6" x2="18" y2="21"></line>
+              </svg>
             </span>
             <span style="flex:1; font-weight: 700; letter-spacing: 0.5px;">Orçamento</span>
             <svg class="submenu-indicator" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </a>
           <div class="nav-submenu sub-orcamento-container" id="sub-orcamento" style="display: none;">
             <a href="#" class="nav-item nav-form-item item-orcamento" data-page="orcamento" onclick="navegar('orcamento')">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              <!-- Moedas de Ouro (Coins) -->
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="6"></circle>
+                <path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path>
+                <circle cx="8" cy="8" r="2"></circle>
+                <circle cx="15" cy="15" r="2"></circle>
+              </svg>
               <span>Orçamento</span>
             </a>
             <a href="#" class="nav-item nav-form-item item-diarias" data-page="diarias" onclick="navegar('diarias')">
@@ -412,7 +444,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.43</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.64</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -451,7 +483,7 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🎒</span>
+              <span style="font-size:26px;">📦</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
                   <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Equipamento - AEE</h2>
@@ -463,7 +495,7 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🖨️ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
@@ -482,7 +514,7 @@
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-aee" onchange="filtrarParametrosGMAC('aee')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏛️ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
@@ -491,7 +523,7 @@
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('aee')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            ✕ Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -502,15 +534,15 @@
         </div>
       </section>
 
-      <!-- GMAC: DOAÇÃO DO ÔNIBUS ESCOLAR -->
+      <!-- GMAC: DOAÇÁO DO Á”NIBUS ESCOLAR -->
       <section class="page" id="page-gmac-onibus">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🚌</span>
+              <span style="font-size:26px;">🎁</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
-                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação do Ônibus Escolar</h2>
+                  <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação do Á”nibus Escolar</h2>
                   <span id="badge-total-onibus" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); padding:3px 10px; border-radius:12px; font-size:12px; font-weight:700;">Carregando...</span>
                 </div>
                 <p style="margin:4px 0 0 0; font-size:13px; color:#94a3b8;">Controle de doação e regularização patrimonial de frotas escolares</p>
@@ -519,7 +551,7 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🖨️ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
@@ -538,7 +570,7 @@
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-onibus" onchange="filtrarParametrosGMAC('onibus')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏛️ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
@@ -547,7 +579,7 @@
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('onibus')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            ✕ Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -558,12 +590,12 @@
         </div>
       </section>
 
-      <!-- GMAC: DOAÇÃO DEFINITIVA DE VEÍCULOS -->
+      <!-- GMAC: DOAÇÁO DEFINITIVA DE VEÍCULOS -->
       <section class="page" id="page-gmac-veiculos">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🚗</span>
+              <span style="font-size:26px;">🔄</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
                   <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Doação Definitiva de Veículos</h2>
@@ -575,7 +607,7 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🖨️ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
@@ -594,7 +626,7 @@
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-veiculos" onchange="filtrarParametrosGMAC('veiculos')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏛️ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
@@ -603,7 +635,7 @@
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            ✕ Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -614,7 +646,7 @@
         </div>
       </section>
 
-      <!-- GMAC: MUNICIPALIZAÇÃO E REORDENAMENTO -->
+      <!-- GMAC: MUNICIPALIZAÇÁO E REORDENAMENTO -->
       <section class="page" id="page-gmac-reordenamento">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
@@ -631,7 +663,7 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🖨️ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
@@ -650,7 +682,7 @@
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-reordenamento" onchange="filtrarParametrosGMAC('reordenamento')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏛️ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
@@ -659,7 +691,7 @@
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            ✕ Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -670,12 +702,12 @@
         </div>
       </section>
 
-      <!-- GMAC: TERMO DE COOPERAÇÃO -->
+      <!-- GMAC: TERMO DE COOPERAÇÁO -->
       <section class="page" id="page-gmac-cooperacao">
         <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; flex-wrap:wrap; gap:16px;">
           <div>
             <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🤝</span>
+              <span style="font-size:26px;">📋</span>
               <div>
                 <div style="display:flex; align-items:center; gap:10px;">
                   <h2 style="font-size:22px; font-weight:800; color:#f8fafc; margin:0;">Termo de Cooperação</h2>
@@ -687,7 +719,7 @@
           </div>
           <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <button type="button" onclick="imprimirRelatorioGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(59,130,246,0.3); color:#60a5fa; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Imprimir Relatório com os filtros aplicados">
-              🖨️ Relatório
+              🖨️Relatório
             </button>
             <button type="button" onclick="carregarGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
@@ -706,7 +738,7 @@
           </div>
           <div style="flex:1; min-width:180px;">
             <select id="filtro-mun-cooperacao" onchange="filtrarParametrosGMAC('cooperacao')" style="width:100%; padding:10px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:#f8fafc; font-size:13px; outline:none; cursor:pointer;">
-              <option value="">🏛️ Todos os Municípios</option>
+              <option value="">🏛️Todos os Municípios</option>
             </select>
           </div>
           <div style="flex:1; min-width:170px;">
@@ -715,7 +747,7 @@
             </select>
           </div>
           <button type="button" onclick="limparFiltrosGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 14px; border:1px solid rgba(255,255,255,0.1); color:#94a3b8; border-radius:8px; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Limpar todos os filtros">
-            ✕ Limpar
+            ✖ Limpar
           </button>
         </div>
 
@@ -737,7 +769,7 @@
             <div class="stat-value" id="stat-total">0</div>
           </div>
           <div class="stat-card yellow">
-            <div class="stat-icon">⏳</div>
+            <div class="stat-icon">â³</div>
             <div class="stat-label">Pendentes/Aguardando</div>
             <div class="stat-value" id="stat-pendente">0</div>
           </div>
@@ -780,10 +812,10 @@
         <!-- Alertas e Acessos -->
         <div class="alerts-acessos-grid">
           <div class="chart-card alert-card-premium" style="display: flex; flex-direction: column;">
-            <h4>⏰ Alertas de Prazos (Datas)</h4>
+            <h4>â° Alertas de Prazos (Datas)</h4>
             <div class="alerts-content" id="data-alertas-content" style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 15px; padding: 10px 0;">
               <div class="alert-item warning">
-                <span class="alert-icon">⚠️</span>
+                <span class="alert-icon">⚠️</span>
                 <div class="alert-text">
                   <div class="alert-title">Processos sem Data</div>
                   <div class="alert-value" id="alert-sem-data">0</div>
@@ -791,7 +823,7 @@
               </div>
               <div class="alert-item danger" style="flex-direction: column; align-items: flex-start; gap: 10px;">
                 <div style="display: flex; align-items: center; gap: 16px; width: 100%;">
-                  <span class="alert-icon">⏳</span>
+                  <span class="alert-icon">â³</span>
                   <div class="alert-text">
                     <div class="alert-title">Data Mais Antiga (Em Aberto)</div>
                     <div class="alert-value" id="alert-data-antiga">--/--/----</div>
@@ -817,19 +849,19 @@
         <!-- Cards de Distribuição Principal (Status, Categoria, Tipo) -->
         <div class="main-charts-grid">
           <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
-            <h4>📈 Distribuição por Status</h4>
+            <h4>📊 Distribuição por Status</h4>
             <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
               <canvas id="chart-status"></canvas>
             </div>
           </div>
           <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
-            <h4>🏷️ Distribuição por Categoria</h4>
+            <h4>🏷️Distribuição por Categoria</h4>
             <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
               <canvas id="chart-categoria"></canvas>
             </div>
           </div>
           <div class="chart-card" style="display: flex; flex-direction: column; height: 420px;">
-            <h4>🛠️ Distribuição por Tipo</h4>
+            <h4>📁Distribuição por Tipo</h4>
             <div style="flex: 1; position: relative; width: 100%; height: 100%; min-height: 0;">
               <canvas id="chart-tipo"></canvas>
             </div>
@@ -839,7 +871,7 @@
         <div class="prefixo-loc-grid">
           <div class="card" style="display: flex; flex-direction: column; height: 500px;">
             <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
-              🏙️ MUNICÍPIOs por Valor</h4>
+              ℹ️MUNICÍPIOs por Valor</h4>
             <div style="flex: 1; overflow-y: auto; height: 100%; min-height: 0; padding-right: 4px;">
               <div id="chart-municipio-wrapper" style="position: relative; height: 100%;">
                 <canvas id="chart-municipio"></canvas>
@@ -849,7 +881,7 @@
 
           <div class="card" style="display: flex; flex-direction: column; height: 500px;">
             <h4 style="font-size:13px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;margin-bottom:16px">
-              📍 Por Localização</h4>
+              📝 Por Localização</h4>
             <div id="loc-list" style="flex: 1; overflow-y: auto;"></div>
           </div>
         </div>
@@ -934,60 +966,21 @@
       <!-- ============= PAGE: PROCESSOS ============= -->
       <section class="page" id="page-processos">
 
-        <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap: wrap; gap:16px;">
-          <!-- Left Badges -->
-          <div style="display:flex; flex-direction:column; align-items:flex-start; gap:8px; min-width:250px;">
-            <span id="valor-filtrado" style="display:flex; justify-content:space-between; align-items:center; width:250px; padding:10px 16px; border-radius:8px; font-size:17px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); font-family:monospace; letter-spacing:0.5px;">
+        <div class="section-header" style="display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:14px;">
+          <!-- Left Badges (Layout Horizontal Compacto) -->
+          <div style="display:flex; flex-direction:row; align-items:center; flex-wrap:wrap; gap:10px;">
+            <span id="valor-filtrado" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); font-family:monospace; letter-spacing:0.5px; height:34px; box-sizing:border-box;">
               <span>R$</span> <span>Carregando...</span>
             </span>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span id="qtd-registros-filtrados" style="display:flex; align-items:center; justify-content:space-between; width:250px; padding:10px 16px; border-radius:8px; font-size:17px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace;">
-                0 Processos
-              </span>
-              <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:40px; height:40px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Right Action Buttons -->
-          <div style="display:flex; flex-direction:column; align-items:flex-end; gap:8px; flex:1;">
-            
-            <!-- Row 1: Reports -->
-            <div class="header-buttons" style="display:flex; align-items:stretch; justify-content:flex-end; gap:10px; flex-wrap:wrap; width:100%;">
-              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">ANÁLISE</span>
-              </button>
-              <button class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Relatório Detalhado">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> <span class="btn-text">DETALHADO</span>
-              </button>
-              <button class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Lista Atual">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÃO</span>
-              </button>
-              <button class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Selecionados">
-                <svg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5'><polyline points='6 9 6 2 18 2 18 9'/><path d='M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2'/><rect x='6' y='14' width='12' height='8'/></svg> <span class="btn-text">PADRÃO SEL.</span>
-              </button>
-            </div>
-
-            <!-- Row 2: Controls -->
-            <div style="display:flex; align-items:stretch; justify-content:flex-end; gap:10px; flex-wrap:wrap; width:100%;">
-              <button class="btn action-report" onclick="exportarExcel()" style="flex:1; max-width:180px; padding:10px 12px; height:40px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> <span class="btn-text">EXCEL</span>
-              </button>
-              
-              <button class="btn action-report" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="flex:1; max-width:180px; background:#10b981; border:none; color:white; padding:10px 12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar Planilha">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                PLANILHA
-              </button>
-              <button id="btn-limpar-filtros" class="btn action-report" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" style="flex:1; max-width:180px; display:flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 12px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                LIMPAR PARÂMETROS
-              </button>
-            </div>
+            <span id="qtd-registros-filtrados" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:34px; box-sizing:border-box;">
+              0 Processos
+            </span>
+            <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:34px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
+            </button>
           </div>
         </div>
 
-        <!-- Filtros -->
         <div class="filters-bar">
           <!-- LINHA 1 -->
           <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
@@ -996,7 +989,7 @@
               <input type="text" id="filtro-busca" placeholder="Buscar por processo, interessado, MUNICÍPIO...">
             </div>
             <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
-              <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÃO:</span>
+              <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÁO:</span>
               <div class="toggle-item">
                 <label class="toggle-switch">
                   <input type="checkbox" id="filtro-cam">
@@ -1040,12 +1033,12 @@
               <option value="">PREFIXO</option>
             </select>
             <select id="filtro-localizacao" multiple>
-              <option value="">LOCALIZAÇÃO</option>
+              <option value="">LOCALIZAÇÁO</option>
             </select>
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
-              <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÃO -->
+              <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÁO -->
             <div class="filtro-digito-container action-adm" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; gap:6px; flex:0 0 auto; width:auto;">
               <div style="position:relative; width:220px; flex-shrink:0;">
                 <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 10px; height:38px; box-sizing:border-box;">
@@ -1115,19 +1108,52 @@
           
         </div>
 
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <div class="action-toolbar-scroll" id="processos-actions-toolbar">
+          <button class="btn action-report action-adm" id="btn-relatorio-padrao-adm" onclick="if(typeof window.imprimirPadraoAdm==='function'){window.imprimirPadraoAdm();}else if(typeof imprimirPadraoAdm==='function'){imprimirPadraoAdm();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:#0f172a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Relatório Padrão sem Origem (Exclusivo Admin)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÁO ADM</span>
+          </button>
+          <button class="btn action-report action-adm" id="btn-relatorio-padrao-adm-2" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:#0f172a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÁ“RIO ADM 2</span>
+          </button>
+          <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">ANÁLISE</span>
+          </button>
+          <button class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Relatório Detalhado">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> <span class="btn-text">DETALHADO</span>
+          </button>
+          <button class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Lista Atual">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÁO</span>
+          </button>
+          <button class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Selecionados">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">PADRÁO SEL.</span>
+          </button>
+          <button class="btn action-report" onclick="exportarExcel()" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> <span class="btn-text">EXCEL</span>
+          </button>
+          <button class="btn action-report" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar Planilha">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            PLANILHA
+          </button>
+          <button id="btn-limpar-filtros" class="btn" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" title="Limpar todos os parâmetros e filtros">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            LIMPAR PARÂMETROS
+          </button>
+        </div>
+
         <!-- Tabela -->
-        <div class="table-wrap" style="overflow-x:auto; -webkit-overflow-scrolling:touch; width:100%;">
-          <table style="table-layout: fixed; width: 100%; min-width: 1200px;">
+        <div class="table-wrap" style="overflow-x:scroll !important; overflow-y:auto !important; -webkit-overflow-scrolling:touch; width:100%; box-sizing:border-box;">
+          <table style="table-layout: fixed; width: 100%; min-width: 1400px;">
             <thead>
               <tr>
                 <th style="width: 40px; text-align: center;"><input type="checkbox" id="check-all-processos" onchange="toggleAllProcessos(this)" style="cursor:pointer; transform: scale(1.2);"></th>
                 <th data-sort="prefixo" style="width: 140px; min-width: 140px;">Prefixo</th>
                 <th data-sort="MUNICÍPIO" style="width: 120px;">MUNICÍPIO</th>
-                <th data-sort="numero" style="width: 165px; min-width: 165px;">Nº Processo</th>
+                <th data-sort="numero" style="width: 165px; min-width: 165px;">NÂº Processo</th>
                 <th data-sort="interessado" style="width: 25%;">Interessado</th>
                 <th data-sort="objeto" style="width: 25%;">Objeto</th>
                 <th data-sort="status" class="col-status" style="width: 135px; text-align: center;">Status</th>
-                <th data-sort="localizacao" class="col-localizacao" style="width: 115px; text-align: center;">LOCALIZAÇÃO</th>
+                <th data-sort="localizacao" class="col-localizacao" style="width: 115px; text-align: center;">LOCALIZAÇÁO</th>
                 <th data-sort="valorOf" style="text-align:right; width: 130px;">Valor Oficial</th>
                 <th data-sort="data" style="width: 80px; text-align: center;">Data</th>
                 <th style="width: 60px; text-align:center;">Ações</th>
@@ -1197,14 +1223,14 @@
         <div class="card" id="card-form-processo">
           <form id="form-processo">
             
-            <!-- GUIAS DE NAVEGAÇÃO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
+            <!-- GUIAS DE NAVEGAÇÁO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; width:100%;">
               <div style="display:flex; gap:12px; align-items:center;">
-                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📦 OBJETO</button>
+                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📋 OBJETO</button>
                 <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">🎯 OBJETIVO</button>
               </div>
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
-                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">📊 Gerar Relatório</button>
+                <button type="button" onclick="gerarRelatorioMonitoramento()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">📄 Gerar Relatório</button>
                 <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">Cancelar</button>
                 <button type="submit" class="btn btn-success" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">💾 Salvar Processo</button>
               </div>
@@ -1220,7 +1246,7 @@
             <div class="form-group full card-autorizacoes-header" style="position: relative; margin-bottom: 20px; padding: 14px 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%;">
                 <label style="margin: 0; text-align: left; color: var(--text-primary); font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;">AUTORIZAÇÕES</label>
-                <!-- MARCAR PROCESSO NO CANTO SUPERIOR DIREITO NA LINHA DA AUTORIZAÇÃO -->
+                <!-- MARCAR PROCESSO NO CANTO SUPERIOR DIREITO NA LINHA DA AUTORIZAÇÁO -->
                 <div id="container-form-marca" style="display: flex; align-items: center; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.28); border-radius: 6px; padding: 5px 12px; transition: all 0.2s;">
                   <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #fca5a5; user-select: none; margin: 0; font-size: 12px;">
                     <input type="checkbox" id="form-marca" style="width: 16px; height: 16px; cursor: pointer; accent-color: #ef4444;">
@@ -1291,7 +1317,7 @@
               <!-- LINHA 2 HARMONIOSA: PROCESSO (REDUZIDO COM COPIAR JUNTO), AGRUPAMENTO (EXPANDIDO), ÚLTIMA ATUALIZAÇÃO (EXPANDIDO) -->
               <div class="form-row-meio full" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: flex-start !important; gap: 16px !important; width: 100% !important; grid-column: 1 / -1 !important; margin-bottom: 0 !important; box-sizing: border-box !important;">
                 
-                <!-- 1. Nº DO PROCESSO: REDUZIDO, COM BOTÃO COPIAR TRAZIDO PARA JUNTO DO INPUT -->
+                <!-- 1. NÂº DO PROCESSO: REDUZIDO, COM BOTÁO COPIAR TRAZIDO PARA JUNTO DO INPUT -->
                 <div class="form-group" id="group-form-processo-num" style="flex: 0 0 auto; width: 330px; min-width: 310px; max-width: 350px;">
                   <label>Nº do Processo</label>
                   <div id="container-numeros" style="display:flex; flex-direction:column; gap:8px;">
@@ -1453,7 +1479,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📐 TIPO SALA</label>
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📍TIPO SALA</label>
                   <input type="text" id="form-tipoSala" class="form-control" placeholder="Ex: Convencional / Climatizada" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
@@ -1468,7 +1494,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏀 QUADRA</label>
+<label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏀 QUADRA</label>
                   <input type="text" id="form-quadra" class="form-control" placeholder="Ex: Coberta / Poliesportiva" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
@@ -1478,7 +1504,7 @@
                 </div>
 
                 <div class="form-group">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🍽️ Refeitório</label>
+<label style="color:#f0f4ff; font-weight:600; font-size:13px;">🍽️ Refeitório</label>
                   <input type="text" id="form-Refeitório" class="form-control" placeholder="Ex: Completo / Cozinha" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
@@ -1497,15 +1523,15 @@
                 </div>
 
                 <div class="form-group" style="margin-bottom:14px;">
-                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📐 Metragem m² (Obras / Ampliação / Reforma)</label>
-                  <input type="text" id="form-metragemM2" class="form-control" placeholder="Ex: 450 m²" style="border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
+                  <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📍Metragem mÂ² (Obras / Ampliação / Reforma)</label>
+                  <input type="text" id="form-metragemM2" class="form-control" placeholder="Ex: 450 mÂ²" style="border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:10px 12px;">
                 </div>
 
                 <div class="form-group">
                   <label style="color:#f0f4ff; font-weight:700; font-size:13px; display:flex; align-items:center; gap:6px; margin-bottom:6px;">
-                    <span>📦</span> <span>Detalhamento dos Itens & Quantidades Pedidas (Móveis, Equipamentos, Obras...)</span>
+                    <span>📝</span> <span>Detalhamento dos Itens & Quantidades Pedidas (Móveis, Equipamentos, Obras...)</span>
                   </label>
-                  <textarea id="form-detalhamentoItens" class="form-control" rows="3" placeholder="Ex: 10 mesas para sala de aula, 2 caixas de som, 4 arm²rios, 5 poltronas para sala dos professores..." style="width:100%; border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:500; padding:10px 12px; border-radius:8px; line-height:1.4; box-sizing:border-box;"></textarea>
+                  <textarea id="form-detalhamentoItens" class="form-control" rows="3" placeholder="Ex: 10 mesas para sala de aula, 2 caixas de som, 4 armÂ²rios, 5 poltronas para sala dos professores..." style="width:100%; border-color:rgba(59,130,246,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:500; padding:10px 12px; border-radius:8px; line-height:1.4; box-sizing:border-box;"></textarea>
                 </div>
               </div>
 
@@ -1559,7 +1585,7 @@
             <div class="badge badge-AUTORIZADO">Anotação</div>
           </div>
           <p style="color:var(--text-muted);font-size:12px;margin-top:12px">
-            ⚠️ Processos com número já existente serão ignorados (sem sobrescrever).
+            ⚠️ Processos com número já existente serão ignorados (sem sobrescrever).
           </p>
         </div>
 
@@ -1573,11 +1599,11 @@
         <div id="import-status" style="margin-top:20px"></div>
 
         <div class="card" style="margin-top:20px">
-          <h4 style="margin-bottom:12px;font-size:14px">⚠️ Atenção: Resetar Banco de Dados</h4>
+          <h4 style="margin-bottom:12px;font-size:14px">⚠️ Atenção: Resetar Banco de Dados</h4>
           <p style="color:var(--text-muted);font-size:13px;margin-bottom:12px">
             Isso apagará <strong>todos</strong> os processos cadastrados e não pode ser desfeito.
           </p>
-          <button class="btn btn-danger btn-sm" onclick="resetarBanco()">🗑️ Apagar todos os dados</button>
+            <button class="btn btn-danger btn-sm" onclick="resetarBanco()">🗑️ Apagar todos os dados</button>
         </div>
 
       </section>
@@ -1588,11 +1614,11 @@
         <div class="section-header">
           <div>
             <h2>Gerenciamento de Acessos</h2>
-            <p>Cadastre, edite e controle o acesso de usuários à Planilha de Controle GDSM</p>
+            <p>Cadastre, edite e controle o acesso de usuários Á  Planilha de Controle GDSM</p>
           </div>
         </div>
 
-        <!-- FORM DE CADASTRO/EDIÇÃO DIRETO NA TELA -->
+        <!-- FORM DE CADASTRO/EDIÇÁO DIRETO NA TELA -->
         <div class="card" id="card-form-acesso" style="margin-bottom: 24px; padding: 20px;">
           <h3 id="cadastro-acesso-title" style="font-size: 14px; margin-bottom: 16px; color: var(--text-primary); display: flex; align-items: center; justify-content: space-between; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px;">
             <span style="display: flex; align-items: center; gap: 8px;">👤 Registro de Acesso</span>
@@ -1616,10 +1642,10 @@
             <div class="form-group" style="margin: 0;">
               <label for="acesso-nivel" style="display:block; font-size:12px; font-weight:600; margin-bottom:6px; color:var(--text-secondary);">Nível de Acesso</label>
               <select id="acesso-nivel" required style="width:100%; height:40px; box-sizing:border-box; padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:6px; font-size:14px; background:#1e293b; color:white; outline:none; transition: border-color 0.2s;" disabled>
-                <option value="leitor">👁️ LEITOR</option>
-                <option value="editor">✏️ EDITOR</option>
-                  <option value="gerente">💼 GERENTE</option>
-                <option value="adm">🛡️ ADMIN</option>
+              <option value="leitor">👁️ LEITOR</option>
+              <option value="editor">✏️ EDITOR</option>
+                  <option value="gerente">📊 GERENTE</option>
+              <option value="adm">👑 ADMIN</option>
               </select>
             </div>
 
@@ -1679,7 +1705,7 @@
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
           <div>
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-              <span style="font-size:26px;">🖥️</span>
+            <span style="font-size:26px;">📊</span>
               <h2 style="margin:0; font-size:22px; font-weight:800; color:#f8fafc;">Informações do Sistema & Diagnóstico Operacional</h2>
             </div>
             <p style="margin:0; font-size:13px; color:#94a3b8; line-height:1.5;">
@@ -1691,7 +1717,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.43
+              GBZ - v1.2.64
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -1699,14 +1725,14 @@
           </div>
         </div>
 
-        <!-- 1. USUÁRIOS LOGADOS & SESSÃO ATIVA -->
+        <!-- 1. USUÁRIOS LOGADOS & SESSÁO ATIVA -->
         <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(59,130,246,0.3); background:linear-gradient(135deg, rgba(15,23,42,0.8), rgba(30,41,59,0.5));">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
             <h3 style="margin:0; font-size:15px; font-weight:700; color:#60a5fa; display:flex; align-items:center; gap:8px;">
               <span>👤</span> Usuários Conectados no Momento & Sessões Ativas
             </h3>
             <span id="sysinfo-tempo-sessao" style="font-family:monospace; font-size:12.5px; color:#10b981; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.35); padding:5px 12px; border-radius:6px; font-weight:700; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.2);">
-              ⏱️ Tempo Ativo: 00:00:00
+              â±ï¸ Tempo Ativo: 00:00:00
             </span>
           </div>
 
@@ -1782,11 +1808,11 @@
                 <span style="font-size:18px;">🏛️</span>
               </div>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
-                <div>🎒 Equipamento AEE: <strong id="metric-gmac-aee" style="color:#34d399; font-family:monospace;">0</strong></div>
-                <div>🚌 Doação Ônibus: <strong id="metric-gmac-onibus" style="color:#f59e0b; font-family:monospace;">0</strong></div>
-                <div>🚗 Doação Veículos: <strong id="metric-gmac-veiculos" style="color:#10b981; font-family:monospace;">0</strong></div>
-                <div>🏛️ Reordenamento: <strong id="metric-gmac-reord" style="color:#8b5cf6; font-family:monospace;">0</strong></div>
-                <div style="grid-column: span 2;">🤝 Termo de Cooperação: <strong id="metric-gmac-coop" style="color:#ec4899; font-family:monospace;">0</strong></div>
+                <div>📦 Equipamento AEE: <strong id="metric-gmac-aee" style="color:#34d399; font-family:monospace;">0</strong></div>
+                <div>🎁 Doação Á”nibus: <strong id="metric-gmac-onibus" style="color:#f59e0b; font-family:monospace;">0</strong></div>
+                <div>🔄 Doação Veículos: <strong id="metric-gmac-veiculos" style="color:#10b981; font-family:monospace;">0</strong></div>
+                <div>🏛️Reordenamento: <strong id="metric-gmac-reord" style="color:#8b5cf6; font-family:monospace;">0</strong></div>
+                <div style="grid-column: span 2;">📋 Termo de Cooperação: <strong id="metric-gmac-coop" style="color:#ec4899; font-family:monospace;">0</strong></div>
               </div>
             </div>
 
@@ -1814,13 +1840,12 @@
             <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(192,132,252,0.25); border-left:4px solid #c084fc; border-radius:8px; padding:16px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <span style="font-size:13px; font-weight:700; color:#c084fc;">PROALFA / CENSO</span>
-                <span style="font-size:18px;">🎓</span>
               </div>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
-                <div>👨‍🏫 Prof. Municipais: <strong id="metric-proalfa-prof-mun" style="color:#c084fc; font-family:monospace;">0</strong></div>
-                <div>👩‍🏫 Prof. Estaduais: <strong id="metric-proalfa-prof-est" style="color:#a78bfa; font-family:monospace;">0</strong></div>
-                <div>🎒 Alunos Municipais: <strong id="metric-proalfa-alun-mun" style="color:#38bdf8; font-family:monospace;">0</strong></div>
-                <div>📚 Alunos Estaduais: <strong id="metric-proalfa-alun-est" style="color:#818cf8; font-family:monospace;">0</strong></div>
+                <div>👨 Prof. Municipais: <strong id="metric-proalfa-prof-mun" style="color:#c084fc; font-family:monospace;">0</strong></div>
+                <div>👩 Prof. Estaduais: <strong id="metric-proalfa-prof-est" style="color:#a78bfa; font-family:monospace;">0</strong></div>
+                <div>📚 Alunos Municipais: <strong id="metric-proalfa-alun-mun" style="color:#38bdf8; font-family:monospace;">0</strong></div>
+                <div>🎓 Alunos Estaduais: <strong id="metric-proalfa-alun-est" style="color:#818cf8; font-family:monospace;">0</strong></div>
               </div>
             </div>
 
@@ -1848,12 +1873,12 @@
             <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(251,191,36,0.25); border-left:4px solid #fbbf24; border-radius:8px; padding:16px;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <span style="font-size:13px; font-weight:700; color:#fbbf24;">Controle de Diárias</span>
-                <span style="font-size:18px;">📅</span>
+                <span style="font-size:18px;">⏳</span>
               </div>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; font-size:12px;">
                 <div>🟢 Pagos: <strong id="metric-diarias-pagos" style="color:#34d399; font-family:monospace;">0</strong></div>
                 <div>🟡 Em Análise: <strong id="metric-diarias-analise" style="color:#fbbf24; font-family:monospace;">0</strong></div>
-                <div>🔵 Encerrados: <strong id="metric-diarias-encerrados" style="color:#60a5fa; font-family:monospace;">0</strong></div>
+                <div>🔍µ Encerrados: <strong id="metric-diarias-encerrados" style="color:#60a5fa; font-family:monospace;">0</strong></div>
                 <div>🟠 Aguardando: <strong id="metric-diarias-aguardando" style="color:#f97316; font-family:monospace;">0</strong></div>
               </div>
             </div>
@@ -1864,10 +1889,10 @@
         <!-- 3. MAPA DE CONEXÕES DAS PLANILHAS DO GOOGLE SHEETS -->
         <div class="card" style="margin-bottom:24px; padding:20px; border-color:rgba(59,130,246,0.3);">
           <h3 style="margin:0 0 16px 0; font-size:15px; font-weight:700; color:#60a5fa; display:flex; align-items:center; gap:8px;">
-            <span>🗺️</span> Mapa de Conexões das Planilhas Google Sheets em Uso
+            <span>🔗</span> Mapa de Conexões das Planilhas Google Sheets em Uso
           </h3>
           <p style="font-size:13px; color:#94a3b8; margin-bottom:16px;">
-            Acesso direto às bases de dados que alimentam os módulos da aplicação em tempo real:
+            Acesso direto Á s bases de dados que alimentam os módulos da aplicação em tempo real:
           </p>
 
           <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
@@ -1915,7 +1940,7 @@
             <a href="https://docs.google.com/spreadsheets/d/1WunsuLAAIUAAo1q65qmSVMIH0qLJu_TjDsb_u9LO304/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
               <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">✈️ Planilha de Diárias</span>
+                  <span style="font-size:13px; font-weight:700; color:#f8fafc;">✈️ Planilha de Diárias</span>
                   <span style="font-size:11px; color:#fbbf24;">Abrir ↗</span>
                 </div>
                 <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Controle de Concessão de Diárias Estadual e Federal.</div>
@@ -1925,14 +1950,14 @@
           </div>
         </div>
 
-        <!-- 4. CORRETOR ORTOGRÁFICO / PADRONIZADOR (TERMINAL CMD VERDE FÓSFORO) -->
+        <!-- 4. CORRETOR ORTOGRÁFICO / PADRONIZADOR (TERMINAL CMD VERDE FÁ“SFORO) -->
         <div class="card" id="card-terminal-padronizador" style="margin-bottom:24px; padding:20px; border-color:rgba(0,255,102,0.4); background:#050907; box-shadow:0 10px 30px rgba(0,0,0,0.6);">
           
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <span style="color:#00ff66; font-size:18px;">📟</span>
+              <span style="color:#00ff66; font-size:18px;">💻</span>
               <h3 style="margin:0; font-size:16px; font-weight:800; color:#00ff66; font-family:'Consolas', monospace; letter-spacing:0.5px; text-shadow:0 0 8px rgba(0,255,102,0.4);">
-                CORRETOR ORTOGRÁFICO & PADRONIZADOR
+                CORRETOR ORTOGRÁFICO & PADRONIZADOR
               </h3>
             </div>
             <div id="sysinfo-backup-badge" style="font-family:'Consolas', monospace; font-size:11px; color:#34d399; background:rgba(0,255,102,0.1); border:1px solid rgba(0,255,102,0.25); padding:4px 10px; border-radius:4px;">
@@ -1953,7 +1978,7 @@
               ✓ Autorizar e Corrigir Linhas Selecionadas (<span id="cmd-qtd-selecionados">0</span>)
             </button>
             <button type="button" class="btn" id="btn-cmd-cancelar" onclick="cancelarPadronizacaoCMD()" style="background:rgba(239,68,68,0.2); color:#f87171; border:1px solid rgba(239,68,68,0.4); padding:10px 16px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:none; align-items:center; gap:6px;">
-              ✕ Cancelar
+              ✖ Cancelar
             </button>
             <button type="button" class="btn" id="btn-cmd-estornar" onclick="estornarUltimaPadronizacao()" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.4); padding:10px 16px; border-radius:6px; font-family:'Consolas', monospace; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px;">
               ↺ Estornar Última Atualização
@@ -1965,14 +1990,14 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.43] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.64] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
             <!-- Barra de Progresso Dinâmica Verde Fósforo -->
             <div id="cmd-progress-container" style="display:none; margin-bottom:16px; background:rgba(0,0,0,0.5); padding:12px; border-radius:6px; border:1px solid rgba(0,255,102,0.2);">
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#00ff66; margin-bottom:6px;">
-                <span id="cmd-progress-msg">⚙️ Processando correções nas células selecionadas...</span>
+                <span id="cmd-progress-msg">⚙️ Processando correções nas células selecionadas...</span>
                 <span id="cmd-progress-pct" style="font-weight:bold; font-size:14px; text-shadow:0 0 6px #00ff66;">0%</span>
               </div>
               <div style="width:100%; height:12px; background:rgba(255,255,255,0.06); border-radius:6px; overflow:hidden; border:1px solid rgba(0,255,102,0.3);">
@@ -1980,7 +2005,7 @@
               </div>
               <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:#94a3b8;">
                 <span id="cmd-count-sucesso" style="color:#00ff66;">✅ Sucesso: 0</span>
-                <span id="cmd-count-falhas" style="color:#f87171;">❌ Falhas: 0</span>
+                <span id="cmd-count-falhas" style="color:#f87171;">âŒ Falhas: 0</span>
                 <span id="cmd-count-total">Total no lote: 0</span>
               </div>
             </div>
@@ -1997,14 +2022,14 @@
 
       </section>
 
-      <!-- ============= MODAL: CONTRA-NOTIFICAÇÃO / CONFIRMAÇÃO DE SEGURANÇA ============= -->
+      <!-- ============= MODAL: CONTRA-NOTIFICAÇÁO / CONFIRMAÇÁO DE SEGURANÇA ============= -->
       <div class="modal-overlay" id="modal-contra-notificacao" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:9999999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; opacity:1 !important; pointer-events:all !important;">
         <div style="background:#0f172a; border:2px solid #ef4444; width:100%; max-width:620px; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.8); overflow:hidden;">
           
           <div style="padding:20px 24px; background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(15,23,42,0.9)); border-bottom:1px solid rgba(239,68,68,0.3); display:flex; align-items:center; gap:12px;">
-            <span style="font-size:28px;">⚠️</span>
+            <span style="font-size:28px;">⚠️</span>
             <div>
-              <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">CONTRA-NOTIFICAÇÃO: Confirmação de Segurança</h3>
+              <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">CONTRA-NOTIFICAÇÁO: Confirmação de Segurança</h3>
               <p style="margin:2px 0 0 0; font-size:12px; color:#fca5a5;">Autorização expressa para padronização em lote</p>
             </div>
           </div>
@@ -2051,8 +2076,8 @@
           </div>
         </div>
 
-        <div class="table-wrap" style="flex: 1; overflow-y: auto; margin-top: 16px;">
-          <table style="width: 100%; table-layout: fixed; border-collapse: separate; border-spacing: 0; font-size: 13px;">
+        <div class="table-wrap" style="flex: 1; min-height: 0; overflow-y: auto !important; overflow-x: scroll !important; margin-top: 8px;">
+          <table style="width: 100%; min-width: 1250px; table-layout: fixed; border-collapse: separate; border-spacing: 0; font-size: 13px;">
             <thead>
               <tr style="background: var(--bg-secondary); border-bottom: 1px solid var(--border);">
                 <th style="padding: 12px; width: 60px; text-align: center;">Expandir</th>
@@ -2094,7 +2119,7 @@
               Acessar Planilha
             </a>
             <button class="btn action-report" onclick="if(typeof window.imprimirRelatorioEscolas==='function'){window.imprimirRelatorioEscolas();}else if(typeof imprimirRelatorioEscolas==='function'){imprimirRelatorioEscolas();}" style="padding:10px 16px; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:6px; background:#475569; color:white; cursor:pointer; font-weight:600;" title="Imprimir Relatório de Escolas">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÓRIO</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÁ“RIO</span>
             </button>
           </div>
         </div>
@@ -2158,11 +2183,11 @@
               </div>
             </div>
 
-            <!-- LOCALIZAÇÃO -->
+            <!-- LOCALIZAÇÁO -->
             <div class="esc-chk-wrap" id="chk-wrap-localizacao" style="position:relative;flex:1;min-width:150px;">
               <button type="button" class="esc-chk-btn" id="chk-btn-localizacao" onclick="_escolasToggleDropdown('localizacao')"
                 style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;text-align:left;">
-                <span id="chk-label-localizacao">LOCALIZAÇÃO</span>
+                <span id="chk-label-localizacao">LOCALIZAÇÁO</span>
                 <span style="font-size:10px;opacity:0.6;">▼</span>
               </button>
               <div id="chk-drop-localizacao" style="display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;min-width:200px;background:#1a1f35;border:1px solid rgba(255,255,255,0.15);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.5);padding:8px 0;max-height:280px;overflow-y:auto;">
@@ -2237,13 +2262,13 @@
 
       </section>
 
-  <!-- ============= PAGE: FORMULÁRIO INDIVIDUALIZADO DE ESCOLA ============= -->
+  <!-- ============= PAGE: FORMULÁRIO INDIVIDUALIZADO DE ESCOLA ============= -->
   <section class="page" id="page-form-escola">
 
     <!-- Header / Nav bar -->
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08);">
       <div>
-        <button type="button" data-page="escolas" onclick="navegar('escolas')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-secondary); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;">← Voltar para Lista de Escolas</button>
+      <button type="button" data-page="escolas" onclick="navegar('escolas')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:var(--text-secondary); padding:8px 16px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;">← Voltar para Lista de Escolas</button>
         <h2 id="form-escola-page-titulo" style="margin:0; font-size:22px; color:#f0f4ff; display:flex; align-items:center; gap:10px;">🏫 Editar Cadastro da Escola</h2>
         <p id="form-escola-page-subtitulo" style="margin:4px 0 0 0; color:#a78bfa; font-weight:600; font-size:14px;">Preencha os dados individualizados da unidade escolar</p>
       </div>
@@ -2259,7 +2284,7 @@
       <form id="form-escola-page-data" onsubmit="salvarFormularioEscolaPage(event)">
         <input type="hidden" id="page-escola-id">
 
-        <!-- 1. IDENTIFICAÇÃO INSTITUCIONAL DA ESCOLA -->
+        <!-- 1. IDENTIFICAÇÁO INSTITUCIONAL DA ESCOLA -->
         <div style="padding:22px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.25); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:#a78bfa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
             🏫 <span>1. Identificação Institucional da Escola</span>
@@ -2308,7 +2333,7 @@
           </div>
         </div>
 
-        <!-- 2. GESTÃO DA ESCOLA & DIREÇÃO -->
+        <!-- 2. GESTÁO DA ESCOLA & DIREÇÁO -->
         <div style="padding:22px; background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.06)); border:1px solid rgba(16,185,129,0.35); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
             👤 <span>2. Gestão da Escola & Contatos</span>
@@ -2330,7 +2355,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">☎️ Telefone Geral da Escola / Secretaria</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">☎️ Telefone Geral da Escola / Secretaria</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-telefone" class="form-control" placeholder="Ex: (69) 3222-0000" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
                 <button type="button" onclick="const v=document.getElementById('page-escola-telefone').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
@@ -2356,11 +2381,11 @@
 
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px;">
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📧 E-mail da Escola</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">✉️ E-mail da Escola</label>
               <input type="email" id="page-escola-email" class="form-control" placeholder="Ex: contato@escola.com.br" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌐 Redes Sociais (Instagram/Facebook)</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌐Redes Sociais (Instagram/Facebook)</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-redesSociais" class="form-control" placeholder="Ex: @escola ou link do perfil" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
                 <button type="button" onclick="const v=document.getElementById('page-escola-redesSociais').value; if(v){ const url=v.startsWith('@') ? 'https://instagram.com/'+v.substring(1) : (v.startsWith('http') ? v : 'https://'+v); window.open(url, '_blank'); }" style="background:#db2777; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Abrir Rede Social">📱</button>
@@ -2372,24 +2397,24 @@
         <!-- 3. ENDEREÇO & INFRAESTRUTURA -->
         <div style="padding:22px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:14px; margin-bottom:24px;">
           <div style="font-size:13px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:18px; display:flex; align-items:center; gap:8px;">
-            📍 <span>3. Endereço & Capacidade de Infraestrutura</span>
+            📝 <span>3. Endereço & Capacidade de Infraestrutura</span>
           </div>
 
           <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:18px; margin-bottom:18px;">
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📍 Endereço e Nº</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📝 Endereço e NÂº</label>
               <div style="display:flex; gap:8px;">
                 <input type="text" id="page-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px; flex:1;">
-                <button type="button" onclick="const end=document.getElementById('page-escola-endereco').value; const mun=document.getElementById('page-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📍</button>
+                <button type="button" onclick="const end=document.getElementById('page-escola-endereco').value; const mun=document.getElementById('page-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 16px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📝</button>
               </div>
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏙️ Bairro</label>
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">ℹ️Bairro</label>
               <input type="text" id="page-escola-bairro" class="form-control" placeholder="Ex: Centro" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
             </div>
             <div class="form-group">
-              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏢 Complemento</label>
-              <input type="text" id="page-escola-complemento" class="form-control" placeholder="Ex: Próximo à praça central" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
+              <label style="color:#f0f4ff; font-weight:600; font-size:13px;">⚡ Complemento</label>
+              <input type="text" id="page-escola-complemento" class="form-control" placeholder="Ex: Próximo Á  praça central" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; padding:12px 14px;">
             </div>
           </div>
 
@@ -2431,18 +2456,18 @@
 
 
 
-  <!-- ============= MODAL FORMULÁRIO DE ESCOLA ============= -->
-  <!-- ============= MODAL FORMULÁRIO/EDIÇÃO ESCOLA ============= -->
+  <!-- ============= MODAL FORMULÁRIO DE ESCOLA ============= -->
+  <!-- ============= MODAL FORMULÁRIO/EDIÇÁO ESCOLA ============= -->
   <div class="modal-overlay" id="modal-form-escola" style="display:none; align-items:flex-start; padding-top:4vh; overflow-y:auto; z-index:99999;">
     <div class="modal card" style="width:95%; max-width:840px; margin:auto; margin-bottom:4vh; padding:0; border:1px solid rgba(139,92,246,0.35); border-radius:14px; overflow:hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.5);">
       
       <!-- Modal Header -->
       <div style="background:linear-gradient(135deg,#1e1b4b,#0f172a); padding:20px 24px; border-bottom:1px solid rgba(139,92,246,0.25); display:flex; justify-content:space-between; align-items:center;">
         <div>
-          <h3 id="form-escola-titulo" style="margin:0; font-size:18px; color:#f0f4ff; display:flex; align-items:center; gap:8px;">✏️ Editar Dados da Escola</h3>
+      <h3 id="form-escola-titulo" style="margin:0; font-size:18px; color:#f0f4ff; display:flex; align-items:center; gap:8px;">✏️ Editar Dados da Escola</h3>
           <span id="form-escola-subtitulo" style="font-size:13px; color:#a78bfa; font-weight:600;">Atualize as informações institucionais, contatos e gestáo da unidade escolar</span>
         </div>
-        <button class="modal-close" onclick="fecharModalFormEscola()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">✕</button>
+        <button class="modal-close" onclick="fecharModalFormEscola()" style="background:none; border:none; color:var(--text-muted); font-size:22px; cursor:pointer;">✖</button>
       </div>
 
       <!-- Modal Body -->
@@ -2450,7 +2475,7 @@
         <form id="form-escola-data" onsubmit="salvarEscola(event)">
           <input type="hidden" id="form-escola-id">
           
-          <!-- SEÇÃO 1: IDENTIFICAÇÃO DA ESCOLA -->
+          <!-- SEÇÁO 1: IDENTIFICAÇÁO DA ESCOLA -->
           <div style="padding:18px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.2); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#a78bfa; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
               🏫 <span>Identificação da Escola</span>
@@ -2499,7 +2524,7 @@
             </div>
           </div>
 
-          <!-- SEÇÃO 2: GESTÃO DA ESCOLA & CONTATOS -->
+          <!-- SEÇÁO 2: GESTÁO DA ESCOLA & CONTATOS -->
           <div style="padding:18px; background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(6,182,212,0.06)); border:1px solid rgba(16,185,129,0.3); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
               👤 <span>Gestão da Escola & Contatos</span>
@@ -2521,7 +2546,7 @@
                 </div>
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">☎️ Telefone Geral da Escola</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">☎️ Telefone Geral da Escola</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-telefone" class="form-control" placeholder="Ex: (69) 3222-0000" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
                   <button type="button" onclick="const v=document.getElementById('form-escola-telefone').value.replace(/\D/g,''); if(v) window.open('https://wa.me/55'+v, '_blank');" style="background:#10b981; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Chamar no WhatsApp">💬</button>
@@ -2547,11 +2572,11 @@
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📧 E-mail da Escola</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">✉️ E-mail da Escola</label>
                 <input type="email" id="form-escola-email" class="form-control" placeholder="Ex: contato@escola.com.br" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌐 Redes Sociais (Instagram/Facebook)</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🌐Redes Sociais (Instagram/Facebook)</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-redesSociais" class="form-control" placeholder="Ex: @escola ou link do perfil" style="border-color:rgba(16,185,129,0.4); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
                   <button type="button" onclick="const v=document.getElementById('form-escola-redesSociais').value; if(v){ const url=v.startsWith('@') ? 'https://instagram.com/'+v.substring(1) : (v.startsWith('http') ? v : 'https://'+v); window.open(url, '_blank'); }" style="background:#db2777; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Abrir Rede Social">📱</button>
@@ -2560,26 +2585,26 @@
             </div>
           </div>
 
-          <!-- SEÇÃO 3: ENDEREÇO & INFRAESTRUTURA -->
+          <!-- SEÇÁO 3: ENDEREÇO & INFRAESTRUTURA -->
           <div style="padding:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; margin-bottom:20px;">
             <div style="font-size:12px; font-weight:800; color:var(--text-secondary); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-              📍 <span>Endereço & Infraestrutura</span>
+              📝 <span>Endereço & Infraestrutura</span>
             </div>
 
             <div style="display:grid; grid-template-columns:2fr 1fr 1fr; gap:14px; margin-bottom:14px;">
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📍 Endereço e Nº</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">📝 Endereço e NÂº</label>
                 <div style="display:flex; gap:8px;">
                   <input type="text" id="form-escola-endereco" class="form-control" placeholder="Ex: Av. Amazonas, 1234" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600; flex:1;">
-                  <button type="button" onclick="const end=document.getElementById('form-escola-endereco').value; const mun=document.getElementById('form-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📍</button>
+                  <button type="button" onclick="const end=document.getElementById('form-escola-endereco').value; const mun=document.getElementById('form-escola-municipio').value; if(end) window.open('https://maps.google.com/?q='+encodeURIComponent(end+', '+mun+', RO'), '_blank');" style="background:#3b82f6; border:none; border-radius:8px; padding:0 12px; cursor:pointer; color:#fff;" title="Ver no Google Maps">📝</button>
                 </div>
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏙️ Bairro</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">ℹ️Bairro</label>
                 <input type="text" id="form-escola-bairro" class="form-control" placeholder="Ex: Centro" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
               <div class="form-group">
-                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">🏢 Complemento</label>
+                <label style="color:#f0f4ff; font-weight:600; font-size:13px;">⚡ Complemento</label>
                 <input type="text" id="form-escola-complemento" class="form-control" placeholder="Ex: Ao lado do posto" style="border-color:rgba(255,255,255,0.15); background:rgba(0,0,0,0.3); color:#fff; font-weight:600;">
               </div>
             </div>
@@ -2600,10 +2625,10 @@
             </div>
           </div>
 
-          <!-- SEÇÃO MODALIDADES (só para Municipal) -->
+          <!-- SEÇÁO MODALIDADES (só para Municipal) -->
           <div id="secao-modalidades-modal" style="display:none; padding:18px; background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(239,68,68,0.03)); border:1px solid rgba(239,68,68,0.3); border-radius:12px; margin-bottom:18px;">
             <div style="font-size:12px; font-weight:800; color:#f87171; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:14px; display:flex; align-items:center; gap:8px;">
-              📚 <span>Modalidades e Matrículas (Municipal)</span>
+              🎓 <span>Modalidades e Matrículas (Municipal)</span>
             </div>
             <div style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">
               Informe a quantidade de alunos por modalidade de ensino desta escola municipal.
@@ -2680,7 +2705,7 @@
         </select>
         <select id="mapa-filtro-localizacao" onchange="if(typeof aplicarFiltrosMapa==='function') aplicarFiltrosMapa()"
           style="flex:1; min-width:150px;padding:10px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text-primary);font-size:13px;cursor:pointer;">
-          <option value="">LOCALIZAÇÃO</option>
+          <option value="">LOCALIZAÇÁO</option>
           <option value="Urbana">Urbana</option>
           <option value="Rural">Rural</option>
           <option value="Indígena">Indígena</option>
@@ -2714,8 +2739,8 @@
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
         <span id="te-badge-total" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(59,130,246,0.15);color:#60a5fa;border:1px solid rgba(59,130,246,0.3);font-family:monospace;letter-spacing:0.5px;">👥 0 Escolas</span>
         <span id="te-badge-alunos" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(16,185,129,0.15);color:#34d399;border:1px solid rgba(16,185,129,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
-        <span id="te-badge-abas" style="display:none;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(139,92,246,0.12);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);letter-spacing:0.4px;">📁 0 planilhas</span>
-        <span id="te-badge-status" style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);letter-spacing:0.4px;">⏳ Aguardando carregamento</span>
+        <span id="te-badge-abas" style="display:none;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(139,92,246,0.12);color:#a78bfa;border:1px solid rgba(139,92,246,0.3);letter-spacing:0.4px;">📍 0 planilhas</span>
+        <span id="te-badge-status" style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);letter-spacing:0.4px;">â³ Aguardando carregamento</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
         <button onclick="recarregarTodasEscolas()" title="Recarregar dados da planilha"
@@ -2921,7 +2946,7 @@
         </button>
         <button onclick="imprimirMemoria()" style="flex:1; min-width:130px; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.5); color:#60a5fa; padding:0 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:4px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-          III - MEMÓRIA CÁLC.
+          III - MEMÁ“RIA CÁLC.
         </button>
         <button onclick="window.open('https://docs.google.com/spreadsheets/d/12w-tBU6lMlKR7mncvbfoKjKGcvCZftd12CFKxdtf7ac/edit?gid=392130906#gid=392130906', '_blank')" style="flex:1; min-width:130px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.5); color:#10b981; padding:0 16px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.3)'" onmouseout="this.style.background='rgba(16,185,129,0.15)'">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -2940,7 +2965,7 @@
         <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">SUPER</label><select id="proalfa-super" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
         <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">MUNICÍPIO</label><select id="proalfa-municipio" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
         <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">DISTRITO</label><select id="proalfa-distrito" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
-        <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOCALIZAÇÃO</label><select id="proalfa-localizacao" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOCALIZAÇÁO</label><select id="proalfa-localizacao" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
         <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOC. DIFERENCIADA</label><select id="proalfa-loc-dif" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
       </div>
       <div style="margin-top: 15px; display:flex; justify-content:space-between; align-items:stretch; gap: 20px;">
@@ -2969,11 +2994,11 @@
   </section>
 
 
-  <!-- ============= MODAL FORMULÁRIO CONTATO ============= -->
+  <!-- ============= MODAL FORMULÁRIO CONTATO ============= -->
   <div class="modal-overlay" id="modal-contato-overlay" onclick="if(event.target===this)fecharModalContato()">
     <div class="modal" style="max-width:550px; width:95%;">
       <div class="modal-header">
-        <h3 id="modal-contato-titulo" style="display:flex; align-items:center; gap:8px;"><span>✏️</span> Editar Contato</h3>
+      <h3 id="modal-contato-titulo" style="display:flex; align-items:center; gap:8px;"><span>✏️</span> Editar Contato</h3>
         <button class="modal-close" onclick="fecharModalContato()">?</button>
       </div>
       <div class="modal-body" style="padding:20px;">
@@ -3040,7 +3065,7 @@
     <div class="modal" style="max-width:680px; width:95%;">
       <div class="modal-header">
         <h3 style="display:flex; align-items:center; gap:8px;"><span>🏫</span> Detalhes da Escola</h3>
-        <button class="modal-close" onclick="fecharModalEscola()">✕</button>
+        <button class="modal-close" onclick="fecharModalEscola()">✖</button>
       </div>
       <div class="modal-body" id="modal-escola-content" style="padding:0;">
         <!-- Preenchido via JS -->
@@ -3068,18 +3093,18 @@
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 0 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
             Google Sheets
           </a>
-          <button onclick="fecharTeModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">✕</button>
+          <button onclick="fecharTeModal()" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;">✖</button>
         </div>
       </div>
       <!-- Body -->
       <div style="overflow-y:auto;flex:1;padding:20px 24px;">
         <input type="hidden" id="te-form-cache-idx"/>
 
-        <!-- SEÇÃO 1: Identificação -->
+        <!-- SEÇÁO 1: Identificação -->
         <div style="margin-bottom:20px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">
             <span style="background:rgba(99,102,241,0.2);color:#818cf8;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">1</span>
-            <span style="font-size:13px;font-weight:700;color:#c7d2fe;letter-spacing:0.5px;">IDENTIFICAÇÃO INSTITUCIONAL</span>
+            <span style="font-size:13px;font-weight:700;color:#c7d2fe;letter-spacing:0.5px;">IDENTIFICAÇÁO INSTITUCIONAL</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
             <div style="grid-column:1/-1;">
@@ -3095,7 +3120,7 @@
               <input id="te-form-inep" type="text" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#60a5fa;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
             </div>
             <div>
-              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">Nº DE ALUNOS</label>
+              <label style="display:block;font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:5px;letter-spacing:0.6px;">NÂº DE ALUNOS</label>
               <input id="te-form-alunos" type="number" min="0" style="width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 12px;color:#34d399;font-size:13px;font-weight:700;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
             </div>
             <div>
@@ -3122,11 +3147,11 @@
           </div>
         </div>
 
-        <!-- SEÇÃO 2: Gestão & Contatos -->
+        <!-- SEÇÁO 2: Gestão & Contatos -->
         <div style="margin-bottom:20px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">
             <span style="background:rgba(16,185,129,0.2);color:#34d399;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">2</span>
-            <span style="font-size:13px;font-weight:700;color:#6ee7b7;letter-spacing:0.5px;">GESTÃO & CONTATOS</span>
+            <span style="font-size:13px;font-weight:700;color:#6ee7b7;letter-spacing:0.5px;">GESTÁO & CONTATOS</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
             <div>
@@ -3208,7 +3233,7 @@
       <!-- Footer -->
       <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 24px;border-top:1px solid rgba(255,255,255,0.07);gap:10px;flex-wrap:wrap;">
         <div style="font-size:11px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
-          ⚠️ Salvar aqui atualiza apenas a <strong>visualização local</strong>. Use o Google Sheets para persistir.
+          ⚠️ Salvar aqui atualiza apenas a <strong>visualização local</strong>. Use o Google Sheets para persistir.
         </div>
         <div style="display:flex;gap:10px;">
           <button onclick="fecharTeModal()" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text-secondary);padding:9px 20px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Cancelar</button>
@@ -3224,7 +3249,7 @@
     <div class="modal">
       <div class="modal-header">
         <h3>Detalhes do Processo</h3>
-        <button class="modal-close" onclick="fecharModal()">✕</button>
+        <button class="modal-close" onclick="fecharModal()">✖</button>
       </div>
       <div class="modal-body" id="modal-content"></div>
     </div>
@@ -3248,13 +3273,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.43"></script>
-  <script src="js/app.js?v=1.2.43"></script>
-  <script src="js/auth-sap.js?v=1.2.43"></script>
-  <script src="js/escolas.js?v=1.2.43" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.64"></script>
+  <script src="js/app.js?v=1.2.64"></script>
+  <script src="js/auth-sap.js?v=1.2.64"></script>
+  <script src="js/escolas.js?v=1.2.64" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.43"></script>
-  <script src="js/contatos.js?v=1.2.43"></script>
+  <script src="js/mapa.js?v=1.2.64"></script>
+  <script src="js/contatos.js?v=1.2.64"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3286,7 +3311,7 @@
 
     // Resetar banco
     function resetarBanco() {
-      if (confirm('⚠️ Isso apagará TODOS os processos. Tem certeza?')) {
+      if (confirm('⚠️ Isso apagará TODOS os processos. Tem certeza?')) {
         if (confirm('Confirme novamente: apagar todos os dados?')) {
           localStorage.removeItem('seduc_processos_v1');
           toast('Banco de dados resetado.', 'info');
@@ -3377,8 +3402,8 @@
   <div class="modal-overlay" id="modal-alertas-overlay">
     <div class="modal" style="max-width: 450px;">
       <div class="modal-header">
-        <h2 style="color: #f59e0b; display: flex; align-items: center; gap: 8px;"><span>⚠️</span> Apontamentos Pendentes</h2>
-        <button class="modal-close" onclick="fecharModalAlertas()">✕</button>
+        <h2 style="color: #f59e0b; display: flex; align-items: center; gap: 8px;"><span>⚠️</span> Apontamentos Pendentes</h2>
+        <button class="modal-close" onclick="fecharModalAlertas()">✖</button>
       </div>
       <div class="modal-body" id="modal-alertas-content">
       </div>
@@ -3388,23 +3413,30 @@
     </div>
   </div>
 
-  <!-- ============= PRINT LAYOUT: PADRÃO ============= -->
+  <!-- ============= PRINT LAYOUT: PADRÁO ADM 2 (AGRUPADO POR DÍGITO C/ MEMORANDO) ============= -->
+  <div id="print-layout-padrao-adm-2" class="print-only-layout" style="display:none; padding:15px; font-family:sans-serif; background:white;"></div>
+
+  <!-- ============= PRINT LAYOUT: PADRÁO ADM (SEM ORIGEM) ============= -->
+  <div id="print-layout-padrao-adm" class="print-only-layout" style="display:none; padding:15px; font-family:sans-serif; background:white;"></div>
+
+  <!-- ============= PRINT LAYOUT: PADRÁO ============= -->
   <div id="print-layout-padrao" style="display:none; padding:20px; font-family:sans-serif; background:white;"></div>
   
   <!-- ============= PRINT LAYOUT: DETALHADO ============= -->
   <div id="print-layout-detalhado" class="print-only-layout" style="display:none;"></div>
 
-  <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
+  <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.43"></script>
+  <script src="js/multi-select.js?v=1.2.64"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.43"></script>
-  <script src="js/gmac.js?v=1.2.43"></script>
-  <script src="js/orcamento.js?v=1.2.43"></script>
-  <script src="js/print-proalfa.js?v=1.2.43"></script>
-  <script src="js/proalfa.js?v=1.2.43"></script>
+  <script src="js/diarias.js?v=1.2.64"></script>
+  <script src="js/gmac.js?v=1.2.64"></script>
+  <script src="js/orcamento.js?v=1.2.64"></script>
+  <script src="js/gdsm.js?v=1.2.64"></script>
+  <script src="js/print-proalfa.js?v=1.2.64"></script>
+  <script src="js/proalfa.js?v=1.2.64"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
@@ -3491,12 +3523,12 @@
     <!-- Legenda das colunas de natureza da despesa – click to filter -->
     <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;padding:12px 16px;background:#1e293b;border-radius:10px;border:1px solid rgba(255,255,255,0.05);">
       <span style="font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;align-self:center;margin-right:4px;">Filtrar por Natureza:</span>
-      <button class="orc-badge-filter" data-code="339014" data-cor="#60a5fa" onclick="filtrarOrcamentoPorNatureza('339014')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);cursor:pointer;transition:all 0.2s;" title="Diárias Pessoal Civil">🏨 Diárias Pessoal</button>
+      <button class="orc-badge-filter" data-code="339014" data-cor="#60a5fa" onclick="filtrarOrcamentoPorNatureza('339014')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);cursor:pointer;transition:all 0.2s;" title="Diárias Pessoal Civil">💼 Diárias Pessoal</button>
       <button class="orc-badge-filter" data-code="339030" data-cor="#fbbf24" onclick="filtrarOrcamentoPorNatureza('339030')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Consumo">📦 Material Consumo</button>
-      <button class="orc-badge-filter" data-code="339033" data-cor="#38bdf8" onclick="filtrarOrcamentoPorNatureza('339033')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);cursor:pointer;transition:all 0.2s;" title="Passagens e Locomoção">✈️ Passagens</button>
-      <button class="orc-badge-filter" data-code="339039" data-cor="#818cf8" onclick="filtrarOrcamentoPorNatureza('339039')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(129,140,248,0.12);color:#818cf8;border:1px solid rgba(129,140,248,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PJ">🏢 Serv. Terceiros PJ</button>
+      <button class="orc-badge-filter" data-code="339033" data-cor="#38bdf8" onclick="filtrarOrcamentoPorNatureza('339033')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.3);cursor:pointer;transition:all 0.2s;" title="Passagens e Locomoção">✈️ Passagens</button>
+      <button class="orc-badge-filter" data-code="339039" data-cor="#818cf8" onclick="filtrarOrcamentoPorNatureza('339039')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(129,140,248,0.12);color:#818cf8;border:1px solid rgba(129,140,248,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PJ">⚡ Serv. Terceiros PJ</button>
       <button class="orc-badge-filter" data-code="339048" data-cor="#4ade80" onclick="filtrarOrcamentoPorNatureza('339048')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílio Financeiro a Pessoa Física">💳 Aux. Financeiro PF</button>
-      <button class="orc-badge-filter" data-code="335031" data-cor="#a78bfa" onclick="filtrarOrcamentoPorNatureza('335031')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílios / Premiação">🏆 Auxílios/Prêmio</button>
+      <button class="orc-badge-filter" data-code="335031" data-cor="#a78bfa" onclick="filtrarOrcamentoPorNatureza('335031')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(167,139,250,0.12);color:#a78bfa;border:1px solid rgba(167,139,250,0.3);cursor:pointer;transition:all 0.2s;" title="Auxílios / Premiação">🤝 Auxílios/Prêmio</button>
       <button class="orc-badge-filter" data-code="339032" data-cor="#f472b6" onclick="filtrarOrcamentoPorNatureza('339032')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(244,114,182,0.12);color:#f472b6;border:1px solid rgba(244,114,182,0.3);cursor:pointer;transition:all 0.2s;" title="Material de Distribuição Gratuita">🎁 Distrib. Gratuita</button>
       <button class="orc-badge-filter" data-code="339036" data-cor="#fb923c" onclick="filtrarOrcamentoPorNatureza('339036')" style="font-size:11px;padding:4px 10px;border-radius:99px;background:rgba(251,146,60,0.12);color:#fb923c;border:1px solid rgba(251,146,60,0.3);cursor:pointer;transition:all 0.2s;" title="Outros Serviços de Terceiros - PF">👤 Serv. Terceiros PF</button>
     </div>
@@ -3595,10 +3627,10 @@
       </div>
       <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
         <button onclick="gerarRelatorioDiarias()" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#6366f1; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;">
-          IMPRIMIR RELATÓRIO
+          IMPRIMIR RELATÁ“RIO
         </button>
         <button onclick="window.open('https://docs.google.com/spreadsheets/d/1WunsuLAAIUAAo1q65qmSVMIH0qLJu_TjDsb_u9LO304/edit?gid=807660383','_blank')" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#10b981; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;">
-          PLANILHA DE DIÁRIAS
+          PLANILHA DE DIÁRIAS
         </button>
       </div>
     </div>
@@ -3811,6 +3843,303 @@
   </section>
 
 
+        <!-- ============= PAGE: GDSM - 32 REGIMES DE COLABORAÇÁO ============= -->
+      <section class="page" id="page-gdsm-regimes">
+        <div class="section-header" style="display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:14px;">
+          <!-- Left Badges (Layout Horizontal Compacto) -->
+          <div style="display:flex; flex-direction:row; align-items:center; flex-wrap:wrap; gap:10px;">
+            <span id="gdsm-badge-valor-regimes" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); font-family:monospace; letter-spacing:0.5px; height:34px; box-sizing:border-box;">
+              <span>R$</span> <span>Carregando...</span>
+            </span>
+            <span id="gdsm-badge-qtd-regimes" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:34px; box-sizing:border-box;">
+              0 Registros
+            </span>
+            <button type="button" onclick="toggleFiltrosGDSM('regimes')" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:34px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-bar" id="gdsm-filters-bar-regimes" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; margin-bottom:14px; background:rgba(15,23,42,0.6); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <div class="search-box" style="flex: 2 1 300px; min-width: 260px; position:relative;">
+            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🔍</span>
+            <input type="text" id="gdsm-filtro-busca-regimes" placeholder="Buscar por qualquer termo nesta aba..." oninput="aplicarFiltrosGDSM('regimes')" style="width:100%; padding:9px 12px 9px 36px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12.5px; outline:none;">
+          </div>
+          <div style="flex: 1 1 180px; min-width: 160px;">
+            <select id="gdsm-filtro-mun-regimes" onchange="aplicarFiltrosGDSM('regimes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">🏛️Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-status-regimes" onchange="aplicarFiltrosGDSM('regimes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-tipo-regimes" onchange="aplicarFiltrosGDSM('regimes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">🏷️Todos os Tipos</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-sit-regimes" onchange="aplicarFiltrosGDSM('regimes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">📋 Todas as Situações</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <div class="action-toolbar-scroll" id="gdsm-actions-toolbar-regimes">
+          <button type="button" onclick="imprimirGDSMSimplificado('regimes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Relatório Simplificado">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
+          </button>
+          <button type="button" onclick="imprimirGDSMDetalhado('regimes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Imprimir Relatório Detalhado com Todas as Colunas">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> DETALHADO
+          </button>
+          <button type="button" onclick="exportarExcelGDSM('regimes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel (.xlsx)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
+          </button>
+          <button type="button" onclick="abrirPlanilhaGDSM('regimes')" class="btn" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar diretamente esta aba na Planilha Google">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> PLANILHA
+          </button>
+          <button type="button" onclick="carregarGDSM('regimes', true)" class="btn" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Recarregar dados da planilha Google">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> ATUALIZAR
+          </button>
+          <button type="button" onclick="limparFiltrosGDSM('regimes')" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" title="Limpar todos os parâmetros">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> LIMPAR PARÂMETROS
+          </button>
+        </div>
+
+
+        <!-- Tabela de Consulta -->
+        <div id="gdsm-table-container-regimes" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============= PAGE: GDSM - DEMAIS PROCESSOS ============= -->
+      <section class="page" id="page-gdsm-demais">
+        <div class="section-header" style="display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:14px;">
+          <!-- Left Badges (Layout Horizontal Compacto) -->
+          <div style="display:flex; flex-direction:row; align-items:center; flex-wrap:wrap; gap:10px;">
+            <span id="gdsm-badge-qtd-demais" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:34px; box-sizing:border-box;">
+              0 Registros
+            </span>
+            <button type="button" onclick="toggleFiltrosGDSM('demais')" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:34px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-bar" id="gdsm-filters-bar-demais" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; margin-bottom:14px; background:rgba(15,23,42,0.6); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <div class="search-box" style="flex: 2 1 300px; min-width: 260px; position:relative;">
+            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🔍</span>
+            <input type="text" id="gdsm-filtro-busca-demais" placeholder="Buscar por qualquer termo nesta aba..." oninput="aplicarFiltrosGDSM('demais')" style="width:100%; padding:9px 12px 9px 36px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12.5px; outline:none;">
+          </div>
+          <div style="flex: 1 1 180px; min-width: 160px;">
+            <select id="gdsm-filtro-mun-demais" onchange="aplicarFiltrosGDSM('demais')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">🏛️Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-status-demais" onchange="aplicarFiltrosGDSM('demais')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-tipo-demais" onchange="aplicarFiltrosGDSM('demais')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">🏷️Todos os Tipos</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-sit-demais" onchange="aplicarFiltrosGDSM('demais')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">📋 Todas as Situações</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <div class="action-toolbar-scroll" id="gdsm-actions-toolbar-demais">
+          <button type="button" onclick="imprimirGDSMSimplificado('demais')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Relatório Simplificado">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
+          </button>
+          <button type="button" onclick="imprimirGDSMDetalhado('demais')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Imprimir Relatório Detalhado com Todas as Colunas">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> DETALHADO
+          </button>
+          <button type="button" onclick="exportarExcelGDSM('demais')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel (.xlsx)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
+          </button>
+          <button type="button" onclick="abrirPlanilhaGDSM('demais')" class="btn" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar diretamente esta aba na Planilha Google">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> PLANILHA
+          </button>
+          <button type="button" onclick="carregarGDSM('demais', true)" class="btn" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Recarregar dados da planilha Google">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> ATUALIZAR
+          </button>
+          <button type="button" onclick="limparFiltrosGDSM('demais')" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" title="Limpar todos os parâmetros">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> LIMPAR PARÂMETROS
+          </button>
+        </div>
+
+
+        <!-- Tabela de Consulta -->
+        <div id="gdsm-table-container-demais" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============= PAGE: GDSM - [TEMPORÁRIO] DOAÇÕES ============= -->
+      <section class="page" id="page-gdsm-doacoes">
+        <div class="section-header" style="display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:14px;">
+          <!-- Left Badges (Layout Horizontal Compacto) -->
+          <div style="display:flex; flex-direction:row; align-items:center; flex-wrap:wrap; gap:10px;">
+            <span id="gdsm-badge-valor-doacoes" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); font-family:monospace; letter-spacing:0.5px; height:34px; box-sizing:border-box;">
+              <span>R$</span> <span>Carregando...</span>
+            </span>
+            <span id="gdsm-badge-qtd-doacoes" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:34px; box-sizing:border-box;">
+              0 Registros
+            </span>
+            <button type="button" onclick="toggleFiltrosGDSM('doacoes')" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:34px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-bar" id="gdsm-filters-bar-doacoes" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; margin-bottom:14px; background:rgba(15,23,42,0.6); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <div class="search-box" style="flex: 2 1 300px; min-width: 260px; position:relative;">
+            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🔍</span>
+            <input type="text" id="gdsm-filtro-busca-doacoes" placeholder="Buscar por qualquer termo nesta aba..." oninput="aplicarFiltrosGDSM('doacoes')" style="width:100%; padding:9px 12px 9px 36px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12.5px; outline:none;">
+          </div>
+          <div style="flex: 1 1 180px; min-width: 160px;">
+            <select id="gdsm-filtro-mun-doacoes" onchange="aplicarFiltrosGDSM('doacoes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">🏛️Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-status-doacoes" onchange="aplicarFiltrosGDSM('doacoes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-tipo-doacoes" onchange="aplicarFiltrosGDSM('doacoes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">🏷️Todos os Tipos</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-sit-doacoes" onchange="aplicarFiltrosGDSM('doacoes')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">📋 Todas as Situações</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <div class="action-toolbar-scroll" id="gdsm-actions-toolbar-doacoes">
+          <button type="button" onclick="imprimirGDSMSimplificado('doacoes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Relatório Simplificado">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
+          </button>
+          <button type="button" onclick="imprimirGDSMDetalhado('doacoes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Imprimir Relatório Detalhado com Todas as Colunas">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> DETALHADO
+          </button>
+          <button type="button" onclick="exportarExcelGDSM('doacoes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel (.xlsx)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
+          </button>
+          <button type="button" onclick="abrirPlanilhaGDSM('doacoes')" class="btn" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar diretamente esta aba na Planilha Google">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> PLANILHA
+          </button>
+          <button type="button" onclick="carregarGDSM('doacoes', true)" class="btn" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Recarregar dados da planilha Google">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> ATUALIZAR
+          </button>
+          <button type="button" onclick="limparFiltrosGDSM('doacoes')" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" title="Limpar todos os parâmetros">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> LIMPAR PARÂMETROS
+          </button>
+        </div>
+
+
+        <!-- Tabela de Consulta -->
+        <div id="gdsm-table-container-doacoes" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============= PAGE: GDSM - NOVO REGIME ============= -->
+      <section class="page" id="page-gdsm-novoregime">
+        <div class="section-header" style="display:flex; justify-content:flex-start; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:14px;">
+          <!-- Left Badges (Layout Horizontal Compacto) -->
+          <div style="display:flex; flex-direction:row; align-items:center; flex-wrap:wrap; gap:10px;">
+            <span id="gdsm-badge-valor-novoregime" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); font-family:monospace; letter-spacing:0.5px; height:34px; box-sizing:border-box;">
+              <span>R$</span> <span>Carregando...</span>
+            </span>
+            <span id="gdsm-badge-qtd-novoregime" style="display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:8px; font-size:14px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:34px; box-sizing:border-box;">
+              0 Registros
+            </span>
+            <button type="button" onclick="toggleFiltrosGDSM('novoregime')" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:34px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-bar" id="gdsm-filters-bar-novoregime" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; margin-bottom:14px; background:rgba(15,23,42,0.6); padding:14px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <div class="search-box" style="flex: 2 1 300px; min-width: 260px; position:relative;">
+            <span class="search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#64748b;">🔍</span>
+            <input type="text" id="gdsm-filtro-busca-novoregime" placeholder="Buscar por qualquer termo nesta aba..." oninput="aplicarFiltrosGDSM('novoregime')" style="width:100%; padding:9px 12px 9px 36px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12.5px; outline:none;">
+          </div>
+          <div style="flex: 1 1 180px; min-width: 160px;">
+            <select id="gdsm-filtro-mun-novoregime" onchange="aplicarFiltrosGDSM('novoregime')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">🏛️Todos os Municípios</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-status-novoregime" onchange="aplicarFiltrosGDSM('novoregime')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">📌 Todos os Status</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-tipo-novoregime" onchange="aplicarFiltrosGDSM('novoregime')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">🏷️Todos os Tipos</option>
+            </select>
+          </div>
+          <div style="flex: 1 1 160px; min-width: 150px;">
+            <select id="gdsm-filtro-sit-novoregime" onchange="aplicarFiltrosGDSM('novoregime')" style="width:100%; height:38px; padding:6px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:#0f172a; color:#e2e8f0; font-size:12px; outline:none; cursor:pointer;">
+              <option value="">📋 Todas as Situações</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- BARRA HORIZONTAL DE BOTÕES NA BASE DOS FORMS DA SEÇÁO -->
+        <div class="action-toolbar-scroll" id="gdsm-actions-toolbar-novoregime">
+          <button type="button" onclick="imprimirGDSMSimplificado('novoregime')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#475569; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#475569'" title="Imprimir Relatório Simplificado">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
+          </button>
+          <button type="button" onclick="imprimirGDSMDetalhado('novoregime')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Imprimir Relatório Detalhado com Todas as Colunas">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> DETALHADO
+          </button>
+          <button type="button" onclick="exportarExcelGDSM('novoregime')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel (.xlsx)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
+          </button>
+          <button type="button" onclick="abrirPlanilhaGDSM('novoregime')" class="btn" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar diretamente esta aba na Planilha Google">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> PLANILHA
+          </button>
+          <button type="button" onclick="carregarGDSM('novoregime', true)" class="btn" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Recarregar dados da planilha Google">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> ATUALIZAR
+          </button>
+          <button type="button" onclick="limparFiltrosGDSM('novoregime')" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" title="Limpar todos os parâmetros">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> LIMPAR PARÂMETROS
+          </button>
+        </div>
+
+
+        <!-- Tabela de Consulta -->
+        <div id="gdsm-table-container-novoregime" class="card" style="padding:0; overflow:hidden; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">
+          <div style="text-align:center; padding:50px 20px; color:#94a3b8;">
+            <p style="font-size:14px;">Carregando...</p>
+          </div>
+        </div>
+      </section>
+
   <!-- ============= MODAL: LOGADOS ============= -->
 <div class="modal-overlay" id="modal-logados" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
   <div style="background:#0f172a; border:1px solid rgba(59,130,246,0.4); width:100%; max-width:600px; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.6); overflow:hidden;">
@@ -3953,7 +4282,7 @@ function mudarAbaDiarias(aba, el) {
 }
 </script>
 
-  <!-- ============= MODAL: FORMULÁRIO GMAC ============= -->
+  <!-- ============= MODAL: FORMULÁRIO GMAC ============= -->
   <div class="modal-overlay" id="modal-gmac-form" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
     <div style="background:#0f172a; border:1px solid rgba(59,130,246,0.4); width:100%; max-width:780px; max-height:92vh; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.7); overflow:hidden;">
       
@@ -4013,7 +4342,7 @@ function mudarAbaDiarias(aba, el) {
         <button type="button" onclick="fecharModalManifestoTCE()" class="btn btn-ghost" style="padding:10px 20px;">Fechar</button>
         <div style="display:flex; gap:12px;">
           <button type="button" onclick="copiarManifestoTCE()" style="background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.15); font-weight:700; padding:10px 20px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">📋 Copiar Texto</button>
-          <button type="button" onclick="imprimirManifestoTCE()" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; font-weight:700; padding:10px 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:inline-flex; align-items:center; gap:6px;">🖨️ Imprimir / Gerar PDF</button>
+          <button type="button" onclick="imprimirManifestoTCE()" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; font-weight:700; padding:10px 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:inline-flex; align-items:center; gap:6px;">🖨️Imprimir / Gerar PDF</button>
         </div>
       </div>
 

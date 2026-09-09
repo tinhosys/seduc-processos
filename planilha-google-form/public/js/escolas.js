@@ -76,7 +76,7 @@ function _preencherFormEscolaPage(escola) {
   if (typeof _preencherFormEscola === 'function') _preencherFormEscola(escola);
 
   const titulo = document.getElementById('form-escola-page-titulo');
-  if (titulo) titulo.innerHTML = 'âœï¸ Editar Cadastro da Escola';
+  if (titulo) titulo.innerHTML = '✏️ Editar Cadastro da Escola';
   const sub = document.getElementById('form-escola-page-subtitulo');
   if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' - ' + escola.municipio : '');
   const btn = document.getElementById('btn-salvar-escola-page');
@@ -806,7 +806,7 @@ function _escolasRenderTabela() {
   }).join('');
 }
 
-// ---- PAGINAÇÃO ----
+// ---- PAGINAÇÁO ----
 function _escolasRenderPaginacao() {
   const infoEl = document.getElementById('escolas-pg-info');
   const ctrlEl = document.getElementById('escolas-pg-controls');
@@ -901,7 +901,7 @@ function _preencherFormEscola(escola) {
   }
 
   const titulo = document.getElementById('form-escola-titulo');
-  if (titulo) titulo.innerHTML = 'âœï¸ Editar Dados da Escola';
+  if (titulo) titulo.innerHTML = '✏️ Editar Dados da Escola';
   
   const sub = document.getElementById('form-escola-subtitulo');
   if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' - ' + escola.municipio : '');
@@ -1242,7 +1242,7 @@ function imprimirRelatorioEscolas() {
         <div class="official-header">
           <div class="titles">
             <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
-            <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+            <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
             <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
           </div>
           <div class="header-sisedu">SISEDU</div>

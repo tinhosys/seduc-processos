@@ -565,7 +565,7 @@ window.gerarRelatorioDiarias = function() {
   const aba = window._filtroDiariasAba || 'estadual';
   const agora = new Date();
   const dataHora = agora.toLocaleDateString('pt-BR') + ', ' + agora.toLocaleTimeString('pt-BR');
-  const gerencia = 'CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS';
+  const gerencia = 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS';
 
   let title = 'RELATÓRIO DE DIÁRIAS - ' + (aba === 'federal' ? 'RECURSO FEDERAL' : (aba === 'consolidado' ? 'CONSOLIDADO ORÇAMENTÁRIO' : 'EXECUÇÁO ORÇAMENTÁRIA ESTADUAL'));
   let contentHtml = '';
@@ -975,7 +975,7 @@ window.gerarRelatorioDiarias = function() {
         <div class="titles">
           <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
           <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
-          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
+          <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
         </div>
         <div class="header-sisedu">SISEDU</div>
       </div>

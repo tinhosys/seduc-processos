@@ -5,9 +5,9 @@ window.limparDigitoValor = function(val) {
   if (val === null || val === undefined) return '';
   let s = String(val).trim();
   if (!s) return '';
-  // Se terminar com ,00 ou .00 ou ,0 ou .0 (ex: 2,00 vira 2; texto como 'CC' ou 'LOTE1' permanece intacto)
+  // Se terminar com ,00 ou .00 ou ,0 ou .0 (ex: 2,00 vira 2; texto livre/alfanumérico sem limite)
   s = s.replace(/[,.]0+$/, '');
-  return s.slice(0, 8).trim();
+  return s.trim();
 };
 window.formatarDigitoInteiro = window.limparDigitoValor;
 
@@ -283,7 +283,7 @@ window.fecharModalAlertas = () => {
   if (m) m.style.display = 'none';
 };
 
-// ---- NAVEGAÇÃO ----
+// ---- NAVEGAÇÁO ----
 function navegar(pagina) {
   const canDash = (typeof window.podeAcessarDashboard === 'function')
     ? window.podeAcessarDashboard()
@@ -326,6 +326,10 @@ function navegar(pagina) {
     'todas-escolas': '🏫 Todas as Escolas',
     'orcamento': '💵 Orçamento',
     'diarias': '📅 Controle de Diárias',
+    'gdsm-regimes': '📋 GDSM — Regime de Colaboração',
+        'gdsm-demais': '📁 GDSM — Demais Processos',
+    'gdsm-doacoes': '🎁 GDSM — [Temporário] Doações',
+    'gdsm-novoregime': '🚀 GDSM — Novo Regime',
     'sistema-info': '🖥️ Informações do Sistema & Diagnóstico'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
@@ -356,6 +360,16 @@ function navegar(pagina) {
     } else {
       setTimeout(() => {
         if (typeof carregarGMAC === 'function') carregarGMAC(mod);
+      }, 150);
+    }
+  }
+  if (pagina && pagina.startsWith('gdsm-')) {
+    const tabKey = pagina.replace('gdsm-', '');
+    if (typeof carregarGDSM === 'function') {
+      carregarGDSM(tabKey);
+    } else {
+      setTimeout(() => {
+        if (typeof carregarGDSM === 'function') carregarGDSM(tabKey);
       }, 150);
     }
   }
@@ -563,11 +577,11 @@ function renderDashboard() {
   processos.forEach(p => {
     let c = String(p.categoria || '').trim().toUpperCase();
     if (!c) {
-      c = 'NÃO INFORMADO';
+      c = 'NÁO INFORMADO';
     } else {
       if (c === 'F') c = 'FOMENTO';
       else if (c === 'C') c = 'CONVÊNIO';
-      else if (c === 'T') c = 'TERMO DE COOPERAÇÃO';
+      else if (c === 'T') c = 'TERMO DE COOPERAÇÁO';
       else if (c === 'O') c = 'OUTRO';
     }
     catCounts[c] = (catCounts[c] || 0) + 1;
@@ -579,9 +593,9 @@ function renderDashboard() {
   const colorsCatMap = {
     'FOMENTO': '#3b82f6',
     'CONVÊNIO': '#10b981',
-    'TERMO DE COOPERAÇÃO': '#8b5cf6',
+    'TERMO DE COOPERAÇÁO': '#8b5cf6',
     'OUTRO': '#06b6d4',
-    'NÃO INFORMADO': '#64748b'
+    'NÁO INFORMADO': '#64748b'
   };
   const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
 
@@ -653,7 +667,7 @@ function renderDashboard() {
   processos.forEach(p => {
     let t = String(p.tipo || '').trim().toUpperCase();
     if (!t) {
-      t = 'NÃO INFORMADO';
+      t = 'NÁO INFORMADO';
     } else {
       if (t === 'OB') t = 'OBRAS';
       else if (t === 'MP') t = 'MATERIAL PERMANENTE';
@@ -675,7 +689,7 @@ function renderDashboard() {
     'SISTEMA': '#a855f7',
     'TREINAMENTO': '#10b981',
     'OUTROS': '#f43f5e',
-    'NÃO INFORMADO': '#64748b'
+    'NÁO INFORMADO': '#64748b'
   };
   const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
 
@@ -1274,6 +1288,10 @@ function renderProcessos() {
   preencherDatalist('list-interessados', 'interessado');
   preencherDatalist('list-objetos', 'objeto');
   preencherDatalist('list-agrupamentos', 'agrupamento');
+  preencherDatalist('list-municipios', 'municipio');
+  preencherDatalist('list-anos', 'ano');
+  preencherDatalist('list-status', 'status');
+  preencherDatalist('list-localizacao', 'localizacao');
   if (typeof popularDigitosDisponiveis === 'function') popularDigitosDisponiveis();
 
   // Tabela
@@ -1405,7 +1423,7 @@ window.setDigitoCondicao = function(cond, triggerFilter = true) {
 
 window.formatarDigitoInteiro = function(val) {
   if (val === null || val === undefined) return '';
-  return String(val).trim().slice(0, 8);
+  return window.limparDigitoValor(val);
 };
 
 window._antigoFormatarDigito = function(s) {
@@ -1480,7 +1498,7 @@ function preencherSelectFiltro(id, opcoes) {
   else if (id === 'filtro-tipo') placeholder = 'TIPO';
   else if (id === 'filtro-super') placeholder = 'SUPER';
 
-  // Pegar valores selecionados atualmente via state (não via DOM, que pode estar destrudo)
+  // Pegar valores selecionados atualmente via state (não via DOM, que pode estar destruído)
   const campo = id.replace('filtro-', '');
   let selectedArr = state.filtros[campo] || [];
   if (typeof selectedArr === 'string') selectedArr = selectedArr ? [selectedArr] : [];
@@ -2255,7 +2273,7 @@ function confirmarExcluir(id) {
   if (!p) return;
   const ident = p.numero || p.interessado || 'Sem Identificação';
   if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
+    if (confirm(`⚠️ ATENÇÁO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
       excluirProcesso(id);
       toast('Processo excludo com sucesso.', 'info');
       navegar('processos');
@@ -2263,7 +2281,7 @@ function confirmarExcluir(id) {
   }
 }
 
-// ---- IMPORTAÇÃO ----
+// ---- IMPORTAÇÁO ----
 function setupImportacao() {
   const zone = document.getElementById('import-zone');
   const input = document.getElementById('import-input');
@@ -2350,7 +2368,7 @@ async function processarLinkGoogleSheets() {
   }
 }
 
-// ---- INICIALIZAÇÃO ----
+// ---- INICIALIZAÇÁO ----
 document.addEventListener('DOMContentLoaded', () => {
   // Navegação
   document.querySelectorAll('[data-page]').forEach(el => {
@@ -2682,7 +2700,7 @@ document.addEventListener('DOMContentLoaded', () => {
   navegar('dashboard');
 });
 
-// ---- EXPORTAÇÃO ----
+// ---- EXPORTAÇÁO ----
 function exportarExcel() {
   const filtrados = getFiltrados();
   if (filtrados.length === 0) {
@@ -2861,7 +2879,7 @@ function renderizarContatosForm() {
 
 
 
-// ---- FUNÇÃO PARA COPIAR PROCESSO SELECIONADO ----
+// ---- FUNÇÁO PARA COPIAR PROCESSO SELECIONADO ----
 window.copiarProcessoSelecionado = function() {
   const radio = document.querySelector('input[name="modal_processo_radio"]:checked');
   if (radio) {
@@ -2893,7 +2911,7 @@ function getCommonHeader(subtitle) {
     <div class="official-print-header" style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0284c7; padding-bottom:6px; margin-bottom:10px; width:100%; font-family: Arial, sans-serif;">
       <div style="text-align:left; line-height:1.25;">
         <div style="font-size:10px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+        <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
         <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
@@ -3062,7 +3080,409 @@ function imprimirPadrao(filtrados = getFiltrados()) {
       }, 1000);
     };
 
+
 window.imprimirPadrao = imprimirPadrao;
+
+// ============= RELATÓRIO PADRÁO ADM (SEM INFORMAÇÕES DE ORIGEM) =============
+function imprimirPadraoAdm(filtrados = getFiltrados()) {
+  if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
+    alert('Acesso restrito ao perfil Administrador.');
+    return;
+  }
+
+  let rowsHtml = filtrados.map((p, index) => {
+    const prefixoFormatado = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.2;">
+        <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
+        <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+          <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
+          <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
+            <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
+            <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+            <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    const zebraBg = index % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
+    return `
+      <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${index + 1}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 4px; text-align:right; font-size:9.5px; font-weight:normal; width:12%; white-space:nowrap;">${formatNumberOnly(p.valorOf)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+  const totalRow = `
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
+    </tr>`;
+  rowsHtml += totalRow;
+
+  const html = `
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2.5px solid #0f172a; padding-bottom: 6px; margin-bottom: 10px; font-family: Arial, sans-serif;">
+              <div>
+                <div style="font-size: 13px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSOS</div>
+              </div>
+              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: 600;">
+                <span>Total: <strong style="color:#0f172a;">${filtrados.length} processos</strong></span>
+                <span style="margin: 0 8px; color: #cbd5e1;">|</span>
+                <span>Valor Total: <strong style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</strong></span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
+              <colgroup>
+                <col style="width: 3%;">
+                <col style="width: 7%;">
+                <col style="width: 11%;">
+                <col style="width: 12%;">
+                <col style="width: 14%;">
+                <col style="width: 19%;">
+                <col style="width: 8%;">
+                <col style="width: 7%;">
+                <col style="width: 7%;">
+                <col style="width: 12%;">
+              </colgroup>
+              <thead>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:bold;">Nº</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">PREFIXO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:14%; font-size:10px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:19%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:bold;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:bold;">DATA</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 3px; text-align:right; width:12%; font-size:10px; font-weight:bold; white-space:nowrap;">VALOR R$</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || '<tr><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">LEGENDA:</strong>
+                  <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">AUTORIZAÇÕES:</strong>
+                  <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+
+  let container = document.getElementById('print-layout-padrao-adm');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'print-layout-padrao-adm';
+    container.className = 'print-only-layout';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = html;
+
+  if (document.getElementById('print-layout-padrao')) document.getElementById('print-layout-padrao').style.display = 'none';
+  if (document.getElementById('print-layout-detalhado')) document.getElementById('print-layout-detalhado').style.display = 'none';
+  if (document.getElementById('print-layout-analise')) document.getElementById('print-layout-analise').style.display = 'none';
+  container.style.display = 'block';
+
+  const pageProcessos = document.getElementById('page-processos');
+  if (pageProcessos) pageProcessos.style.display = 'none';
+
+  document.body.classList.add('print-mode-padrao-adm');
+  document.body.classList.remove('print-mode-padrao', 'print-mode-detalhado', 'print-mode-analise');
+
+  const origTitle = document.title;
+  document.title = 'RELATORIO_PROCESSOS_' + getFormattedDateForTitle();
+
+  const style = document.createElement('style');
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } table.print-table-adm tr.group-header-digito, table.print-table-adm tr.group-header-digito td { background-color: #008080 !important; color: #ffffff !important; border-color: #005f5f !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
+  document.head.appendChild(style);
+
+  const cleanupPrint = () => {
+    document.title = origTitle;
+    if (document.head.contains(style)) document.head.removeChild(style);
+    document.body.classList.remove('print-mode-padrao-adm');
+    container.style.display = 'none';
+    if (pageProcessos) pageProcessos.style.display = '';
+    window.removeEventListener('afterprint', cleanupPrint);
+  };
+
+  window.addEventListener('afterprint', cleanupPrint);
+
+  window.print();
+
+  setTimeout(cleanupPrint, 1000);
+}
+
+window.imprimirPadraoAdm = imprimirPadraoAdm;
+
+window.imprimirPadraoAdm = imprimirPadraoAdm;
+
+// ============= RELATÓRIO ADM 2 (AGRUPADO POR DÍGITO C/ LINHA MEMORANDO) =============
+function imprimirPadraoAdm2(filtrados = getFiltrados()) {
+  if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
+    alert('Acesso restrito ao perfil Administrador.');
+    return;
+  }
+
+  // Agrupamento por Dígito
+  const grupos = {};
+  filtrados.forEach(p => {
+    const dRaw = typeof window.limparDigitoValor === 'function' 
+      ? window.limparDigitoValor(p.digito || p.DIGITO || '') 
+      : String(p.digito || p.DIGITO || '').trim();
+    const chave = dRaw || 'SEM DÍGITO';
+    if (!grupos[chave]) grupos[chave] = [];
+    grupos[chave].push(p);
+  });
+
+  const chavesOrdenadas = Object.keys(grupos).sort((a, b) => {
+    if (a === 'SEM DÍGITO') return 1;
+    if (b === 'SEM DÍGITO') return -1;
+    const numA = parseFloat(a);
+    const numB = parseFloat(b);
+    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+  });
+
+  let globalIndex = 0;
+  let rowsHtml = '';
+
+  chavesOrdenadas.forEach(chave => {
+    const procs = grupos[chave];
+    const totalGrupo = procs.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+
+    // Linha de Cabeçalho do Grupo com cor padrão #008080, sem palavra DÍGITO e sem negrito
+    rowsHtml += `
+      <tr class="no-page-break group-header-digito" style="page-break-inside: avoid; break-inside: avoid; background-color: #008080 !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <td colspan="10" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <span style="color: #ffffff !important; font-weight: normal; letter-spacing: 0.5px;">${chave}</span>
+          <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #ffffff !important;">(${procs.length} processos &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
+        </td>
+      </tr>
+    `;
+
+    procs.forEach(p => {
+      globalIndex++;
+      const prefixoFormatado = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.2;">
+          <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
+          <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+            <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
+            <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
+              <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
+              <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+              <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      const zebraBg = globalIndex % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
+
+      // Linha Principal do Processo (sem negritos)
+      rowsHtml += `
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 4px; text-align:right; font-size:9.5px; font-weight:normal; width:12%; white-space:nowrap;">${formatNumberOnly(p.valorOf)}</td>
+        </tr>
+      `;
+
+      // Linha Memorando: "AGRUPAMENTO" - "ANOTAÇÁO INTERNA" (itálico vermelho na largura da tabela)
+      const partesMemo = [];
+      if (p.agrupamento && String(p.agrupamento).trim()) {
+        partesMemo.push(String(p.agrupamento).trim());
+      }
+      if (p.anotacao && String(p.anotacao).trim()) {
+        partesMemo.push(String(p.anotacao).trim());
+      }
+
+      if (partesMemo.length > 0) {
+        const memoTexto = partesMemo.join(' - ');
+        rowsHtml += `
+          <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color: #fff9f9;">
+            <td colspan="10" style="border: 1px solid #cbd5e1; border-top: none; padding: 2px 8px 3px 12px; font-size: 8.5px; font-style: italic; color: #dc2626; line-height: 1.3;">
+              ${memoTexto}
+            </td>
+          </tr>
+        `;
+      }
+    });
+  });
+
+  const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+  const totalRow = `
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
+    </tr>`;
+  rowsHtml += totalRow;
+
+  const html = `
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2.5px solid #0f172a; padding-bottom: 6px; margin-bottom: 10px; font-family: Arial, sans-serif;">
+              <div>
+                <div style="font-size: 13px; font-weight: normal; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSO | GRUPO</div>
+              </div>
+              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: normal;">
+                <span>Total: <span style="color:#0f172a;">${filtrados.length} processos</span></span>
+                <span style="margin: 0 8px; color: #cbd5e1;">|</span>
+                <span>Valor Total: <span style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</span></span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
+              <colgroup>
+                <col style="width: 3%;">
+                <col style="width: 7%;">
+                <col style="width: 11%;">
+                <col style="width: 12%;">
+                <col style="width: 14%;">
+                <col style="width: 19%;">
+                <col style="width: 8%;">
+                <col style="width: 7%;">
+                <col style="width: 7%;">
+                <col style="width: 12%;">
+              </colgroup>
+              <thead>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:normal;">Nº</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:normal;">PREFIXO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:normal;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:normal;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:14%; font-size:10px; font-weight:normal;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:19%; font-size:10px; font-weight:normal;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:normal;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:normal;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:normal;">DATA</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 3px; text-align:right; width:12%; font-size:10px; font-weight:normal; white-space:nowrap;">VALOR R$</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || '<tr><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span style="color: #0f172a; text-transform: uppercase; font-weight: normal;">LEGENDA:</span>
+                  <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span style="color: #0f172a; text-transform: uppercase; font-weight: normal;">AUTORIZAÇÕES:</span>
+                  <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+
+  let container = document.getElementById('print-layout-padrao-adm-2');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'print-layout-padrao-adm-2';
+    container.className = 'print-only-layout';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = html;
+
+  // Oculta os outros layouts
+  ['print-layout-padrao', 'print-layout-padrao-adm', 'print-layout-detalhado', 'print-layout-analise'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  container.style.display = 'block';
+
+  const pageProcessos = document.getElementById('page-processos');
+  if (pageProcessos) pageProcessos.style.display = 'none';
+
+  document.body.classList.add('print-mode-padrao-adm-2');
+  document.body.classList.remove('print-mode-padrao', 'print-mode-padrao-adm', 'print-mode-detalhado', 'print-mode-analise');
+
+  const origTitle = document.title;
+  document.title = 'RELATORIO_ADM2_' + getFormattedDateForTitle();
+
+  const style = document.createElement('style');
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm-2 { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } }';
+  document.head.appendChild(style);
+
+  const cleanupPrint = () => {
+    document.title = origTitle;
+    if (document.head.contains(style)) document.head.removeChild(style);
+    document.body.classList.remove('print-mode-padrao-adm-2');
+    container.style.display = 'none';
+    if (pageProcessos) pageProcessos.style.display = '';
+    window.removeEventListener('afterprint', cleanupPrint);
+  };
+
+  window.addEventListener('afterprint', cleanupPrint);
+
+  window.print();
+
+  setTimeout(cleanupPrint, 1000);
+}
+
+window.imprimirPadraoAdm2 = imprimirPadraoAdm2;
+
+
 
 function imprimirDetalhado() {
   updatePrintDateTime();
@@ -5631,7 +6051,7 @@ window.verificarInconsistenciasPlanilhaCMD = async function() {
 
   let tableHtml = `
     <div style="margin-top:10px; color:#fbbf24; font-weight:bold; font-size:13px;">
-      > [ATENÇÃO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
+      > [ATENÇÁO] Encontrados ${divergencias.length} registro(s) com divergências ortográficas / espaços extras / caixa.
     </div>
     <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 8px; font-size:12px; color:#94a3b8; flex-wrap:wrap; gap:10px;">
       <span>Selecione as linhas que deseja autorizar para correção:</span>
@@ -5724,7 +6144,7 @@ window.cancelarPadronizacaoCMD = function() {
 };
 
 // =========================================================================
-// CONTRA-NOTIFICAÇÃO & CONFIRMAÇÃO DE SEGURANÇA
+// CONTRA-NOTIFICAÇÁO & CONFIRMAÇÁO DE SEGURANÇA
 // =========================================================================
 
 window.confirmarContraNotificacaoPadronizacao = function() {
@@ -5777,7 +6197,7 @@ window.toggleBotaoContraExecucao = function(isChecked) {
 };
 
 // =========================================================================
-// EXECUÇÃO EM LOTE COM PROGRESSO DINÂMICO & BACKUP DE ESTORNO
+// EXECUÇÁO EM LOTE COM PROGRESSO DINÂMICO & BACKUP DE ESTORNO
 // =========================================================================
 
 window.executarPadronizacaoPlanilhaCMD = async function() {
@@ -5890,7 +6310,7 @@ window.executarPadronizacaoPlanilhaCMD = async function() {
 };
 
 // =========================================================================
-// ESTORNO DA ÚLTIMA ATUALIZAÇÃO (UNDO COM DATA E HORA)
+// ESTORNO DA ÚLTIMA ATUALIZAÇÁO (UNDO COM DATA E HORA)
 // =========================================================================
 
 window.estornarUltimaPadronizacao = async function() {
@@ -5913,7 +6333,7 @@ window.estornarUltimaPadronizacao = async function() {
     return;
   }
 
-  const confirma = confirm(`⚠️ ATENÇÃO: Deseja realmente estornar (reverter) a última padronização realizada em ${backup.dataHora}?
+  const confirma = confirm(`⚠️ ATENÇÁO: Deseja realmente estornar (reverter) a última padronização realizada em ${backup.dataHora}?
 
 Total de registros a restaurar: ${backup.registros.length}`);
   if (!confirma) return;

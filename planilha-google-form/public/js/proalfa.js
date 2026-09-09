@@ -19,7 +19,7 @@ const TAB_CONFIG = [
 // MATRÍCULAS: r[8]=TOTAL planilha (não usar — calcular)
 //             r[9]=1º  r[10]=2º  r[11]=3º  r[12]=4º  r[13]=5º
 //
-// ATENÇÃO: a planilha inclui uma linha "Total" ao final com r[0]="Total" e
+// ATENÇÁO: a planilha inclui uma linha "Total" ao final com r[0]="Total" e
 //          r[3]=null. O filtro abaixo exige INEP numérico > 0 para excluí-la.
 // ─────────────────────────────────────────────────────────────────────────────
 

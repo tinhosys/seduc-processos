@@ -248,7 +248,7 @@ function renderTableProalfa(dados, isDoc) {
       <th style="width:9%;  ${thL}">DISTRITO</th>
       <th style="width:7%;  ${thL}">INEP</th>
       <th style="width:14%; ${thL}">ESCOLA</th>
-      <th style="width:7%;  ${thL}">LOCALIZAÇÁO</th>
+      <th style="width:7%;  ${thL}">LOCALIZAÇÃO</th>
       <th style="width:7%;  ${thL}">LOC. DIF.</th>`;
 
   if (isDoc) {
@@ -275,7 +275,7 @@ function renderTableProalfa(dados, isDoc) {
   }
   thead.innerHTML = headHtml;
 
-  // ── BADGE DE LOCALIZAÇÁO E DIFERENCIADA ────────────────────────────────────
+  // ── BADGE DE LOCALIZAÇÃO E DIFERENCIADA ────────────────────────────────────
   const locPalette = {
     'Urbana':     { bg:'rgba(6,182,212,0.18)',  color:'#22d3ee', border:'rgba(6,182,212,0.35)'  },
     'Rural':      { bg:'rgba(16,185,129,0.18)', color:'#34d399', border:'rgba(16,185,129,0.35)' },

@@ -1288,6 +1288,10 @@ function renderProcessos() {
   preencherDatalist('list-interessados', 'interessado');
   preencherDatalist('list-objetos', 'objeto');
   preencherDatalist('list-agrupamentos', 'agrupamento');
+  preencherDatalist('list-municipios', 'municipio');
+  preencherDatalist('list-anos', 'ano');
+  preencherDatalist('list-status', 'status');
+  preencherDatalist('list-localizacao', 'localizacao');
   if (typeof popularDigitosDisponiveis === 'function') popularDigitosDisponiveis();
 
   // Tabela
@@ -1306,7 +1310,7 @@ function renderProcessos() {
             </span>
             ${p.ano ? `<span style="padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 10px; color: #cbd5e1; flex-shrink: 0;">${p.ano}</span>` : ''}
           </div>
-          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÁO -->
+          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÃO -->
           <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
             ${getCategoryBadge(p.categoria)}
             ${getTypeBadge(p.tipo)}
@@ -1484,7 +1488,7 @@ function preencherSelectFiltro(id, opcoes) {
 
   let placeholder = 'TODOS';
   if (id === 'filtro-status') placeholder = 'STATUS';
-  else if (id === 'filtro-localizacao') placeholder = 'LOCALIZAÇÁO';
+  else if (id === 'filtro-localizacao') placeholder = 'LOCALIZAÇÃO';
   else if (id === 'filtro-municipio') placeholder = 'MUNICÍPIO';
   else if (id === 'filtro-objeto') placeholder = 'OBJETO';
   else if (id === 'filtro-ano') placeholder = 'ANO';
@@ -1494,7 +1498,7 @@ function preencherSelectFiltro(id, opcoes) {
   else if (id === 'filtro-tipo') placeholder = 'TIPO';
   else if (id === 'filtro-super') placeholder = 'SUPER';
 
-  // Pegar valores selecionados atualmente via state (não via DOM, que pode estar destrudo)
+  // Pegar valores selecionados atualmente via state (não via DOM, que pode estar destruído)
   const campo = id.replace('filtro-', '');
   let selectedArr = state.filtros[campo] || [];
   if (typeof selectedArr === 'string') selectedArr = selectedArr ? [selectedArr] : [];
@@ -2780,7 +2784,7 @@ function exportarPDF() {
     didDrawPage: function (data) {
       doc.setFontSize(12);
       doc.setTextColor(40);
-      doc.text("CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
+      doc.text("CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO", 14, 20);
       
       const str = "Página " + data.pageNumber + " de " + totalPagesExp;
       doc.setFontSize(8);
@@ -2908,7 +2912,7 @@ function getCommonHeader(subtitle) {
       <div style="text-align:left; line-height:1.25;">
         <div style="font-size:10px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.4px;">GOVERNO DO ESTADO DE RONDÔNIA</div>
         <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
-        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
+        <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
         <span style="font-size:6pt; font-weight:700; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;">SISEDU</span>

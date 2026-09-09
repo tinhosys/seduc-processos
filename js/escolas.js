@@ -76,7 +76,7 @@ function _preencherFormEscolaPage(escola) {
   if (typeof _preencherFormEscola === 'function') _preencherFormEscola(escola);
 
   const titulo = document.getElementById('form-escola-page-titulo');
-  if (titulo) titulo.innerHTML = 'âœï¸ Editar Cadastro da Escola';
+  if (titulo) titulo.innerHTML = '✏️ Editar Cadastro da Escola';
   const sub = document.getElementById('form-escola-page-subtitulo');
   if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' - ' + escola.municipio : '');
   const btn = document.getElementById('btn-salvar-escola-page');
@@ -584,7 +584,7 @@ function _escolasFiltrarOpcoes(field, query) {
 function _chkUpdateLabel(field) {
   const labelEl = document.getElementById('chk-label-' + field);
   if (!labelEl) return;
-  const LABELS = { super: 'SUPER', municipio: 'MUNICÍPIO', competencia: 'COMPETÊNCIA', localizacao: 'LOCALIZAÇÁO', modalidade: 'MODALIDADE' };
+  const LABELS = { super: 'SUPER', municipio: 'MUNICÍPIO', competencia: 'COMPETÊNCIA', localizacao: 'LOCALIZAÇÃO', modalidade: 'MODALIDADE' };
   const count = _chkSelected[field].size;
   const btn = document.getElementById('chk-btn-' + field);
   if (count === 0) {
@@ -645,7 +645,7 @@ function filtrarEscolas(manterPagina = false) {
     if (_chkSelected.competencia.size > 0) {
       if (!_chkSelected.competencia.has((e.competencia||'').trim())) return false;
     }
-    // --- LOCALIZAÇÁO
+    // --- LOCALIZAÇÃO
     if (_chkSelected.localizacao.size > 0) {
       const eLoc = (e.localidade || e.localizacao || '').trim();
       if (!_chkSelected.localizacao.has(eLoc)) return false;
@@ -901,7 +901,7 @@ function _preencherFormEscola(escola) {
   }
 
   const titulo = document.getElementById('form-escola-titulo');
-  if (titulo) titulo.innerHTML = 'âœï¸ Editar Dados da Escola';
+  if (titulo) titulo.innerHTML = '✏️ Editar Dados da Escola';
   
   const sub = document.getElementById('form-escola-subtitulo');
   if (sub) sub.textContent = (escola.nome || 'Escola') + (escola.municipio ? ' - ' + escola.municipio : '');
@@ -1243,7 +1243,7 @@ function imprimirRelatorioEscolas() {
           <div class="titles">
             <div class="line-1">GOVERNO DO ESTADO DE RONDÔNIA</div>
             <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÁO</div>
-            <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÁO COM OS MUNICÍPIOS</div>
+            <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
           </div>
           <div class="header-sisedu">SISEDU</div>
         </div>
