@@ -3,6 +3,30 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
+## [v1.2.66] — 2026-09-09 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.66` · **Versão do Sistema:** `GBZ - v1.2.66`
+
+### 🪙 Ajuste no Menu Orçamento & Financeiro
+- **Submenu:** Renomeado o primeiro item de 'Orçamento' para **Financeiro**, mantendo o ícone das moedas douradas, e removido o terceiro item duplicado.
+- **Botões Rápidos da Barra Lateral:** Substituído o nome de 'ORÇAMENTO' para **FINANCEIRO** e removidas as setas indicadoras (`▶`) dos 4 botões para um visual limpo e moderno.
+
+### 📐 Alinhamento do Grupo Dígito e Parâmetros (=, <>) na Mesma Linha
+- Correção do container `.filtro-digito-container` para exibição forçada em linha única (`display: inline-flex !important; flex-wrap: nowrap !important; height: 38px;`), mantendo o campo de texto do Dígito e os seletores de comparação (`=` e `<>`) rigorosamente alinhados horizontalmente com os demais filtros.
+
+### 🎓 Formulário Unificado PROALFA (Professores e Alunos na Mesma Tela)
+- **4 Botões Simultâneos:** Painel superior de controle reformulado para exibir todos os 4 botões de forma simultânea em grade 2x2 com números expressivos:
+  1. **Docentes Municipais** (Total e filtro)
+  2. **Docentes Estaduais** (Total e filtro)
+  3. **Alunos Municipais** (Total e filtro)
+  4. **Alunos Estaduais** (Total e filtro)
+- Ao clicar em qualquer um dos 4 botões, a tabela e as métricas são chaveadas instantaneamente, sem necessidade de navegar entre abas separadas.
+
+### 📱 Compartilhamento Rápido no WhatsApp (PDF & Imagem)
+- **Novo Botão WhatsApp na Barra de Ações:** Gera instantaneamente um **Card Visual em Alta Resolução (PNG)** desenhado em Canvas com fundo escuro, resumo de valores e processos filtrados, acompanhado de **PDF Rápido** para download e texto com emojis pronto para envio no WhatsApp.
+
+---
+
 ## [v1.2.65] — 2026-09-09 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.2.65` · **Versão do Sistema:** `GBZ - v1.2.65`

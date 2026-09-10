@@ -2531,3 +2531,38 @@ thead th {
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25) !important;
   background: #0f172a !important;
 }
+
+/* Alinhamento Estrito na Mesma Linha do Grupo Dígito e Parâmetros = <> */
+.filtro-digito-container {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+  height: 38px !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+.filtro-digito-container > div:first-child {
+  width: 170px !important;
+  flex-shrink: 0 !important;
+}
+.btn-group-param-digito {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  height: 38px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Modal WhatsApp Share */
+.modal-whatsapp-share {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  max-width: 580px;
+  width: 95%;
+  overflow: hidden;
+}

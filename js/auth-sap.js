@@ -161,7 +161,11 @@ function aplicarPermissoes(nivel) {
       el.style.setProperty('display', 'none', 'important');
       return;
     }
-    el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+    if (el.classList.contains('filtro-digito-container')) {
+      el.style.setProperty('display', isAdminUser ? 'inline-flex' : 'none', 'important');
+    } else {
+      el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+    }
   });
 
   // Controle restrito do Dashboard (somente Elton, Admin, 69 99922-1336)

@@ -6411,3 +6411,242 @@ window.carregarFinanceiro = function() {
     window.carregarOrcamentoData();
   }
 };
+
+
+// ====== COMPARTILHAR RELATÓRIO NO WHATSAPP COM RESUMO, IMAGEM E PDF ======
+window.compartilharWhatsAppRelatorio = function() {
+  const lista = (typeof getProcessosFiltrados === 'function') ? getProcessosFiltrados() : (state.processos || []);
+  const totalQtd = lista.length;
+  
+  // Calcular valor total
+  let totalValor = 0;
+  lista.forEach(p => {
+    let v = p.valor || p.valorOficial || 0;
+    if (typeof v === 'string') {
+      v = parseFloat(v.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+    }
+    totalValor += Number(v) || 0;
+  });
+
+  const totalFmt = totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
+  // Distribuição por Status
+  const porStatus = {};
+  lista.forEach(p => {
+    const s = (p.status || 'OUTROS').trim();
+    porStatus[s] = (porStatus[s] || 0) + 1;
+  });
+  const statusStr = Object.entries(porStatus)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([st, qtd]) => ` • ${st}: ${qtd}`)
+    .join('\n');
+
+  // Gerar Texto Formatado para WhatsApp
+  const dataHoje = new Date().toLocaleDateString('pt-BR');
+  const horaHoje = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const textoWhatsApp = 
+`📊 *SEDUC/RO — CAM: RELATÓRIO EXECUTIVO*
+📅 *Data:* ${dataHoje} às ${horaHoje}
+📂 *Processos Filtrados:* ${totalQtd}
+💰 *Valor Total:* ${totalFmt}
+
+📌 *Status dos Processos:*
+${statusStr}
+
+🔗 *Acompanhe online:* https://tinhosys.github.io/seduc-processos/
+_Gerado via SEDUC Processos v1.2.66_`;
+
+  // Gerar Imagem do Card via HTML5 Canvas
+  const canvas = document.createElement('canvas');
+  canvas.width = 900;
+  canvas.height = 560;
+  const ctx = canvas.getContext('2d');
+
+  // Fundo com gradiente elegante
+  const grad = ctx.createLinearGradient(0, 0, 900, 560);
+  grad.addColorStop(0, '#0f172a');
+  grad.addColorStop(1, '#1e293b');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 900, 560);
+
+  // Borda superior colorida
+  const lineGrad = ctx.createLinearGradient(0, 0, 900, 0);
+  lineGrad.addColorStop(0, '#38bdf8');
+  lineGrad.addColorStop(0.5, '#25d366');
+  lineGrad.addColorStop(1, '#10b981');
+  ctx.fillStyle = lineGrad;
+  ctx.fillRect(0, 0, 900, 6);
+
+  // Cabeçalho
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 24px Inter, sans-serif';
+  ctx.fillText('CAM — COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS', 40, 55);
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '14px Inter, sans-serif';
+  ctx.fillText('SEDUC - RO · Resumo Executivo para Compartilhamento', 40, 80);
+
+  // Card Valor Total
+  ctx.fillStyle = 'rgba(16, 185, 129, 0.12)';
+  ctx.strokeStyle = '#10b981';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.roundRect(40, 110, 400, 110, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#6ee7b7';
+  ctx.font = 'bold 12px Inter, sans-serif';
+  ctx.fillText('VALOR TOTAL FILTRADO', 60, 138);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 28px Inter, sans-serif';
+  ctx.fillText(totalFmt, 60, 182);
+
+  // Card Quantidade
+  ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
+  ctx.strokeStyle = '#38bdf8';
+  ctx.beginPath();
+  ctx.roundRect(460, 110, 400, 110, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  ctx.fillStyle = '#7dd3fc';
+  ctx.font = 'bold 12px Inter, sans-serif';
+  ctx.fillText('TOTAL DE PROCESSOS', 480, 138);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 28px Inter, sans-serif';
+  ctx.fillText(totalQtd + ' Processos', 480, 182);
+
+  // Tabela de Amostra dos Processos
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 16px Inter, sans-serif';
+  ctx.fillText('Amostra de Processos Filtrados:', 40, 260);
+
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+  ctx.fillRect(40, 275, 820, 220);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+  ctx.strokeRect(40, 275, 820, 220);
+
+  // Cabeçalho da mini-tabela
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = 'bold 12px Inter, sans-serif';
+  ctx.fillText('PROCESSO SEI / PREFIXO', 55, 300);
+  ctx.fillText('MUNICÍPIO / INTERESSADO', 320, 300);
+  ctx.fillText('STATUS', 630, 300);
+  ctx.fillText('VALOR (R$)', 760, 300);
+
+  // Linhas
+  const amostra = lista.slice(0, 5);
+  let y = 330;
+  amostra.forEach((p, idx) => {
+    ctx.fillStyle = idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent';
+    ctx.fillRect(41, y - 18, 818, 26);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 12px monospace';
+    const procStr = (p.prefixo ? p.prefixo + ' ' : '') + (p.numero || p.processo || 'S/N');
+    ctx.fillText(procStr.substring(0, 25), 55, y);
+
+    ctx.fillStyle = '#e2e8f0';
+    ctx.font = '12px Inter, sans-serif';
+    const munStr = (p.municipio || '') + (p.interessado ? ' - ' + p.interessado : '');
+    ctx.fillText(munStr.substring(0, 35), 320, y);
+
+    ctx.fillStyle = '#f59e0b';
+    ctx.font = 'bold 11px Inter, sans-serif';
+    ctx.fillText((p.status || 'N/A').substring(0, 16), 630, y);
+
+    ctx.fillStyle = '#34d399';
+    ctx.font = 'bold 12px monospace';
+    let valRow = p.valor || p.valorOficial || 0;
+    if (typeof valRow === 'number') valRow = valRow.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    ctx.fillText(String(valRow).substring(0, 14), 760, y);
+
+    y += 28;
+  });
+
+  // Rodapé
+  ctx.fillStyle = '#64748b';
+  ctx.font = '11px Inter, sans-serif';
+  ctx.fillText('Gerado em ' + dataHoje + ' ' + horaHoje + ' · SEDUC Processos v1.2.66', 40, 530);
+  ctx.fillText('https://tinhosys.github.io/seduc-processos/', 620, 530);
+
+  // Converter para imagem PNG
+  const imgUrl = canvas.toDataURL('image/png');
+
+  // Criar Modal com Opções de Compartilhamento
+  let modalOverlay = document.getElementById('modal-whatsapp-relatorio');
+  if (!modalOverlay) {
+    modalOverlay = document.createElement('div');
+    modalOverlay.id = 'modal-whatsapp-relatorio';
+    modalOverlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:999999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);';
+    document.body.appendChild(modalOverlay);
+  }
+
+  modalOverlay.innerHTML = `
+    <div class="modal-whatsapp-share" style="background:#0f172a; border:1px solid #334155; border-radius:14px; box-shadow:0 25px 50px rgba(0,0,0,0.7); max-width:620px; width:95%; max-height:90vh; overflow-y:auto; padding:22px; color:#fff;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #334155; padding-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:22px;">📱</span>
+          <h3 style="margin:0; font-size:17px; font-weight:800; color:#25d366;">Compartilhar Relatório no WhatsApp</h3>
+        </div>
+        <button onclick="document.getElementById('modal-whatsapp-relatorio').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer;">&times;</button>
+      </div>
+
+      <!-- Preview da Imagem -->
+      <div style="margin-bottom:16px; text-align:center;">
+        <img src="${imgUrl}" style="max-width:100%; border-radius:8px; border:1px solid #334155; box-shadow:0 8px 20px rgba(0,0,0,0.4);" alt="Preview Relatório">
+      </div>
+
+      <!-- Botões de Ação Rápida -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
+        <button id="btn-env-whatsapp" style="background:#25d366; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          📲 Abrir no WhatsApp
+        </button>
+        <button id="btn-baixar-imagem" style="background:#0284c7; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          🖼️ Baixar Imagem
+        </button>
+        <button id="btn-baixar-pdf-rapido" style="background:#7c3aed; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          📄 Baixar PDF Rápido
+        </button>
+        <button id="btn-copiar-texto" style="background:#334155; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+          📋 Copiar Texto
+        </button>
+      </div>
+
+      <p style="margin:0; font-size:11px; color:#64748b; text-align:center;">A imagem e o texto são otimizados para envio direto para grupos e contatos no WhatsApp.</p>
+    </div>
+  `;
+
+  modalOverlay.style.display = 'flex';
+
+  // Eventos dos botões
+  document.getElementById('btn-env-whatsapp').onclick = () => {
+    const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(textoWhatsApp);
+    window.open(url, '_blank');
+  };
+
+  document.getElementById('btn-baixar-imagem').onclick = () => {
+    const a = document.createElement('a');
+    a.href = imgUrl;
+    a.download = 'Relatorio_SEDUC_CAM_' + Date.now() + '.png';
+    a.click();
+  };
+
+  document.getElementById('btn-copiar-texto').onclick = () => {
+    navigator.clipboard.writeText(textoWhatsApp);
+    if (typeof showToast === 'function') showToast('Texto copiado para a área de transferência!', 'success');
+    else alert('Texto copiado!');
+  };
+
+  document.getElementById('btn-baixar-pdf-rapido').onclick = () => {
+    if (window.jspdf) {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF('landscape', 'pt', [900, 560]);
+      pdf.addImage(imgUrl, 'PNG', 0, 0, 900, 560);
+      pdf.save('Relatorio_WhatsApp_' + Date.now() + '.pdf');
+    } else if (typeof window.imprimirPadrao === 'function') {
+      window.imprimirPadrao();
+    }
+  };
+};

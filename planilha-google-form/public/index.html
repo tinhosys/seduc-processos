@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.65">
+  <link rel="stylesheet" href="css/style.css?v=1.2.66">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -220,7 +220,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.65</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.66</div>
   </div>
 </div>
   
@@ -246,35 +246,31 @@
       </div>
 
       
-            <!-- 4 BOTÕES DE MÓDULOS RÁPIDOS COM CONTROLE DE PERFIL (GDSM, GMAC, PROALFA, ORÇAMENTO) -->
+            <!-- 4 BOTÕES DE MÓDULOS RÁPIDOS (GDSM, GMAC, PROALFA, FINANCEIRO) SEM SETAS -->
       <div class="sidebar-quick-modules" id="sidebar-quick-modules">
         <a href="#" class="quick-module-btn btn-mod-gdsm" id="btn-quick-gdsm" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-gdsm'); navegar('processos'); return false;" title="Acessar Módulo GDSM">
           <span style="display:flex; align-items:center; gap:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
             <span>GDSM</span>
           </span>
-          <span style="font-size:10px; opacity:0.85;">▶</span>
         </a>
         <a href="#" class="quick-module-btn btn-mod-gmac" id="btn-quick-gmac" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-gmac'); navegar('gmac-aee'); if(typeof carregarGMAC==='function') carregarGMAC('aee'); return false;" title="Acessar Módulo GMAC">
           <span style="display:flex; align-items:center; gap:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line></svg>
             <span>GMAC</span>
           </span>
-          <span style="font-size:10px; opacity:0.85;">▶</span>
         </a>
-        <a href="#" class="quick-module-btn btn-mod-proalfa" id="btn-quick-proalfa" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-proalfa'); navegarProalfa('professores'); return false;" title="Acessar Módulo PROALFA">
+        <a href="#" class="quick-module-btn btn-mod-proalfa" id="btn-quick-proalfa" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-proalfa'); navegarProalfa('todos'); return false;" title="Acessar Módulo PROALFA">
           <span style="display:flex; align-items:center; gap:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
             <span>PROALFA</span>
           </span>
-          <span style="font-size:10px; opacity:0.85;">▶</span>
         </a>
-        <a href="#" class="quick-module-btn btn-mod-orcamento action-report" id="btn-quick-orcamento" onclick="abrirSubmenu('sub-orcamento'); navegar('orcamento'); return false;" title="Acessar Módulo Orçamento">
+        <a href="#" class="quick-module-btn btn-mod-orcamento action-report" id="btn-quick-orcamento" onclick="abrirSubmenu('sub-orcamento'); navegar('orcamento'); return false;" title="Acessar Módulo Financeiro">
           <span style="display:flex; align-items:center; gap:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path></svg>
-            <span>ORÇAMENTO</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path></svg>
+            <span>FINANCEIRO</span>
           </span>
-          <span style="font-size:10px; opacity:0.85;">▶</span>
         </a>
       </div>
 
@@ -377,11 +373,11 @@
               <svg class="submenu-indicator" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
             </a>
             <div class="nav-submenu sub-level-proalfa" id="sub-proalfa" style="display: none;">
-              <a href="#" class="nav-item nav-form-item" data-page="proalfa-professores" onclick="navegarProalfa('professores'); return false;">
+              <a href="#" class="nav-item nav-form-item" data-page="proalfa-professores" onclick="navegarProalfa('professores'); if(typeof selecionarTabProalfa==='function') selecionarTabProalfa('Docentes_Rede_Municipal_2025'); return false;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
                 <span>Professores</span>
               </a>
-              <a href="#" class="nav-item nav-form-item" data-page="proalfa-alunos" onclick="navegarProalfa('alunos'); return false;">
+              <a href="#" class="nav-item nav-form-item" data-page="proalfa-alunos" onclick="navegarProalfa('alunos'); if(typeof selecionarTabProalfa==='function') selecionarTabProalfa('Matrículas_Municipal_2025'); return false;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
                 <span>Alunos</span>
               </a>
@@ -416,22 +412,11 @@
                 <circle cx="8" cy="8" r="2"></circle>
                 <circle cx="15" cy="15" r="2"></circle>
               </svg>
-              <span>Orçamento</span>
+              <span>Financeiro</span>
             </a>
             <a href="#" class="nav-item nav-form-item item-diarias" data-page="diarias" onclick="navegar('diarias')">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
               <span>Diárias</span>
-            </a>
-            <!-- Item Financeiro com chamada ao formulário e efeito no foco -->
-            <a href="#" class="nav-item nav-form-item item-financeiro" data-page="financeiro" onclick="navegar('financeiro')" title="Gestão Financeira e Lançamentos">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                <line x1="1" y1="10" x2="23" y2="10"></line>
-                <circle cx="6" cy="15" r="1" fill="#10b981"></circle>
-                <circle cx="10" cy="15" r="1" fill="#10b981"></circle>
-                <path d="M16 15h3"></path>
-              </svg>
-              <span>Financeiro</span>
             </a>
           </div>
         </div>
@@ -487,7 +472,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.65</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.66</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1081,19 +1066,19 @@
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
-              <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÃO -->
-            <div class="filtro-digito-container action-adm" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; gap:6px; flex:0 0 auto; width:auto;">
-              <div style="position:relative; width:220px; flex-shrink:0;">
-                <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 10px; height:38px; box-sizing:border-box;">
+              <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÃO ALINHADOS NA MESMA LINHA -->
+            <div class="filtro-digito-container action-adm" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; gap:6px; flex:0 0 auto; width:auto; height:38px;">
+              <div style="position:relative; width:170px; flex-shrink:0;">
+                <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 8px; height:38px; box-sizing:border-box;">
                   <input type="text" id="filtro-digito" placeholder="GRUPO (DÍGITO)" autocomplete="off"
-                    style="width:100%; background:transparent; border:none; color:#c7d2fe; font-size:13px; font-weight:600; outline:none; padding:0;">
+                    style="width:100%; background:transparent; border:none; color:#c7d2fe; font-size:12px; font-weight:600; outline:none; padding:0;">
                   <button type="button" id="btn-digito-dropdown-toggle" title="Ver grupos/dígitos disponíveis na planilha"
-                    style="background:none; border:none; color:#818cf8; cursor:pointer; padding:4px; font-size:12px; display:flex; align-items:center; justify-content:center; transition:transform 0.2s;">
+                    style="background:none; border:none; color:#818cf8; cursor:pointer; padding:2px; font-size:11px; display:flex; align-items:center; justify-content:center; transition:transform 0.2s;">
                     &#9662;
                   </button>
                 </div>
                 <!-- Dropdown de Multi-Seleção de Dígitos -->
-                <div id="dropdown-digitos-opcoes" class="custom-multiselect-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; min-width:180px; z-index:9999; margin-top:4px; max-height:220px; overflow-y:auto; background:#1e293b; border:1px solid #334155; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.5); padding:4px;">
+                <div id="dropdown-digitos-opcoes" class="custom-multiselect-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; min-width:180px; z-index:9999; margin-top:4px; max-height:220px; overflow-y:auto; overflow-x:hidden; background:#1e293b; border:1px solid #334155; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.5); padding:4px;">
                   <div class="custom-multiselect-header" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; border-bottom:1px solid #334155;">
                     <span style="font-weight:700; font-size:10px; text-transform:uppercase; color:#94a3b8; display:flex; align-items:center; gap:4px;">
                       <span style="font-size:10px; color:#38bdf8;">📌</span> DISPONÍVEIS NA PLANILHA
@@ -1158,6 +1143,9 @@
           </button>
           <button class="btn action-report action-adm" id="btn-relatorio-padrao-adm-2" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:#0f172a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> <span class="btn-text">RELATÓRIO ADM 2</span>
+          </button>
+          <button class="btn action-report" onclick="compartilharWhatsAppRelatorio()" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#25d366; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#22c55e'" onmouseout="this.style.background='#25d366'" title="Gerar PDF Rápido / Imagem para Compartilhar no WhatsApp">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> <span class="btn-text">WHATSAPP (PDF/IMG)</span>
           </button>
           <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#9333ea; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#7e22ce'" onmouseout="this.style.background='#9333ea'" title="Análise Gerencial">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg> <span class="btn-text">ANÁLISE</span>
@@ -1760,7 +1748,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.65
+              GBZ - v1.2.66
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2033,7 +2021,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.65] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.66] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -2976,7 +2964,7 @@
   <!-- ===================== PAGE PROALFA ===================== -->
   <section id="page-proalfa" class="page">
     <div style="display: flex; gap: 30px; margin-bottom: 20px; flex-wrap: wrap; align-items: stretch; justify-content: space-between;">
-      <div style="display: flex; flex-direction: column; gap: 10px; width: 250px; min-width: 220px;" id="proalfa-tabs"></div>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 440px; min-width: 340px;" id="proalfa-tabs"></div>
       
       <div style="display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; flex: 1;">
         <button onclick="imprimirCenso()" style="flex:1; min-width:130px; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.5); color:#60a5fa; padding:0 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
@@ -3316,13 +3304,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.65"></script>
-  <script src="js/app.js?v=1.2.65"></script>
-  <script src="js/auth-sap.js?v=1.2.65"></script>
-  <script src="js/escolas.js?v=1.2.65" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.66"></script>
+  <script src="js/app.js?v=1.2.66"></script>
+  <script src="js/auth-sap.js?v=1.2.66"></script>
+  <script src="js/escolas.js?v=1.2.66" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.65"></script>
-  <script src="js/contatos.js?v=1.2.65"></script>
+  <script src="js/mapa.js?v=1.2.66"></script>
+  <script src="js/contatos.js?v=1.2.66"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3495,15 +3483,15 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.65"></script>
+  <script src="js/multi-select.js?v=1.2.66"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.65"></script>
-  <script src="js/gmac.js?v=1.2.65"></script>
-  <script src="js/orcamento.js?v=1.2.65"></script>
-  <script src="js/gdsm.js?v=1.2.65"></script>
-  <script src="js/print-proalfa.js?v=1.2.65"></script>
-  <script src="js/proalfa.js?v=1.2.65"></script>
+  <script src="js/diarias.js?v=1.2.66"></script>
+  <script src="js/gmac.js?v=1.2.66"></script>
+  <script src="js/orcamento.js?v=1.2.66"></script>
+  <script src="js/gdsm.js?v=1.2.66"></script>
+  <script src="js/print-proalfa.js?v=1.2.66"></script>
+  <script src="js/proalfa.js?v=1.2.66"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
