@@ -3,7 +3,24 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.71] — 2026-09-10 🟢 VERSÃO ATUAL
+## [v1.2.72] — 2026-09-10 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.72` · **Versão do Sistema:** `GBZ - v1.2.72`
+
+### 📐 Padronização Universal de Telas em 100% (Padrão Imagem 2)
+- **Extinção de Formulários Estourados ou Desproporcionais:** Unificada a geometria de todos os formulários do sistema para **100% de largura contínua** (`width: 100%; box-sizing: border-box`), eliminando larguras forçadas (`1700px`, `1400px`) que deformavam a tela de processos em relação ao padrão ideal visto no GDSM.
+- **Botões, Busca e Parâmetros SEMPRE Visíveis:** O cabeçalho de contadores/badges (`.section-header`), os campos de busca e filtros (`.filters-bar`) e a barra de ações (`.action-toolbar-scroll`) receberam travamento estrito (`flex-shrink: 0`), permanecendo permanentemente acessíveis e fixos no topo do viewport durante toda a navegação.
+
+### 🔄 Rolagem Inteligente sob Demanda (Auxiliar Apenas Quando Necessário)
+- **Eliminação do `overflow: scroll` Forçado:** Substituído por `overflow: auto` em todas as tabelas. Em telas de computador normais, a tabela se ajusta perfeitamente em 100% sem exibir nenhuma barra de rolagem horizontal desnecessária.
+- **Ferramenta Auxiliar Elegante:** Em celulares, tablets ou visões com zoom, a barra de rolagem horizontal surge de forma fluida e discreta (8px) com controle deslizante azul (`#3b82f6`), sem quebrar a estrutura da página.
+
+### 📱 Responsividade Completa (Celulares e Tablets)
+- **Adaptação para Dispositivos Móveis:** Media queries dedicadas para telas de até 1024px e até 768px, reorganizando cards, quebrando parâmetros harmoniosamente e permitindo rolagem horizontal suave com aceleração de toque (`-webkit-overflow-scrolling: touch`).
+
+---
+
+## [v1.2.71] — 2026-09-10
 
 **Tag:** `v1.2.71` · **Versão do Sistema:** `GBZ - v1.2.71`
 
