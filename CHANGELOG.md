@@ -3,7 +3,23 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.66] — 2026-09-09 🟢 VERSÃO ATUAL
+## [v1.2.67] — 2026-09-09 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.67` · **Versão do Sistema:** `GBZ - v1.2.67`
+
+### 🛡️ Correção de Erro de Execução (Bugfix PROALFA)
+- **Causa Raiz Resolvida:** Tratamento contra leitura assíncrona de chaves antes do carregamento completo do `proalfa.json` (eliminando o erro `TypeError: Cannot read properties of null`).
+- **Resiliência e Carregamento:** Inicialização de `proalfaData` como objeto seguro `{}` e mecanismo de recarga sob demanda transparente ao selecionar qualquer aba.
+- **Preservação Visual:** Ao alternar abas, os 4 botões mantêm seus gradientes vivos (Docentes: azul/índigo; Alunos: esmeralda/verde).
+
+### 📤 Novo Botão COMPARTILHAR com Ícone Oficial de Nós / Rede
+- **Substituição Visual:** Removido o botão antigo e adicionado o botão azul **COMPARTILHAR** com o ícone oficial de rede / compartilhamento.
+- **Compartilhamento de Processos Marcados (PADRÃO SELEÇÃO):** O botão detecta automaticamente os processos selecionados com check na tabela e gera instantaneamente a imagem em alta resolução com a diagramação oficial do relatório **PADRÃO SELEÇÃO** (cabeçalho oficial, grade com colunas completas e totais).
+- **Esquema de Compartilhamento Rápido:** Modal interativo completo com preview da imagem, botão de disparo no WhatsApp com texto estruturado, download de PNG e PDF.
+
+---
+
+## [v1.2.66] — 2026-09-09
 
 **Tag:** `v1.2.66` · **Versão do Sistema:** `GBZ - v1.2.66`
 

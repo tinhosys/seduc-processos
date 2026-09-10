@@ -1,4 +1,5 @@
-let proalfaData = null;
+let proalfaData = {};
+let _carregandoProalfaPromise = null;
 let currentTabProalfa = 'Docentes_Rede_Municipal_2025';
 let currentProalfaModulo = 'professores'; // 'professores' | 'alunos'
 
@@ -40,6 +41,8 @@ function _somaMatriculas(r) {
 
 // ─── CARREGAR DADOS ──────────────────────────────────────────────────────────
 async function carregarProalfa() {
+  if (_carregandoProalfaPromise) return _carregandoProalfaPromise;
+  _carregandoProalfaPromise = (async () => {
   try {
     const res  = await fetch('proalfa.json');
     const json = await res.json();
@@ -65,7 +68,11 @@ async function carregarProalfa() {
 
   } catch (e) {
     console.error('Erro ao carregar proalfa:', e);
+  } finally {
+    _carregandoProalfaPromise = null;
   }
+  })();
+  return _carregandoProalfaPromise;
 }
 
 // ─── ABAS (tab buttons organizados por módulo: Professores x Alunos - GBZ v1.2.40) ─
@@ -134,13 +141,27 @@ function selecionarTabProalfa(tabId) {
     currentProalfaModulo = novoModulo;
   }
 
+  // Se os dados ainda não foram carregados, carrega e depois re-aplica
+  if (!proalfaData || Object.keys(proalfaData).length === 0) {
+    if (typeof carregarProalfa === 'function') {
+      carregarProalfa().then(() => {
+        renderProalfaTabs();
+        selecionarTabProalfa(tabId);
+      });
+    }
+    return;
+  }
+
   document.querySelectorAll('.proalfa-tab-btn').forEach(b => {
     const isAtivo = b.dataset.tab === tabId;
     const numSpan = b.querySelector('.proalfa-tab-num');
     const titleSpan = b.querySelector('.proalfa-tab-title');
-    b.style.background  = isAtivo ? '#6366f1' : 'rgba(255,255,255,0.05)';
-    b.style.borderColor = isAtivo ? '#6366f1' : 'var(--border-color)';
-    b.style.boxShadow   = isAtivo ? '0 4px 12px rgba(99,102,241,0.35)' : 'none';
+    const tabItemConf = TAB_CONFIG.find(t => t.id === b.dataset.tab);
+    const isDocTab = tabItemConf ? tabItemConf.type === 'docentes' : true;
+    const corTab = isDocTab ? '#6366f1' : '#10b981';
+    b.style.background  = isAtivo ? (isDocTab ? 'linear-gradient(135deg,#4f46e5,#6366f1)' : 'linear-gradient(135deg,#059669,#10b981)') : 'rgba(15,23,42,0.7)';
+    b.style.borderColor = isAtivo ? corTab : 'rgba(255,255,255,0.1)';
+    b.style.boxShadow   = isAtivo ? '0 4px 14px rgba(0,0,0,0.4)' : 'none';
     if (titleSpan) titleSpan.style.color = isAtivo ? '#ffffff' : '#cbd5e1';
     if (numSpan)   numSpan.style.color   = isAtivo ? '#ffffff' : '#10b981';
   });
@@ -151,6 +172,7 @@ function selecionarTabProalfa(tabId) {
 
 // ─── PREENCHER COMBOS ─────────────────────────────────────────────────────────
 function preencherCombosProalfa() {
+  if (!proalfaData) proalfaData = {};
   const data = proalfaData[currentTabProalfa] || [];
 
   const superSet = new Set();
@@ -205,7 +227,8 @@ function filtrarProalfa() {
   const filterLoc   = document.getElementById('proalfa-localizacao')?.value || '';
   const filterLocD  = document.getElementById('proalfa-loc-dif')?.value || '';
 
-  const filtrados = (proalfaData[currentTabProalfa] || []).filter(r => {
+  const dataTab = (proalfaData && proalfaData[currentTabProalfa]) ? proalfaData[currentTabProalfa] : [];
+  const filtrados = dataTab.filter(r => {
     if (filterSuper && r[0] !== filterSuper) return false;
     if (filterMun   && r[1] !== filterMun)   return false;
     if (filterDist  && r[2] !== filterDist)  return false;

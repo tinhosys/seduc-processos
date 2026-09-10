@@ -6413,15 +6413,42 @@ window.carregarFinanceiro = function() {
 };
 
 
-// ====== COMPARTILHAR RELATÓRIO NO WHATSAPP COM RESUMO, IMAGEM E PDF ======
-window.compartilharWhatsAppRelatorio = function() {
-  const lista = (typeof getProcessosFiltrados === 'function') ? getProcessosFiltrados() : (state.processos || []);
+
+// ====== COMPARTILHAR RELATÓRIO / SELEÇÃO (WHATSAPP COM LAYOUT PADRÃO E IMAGEM DIRETA) ======
+window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
+  let lista = [];
+  
+  // Verifica se há checkboxes selecionados na tabela
+  const checks = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
+  const temSelecionados = checks.length > 0;
+
+  // Se 'somenteSelecionados' for true OU se houver itens marcados com check
+  if (somenteSelecionados || temSelecionados) {
+    const base = (typeof getFiltrados === 'function') ? getFiltrados() : (state.processos || []);
+    lista = base.filter(p => checks.includes(p.id));
+    if (lista.length === 0 && temSelecionados) {
+      // Tenta direto em carregarProcessos caso getFiltrados esteja filtrando
+      lista = (typeof carregarProcessos === 'function' ? carregarProcessos() : []).filter(p => checks.includes(p.id));
+    }
+  }
+
+  // Se ainda assim a lista estiver vazia (nenhum check marcado), usa os processos filtrados da tela
+  if (!lista || lista.length === 0) {
+    lista = (typeof getFiltrados === 'function') ? getFiltrados() : (state.processos || []);
+  }
+
+  if (!lista || lista.length === 0) {
+    alert('Nenhum processo selecionado ou disponível para compartilhamento.');
+    return;
+  }
+
+  const isSelecao = checks.length > 0 && lista.length === checks.length;
   const totalQtd = lista.length;
   
   // Calcular valor total
   let totalValor = 0;
   lista.forEach(p => {
-    let v = p.valor || p.valorOficial || 0;
+    let v = p.valor || p.valorOficial || p.valorOf || 0;
     if (typeof v === 'string') {
       v = parseFloat(v.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
     }
@@ -6429,192 +6456,273 @@ window.compartilharWhatsAppRelatorio = function() {
   });
 
   const totalFmt = totalValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  const dataHoje = new Date().toLocaleDateString('pt-BR');
+  const horaHoje = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
   // Distribuição por Status
   const porStatus = {};
   lista.forEach(p => {
-    const s = (p.status || 'OUTROS').trim();
+    const s = (p.status || 'OUTROS').trim().toUpperCase();
     porStatus[s] = (porStatus[s] || 0) + 1;
   });
   const statusStr = Object.entries(porStatus)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 4)
-    .map(([st, qtd]) => ` • ${st}: ${qtd}`)
+    .map(([st, qtd]) => ' • ' + st + ': ' + qtd)
     .join('\n');
 
-  // Gerar Texto Formatado para WhatsApp
-  const dataHoje = new Date().toLocaleDateString('pt-BR');
-  const horaHoje = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  // Gerar Texto Formatado para WhatsApp com a lista dos processos selecionados
+  let listaTextoProcs = '';
+  lista.slice(0, 10).forEach((p, idx) => {
+    const valP = Number(p.valor || p.valorOficial || p.valorOf || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    listaTextoProcs += (idx + 1) + '. *' + (p.prefixo || '-') + '* | ' + (p.municipio || '-') + ' | ' + (p.numero || '-') + ' | ' + valP + '\n';
+  });
+  if (lista.length > 10) {
+    listaTextoProcs += '... e mais ' + (lista.length - 10) + ' processos selecionados.\n';
+  }
+
+  const tituloMsg = isSelecao ? '📋 *SEDUC/RO — CAM: PROCESSOS SELECIONADOS*' : '📊 *SEDUC/RO — CAM: RELATÓRIO EXECUTIVO*';
   const textoWhatsApp = 
-`📊 *SEDUC/RO — CAM: RELATÓRIO EXECUTIVO*
+`${tituloMsg}
 📅 *Data:* ${dataHoje} às ${horaHoje}
-📂 *Processos Filtrados:* ${totalQtd}
+📂 *Processos:* ${totalQtd} selecionado(s)
 💰 *Valor Total:* ${totalFmt}
 
-📌 *Status dos Processos:*
+📌 *Status:*
 ${statusStr}
 
+📝 *Processos Marcados:*
+${listaTextoProcs}
 🔗 *Acompanhe online:* https://tinhosys.github.io/seduc-processos/
-_Gerado via SEDUC Processos v1.2.66_`;
+_Gerado via SEDUC Processos v1.2.67_`;
 
-  // Gerar Imagem do Card via HTML5 Canvas
+  // Gerar Imagem do Relatório em Alta Resolução (Layout fiel ao "PADRÃO SELEÇÃO")
+  const rowHeight = 30;
+  const headerHeight = 110;
+  const colHeaderHeight = 35;
+  const footerHeight = 70;
+  const maxRowsToDraw = Math.min(lista.length, 25);
+  const dynamicHeight = Math.max(520, headerHeight + colHeaderHeight + (maxRowsToDraw * rowHeight) + footerHeight);
+  const canvasWidth = 1200;
+
   const canvas = document.createElement('canvas');
-  canvas.width = 900;
-  canvas.height = 560;
+  canvas.width = canvasWidth;
+  canvas.height = dynamicHeight;
   const ctx = canvas.getContext('2d');
 
-  // Fundo com gradiente elegante
-  const grad = ctx.createLinearGradient(0, 0, 900, 560);
-  grad.addColorStop(0, '#0f172a');
-  grad.addColorStop(1, '#1e293b');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 900, 560);
-
-  // Borda superior colorida
-  const lineGrad = ctx.createLinearGradient(0, 0, 900, 0);
-  lineGrad.addColorStop(0, '#38bdf8');
-  lineGrad.addColorStop(0.5, '#25d366');
-  lineGrad.addColorStop(1, '#10b981');
-  ctx.fillStyle = lineGrad;
-  ctx.fillRect(0, 0, 900, 6);
-
-  // Cabeçalho
+  // Fundo branco do documento oficial impresso
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 24px Inter, sans-serif';
-  ctx.fillText('CAM — COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS', 40, 55);
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = '14px Inter, sans-serif';
-  ctx.fillText('SEDUC - RO · Resumo Executivo para Compartilhamento', 40, 80);
+  ctx.fillRect(0, 0, canvasWidth, dynamicHeight);
 
-  // Card Valor Total
-  ctx.fillStyle = 'rgba(16, 185, 129, 0.12)';
-  ctx.strokeStyle = '#10b981';
-  ctx.lineWidth = 1.5;
+  // Cabeçalho Oficial do Estado de Rondônia (idêntico ao getCommonHeader)
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 15px Arial, sans-serif';
+  ctx.fillText('GOVERNO DO ESTADO DE RONDÔNIA', 30, 32);
+
+  ctx.fillStyle = '#0284c7';
+  ctx.font = 'bold 14px Arial, sans-serif';
+  ctx.fillText('SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO', 30, 52);
+
+  ctx.fillStyle = '#475569';
+  ctx.font = 'bold 13px Arial, sans-serif';
+  ctx.fillText('CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS', 30, 72);
+
+  ctx.fillStyle = '#1e3a8a';
+  ctx.font = 'bold 16px Arial, sans-serif';
+  const subTituloRelat = isSelecao ? 'LISTA DE PROCESSOS SELECIONADOS (PADRÃO SELEÇÃO)' : 'LISTA DE PROCESSOS (RELATÓRIO PADRÃO)';
+  ctx.fillText(subTituloRelat, 30, 96);
+
+  // Indicador SISEDU e Data no topo direito
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#64748b';
+  ctx.font = 'bold 12px Arial, sans-serif';
+  ctx.fillText('SISEDU / CAM', canvasWidth - 30, 32);
+  ctx.font = '11px Arial, sans-serif';
+  ctx.fillText('Emissão: ' + dataHoje + ' ' + horaHoje, canvasWidth - 30, 52);
+  ctx.fillText('Total: ' + totalQtd + ' processo(s)', canvasWidth - 30, 72);
+  ctx.textAlign = 'left';
+
+  // Linha divisória do topo
+  ctx.strokeStyle = '#0284c7';
+  ctx.lineWidth = 2.5;
   ctx.beginPath();
-  ctx.roundRect(40, 110, 400, 110, 10);
-  ctx.fill();
+  ctx.moveTo(30, 104);
+  ctx.lineTo(canvasWidth - 30, 104);
   ctx.stroke();
 
-  ctx.fillStyle = '#6ee7b7';
-  ctx.font = 'bold 12px Inter, sans-serif';
-  ctx.fillText('VALOR TOTAL FILTRADO', 60, 138);
+  // Definição das colunas da tabela padrão
+  const cols = [
+    { label: 'Nº', width: 45, align: 'center' },
+    { label: 'PREFIXO', width: 95, align: 'left' },
+    { label: 'MUNICÍPIO', width: 140, align: 'left' },
+    { label: 'PROCESSO SEI', width: 155, align: 'left' },
+    { label: 'INTERESSADO', width: 190, align: 'left' },
+    { label: 'OBJETO / FINALIDADE', width: 285, align: 'left' },
+    { label: 'STATUS', width: 110, align: 'left' },
+    { label: 'LOCAL', width: 90, align: 'left' },
+    { label: 'VALOR R$', width: 110, align: 'right' }
+  ];
+
+  let currentX = 30;
+  let startY = 115;
+
+  // Desenhar barra do cabeçalho da tabela (Azul Marinho #1e3a8a oficial)
+  ctx.fillStyle = '#1e3a8a';
+  ctx.fillRect(30, startY, canvasWidth - 60, colHeaderHeight);
+
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 28px Inter, sans-serif';
-  ctx.fillText(totalFmt, 60, 182);
+  ctx.font = 'bold 12px Arial, sans-serif';
 
-  // Card Quantidade
-  ctx.fillStyle = 'rgba(56, 189, 248, 0.12)';
-  ctx.strokeStyle = '#38bdf8';
-  ctx.beginPath();
-  ctx.roundRect(460, 110, 400, 110, 10);
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = '#7dd3fc';
-  ctx.font = 'bold 12px Inter, sans-serif';
-  ctx.fillText('TOTAL DE PROCESSOS', 480, 138);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 28px Inter, sans-serif';
-  ctx.fillText(totalQtd + ' Processos', 480, 182);
-
-  // Tabela de Amostra dos Processos
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 16px Inter, sans-serif';
-  ctx.fillText('Amostra de Processos Filtrados:', 40, 260);
-
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-  ctx.fillRect(40, 275, 820, 220);
-  ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-  ctx.strokeRect(40, 275, 820, 220);
-
-  // Cabeçalho da mini-tabela
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = 'bold 12px Inter, sans-serif';
-  ctx.fillText('PROCESSO SEI / PREFIXO', 55, 300);
-  ctx.fillText('MUNICÍPIO / INTERESSADO', 320, 300);
-  ctx.fillText('STATUS', 630, 300);
-  ctx.fillText('VALOR (R$)', 760, 300);
-
-  // Linhas
-  const amostra = lista.slice(0, 5);
-  let y = 330;
-  amostra.forEach((p, idx) => {
-    ctx.fillStyle = idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent';
-    ctx.fillRect(41, y - 18, 818, 26);
-
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 12px monospace';
-    const procStr = (p.prefixo ? p.prefixo + ' ' : '') + (p.numero || p.processo || 'S/N');
-    ctx.fillText(procStr.substring(0, 25), 55, y);
-
-    ctx.fillStyle = '#e2e8f0';
-    ctx.font = '12px Inter, sans-serif';
-    const munStr = (p.municipio || '') + (p.interessado ? ' - ' + p.interessado : '');
-    ctx.fillText(munStr.substring(0, 35), 320, y);
-
-    ctx.fillStyle = '#f59e0b';
-    ctx.font = 'bold 11px Inter, sans-serif';
-    ctx.fillText((p.status || 'N/A').substring(0, 16), 630, y);
-
-    ctx.fillStyle = '#34d399';
-    ctx.font = 'bold 12px monospace';
-    let valRow = p.valor || p.valorOficial || 0;
-    if (typeof valRow === 'number') valRow = valRow.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    ctx.fillText(String(valRow).substring(0, 14), 760, y);
-
-    y += 28;
+  cols.forEach(c => {
+    let textX = currentX + 8;
+    if (c.align === 'center') textX = currentX + (c.width / 2);
+    else if (c.align === 'right') textX = currentX + c.width - 8;
+    ctx.textAlign = c.align;
+    ctx.fillText(c.label, textX, startY + 22);
+    currentX += c.width;
   });
 
-  // Rodapé
-  ctx.fillStyle = '#64748b';
-  ctx.font = '11px Inter, sans-serif';
-  ctx.fillText('Gerado em ' + dataHoje + ' ' + horaHoje + ' · SEDUC Processos v1.2.66', 40, 530);
-  ctx.fillText('https://tinhosys.github.io/seduc-processos/', 620, 530);
+  // Linhas dos processos
+  let y = startY + colHeaderHeight;
+  ctx.font = '11px Arial, sans-serif';
 
-  // Converter para imagem PNG
+  const processosParaDesenhar = lista.slice(0, maxRowsToDraw);
+  processosParaDesenhar.forEach((p, idx) => {
+    ctx.fillStyle = idx % 2 === 0 ? '#f8fafc' : '#ffffff';
+    ctx.fillRect(30, y, canvasWidth - 60, rowHeight);
+
+    // Bordas de grade suaves
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 0.8;
+    ctx.strokeRect(30, y, canvasWidth - 60, rowHeight);
+
+    let cellX = 30;
+    cols.forEach(c => {
+      let val = '';
+      if (c.label === 'Nº') val = String(idx + 1);
+      else if (c.label === 'PREFIXO') val = p.prefixo || '-';
+      else if (c.label === 'MUNICÍPIO') val = p.municipio || '-';
+      else if (c.label === 'PROCESSO SEI') val = p.numero || p.processo || '-';
+      else if (c.label === 'INTERESSADO') val = p.interessado || '-';
+      else if (c.label === 'OBJETO / FINALIDADE') val = p.objeto || '-';
+      else if (c.label === 'STATUS') val = p.status || '-';
+      else if (c.label === 'LOCAL') val = p.localizacao || '-';
+      else if (c.label === 'VALOR R$') {
+        let v = p.valor || p.valorOficial || p.valorOf || 0;
+        if (typeof v === 'string') v = parseFloat(v.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
+        val = Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      // Truncar para não estourar coluna
+      const maxChars = Math.floor(c.width / 7.2);
+      if (val.length > maxChars) val = val.substring(0, maxChars - 2) + '...';
+
+      let textX = cellX + 8;
+      if (c.align === 'center') textX = cellX + (c.width / 2);
+      else if (c.align === 'right') textX = cellX + c.width - 8;
+
+      ctx.textAlign = c.align;
+      ctx.fillStyle = (c.label === 'STATUS' && val.includes('AUTORIZADO')) ? '#059669' : '#1e293b';
+      if (c.label === 'Nº' || c.label === 'PREFIXO') ctx.font = 'bold 11px Arial, sans-serif';
+      else ctx.font = '11px Arial, sans-serif';
+
+      ctx.fillText(val, textX, y + 19);
+      cellX += c.width;
+    });
+
+    y += rowHeight;
+  });
+
+  // Linha de TOTAL GERAL
+  ctx.fillStyle = '#f1f5f9';
+  ctx.fillRect(30, y, canvasWidth - 60, rowHeight + 4);
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1.2;
+  ctx.strokeRect(30, y, canvasWidth - 60, rowHeight + 4);
+
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 12px Arial, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText('TOTAL GERAL (' + totalQtd + ' processo' + (totalQtd > 1 ? 's' : '') + '):', canvasWidth - 148, y + 22);
+
+  ctx.fillStyle = '#059669';
+  ctx.fillText(totalFmt, canvasWidth - 38, y + 22);
+
+  // Rodapé Oficial
+  const footerY = y + rowHeight + 25;
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(30, footerY);
+  ctx.lineTo(canvasWidth - 30, footerY);
+  ctx.stroke();
+
+  ctx.font = '10px Arial, sans-serif';
+  ctx.fillStyle = '#64748b';
+  ctx.textAlign = 'left';
+  ctx.fillText('GDSM / CAM — Documento gerado eletronicamente em ' + dataHoje + ', ' + horaHoje, 30, footerY + 18);
+
+  ctx.textAlign = 'right';
+  ctx.fillText('https://tinhosys.github.io/seduc-processos/ · v1.2.67', canvasWidth - 30, footerY + 18);
+
+  // Imagem gerada
   const imgUrl = canvas.toDataURL('image/png');
 
-  // Criar Modal com Opções de Compartilhamento
+  // Modal com visualização e opções de compartilhamento rápido
   let modalOverlay = document.getElementById('modal-whatsapp-relatorio');
   if (!modalOverlay) {
     modalOverlay = document.createElement('div');
     modalOverlay.id = 'modal-whatsapp-relatorio';
-    modalOverlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.8); z-index:999999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);';
+    modalOverlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:999999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);';
     document.body.appendChild(modalOverlay);
   }
 
   modalOverlay.innerHTML = `
-    <div class="modal-whatsapp-share" style="background:#0f172a; border:1px solid #334155; border-radius:14px; box-shadow:0 25px 50px rgba(0,0,0,0.7); max-width:620px; width:95%; max-height:90vh; overflow-y:auto; padding:22px; color:#fff;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid #334155; padding-bottom:12px;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:22px;">📱</span>
-          <h3 style="margin:0; font-size:17px; font-weight:800; color:#25d366;">Compartilhar Relatório no WhatsApp</h3>
+    <div class="modal-whatsapp-share" style="background:#0f172a; border:1px solid #334155; border-radius:14px; box-shadow:0 25px 50px rgba(0,0,0,0.7); max-width:850px; width:95%; max-height:92vh; overflow-y:auto; padding:22px; color:#fff;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #334155; padding-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="background:#0284c7; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+          </div>
+          <div>
+            <h3 style="margin:0; font-size:16px; font-weight:800; color:#38bdf8;">Compartilhar ${isSelecao ? 'Processos Marcados' : 'Relatório'}</h3>
+            <span style="font-size:11px; color:#94a3b8;">Layout oficial "PADRÃO SELEÇÃO" renderizado com sucesso</span>
+          </div>
         </div>
-        <button onclick="document.getElementById('modal-whatsapp-relatorio').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer;">&times;</button>
+        <button onclick="document.getElementById('modal-whatsapp-relatorio').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:22px; cursor:pointer; padding:4px 8px;">&times;</button>
       </div>
 
-      <!-- Preview da Imagem -->
-      <div style="margin-bottom:16px; text-align:center;">
-        <img src="${imgUrl}" style="max-width:100%; border-radius:8px; border:1px solid #334155; box-shadow:0 8px 20px rgba(0,0,0,0.4);" alt="Preview Relatório">
+      <!-- Preview da Imagem no Layout Padrão Seleção -->
+      <div style="margin-bottom:16px; text-align:center; background:#020617; padding:12px; border-radius:8px; border:1px solid #1e293b;">
+        <img src="${imgUrl}" style="max-width:100%; max-height:380px; object-fit:contain; border-radius:4px; box-shadow:0 8px 24px rgba(0,0,0,0.6);" alt="Preview do Relatório Padrão Seleção">
       </div>
 
       <!-- Botões de Ação Rápida -->
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
-        <button id="btn-env-whatsapp" style="background:#25d366; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px; margin-bottom:14px;">
+        <button id="btn-env-whatsapp" style="background:#25d366; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#22c55e'" onmouseout="this.style.background='#25d366'">
           📲 Abrir no WhatsApp
         </button>
-        <button id="btn-baixar-imagem" style="background:#0284c7; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
-          🖼️ Baixar Imagem
+        <button id="btn-baixar-imagem" style="background:#0284c7; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">
+          🖼️ Baixar Imagem (PNG)
         </button>
-        <button id="btn-baixar-pdf-rapido" style="background:#7c3aed; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
-          📄 Baixar PDF Rápido
+        <button id="btn-baixar-pdf-rapido" style="background:#7c3aed; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='#7c3aed'">
+          📄 Baixar PDF
         </button>
-        <button id="btn-copiar-texto" style="background:#334155; color:#fff; border:none; padding:10px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+        <button id="btn-copiar-texto" style="background:#334155; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#475569'" onmouseout="this.style.background='#334155'">
           📋 Copiar Texto
         </button>
       </div>
 
-      <p style="margin:0; font-size:11px; color:#64748b; text-align:center;">A imagem e o texto são otimizados para envio direto para grupos e contatos no WhatsApp.</p>
+      <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); border-radius:8px; padding:10px; font-size:12px; color:#bae6fd; display:flex; align-items:center; gap:8px;">
+        <span>💡</span>
+        <span><b>Dica de Compartilhamento:</b> A imagem gerada reproduz fielmente a impressão oficial do <b>PADRÃO SELEÇÃO</b> e pode ser colada diretamente (Ctrl+V) ou anexada em qualquer conversa ou grupo do WhatsApp.</span>
+      </div>
     </div>
   `;
 
@@ -6629,22 +6737,24 @@ _Gerado via SEDUC Processos v1.2.66_`;
   document.getElementById('btn-baixar-imagem').onclick = () => {
     const a = document.createElement('a');
     a.href = imgUrl;
-    a.download = 'Relatorio_SEDUC_CAM_' + Date.now() + '.png';
+    a.download = (isSelecao ? 'Processos_Selecionados_CAM_' : 'Relatorio_CAM_') + Date.now() + '.png';
     a.click();
   };
 
   document.getElementById('btn-copiar-texto').onclick = () => {
     navigator.clipboard.writeText(textoWhatsApp);
     if (typeof showToast === 'function') showToast('Texto copiado para a área de transferência!', 'success');
-    else alert('Texto copiado!');
+    else alert('Texto copiado com sucesso!');
   };
 
   document.getElementById('btn-baixar-pdf-rapido').onclick = () => {
     if (window.jspdf) {
       const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF('landscape', 'pt', [900, 560]);
-      pdf.addImage(imgUrl, 'PNG', 0, 0, 900, 560);
-      pdf.save('Relatorio_WhatsApp_' + Date.now() + '.pdf');
+      const pdf = new jsPDF('landscape', 'pt', [canvasWidth, dynamicHeight]);
+      pdf.addImage(imgUrl, 'PNG', 0, 0, canvasWidth, dynamicHeight);
+      pdf.save((isSelecao ? 'Processos_Selecionados_CAM_' : 'Relatorio_CAM_') + Date.now() + '.pdf');
+    } else if (typeof window.imprimirPadraoSelecionado === 'function' && isSelecao) {
+      window.imprimirPadraoSelecionado();
     } else if (typeof window.imprimirPadrao === 'function') {
       window.imprimirPadrao();
     }
