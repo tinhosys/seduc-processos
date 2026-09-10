@@ -3,6 +3,33 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
+## [v1.2.68] — 2026-09-09 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.68` · **Versão do Sistema:** `GBZ - v1.2.68`
+
+### 📝 Agrupamento por PREFIXO no "Copiar Texto" (Imagem 3)
+- **Estrutura Solicitada:** O texto gerado para o WhatsApp agora agrupa rigorosamente os processos por **PREFIXO**:
+  ```text
+  "PREFIXO"
+  1 - "MUNICIPIO" | "ESCOLA" | "PROCESSO SEI" | "VALOR"
+  2 - ...
+  ```
+- **Eliminação de Links Supérfluos:** Removidos links e rodapés poluídos da mensagem, deixando o texto limpo, direto e profissional para envio aos contatos e secretários.
+
+### 🖼️ Layout de Imagem Idêntico ao Relatório Padrão (Imagem 1 = Imagem 2)
+- **Fidelidade Visual 100%:** A imagem gerada pelo botão **COMPARTILHAR** agora reproduz exatamente a mesma diagramação, cabeçalho e tabela do relatório padrão de impressão oficial:
+  - Cabeçalho institucional do Governo de Rondônia / SEDUC / CAM e selo SISEDU.
+  - Tabela completa de 10 colunas: *Nº, PREFIXO, MUNICÍPIO, PROCESSO SEI, INTERESSADO, OBJETO / FINALIDADE, STATUS, LOCAL, DATA, VALOR R$*.
+  - Bloco do **PREFIXO** com categoria, tipo e os 3 indicadores de esferas (*CAM, GABINETE, CASA CIVIL*).
+  - Linha de **TOTAL GERAL (X processos):** com valor oficial formatado à direita.
+  - Rodapé com gerência GDSM, numeração de página e data/hora oficial de geração eletrônica.
+
+### ⚡ Esquema Ultra-Rápido de Compartilhamento
+- **Copiar Imagem Diretamente (Clipboard API):** Novo botão que permite colar a imagem do relatório diretamente com **Ctrl+V** em qualquer janela do WhatsApp Web, sem necessidade de baixar e anexar arquivo.
+- **Responsividade Aprimorada:** Estilos de contêiner e imagem com max-width 100% e overflow-x hidden, garantindo que o modal não estoure a tela nem quebre o layout da página em nenhuma resolução.
+
+---
+
 ## [v1.2.67] — 2026-09-09 🟢 VERSÃO ATUAL
 
 **Tag:** `v1.2.67` · **Versão do Sistema:** `GBZ - v1.2.67`
