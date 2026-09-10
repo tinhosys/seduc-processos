@@ -3,7 +3,27 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.72] — 2026-09-10 🟢 VERSÃO ATUAL
+## [v1.2.73] — 2026-09-10 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.73` · **Versão do Sistema:** `GBZ - v1.2.73`
+
+### 🗑️ Remoção dos Botões Inoperantes de Cadastro em GMAC (Imagens 1 e 2)
+- **Exclusão de Botões `+ Novo Registro`**: Removidos os botões em todas as seções de GMAC onde estavam inoperantes ou desnecessários (`#page-gmac-aee`, `#page-gmac-onibus`, `#page-gmac-veiculos`, `#page-gmac-reordenamento` e `#page-gmac-cooperacao`).
+
+### 📜 Regra de Ouro de Rolagem Vertical Sob Demanda (Imagem 4)
+- **Ativação Inteligente de Rolagem**: Definido `overflow-y: auto !important` em `.page.active` e especialmente no painel de **Informações do Sistema & Diagnóstico Operacional** (`#page-sistema-info.active`).
+- Sempre que o conteúdo ultrapassar a altura da viewport, a barra de rolagem vertical suave e estilizada é acionada automaticamente, permitindo visualização completa de sessões ativas e métricas globais sem cortes.
+
+### 🗺️ Calibração Geográfica Avançada e Busca Inteligente no Mapa de Escolas (Imagem 3)
+- **Resolução do Agrupamento Centralizado (Espiral Única)**: Corrigido o bug na resolução da chave municipal no dicionário de bairros que fazia com que todas as escolas caíssem em um único ponto em Porto Velho.
+- **Mapeamento de Distritos e Bairros**: Adicionadas coordenadas exatas de distritos de Porto Velho (Jaci-Paraná, Nova Mutum, Extrema, Vista Alegre do Abunã, União Bandeirantes, Calama, etc.) e mais de 50 bairros urbanos.
+- **Dispersão Geográfica Determinística**: Implementado cálculo de dispersão realista baseado no identificador único de cada escola, eliminando círculos artificiais compactados.
+- **Busca com Foco Automático (`flyTo`)**: Ao pesquisar por nome da escola, INEP ou município, o mapa agora voa suavemente com zoom até a escola localizada e destaca o ponto no mapa.
+- **Correção no Filtro de Competência**: Corrigida a validação para verificar `e.competencia` (Estadual/Municipal).
+
+---
+
+## [v1.2.72] — 2026-09-10
 
 **Tag:** `v1.2.72` · **Versão do Sistema:** `GBZ - v1.2.72`
 

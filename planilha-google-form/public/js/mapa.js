@@ -311,27 +311,102 @@ async function _geocDrain() {
 
 // Resolve coordenada de uma escola (usa cache exato, bairro ou município) e,
 // em paralelo, tenta refinar via Nominatim na próxima oportunidade.
+// ============================================================
+// MOTOR DE LOCALIZAÇÃO GEOGRÁFICA DE ESCOLAS (v3.2 - GBZ v1.2.73)
+// ============================================================
+
+// Tabela de distritos e localidades de Porto Velho
+const DISTRITOS_PVH_COORDS = {
+  "jaci parana":            [-9.2619, -64.4042],
+  "jaci-parana":            [-9.2619, -64.4042],
+  "nova mutum parana":      [-9.2942, -64.5369],
+  "nova mutum":             [-9.2942, -64.5369],
+  "uniao bandeirantes":     [-9.8731, -64.3981],
+  "vista alegre do abuna":  [-9.6739, -65.7331],
+  "vista alegre":           [-9.6739, -65.7331],
+  "extrema":                [-9.7719, -66.3686],
+  "nova california":        [-9.7397, -66.6083],
+  "abuna":                  [-9.6975, -65.3589],
+  "calama":                 [-8.0417, -62.8750],
+  "sao carlos":             [-8.5083, -63.3889],
+  "nazare":                 [-8.1408, -62.9819],
+  "demarcacao":             [-8.1750, -62.9050],
+  "rio pardo":              [-9.5639, -63.9800]
+};
+
+// Limpa e padroniza strings de bairros e distritos
+function _limparNomeBairro(str) {
+  if (!str) return '';
+  let s = _mapaNormalizarStr(str);
+  s = s.replace(/^(bairro|distrito|setor|comunidade|aldeia|gleba|linha|vila)\s+/i, '');
+  s = s.replace(/\s*-\s*\d+.*$/, ''); // remove números de lote/rua
+  s = s.replace(/[\r\n\t]+/g, ' ').trim();
+  return s;
+}
+
+// Gera deslocamento determinístico e realista baseado no nome/inep da escola
+// para evitar aglomerados artificiais na mesma coordenada exata do bairro/município
+function _gerarOffsetDispersao(identificador, escalaKm = 0.0035) {
+  if (!identificador) return [0, 0];
+  let hash = 0;
+  const str = String(identificador);
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const angle = Math.abs(hash % 360) * (Math.PI / 180);
+  const dist = ((Math.abs(hash) % 100) / 100) * escalaKm;
+  return [Math.cos(angle) * dist, Math.sin(angle) * dist];
+}
+
 function getCoordsParaEscola(escola) {
   if (!escola) return MUNICIPIOS_RO_COORDS['Porto Velho'];
 
   const inep = escola.codigoInep ? String(escola.codigoInep).trim() : null;
   const cacheKey = inep || (escola.nome + '|' + escola.municipio);
 
-  // 1. Cache do Nominatim (coordenada geocodificada real)
+  // 1. Cache do Nominatim (se geocodificado)
   if (_geocCache[cacheKey]) return _geocCache[cacheKey];
 
   // 2. Lookup manual INEP (hardcoded para escolas conhecidas)
   if (inep && ESCOLAS_EXACT_COORDS[inep]) return ESCOLAS_EXACT_COORDS[inep];
 
-  // 3. Bairro calibrado no município
-  const munNorm    = _mapaNormalizarStr(escola.municipio);
-  const bairroNorm = _mapaNormalizarStr(escola.bairro);
-  if (munNorm && bairroNorm && BAIRROS_RO_COORDS[munNorm] && BAIRROS_RO_COORDS[munNorm][bairroNorm]) {
-    return BAIRROS_RO_COORDS[munNorm][bairroNorm];
+  const munStr = _mapaNormalizarStr(escola.municipio || '');
+  const munKey = munStr.replace(/\s+/g, '');
+  const rawBairro = String(escola.bairro || escola.endereco || escola.complemento || '');
+  const bairroLimpo = _limparNomeBairro(rawBairro);
+
+  // 3. Verifica distritos de Porto Velho (ex: Jaci-Paraná, Extrema, etc.)
+  if (munKey.includes('portovelho') || munKey === '') {
+    for (const [distKey, distCoords] of Object.entries(DISTRITOS_PVH_COORDS)) {
+      if (bairroLimpo.includes(distKey) || rawBairro.toLowerCase().includes(distKey) || (escola.nome && escola.nome.toLowerCase().includes(distKey))) {
+        const [oLat, oLng] = _gerarOffsetDispersao(escola.nome || inep, 0.005);
+        return [distCoords[0] + oLat, distCoords[1] + oLng];
+      }
+    }
   }
 
-  // 4. Fallback: centro do município
-  return getCoordsParaMunicipio(escola.municipio);
+  // 4. Bairro calibrado no município (testa com munKey sem espaços ou com espaços)
+  const dicMun = BAIRROS_RO_COORDS[munKey] || BAIRROS_RO_COORDS[munStr];
+  if (dicMun && bairroLimpo) {
+    // Busca exata
+    if (dicMun[bairroLimpo]) {
+      const [oLat, oLng] = _gerarOffsetDispersao(escola.nome || inep, 0.002);
+      return [dicMun[bairroLimpo][0] + oLat, dicMun[bairroLimpo][1] + oLng];
+    }
+    // Busca aproximada / parcial no dicionário de bairros
+    for (const [bKey, bCoords] of Object.entries(dicMun)) {
+      if (bairroLimpo.includes(bKey) || bKey.includes(bairroLimpo)) {
+        const [oLat, oLng] = _gerarOffsetDispersao(escola.nome || inep, 0.0025);
+        return [bCoords[0] + oLat, bCoords[1] + oLng];
+      }
+    }
+  }
+
+  // 5. Fallback: centro do município com dispersão radial realista
+  const munCentro = getCoordsParaMunicipio(escola.municipio);
+  const [oLat, oLng] = _gerarOffsetDispersao(escola.nome || inep, 0.008);
+  return [munCentro[0] + oLat, munCentro[1] + oLng];
 }
 
 function iniciarMapaEscolas() {
@@ -387,6 +462,17 @@ function iniciarMapaEscolas() {
   } else if (_mapaCacheEscolas.length > 0) {
     // Já tem dados carregados anteriormente
     _mapaRenderizarPinos();
+  // BUSCA INTELIGENTE COM FOCO E ZOOM
+  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
+    const primeira = _mapaEscolasFiltradas[0];
+    const coords = getCoordsParaEscola(primeira);
+    if (_mapaEscolasFiltradas.length === 1) {
+      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
+    } else if (_mapaEscolasFiltradas.length <= 15) {
+      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
+    }
+  }
+
   } else {
     // Buscar da API
     carregarMapaEscolasAPI();
@@ -410,6 +496,17 @@ async function carregarMapaEscolasAPI() {
       _mapaEscolasFiltradas = [..._mapaCacheEscolas];
       _mapaPopularFiltros();
       _mapaRenderizarPinos();
+  // BUSCA INTELIGENTE COM FOCO E ZOOM
+  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
+    const primeira = _mapaEscolasFiltradas[0];
+    const coords = getCoordsParaEscola(primeira);
+    if (_mapaEscolasFiltradas.length === 1) {
+      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
+    } else if (_mapaEscolasFiltradas.length <= 15) {
+      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
+    }
+  }
+
     }
   } catch (err) {
     console.error('[Mapa Error]', err);
@@ -418,6 +515,17 @@ async function carregarMapaEscolasAPI() {
       _mapaEscolasFiltradas = [..._mapaCacheEscolas];
       _mapaPopularFiltros();
       _mapaRenderizarPinos();
+  // BUSCA INTELIGENTE COM FOCO E ZOOM
+  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
+    const primeira = _mapaEscolasFiltradas[0];
+    const coords = getCoordsParaEscola(primeira);
+    if (_mapaEscolasFiltradas.length === 1) {
+      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
+    } else if (_mapaEscolasFiltradas.length <= 15) {
+      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
+    }
+  }
+
     } else if (badgeEl) {
       badgeEl.textContent = '🗺️ Erro ao carregar mapa';
     }
@@ -496,8 +604,8 @@ function filtrarMapaEscolas() {
 
     // 3. Filtro de Competência
     if (comp) {
-      const eComp = (e.codigoSuper || '').toLowerCase();
-      if (!eComp.includes(comp.toLowerCase())) return false;
+      const eComp = (e.competencia || e.codigoSuper || '').toLowerCase();
+    if (!eComp.includes(comp.toLowerCase())) return false;
     }
     
     // 4. Filtro de Localização
@@ -512,6 +620,17 @@ function filtrarMapaEscolas() {
   });
 
   _mapaRenderizarPinos();
+  // BUSCA INTELIGENTE COM FOCO E ZOOM
+  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
+    const primeira = _mapaEscolasFiltradas[0];
+    const coords = getCoordsParaEscola(primeira);
+    if (_mapaEscolasFiltradas.length === 1) {
+      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
+    } else if (_mapaEscolasFiltradas.length <= 15) {
+      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
+    }
+  }
+
 }
 
 function limparFiltrosMapa() {
@@ -521,6 +640,17 @@ function limparFiltrosMapa() {
   });
   _mapaEscolasFiltradas = [..._mapaCacheEscolas];
   _mapaRenderizarPinos();
+  // BUSCA INTELIGENTE COM FOCO E ZOOM
+  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
+    const primeira = _mapaEscolasFiltradas[0];
+    const coords = getCoordsParaEscola(primeira);
+    if (_mapaEscolasFiltradas.length === 1) {
+      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
+    } else if (_mapaEscolasFiltradas.length <= 15) {
+      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
+    }
+  }
+
 }
 
 function _mapaRenderizarPinos() {

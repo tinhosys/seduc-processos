@@ -3058,3 +3058,83 @@ thead th {
     height: 36px !important;
   }
 }
+
+
+/* ============================================================
+   GBZ v1.2.73 - REGRA DE OURO: ROLAGEM VERTICAL SOB DEMANDA
+   Sempre que o conteúdo de qualquer página exceder a tela,
+   aciona a barra de rolagem vertical personalizada suave.
+   ============================================================ */
+.page.active,
+#page-processos.active,
+#page-repetidos.active,
+#page-sistema-info.active,
+#page-configuracoes.active,
+#page-escola-detalhes.active,
+#page-dashboard.active,
+#page-gdsm-regimes.active,
+#page-gdsm-demais.active,
+#page-gdsm-doacoes.active,
+#page-gdsm-novoregime.active,
+#page-gmac-aee.active,
+#page-gmac-onibus.active,
+#page-gmac-embarcacoes.active,
+#page-gmac-equipamentos.active,
+#page-gmac-computadores.active,
+#page-gmac-veiculos.active,
+#page-gmac-reordenamento.active,
+#page-gmac-cooperacao.active,
+#page-escolas.active,
+#page-transporte.active,
+#page-diarias.active,
+#page-orcamento.active,
+#page-financeiro.active,
+#page-proalfa-alunos.active,
+#page-proalfa-professores.active {
+  display: flex !important;
+  flex-direction: column !important;
+  height: calc(100vh - var(--header-height, 68px)) !important;
+  max-height: calc(100vh - var(--header-height, 68px)) !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 8px 16px 8px 16px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #3b82f6 rgba(15, 23, 42, 0.6) !important;
+}
+
+/* Garante que o painel de informações do sistema role perfeitamente até o fim */
+#page-sistema-info.active {
+  overflow-y: auto !important;
+  padding-bottom: 30px !important;
+}
+
+/* Barra de rolagem estilizada para as páginas quando ativadas */
+.page.active::-webkit-scrollbar,
+#page-sistema-info::-webkit-scrollbar,
+.main-content::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+
+.page.active::-webkit-scrollbar-track,
+#page-sistema-info::-webkit-scrollbar-track,
+.main-content::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-radius: 4px !important;
+}
+
+.page.active::-webkit-scrollbar-thumb,
+#page-sistema-info::-webkit-scrollbar-thumb,
+.main-content::-webkit-scrollbar-thumb {
+  background: #3b82f6 !important;
+  border-radius: 4px !important;
+}
+
+.page.active::-webkit-scrollbar-thumb:hover,
+#page-sistema-info::-webkit-scrollbar-thumb:hover,
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: #60a5fa !important;
+}
