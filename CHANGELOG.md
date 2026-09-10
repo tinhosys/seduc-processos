@@ -3,7 +3,25 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.68] — 2026-09-09 🟢 VERSÃO ATUAL
+## [v1.2.69] — 2026-09-09 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.69` · **Versão do Sistema:** `GBZ - v1.2.69`
+
+### 💰 Exibição Completa da Coluna VALOR R$ no Relatório Canvas
+- **Correção da Largura do Canvas e Proporções de Coluna:** Ajustada a geometria do canvas para 1280px de largura com tabela de 1200px exatos, eliminando qualquer corte no lado direito e assegurando que a coluna **VALOR R$** e seus valores fiquem 100% visíveis, nítidos e perfeitamente alinhados à direita.
+- **Soma Rigorosa das Colunas (1200px):**
+  - *Nº (36px)* | *PREFIXO (86px)* | *MUNICÍPIO (130px)* | *PROCESSO SEI (144px)* | *INTERESSADO (174px)* | *OBJETO / FINALIDADE (260px)* | *STATUS (105px)* | *LOCAL (85px)* | *DATA (75px)* | *VALOR R$ (105px)* = 1200px exatos.
+- **Alinhamento do TOTAL GERAL:** O rótulo `TOTAL GERAL (X processos):` e o valor total em negrito estão alinhados rigorosamente sob a coluna do valor, com moldura e linhas de grade contínuas.
+
+### 🎨 Refinamento Visual e Estética Aprimorada ("Capricho Visual")
+- **Quebra Inteligente de Linhas:** Nomes de municípios, interessados e objetos longos são subdivididos de forma limpa em até duas linhas, evitando truncamentos com reticências.
+- **Formatação de Status e Localização:** Status como `N/ AUTORIZADO` e locais com separador `|` são dispostos verticalmente com destaque de cores (verde para autorizados/pagos, laranja para notificados, vermelho para duplicados/cancelados).
+- **Indicadores Visuais do Prefixo:** As esferas de acompanhamento (*CAM*, *GAB*, *CC*) contam com espaçamento simétrico e círculos perfeitamente preenchidos ou delineados.
+- **Modal de Compartilhamento:** Adicionada capacidade de ampliação ao clicar na imagem (`cursor: zoom-in`), barra de rolagem suave e layout adaptado sem estouro de tela.
+
+---
+
+## [v1.2.68] — 2026-09-09
 
 **Tag:** `v1.2.68` · **Versão do Sistema:** `GBZ - v1.2.68`
 

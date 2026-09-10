@@ -6471,7 +6471,7 @@ window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
     .map(([st, qtd]) => ' • ' + st + ': ' + qtd)
     .join('\n');
 
-  // Agrupamento por PREFIXO conforme solicitado pelo usuário na Imagem 3:
+  // Agrupamento por PREFIXO conforme solicitado pelo usuário:
   // "PREFIXO"
   // 1 - "MUNICIPIO" | "ESCOLA" | "PROCESSO SEI" | "VALOR"
   // 2 - ...
@@ -6510,31 +6510,31 @@ ${statusStr}
 
 ${textoGrupos.trim()}`;
 
-  // Gerar Imagem do Relatório em Alta Resolução (Layout IDÊNTICO À IMAGEM 2 - Relatório Padrão Oficial)
-  // Colunas oficiais:
-  // Nº (40) | PREFIXO (85) | MUNICÍPIO (130) | PROCESSO SEI (145) | INTERESSADO (185) | OBJETO / FINALIDADE (275) | STATUS (110) | LOCAL (95) | DATA (70) | VALOR R$ (100) = 1140 + 60 = 1200
+  // Gerar Imagem do Relatório em Alta Resolução (Layout IDÊNTICO AO RELATÓRIO PADRÃO OFICIAL)
+  // Colunas oficiais com soma EXATA = 1200px:
+  // Nº(36) + PREFIXO(86) + MUNICÍPIO(130) + PROCESSO SEI(144) + INTERESSADO(174) + OBJETO(260) + STATUS(105) + LOCAL(85) + DATA(75) + VALOR R$(105) = 1200px
   const cols = [
-    { label: 'Nº', width: 40, align: 'center' },
-    { label: 'PREFIXO', width: 90, align: 'left' },
+    { label: 'Nº', width: 36, align: 'center' },
+    { label: 'PREFIXO', width: 86, align: 'left' },
     { label: 'MUNICÍPIO', width: 130, align: 'left' },
-    { label: 'PROCESSO SEI', width: 140, align: 'left' },
-    { label: 'INTERESSADO', width: 180, align: 'left' },
-    { label: 'OBJETO / FINALIDADE', width: 270, align: 'left' },
-    { label: 'STATUS', width: 110, align: 'left' },
-    { label: 'LOCAL', width: 90, align: 'left' },
-    { label: 'DATA', width: 70, align: 'center' },
-    { label: 'VALOR R$', width: 110, align: 'right' }
+    { label: 'PROCESSO SEI', width: 144, align: 'left' },
+    { label: 'INTERESSADO', width: 174, align: 'left' },
+    { label: 'OBJETO / FINALIDADE', width: 260, align: 'left' },
+    { label: 'STATUS', width: 105, align: 'left' },
+    { label: 'LOCAL', width: 85, align: 'left' },
+    { label: 'DATA', width: 75, align: 'center' },
+    { label: 'VALOR R$', width: 105, align: 'right' }
   ];
 
-  const rowHeight = 44; // Altura suficiente para comportar o bloco do prefixo com as bolinhas
-  const headerHeight = 90;
+  const rowHeight = 44;
+  const headerHeight = 94;
   const colHeaderHeight = 32;
-  const totalRowHeight = 30;
+  const totalRowHeight = 32;
   const footerHeight = 65;
-  const maxRowsToDraw = Math.min(lista.length, 30);
-  const canvasWidth = 1200;
-  const tableWidth = 1140; // 30px margem esquerda + 30px margem direita
-  const startX = 30;
+  const maxRowsToDraw = Math.min(lista.length, 50);
+  const canvasWidth = 1280;
+  const tableWidth = 1200;
+  const startX = 40;
   const dynamicHeight = Math.max(380, headerHeight + colHeaderHeight + (maxRowsToDraw * rowHeight) + totalRowHeight + footerHeight);
 
   const canvas = document.createElement('canvas');
@@ -6546,10 +6546,10 @@ ${textoGrupos.trim()}`;
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvasWidth, dynamicHeight);
 
-  // 2. Borda externa suave igual ao layout de impressão oficial (Imagem 2)
+  // 2. Borda externa suave igual ao layout oficial
   ctx.strokeStyle = '#cbd5e1';
   ctx.lineWidth = 1;
-  ctx.strokeRect(startX - 10, 12, tableWidth + 20, dynamicHeight - 24);
+  ctx.strokeRect(20, 14, canvasWidth - 40, dynamicHeight - 28);
 
   // 3. Cabeçalho Institucional Oficial
   ctx.fillStyle = '#0f172a';
@@ -6568,7 +6568,7 @@ ${textoGrupos.trim()}`;
   // Lado direito: SISEDU
   ctx.textAlign = 'right';
   ctx.fillStyle = '#0284c7';
-  ctx.font = 'bold 11px Arial, sans-serif';
+  ctx.font = 'bold 12px Arial, sans-serif';
   ctx.fillText('SISEDU', startX + tableWidth, 36);
   ctx.textAlign = 'left';
 
@@ -6585,13 +6585,13 @@ ${textoGrupos.trim()}`;
   ctx.font = 'bold 12px Arial, sans-serif';
   ctx.fillText('LISTA DE PROCESSOS', startX, 90);
 
-  // 4. Cabeçalho da Tabela (Azul suave com texto azul e bordas cinzas, IDÊNTICO À IMAGEM 2)
+  // 4. Cabeçalho da Tabela
   let startY = 100;
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(startX, startY, tableWidth, colHeaderHeight);
-
   let currentX = startX;
   cols.forEach(c => {
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(currentX, startY, c.width, colHeaderHeight);
+
     ctx.strokeStyle = '#93c5fd';
     ctx.lineWidth = 1;
     ctx.strokeRect(currentX, startY, c.width, colHeaderHeight);
@@ -6601,24 +6601,24 @@ ${textoGrupos.trim()}`;
     else if (c.align === 'right') textX = currentX + c.width - 6;
 
     ctx.textAlign = c.align;
-    ctx.fillStyle = '#3b82f6';
-    ctx.font = 'bold 11px Arial, sans-serif';
+    ctx.fillStyle = '#1d4ed8';
+    ctx.font = 'bold 10.5px Arial, sans-serif';
     ctx.fillText(c.label, textX, startY + 20);
     currentX += c.width;
   });
 
-  // 5. Linhas dos Processos (com layout de prefixo idêntico à imagem 2)
+  // 5. Linhas dos Processos
   let y = startY + colHeaderHeight;
 
   const processosParaDesenhar = lista.slice(0, maxRowsToDraw);
   processosParaDesenhar.forEach((p, idx) => {
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = (idx % 2 === 0) ? '#ffffff' : '#f8fafc';
     ctx.fillRect(startX, y, tableWidth, rowHeight);
 
     let cellX = startX;
     cols.forEach(c => {
       // Grade da célula
-      ctx.strokeStyle = '#e2e8f0';
+      ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 1;
       ctx.strokeRect(cellX, y, c.width, rowHeight);
 
@@ -6627,28 +6627,29 @@ ${textoGrupos.trim()}`;
       else if (c.align === 'right') textX = cellX + c.width - 6;
 
       ctx.textAlign = c.align;
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = '#0f172a';
 
       if (c.label === 'Nº') {
-        ctx.font = '11px Arial, sans-serif';
+        ctx.font = 'bold 10px Arial, sans-serif';
         ctx.fillText(String(idx + 1), textX, y + 26);
       } else if (c.label === 'PREFIXO') {
-        // Bloco IDÊNTICO à Imagem 2:
-        // Linha 1: JEOL (bold)
-        // Linha 2: F | MP | ○○○
+        // Linha 1: Prefixo em negrito
         ctx.textAlign = 'left';
         ctx.font = 'bold 10px Arial, sans-serif';
+        ctx.fillStyle = '#0f172a';
         ctx.fillText(p.prefixo || '-', cellX + 6, y + 16);
 
-        // Sublinha: Categoria | Tipo | Bolinhas
+        // Linha 2: Categoria | Tipo |
         ctx.font = '9px Arial, sans-serif';
         ctx.fillStyle = '#64748b';
-        const cat = p.categoria || 'F';
-        const tip = p.tipo || 'MP';
-        ctx.fillText(cat + ' | ' + tip + ' |', cellX + 6, y + 32);
+        const cat = (p.categoria || 'F').trim();
+        const tip = (p.tipo || 'MP').trim();
+        const subStr = cat + ' | ' + tip + ' |';
+        ctx.fillText(subStr, cellX + 6, y + 32);
 
-        // Desenhar os 3 círculos (CAM, GAB, CC)
-        const circStartX = cellX + 48;
+        // Desenhar 3 círculos (CAM, GABINETE, CASA CIVIL)
+        const subWidth = ctx.measureText(subStr).width;
+        const circStartX = cellX + 6 + subWidth + 5;
         const circY = y + 29;
         const circR = 3.5;
 
@@ -6671,39 +6672,116 @@ ${textoGrupos.trim()}`;
         else { ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1; ctx.stroke(); }
 
       } else if (c.label === 'MUNICÍPIO') {
-        ctx.font = '10px Arial, sans-serif';
-        let val = (p.municipio || '-').substring(0, 18);
-        ctx.fillText(val, textX, y + 26);
+        ctx.font = '9.5px Arial, sans-serif';
+        ctx.fillStyle = '#1e293b';
+        let val = (p.municipio || '-').trim();
+        if (val.length > 18) {
+          const words = val.split(' ');
+          let l1 = '', l2 = '';
+          for (let w of words) {
+            if ((l1 + ' ' + w).trim().length <= 17) l1 = (l1 + ' ' + w).trim();
+            else l2 = (l2 + ' ' + w).trim();
+          }
+          ctx.fillText(l1 || val.substring(0, 17), textX, y + 17);
+          ctx.fillText(l2 || val.substring(17, 34), textX, y + 31);
+        } else {
+          ctx.fillText(val, textX, y + 26);
+        }
       } else if (c.label === 'PROCESSO SEI') {
-        ctx.font = '10px Arial, sans-serif';
-        let val = p.numero || p.processo || '-';
-        if (val.length > 20) val = val.substring(0, 19) + '..';
-        ctx.fillText(val, textX, y + 26);
+        ctx.font = '9.5px Arial, sans-serif';
+        ctx.fillStyle = '#1e293b';
+        let val = (p.numero || p.processo || '-').trim();
+        if (val.length > 21) {
+          const parts = val.split('/');
+          if (parts.length > 1) {
+            ctx.fillText(parts[0] + '/', textX, y + 17);
+            ctx.fillText(parts.slice(1).join('/'), textX, y + 31);
+          } else {
+            ctx.fillText(val.substring(0, 20) + '..', textX, y + 26);
+          }
+        } else {
+          ctx.fillText(val, textX, y + 26);
+        }
       } else if (c.label === 'INTERESSADO') {
-        ctx.font = '10px Arial, sans-serif';
-        let val = p.interessado || '-';
-        if (val.length > 28) val = val.substring(0, 27) + '..';
-        ctx.fillText(val, textX, y + 26);
+        ctx.font = '9.5px Arial, sans-serif';
+        ctx.fillStyle = '#1e293b';
+        let val = (p.interessado || '-').trim();
+        if (val.includes(' - ')) {
+          const parts = val.split(' - ');
+          ctx.fillText(parts[0].substring(0, 26), textX, y + 17);
+          ctx.fillText(('- ' + parts.slice(1).join(' - ')).substring(0, 26), textX, y + 31);
+        } else if (val.includes(' | ')) {
+          const parts = val.split(' | ');
+          ctx.fillText(parts[0].substring(0, 26), textX, y + 17);
+          ctx.fillText(('| ' + parts.slice(1).join(' | ')).substring(0, 26), textX, y + 31);
+        } else if (val.length > 24) {
+          ctx.fillText(val.substring(0, 24), textX, y + 17);
+          ctx.fillText(val.substring(24, 48), textX, y + 31);
+        } else {
+          ctx.fillText(val, textX, y + 26);
+        }
       } else if (c.label === 'OBJETO / FINALIDADE') {
-        ctx.font = '10px Arial, sans-serif';
-        let val = p.objeto || '-';
-        if (val.length > 42) val = val.substring(0, 41) + '..';
-        ctx.fillText(val, textX, y + 26);
+        ctx.font = '9.5px Arial, sans-serif';
+        ctx.fillStyle = '#1e293b';
+        let val = (p.objeto || '-').trim();
+        if (val.length > 36) {
+          const mid = val.lastIndexOf(' ', 35);
+          const splitIdx = mid > 15 ? mid : 35;
+          ctx.fillText(val.substring(0, splitIdx).trim(), textX, y + 17);
+          ctx.fillText(val.substring(splitIdx).trim().substring(0, 36), textX, y + 31);
+        } else {
+          ctx.fillText(val, textX, y + 26);
+        }
       } else if (c.label === 'STATUS') {
-        ctx.font = 'bold 9px Arial, sans-serif';
-        let val = p.status || '-';
-        ctx.fillStyle = val.includes('AUTORIZADO') ? '#047857' : '#b45309';
-        ctx.fillText(val.substring(0, 17), textX, y + 26);
+        ctx.font = 'bold 9.5px Arial, sans-serif';
+        let val = (p.status || '-').trim().toUpperCase();
+        if (val.includes('AUTORIZADO') || val.includes('PAGO') || val.includes('CONCLU')) {
+          ctx.fillStyle = '#047857';
+        } else if (val.includes('NOTIFICADO') || val.includes('AGUARD') || val.includes('PEND')) {
+          ctx.fillStyle = '#c2410c';
+        } else if (val.includes('DUPLICADO') || val.includes('CANCEL')) {
+          ctx.fillStyle = '#b91c1c';
+        } else {
+          ctx.fillStyle = '#475569';
+        }
+
+        if (val.startsWith('N/') || val.startsWith('N/ ')) {
+          ctx.fillText('N/', textX, y + 17);
+          const rest = val.replace(/^N\/\s*/, '');
+          ctx.fillText(rest.substring(0, 14), textX, y + 31);
+        } else if (val.length > 13) {
+          const parts = val.split(' ');
+          if (parts.length > 1) {
+            ctx.fillText(parts[0], textX, y + 17);
+            ctx.fillText(parts.slice(1).join(' ').substring(0, 13), textX, y + 31);
+          } else {
+            ctx.fillText(val.substring(0, 13), textX, y + 26);
+          }
+        } else {
+          ctx.fillText(val, textX, y + 26);
+        }
       } else if (c.label === 'LOCAL') {
         ctx.font = '9px Arial, sans-serif';
-        let val = p.localizacao || '-';
-        ctx.fillText(val.substring(0, 14), textX, y + 26);
+        ctx.fillStyle = '#334155';
+        let val = (p.localizacao || '-').trim();
+        if (val.includes('|')) {
+          const parts = val.split('|');
+          ctx.fillText(parts[0].trim().substring(0, 13), textX, y + 17);
+          ctx.fillText(('| ' + parts.slice(1).join('|').trim()).substring(0, 13), textX, y + 31);
+        } else if (val.length > 12) {
+          ctx.fillText(val.substring(0, 11), textX, y + 17);
+          ctx.fillText(val.substring(11, 23), textX, y + 31);
+        } else {
+          ctx.fillText(val, textX, y + 26);
+        }
       } else if (c.label === 'DATA') {
         ctx.font = '10px Arial, sans-serif';
+        ctx.fillStyle = '#334155';
         let val = p.data ? formatDate(p.data) : '-';
         ctx.fillText(val, textX, y + 26);
       } else if (c.label === 'VALOR R$') {
-        ctx.font = '10px Arial, sans-serif';
+        ctx.font = 'bold 10.5px Arial, sans-serif';
+        ctx.fillStyle = '#0f172a';
         let v = p.valor || p.valorOficial || p.valorOf || 0;
         if (typeof v === 'string') v = parseFloat(v.replace(/[^0-9,-]/g, '').replace(',', '.')) || 0;
         let val = Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -6716,8 +6794,8 @@ ${textoGrupos.trim()}`;
     y += rowHeight;
   });
 
-  // 6. Linha de TOTAL GERAL (Exatamente como na Imagem 2)
-  ctx.fillStyle = '#ffffff';
+  // 6. Linha de TOTAL GERAL (Exatamente como na Imagem 2 oficial)
+  ctx.fillStyle = '#f8fafc';
   ctx.fillRect(startX, y, tableWidth, totalRowHeight);
   ctx.strokeStyle = '#cbd5e1';
   ctx.lineWidth = 1;
@@ -6727,12 +6805,15 @@ ${textoGrupos.trim()}`;
   ctx.fillStyle = '#0f172a';
   ctx.font = 'bold 11px Arial, sans-serif';
   ctx.textAlign = 'right';
-  ctx.fillText('TOTAL GERAL (' + totalQtd + ' processos):', startX + tableWidth - 120, y + 20);
+  ctx.fillText('TOTAL GERAL (' + totalQtd + ' processos):', startX + tableWidth - 115, y + 20);
 
   // Valor Total
-  ctx.fillText(totalFmt.replace('R$', '').trim(), startX + tableWidth - 6, y + 20);
+  ctx.fillStyle = '#0f172a';
+  ctx.font = 'bold 11px Arial, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(totalFmt.replace('R$', '').trim(), startX + tableWidth - 8, y + 20);
 
-  // 7. Rodapé Oficial (Exatamente como na Imagem 2)
+  // 7. Rodapé Oficial
   const footerY = y + totalRowHeight + 22;
   ctx.strokeStyle = '#cbd5e1';
   ctx.lineWidth = 1;
@@ -6765,7 +6846,7 @@ ${textoGrupos.trim()}`;
   }
 
   modalOverlay.innerHTML = `
-    <div class="modal-whatsapp-share" style="background:#0f172a; border:1px solid #334155; border-radius:14px; box-shadow:0 25px 50px rgba(0,0,0,0.7); max-width:960px; width:95%; max-height:94vh; overflow-y:auto; padding:22px; color:#fff;">
+    <div class="modal-whatsapp-share" style="background:#0f172a; border:1px solid #334155; border-radius:14px; box-shadow:0 25px 50px rgba(0,0,0,0.7); max-width:1080px; width:95%; max-height:94vh; overflow-y:auto; padding:22px; color:#fff;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #334155; padding-bottom:12px;">
         <div style="display:flex; align-items:center; gap:10px;">
           <div style="background:#0284c7; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
@@ -6779,15 +6860,15 @@ ${textoGrupos.trim()}`;
           </div>
           <div>
             <h3 style="margin:0; font-size:16px; font-weight:800; color:#38bdf8;">Compartilhar ${isSelecao ? 'Processos Marcados' : 'Relatório'}</h3>
-            <span style="font-size:11px; color:#94a3b8;">Layout oficial idêntico ao Relatório Padrão impresso</span>
+            <span style="font-size:11px; color:#94a3b8;">Layout oficial idêntico ao Relatório Padrão impresso (Todas as 10 colunas incluídas com VALOR R$)</span>
           </div>
         </div>
         <button onclick="document.getElementById('modal-whatsapp-relatorio').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; padding:4px 8px;">&times;</button>
       </div>
 
-      <!-- Preview da Imagem no Layout Padrão Seleção (idêntico à imagem 2) -->
-      <div style="margin-bottom:16px; text-align:center; background:#020617; padding:12px; border-radius:8px; border:1px solid #1e293b; overflow-x:auto;">
-        <img id="img-preview-relatorio" src="${imgUrl}" style="max-width:100%; height:auto; object-fit:contain; border-radius:4px; box-shadow:0 8px 24px rgba(0,0,0,0.6);" alt="Preview do Relatório">
+      <!-- Preview da Imagem no Layout Padrão Seleção -->
+      <div style="margin-bottom:16px; text-align:center; background:#020617; padding:12px; border-radius:8px; border:1px solid #1e293b; max-height:60vh; overflow:auto;">
+        <img id="img-preview-relatorio" src="${imgUrl}" style="max-width:100%; height:auto; display:block; margin:0 auto; border-radius:4px; box-shadow:0 8px 24px rgba(0,0,0,0.6); cursor:zoom-in;" title="Clique para abrir imagem em tamanho original" onclick="window.open('${imgUrl}', '_blank')" alt="Preview do Relatório">
       </div>
 
       <!-- Botões de Ação Rápida -->
