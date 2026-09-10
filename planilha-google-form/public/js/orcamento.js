@@ -715,7 +715,7 @@ window.imprimirOrcamento = function() {
         <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
-        <span style="font-size:6pt; font-weight:700; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;">SISEDU</span>
+        
       </div>
     </div>
     <div style="font-size:11px; font-weight:700; color:#1e3a8a; text-transform:uppercase; margin-bottom:8px; font-family: Arial, sans-serif;">

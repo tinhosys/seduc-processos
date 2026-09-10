@@ -867,14 +867,7 @@ window.gerarRelatorioDiarias = function() {
           color: #334155;
           text-transform: uppercase;
         }
-        .official-header .header-sisedu {
-          text-align: right;
-          font-size: 6pt;
-          font-weight: 700;
-          color: #94a3b8;
-          letter-spacing: 1px;
-          text-transform: uppercase;
-        }
+        
         .report-subtitle {
           font-size: 11px;
           font-weight: 700;
@@ -977,7 +970,7 @@ window.gerarRelatorioDiarias = function() {
           <div class="line-2">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
           <div class="line-3">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
         </div>
-        <div class="header-sisedu">SISEDU</div>
+        
       </div>
 
       <div class="report-subtitle"><span>${title}</span></div>

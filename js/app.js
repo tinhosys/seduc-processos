@@ -2917,7 +2917,7 @@ function getCommonHeader(subtitle) {
         <div style="font-size:10px; font-weight:700; color:#334155; text-transform:uppercase;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
       </div>
       <div style="text-align:right;">
-        <span style="font-size:6pt; font-weight:700; color:#94a3b8; letter-spacing:1px; text-transform:uppercase;">SISEDU</span>
+        
       </div>
     </div>
     ${subtitle ? `<div style="font-size:11px; font-weight:700; color:#1e3a8a; text-transform:uppercase; margin-bottom:8px; font-family: Arial, sans-serif;">${subtitle}</div>` : ''}
@@ -3520,7 +3520,7 @@ function imprimirDetalhado() {
       <div style="flex:1; border:2px solid #000; background:#f8fafc; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">VALOR TOTAL CONSOLIDADO</div>
         <div style="font-size:14px; font-weight:bold; color:#000; margin:5px 0;">${formatCurrency(total)}</div>
-        <div style="font-size:7px; color:#000;">${filtrados.length} processos úúnicos</div>
+        <div style="font-size:7px; color:#000;">${filtrados.length} processos únicos</div>
       </div>
       <div style="flex:1; border:2px solid #000; background:#f0fdf4; padding:6px; text-align:center; min-width:0;">
         <div style="font-size:7px; font-weight:bold; color:#000;">PROCESSOS AUTORIZADOS</div>
@@ -4242,7 +4242,7 @@ function renderProcessosRepetidos() {
       <tr>
         <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
           <h3>🔍 Nenhum processo repetido encontrado!</h3>
-          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são úúnicos.</p>
+          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são únicos.</p>
         </td>
       </tr>
     `;
@@ -4834,7 +4834,7 @@ async function buscarTodasEscolasGSheet() {
     if (typeof showToast === 'function') showToast('Erro: ' + err.message, 'error');
   }
 }
-// Popular filtros com valores úúnicos de TODOS os dados
+// Popular filtros com valores únicos de TODOS os dados
 function _tePopularFiltros() {
   const unique = (key) => [...new Set(_teCache.map(e => e[key]).filter(Boolean))].sort();
   [['te-filtro-municipio','municipio','MUNICÍPIO'],
@@ -6560,13 +6560,6 @@ ${textoGrupos.trim()}`;
   ctx.font = 'bold 11px Arial, sans-serif';
   ctx.fillText('CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS', startX, 64);
 
-  // Lado direito: SISEDU
-  ctx.textAlign = 'right';
-  ctx.fillStyle = '#0284c7';
-  ctx.font = 'bold 12px Arial, sans-serif';
-  ctx.fillText('SISEDU', startX + tableWidth, 36);
-  ctx.textAlign = 'left';
-
   // Barra azul separadora
   ctx.strokeStyle = '#0284c7';
   ctx.lineWidth = 2;
@@ -6848,8 +6841,7 @@ ${textoGrupos.trim()}`;
             </svg>
           </div>
           <div>
-            <h3 style="margin:0; font-size:16px; font-weight:800; color:#38bdf8;">Compartilhar ${isSelecao ? 'Processos Marcados' : 'Relatório'}</h3>
-            <span style="font-size:11px; color:#94a3b8;">Layout oficial idêntico ao Relatório Padrão impresso (Todas as 10 colunas com VALOR R$)</span>
+            <h3 style="margin:0; font-size:16px; font-weight:800; color:#38bdf8;">Compartilhar</h3>
           </div>
         </div>
         <button onclick="document.getElementById('modal-whatsapp-relatorio').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; padding:4px 8px;">&times;</button>

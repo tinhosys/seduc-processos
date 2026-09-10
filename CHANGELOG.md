@@ -3,7 +3,26 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.70] — 2026-09-10 🟢 VERSÃO ATUAL
+## [v1.2.71] — 2026-09-10 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.71` · **Versão do Sistema:** `GBZ - v1.2.71`
+
+### 🧼 Limpeza e Padronização de Relatórios e Cabeçalhos
+- **Remoção de 'SISEDU':** A palavra 'SISEDU' foi suprimida do canto superior direito de absolutamente todos os relatórios impressos, telas de visualização e imagens de compartilhamento (Processos, Diárias, Escolas, GMAC, Orçamento, Proalfa e GDSM).
+- **Cabeçalho Minimalista do Modal de Compartilhar:** O cabeçalho foi simplificado para exibir exclusivamente o título **"Compartilhar"**, eliminando subtítulos e textos poluídos conforme solicitado.
+
+### 🛡️ Eliminação de Caracteres 'Zumbis' e Correções Ortográficas
+- **Dashboard sem Zumbis (Imagem 2):** Substituídos todos os caracteres corrompidos (`â ³`, `â °`, etc.) por ícones vetoriais SVG de alta definição nos cards de *Pendentes/Aguardando*, título de *Alertas de Prazos (Datas)*, e nos alertas de *Processos sem Data* e *Data Mais Antiga*.
+- **Ajuste de Menu (Imagem 3):** O item do menu lateral foi alterado de `Escolas & Mapas` para **`Escolas | Mapas`**.
+- **Correção Ortográfica (Imagem 4):** Corrigido o termo `úúnicos` para **`únicos`** na mensagem de tela de processos repetidos.
+
+### 📊 Restauração da Barra Horizontal de Extensão da Base nos Formulários de Dados
+- **Barra de Rolagem Destacada (12px):** Recriada a barra horizontal com trilho em alto contraste e controle deslizante em gradiente azul (`#2563eb` a `#3b82f6`), permitindo ao usuário observar confortavelmente toda a extensão das colunas da base de dados em todos os formulários (GDSM Regimes, Demais, Doações, Novo Regime, Processos, Repetidos, etc.).
+- **Preservação Estrita dos Parâmetros:** A barra de filtros e parâmetros de pesquisa permanece limpa e sem rolagem horizontal indesejada, atuando estritamente sobre a área que contém os registros e dados.
+
+---
+
+## [v1.2.70] — 2026-09-10
 
 **Tag:** `v1.2.70` · **Versão do Sistema:** `GBZ - v1.2.70`
 
