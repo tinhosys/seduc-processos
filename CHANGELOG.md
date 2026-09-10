@@ -3,7 +3,30 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.69] — 2026-09-09 🟢 VERSÃO ATUAL
+## [v1.2.70] — 2026-09-10 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.70` · **Versão do Sistema:** `GBZ - v1.2.70`
+
+### 🔄 Inversão da Posição dos Botões no Modal de Compartilhamento
+- **Nova Sequência de Ações:**
+  1. `[Enviar]` (Ícone oficial do WhatsApp)
+  2. `[Copiar Imagem]` (Ícone de cópia padrão Windows)
+  3. `[Copiar Texto]` (Ícone de copiar documento/texto)
+  4. `[Baixar Imagem (PNG)]` (Ícone de download de imagem)
+  5. `[Baixar PDF]` (Ícone de arquivo PDF)
+- **Troca Estratégica:** Os botões **Copiar Texto** e **Baixar Imagem (PNG)** tiveram suas posições invertidas conforme solicitado, agrupando as funções de cópia direta em sequência contígua.
+
+### 💎 Novo Aspecto Visual dos Botões e Ícones Vetoriais Oficiais
+- **Ícone Oficial do WhatsApp:** Substituído o emoji genérico pelo logo vetorial SVG oficial do WhatsApp com gradiente característico (`#25D366` / `#128C7E`).
+- **Ícone Copiar Imagem Padrão Windows:** Implementado o ícone de folhas sobrepostas de recorte/cópia no estilo Fluent do Windows.
+- **Ícone Copiar Texto:** Ícone de prancheta/documento com linhas de texto estruturado.
+- **Ícone Baixar Imagem (PNG):** Ícone de arquivo de imagem com vetor de download.
+- **Ícone Baixar PDF:** Ícone de documento com marca de dobra e cor vermelha/carmesim característica de PDF (`#dc2626`).
+- **Efeitos de Transição e Sombreamento:** Botões com gradientes suaves, elevação dinâmica ao passar o mouse (`transform: translateY(-1px)`), brilho interativo e acessibilidade aprimorada.
+
+---
+
+## [v1.2.69] — 2026-09-09
 
 **Tag:** `v1.2.69` · **Versão do Sistema:** `GBZ - v1.2.69`
 

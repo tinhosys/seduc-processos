@@ -6471,10 +6471,7 @@ window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
     .map(([st, qtd]) => ' • ' + st + ': ' + qtd)
     .join('\n');
 
-  // Agrupamento por PREFIXO conforme solicitado pelo usuário:
-  // "PREFIXO"
-  // 1 - "MUNICIPIO" | "ESCOLA" | "PROCESSO SEI" | "VALOR"
-  // 2 - ...
+  // Agrupamento por PREFIXO
   const porPrefixo = {};
   lista.forEach(p => {
     const pref = (p.prefixo || 'SEM PREFIXO').trim();
@@ -6510,9 +6507,7 @@ ${statusStr}
 
 ${textoGrupos.trim()}`;
 
-  // Gerar Imagem do Relatório em Alta Resolução (Layout IDÊNTICO AO RELATÓRIO PADRÃO OFICIAL)
   // Colunas oficiais com soma EXATA = 1200px:
-  // Nº(36) + PREFIXO(86) + MUNICÍPIO(130) + PROCESSO SEI(144) + INTERESSADO(174) + OBJETO(260) + STATUS(105) + LOCAL(85) + DATA(75) + VALOR R$(105) = 1200px
   const cols = [
     { label: 'Nº', width: 36, align: 'center' },
     { label: 'PREFIXO', width: 86, align: 'left' },
@@ -6617,7 +6612,6 @@ ${textoGrupos.trim()}`;
 
     let cellX = startX;
     cols.forEach(c => {
-      // Grade da célula
       ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 1;
       ctx.strokeRect(cellX, y, c.width, rowHeight);
@@ -6633,13 +6627,11 @@ ${textoGrupos.trim()}`;
         ctx.font = 'bold 10px Arial, sans-serif';
         ctx.fillText(String(idx + 1), textX, y + 26);
       } else if (c.label === 'PREFIXO') {
-        // Linha 1: Prefixo em negrito
         ctx.textAlign = 'left';
         ctx.font = 'bold 10px Arial, sans-serif';
         ctx.fillStyle = '#0f172a';
         ctx.fillText(p.prefixo || '-', cellX + 6, y + 16);
 
-        // Linha 2: Categoria | Tipo |
         ctx.font = '9px Arial, sans-serif';
         ctx.fillStyle = '#64748b';
         const cat = (p.categoria || 'F').trim();
@@ -6647,7 +6639,6 @@ ${textoGrupos.trim()}`;
         const subStr = cat + ' | ' + tip + ' |';
         ctx.fillText(subStr, cellX + 6, y + 32);
 
-        // Desenhar 3 círculos (CAM, GABINETE, CASA CIVIL)
         const subWidth = ctx.measureText(subStr).width;
         const circStartX = cellX + 6 + subWidth + 5;
         const circY = y + 29;
@@ -6794,20 +6785,18 @@ ${textoGrupos.trim()}`;
     y += rowHeight;
   });
 
-  // 6. Linha de TOTAL GERAL (Exatamente como na Imagem 2 oficial)
+  // 6. Linha de TOTAL GERAL
   ctx.fillStyle = '#f8fafc';
   ctx.fillRect(startX, y, tableWidth, totalRowHeight);
   ctx.strokeStyle = '#cbd5e1';
   ctx.lineWidth = 1;
   ctx.strokeRect(startX, y, tableWidth, totalRowHeight);
 
-  // Texto "TOTAL GERAL (X processos):"
   ctx.fillStyle = '#0f172a';
   ctx.font = 'bold 11px Arial, sans-serif';
   ctx.textAlign = 'right';
   ctx.fillText('TOTAL GERAL (' + totalQtd + ' processos):', startX + tableWidth - 115, y + 20);
 
-  // Valor Total
   ctx.fillStyle = '#0f172a';
   ctx.font = 'bold 11px Arial, sans-serif';
   ctx.textAlign = 'right';
@@ -6860,7 +6849,7 @@ ${textoGrupos.trim()}`;
           </div>
           <div>
             <h3 style="margin:0; font-size:16px; font-weight:800; color:#38bdf8;">Compartilhar ${isSelecao ? 'Processos Marcados' : 'Relatório'}</h3>
-            <span style="font-size:11px; color:#94a3b8;">Layout oficial idêntico ao Relatório Padrão impresso (Todas as 10 colunas incluídas com VALOR R$)</span>
+            <span style="font-size:11px; color:#94a3b8;">Layout oficial idêntico ao Relatório Padrão impresso (Todas as 10 colunas com VALOR R$)</span>
           </div>
         </div>
         <button onclick="document.getElementById('modal-whatsapp-relatorio').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; padding:4px 8px;">&times;</button>
@@ -6871,23 +6860,59 @@ ${textoGrupos.trim()}`;
         <img id="img-preview-relatorio" src="${imgUrl}" style="max-width:100%; height:auto; display:block; margin:0 auto; border-radius:4px; box-shadow:0 8px 24px rgba(0,0,0,0.6); cursor:zoom-in;" title="Clique para abrir imagem em tamanho original" onclick="window.open('${imgUrl}', '_blank')" alt="Preview do Relatório">
       </div>
 
-      <!-- Botões de Ação Rápida -->
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px; margin-bottom:14px;">
-        <button id="btn-env-whatsapp" style="background:#25d366; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#22c55e'" onmouseout="this.style.background='#25d366'">
-          📲 Abrir no WhatsApp
+      <!-- Botões de Ação Rápida com Ordem Invertida e Ícones SVG Oficiais -->
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:10px; margin-bottom:14px;">
+        
+        <!-- 1. Enviar (WhatsApp) -->
+        <button id="btn-env-whatsapp" style="background:linear-gradient(135deg, #25D366 0%, #128C7E 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(37,211,102,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Enviar pelo WhatsApp">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.076-2.146-.523-1.611-.666-2.651-2.298-2.733-2.406-.083-.109-.652-.868-.652-1.652 0-.785.411-1.17.559-1.328.147-.158.322-.198.43-.198.107 0 .214.002.308.007.098.005.231-.038.361.275.134.322.457 1.115.498 1.197.04.082.067.177.013.286-.055.108-.082.176-.162.272-.081.096-.17.214-.243.287-.081.082-.165.171-.071.333.094.162.417.688.894 1.114.614.548 1.132.718 1.293.799.162.081.256.068.351-.041.095-.108.405-.472.513-.634.108-.162.216-.135.364-.081.148.054.945.446 1.107.527.162.081.27.121.31.189.04.068.04.392-.104.797z"/>
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.396A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.2a8.16 8.16 0 0 1-4.38-1.267l-.314-.187-2.953.826.837-2.88-.205-.326A8.16 8.16 0 0 1 3.8 12c0-4.529 3.671-8.2 8.2-8.2s8.2 3.671 8.2 8.2-3.671 8.2-8.2 8.2z"/>
+          </svg>
+          <span>Enviar</span>
         </button>
-        <button id="btn-copiar-imagem" style="background:#0284c7; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'" title="Copiar Imagem diretamente para colar (Ctrl+V) no WhatsApp">
-          📋 Copiar Imagem
+
+        <!-- 2. Copiar Imagem (Ícone padrão do Windows) -->
+        <button id="btn-copiar-imagem" style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(2,132,199,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Copiar Imagem diretamente para colar (Ctrl+V) no WhatsApp">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copiar Imagem</span>
         </button>
-        <button id="btn-baixar-imagem" style="background:#0f766e; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#115e59'" onmouseout="this.style.background='#0f766e'">
-          🖼️ Baixar Imagem (PNG)
+
+        <!-- 3. Copiar Texto (Posição Invertida com Baixar Imagem) -->
+        <button id="btn-copiar-texto" style="background:linear-gradient(135deg, #475569 0%, #334155 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(71,85,105,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Copiar Texto estruturado por Prefixo">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            <line x1="8" y1="11" x2="16" y2="11"></line>
+            <line x1="8" y1="15" x2="13" y2="15"></line>
+          </svg>
+          <span>Copiar Texto</span>
         </button>
-        <button id="btn-copiar-texto" style="background:#334155; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#475569'" onmouseout="this.style.background='#334155'">
-          📝 Copiar Texto
+
+        <!-- 4. Baixar Imagem (PNG) (Posição Invertida com Copiar Texto) -->
+        <button id="btn-baixar-imagem" style="background:linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(13,148,136,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Baixar Imagem PNG em Alta Resolução">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+            <path d="M12 12v5m2.5-2.5L12 17l-2.5-2.5"></path>
+          </svg>
+          <span>Baixar Imagem (PNG)</span>
         </button>
-        <button id="btn-baixar-pdf-rapido" style="background:#7c3aed; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='#7c3aed'">
-          📄 Baixar PDF
+
+        <!-- 5. Baixar PDF -->
+        <button id="btn-baixar-pdf-rapido" style="background:linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(220,38,38,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Baixar Relatório em PDF">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <path d="M9 15h6M12 12v6" stroke-width="2.2"></path>
+          </svg>
+          <span>Baixar PDF</span>
         </button>
+
       </div>
 
       <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); border-radius:8px; padding:10px; font-size:12px; color:#bae6fd; display:flex; align-items:center; gap:8px;">
@@ -6905,7 +6930,6 @@ ${textoGrupos.trim()}`;
     window.open(url, '_blank');
   };
 
-  // Cópia direta da imagem para área de transferência
   document.getElementById('btn-copiar-imagem').onclick = async () => {
     try {
       canvas.toBlob(async (blob) => {
@@ -6930,17 +6954,17 @@ ${textoGrupos.trim()}`;
     }
   };
 
+  document.getElementById('btn-copiar-texto').onclick = () => {
+    navigator.clipboard.writeText(textoWhatsApp);
+    if (typeof showToast === 'function') showToast('Texto copiado com agrupamento por prefixo!', 'success');
+    else alert('Texto copiado com sucesso!');
+  };
+
   document.getElementById('btn-baixar-imagem').onclick = () => {
     const a = document.createElement('a');
     a.href = imgUrl;
     a.download = (isSelecao ? 'Processos_Selecionados_CAM_' : 'Relatorio_CAM_') + Date.now() + '.png';
     a.click();
-  };
-
-  document.getElementById('btn-copiar-texto').onclick = () => {
-    navigator.clipboard.writeText(textoWhatsApp);
-    if (typeof showToast === 'function') showToast('Texto copiado com agrupamento por prefixo!', 'success');
-    else alert('Texto copiado com sucesso!');
   };
 
   document.getElementById('btn-baixar-pdf-rapido').onclick = () => {
