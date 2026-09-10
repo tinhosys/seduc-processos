@@ -3,7 +3,27 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.73] — 2026-09-10 🟢 VERSÃO ATUAL
+## [v1.2.74] — 2026-09-10 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.74` · **Versão do Sistema:** `GBZ - v1.2.74`
+
+### 🐛 Correção de Exceção (Imagem 1)
+- **Eliminação do Erro de Referência**: Resolvido `Promise Rejeitada: ReferenceError: busca is not defined` no módulo de mapas (`js/mapa.js`), encapsulando com segurança a busca inteligente apenas no escopo onde `busca` é declarada.
+
+### 📐 Reorganização Harmônica no Topo (Imagem 2)
+- **Botões Acomodados no Topo em 2 Linhas Harmônicas**:
+  - **Linha 1**: Badges de Valor e Total de Processos + Botões de Relatório Principais (`COMPARTILHAR`, `ANÁLISE`, `DETALHADO`, `PADRÃO`, `PADRÃO SEL.`).
+  - **Linha 2**: Relatórios Administrativos (`PADRÃO ADM`, `RELATÓRIO ADM 2`) + Ferramentas (`EXCEL`, `PLANILHA`) + **Botão `LIMPAR PARÂMETROS` à extrema direita**.
+  - **Identidade Visual Uniforme**: Padronização de altura (34px), tipografia, espaçamentos e paleta sóbria em estilo vidro escuro com sutis acentos coloridos, eliminando a poluição visual anterior.
+- **Encurtamento do Campo Objeto & Alinhamento com Dígito**:
+  - O campo `OBJETO` foi encurtado e posicionado lado a lado na mesma linha com `GRUPO (DÍGITO)` e seus seletores de condição (`=`, `<>`), desocupando a linha dos filtros de municípios.
+  - A linha seguinte agora abriga confortavelmente apenas os 5 filtros fundamentais: `MUNICÍPIO`, `SUPER`, `PREFIXO`, `LOCALIZAÇÃO` e `STATUS`.
+- **Botão Limpar Parâmetros à Direita**:
+  - Posicionado com destaque à direita da barra superior de ações (`margin-left: auto`), com gradiente âmbar e ícone nítido, sempre visível e acessível imediatamente para todos os usuários.
+
+---
+
+## [v1.2.73] — 2026-09-10
 
 **Tag:** `v1.2.73` · **Versão do Sistema:** `GBZ - v1.2.73`
 

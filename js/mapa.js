@@ -462,16 +462,6 @@ function iniciarMapaEscolas() {
   } else if (_mapaCacheEscolas.length > 0) {
     // Já tem dados carregados anteriormente
     _mapaRenderizarPinos();
-  // BUSCA INTELIGENTE COM FOCO E ZOOM
-  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
-    const primeira = _mapaEscolasFiltradas[0];
-    const coords = getCoordsParaEscola(primeira);
-    if (_mapaEscolasFiltradas.length === 1) {
-      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
-    } else if (_mapaEscolasFiltradas.length <= 15) {
-      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
-    }
-  }
 
   } else {
     // Buscar da API
@@ -496,16 +486,6 @@ async function carregarMapaEscolasAPI() {
       _mapaEscolasFiltradas = [..._mapaCacheEscolas];
       _mapaPopularFiltros();
       _mapaRenderizarPinos();
-  // BUSCA INTELIGENTE COM FOCO E ZOOM
-  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
-    const primeira = _mapaEscolasFiltradas[0];
-    const coords = getCoordsParaEscola(primeira);
-    if (_mapaEscolasFiltradas.length === 1) {
-      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
-    } else if (_mapaEscolasFiltradas.length <= 15) {
-      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
-    }
-  }
 
     }
   } catch (err) {
@@ -515,16 +495,6 @@ async function carregarMapaEscolasAPI() {
       _mapaEscolasFiltradas = [..._mapaCacheEscolas];
       _mapaPopularFiltros();
       _mapaRenderizarPinos();
-  // BUSCA INTELIGENTE COM FOCO E ZOOM
-  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
-    const primeira = _mapaEscolasFiltradas[0];
-    const coords = getCoordsParaEscola(primeira);
-    if (_mapaEscolasFiltradas.length === 1) {
-      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
-    } else if (_mapaEscolasFiltradas.length <= 15) {
-      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
-    }
-  }
 
     } else if (badgeEl) {
       badgeEl.textContent = '🗺️ Erro ao carregar mapa';
@@ -619,8 +589,10 @@ function filtrarMapaEscolas() {
     return true;
   });
 
+  
   _mapaRenderizarPinos();
-  // BUSCA INTELIGENTE COM FOCO E ZOOM
+
+  // Foco e zoom inteligente apenas quando houver termo de busca digitado
   if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
     const primeira = _mapaEscolasFiltradas[0];
     const coords = getCoordsParaEscola(primeira);
@@ -640,16 +612,6 @@ function limparFiltrosMapa() {
   });
   _mapaEscolasFiltradas = [..._mapaCacheEscolas];
   _mapaRenderizarPinos();
-  // BUSCA INTELIGENTE COM FOCO E ZOOM
-  if (busca && _mapaEscolasFiltradas.length > 0 && _mapaInstancia) {
-    const primeira = _mapaEscolasFiltradas[0];
-    const coords = getCoordsParaEscola(primeira);
-    if (_mapaEscolasFiltradas.length === 1) {
-      _mapaInstancia.flyTo(coords, 16, { animate: true, duration: 1 });
-    } else if (_mapaEscolasFiltradas.length <= 15) {
-      _mapaInstancia.flyTo(coords, 14, { animate: true, duration: 1 });
-    }
-  }
 
 }
 
