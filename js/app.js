@@ -1240,25 +1240,33 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-function renderMobileCell(titulo, valor) {
+function renderMobileCell(titulo, valor, maxChars = 7) {
   const str = (valor || '').toString().trim();
   if (!str || str === '—' || str === '-') {
     return '—';
   }
-  const trunc = str.length > 9 ? escapeHtml(str.substring(0, 9)) + '...' : escapeHtml(str);
+  const trunc = str.length > maxChars ? escapeHtml(str.substring(0, maxChars)) + '...' : escapeHtml(str);
   const attrTitulo = escapeHtml(titulo);
   const attrConteudo = escapeHtml(str);
   return `<span class="mobile-cell-wrap">${trunc}<button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTitulo}" data-conteudo="${attrConteudo}" title="Ver ${attrTitulo} completo">🔍</button></span>`;
 }
 
-function renderMobileStatusCell(status) {
+function renderMobileStatusCell(status, maxChars = 7) {
   const str = (status || '').toString().trim();
   if (!str || str === '—' || str === '-') return '—';
   const badgeClass = getStatusBadgeClass(str);
-  const trunc = str.length > 9 ? escapeHtml(str.substring(0, 9)) + '...' : escapeHtml(str);
+  const trunc = str.length > maxChars ? escapeHtml(str.substring(0, maxChars)) + '...' : escapeHtml(str);
   const attrTitulo = 'Status';
   const attrConteudo = escapeHtml(str);
   return `<span class="badge ${badgeClass}" style="padding: 2px 6px; font-size: 10px; display:inline-flex; align-items:center; gap:3px;">${trunc}<button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTitulo}" data-conteudo="${attrConteudo}" title="Ver Status completo" style="margin-left:2px; padding:0 3px; font-size:9px; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; border-radius:3px; cursor:pointer;">🔍</button></span>`;
+}
+
+function renderMobileDateCell(dataRaw) {
+  const dataFmt = formatDate(dataRaw);
+  const textoData = (!dataFmt || dataFmt === '—' || dataFmt === '-') ? 'Sem data informada' : dataFmt;
+  const attrTitulo = 'Data';
+  const attrConteudo = escapeHtml(textoData);
+  return `<button type="button" class="btn-calendario-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTitulo}" data-conteudo="${attrConteudo}" title="Ver Data (${attrConteudo})">📅</button>`;
 }
 
 window.toggleFuncaoMobile = function(forcarEstado) {
@@ -1500,29 +1508,35 @@ function renderProcessos() {
           </div>
         </div>
       </td>
-      <td class="col-municipio">${hl(p.municipio, busca)}</td>
+      <td class="col-municipio" title="${p.municipio || ''}">
+        <span class="desktop-cell-view">${hl(p.municipio, busca)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Município', p.municipio, 7)}</span>
+      </td>
       <td class="col-numero">
         <span class="desktop-cell-view">${p.numero ? p.numero.split(/\s+/).map(n => hl(n, busca)).join('<br>') : '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Nº Processo', p.numero)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Nº Processo', p.numero, 7)}</span>
       </td>
       <td class="col-interessado" title="${p.interessado}">
         <span class="desktop-cell-view">${hl(p.interessado, busca) || '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado, 7)}</span>
       </td>
       <td class="col-objeto" title="${p.objeto}">
         <span class="desktop-cell-view">${p.objeto || '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Objeto', p.objeto)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Objeto', p.objeto, 7)}</span>
       </td>
       <td class="col-status" style="text-align: center;">
         <span class="desktop-cell-view"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></span>
-        <span class="mobile-cell-view">${renderMobileStatusCell(p.status)}</span>
+        <span class="mobile-cell-view">${renderMobileStatusCell(p.status, 7)}</span>
       </td>
       <td class="col-localizacao" style="text-align: center;">
         <span class="desktop-cell-view">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>').replace(/\|/g, '|<wbr>') : '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Localização', p.localizacao)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Localização', p.localizacao, 7)}</span>
       </td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
-      <td style="text-align: center;">${formatDate(p.data)}</td>
+      <td class="col-data" style="text-align: center;">
+        <span class="desktop-cell-view">${formatDate(p.data)}</span>
+        <span class="mobile-cell-view">${renderMobileDateCell(p.data)}</span>
+      </td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
         <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">✏️</button>
       </td>

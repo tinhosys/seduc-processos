@@ -3,7 +3,25 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.76] — 2026-09-12 🟢 VERSÃO ATUAL
+## [v1.2.77] — 2026-09-12 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.77` · **Versão do Sistema:** `GBZ - v1.2.77`
+
+### 📌 Colunas Ancoradas (Check e Prefixo) e Otimizações Mobile
+- **Colunas Ancoradas no Scroll Horizontal (Freeze Sticky)**:
+  - A coluna de seleção (`Checkbox`) permanece 100% fixa à esquerda (`position: sticky; left: 0; z-index: 25/35`).
+  - A coluna `Prefixo` permanece ancorada e alinhada imediatamente ao lado do checkbox (`position: sticky; left: 40px; z-index: 25/35`), com divisória sutil e sombra projetada à direita, permitindo navegar horizontalmente pelas demais colunas sem perder a referência do processo no celular ou tablet.
+- **Coluna Município no Modo Mobile Compacto (7 Caracteres)**:
+  - Adicionado o suporte responsivo na coluna `Município`, reduzindo o corte de 9 para 7 caracteres seguidos de reticências (`...`) e botão discreto com lupa `🔍` para abertura do balão pop-up.
+  - Truncamento geral de células no modo mobile ajustado para o limite de 7 dígitos/caracteres nas colunas compactadas (`Nº Processo`, `Interessado`, `Objeto`, `Status`, `Localização` e `Município`).
+- **Coluna Data no Mobile Apenas com Botão de Calendário (`📅`)**:
+  - No mobile, a coluna Data não exibe texto diretamente na linha, apresentando exclusivamente um botão discreto de calendário `📅` que abre o balão flutuante com a data formatada completa ao ser clicado.
+- **Preservação Integral do Desktop**:
+  - No computador/desktop regular, as colunas exibem todos os dados normalmente sem truncamento ou substituição por ícone.
+
+---
+
+## [v1.2.76] — 2026-09-12
 
 **Tag:** `v1.2.76` · **Versão do Sistema:** `GBZ - v1.2.76`
 

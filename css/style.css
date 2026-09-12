@@ -2033,23 +2033,55 @@ input:checked ~ .toggle-text {
 }
 
 
-/* Congelar coluna Prefixo */
-.table-wrap th[data-sort="prefixo"] {
-  position: sticky;
-  left: 0;
-  z-index: 30 !important;
-  background-color: var(--surface);
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+/* ============================================================
+   GBZ v1.2.77 - COLUNAS ANCORADAS: CHECKBOX (left: 0) E PREFIXO (left: 40px)
+   ============================================================ */
+.table-wrap th:first-child,
+.table-wrap td:first-child {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 25 !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  background-color: #0b132b !important;
 }
+
+.table-wrap th[data-sort="prefixo"],
 .table-wrap td.col-prefixo {
-  position: sticky;
-  left: 0;
-  z-index: 10;
-  background-color: var(--surface);
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  position: sticky !important;
+  left: 40px !important;
+  z-index: 25 !important;
+  width: 110px !important;
+  min-width: 110px !important;
+  background-color: #0b132b !important;
+  border-right: 2px solid rgba(56, 189, 248, 0.35) !important;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5) !important;
 }
-.process-row:hover td.col-prefixo {
-  background-color: var(--surface); filter: brightness(1.2);
+
+.table-wrap thead th:first-child {
+  z-index: 35 !important;
+  background-color: #0d1530 !important;
+}
+
+.table-wrap thead th[data-sort="prefixo"] {
+  z-index: 35 !important;
+  background-color: #0d1530 !important;
+}
+
+tbody tr:hover td:first-child,
+tbody tr:hover td.col-prefixo {
+  background-color: #172347 !important;
+}
+
+tbody tr.linha-alerta td:first-child,
+tbody tr.linha-alerta td.col-prefixo {
+  background-color: #24141d !important;
+}
+
+tbody tr.linha-pago td:first-child,
+tbody tr.linha-pago td.col-prefixo {
+  background-color: #0d2624 !important;
 }
 thead th {
   z-index: 20;
@@ -3281,6 +3313,26 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 .btn-lupa-mobile:hover,
 .btn-lupa-mobile:active {
   background: rgba(56, 189, 248, 0.4);
+  transform: scale(1.1);
+}
+
+.btn-calendario-mobile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #38bdf8;
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+.btn-calendario-mobile:hover,
+.btn-calendario-mobile:active {
+  background: rgba(56, 189, 248, 0.45);
   transform: scale(1.1);
 }
 
