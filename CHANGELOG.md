@@ -3,7 +3,25 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.74] — 2026-09-10 🟢 VERSÃO ATUAL
+## [v1.2.75] — 2026-09-12 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.75` · **Versão do Sistema:** `GBZ - v1.2.75`
+
+### 📱 Visualização Otimizada para Mobile com Balão Pop-up (Imagem 1)
+- **Truncamento Inteligente em 9 Dígitos**: Em telas menores/mobile (resolução <= 768px), as colunas com espaço restrito (`Nº PROCESSO`, `INTERESSADO`, `OBJETO`, `STATUS` e `LOCALIZAÇÃO`) exibem os 9 primeiros dígitos seguidos de reticências (`...`).
+- **Botão Discreto de Lupa (`🔍`)**: Adicionado botão compacto em cada célula truncada no mobile que, ao ser clicado sem disparar a navegação da linha, abre um balão pop-up flutuante contendo o conteúdo completo legível e botão de cópia rápida.
+- **Isolamento Completo Desktop**: No computador/desktop, a tabela preserva 100% da sua exibição original e marcações de busca sem qualquer alteração.
+
+### 💬 Mensagens e Toasts à Frente do Modal de Compartilhar (Imagem 2)
+- **Elevação do Z-Index das Notificações**: Ajustado o `#toast-container` com `z-index: 10000005 !important` e `pointer-events: all !important`. Agora, ao clicar em "Copiar Imagem", "Copiar Texto", "Baixar Imagem" ou "Enviar", o balão de confirmação aparece na frente da tela de Compartilhamento, perfeitamente visível.
+
+### 🟢 Destaque em Verde Sólido para Linha e Status "PAGO" (Imagem 3)
+- **Realce da Linha PAGO**: Linhas cujo status seja `PAGO` recebem classe `.linha-pago` com borda lateral verde sólida (`#10b981`) e fundo translúcido esmeralda.
+- **Badge PAGO Sólido**: A etiqueta do status `PAGO` foi reformulada de ciano para verde sólido institucional vibrante (`background: #10b981 !important; color: #ffffff !important; box-shadow: 0 0 8px rgba(16,185,129,0.45);`), conferindo destaque imediato na listagem.
+
+---
+
+## [v1.2.74] — 2026-09-10
 
 **Tag:** `v1.2.74` · **Versão do Sistema:** `GBZ - v1.2.74`
 

@@ -582,7 +582,7 @@ tbody tr.linha-alerta:hover td {
 }
 
 .badge-AUTORIZADO    { background: rgba(16,185,129,0.15);  color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
-.badge-PAGO          { background: rgba(6,182,212,0.15);   color: #22d3ee; border: 1px solid rgba(6,182,212,0.3); }
+.badge-PAGO          { background: #10b981 !important; color: #ffffff !important; font-weight: 700 !important; border: 1px solid #059669 !important; box-shadow: 0 0 8px rgba(16,185,129,0.45) !important; text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important; }
 .badge-PENDENTE      { background: rgba(245,158,11,0.15);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
 .badge-CONCLUIDO     { background: rgba(99,102,241,0.15);  color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
 .badge-CANCELADO     { background: rgba(239,68,68,0.15);   color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
@@ -972,10 +972,11 @@ textarea { resize: vertical; min-height: 80px; }
 #toast-container {
   position: fixed;
   bottom: 24px; right: 24px;
-  z-index: 999;
+  z-index: 10000005 !important;
   display: flex;
   flex-direction: column;
   gap: 8px;
+  pointer-events: all !important;
 }
 
 .toast {
@@ -1874,6 +1875,20 @@ tr.linha-marcada {
 
 tr.linha-marcada:hover {
   background: rgba(59, 130, 246, 0.12) !important;
+}
+
+/* ============================================================
+   PROCESSO PAGO - DESTAQUE EM VERDE SÓLIDO (v1.2.75)
+   ============================================================ */
+tbody tr.linha-pago td {
+  background: rgba(16, 185, 129, 0.1) !important;
+  border-bottom: 1px solid rgba(16, 185, 129, 0.35) !important;
+}
+tbody tr.linha-pago td:first-child {
+  border-left: 4px solid #10b981 !important;
+}
+tbody tr.linha-pago:hover td {
+  background: rgba(16, 185, 129, 0.18) !important;
 }
 
 .badge-marca {
@@ -3138,3 +3153,174 @@ thead th {
 .main-content::-webkit-scrollbar-thumb:hover {
   background: #60a5fa !important;
 }
+
+/* ============================================================
+   GBZ v1.2.75 - MOBILE: CÉLULAS TRUNCADAS (9 DÍGITOS) COM BALÃO POPUP
+   ============================================================ */
+.mobile-cell-view {
+  display: none !important;
+}
+.desktop-cell-view {
+  display: inline !important;
+}
+
+@media (max-width: 768px) {
+  .desktop-cell-view {
+    display: none !important;
+  }
+  .mobile-cell-view {
+    display: inline-flex !important;
+    align-items: center;
+    max-width: 100%;
+  }
+  .table-wrap th[data-sort="numero"],
+  .table-wrap td.col-numero {
+    min-width: 110px !important;
+  }
+  .table-wrap th[data-sort="interessado"],
+  .table-wrap td.col-interessado {
+    min-width: 110px !important;
+  }
+  .table-wrap th[data-sort="objeto"],
+  .table-wrap td.col-objeto {
+    min-width: 110px !important;
+  }
+}
+
+.mobile-cell-wrap {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  gap: 2px;
+}
+
+.btn-lupa-mobile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  color: #38bdf8;
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 11px;
+  cursor: pointer;
+  margin-left: 4px;
+  line-height: 1.1;
+  transition: all 0.15s ease;
+  vertical-align: middle;
+}
+
+.btn-lupa-mobile:hover,
+.btn-lupa-mobile:active {
+  background: rgba(56, 189, 248, 0.4);
+  transform: scale(1.1);
+}
+
+/* Balão flutuante para visualização de conteúdo completo no mobile */
+.balao-conteudo-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 10000010 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+  animation: fadeInBalao 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.balao-conteudo-card {
+  background: #0f172a;
+  border: 1px solid #38bdf8;
+  border-radius: 12px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85), 0 0 16px rgba(56, 189, 248, 0.25);
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.balao-conteudo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: #1e293b;
+  border-bottom: 1px solid #334155;
+}
+
+.balao-conteudo-close {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+}
+.balao-conteudo-close:hover {
+  color: #ffffff;
+}
+
+.balao-conteudo-body {
+  padding: 18px 16px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #f8fafc;
+  word-break: break-word;
+  max-height: 60vh;
+  overflow-y: auto;
+  user-select: text;
+  background: #090d16;
+}
+
+.balao-conteudo-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 10px 16px;
+  background: #1e293b;
+  border-top: 1px solid #334155;
+}
+
+.btn-balao-copiar {
+  background: #334155;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.btn-balao-copiar:hover {
+  background: #475569;
+}
+
+.btn-balao-ok {
+  background: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.btn-balao-ok:hover {
+  background: #0369a1;
+}
+
+@keyframes fadeInBalao {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+

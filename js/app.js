@@ -1227,6 +1227,105 @@ function getFiltrados() {
   return lista;
 }
 
+// ============================================================
+// GBZ v1.2.75 - FUNÇÕES AUXILIARES PARA CÉLULAS E BALÃO MOBILE
+// ============================================================
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function renderMobileCell(titulo, valor, isStatus = false) {
+  const str = (valor || '').toString().trim();
+  if (!str || str === '—' || str === '-') {
+    return '—';
+  }
+  if (str.length <= 9) {
+    return escapeHtml(str);
+  }
+  const trunc = escapeHtml(str.substring(0, 9)) + '...';
+  const attrTitulo = escapeHtml(titulo);
+  const attrConteudo = escapeHtml(str);
+  return `<span class="mobile-cell-wrap">${trunc}<button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTitulo}" data-conteudo="${attrConteudo}" title="Ver ${attrTitulo} completo">🔍</button></span>`;
+}
+
+window.abrirBalaoConteudo = function(event, btnOrTitle, textContent) {
+  if (event) {
+    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+    if (typeof event.preventDefault === 'function') event.preventDefault();
+  }
+  fecharBalaoConteudo();
+  
+  let titulo = '';
+  let conteudo = '';
+  if (typeof btnOrTitle === 'string') {
+    titulo = btnOrTitle;
+    conteudo = textContent || '';
+  } else if (btnOrTitle && btnOrTitle.dataset) {
+    titulo = btnOrTitle.dataset.titulo || '';
+    conteudo = btnOrTitle.dataset.conteudo || '';
+  }
+  
+  const overlay = document.createElement('div');
+  overlay.id = 'balao-conteudo-overlay';
+  overlay.className = 'balao-conteudo-overlay';
+  overlay.onclick = function(e) {
+    if (e.target === overlay) fecharBalaoConteudo(e);
+  };
+
+  overlay.innerHTML = `
+    <div class="balao-conteudo-card" onclick="event.stopPropagation()">
+      <div class="balao-conteudo-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:16px;">🔍</span>
+          <span style="font-weight:700; font-size:13px; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px;">${escapeHtml(titulo)}</span>
+        </div>
+        <button type="button" class="balao-conteudo-close" onclick="fecharBalaoConteudo(event)" title="Fechar">&times;</button>
+      </div>
+      <div class="balao-conteudo-body">
+        ${escapeHtml(conteudo).replace(/\n/g, '<br>')}
+      </div>
+      <div class="balao-conteudo-footer">
+        <button type="button" class="btn-balao-copiar" onclick="copiarTextoBalao(this)">📋 Copiar</button>
+        <button type="button" class="btn-balao-ok" onclick="fecharBalaoConteudo(event)">OK</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+};
+
+window.fecharBalaoConteudo = function(event) {
+  if (event && typeof event.stopPropagation === 'function') event.stopPropagation();
+  const el = document.getElementById('balao-conteudo-overlay');
+  if (el) el.remove();
+};
+
+window.copiarTextoBalao = function(btn) {
+  const card = btn.closest('.balao-conteudo-card');
+  const body = card ? card.querySelector('.balao-conteudo-body') : null;
+  const txt = body ? body.innerText.trim() : '';
+  if (txt && navigator.clipboard) {
+    navigator.clipboard.writeText(txt).then(() => {
+      btn.textContent = '✅ Copiado!';
+      setTimeout(() => { btn.textContent = '📋 Copiar'; }, 2000);
+    }).catch(() => {
+      alert('Conteúdo copiado.');
+    });
+  }
+};
+
+if (!window._balaoEscListenerAttached) {
+  window._balaoEscListenerAttached = true;
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') fecharBalaoConteudo();
+  });
+}
+
 function renderProcessos() {
   const processos = carregarProcessos();
   const filtrados = getFiltrados();
@@ -1300,8 +1399,10 @@ function renderProcessos() {
   const tbody = document.getElementById('table-processos');
   const busca = state.filtros.busca;
 
-  tbody.innerHTML = pagina.map(p => `
-    <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
+  tbody.innerHTML = pagina.map(p => {
+    const isPago = (p.status || '').toString().trim().toUpperCase().includes('PAGO');
+    return `
+    <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} ${isPago ? 'linha-pago' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
       <td onclick="event.stopPropagation()" style="text-align: center;"><input type="checkbox" class="check-processo" value="${p.id}" style="cursor:pointer; transform: scale(1.2);"></td>
       <td class="col-prefixo" title="${p.prefixo}">
         <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
@@ -1328,20 +1429,32 @@ function renderProcessos() {
       </td>
       <td class="col-municipio">${hl(p.municipio, busca)}</td>
       <td class="col-numero">
-        ${p.numero ? p.numero.split(/\s+/).map(n => hl(n, busca)).join('<br>') : '—'}
+        <span class="desktop-cell-view">${p.numero ? p.numero.split(/\s+/).map(n => hl(n, busca)).join('<br>') : '—'}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Nº Processo', p.numero)}</span>
       </td>
-      <td class="col-interessado" title="${p.interessado}">${hl(p.interessado, busca) || '—'}</td>
-      <td class="col-objeto" title="${p.objeto}">${p.objeto || '—'}</td>
-      <td class="col-status" style="text-align: center;"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></td>
-      <td class="col-localizacao" style="text-align: center;">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>').replace(/\|/g, '|<wbr>') : '—'}</td>
+      <td class="col-interessado" title="${p.interessado}">
+        <span class="desktop-cell-view">${hl(p.interessado, busca) || '—'}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado)}</span>
+      </td>
+      <td class="col-objeto" title="${p.objeto}">
+        <span class="desktop-cell-view">${p.objeto || '—'}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Objeto', p.objeto)}</span>
+      </td>
+      <td class="col-status" style="text-align: center;">
+        <span class="desktop-cell-view"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></span>
+        <span class="mobile-cell-view"><span class="badge ${getStatusBadgeClass(p.status)}">${renderMobileCell('Status', p.status, true)}</span></span>
+      </td>
+      <td class="col-localizacao" style="text-align: center;">
+        <span class="desktop-cell-view">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>').replace(/\|/g, '|<wbr>') : '—'}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Localização', p.localizacao)}</span>
+      </td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
       <td style="text-align: center;">${formatDate(p.data)}</td>
       <td onclick="event.stopPropagation()" style="white-space:nowrap">
         <button class="btn btn-ghost btn-sm" onclick="editarProcesso('${p.id}')" title="Editar">✏️</button>
-        
       </td>
     </tr>
-  `).join('') || `
+  `;}).join('') || `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="11">
       <div class="empty-state">
         <div class="empty-icon">📂</div>
