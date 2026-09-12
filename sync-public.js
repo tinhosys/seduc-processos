@@ -1,13 +1,16 @@
-﻿// sync-public.js — Sincroniza arquivos da raiz SEDUC com a pasta public/ do servidor
+// sync-public.js — Sincroniza arquivos da raiz SEDUC com a pasta public/ do servidor
 const fs = require('fs');
 const path = require('path');
 const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, 'planilha-google-form', 'public');
 const files = [
-  { src: 'index.html',    dst: 'index.html' },
-  { src: 'js/app.js',     dst: 'js/app.js' },
-  { src: 'js/escolas.js', dst: 'js/escolas.js' },
-  { src: 'js/mapa.js',    dst: 'js/mapa.js' },
+  { src: 'index.html',        dst: 'index.html' },
+  { src: 'js/app.js',         dst: 'js/app.js' },
+  { src: 'js/multi-select.js',dst: 'js/multi-select.js' },
+  { src: 'js/escolas.js',     dst: 'js/escolas.js' },
+  { src: 'js/mapa.js',        dst: 'js/mapa.js' },
+  { src: 'style.css',         dst: 'style.css' },
+  { src: 'style.css',         dst: 'css/style.css' },
 ];
 let changes = 0;
 files.forEach(({ src, dst }) => {

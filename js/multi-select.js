@@ -83,38 +83,65 @@ class MultiSelect {
       el.setAttribute("aria-expanded", "false");
     });
 
+    const isTouchOrMobile = ('ontouchstart' in window) || 
+                            (navigator.maxTouchPoints > 0) || 
+                            (window.innerWidth <= 1024) || 
+                            document.body.classList.contains('funcao-mobile-ativa');
+
     const rect = this.button.getBoundingClientRect();
-    const minW = Math.max(rect.width, 240);
+    const viewportW = window.innerWidth;
+    const viewportH = window.innerHeight;
+
+    // Largura adequada ao mobile sem estourar a tela
+    const minW = isTouchOrMobile ? Math.min(Math.max(rect.width, 260), viewportW - 16) : Math.max(rect.width, 240);
     this.dropdown.style.position = "fixed";
-    this.dropdown.style.top = (rect.bottom + 4) + "px";
-    this.dropdown.style.left = rect.left + "px";
     this.dropdown.style.width = minW + "px";
     this.dropdown.style.minWidth = minW + "px";
-    this.dropdown.style.zIndex = "99999";
+    this.dropdown.style.maxWidth = (viewportW - 16) + "px";
+    this.dropdown.style.zIndex = "999999";
     this.dropdown.style.display = "block";
     this.button.setAttribute("aria-expanded", "true");
 
-    // Focar no campo de busca para digitação imediata
-    const searchInput = this.dropdown.querySelector(".custom-multiselect-search");
-    if (searchInput) {
-      setTimeout(() => searchInput.focus(), 30);
+    // Posição horizontal segura
+    let left = rect.left;
+    if (left + minW > viewportW - 8) {
+      left = Math.max(8, viewportW - minW - 8);
+    }
+    this.dropdown.style.left = left + "px";
+
+    // Posição vertical segura: calcular espaço disponível acima e abaixo
+    const spaceBelow = viewportH - rect.bottom;
+    const spaceAbove = rect.top;
+    const itemsContainer = this.dropdown.querySelector(".custom-multiselect-items-container");
+
+    // Limitar altura dos itens no mobile para nunca forçar scroll de tela
+    if (itemsContainer) {
+      const maxContainerHeight = isTouchOrMobile ? Math.min(220, Math.max(120, Math.max(spaceBelow, spaceAbove) - 100)) : 210;
+      itemsContainer.style.maxHeight = maxContainerHeight + "px";
     }
 
-    // Ajustar se sair da tela (viewport)
-    requestAnimationFrame(() => {
-      const dropRect = this.dropdown.getBoundingClientRect();
-      if (dropRect.right > window.innerWidth - 8) {
-        this.dropdown.style.left = Math.max(8, window.innerWidth - dropRect.width - 8) + "px";
+    const dropHeight = this.dropdown.offsetHeight || 260;
+    if (spaceBelow >= dropHeight || spaceBelow >= spaceAbove) {
+      // Abre para baixo
+      this.dropdown.style.top = (rect.bottom + 4) + "px";
+    } else {
+      // Abre para cima com segurança
+      this.dropdown.style.top = Math.max(8, rect.top - dropHeight - 4) + "px";
+    }
+
+    // Focar no campo de busca para digitação imediata APENAS em desktop com teclado físico (evita teclado virtual abrir e fechar no mobile)
+    if (!isTouchOrMobile) {
+      const searchInput = this.dropdown.querySelector(".custom-multiselect-search");
+      if (searchInput) {
+        setTimeout(() => searchInput.focus(), 50);
       }
-      if (dropRect.bottom > window.innerHeight - 8) {
-        this.dropdown.style.top = Math.max(8, rect.top - dropRect.height - 4) + "px";
-      }
-    });
+    }
   }
 
   closeDropdown() {
     this.dropdown.style.display = "none";
     this.button.setAttribute("aria-expanded", "false");
+    window._dropdownJustClosed = Date.now();
   }
 
   buildOptions() {
@@ -291,29 +318,63 @@ window.initMultiSelect = function(selectId) {
   select._multiSelectInstance = new MultiSelect(select);
 };
 
-// Fechar dropdowns ao rolar ou redimensionar a página EXTERNA, mas NÃO ao rolar dentro do dropdown
+// Fechar dropdowns ao rolar ou redimensionar a página EXTERNA, mas NÃO ao rolar dentro do dropdown nem por teclado virtual
+let _lastWindowWidth = window.innerWidth;
+
 window.addEventListener("scroll", (e) => {
-  if (e.target && (
-    e.target.classList?.contains("custom-multiselect-dropdown") ||
-    e.target.closest?.(".custom-multiselect-dropdown") ||
-    e.target.classList?.contains("custom-multiselect-items-container") ||
-    e.target.closest?.(".custom-multiselect-items-container")
-  )) {
-    return; // Permite a rolagem normal dentro do dropdown sem fechar!
+  const target = e.target;
+  // Não fechar se estiver rolando dentro de qualquer parte do dropdown, itens ou wrapper
+  if (target && target.nodeType === 1) {
+    if (target.closest?.(".custom-multiselect-dropdown") ||
+        target.closest?.(".custom-multiselect") ||
+        target.closest?.(".custom-multiselect-items-container")) {
+      return;
+    }
   }
+
+  // Não fechar se o usuário estiver focado no campo de busca da multiselect
+  const active = document.activeElement;
+  if (active && (active.classList?.contains("custom-multiselect-search") || active.closest?.(".custom-multiselect-dropdown"))) {
+    return;
+  }
+
+  // Se não houver nenhum dropdown aberto, não precisa processar
+  const openDropdowns = document.querySelectorAll(".custom-multiselect-dropdown[style*='display: block']");
+  if (openDropdowns.length === 0) return;
+
+  // Em mobile/touch, evitar fechar por micro-scroll acidental de toque na tela
+  const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.innerWidth <= 1024);
+  if (isTouch && (target === document || target === window)) {
+    return;
+  }
+
   document.querySelectorAll(".custom-multiselect-dropdown").forEach(el => {
     el.style.display = "none";
   });
   document.querySelectorAll(".custom-multiselect-btn").forEach(el => {
     el.setAttribute("aria-expanded", "false");
   });
+  window._dropdownJustClosed = Date.now();
 }, true);
 
 window.addEventListener("resize", () => {
+  // Ignorar resize se for apenas variação de altura (abertura/fechamento do teclado virtual no mobile)
+  if (Math.abs(window.innerWidth - _lastWindowWidth) < 35) {
+    return;
+  }
+  _lastWindowWidth = window.innerWidth;
+
+  // Não fechar se o usuário estiver interagindo com um campo de busca
+  const active = document.activeElement;
+  if (active && (active.classList?.contains("custom-multiselect-search") || active.closest?.(".custom-multiselect-dropdown"))) {
+    return;
+  }
+
   document.querySelectorAll(".custom-multiselect-dropdown").forEach(el => {
     el.style.display = "none";
   });
   document.querySelectorAll(".custom-multiselect-btn").forEach(el => {
     el.setAttribute("aria-expanded", "false");
   });
+  window._dropdownJustClosed = Date.now();
 });

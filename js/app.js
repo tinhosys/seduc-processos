@@ -2904,6 +2904,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ---- EXPORTAÇÃO ----
 function exportarExcel() {
+  if (window._dropdownJustClosed && Date.now() - window._dropdownJustClosed < 450) {
+    return;
+  }
   const filtrados = getFiltrados();
   if (filtrados.length === 0) {
     toast('Nenhum processo para exportar.', 'error');
@@ -3169,6 +3172,9 @@ window.formatNumberOnly = function(valor) {
 function injectPrintHeader(subtitle) { /* disabled */ }
 
 function imprimirPadrao(filtrados = getFiltrados()) {
+      if (window._dropdownJustClosed && Date.now() - window._dropdownJustClosed < 450) {
+        return;
+      }
       updatePrintDateTime();
       updatePrintDateTime();
       

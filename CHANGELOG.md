@@ -3,7 +3,28 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.77] — 2026-09-12 🟢 VERSÃO ATUAL
+## [v1.2.78] — 2026-09-12 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.78` · **Versão do Sistema:** `GBZ - v1.2.78`
+
+### 📱 Correção Crítica dos Combos/Dropdowns & Eliminação de Disparos Residuais no Mobile
+- **Eliminação do Fechamento Instantâneo dos Combos no Mobile**:
+  - Removido o foco automático forçado (`searchInput.focus()`) em dispositivos móveis e telas touch. Anteriormente, ao tocar em um combo no celular, o teclado virtual do sistema abria automaticamente, disparando eventos nativos de `resize` e `scroll` de viewport que fechavam o dropdown em 30 milissegundos.
+  - No mobile, o combo agora abre confortavelmente exibindo a lista de opções para seleção direta; o campo de busca interna permanece totalmente funcional e acessível mediante toque intencional do usuário.
+- **Calibração dos Listeners de `resize` e `scroll`**:
+  - Eventos de `resize` causados unicamente pela variação vertical do teclado virtual não fecham mais o dropdown.
+  - Eventos de micro-scroll ou toques na tela em dispositivos touch não encerram mais prematuramente os menus suspensos.
+  - Posicionamento inteligente recalculado para manter o dropdown dentro dos limites da tela sem cobrir a barra de ferramentas superior.
+- **Bloqueio de Ghost Clicks / Toques Residuais ("Gerando Arquivo")**:
+  - Identificada e corrigida a causa do disparo inadvertido de download de arquivos: quando o combo fechava abruptamente em milissegundos devido ao bug do foco, o toque residual do usuário vazava para o botão de ação subjacente (ex: `EXCEL` ou `PADRÃO`).
+  - Implementada barreira temporizada (`window._dropdownJustClosed`) que bloqueia cliques fantasmas em `exportarExcel()` e relatórios de impressão por 450ms após qualquer fechamento de menu.
+  - Atribuído `type="button"` explícito a todos os botões de ação do cabeçalho.
+- **Sincronização Integrada**:
+  - Atualizado o script `sync-public.js` para sincronizar automaticamente `multi-select.js` e folhas de estilo no diretório de publicação.
+
+---
+
+## [v1.2.77] — 2026-09-12
 
 **Tag:** `v1.2.77` · **Versão do Sistema:** `GBZ - v1.2.77`
 
