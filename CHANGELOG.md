@@ -3,9 +3,20 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.75] — 2026-09-12 🟢 VERSÃO ATUAL
+## [v1.2.76] — 2026-09-12 🟢 VERSÃO ATUAL
 
-**Tag:** `v1.2.75` · **Versão do Sistema:** `GBZ - v1.2.75`
+**Tag:** `v1.2.76` · **Versão do Sistema:** `GBZ - v1.2.76`
+
+### 📱 Calibração Robusta da Função Mobile & Botão Alternador (Imagem 1)
+- **Ativação Ampla e Automática (<= 1024px)**: Expandido o breakpoint responsivo de 768px para 1024px, contemplando tablets, iPads, celulares em modo paisagem e testes com janela redimensionada no desktop.
+- **Botão Alternador `📱 MODO MOBILE` no Cabeçalho**: Adicionado botão direto na barra de ações (ao lado de Planilha) que permite ligar/desligar a qualquer instante a Função Mobile com 1 clique, mesmo em monitor de computador grande.
+- **Formatação Precisa dos 9 Dígitos**: Em todas as 5 colunas sinalizadas (`Nº Processo`, `Interessado`, `Objeto`, `Status` e `Localização`), o texto é truncado nos 9 primeiros dígitos/caracteres com reticências (`...`) e botão discreto de lupa `🔍`.
+- **Botão de Lupa Universal para Células com Conteúdo**: Toda célula com conteúdo nessas colunas inclui o botão `🔍` para abertura imediata do balão pop-up explicativo.
+- **Imunidade contra Cache**: Injeção das regras de responsividade diretamente no `<head>` do HTML (`<style>`), garantindo funcionamento instantâneo em navegadores móveis sem retenção de cache antigo.
+
+---
+
+## [v1.2.75] — 2026-09-12
 
 ### 📱 Visualização Otimizada para Mobile com Balão Pop-up (Imagem 1)
 - **Truncamento Inteligente em 9 Dígitos**: Em telas menores/mobile (resolução <= 768px), as colunas com espaço restrito (`Nº PROCESSO`, `INTERESSADO`, `OBJETO`, `STATUS` e `LOCALIZAÇÃO`) exibem os 9 primeiros dígitos seguidos de reticências (`...`).

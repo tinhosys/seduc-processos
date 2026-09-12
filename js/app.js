@@ -1240,18 +1240,91 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-function renderMobileCell(titulo, valor, isStatus = false) {
+function renderMobileCell(titulo, valor) {
   const str = (valor || '').toString().trim();
   if (!str || str === '—' || str === '-') {
     return '—';
   }
-  if (str.length <= 9) {
-    return escapeHtml(str);
-  }
-  const trunc = escapeHtml(str.substring(0, 9)) + '...';
+  const trunc = str.length > 9 ? escapeHtml(str.substring(0, 9)) + '...' : escapeHtml(str);
   const attrTitulo = escapeHtml(titulo);
   const attrConteudo = escapeHtml(str);
   return `<span class="mobile-cell-wrap">${trunc}<button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTitulo}" data-conteudo="${attrConteudo}" title="Ver ${attrTitulo} completo">🔍</button></span>`;
+}
+
+function renderMobileStatusCell(status) {
+  const str = (status || '').toString().trim();
+  if (!str || str === '—' || str === '-') return '—';
+  const badgeClass = getStatusBadgeClass(str);
+  const trunc = str.length > 9 ? escapeHtml(str.substring(0, 9)) + '...' : escapeHtml(str);
+  const attrTitulo = 'Status';
+  const attrConteudo = escapeHtml(str);
+  return `<span class="badge ${badgeClass}" style="padding: 2px 6px; font-size: 10px; display:inline-flex; align-items:center; gap:3px;">${trunc}<button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTitulo}" data-conteudo="${attrConteudo}" title="Ver Status completo" style="margin-left:2px; padding:0 3px; font-size:9px; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; border-radius:3px; cursor:pointer;">🔍</button></span>`;
+}
+
+window.toggleFuncaoMobile = function(forcarEstado) {
+  const body = document.body;
+  const ativoAtual = body.classList.contains('funcao-mobile-ativa');
+  const novoEstado = typeof forcarEstado === 'boolean' ? forcarEstado : !ativoAtual;
+  
+  if (novoEstado) {
+    body.classList.add('funcao-mobile-ativa');
+    window._forcarMobile = true;
+  } else {
+    body.classList.remove('funcao-mobile-ativa');
+    window._forcarMobile = false;
+  }
+  
+  const btn = document.getElementById('btn-toggle-mobile');
+  const txt = document.getElementById('btn-toggle-mobile-text');
+  if (btn && txt) {
+    if (novoEstado) {
+      btn.style.background = '#0284c7';
+      btn.style.color = '#ffffff';
+      btn.style.borderColor = '#38bdf8';
+      btn.style.boxShadow = '0 0 10px rgba(56,189,248,0.5)';
+      txt.textContent = 'MOBILE ATIVO';
+    } else {
+      btn.style.background = 'rgba(56,189,248,0.25)';
+      btn.style.color = '#38bdf8';
+      btn.style.borderColor = 'rgba(56,189,248,0.5)';
+      btn.style.boxShadow = 'none';
+      txt.textContent = 'MODO MOBILE';
+    }
+  }
+};
+
+function verificarModoMobileAuto() {
+  const isMobile = window.innerWidth <= 1024 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.matchMedia && window.matchMedia('(max-width: 1024px)').matches) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  if (typeof window._forcarMobile === 'undefined') {
+    if (isMobile) {
+      document.body.classList.add('funcao-mobile-ativa');
+    } else {
+      document.body.classList.remove('funcao-mobile-ativa');
+    }
+    const btn = document.getElementById('btn-toggle-mobile');
+    const txt = document.getElementById('btn-toggle-mobile-text');
+    if (btn && txt) {
+      if (isMobile) {
+        btn.style.background = '#0284c7';
+        btn.style.color = '#ffffff';
+        btn.style.borderColor = '#38bdf8';
+        btn.style.boxShadow = '0 0 10px rgba(56,189,248,0.5)';
+        txt.textContent = 'MOBILE ATIVO';
+      } else {
+        btn.style.background = 'rgba(56,189,248,0.25)';
+        btn.style.color = '#38bdf8';
+        btn.style.borderColor = 'rgba(56,189,248,0.5)';
+        btn.style.boxShadow = 'none';
+        txt.textContent = 'MODO MOBILE';
+      }
+    }
+  }
+}
+window.addEventListener('resize', verificarModoMobileAuto);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', verificarModoMobileAuto);
+} else {
+  verificarModoMobileAuto();
 }
 
 window.abrirBalaoConteudo = function(event, btnOrTitle, textContent) {
@@ -1442,7 +1515,7 @@ function renderProcessos() {
       </td>
       <td class="col-status" style="text-align: center;">
         <span class="desktop-cell-view"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></span>
-        <span class="mobile-cell-view"><span class="badge ${getStatusBadgeClass(p.status)}">${renderMobileCell('Status', p.status, true)}</span></span>
+        <span class="mobile-cell-view">${renderMobileStatusCell(p.status)}</span>
       </td>
       <td class="col-localizacao" style="text-align: center;">
         <span class="desktop-cell-view">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>').replace(/\|/g, '|<wbr>') : '—'}</span>

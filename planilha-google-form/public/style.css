@@ -3164,7 +3164,7 @@ thead th {
   display: inline !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
   .desktop-cell-view {
     display: none !important;
   }
@@ -3175,16 +3175,83 @@ thead th {
   }
   .table-wrap th[data-sort="numero"],
   .table-wrap td.col-numero {
+    width: 110px !important;
     min-width: 110px !important;
+    max-width: 120px !important;
+    font-size: 11px !important;
   }
   .table-wrap th[data-sort="interessado"],
   .table-wrap td.col-interessado {
+    width: 110px !important;
     min-width: 110px !important;
+    max-width: 130px !important;
+    font-size: 11px !important;
   }
   .table-wrap th[data-sort="objeto"],
   .table-wrap td.col-objeto {
+    width: 110px !important;
     min-width: 110px !important;
+    max-width: 130px !important;
+    font-size: 11px !important;
   }
+  .table-wrap th[data-sort="status"],
+  .table-wrap td.col-status {
+    width: 100px !important;
+    min-width: 100px !important;
+    max-width: 110px !important;
+    font-size: 10px !important;
+  }
+  .table-wrap th[data-sort="localizacao"],
+  .table-wrap td.col-localizacao {
+    width: 95px !important;
+    min-width: 95px !important;
+    max-width: 105px !important;
+    font-size: 11px !important;
+  }
+}
+
+body.funcao-mobile-ativa .desktop-cell-view {
+  display: none !important;
+}
+body.funcao-mobile-ativa .mobile-cell-view {
+  display: inline-flex !important;
+  align-items: center;
+  max-width: 100%;
+}
+body.funcao-mobile-ativa .table-wrap th[data-sort="numero"],
+body.funcao-mobile-ativa .table-wrap td.col-numero {
+  width: 110px !important;
+  min-width: 110px !important;
+  max-width: 120px !important;
+  font-size: 11px !important;
+}
+body.funcao-mobile-ativa .table-wrap th[data-sort="interessado"],
+body.funcao-mobile-ativa .table-wrap td.col-interessado {
+  width: 110px !important;
+  min-width: 110px !important;
+  max-width: 130px !important;
+  font-size: 11px !important;
+}
+body.funcao-mobile-ativa .table-wrap th[data-sort="objeto"],
+body.funcao-mobile-ativa .table-wrap td.col-objeto {
+  width: 110px !important;
+  min-width: 110px !important;
+  max-width: 130px !important;
+  font-size: 11px !important;
+}
+body.funcao-mobile-ativa .table-wrap th[data-sort="status"],
+body.funcao-mobile-ativa .table-wrap td.col-status {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 110px !important;
+  font-size: 10px !important;
+}
+body.funcao-mobile-ativa .table-wrap th[data-sort="localizacao"],
+body.funcao-mobile-ativa .table-wrap td.col-localizacao {
+  width: 95px !important;
+  min-width: 95px !important;
+  max-width: 105px !important;
+  font-size: 11px !important;
 }
 
 .mobile-cell-wrap {
