@@ -1,5 +1,5 @@
 
-// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.85)
+// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.86)
 // Remove ,00 ou .00 se for formatação numérica de planilha, preserva texto livre e limita a 8 caracteres
 window.limparDigitoValor = function(val) {
   if (val === null || val === undefined) return '';
@@ -12,7 +12,7 @@ window.limparDigitoValor = function(val) {
 window.formatarDigitoInteiro = window.limparDigitoValor;
 
 
-// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.85)
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.86)
 window.copiarSeiLinha = function(btn) {
   const row = btn.closest('div');
   const input = row ? row.querySelector('.form-numero-item') : null;
@@ -1228,7 +1228,7 @@ function getFiltrados() {
 }
 
 // ============================================================
-// GBZ v1.2.85 - FUNÇÕES AUXILIARES PARA CÉLULAS E BALÃO MOBILE
+// GBZ v1.2.86 - FUNÇÕES AUXILIARES PARA CÉLULAS E BALÃO MOBILE
 // ============================================================
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
@@ -1652,7 +1652,7 @@ window.popularDigitosDisponiveis = function() {
         ? inputVal.split(/[,;\s]+/).map(v => window.limparDigitoValor(v)).filter(Boolean) 
         : [];
       
-      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.85)
+      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.86)
       container.innerHTML = distinctDigitos.map(dig => {
         const isChecked = currentSelected.includes(dig);
         return `
@@ -4811,7 +4811,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.85)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.86)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -5670,7 +5670,7 @@ window.getTypeBadge = getTypeBadge;
 
 
 // =========================================================================
-// PAINEL DE INFORMAÇÕES DO SISTEMA, DIAGNÓSTICO & MÉTRICAS (GBZ - v1.2.85)
+// PAINEL DE INFORMAÇÕES DO SISTEMA, DIAGNÓSTICO & MÉTRICAS (GBZ - v1.2.86)
 // =========================================================================
 
 let _sysInfoTimer = null;
@@ -5866,7 +5866,7 @@ async function carregarPainelSistemaInfo() {
     elEntrada.textContent = dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR');
   }
 
-  // Cronômetro da sessão ativa (GBZ - v1.2.85)
+  // Cronômetro da sessão ativa (GBZ - v1.2.86)
   const elTempo = document.getElementById('sysinfo-tempo-sessao');
   if (_sysInfoTimer) clearInterval(_sysInfoTimer);
   const formatarTempoAtivo = () => {
@@ -5881,7 +5881,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.85)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.86)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -5961,7 +5961,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.85)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.86)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';
@@ -7117,7 +7117,7 @@ window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
   let btnCompOriginalHtml = '';
   if (btnComp) {
     btnCompOriginalHtml = btnComp.innerHTML;
-    btnComp.innerHTML = '<span class="anim-ampulheta" style="font-size:14px; margin-right:4px;">⏳</span> <span class="btn-text">Compartilhar</span>';
+    btnComp.innerHTML = '<svg class="anim-ampulheta" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M5 22h14M5 2h14M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg><span class="btn-text">Compartilhar</span>';
     btnComp.style.opacity = '0.85';
     btnComp.style.pointerEvents = 'none';
   }
@@ -7328,7 +7328,7 @@ ${textoGrupos.trim()}`;
       </div>
 
       <!-- Preview Dinâmico da Imagem Centralizado -->
-      <div style="margin-bottom:16px; background:#020617; padding:16px; border-radius:8px; border:1px solid #1e293b; min-height:240px; max-height:60vh; overflow:auto; position:relative; display:flex; align-items:center; justify-content:center; text-align:center;">
+      <div style="margin-bottom:16px; background:#020617; padding:20px; border-radius:10px; border:1px solid #1e293b; min-height:280px; max-height:60vh; overflow:auto; position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; box-sizing:border-box;">
         
         <!-- Indicador de Processamento com Ampulheta -->
         <div id="loading-preview-msg" style="display:none; position:absolute; inset:0; background:rgba(2,6,23,0.9); align-items:center; justify-content:center; flex-direction:column; gap:12px; z-index:15; border-radius:8px;">
@@ -7337,7 +7337,7 @@ ${textoGrupos.trim()}`;
         </div>
 
         <!-- Placeholder Inicial Centralizado -->
-        <div id="placeholder-tela-imagem" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin:auto; text-align:center; padding:30px 20px; color:#94a3b8; gap:12px;">
+        <div id="placeholder-tela-imagem" style="display:flex; flex-direction:column; align-items:center; justify-content:center; margin:auto; text-align:center; padding:36px 20px; color:#94a3b8; gap:14px; width:100%; max-width:540px;">
           <div style="font-size:42px; opacity:0.85;">🖼️</div>
           <div style="font-size:16px; font-weight:700; color:#f1f5f9; letter-spacing:0.5px;">GERE UMA IMAGEM - PADRÃO / DETALHADO</div>
           <div style="font-size:12px; color:#64748b; max-width:440px; line-height:1.5;">Clique em <b>Gere padrão</b> ou <b>Gere detalhado</b> abaixo para visualizar, copiar e baixar o relatório oficial.</div>
@@ -7376,7 +7376,7 @@ ${textoGrupos.trim()}`;
             <line x1="8" y1="11" x2="16" y2="11"></line>
             <line x1="8" y1="15" x2="13" y2="15"></line>
           </svg>
-          <span>Copiar para texto</span>
+          <span>Copiar texto</span>
         </button>
 
         <!-- 4. Baixar (PNG) -->
@@ -7429,13 +7429,16 @@ ${textoGrupos.trim()}`;
       <!-- Dica Rápida com texto padronizado -->
       <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); border-radius:8px; padding:10px; font-size:12px; color:#bae6fd; display:flex; align-items:center; gap:8px;">
         <span>💡</span>
-        <span><b>Dica Rápida:</b> Clique em <b>"Copiar imagem"</b> ou <b>"Copiar para texto"</b> e pressione <b>Ctrl+V</b> direto na conversa do WhatsApp Web para enviar instantaneamente sem precisar baixar arquivos!</span>
+        <span><b>Dica Rápida:</b> Clique em <b>"Copiar imagem"</b> ou <b>"Copiar texto"</b> e pressione <b>Ctrl+V</b> direto na conversa do WhatsApp Web para enviar instantaneamente sem precisar baixar arquivos!</span>
       </div>
     </div>
   `;
 
-  if (typeof restaurarBtnComp === 'function') restaurarBtnComp();
-  modalOverlay.style.display = 'flex';
+  // Efeito e transição de processamento antes de abrir o modal
+  setTimeout(() => {
+    if (typeof restaurarBtnComp === 'function') restaurarBtnComp();
+    modalOverlay.style.display = 'flex';
+  }, 450);
 
   
 

@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.85">
+  <link rel="stylesheet" href="css/style.css?v=1.2.86">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -585,7 +585,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.85</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.86</div>
   </div>
 </div>
   
@@ -837,7 +837,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.85</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.86</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1372,24 +1372,25 @@
 
             <!-- Botões Principais de Relatório (Harmonizados e Padronizados) -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-              <button id="btn-compartilhar-topo" class="btn action-report" onclick="compartilharWhatsAppRelatorio(true)" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
+              <button id="btn-compartilhar-topo" class="btn action-report" onclick="compartilharWhatsAppRelatorio(true)" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:700;  letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
                 <span class="btn-text">Compartilhar</span>
               </button>
-              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(99,102,241,0.5); border-radius:8px; background:rgba(99,102,241,0.25); color:#a5b4fc; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.4)'" onmouseout="this.style.background='rgba(99,102,241,0.25)'" title="Análise Gerencial">
+              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(99,102,241,0.5); border-radius:8px; background:rgba(99,102,241,0.25); color:#a5b4fc; cursor:pointer; font-weight:700;  letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.4)'" onmouseout="this.style.background='rgba(99,102,241,0.25)'" title="Análise Gerencial">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                 <span class="btn-text">Análise</span>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(59,130,246,0.5); border-radius:8px; background:rgba(59,130,246,0.25); color:#93c5fd; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.4)'" onmouseout="this.style.background='rgba(59,130,246,0.25)'" title="Relatório Detalhado">
+              </button>
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(59,130,246,0.5); border-radius:8px; background:rgba(59,130,246,0.25); color:#93c5fd; cursor:pointer; font-weight:700;  letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.4)'" onmouseout="this.style.background='rgba(59,130,246,0.25)'" title="Relatório Detalhado">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                 <span class="btn-text">Detalhado</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Lista Atual">
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:700;  letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Lista Atual">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 <span class="btn-text">Padrão</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Selecionados">
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:700;  letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Selecionados">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                <span class="btn-text">Padrão sel.</span>
+                <span class="btn-text">Selecionado</span>
               </button>
             </div>
           </div>
@@ -1406,11 +1407,11 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 <span class="btn-text">Relatório adm 2</span>
               </button>
-              <button type="button" class="btn action-report" onclick="exportarExcel()" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(22,163,74,0.5); border-radius:8px; background:rgba(22,163,74,0.25); color:#4ade80; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(22,163,74,0.4)'" onmouseout="this.style.background='rgba(22,163,74,0.25)'" title="Exportar para Excel">
+              <button type="button" class="btn action-report" onclick="exportarExcel()" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(22,163,74,0.5); border-radius:8px; background:rgba(22,163,74,0.25); color:#4ade80; cursor:pointer; font-weight:700;  letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(22,163,74,0.4)'" onmouseout="this.style.background='rgba(22,163,74,0.25)'" title="Exportar para Excel">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
                 <span class="btn-text">Excel</span>
               </button>
-              <button type="button" class="btn action-report" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha">
+              <button type="button" class="btn action-report" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:700;  letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span class="btn-text">Planilha</span></button>
               </div>
 
@@ -2124,7 +2125,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.85
+              GBZ - v1.2.86
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3675,13 +3676,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.85"></script>
-  <script src="js/app.js?v=1.2.85"></script>
-  <script src="js/auth-sap.js?v=1.2.85"></script>
-  <script src="js/escolas.js?v=1.2.85" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.86"></script>
+  <script src="js/app.js?v=1.2.86"></script>
+  <script src="js/auth-sap.js?v=1.2.86"></script>
+  <script src="js/escolas.js?v=1.2.86" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.85"></script>
-  <script src="js/contatos.js?v=1.2.85"></script>
+  <script src="js/mapa.js?v=1.2.86"></script>
+  <script src="js/contatos.js?v=1.2.86"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3854,15 +3855,15 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.85"></script>
+  <script src="js/multi-select.js?v=1.2.86"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.85"></script>
-  <script src="js/gmac.js?v=1.2.85"></script>
-  <script src="js/orcamento.js?v=1.2.85"></script>
-  <script src="js/gdsm.js?v=1.2.85"></script>
-  <script src="js/print-proalfa.js?v=1.2.85"></script>
-  <script src="js/proalfa.js?v=1.2.85"></script>
+  <script src="js/diarias.js?v=1.2.86"></script>
+  <script src="js/gmac.js?v=1.2.86"></script>
+  <script src="js/orcamento.js?v=1.2.86"></script>
+  <script src="js/gdsm.js?v=1.2.86"></script>
+  <script src="js/print-proalfa.js?v=1.2.86"></script>
+  <script src="js/proalfa.js?v=1.2.86"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
