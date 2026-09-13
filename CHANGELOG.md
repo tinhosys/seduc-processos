@@ -3,9 +3,20 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.90] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.91] — 2026-09-13 🟢 VERSÃO ATUAL
 
-**Tag:** `v1.2.90` · **Versão do Sistema:** `GBZ - v1.2.90`
+**Tag:** `v1.2.91` · **Versão do Sistema:** `GBZ - v1.2.91`
+
+### 🔤 Correção Integral de Codificação UTF-8 & Eliminação de Caracteres Zumbis
+- **Restauração Completa de Acentuação e Emojis**:
+  - Varredura e eliminação de caracteres zumbis/mojibake gerados por sobreposição de encodings ANSI/UTF-16 (`Ã`, `Â`, `â`, `ðŸ`, etc.).
+  - Restauração perfeita de todos os textos, títulos, badges, menus e tooltips da aplicação: `ARTICULAÇÃO`, `MUNICÍPIOS`, `MUNICÍPIO`, `Análise`, `Padrão`, `AUTORIZAÇÃO`, `MARCAÇÃO`, `LIMPAR PARÂMETROS`, `(DÍGITO)`.
+  - Restauração dos ícones e emojis nativos da interface: `📱 Modo mobile`, `📋 Processos`, `🔄 Recarregar`, `⚠️ ALERTA`, `🔴 Com Alerta`, `🟢 Sem Alerta`, `📌 MARCAÇÃO`, `⭐ Apenas Marcados`, `⚪ Não Marcados`.
+  - Persistência e integridade do arquivo em codificação **UTF-8 pura** (`<meta charset="UTF-8">`).
+
+---
+
+## [v1.2.90] — 2026-09-13
 
 ### 📐 Padronização Dimensional e Geometria dos Botões e Badges
 - **Regra de Ouro (Altura Unificada)**:
