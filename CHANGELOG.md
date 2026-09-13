@@ -3,7 +3,26 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.89] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.90] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.90` · **Versão do Sistema:** `GBZ - v1.2.90`
+
+### 📐 Padronização Dimensional e Geometria dos Botões e Badges
+- **Regra de Ouro (Altura Unificada)**:
+  - Todos os botões da topbar, badges de valores/processos e botões de ação/relatório unificados com **38px de altura** rigorosa (`height: 38px; min-height: 38px; max-height: 38px; box-sizing: border-box`).
+- **Marcação Verde (Badges de Resumo)**:
+  - `#valor-filtrado` e `#qtd-registros-filtrados` padronizados pela largura do maior elemento com `min-width: 170px; width: 170px;` e alinhamento centralizado.
+- **Marcação Azul Claro (Botões da Topbar)**:
+  - Botões `Modo mobile`, `📋 Processos` e `🔄 Recarregar` padronizados pela largura de 135px (`width: 135px; min-width: 135px`), com texto centralizado.
+- **Marcação Vermelha (Botão Sair)**:
+  - Botão `Sair` com largura dobrada (+100%) para 100px (`min-width: 100px; width: 100px; font-weight: 800`).
+- **Marcações Amarelo e Roxa (Ações e Relatórios)**:
+  - Botões `Planilha`, `Análise`, `Detalhado`, `Padrão`, `Selecionado`, `Adm 1`, `Adm 2`, `Excel` e `Compartilhar` padronizados rigorosamente com largura de 125px (`min-width: 125px; width: 125px`).
+  - **Reposicionamento de Compartilhar**: O botão `Compartilhar` foi movido para a Linha 2 à esquerda de `Adm 1` (ficando no início do grupo de relatórios da linha 2).
+
+---
+
+## [v1.2.89] — 2026-09-13
 
 **Tag:** `v1.2.89` · **Versão do Sistema:** `GBZ - v1.2.89`
 
