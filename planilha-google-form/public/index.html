@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.78">
+  <link rel="stylesheet" href="css/style.css?v=1.2.89">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -62,7 +62,7 @@
     }
 
     /* ============================================================
-       GBZ v1.2.78 - MODO/FUNÇÃO MOBILE: CÉLULAS EM 7 DÍGITOS + BALÃO
+       GBZ v1.2.89 - MODO/FUNÇÃO MOBILE: CÉLULAS EM 7 DÍGITOS + BALÃO
        ============================================================ */
     .mobile-cell-view {
       display: none !important;
@@ -314,10 +314,11 @@
     }
 
     /* ============================================================
-       GBZ v1.2.77 - COLUNAS ANCORADAS: CHECKBOX (left: 0) E PREFIXO (left: 40px)
+       GBZ v1.2.89 - COLUNAS ANCORADAS EXCLUSIVAS DA TABELA DE PROCESSOS (GDSM)
+       Evita que outras tabelas (GMAC, etc.) tenham a primeira coluna esmagada a 40px!
        ============================================================ */
-    .table-wrap th:first-child,
-    .table-wrap td:first-child {
+    #page-processos .table-wrap th:first-child,
+    #page-processos .table-wrap td:first-child {
       position: sticky !important;
       left: 0 !important;
       z-index: 25 !important;
@@ -327,8 +328,8 @@
       background-color: #0b132b !important;
     }
 
-    .table-wrap th[data-sort="prefixo"],
-    .table-wrap td.col-prefixo {
+    #page-processos .table-wrap th[data-sort="prefixo"],
+    #page-processos .table-wrap td.col-prefixo {
       position: sticky !important;
       left: 40px !important;
       z-index: 25 !important;
@@ -339,29 +340,55 @@
       box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5) !important;
     }
 
-    .table-wrap thead th:first-child {
+    #page-processos .table-wrap thead th:first-child {
       z-index: 35 !important;
       background-color: #0d1530 !important;
     }
 
-    .table-wrap thead th[data-sort="prefixo"] {
+    #page-processos .table-wrap thead th[data-sort="prefixo"] {
       z-index: 35 !important;
       background-color: #0d1530 !important;
     }
 
-    tbody tr:hover td:first-child,
-    tbody tr:hover td.col-prefixo {
+    #page-processos tbody tr:hover td:first-child,
+    #page-processos tbody tr:hover td.col-prefixo {
       background-color: #172347 !important;
     }
 
-    tbody tr.linha-alerta td:first-child,
-    tbody tr.linha-alerta td.col-prefixo {
+    #page-processos tbody tr.linha-alerta td:first-child,
+    #page-processos tbody tr.linha-alerta td.col-prefixo {
       background-color: #24141d !important;
     }
 
-    tbody tr.linha-pago td:first-child,
-    tbody tr.linha-pago td.col-prefixo {
+    #page-processos tbody tr.linha-pago td:first-child,
+    #page-processos tbody tr.linha-pago td.col-prefixo {
       background-color: #0d2624 !important;
+    }
+
+    /* Regras Padronizadas para Tabelas GMAC e Outros Módulos */
+    .gmac-table-wrap th:first-child,
+    .gmac-table-wrap td:first-child {
+      position: static !important;
+      width: 165px !important;
+      min-width: 150px !important;
+      max-width: 220px !important;
+      white-space: normal !important;
+      word-break: normal !important;
+      overflow-wrap: break-word !important;
+      background-color: transparent !important;
+    }
+
+    /* MODO MOBILE GLOBAL PADRONIZADO EM TODAS AS TABELAS */
+    body.funcao-mobile-ativa .gmac-table-wrap th,
+    body.funcao-mobile-ativa .gmac-table-wrap td {
+      padding: 8px 10px !important;
+      font-size: 11px !important;
+    }
+    body.funcao-mobile-ativa .gmac-table-wrap th:first-child,
+    body.funcao-mobile-ativa .gmac-table-wrap td:first-child {
+      width: 130px !important;
+      min-width: 120px !important;
+      font-size: 11px !important;
     }
 
     /* CSS for infinite scroll tables and sticky headers */
@@ -462,6 +489,68 @@
     }
 
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       PADRONIZAÇÃO GLOBAL DE BOTÕES (EXCETO MENU LATERAL):
+       - Sem negrito por padrão (font-weight: 600)
+       - Foco / Hover: Negrito forte (font-weight: 800) + elevação sutil
+       - Clique (:active): Sem cor de fundo, apenas bordas e legenda na cor temática
+       - Legendas: Apenas a primeira letra maiúscula
+       ========================================================================== */
+    button:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):not(.close):not(#modal-whatsapp-relatorio button),
+    .btn:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link),
+    .action-report {
+      font-weight: 600 !important;
+      transition: all 0.15s ease-in-out !important;
+    }
+
+    button:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):not(.close):hover,
+    button:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):not(.close):focus,
+    .btn:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):hover,
+    .btn:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):focus,
+    .action-report:hover,
+    .action-report:focus {
+      font-weight: 800 !important;
+      filter: brightness(1.15) !important;
+      transform: translateY(-1px) !important;
+    }
+
+    button:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):not(.close):active,
+    .btn:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):active,
+    .action-report:active {
+      background: transparent !important;
+      box-shadow: none !important;
+      transform: scale(0.97) !important;
+    }
+
+    /* Cores das bordas e texto no clique ativo (:active) */
+    #btn-compartilhar-topo:active { border-color: #0284c7 !important; color: #38bdf8 !important; }
+    #btn-analise-topo:active { border-color: #6366f1 !important; color: #a5b4fc !important; }
+    #btn-detalhado-topo:active { border-color: #3b82f6 !important; color: #93c5fd !important; }
+    #btn-padrao-topo:active { border-color: #94a3b8 !important; color: #f1f5f9 !important; }
+    #btn-padrao-sel-topo:active { border-color: #94a3b8 !important; color: #f1f5f9 !important; }
+    #btn-relatorio-padrao-adm:active { border-color: #f59e0b !important; color: #fbbf24 !important; }
+    #btn-relatorio-padrao-adm-2:active { border-color: #0d9488 !important; color: #2dd4bf !important; }
+    #btn-excel-topo:active { border-color: #16a34a !important; color: #4ade80 !important; }
+    #btn-planilha-topo:active { border-color: #10b981 !important; color: #34d399 !important; }
+    #btn-toggle-mobile:active { border-color: #0284c7 !important; color: #38bdf8 !important; }
+    #btn-limpar-filtros:active { border: 2px solid #f59e0b !important; color: #f59e0b !important; }
+
+    /* Ampulheta de processamento girando */
+    @keyframes girarAmpulheta {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .anim-ampulheta {
+      animation: girarAmpulheta 2s infinite ease-in-out;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  </style>
+
 </head>
 
 <body>
@@ -523,7 +612,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.78</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.89</div>
   </div>
 </div>
   
@@ -775,7 +864,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.78</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.89</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -789,7 +878,12 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
         </div>
-        <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;">
+        <div class="topbar-actions" style="display:flex;align-items:center;gap:10px;">
+          <!-- Botão Modo mobile Global no Topo da Aplicação (Visível em todos os forms) -->
+          <button type="button" id="btn-toggle-mobile" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:6px 14px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(56,189,248,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%)'" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up em todas as tabelas)">
+            <span id="btn-toggle-mobile-icon">📱</span>
+            <span id="btn-toggle-mobile-text" class="btn-toggle-mobile-text">Modo mobile</span>
+          </button>
 
           <button class="btn btn-ghost btn-sm" data-page="processos" onclick="navegar('processos')">📋 Processos</button>
           <button class="btn btn-ghost btn-sm" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha">🔄 Recarregar</button>
@@ -830,6 +924,10 @@
             </button>
             <button type="button" onclick="carregarGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
+            </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
             </button>
             
           </div>
@@ -885,6 +983,10 @@
             <button type="button" onclick="carregarGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
+            </button>
             
           </div>
         </div>
@@ -938,6 +1040,10 @@
             </button>
             <button type="button" onclick="carregarGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
+            </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
             </button>
             
           </div>
@@ -993,6 +1099,10 @@
             <button type="button" onclick="carregarGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
+            </button>
             
           </div>
         </div>
@@ -1046,6 +1156,10 @@
             </button>
             <button type="button" onclick="carregarGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
+            </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
             </button>
             
           </div>
@@ -1289,10 +1403,12 @@
 
                 <div class="section-header" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px; width:100%; flex-shrink:0;">
           <!-- LINHA 1 DE BOTÕES E BADGES (SUPERIOR) -->
+          <div class="action-buttons-grid" style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px; width:100%;">
+          <!-- LINHA 1 DE BOTÕES: REGISTROS/FILTROS + PLANILHA À ESQUERDA | RELATÓRIOS À DIREITA -->
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; width:100%;">
-            <!-- Badges e Toggle à Esquerda -->
+            <!-- Esquerda: Informações e Acesso à Planilha (Planilha no lugar de Modo mobile - Imagem 3) -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-              <span id="valor-filtrado" style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); font-family:monospace; letter-spacing:0.5px; height:34px; box-sizing:border-box;">
+              <span id="valor-filtrado" style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); white-space:nowrap; font-family:monospace; letter-spacing:0.5px; height:34px; box-sizing:border-box;">
                 <span>R$</span> <span>Carregando...</span>
               </span>
               <span id="qtd-registros-filtrados" style="display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:34px; box-sizing:border-box;">
@@ -1301,65 +1417,52 @@
               <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:34px; height:34px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
               </button>
+              <!-- Botão Planilha no lugar do Modo mobile (conforme Imagem 3) -->
+              <button type="button" class="btn action-report" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha Oficial">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                <span class="btn-text">Planilha</span>
+              </button>
             </div>
 
-            <!-- Botões Principais de Relatório (Harmonizados e Padronizados) -->
+            <!-- Direita Linha 1: Relatórios Principais -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-              <button class="btn action-report" onclick="compartilharWhatsAppRelatorio(true)" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-                <span class="btn-text">COMPARTILHAR</span>
-              </button>
-              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(99,102,241,0.5); border-radius:8px; background:rgba(99,102,241,0.25); color:#a5b4fc; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.4)'" onmouseout="this.style.background='rgba(99,102,241,0.25)'" title="Análise Gerencial">
+              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(99,102,241,0.5); border-radius:8px; background:rgba(99,102,241,0.25); color:#a5b4fc; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(99,102,241,0.4)'" onmouseout="this.style.background='rgba(99,102,241,0.25)'" title="Análise Gerencial">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-                <span class="btn-text">ANÁLISE</span>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(59,130,246,0.5); border-radius:8px; background:rgba(59,130,246,0.25); color:#93c5fd; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.4)'" onmouseout="this.style.background='rgba(59,130,246,0.25)'" title="Relatório Detalhado">
+                <span class="btn-text">Análise</span>
+              </button>
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(59,130,246,0.5); border-radius:8px; background:rgba(59,130,246,0.25); color:#93c5fd; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.4)'" onmouseout="this.style.background='rgba(59,130,246,0.25)'" title="Relatório Detalhado">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                <span class="btn-text">DETALHADO</span>
+                <span class="btn-text">Detalhado</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Lista Atual">
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Lista Atual">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                <span class="btn-text">PADRÃO</span>
+                <span class="btn-text">Padrão</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Selecionados">
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Selecionados">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                <span class="btn-text">PADRÃO SEL.</span>
+                <span class="btn-text">Selecionado</span>
               </button>
             </div>
           </div>
 
-          <!-- LINHA 2 DE BOTÕES: ADM + EXCEL/PLANILHA + LIMPAR PARÂMETROS À DIREITA -->
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; width:100%;">
-            <!-- Ações Secundárias / Admin à Esquerda -->
-            <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-              <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm" onclick="if(typeof window.imprimirPadraoAdm==='function'){window.imprimirPadraoAdm();}else if(typeof imprimirPadraoAdm==='function'){imprimirPadraoAdm();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(15,23,42,0.8); color:#e2e8f0; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='rgba(15,23,42,0.8)'" title="Relatório Padrão sem Origem (Exclusivo Admin)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                <span class="btn-text">PADRÃO ADM</span>
-              </button>
-              <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm-2" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(255,255,255,0.15); border-radius:8px; background:rgba(15,23,42,0.8); color:#e2e8f0; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='rgba(15,23,42,0.8)'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                <span class="btn-text">RELATÓRIO ADM 2</span>
-              </button>
-              <button type="button" class="btn action-report" onclick="exportarExcel()" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(22,163,74,0.5); border-radius:8px; background:rgba(22,163,74,0.25); color:#4ade80; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(22,163,74,0.4)'" onmouseout="this.style.background='rgba(22,163,74,0.25)'" title="Exportar para Excel">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
-                <span class="btn-text">EXCEL</span>
-              </button>
-              <button type="button" class="btn action-report" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                PLANILHA
-              </button>
-              <button type="button" id="btn-toggle-mobile" class="btn action-report" onclick="toggleFuncaoMobile()" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:rgba(56,189,248,0.25); color:#38bdf8; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(56,189,248,0.4)'" onmouseout="this.style.background='rgba(56,189,248,0.25)'" title="Alternar Função Mobile (Células Compactas de 9 Dígitos com Balão Pop-up)">
-                <span id="btn-toggle-mobile-icon">📱</span>
-                <span id="btn-toggle-mobile-text">MODO MOBILE</span>
-              </button>
-            </div>
-
-            <!-- LIMPAR PARÂMETROS ACOMODADO À DIREITA, VISÍVEL PARA TODOS -->
-            <div style="margin-left:auto;">
-              <button type="button" id="btn-limpar-filtros" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:34px; padding:6px 16px; border-radius:8px; background:linear-gradient(135deg, #f59e0b, #d97706); border:none; color:white; font-weight:800; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 2px 8px rgba(245, 158, 11, 0.3); transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg, #d97706, #b45309)'" onmouseout="this.style.background='linear-gradient(135deg, #f59e0b, #d97706)'" title="Limpar todos os parâmetros e filtros">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                LIMPAR PARÂMETROS
-              </button>
-            </div>
+          <!-- LINHA 2 DE BOTÕES: ADM 1, ADM 2, EXCEL, COMPARTILHAR ALINHADOS À DIREITA (conforme Imagem 4) -->
+          <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px; width:100%;">
+            <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%); color:#fbbf24; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(245,158,11,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%)'" title="Relatório Padrão sem Origem (Exclusivo Admin)" onclick="if(typeof window.imprimirPadraoAdm==='function'){window.imprimirPadraoAdm();}else if(typeof imprimirPadraoAdm==='function'){imprimirPadraoAdm();}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span class="btn-text">Adm 1</span>
+            </button>
+            <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm-2" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(13,148,136,0.6); border-radius:8px; background:linear-gradient(135deg, rgba(13,148,136,0.3) 0%, rgba(15,118,110,0.3) 100%); color:#2dd4bf; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(13,148,136,0.45)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(13,148,136,0.3) 0%, rgba(15,118,110,0.3) 100%)'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span class="btn-text">Adm 2</span>
+            </button>
+            <button type="button" class="btn action-report" onclick="exportarExcel()" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(22,163,74,0.5); border-radius:8px; background:rgba(22,163,74,0.25); color:#4ade80; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(22,163,74,0.4)'" onmouseout="this.style.background='rgba(22,163,74,0.25)'" title="Exportar para Excel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
+              <span class="btn-text">Excel</span>
+            </button>
+            <button id="btn-compartilhar-topo" class="btn action-report" onclick="compartilharWhatsAppRelatorio(true)" style="padding:6px 12px; height:34px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              <span class="btn-text">Compartilhar</span>
+            </button>
           </div>
         </div>
 
@@ -1443,49 +1546,53 @@
             </div>
           </div>
 
-          <!-- LINHA 3: MUNICÍPIO | SUPER | PREFIXO | LOCALIZAÇÃO | STATUS -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <select id="filtro-municipio" multiple style="flex:1; min-width:115px;">
+          <!-- LINHA 1 (GRID 6 COLUNAS 100%): MUNICÍPIO | SUPER | PREFIXO | LOCALIZAÇÃO | STATUS | ANO -->
+          <div class="filter-row filter-row-grid-6">
+            <select id="filtro-municipio" multiple>
               <option value="">MUNICÍPIO</option>
             </select>
-            <select id="filtro-super" multiple style="flex:1; min-width:105px;">
+            <select id="filtro-super" multiple>
               <option value="">SUPER</option>
             </select>
-            <select id="filtro-prefixo" multiple style="flex:1; min-width:105px;">
+            <select id="filtro-prefixo" multiple>
               <option value="">PREFIXO</option>
             </select>
-            <select id="filtro-localizacao" multiple style="flex:1; min-width:115px;">
+            <select id="filtro-localizacao" multiple>
               <option value="">LOCALIZAÇÃO</option>
             </select>
-            <select id="filtro-status" multiple style="flex:1; min-width:105px;">
+            <select id="filtro-status" multiple>
               <option value="">STATUS</option>
+            </select>
+            <select id="filtro-ano" multiple style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
+              <option value="">ANO</option>
             </select>
           </div>
 
-          <!-- LINHA 4: CATEGORIA | TIPO | AGRUPAMENTO | ANO | ALERTA | MARCAÇÃO -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <select id="filtro-categoria" multiple style="flex:1; min-width:105px;">
+          <!-- LINHA 2 (GRID 6 COLUNAS 100%): CATEGORIA | TIPO | AGRUPAMENTO | ALERTA | MARCAÇÃO | LIMPAR PARÂMETROS -->
+          <div class="filter-row filter-row-grid-6">
+            <select id="filtro-categoria" multiple>
               <option value="">CATEGORIA</option>
             </select>
-            <select id="filtro-tipo" multiple style="flex:1; min-width:105px;">
+            <select id="filtro-tipo" multiple>
               <option value="">TIPO</option>
             </select>
-            <select id="filtro-agrupamento" class="action-adm" multiple style="flex:1; min-width:115px; border-color: rgba(168,85,247,0.5); color: #c084fc;">
+            <select id="filtro-agrupamento" multiple style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
               <option value="">AGRUPAMENTO</option>
             </select>
-            <select id="filtro-ano" multiple style="flex:1; min-width:85px; border-color: rgba(249,115,22,0.5); color: #fb923c;">
-              <option value="">ANO</option>
-            </select>
-            <select id="filtro-alerta" class="action-adm" style="flex:1; min-width:105px; border-color: rgba(245,158,11,0.5); color: #f59e0b;">
+            <select id="filtro-alerta" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
               <option value="">&#9888; ALERTA</option>
               <option value="sim">&#128308; Com Alerta</option>
               <option value="nao">&#128994; Sem Alerta</option>
             </select>
-            <select id="filtro-marca" style="flex:1; min-width:105px; border-color: rgba(59,130,246,0.5); color: #60a5fa;">
+            <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
               <option value="">&#128204; MARCAÇÃO</option>
               <option value="sim">&#11088; Apenas Marcados</option>
               <option value="nao">&#9898; Não Marcados</option>
             </select>
+            <button type="button" id="btn-limpar-filtros" class="btn btn-limpar-grid" onclick="limparFiltros();" title="Limpar todos os parâmetros e filtros">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              <span>LIMPAR PARÂMETROS</span>
+            </button>
           </div>
         </div>
 
@@ -2065,7 +2172,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.78
+              GBZ - v1.2.89
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2338,7 +2445,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.78] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.89] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -2562,8 +2669,7 @@
                     onmouseover="this.style.background='#d97706'" 
                     onmouseout="this.style.background='#f59e0b'"
                     style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
-              <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
-            </button>
+              <span style="font-size:16px;">&times;</span>Limpar parâmetros</button>
           </div>
         </div>
 
@@ -3067,8 +3173,7 @@
                 onmouseover="this.style.background='#d97706'" 
                 onmouseout="this.style.background='#f59e0b'"
                 style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
-          <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
-        </button>
+          <span style="font-size:16px;">&times;</span>Limpar parâmetros</button>
       </div>
     </div>
 
@@ -3297,9 +3402,7 @@
           III - MEMÓRIA CÁLC.
         </button>
         <button onclick="window.open('https://docs.google.com/spreadsheets/d/12w-tBU6lMlKR7mncvbfoKjKGcvCZftd12CFKxdtf7ac/edit?gid=392130906#gid=392130906', '_blank')" style="flex:1; min-width:130px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.5); color:#10b981; padding:0 16px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.3)'" onmouseout="this.style.background='rgba(16,185,129,0.15)'">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          PLANILHA
-        </button>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span class="btn-text">Planilha</span></button>
       </div>
     </div>
     <div class="filters-container">
@@ -3328,8 +3431,7 @@
             onmouseover="this.style.background='#d97706'" 
             onmouseout="this.style.background='#f59e0b'"
             style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
-          <span style="font-size:16px;">&times;</span> LIMPAR PARÂMETROS
-        </button>
+          <span style="font-size:16px;">&times;</span>Limpar parâmetros</button>
       </div>
     </div>
     <div class="table-wrap" style="margin-top: 20px;">
@@ -3621,13 +3723,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.68"></script>
-  <script src="js/app.js?v=1.2.78"></script>
-  <script src="js/auth-sap.js?v=1.2.68"></script>
-  <script src="js/escolas.js?v=1.2.68" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.89"></script>
+  <script src="js/app.js?v=1.2.89"></script>
+  <script src="js/auth-sap.js?v=1.2.89"></script>
+  <script src="js/escolas.js?v=1.2.89" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.68"></script>
-  <script src="js/contatos.js?v=1.2.68"></script>
+  <script src="js/mapa.js?v=1.2.89"></script>
+  <script src="js/contatos.js?v=1.2.89"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3800,15 +3902,15 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.78"></script>
+  <script src="js/multi-select.js?v=1.2.89"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.68"></script>
-  <script src="js/gmac.js?v=1.2.68"></script>
-  <script src="js/orcamento.js?v=1.2.68"></script>
-  <script src="js/gdsm.js?v=1.2.68"></script>
-  <script src="js/print-proalfa.js?v=1.2.68"></script>
-  <script src="js/proalfa.js?v=1.2.68"></script>
+  <script src="js/diarias.js?v=1.2.89"></script>
+  <script src="js/gmac.js?v=1.2.89"></script>
+  <script src="js/orcamento.js?v=1.2.89"></script>
+  <script src="js/gdsm.js?v=1.2.89"></script>
+  <script src="js/print-proalfa.js?v=1.2.89"></script>
+  <script src="js/proalfa.js?v=1.2.89"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
@@ -3933,9 +4035,7 @@
           EXPORTAR CSV
         </button>
         <button onclick="window.open('https://docs.google.com/spreadsheets/d/1NQuN9icUm8RL08pqkPia3ZrgoC5zEka99mK43sUJm3o/edit?gid=325984433','_blank')" style="display:flex; align-items:center; gap:6px; padding:10px 16px; height:40px; background:#10b981; border:none; border-radius:8px; color:white; font-weight:700; font-size:13px; text-transform:uppercase; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
-          PLANILHA
-        </button>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg><span class="btn-text">Planilha</span></button>
       </div>
     </div>
 
@@ -4296,9 +4396,7 @@
           </div>
           
           <button onclick="limparFiltrosDiarias()" style="background:#f59e0b; color:#fff; border:none; border-radius:8px; padding:10px 20px; font-weight:bold; font-size:13px; cursor:pointer; display:flex; align-items:center; gap:8px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            LIMPAR PARÂMETROS
-          </button>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>Limpar parâmetros</button>
         </div>
 
       </div>
@@ -4372,20 +4470,16 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
           </button>
           <button type="button" onclick="imprimirGDSMDetalhado('regimes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Imprimir Relatório Detalhado com Todas as Colunas">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> DETALHADO
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span class="btn-text">Detalhado</span></button>
           <button type="button" onclick="exportarExcelGDSM('regimes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel (.xlsx)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg><span class="btn-text">Excel</span></button>
           <button type="button" onclick="abrirPlanilhaGDSM('regimes')" class="btn" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar diretamente esta aba na Planilha Google">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> PLANILHA
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="btn-text">Planilha</span></button>
           <button type="button" onclick="carregarGDSM('regimes', true)" class="btn" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Recarregar dados da planilha Google">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> ATUALIZAR
           </button>
           <button type="button" onclick="limparFiltrosGDSM('regimes')" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" title="Limpar todos os parâmetros">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> LIMPAR PARÂMETROS
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>Limpar parâmetros</button>
         </div>
 
 
@@ -4444,20 +4538,16 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
           </button>
           <button type="button" onclick="imprimirGDSMDetalhado('demais')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Imprimir Relatório Detalhado com Todas as Colunas">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> DETALHADO
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span class="btn-text">Detalhado</span></button>
           <button type="button" onclick="exportarExcelGDSM('demais')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel (.xlsx)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg><span class="btn-text">Excel</span></button>
           <button type="button" onclick="abrirPlanilhaGDSM('demais')" class="btn" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar diretamente esta aba na Planilha Google">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> PLANILHA
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="btn-text">Planilha</span></button>
           <button type="button" onclick="carregarGDSM('demais', true)" class="btn" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Recarregar dados da planilha Google">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> ATUALIZAR
           </button>
           <button type="button" onclick="limparFiltrosGDSM('demais')" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" title="Limpar todos os parâmetros">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> LIMPAR PARÂMETROS
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>Limpar parâmetros</button>
         </div>
 
 
@@ -4519,20 +4609,16 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
           </button>
           <button type="button" onclick="imprimirGDSMDetalhado('doacoes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Imprimir Relatório Detalhado com Todas as Colunas">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> DETALHADO
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span class="btn-text">Detalhado</span></button>
           <button type="button" onclick="exportarExcelGDSM('doacoes')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel (.xlsx)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg><span class="btn-text">Excel</span></button>
           <button type="button" onclick="abrirPlanilhaGDSM('doacoes')" class="btn" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar diretamente esta aba na Planilha Google">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> PLANILHA
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="btn-text">Planilha</span></button>
           <button type="button" onclick="carregarGDSM('doacoes', true)" class="btn" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Recarregar dados da planilha Google">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> ATUALIZAR
           </button>
           <button type="button" onclick="limparFiltrosGDSM('doacoes')" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" title="Limpar todos os parâmetros">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> LIMPAR PARÂMETROS
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>Limpar parâmetros</button>
         </div>
 
 
@@ -4594,20 +4680,16 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> SIMPLIFICADO
           </button>
           <button type="button" onclick="imprimirGDSMDetalhado('novoregime')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#2563eb; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'" title="Imprimir Relatório Detalhado com Todas as Colunas">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg> DETALHADO
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span class="btn-text">Detalhado</span></button>
           <button type="button" onclick="exportarExcelGDSM('novoregime')" class="btn" style="padding:10px 14px; height:40px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:none; border-radius:8px; background:#16a34a; color:white; cursor:pointer; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'" title="Exportar para Excel (.xlsx)">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg> EXCEL
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg><span class="btn-text">Excel</span></button>
           <button type="button" onclick="abrirPlanilhaGDSM('novoregime')" class="btn" style="background:#10b981; border:none; color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'" title="Acessar diretamente esta aba na Planilha Google">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> PLANILHA
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span class="btn-text">Planilha</span></button>
           <button type="button" onclick="carregarGDSM('novoregime', true)" class="btn" style="background:#0f172a; border:1px solid rgba(255,255,255,0.15); color:white; padding:10px 14px; border-radius:8px; font-weight:700; font-size:12px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'" title="Recarregar dados da planilha Google">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg> ATUALIZAR
           </button>
           <button type="button" onclick="limparFiltrosGDSM('novoregime')" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:40px; padding:10px 14px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; transition:background 0.2s;" onmouseover="this.style.background='#d97706'" onmouseout="this.style.background='#f59e0b'" title="Limpar todos os parâmetros">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> LIMPAR PARÂMETROS
-          </button>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>Limpar parâmetros</button>
         </div>
 
 
