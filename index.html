@@ -314,10 +314,11 @@
     }
 
     /* ============================================================
-       GBZ v1.2.77 - COLUNAS ANCORADAS: CHECKBOX (left: 0) E PREFIXO (left: 40px)
+       GBZ v1.2.87 - COLUNAS ANCORADAS EXCLUSIVAS DA TABELA DE PROCESSOS (GDSM)
+       Evita que outras tabelas (GMAC, etc.) tenham a primeira coluna esmagada a 40px!
        ============================================================ */
-    .table-wrap th:first-child,
-    .table-wrap td:first-child {
+    #page-processos .table-wrap th:first-child,
+    #page-processos .table-wrap td:first-child {
       position: sticky !important;
       left: 0 !important;
       z-index: 25 !important;
@@ -327,8 +328,8 @@
       background-color: #0b132b !important;
     }
 
-    .table-wrap th[data-sort="prefixo"],
-    .table-wrap td.col-prefixo {
+    #page-processos .table-wrap th[data-sort="prefixo"],
+    #page-processos .table-wrap td.col-prefixo {
       position: sticky !important;
       left: 40px !important;
       z-index: 25 !important;
@@ -339,29 +340,55 @@
       box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5) !important;
     }
 
-    .table-wrap thead th:first-child {
+    #page-processos .table-wrap thead th:first-child {
       z-index: 35 !important;
       background-color: #0d1530 !important;
     }
 
-    .table-wrap thead th[data-sort="prefixo"] {
+    #page-processos .table-wrap thead th[data-sort="prefixo"] {
       z-index: 35 !important;
       background-color: #0d1530 !important;
     }
 
-    tbody tr:hover td:first-child,
-    tbody tr:hover td.col-prefixo {
+    #page-processos tbody tr:hover td:first-child,
+    #page-processos tbody tr:hover td.col-prefixo {
       background-color: #172347 !important;
     }
 
-    tbody tr.linha-alerta td:first-child,
-    tbody tr.linha-alerta td.col-prefixo {
+    #page-processos tbody tr.linha-alerta td:first-child,
+    #page-processos tbody tr.linha-alerta td.col-prefixo {
       background-color: #24141d !important;
     }
 
-    tbody tr.linha-pago td:first-child,
-    tbody tr.linha-pago td.col-prefixo {
+    #page-processos tbody tr.linha-pago td:first-child,
+    #page-processos tbody tr.linha-pago td.col-prefixo {
       background-color: #0d2624 !important;
+    }
+
+    /* Regras Padronizadas para Tabelas GMAC e Outros Módulos */
+    .gmac-table-wrap th:first-child,
+    .gmac-table-wrap td:first-child {
+      position: static !important;
+      width: 165px !important;
+      min-width: 150px !important;
+      max-width: 220px !important;
+      white-space: normal !important;
+      word-break: normal !important;
+      overflow-wrap: break-word !important;
+      background-color: transparent !important;
+    }
+
+    /* MODO MOBILE GLOBAL PADRONIZADO EM TODAS AS TABELAS */
+    body.funcao-mobile-ativa .gmac-table-wrap th,
+    body.funcao-mobile-ativa .gmac-table-wrap td {
+      padding: 8px 10px !important;
+      font-size: 11px !important;
+    }
+    body.funcao-mobile-ativa .gmac-table-wrap th:first-child,
+    body.funcao-mobile-ativa .gmac-table-wrap td:first-child {
+      width: 130px !important;
+      min-width: 120px !important;
+      font-size: 11px !important;
     }
 
     /* CSS for infinite scroll tables and sticky headers */
@@ -585,7 +612,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.86</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.87</div>
   </div>
 </div>
   
@@ -837,7 +864,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.86</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.87</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -893,6 +920,10 @@
             <button type="button" onclick="carregarGMAC('aee')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
+            </button>
             
           </div>
         </div>
@@ -946,6 +977,10 @@
             </button>
             <button type="button" onclick="carregarGMAC('onibus')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
+            </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
             </button>
             
           </div>
@@ -1001,6 +1036,10 @@
             <button type="button" onclick="carregarGMAC('veiculos')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
+            </button>
             
           </div>
         </div>
@@ -1055,6 +1094,10 @@
             <button type="button" onclick="carregarGMAC('reordenamento')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
             </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
+            </button>
             
           </div>
         </div>
@@ -1108,6 +1151,10 @@
             </button>
             <button type="button" onclick="carregarGMAC('cooperacao')" class="btn btn-ghost" style="padding:10px 16px; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; border-radius:8px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
               🔄 Atualizar
+            </button>
+            <button type="button" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:10px 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up)">
+              <span>📱</span>
+              <span class="btn-toggle-mobile-text">Modo mobile</span>
             </button>
             
           </div>
@@ -2125,7 +2172,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.86
+              GBZ - v1.2.87
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel

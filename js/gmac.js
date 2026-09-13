@@ -116,54 +116,54 @@ function getVisibleHeadersGMAC(rawHeaders) {
 // Estilização dinâmica e equilibrada por tipo de coluna (trazendo colunas para a esquerda e evitando vácuos)
 function getColStyleGMAC(header) {
   const h = (header || '').toLowerCase().trim();
-  const norm = h.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const norm = h.normalize('NFD').replace(/[̀-ͯ]/g, '');
 
   if (norm === 'municipio' || norm === 'municipios') {
-    return 'width:160px; min-width:140px; word-break:break-word; overflow-wrap:break-word; white-space:normal; font-weight:700; color:#f8fafc;';
+    return 'width:175px; min-width:155px; max-width:220px; word-break:normal; overflow-wrap:break-word; white-space:normal; font-weight:700; color:#f8fafc;';
   }
   if (norm === 'id' || norm === 'ids') {
-    return 'width:85px; min-width:75px; text-align:center; font-family:ui-monospace, monospace; font-weight:700; color:#cbd5e1;';
+    return 'width:75px; min-width:70px; text-align:center; font-family:ui-monospace, monospace; font-weight:700; color:#cbd5e1;';
   }
   if (norm.includes('processo') || norm.includes('sei')) {
-    return 'width:245px; min-width:230px; white-space:nowrap;';
+    return 'width:225px; min-width:210px; white-space:nowrap;';
   }
   if (norm.includes('placa') || norm.includes('renavam') || norm.includes('chassi') || norm.includes('crlv')) {
-    return 'width:110px; min-width:95px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600; text-align:center;';
+    return 'width:95px; min-width:85px; white-space:nowrap; font-family:ui-monospace, monospace; font-weight:600; text-align:center;';
   }
   if (norm.includes('status')) {
-    return 'width:145px; min-width:130px; text-align:center; word-break:break-word; overflow-wrap:break-word; white-space:normal;';
+    return 'width:130px; min-width:115px; text-align:center; word-break:break-word; overflow-wrap:break-word; white-space:normal;';
   }
   if (norm === 'situacao' || norm.includes('situacao')) {
-    return 'width:230px; min-width:190px; text-align:center; white-space:normal; line-height:1.35; word-break:break-word; overflow-wrap:break-word;';
+    return 'width:190px; min-width:160px; text-align:center; white-space:normal; line-height:1.35; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm.includes('termo ass') || norm.includes('termo de doacao') || norm.includes('termo')) {
-    return 'width:210px; min-width:170px; text-align:center; white-space:normal; line-height:1.35; word-break:break-word; overflow-wrap:break-word;';
+    return 'width:165px; min-width:140px; text-align:center; white-space:normal; line-height:1.35; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm === 'forma') {
-    return 'width:90px; min-width:80px; text-align:center;';
+    return 'width:75px; min-width:65px; text-align:center;';
   }
   if (norm.includes('tipo') && norm.includes('objeto')) {
-    return 'width:150px; min-width:130px; text-align:center; word-break:break-word; overflow-wrap:break-word; white-space:normal;';
+    return 'width:135px; min-width:120px; text-align:center; word-break:break-word; overflow-wrap:break-word; white-space:normal;';
   }
   if (norm === 'objeto' || (norm.includes('objeto') && !norm.includes('tipo'))) {
-    return 'width:230px; min-width:180px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
+    return 'width:180px; min-width:150px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm.includes('escola') || norm.includes('secretaria') || norm.includes('localizacao')) {
-    return 'width:210px; min-width:170px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
+    return 'width:175px; min-width:145px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm.includes('data') || norm.includes('vigencia')) {
-    return 'width:115px; min-width:105px; white-space:nowrap; text-align:center;';
+    return 'width:105px; min-width:95px; white-space:nowrap; text-align:center;';
   }
   if (norm.includes('valor')) {
-    return 'width:120px; min-width:110px; white-space:nowrap; text-align:right;';
+    return 'width:110px; min-width:95px; white-space:nowrap; text-align:right; font-family:ui-monospace, monospace; font-weight:700; color:#34d399;';
   }
   if (norm.includes('contato')) {
-    return 'width:180px; min-width:150px; font-size:12px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
+    return 'width:150px; min-width:130px; font-size:12px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
   }
   if (norm.includes('observ') || norm.includes('documento') || norm.includes('parecer')) {
-    return 'width:220px; min-width:180px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
+    return 'width:170px; min-width:140px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
   }
-  return 'width:170px; min-width:140px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
+  return 'width:140px; min-width:120px; line-height:1.35; white-space:normal; word-break:break-word; overflow-wrap:break-word;';
 }
 
 // Badge visual para status no GMAC com cores específicas por status (Imagem 1: Não Entregue Vermelho, Entregue Verde)
