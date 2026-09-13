@@ -3,7 +3,29 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.78] — 2026-09-12 🟢 VERSÃO ATUAL
+## [v1.2.89] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.89` · **Versão do Sistema:** `GBZ - v1.2.89`
+
+### 📐 Reorganização Simétrica dos Filtros em 2 Linhas de 6 Colunas (100% da Largura)
+- **Padronização em Grid CSS (`.filter-row-grid-6`)**:
+  - **Linha 1:** `MUNICÍPIO`, `SUPER`, `PREFIXO`, `LOCALIZAÇÃO`, `STATUS`, `ANO`.
+  - **Linha 2:** `CATEGORIA`, `TIPO`, `AGRUPAMENTO`, `ALERTA`, `MARCAÇÃO`, **`LIMPAR PARÂMETROS`**.
+- **Dimensões e Espaçamento Homogêneos**:
+  - Todos os 12 elementos calibrados rigorosamente com **38px de altura** (`min-height: 38px`), raio de 8px e gap constante de 10px.
+  - Expansão de largura para 100% simétrica por coluna (`grid-template-columns: repeat(6, minmax(0, 1fr))`).
+  - Remoção da limitação de `max-width: 200px` nos multiselects para preenchimento total da tela.
+- **Botão Limpar Parâmetros**:
+  - Integrado organicamente na 6ª posição da Linha 2 com estilização `.btn-limpar-grid`, sincronizado com o grid dos combos.
+
+### 🔄 Correção do Carregamento de Dados na Restauração de Sessão
+- **Fim do Spinner Travado ao Recarregar**:
+  - Corrigido o fluxo de verificação de sessão em `js/auth-sap.js`, garantindo a execução de `inicializarDados()`, `popularFiltrosProcessos()` e `renderProcessos()` ao recarregar a página com credenciais salvas.
+  - Todos os processos e opções dos combos passam a ser renderizados imediatamente na inicialização.
+
+---
+
+## [v1.2.78] — 2026-09-12
 
 **Tag:** `v1.2.78` · **Versão do Sistema:** `GBZ - v1.2.78`
 
