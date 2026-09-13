@@ -36,6 +36,67 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       PADRONIZAÇÃO GLOBAL DE BOTÕES (EXCETO MENU LATERAL):
+       - Sem negrito por padrão (font-weight: 600)
+       - Foco / Hover: Negrito marcante (font-weight: 800) + elevação discreta
+       - Clique (:active): Sem cor de fundo, apenas bordas e legenda na cor temática
+       - Legendas: Apenas a primeira letra maiúscula (Titlecase/Sentence)
+       ========================================================================== */
+    button:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):not(.close):not(#modal-whatsapp-relatorio button),
+    .btn:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link),
+    .action-report {
+      font-weight: 600 !important;
+      transition: all 0.15s ease-in-out !important;
+    }
+
+    button:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):not(.close):hover,
+    button:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):not(.close):focus,
+    .btn:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):hover,
+    .btn:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):focus,
+    .action-report:hover,
+    .action-report:focus {
+      font-weight: 800 !important;
+      filter: brightness(1.15) !important;
+      transform: translateY(-1px) !important;
+    }
+
+    button:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):not(.close):active,
+    .btn:not(.sidebar *):not(.sidebar-nav *):not(.nav-item):not(.tab-link):active,
+    .action-report:active {
+      background: transparent !important;
+      box-shadow: none !important;
+      transform: scale(0.97) !important;
+    }
+
+    /* Cores das bordas e texto no clique ativo (:active) para manter legenda nítida */
+    #btn-compartilhar-topo:active { border-color: #0284c7 !important; color: #38bdf8 !important; }
+    #btn-analise-topo:active { border-color: #6366f1 !important; color: #a5b4fc !important; }
+    #btn-detalhado-topo:active { border-color: #3b82f6 !important; color: #93c5fd !important; }
+    #btn-padrao-topo:active { border-color: #94a3b8 !important; color: #f1f5f9 !important; }
+    #btn-padrao-sel-topo:active { border-color: #94a3b8 !important; color: #f1f5f9 !important; }
+    #btn-relatorio-padrao-adm:active { border-color: #f59e0b !important; color: #fbbf24 !important; }
+    #btn-relatorio-padrao-adm-2:active { border-color: #0d9488 !important; color: #2dd4bf !important; }
+    #btn-excel-topo:active { border-color: #16a34a !important; color: #4ade80 !important; }
+    #btn-planilha-topo:active { border-color: #10b981 !important; color: #34d399 !important; }
+    #btn-toggle-mobile:active { border-color: #0284c7 !important; color: #38bdf8 !important; }
+    #btn-limpar-filtros:active { border: 2px solid #f59e0b !important; color: #f59e0b !important; }
+
+    /* Ampulheta de processamento girando */
+    @keyframes girarAmpulheta {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(180deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .anim-ampulheta {
+      animation: girarAmpulheta 2s infinite ease-in-out;
+      display: inline-block;
+      vertical-align: middle;
+    }
+  </style>
+
 </head>
 
 <body>

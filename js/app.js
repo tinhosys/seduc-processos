@@ -1,5 +1,5 @@
 
-// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.43)
+// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.82)
 // Remove ,00 ou .00 se for formatação numérica de planilha, preserva texto livre e limita a 8 caracteres
 window.limparDigitoValor = function(val) {
   if (val === null || val === undefined) return '';
@@ -12,7 +12,7 @@ window.limparDigitoValor = function(val) {
 window.formatarDigitoInteiro = window.limparDigitoValor;
 
 
-// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.43)
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.82)
 window.copiarSeiLinha = function(btn) {
   const row = btn.closest('div');
   const input = row ? row.querySelector('.form-numero-item') : null;
@@ -1228,7 +1228,7 @@ function getFiltrados() {
 }
 
 // ============================================================
-// GBZ v1.2.75 - FUNÇÕES AUXILIARES PARA CÉLULAS E BALÃO MOBILE
+// GBZ v1.2.82 - FUNÇÕES AUXILIARES PARA CÉLULAS E BALÃO MOBILE
 // ============================================================
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
@@ -1652,7 +1652,7 @@ window.popularDigitosDisponiveis = function() {
         ? inputVal.split(/[,;\s]+/).map(v => window.limparDigitoValor(v)).filter(Boolean) 
         : [];
       
-      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.43)
+      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.82)
       container.innerHTML = distinctDigitos.map(dig => {
         const isChecked = currentSelected.includes(dig);
         return `
@@ -4811,7 +4811,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.20)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.82)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -5670,7 +5670,7 @@ window.getTypeBadge = getTypeBadge;
 
 
 // =========================================================================
-// PAINEL DE INFORMAÇÕES DO SISTEMA, DIAGNÓSTICO & MÉTRICAS (GBZ - v1.2.21)
+// PAINEL DE INFORMAÇÕES DO SISTEMA, DIAGNÓSTICO & MÉTRICAS (GBZ - v1.2.82)
 // =========================================================================
 
 let _sysInfoTimer = null;
@@ -5866,7 +5866,7 @@ async function carregarPainelSistemaInfo() {
     elEntrada.textContent = dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR');
   }
 
-  // Cronômetro da sessão ativa (GBZ - v1.2.25)
+  // Cronômetro da sessão ativa (GBZ - v1.2.82)
   const elTempo = document.getElementById('sysinfo-tempo-sessao');
   if (_sysInfoTimer) clearInterval(_sysInfoTimer);
   const formatarTempoAtivo = () => {
@@ -5881,7 +5881,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.43)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.82)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -5961,7 +5961,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.43)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.82)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';
@@ -7112,6 +7112,23 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
  * Função Principal de Compartilhamento via Modal WhatsApp com pré-renderização em background e troca instantânea
  */
 window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
+  // Animação de Ampulheta no botão Compartilhar (Imagem 2 / Imagem 5)
+  const btnComp = document.getElementById('btn-compartilhar-topo');
+  let btnCompOriginalHtml = '';
+  if (btnComp) {
+    btnCompOriginalHtml = btnComp.innerHTML;
+    btnComp.innerHTML = '<span class="anim-ampulheta" style="font-size:14px; margin-right:4px;">⏳</span> <span class="btn-text">Compartilhar</span>';
+    btnComp.style.opacity = '0.85';
+    btnComp.style.pointerEvents = 'none';
+  }
+  const restaurarBtnComp = () => {
+    if (btnComp && btnCompOriginalHtml) {
+      btnComp.innerHTML = btnCompOriginalHtml;
+      btnComp.style.opacity = '1';
+      btnComp.style.pointerEvents = 'auto';
+    }
+  };
+
   let lista = [];
   const checks = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
   const temSelecionados = checks.length > 0;
@@ -7417,7 +7434,27 @@ ${textoGrupos.trim()}`;
     </div>
   `;
 
+  if (typeof restaurarBtnComp === 'function') restaurarBtnComp();
   modalOverlay.style.display = 'flex';
+
+  
+  // Regra de Ouro: Botão "Gere detalhado" só visível para Admin
+  const ehAdmin = (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin());
+  if (btnDetalhado) {
+    if (ehAdmin) {
+      btnDetalhado.style.display = 'flex';
+      const containerBotoesGere = btnDetalhado.parentElement;
+      if (containerBotoesGere) {
+        containerBotoesGere.style.gridTemplateColumns = '1fr 1fr';
+      }
+    } else {
+      btnDetalhado.style.display = 'none';
+      const containerBotoesGere = btnDetalhado.parentElement;
+      if (containerBotoesGere) {
+        containerBotoesGere.style.gridTemplateColumns = '1fr';
+      }
+    }
+  }
 
   const previewImg = document.getElementById('img-preview-relatorio');
   const placeholderTela = document.getElementById('placeholder-tela-imagem');
