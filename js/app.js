@@ -6625,6 +6625,20 @@ window.carregarFinanceiro = function() {
 // =========================================================================
 
 /**
+ * Formata data/hora para nomenclatura oficial: AAAAMMDDHHMMSS
+ */
+function getFormattedTimestampCompacto() {
+  const agora = new Date();
+  const aaaa = agora.getFullYear();
+  const mm = String(agora.getMonth() + 1).padStart(2, '0');
+  const dd = String(agora.getDate()).padStart(2, '0');
+  const hh = String(agora.getHours()).padStart(2, '0');
+  const min = String(agora.getMinutes()).padStart(2, '0');
+  const ss = String(agora.getSeconds()).padStart(2, '0');
+  return `${aaaa}${mm}${dd}${hh}${min}${ss}`;
+}
+
+/**
  * Renderiza o Relatório Padrão Oficial em um Canvas e retorna { canvas, imgUrl, dynamicHeight, canvasWidth }
  */
 window.renderizarCanvasRelatorioPadrao = function(lista, isSelecao) {
@@ -7095,7 +7109,7 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
 };
 
 /**
- * Função Principal de Compartilhamento via Modal WhatsApp com alternância dinâmica Padrão / Detalhado
+ * Função Principal de Compartilhamento via Modal WhatsApp com pré-renderização em background e troca instantânea
  */
 window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
   let lista = [];
@@ -7181,19 +7195,34 @@ ${statusStr}
 
 ${textoGrupos.trim()}`;
 
-  // Estado atual do layout no modal ('padrao' ou 'detalhado')
-  let currentLayout = 'padrao';
+  // Estado atual do layout no modal (inicialmente sem layout selecionado)
+  let currentLayout = null; // 'padrao' ou 'detalhado'
   let activeCanvas = null;
   let activeImgUrl = '';
   let activeHeight = 0;
   let activeWidth = 1280;
 
-  // Renderiza inicialmente o layout Padrão
-  const padraoRes = window.renderizarCanvasRelatorioPadrao(lista, isSelecao);
-  activeCanvas = padraoRes.canvas;
-  activeImgUrl = padraoRes.imgUrl;
-  activeHeight = padraoRes.dynamicHeight;
-  activeWidth = padraoRes.canvasWidth;
+  // Cache das imagens pré-geradas
+  let cachePadrao = null;
+  let cacheDetalhado = null;
+  let isGerandoDetalhado = false;
+
+  // Pré-gera imediatamente o layout Padrão em background (instantâneo)
+  try {
+    cachePadrao = window.renderizarCanvasRelatorioPadrao(lista, isSelecao);
+  } catch (err) {
+    console.error('Erro ao pré-gerar relatório padrão:', err);
+  }
+
+  // Pré-gera em background o layout Detalhado para ficar pronto imediatamente
+  isGerandoDetalhado = true;
+  window.renderizarCanvasRelatorioAdm2(lista).then(res => {
+    cacheDetalhado = res;
+    isGerandoDetalhado = false;
+  }).catch(err => {
+    console.warn('Erro ao pré-gerar relatório detalhado em background:', err);
+    isGerandoDetalhado = false;
+  });
 
   // Modal Container
   let modalOverlay = document.getElementById('modal-whatsapp-relatorio');
@@ -7205,6 +7234,74 @@ ${textoGrupos.trim()}`;
   }
 
   modalOverlay.innerHTML = `
+    <style>
+      .btn-modal-action {
+        color: #fff;
+        border: 2px solid transparent;
+        padding: 11px 14px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 13px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.15s ease-in-out;
+        user-select: none;
+      }
+      .btn-modal-action:focus {
+        font-weight: 900 !important;
+        transform: scale(1.03);
+        outline: none;
+      }
+      .btn-modal-action:hover {
+        font-weight: 900 !important;
+        filter: brightness(1.15);
+      }
+      .btn-modal-action:active {
+        background: transparent !important;
+        box-shadow: none !important;
+        transform: scale(0.97);
+      }
+      .btn-modal-action.disabled-action {
+        opacity: 0.35 !important;
+        cursor: not-allowed !important;
+        pointer-events: none !important;
+        filter: grayscale(0.8) !important;
+      }
+
+      /* Estilização individual dos botões quando ativos (:active) */
+      #btn-env-whatsapp:active {
+        border-color: #25D366 !important;
+        color: #25D366 !important;
+      }
+      #btn-copiar-imagem:active {
+        border-color: #0284c7 !important;
+        color: #38bdf8 !important;
+      }
+      #btn-copiar-texto:active {
+        border-color: #94a3b8 !important;
+        color: #f1f5f9 !important;
+      }
+      #btn-baixar-imagem:active {
+        border-color: #0d9488 !important;
+        color: #2dd4bf !important;
+      }
+      #btn-baixar-pdf-rapido:active {
+        border-color: #dc2626 !important;
+        color: #f87171 !important;
+      }
+      #btn-gere-padrao:active {
+        border-color: #0284c7 !important;
+        color: #38bdf8 !important;
+      }
+      #btn-gere-detalhado:active {
+        border-color: #0d9488 !important;
+        color: #2dd4bf !important;
+      }
+    </style>
+
     <div class="modal-whatsapp-share" style="background:#0f172a; border:1px solid #334155; border-radius:14px; box-shadow:0 25px 50px rgba(0,0,0,0.7); max-width:1080px; width:95%; max-height:94vh; overflow-y:auto; padding:22px; color:#fff;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; border-bottom:1px solid #334155; padding-bottom:12px;">
         <div style="display:flex; align-items:center; gap:10px;">
@@ -7219,24 +7316,36 @@ ${textoGrupos.trim()}`;
           </div>
           <div>
             <h3 style="margin:0; font-size:16px; font-weight:800; color:#38bdf8;">Compartilhar</h3>
-            <span id="modal-subtitulo-layout" style="font-size:11px; color:#94a3b8; font-weight:600;">Layout Atual: Padrão</span>
+            <span id="modal-subtitulo-layout" style="font-size:11px; color:#94a3b8; font-weight:600;">Layout Atual: Detalhado</span>
           </div>
         </div>
         <button onclick="document.getElementById('modal-whatsapp-relatorio').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; padding:4px 8px;">&times;</button>
       </div>
 
-      <!-- Preview Dinâmico da Imagem -->
-      <div style="margin-bottom:16px; text-align:center; background:#020617; padding:12px; border-radius:8px; border:1px solid #1e293b; max-height:60vh; overflow:auto; position:relative;">
-        <div id="loading-preview-msg" style="display:none; position:absolute; inset:0; background:rgba(2,6,23,0.85); display:none; align-items:center; justify-content:center; color:#38bdf8; font-weight:bold; font-size:14px; gap:8px;">
-          <span>⏳ Gerando visualização...</span>
+      <!-- Preview Dinâmico da Imagem ou Mensagem Inicial -->
+      <div style="margin-bottom:16px; text-align:center; background:#020617; padding:12px; border-radius:8px; border:1px solid #1e293b; min-height:220px; max-height:60vh; overflow:auto; position:relative; display:flex; align-items:center; justify-content:center;">
+        
+        <!-- Mensagem de carregamento caso ainda esteja gerando em background -->
+        <div id="loading-preview-msg" style="display:none; position:absolute; inset:0; background:rgba(2,6,23,0.85); align-items:center; justify-content:center; color:#38bdf8; font-weight:bold; font-size:14px; gap:8px; z-index:10;">
+          <span>⏳ Gerando imagem...</span>
         </div>
-        <img id="img-preview-relatorio" src="${activeImgUrl}" style="max-width:100%; height:auto; display:block; margin:0 auto; border-radius:4px; box-shadow:0 8px 24px rgba(0,0,0,0.6); cursor:zoom-in;" title="Clique para abrir imagem em tamanho original" onclick="window.open(this.src, '_blank')" alt="Preview do Relatório">
+
+        <!-- Placeholder inicial quando ainda não houver layout ativado -->
+        <div id="placeholder-tela-imagem" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; color:#94a3b8; gap:12px;">
+          <div style="font-size:42px; opacity:0.8;">🖼️</div>
+          <div style="font-size:16px; font-weight:800; color:#f1f5f9; letter-spacing:0.5px;">GERE UMA IMAGEM - PADRÃO / DETALHADO</div>
+          <div style="font-size:12px; color:#64748b; max-width:440px; line-height:1.5;">Clique em <b>GERE PADRÃO</b> ou <b>GERE DETALHADO</b> abaixo para liberar a visualização, cópia e download instantâneo do relatório oficial.</div>
+        </div>
+
+        <!-- Elemento de imagem do preview (inicialmente oculto) -->
+        <img id="img-preview-relatorio" src="" style="display:none; max-width:100%; height:auto; margin:0 auto; border-radius:4px; box-shadow:0 8px 24px rgba(0,0,0,0.6); cursor:zoom-in;" title="Clique para abrir imagem em tamanho original" onclick="if(this.src) window.open(this.src, '_blank')" alt="Preview do Relatório">
       </div>
 
-      <!-- Linha 1 de Botões de Ação (Ações com o Layout Ativo) -->
+      <!-- Linha 1 de Botões de Ação (Ações com a Imagem Ativa) -->
       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(165px, 1fr)); gap:10px; margin-bottom:10px;">
-        <!-- 1. Enviar (WhatsApp) -->
-        <button id="btn-env-whatsapp" style="background:linear-gradient(135deg, #25D366 0%, #128C7E 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(37,211,102,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Enviar pelo WhatsApp">
+        
+        <!-- 1. Enviar (WhatsApp) - Inicialmente Desativado -->
+        <button id="btn-env-whatsapp" class="btn-modal-action disabled-action" style="background:linear-gradient(135deg, #25D366 0%, #128C7E 100%); box-shadow:0 4px 12px rgba(37,211,102,0.25);" title="Enviar pelo WhatsApp">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.694.076-2.146-.523-1.611-.666-2.651-2.298-2.733-2.406-.083-.109-.652-.868-.652-1.652 0-.785.411-1.17.559-1.328.147-.158.322-.198.43-.198.107 0 .214.002.308.007.098.005.231-.038.361.275.134.322.457 1.115.498 1.197.04.082.067.177.013.286-.055.108-.082.176-.162.272-.081.096-.17.214-.243.287-.081.082-.165.171-.071.333.094.162.417.688.894 1.114.614.548 1.132.718 1.293.799.162.081.256.068.351-.041.095-.108.405-.472.513-.634.108-.162.216-.135.364-.081.148.054.945.446 1.107.527.162.081.27.121.31.189.04.068.04.392-.104.797z"/>
             <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.98-1.396A9.957 9.957 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.2a8.16 8.16 0 0 1-4.38-1.267l-.314-.187-2.953.826.837-2.88-.205-.326A8.16 8.16 0 0 1 3.8 12c0-4.529 3.671-8.2 8.2-8.2s8.2 3.671 8.2 8.2-3.671 8.2-8.2 8.2z"/>
@@ -7244,8 +7353,8 @@ ${textoGrupos.trim()}`;
           <span>Enviar</span>
         </button>
 
-        <!-- 2. Copiar Imagem -->
-        <button id="btn-copiar-imagem" style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(2,132,199,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Copiar Imagem diretamente para colar (Ctrl+V) no WhatsApp">
+        <!-- 2. Copiar Imagem - Inicialmente Desativado -->
+        <button id="btn-copiar-imagem" class="btn-modal-action disabled-action" style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); box-shadow:0 4px 12px rgba(2,132,199,0.25);" title="Copiar Imagem diretamente para colar (Ctrl+V) no WhatsApp">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -7253,36 +7362,36 @@ ${textoGrupos.trim()}`;
           <span>Copiar Imagem</span>
         </button>
 
-        <!-- 3. Copiar Texto -->
-        <button id="btn-copiar-texto" style="background:linear-gradient(135deg, #475569 0%, #334155 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(71,85,105,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Copiar Texto estruturado por Prefixo">
+        <!-- 3. Copiar Para Texto - NASCE ATIVADO -->
+        <button id="btn-copiar-texto" class="btn-modal-action" style="background:linear-gradient(135deg, #475569 0%, #334155 100%); box-shadow:0 4px 12px rgba(71,85,105,0.25);" title="Copiar Texto estruturado por Prefixo">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
             <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
             <line x1="8" y1="11" x2="16" y2="11"></line>
             <line x1="8" y1="15" x2="13" y2="15"></line>
           </svg>
-          <span>Copiar Texto</span>
+          <span>COPIAR PARA TEXTO</span>
         </button>
 
-        <!-- 4. Baixar Imagem (PNG) -->
-        <button id="btn-baixar-imagem" style="background:linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(13,148,136,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Baixar Imagem PNG da visualização ativa">
+        <!-- 4. Baixar (PNG) - Inicialmente Desativado -->
+        <button id="btn-baixar-imagem" class="btn-modal-action disabled-action" style="background:linear-gradient(135deg, #0d9488 0%, #0f766e 100%); box-shadow:0 4px 12px rgba(13,148,136,0.25);" title="Baixar Imagem PNG da visualização ativa">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <circle cx="8.5" cy="8.5" r="1.5"></circle>
             <polyline points="21 15 16 10 5 21"></polyline>
             <path d="M12 12v5m2.5-2.5L12 17l-2.5-2.5"></path>
           </svg>
-          <span>Baixar Imagem (PNG)</span>
+          <span>BAIXAR (PNG)</span>
         </button>
 
-        <!-- 5. Baixar PDF -->
-        <button id="btn-baixar-pdf-rapido" style="background:linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(220,38,38,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Baixar Relatório em PDF da visualização ativa">
+        <!-- 5. Baixar (PDF) - Inicialmente Desativado -->
+        <button id="btn-baixar-pdf-rapido" class="btn-modal-action disabled-action" style="background:linear-gradient(135deg, #dc2626 0%, #991b1b 100%); box-shadow:0 4px 12px rgba(220,38,38,0.25);" title="Baixar Relatório em PDF da visualização ativa">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
             <path d="M9 15h6M12 12v6" stroke-width="2.2"></path>
           </svg>
-          <span>Baixar PDF</span>
+          <span>BAIXAR (PDF)</span>
         </button>
       </div>
 
@@ -7290,7 +7399,7 @@ ${textoGrupos.trim()}`;
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; background:rgba(30,41,59,0.5); padding:10px; border-radius:10px; border:1px solid #334155;">
         
         <!-- Botão GERE PADRÃO (Local Amarelo) -->
-        <button id="btn-gere-padrao" style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color:#fff; border:2px solid #38bdf8; padding:11px 16px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(2,132,199,0.35); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.15)';" onmouseout="this.style.filter='brightness(1)';" title="Gerar e alternar para o Layout Padrão Oficial">
+        <button id="btn-gere-padrao" class="btn-modal-action" style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); border:2px solid #38bdf8; padding:12px 16px; font-weight:800; box-shadow:0 4px 14px rgba(2,132,199,0.35);" title="Gerar e alternar para o Layout Padrão Oficial">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 6 2 18 2 18 9"></polyline>
             <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
@@ -7300,7 +7409,7 @@ ${textoGrupos.trim()}`;
         </button>
 
         <!-- Botão GERE DETALHADO (Local Laranja/Vermelho - Relatório ADM 2) -->
-        <button id="btn-gere-detalhado" style="background:linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color:#fff; border:2px solid transparent; padding:11px 16px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(13,148,136,0.35); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.15)';" onmouseout="this.style.filter='brightness(1)';" title="Gerar e alternar para o Layout Detalhado (Relatório ADM 2)">
+        <button id="btn-gere-detalhado" class="btn-modal-action" style="background:linear-gradient(135deg, #0d9488 0%, #0f766e 100%); border:2px solid transparent; padding:12px 16px; font-weight:800; box-shadow:0 4px 14px rgba(13,148,136,0.35);" title="Gerar e alternar para o Layout Detalhado (Relatório ADM 2)">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
             <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -7311,9 +7420,10 @@ ${textoGrupos.trim()}`;
 
       </div>
 
+      <!-- Dica Rápida Atualizada -->
       <div style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.25); border-radius:8px; padding:10px; font-size:12px; color:#bae6fd; display:flex; align-items:center; gap:8px;">
         <span>💡</span>
-        <span><b>Dica Rápida:</b> Clique em <b>"Copiar Imagem"</b> e pressione <b>Ctrl+V</b> direto na conversa do WhatsApp Web para enviar instantaneamente a imagem oficial sem precisar baixar arquivos!</span>
+        <span><b>Dica Rápida:</b> Clique em <b>"Copiar Imagem"</b> ou <b>"COPIAR PARA TEXTO"</b> e pressione <b>Ctrl+V</b> direto na conversa do WhatsApp Web para enviar instantaneamente sem precisar baixar arquivos!</span>
       </div>
     </div>
   `;
@@ -7321,65 +7431,90 @@ ${textoGrupos.trim()}`;
   modalOverlay.style.display = 'flex';
 
   const previewImg = document.getElementById('img-preview-relatorio');
+  const placeholderTela = document.getElementById('placeholder-tela-imagem');
   const subTit = document.getElementById('modal-subtitulo-layout');
   const btnPadrao = document.getElementById('btn-gere-padrao');
   const btnDetalhado = document.getElementById('btn-gere-detalhado');
   const loadingMsg = document.getElementById('loading-preview-msg');
 
-  // Atualização dinâmica entre layouts
+  const btnEnvWhatsapp = document.getElementById('btn-env-whatsapp');
+  const btnCopiarImagem = document.getElementById('btn-copiar-imagem');
+  const btnBaixarImagem = document.getElementById('btn-baixar-imagem');
+  const btnBaixarPdf = document.getElementById('btn-baixar-pdf-rapido');
+
+  // Função para desbloquear os botões de ação após gerar imagem
+  function liberarBotoesAcao() {
+    [btnEnvWhatsapp, btnCopiarImagem, btnBaixarImagem, btnBaixarPdf].forEach(btn => {
+      if (btn) btn.classList.remove('disabled-action');
+    });
+  }
+
+  // Ação: GERE PADRÃO
   btnPadrao.onclick = () => {
     currentLayout = 'padrao';
     subTit.textContent = 'Layout Atual: Padrão';
     btnPadrao.style.border = '2px solid #38bdf8';
     btnDetalhado.style.border = '2px solid transparent';
 
-    const res = window.renderizarCanvasRelatorioPadrao(lista, isSelecao);
-    activeCanvas = res.canvas;
-    activeImgUrl = res.imgUrl;
-    activeHeight = res.dynamicHeight;
-    activeWidth = res.canvasWidth;
-    previewImg.src = activeImgUrl;
+    // Se já estiver no cache, é instantâneo
+    if (!cachePadrao) {
+      cachePadrao = window.renderizarCanvasRelatorioPadrao(lista, isSelecao);
+    }
+    activeCanvas = cachePadrao.canvas;
+    activeImgUrl = cachePadrao.imgUrl;
+    activeHeight = cachePadrao.dynamicHeight;
+    activeWidth = cachePadrao.canvasWidth;
 
-    if (typeof showToast === 'function') showToast('Visualização alterada para Layout Padrão', 'info');
+    placeholderTela.style.display = 'none';
+    previewImg.src = activeImgUrl;
+    previewImg.style.display = 'block';
+
+    liberarBotoesAcao();
+    if (typeof showToast === 'function') showToast('IMAGEM GERADA PADRAO', 'info');
   };
 
+  // Ação: GERE DETALHADO (Instantâneo se já pré-gerado em cache)
   btnDetalhado.onclick = async () => {
     try {
-      if (loadingMsg) loadingMsg.style.display = 'flex';
-      btnDetalhado.style.opacity = '0.7';
-
-      const res = await window.renderizarCanvasRelatorioAdm2(lista);
       currentLayout = 'detalhado';
-      subTit.textContent = 'Layout Atual: Detalhado (Relatório ADM 2)';
+      subTit.textContent = 'Layout Atual: Detalhado';
       btnDetalhado.style.border = '2px solid #2dd4bf';
       btnPadrao.style.border = '2px solid transparent';
 
-      activeCanvas = res.canvas;
-      activeImgUrl = res.imgUrl;
-      activeHeight = res.dynamicHeight;
-      activeWidth = res.canvasWidth;
-      previewImg.src = activeImgUrl;
+      if (!cacheDetalhado) {
+        if (loadingMsg) loadingMsg.style.display = 'flex';
+        cacheDetalhado = await window.renderizarCanvasRelatorioAdm2(lista);
+      }
 
-      if (typeof showToast === 'function') showToast('Visualização alterada para Relatório ADM 2 (Detalhado)', 'success');
+      activeCanvas = cacheDetalhado.canvas;
+      activeImgUrl = cacheDetalhado.imgUrl;
+      activeHeight = cacheDetalhado.dynamicHeight;
+      activeWidth = cacheDetalhado.canvasWidth;
+
+      placeholderTela.style.display = 'none';
+      previewImg.src = activeImgUrl;
+      previewImg.style.display = 'block';
+
+      liberarBotoesAcao();
+      if (typeof showToast === 'function') showToast('IMAGEM GERADA DETALHADA', 'success');
     } catch (err) {
-      console.error('Erro ao gerar Relatório ADM 2 Detalhado:', err);
+      console.error('Erro ao gerar Relatório Detalhado:', err);
       alert('Erro ao gerar imagem detalhada: ' + err.message);
     } finally {
       if (loadingMsg) loadingMsg.style.display = 'none';
-      btnDetalhado.style.opacity = '1';
     }
   };
 
   // 1. Enviar WhatsApp
-  document.getElementById('btn-env-whatsapp').onclick = () => {
+  btnEnvWhatsapp.onclick = () => {
     const url = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(textoWhatsApp);
     window.open(url, '_blank');
   };
 
   // 2. Copiar Imagem ativa
-  document.getElementById('btn-copiar-imagem').onclick = async () => {
+  btnCopiarImagem.onclick = async () => {
     try {
-      if (!activeCanvas) throw new Error('Canvas não disponível');
+      if (!activeCanvas) throw new Error('Nenhuma imagem ativa para copiar. Gere uma imagem primeiro.');
       activeCanvas.toBlob(async (blob) => {
         if (!blob) throw new Error('Falha ao gerar blob da imagem');
         if (navigator.clipboard && navigator.clipboard.write) {
@@ -7394,37 +7529,45 @@ ${textoGrupos.trim()}`;
       }, 'image/png');
     } catch (err) {
       console.warn('Fallback para download da imagem:', err);
+      const ts = getFormattedTimestampCompacto();
+      const nomeArquivo = (currentLayout === 'detalhado' ? `DCAM(${ts}).png` : (isSelecao ? `SCAM(${ts}).png` : `PCAM(${ts}).png`));
       const a = document.createElement('a');
       a.href = activeImgUrl;
-      a.download = (currentLayout === 'detalhado' ? 'Relatorio_ADM2_Detalhado_' : (isSelecao ? 'Processos_Selecionados_CAM_' : 'Relatorio_CAM_')) + Date.now() + '.png';
+      a.download = nomeArquivo;
       a.click();
       if (typeof showToast === 'function') showToast('Imagem baixada para envio!', 'info');
     }
   };
 
-  // 3. Copiar Texto
+  // 3. Copiar Para Texto (NASCE ATIVADO)
   document.getElementById('btn-copiar-texto').onclick = () => {
     navigator.clipboard.writeText(textoWhatsApp);
-    if (typeof showToast === 'function') showToast('Texto copiado com agrupamento por prefixo!', 'success');
+    if (typeof showToast === 'function') showToast('Texto copiado com sucesso!', 'success');
     else alert('Texto copiado com sucesso!');
   };
 
-  // 4. Baixar Imagem (PNG) ativa
-  document.getElementById('btn-baixar-imagem').onclick = () => {
+  // 4. Baixar (PNG) ativo
+  btnBaixarImagem.onclick = () => {
+    if (!activeImgUrl) return;
+    const ts = getFormattedTimestampCompacto();
+    const nomeArquivo = (currentLayout === 'detalhado' ? `DCAM(${ts}).png` : (isSelecao ? `SCAM(${ts}).png` : `PCAM(${ts}).png`));
     const a = document.createElement('a');
     a.href = activeImgUrl;
-    a.download = (currentLayout === 'detalhado' ? 'Relatorio_ADM2_Detalhado_' : (isSelecao ? 'Processos_Selecionados_CAM_' : 'Relatorio_CAM_')) + Date.now() + '.png';
+    a.download = nomeArquivo;
     a.click();
     if (typeof showToast === 'function') showToast('Imagem PNG baixada com sucesso!', 'success');
   };
 
-  // 5. Baixar PDF ativo
-  document.getElementById('btn-baixar-pdf-rapido').onclick = () => {
+  // 5. Baixar (PDF) ativo
+  btnBaixarPdf.onclick = () => {
+    if (!activeImgUrl) return;
+    const ts = getFormattedTimestampCompacto();
+    const nomeArquivo = (currentLayout === 'detalhado' ? `DCAM(${ts}).pdf` : (isSelecao ? `DCAM(${ts}).pdf` : `PCAM(${ts}).pdf`));
     if (window.jspdf) {
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF('landscape', 'pt', [activeWidth, activeHeight]);
       pdf.addImage(activeImgUrl, 'PNG', 0, 0, activeWidth, activeHeight);
-      pdf.save((currentLayout === 'detalhado' ? 'Relatorio_ADM2_Detalhado_' : (isSelecao ? 'Processos_Selecionados_CAM_' : 'Relatorio_CAM_')) + Date.now() + '.pdf');
+      pdf.save(nomeArquivo);
       if (typeof showToast === 'function') showToast('PDF baixado com sucesso!', 'success');
     } else if (typeof window.imprimirPadraoSelecionado === 'function' && isSelecao) {
       window.imprimirPadraoSelecionado();
