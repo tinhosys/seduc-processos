@@ -264,11 +264,15 @@ async function realizarLogin() {
 
     // Carrega dados
     await inicializarDados();
+    if (typeof window.popularFiltrosProcessos === 'function') window.popularFiltrosProcessos();
+    if (typeof renderProcessos === 'function') renderProcessos();
+
     const isAdminLog = (data.nivel === 'adm' || data.nivel === 'admin');
     const canDashLog = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
     if (typeof window.iniciarHeartbeat === 'function') window.iniciarHeartbeat();
     navegar(canDashLog ? 'dashboard' : 'processos');
-    atualizarContador();
+    if (canDashLog && typeof renderDashboard === 'function') renderDashboard();
+    if (typeof atualizarContador === 'function') atualizarContador();
 
   } catch (err) {
     if (errDiv) errDiv.textContent = 'Erro de conexão com o servidor.';
@@ -319,20 +323,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         aplicarPermissoes(usuario.nivel);
         ocultarLogin();
 
-        const data = await testRes.json();
-        if (data.rows) window.processosCache = data.rows.map(mapToApp);
+        if (typeof inicializarDados === 'function') {
+          await inicializarDados();
+        } else {
+          const data = await testRes.json();
+          if (data.rows) window.processosCache = data.rows.filter(r => r._tabName && !r._tabName.toLowerCase().includes('parametro')).map(mapToApp);
+        }
 
         const dl = document.getElementById('list-municipios');
         if (dl) {
           const muns = [...new Set((window.processosCache || []).map(p => p.municipio).filter(Boolean))].sort();
           dl.innerHTML = muns.map(m => `<option value="${m}">`).join('');
         }
-        atualizarContador();
+        if (typeof atualizarContador === 'function') atualizarContador();
+        if (typeof window.popularFiltrosProcessos === 'function') window.popularFiltrosProcessos();
+        if (typeof renderProcessos === 'function') renderProcessos();
+
         const isAdminSess = (usuario.nivel === 'adm' || usuario.nivel === 'admin');
         const canDashSess = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
         if (typeof window.iniciarHeartbeat === 'function') window.iniciarHeartbeat();
         navegar(canDashSess ? 'dashboard' : 'processos');
-        if (canDashSess) renderDashboard();
+        if (canDashSess && typeof renderDashboard === 'function') renderDashboard();
         
         if (typeof checkAlertasADM === 'function' && window.processosCache) {
            checkAlertasADM(window.processosCache);

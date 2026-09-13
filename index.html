@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.86">
+  <link rel="stylesheet" href="css/style.css?v=1.2.88">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -1546,54 +1546,52 @@
             </div>
           </div>
 
-          <!-- LINHA 3: MUNICÍPIO | SUPER | PREFIXO | LOCALIZAÇÃO | STATUS -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <select id="filtro-municipio" multiple style="flex:1; min-width:115px;">
+          <!-- LINHA 1 (GRID 6 COLUNAS 100%): MUNICÍPIO | SUPER | PREFIXO | LOCALIZAÇÃO | STATUS | ANO -->
+          <div class="filter-row filter-row-grid-6">
+            <select id="filtro-municipio" multiple>
               <option value="">MUNICÍPIO</option>
             </select>
-            <select id="filtro-super" multiple style="flex:1; min-width:105px;">
+            <select id="filtro-super" multiple>
               <option value="">SUPER</option>
             </select>
-            <select id="filtro-prefixo" multiple style="flex:1; min-width:105px;">
+            <select id="filtro-prefixo" multiple>
               <option value="">PREFIXO</option>
             </select>
-            <select id="filtro-localizacao" multiple style="flex:1; min-width:115px;">
+            <select id="filtro-localizacao" multiple>
               <option value="">LOCALIZAÇÃO</option>
             </select>
-            <select id="filtro-status" multiple style="flex:1; min-width:105px;">
+            <select id="filtro-status" multiple>
               <option value="">STATUS</option>
+            </select>
+            <select id="filtro-ano" multiple style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
+              <option value="">ANO</option>
             </select>
           </div>
 
-          <!-- LINHA 4: CATEGORIA | TIPO | AGRUPAMENTO | ANO | ALERTA | MARCAÇÃO -->
-          <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <select id="filtro-categoria" multiple style="flex:1; min-width:105px;">
+          <!-- LINHA 2 (GRID 6 COLUNAS 100%): CATEGORIA | TIPO | AGRUPAMENTO | ALERTA | MARCAÇÃO | LIMPAR PARÂMETROS -->
+          <div class="filter-row filter-row-grid-6">
+            <select id="filtro-categoria" multiple>
               <option value="">CATEGORIA</option>
             </select>
-            <select id="filtro-tipo" multiple style="flex:1; min-width:105px;">
+            <select id="filtro-tipo" multiple>
               <option value="">TIPO</option>
             </select>
-            <select id="filtro-agrupamento" class="action-adm" multiple style="flex:1; min-width:115px; border-color: rgba(168,85,247,0.5); color: #c084fc;">
+            <select id="filtro-agrupamento" multiple style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
               <option value="">AGRUPAMENTO</option>
             </select>
-            <select id="filtro-ano" multiple style="flex:1; min-width:85px; border-color: rgba(249,115,22,0.5); color: #fb923c;">
-              <option value="">ANO</option>
-            </select>
-            <select id="filtro-alerta" class="action-adm" style="flex:1; min-width:105px; border-color: rgba(245,158,11,0.5); color: #f59e0b;">
+            <select id="filtro-alerta" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
               <option value="">&#9888; ALERTA</option>
               <option value="sim">&#128308; Com Alerta</option>
               <option value="nao">&#128994; Sem Alerta</option>
             </select>
-            <select id="filtro-marca" style="flex:1; min-width:105px; border-color: rgba(59,130,246,0.5); color: #60a5fa;">
+            <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
               <option value="">&#128204; MARCAÇÃO</option>
               <option value="sim">&#11088; Apenas Marcados</option>
               <option value="nao">&#9898; Não Marcados</option>
             </select>
-          
-            <!-- Botão Limpar Parâmetros integrado dentro do bloco de filtros (Imagem 2) -->
-            <button type="button" id="btn-limpar-filtros" class="btn" onclick="limparFiltros();" style="flex:0 0 auto; min-width:160px; height:38px; padding:6px 14px; border-radius:8px; background:linear-gradient(135deg, #f59e0b, #d97706); border:none; color:white; font-weight:700; font-size:12px; cursor:pointer; letter-spacing:0.5px; box-shadow:0 2px 8px rgba(245, 158, 11, 0.3); display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" onmouseover="this.style.background='linear-gradient(135deg, #d97706, #b45309)'" onmouseout="this.style.background='linear-gradient(135deg, #f59e0b, #d97706)'" title="Limpar todos os parâmetros e filtros">
+            <button type="button" id="btn-limpar-filtros" class="btn btn-limpar-grid" onclick="limparFiltros();" title="Limpar todos os parâmetros e filtros">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              <span>Limpar parâmetros</span>
+              <span>LIMPAR PARÂMETROS</span>
             </button>
           </div>
         </div>
@@ -3725,13 +3723,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.86"></script>
-  <script src="js/app.js?v=1.2.86"></script>
-  <script src="js/auth-sap.js?v=1.2.86"></script>
-  <script src="js/escolas.js?v=1.2.86" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.88"></script>
+  <script src="js/app.js?v=1.2.88"></script>
+  <script src="js/auth-sap.js?v=1.2.88"></script>
+  <script src="js/escolas.js?v=1.2.88" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.86"></script>
-  <script src="js/contatos.js?v=1.2.86"></script>
+  <script src="js/mapa.js?v=1.2.88"></script>
+  <script src="js/contatos.js?v=1.2.88"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3904,15 +3902,15 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.86"></script>
+  <script src="js/multi-select.js?v=1.2.88"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.86"></script>
-  <script src="js/gmac.js?v=1.2.86"></script>
-  <script src="js/orcamento.js?v=1.2.86"></script>
-  <script src="js/gdsm.js?v=1.2.86"></script>
-  <script src="js/print-proalfa.js?v=1.2.86"></script>
-  <script src="js/proalfa.js?v=1.2.86"></script>
+  <script src="js/diarias.js?v=1.2.88"></script>
+  <script src="js/gmac.js?v=1.2.88"></script>
+  <script src="js/orcamento.js?v=1.2.88"></script>
+  <script src="js/gdsm.js?v=1.2.88"></script>
+  <script src="js/print-proalfa.js?v=1.2.88"></script>
+  <script src="js/proalfa.js?v=1.2.88"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
