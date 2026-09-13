@@ -6621,6 +6621,201 @@ window.carregarFinanceiro = function() {
 
 
 // ====== COMPARTILHAR RELATÓRIO / SELEÇÃO (WHATSAPP COM LAYOUT PADRÃO E IMAGEM DIRETA) ======
+
+// ==================== GERAR IMAGEM DO RELATÓRIO ADM 2 ====================
+window.gerarImagemRelatorioAdm2 = async function(somenteSelecionados = false) {
+  let lista = [];
+  const checks = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
+  const temSelecionados = checks.length > 0;
+
+  if (somenteSelecionados || temSelecionados) {
+    const base = (typeof getFiltrados === 'function') ? getFiltrados() : (state.processos || []);
+    lista = base.filter(p => checks.includes(p.id));
+    if (lista.length === 0 && temSelecionados) {
+      lista = (typeof carregarProcessos === 'function' ? carregarProcessos() : []).filter(p => checks.includes(p.id));
+    }
+  }
+
+  if (!lista || lista.length === 0) {
+    lista = (typeof getFiltrados === 'function') ? getFiltrados() : (state.processos || []);
+  }
+
+  if (!lista || lista.length === 0) {
+    alert('Nenhum processo disponível para gerar o Relatório ADM 2.');
+    return;
+  }
+
+  // Agrupamento por Dígito exatamente como no imprimirPadraoAdm2
+  const grupos = {};
+  lista.forEach(p => {
+    const dRaw = typeof window.limparDigitoValor === 'function' 
+      ? window.limparDigitoValor(p.digito || p.DIGITO || '') 
+      : String(p.digito || p.DIGITO || '').trim();
+    const chave = dRaw || 'SEM DÍGITO';
+    if (!grupos[chave]) grupos[chave] = [];
+    grupos[chave].push(p);
+  });
+
+  const chavesOrdenadas = Object.keys(grupos).sort((a, b) => {
+    if (a === 'SEM DÍGITO') return 1;
+    if (b === 'SEM DÍGITO') return -1;
+    const numA = parseFloat(a);
+    const numB = parseFloat(b);
+    if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+  });
+
+  let globalIndex = 0;
+  let rowsHtml = '';
+
+  chavesOrdenadas.forEach(chave => {
+    const procs = grupos[chave];
+    const totalGrupo = procs.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+
+    rowsHtml += `
+      <tr style="background-color: #008080 !important; color: #ffffff !important;">
+        <td colspan="10" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase;">
+          <span style="color: #ffffff !important; font-weight: normal; letter-spacing: 0.5px;">${chave}</span>
+          <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #ffffff !important;">(${procs.length} processos • R$ ${formatNumberOnly(totalGrupo)})</span>
+        </td>
+      </tr>
+    `;
+
+    procs.forEach(p => {
+      globalIndex++;
+      const prefixoFormatado = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.2;">
+          <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
+          <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+            <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
+            <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
+              <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
+              <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+              <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      const zebraBg = globalIndex % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
+
+      rowsHtml += `
+        <tr style="${zebraBg}">
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 4px; text-align:right; font-size:9.5px; font-weight:normal; width:12%; white-space:nowrap;">${formatNumberOnly(p.valorOf)}</td>
+        </tr>
+      `;
+
+      const partesMemo = [];
+      if (p.agrupamento && String(p.agrupamento).trim()) partesMemo.push(String(p.agrupamento).trim());
+      if (p.anotacao && String(p.anotacao).trim()) partesMemo.push(String(p.anotacao).trim());
+
+      if (partesMemo.length > 0) {
+        const memoTexto = partesMemo.join(' - ');
+        rowsHtml += `
+          <tr style="background-color: #fff9f9;">
+            <td colspan="10" style="border: 1px solid #cbd5e1; border-top: none; padding: 2px 8px 3px 12px; font-size: 8.5px; font-style: italic; color: #dc2626; line-height: 1.3;">
+              ${memoTexto}
+            </td>
+          </tr>
+        `;
+      }
+    });
+  });
+
+  const totalValor = lista.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+  const totalRow = `
+    <tr style="background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${lista.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
+    </tr>`;
+  rowsHtml += totalRow;
+
+  const html = `
+    <div style="width:1200px; padding:20px; background:#fff; font-family:Arial,sans-serif;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom:2px solid #0f172a; padding-bottom:6px; margin-bottom:14px; width:100%;">
+        <div style="text-align:left;">
+          <div style="font-size:11px; font-weight:800; color:#0f172a; text-transform:uppercase; letter-spacing:0.5px; line-height:1.2;">GOVERNO DO ESTADO DE RONDÔNIA</div>
+          <div style="font-size:10px; font-weight:700; color:#0284c7; text-transform:uppercase; line-height:1.2;">SEDUC - SECRETARIA DE ESTADO DA EDUCAÇÃO</div>
+          <div style="font-size:9.5px; font-weight:700; color:#334155; text-transform:uppercase; line-height:1.2;">CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:10px; color:#475569; font-weight:bold; text-transform:uppercase; background:#f1f5f9; border:1px solid #cbd5e1; padding:3px 8px; border-radius:4px;">RELATÓRIO ADM 2</div>
+        </div>
+      </div>
+      <table style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word;">
+        <colgroup>
+          <col style="width: 3%;"><col style="width: 7%;"><col style="width: 11%;"><col style="width: 12%;"><col style="width: 14%;">
+          <col style="width: 19%;"><col style="width: 8%;"><col style="width: 7%;"><col style="width: 7%;"><col style="width: 12%;">
+        </colgroup>
+        <thead>
+          <tr style="background-color:#f1f5f9;">
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:center; font-size:9.5px; font-weight:bold; color:#0f172a;">Nº</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#0f172a;">PREFIXO</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#0f172a;">MUNICÍPIO</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#0f172a;">PROCESSO SEI</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#0f172a;">INTERESSADO</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#0f172a;">OBJETO / FINALIDADE</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#0f172a;">STATUS</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#0f172a;">LOCAL</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 2px; text-align:center; font-size:9.5px; font-weight:bold; color:#0f172a;">DATA</th>
+            <th style="border: 1px solid #cbd5e1; padding: 4px 4px; text-align:right; font-size:9.5px; font-weight:bold; color:#0f172a;">VALOR R$</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+      <div style="border-top:1px solid #cbd5e1; padding-top:5px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:8.5px; color:#475569;">
+        <div style="font-weight:bold; color:#0f172a;">GDSM - GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS</div>
+        <div>Página 1 de 1 • Documento gerado eletronicamente em ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}</div>
+      </div>
+    </div>
+  `;
+
+  if (typeof html2canvas !== 'function') {
+    alert('Biblioteca html2canvas não encontrada.');
+    return;
+  }
+
+  const container = document.createElement('div');
+  container.style.position = 'fixed';
+  container.style.left = '-9999px';
+  container.style.top = '0';
+  container.innerHTML = html;
+  document.body.appendChild(container);
+
+  if (typeof showToast === 'function') showToast('Gerando Imagem Detalhada (Relatório ADM 2)...', 'info');
+
+  try {
+    const canvas = await html2canvas(container.firstElementChild, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false
+    });
+
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'RELATORIO_ADM_2_' + Date.now() + '.png';
+    a.click();
+    if (typeof showToast === 'function') showToast('Imagem Detalhada (Relatório ADM 2) baixada com sucesso!', 'success');
+  } catch (err) {
+    console.error('Erro ao gerar imagem detalhada:', err);
+    alert('Erro ao gerar imagem: ' + err.message);
+  } finally {
+    document.body.removeChild(container);
+  }
+};
+
 window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
   let lista = [];
   
@@ -7090,6 +7285,16 @@ ${textoGrupos.trim()}`;
           <span>Copiar Texto</span>
         </button>
 
+        <!-- NOVO: Imagem Detalhada (Relatório ADM 2 da Guia GDSM) -->
+        <button id="btn-imagem-detalhada" style="background:linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(13,148,136,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Gerar Imagem no modelo padronizado do Relatório ADM 2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span>Imagem Detalhada</span>
+        </button>
+
         <!-- 4. Baixar Imagem (PNG) (Posição Invertida com Copiar Texto) -->
         <button id="btn-baixar-imagem" style="background:linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color:#fff; border:none; padding:11px 14px; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(13,148,136,0.25); transition:all 0.2s;" onmouseover="this.style.filter='brightness(1.1)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.filter='brightness(1)'; this.style.transform='translateY(0)';" title="Baixar Imagem PNG em Alta Resolução">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -7156,6 +7361,12 @@ ${textoGrupos.trim()}`;
     navigator.clipboard.writeText(textoWhatsApp);
     if (typeof showToast === 'function') showToast('Texto copiado com agrupamento por prefixo!', 'success');
     else alert('Texto copiado com sucesso!');
+  };
+
+  document.getElementById('btn-imagem-detalhada').onclick = () => {
+    if (typeof window.gerarImagemRelatorioAdm2 === 'function') {
+      window.gerarImagemRelatorioAdm2(somenteSelecionados);
+    }
   };
 
   document.getElementById('btn-baixar-imagem').onclick = () => {
