@@ -3,9 +3,19 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.91] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.92] — 2026-09-13 🟢 VERSÃO ATUAL
 
-**Tag:** `v1.2.91` · **Versão do Sistema:** `GBZ - v1.2.91`
+**Tag:** `v1.2.92` · **Versão do Sistema:** `GBZ - v1.2.92`
+
+### 🛠️ Correção de Erro JS (limparFiltros is not defined)
+- **Disponibilização Global da Função `limparFiltros`**:
+  - Definida no escopo inicial e exposta em `window.limparFiltros` e no escopo global para execução instantânea do botão `LIMPAR PARÂMETROS`.
+  - Tratamento resiliente no atributo `onclick` do botão com fallback condicional `if (typeof window.limparFiltros === 'function') ...`.
+  - Reset completo e re-renderização imediata de todos os parâmetros (busca, toggles, multiselects e dígito).
+
+---
+
+## [v1.2.91] — 2026-09-13
 
 ### 🔤 Correção Integral de Codificação UTF-8 & Eliminação de Caracteres Zumbis
 - **Restauração Completa de Acentuação e Emojis**:

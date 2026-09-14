@@ -11,6 +11,51 @@ window.limparDigitoValor = function(val) {
 };
 window.formatarDigitoInteiro = window.limparDigitoValor;
 
+// Função global para limpar todos os filtros de processos
+window.limparFiltros = function() {
+  if (typeof state !== 'undefined' && state && state.filtros) {
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
+    state.paginaAtual = 1;
+  }
+  const fb = document.getElementById('filtro-busca');
+  if (fb) fb.value = '';
+  const fd = document.getElementById('filtro-digito');
+  if (fd) fd.value = '';
+
+  // Limpar autorizações (toggles)
+  ['filtro-cam', 'filtro-gab', 'filtro-cc'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+
+  // Limpar todos os selects múltiplos e simples
+  ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto',
+   'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    Array.from(el.options).forEach(opt => { opt.selected = false; });
+    if (el._multiSelectInstance) {
+      const cbs = el._multiSelectInstance.dropdown
+        ? el._multiSelectInstance.dropdown.querySelectorAll('input[type="checkbox"]')
+        : [];
+      cbs.forEach(cb => { cb.checked = false; });
+      el._multiSelectInstance.updateButtonText();
+    } else {
+      el.value = '';
+    }
+  });
+
+  const fa = document.getElementById('filtro-alerta');
+  if (fa) fa.value = '';
+  const fm = document.getElementById('filtro-marca');
+  if (fm) fm.value = '';
+  
+  if (typeof renderProcessos === 'function') {
+    renderProcessos();
+  }
+};
+var limparFiltros = window.limparFiltros;
+
 
 // Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.88)
 window.copiarSeiLinha = function(btn) {
@@ -2764,12 +2809,13 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroMarcaEl.addEventListener('change', e => aplicarFiltro('marca', e.target.value));
   }
 
-  document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
+  window.limparFiltros = function() {
     state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
     state.paginaAtual = 1;
-    document.getElementById('filtro-busca').value = '';
+    const fb = document.getElementById('filtro-busca');
+    if (fb) fb.value = '';
     const fd = document.getElementById('filtro-digito');
-    if(fd) fd.value = '';
+    if (fd) fd.value = '';
 
     // Limpar autorizações (toggles)
     ['filtro-cam', 'filtro-gab', 'filtro-cc'].forEach(id => {
@@ -2800,7 +2846,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (fm) fm.value = '';
     
     renderProcessos();
-  });
+  };
+
+  const btnLimparFiltrosEl = document.getElementById('btn-limpar-filtros');
+  if (btnLimparFiltrosEl) {
+    btnLimparFiltrosEl.addEventListener('click', window.limparFiltros);
+  }
 
   // Ordenação — o prefixo agora é multiselect, não text input (sem listener 'input')
 
