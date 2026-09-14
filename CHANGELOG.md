@@ -3,7 +3,25 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.95] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.96] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.96` · **Versão do Sistema:** `GBZ - v1.2.96`
+
+### 🔑 Acesso aos Relatórios e Ajuste Visual da Topbar
+- **Permissão de Acesso ao "Gerar Relatório" para o Perfil `Editor`**:
+  - O perfil `editor` agora tem permissão completa para visualizar e acionar o botão **"Gerar Relatório"** dentro do formulário de processo.
+  - Regra CSS atualizada: `body:not(.role-adm):not(.role-gerente):not(.role-editor) .action-report { display: none !important; }`.
+- **Acesso Universal ao "Compartilhar" para Todos os Perfis**:
+  - O botão **"Compartilhar"** (`#btn-compartilhar-topo`) agora está disponível universalmente para todos os perfis de usuário do sistema, sem qualquer restrição de classe.
+- **Ajuste de Largura e Distribuição dos Botões da Barra Superior (Topbar)**:
+  - Largura dos botões da topbar (`Modo mobile`, `Processos`, `Recarregar`) aumentada em **+30%** (de `135px` para `175px`).
+  - Espaçamento harmônico e uniforme (`gap: 12px`) acomodando os botões perfeitamente alinhados à direita do topo.
+- **Cache-Busting Global**:
+  - Atualizadas as versões de todos os arquivos de script e estilos para `v=1.2.96`.
+
+---
+
+## [v1.2.95] — 2026-09-13
 
 **Tag:** `v1.2.95` · **Versão do Sistema:** `GBZ - v1.2.95`
 

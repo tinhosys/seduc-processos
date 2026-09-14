@@ -1541,8 +1541,8 @@ body:not(.role-adm) .action-adm {
   display: none !important;
 }
 
-/* ==================== CONTROLE DE ACESSO (REPORTS - ADM/GERENTE ONLY) ==================== */
-body:not(.role-adm):not(.role-gerente) .action-report {
+/* ==================== CONTROLE DE ACESSO (REPORTS - ADM/GERENTE/EDITOR) ==================== */
+body:not(.role-adm):not(.role-gerente):not(.role-editor) .action-report {
   display: none !important;
 }
 
