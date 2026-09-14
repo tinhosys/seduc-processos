@@ -287,12 +287,13 @@ function renderOrcamentoTable() {
     return;
   }
 
+  const esc = window.escapeHtml || (s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'));
+
   // Helper local para exibir até 9 caracteres seguidos de reticências com botão de lupa
   const _renderTruncado9 = (titulo, textoExibicao, valorCompleto) => {
     const txt = (textoExibicao || '').toString().trim();
     if (!txt || txt === '—' || txt === '-') return '—';
     const full = (valorCompleto || txt).toString().trim();
-    const esc = window.escapeHtml || (s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'));
     const trunc = txt.length > 9 ? esc(txt.substring(0, 9)) + '...' : esc(txt);
     const attrTit = esc(titulo);
     const attrCont = esc(full);
@@ -327,8 +328,11 @@ function renderOrcamentoTable() {
             <span style="white-space:nowrap;">${row.despesa}</span>
           </span>
         </td>
-        <td style="padding:8px 10px; font-size:12px; color:#e2e8f0; white-space:nowrap;">
-          ${_renderTruncado9('Natureza da Despesa', nat?.nome || row.despesa, natCompleto)}
+        <td style="padding:8px 10px; font-size:12px; color:#e2e8f0;">
+          <div style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:8px;">
+            <span style="font-weight:600; color:#e2e8f0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc((nat?.nome || row.despesa).length > 25 ? (nat?.nome || row.despesa).substring(0,25) + '...' : (nat?.nome || row.despesa))}</span>
+            <button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="Natureza da Despesa" data-conteudo="${esc(natCompleto)}" title="Ver Natureza da Despesa completa" style="margin-left:auto; flex-shrink:0;">🔍</button>
+          </div>
         </td>
         <td style="padding:8px 10px; text-align:right; font-size:12px; color:#60a5fa; font-family:monospace; white-space:nowrap;">${_fmtBRL(row.inicial)}</td>
         <td style="padding:8px 10px; text-align:right; font-size:12px; color:#f59e0b; font-family:monospace; white-space:nowrap;">${_fmtBRL(row.empenhado)}</td>

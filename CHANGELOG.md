@@ -3,7 +3,26 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.98] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.99] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.99` · **Versão do Sistema:** `GBZ - v1.2.99`
+
+### 🎨 Reorganização das Colunas Orçamentárias e Alinhamento à Direita da Topbar
+- **Alinhamento dos Botões da Topbar à Direita**:
+  - Bloco de botões de ações da topbar (`Modo mobile`, `Processos`, `Recarregar`) alinhado com `margin-left: auto;` para acomodar todo o grupo perfeitamente à direita do cabeçalho superior.
+- **Coluna Natureza da Despesa com Lupa à Direita**:
+  - Célula da Natureza da Despesa refatorada com layout flex (`display: flex; justify-content: space-between; align-items: center; gap: 8px;`): o texto descritivo fica alinhado à esquerda e o botão de lupa `🔍` fica alinhado à direita da coluna.
+- **Alargamento das Colunas PA e Fonte de Recurso**:
+  - Coluna **PA** aumentada para `width: 110px; min-width: 110px`.
+  - Coluna **Fonte de Recurso** aumentada para `width: 145px; min-width: 145px`, permitindo leitura clara e sem compressão.
+- **Largura Fixa Padronizada para Colunas Monetárias**:
+  - As colunas de valores (`Dotação`, `Empenhado`, `Anulado`, `Executado` e `Saldo Líq.`) foram fixadas na largura exata da máscara monetária (`width: 115px; min-width: 115px; max-width: 115px; text-align: right; font-family: monospace;`), suportando confortavelmente até `R$ 0.000.000,00` e transferindo todo o espaço excedente para as colunas descritivas.
+- **Cache-Busting Global**:
+  - Atualizadas as versões de todos os arquivos de script e estilos para `v=1.2.99`.
+
+---
+
+## [v1.2.98] — 2026-09-13
 
 **Tag:** `v1.2.98` · **Versão do Sistema:** `GBZ - v1.2.98`
 

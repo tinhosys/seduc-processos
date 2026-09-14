@@ -3558,16 +3558,73 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 }
 
 /* Tabela Financeira / Orçamentária - Ajuste de Colunas e Dimensionamento */
+#page-orcamento .orc-table-main,
+#page-orcamento table,
 #page-financeiro table {
   table-layout: auto !important;
-  min-width: 980px !important;
+  min-width: 1150px !important;
   width: 100% !important;
+  border-collapse: collapse !important;
 }
 
+#page-orcamento th,
+#page-orcamento td,
 #page-financeiro th,
 #page-financeiro td {
-  box-sizing: border-box;
+  box-sizing: border-box !important;
 }
+
+/* Colunas com larguras proporcionais e alinhamentos */
+#page-orcamento .orc-table-main th:nth-child(1),
+#page-orcamento .orc-table-main td:nth-child(1) {
+  width: 110px !important;
+  min-width: 110px !important;
+}
+
+#page-orcamento .orc-table-main th:nth-child(2),
+#page-orcamento .orc-table-main td:nth-child(2) {
+  width: 145px !important;
+  min-width: 145px !important;
+}
+
+#page-orcamento .orc-table-main th:nth-child(3),
+#page-orcamento .orc-table-main td:nth-child(3) {
+  width: 95px !important;
+  min-width: 95px !important;
+}
+
+#page-orcamento .orc-table-main th:nth-child(4),
+#page-orcamento .orc-table-main td:nth-child(4) {
+  min-width: 210px !important;
+}
+
+/* Colunas de Valores (Dotação, Empenhado, Anulado, Executado, Saldo Líq.): largura padrão fixa no limite da máscara */
+#page-orcamento .orc-table-main th:nth-child(5),
+#page-orcamento .orc-table-main td:nth-child(5),
+#page-orcamento .orc-table-main th:nth-child(6),
+#page-orcamento .orc-table-main td:nth-child(6),
+#page-orcamento .orc-table-main th:nth-child(7),
+#page-orcamento .orc-table-main td:nth-child(7),
+#page-orcamento .orc-table-main th:nth-child(8),
+#page-orcamento .orc-table-main td:nth-child(8),
+#page-orcamento .orc-table-main th:nth-child(9),
+#page-orcamento .orc-table-main td:nth-child(9) {
+  width: 115px !important;
+  min-width: 115px !important;
+  max-width: 115px !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+  font-family: monospace !important;
+}
+
+/* Coluna % Exec */
+#page-orcamento .orc-table-main th:nth-child(10),
+#page-orcamento .orc-table-main td:nth-child(10) {
+  width: 105px !important;
+  min-width: 105px !important;
+  max-width: 105px !important;
+}
+
 
 
 
