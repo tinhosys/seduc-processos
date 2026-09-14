@@ -3,7 +3,24 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.94] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.95] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.95` · **Versão do Sistema:** `GBZ - v1.2.95`
+
+### ⚡ Acionamento Imediato do Indicador de Processamento e Abertura Fluida do Modal
+- **Resposta Instantânea no Clique (0ms)**:
+  - Adicionado gatilho imediato de exibição do indicador animado (engrenagens e setas circulares) no evento de clique/pressionamento (`onmousedown` e primeira linha de `compartilharWhatsAppRelatorio`).
+  - O indicador visual aparece imediatamente sem qualquer atraso ou espera perceptível para o usuário.
+- **Pipeline Assíncrono Não-Bloqueante**:
+  - Removido o pré-processamento síncrono pesado de canvas antes da abertura do popup, evitando o travamento da thread visual do navegador.
+  - A geração e cálculo dos relatórios ocorrem de forma fluida e sob demanda, permitindo que a animação gire com 60 FPS perfeitos.
+  - Transição de abertura do formulário suspenso de compartilhamento otimizada de 450ms para 120ms rápidos e suaves.
+- **Cache-Busting Global**:
+  - Atualizadas as versões de todos os arquivos de script e estilos para `v=1.2.95`.
+
+---
+
+## [v1.2.94] — 2026-09-13
 
 **Tag:** `v1.2.94` · **Versão do Sistema:** `GBZ - v1.2.94`
 

@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.94">
+  <link rel="stylesheet" href="css/style.css?v=1.2.95">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -637,7 +637,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.94</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.95</div>
   </div>
 </div>
   
@@ -889,7 +889,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.94</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.95</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1492,7 +1492,7 @@
 
           <!-- LINHA 2 DE BOTÕES: COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
           <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px; width:100%;">
-            <button id="btn-compartilhar-topo" class="btn action-report" onclick="compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
+            <button id="btn-compartilhar-topo" class="btn action-report" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
               <span class="btn-text">Compartilhar</span>
             </button>
@@ -2218,7 +2218,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.94
+              GBZ - v1.2.95
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2491,7 +2491,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.94] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.2.95] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -3769,13 +3769,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.94"></script>
-  <script src="js/app.js?v=1.2.94"></script>
-  <script src="js/auth-sap.js?v=1.2.94"></script>
-  <script src="js/escolas.js?v=1.2.94" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.2.95"></script>
+  <script src="js/app.js?v=1.2.95"></script>
+  <script src="js/auth-sap.js?v=1.2.95"></script>
+  <script src="js/escolas.js?v=1.2.95" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.94"></script>
-  <script src="js/contatos.js?v=1.2.94"></script>
+  <script src="js/mapa.js?v=1.2.95"></script>
+  <script src="js/contatos.js?v=1.2.95"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3948,15 +3948,15 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.94"></script>
+  <script src="js/multi-select.js?v=1.2.95"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.94"></script>
-  <script src="js/gmac.js?v=1.2.94"></script>
-  <script src="js/orcamento.js?v=1.2.94"></script>
-  <script src="js/gdsm.js?v=1.2.94"></script>
-  <script src="js/print-proalfa.js?v=1.2.94"></script>
-  <script src="js/proalfa.js?v=1.2.94"></script>
+  <script src="js/diarias.js?v=1.2.95"></script>
+  <script src="js/gmac.js?v=1.2.95"></script>
+  <script src="js/orcamento.js?v=1.2.95"></script>
+  <script src="js/gdsm.js?v=1.2.95"></script>
+  <script src="js/print-proalfa.js?v=1.2.95"></script>
+  <script src="js/proalfa.js?v=1.2.95"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->

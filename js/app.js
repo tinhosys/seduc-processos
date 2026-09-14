@@ -7287,18 +7287,10 @@ ${textoGrupos.trim()}`;
   let cacheDetalhado = null;
   let isGerandoDetalhado = true;
 
-  // Pré-gera imediatamente o layout Padrão em background
-  try {
-    cachePadrao = window.renderizarCanvasRelatorioPadrao(lista, isSelecao);
-  } catch (err) {
-    console.error('Erro ao pré-gerar relatório padrão:', err);
-  }
-
-  // Pré-gera em background o layout Detalhado para ficar pronto imediatamente
+  // Pré-gera em background (não bloqueante) o layout Detalhado
   window.renderizarCanvasRelatorioAdm2(lista).then(res => {
     cacheDetalhado = res;
     isGerandoDetalhado = false;
-    // Se o usuário já tiver clicado enquanto gerava, atualiza a tela
     if (currentLayout === 'detalhado' && !activeImgUrl) {
       aplicarLayoutDetalhado(res);
     }
@@ -7497,11 +7489,11 @@ ${textoGrupos.trim()}`;
     </div>
   `;
 
-  // Efeito e transição de processamento antes de abrir o modal
+  // Efeito e transição de processamento antes de abrir o modal (rápido e fluído)
   setTimeout(() => {
     if (typeof restaurarBtnComp === 'function') restaurarBtnComp();
     modalOverlay.style.display = 'flex';
-  }, 450);
+  }, 120);
 
   
 
