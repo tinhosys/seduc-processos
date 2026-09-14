@@ -3,7 +3,21 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.92] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.93] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.93` · **Versão do Sistema:** `GBZ - v1.2.93`
+
+### 🛠️ Correção da Estrutura DOM e Visibilidade da Tabela de Processos
+- **Fechamento Correto da Tag `.section-header`**:
+  - Identificado e corrigido o fechamento ausente da `<div>` de `.section-header` antes da `.filters-bar`.
+  - Essa ausência de fechamento fazia com que a `.filters-bar`, a `.table-wrap` (tabela de dados) e a paginação fossem englobadas internamente pela `.section-header`, que possui regras de `flex-shrink: 0`, distorcendo o cálculo de flex e altura do contêiner `#page-processos`.
+  - Com a hierarquia corrigida, `.filters-bar` e `.table-wrap` voltam a ser filhas diretas de `#page-processos`, permitindo que `.table-wrap` preencha integralmente o restante da tela com suas linhas e colunas visíveis.
+- **Cache-Busting Global**:
+  - Atualizadas as versões de todos os arquivos de script e estilos para `v=1.2.93`.
+
+---
+
+## [v1.2.92] — 2026-09-13
 
 **Tag:** `v1.2.92` · **Versão do Sistema:** `GBZ - v1.2.92`
 
