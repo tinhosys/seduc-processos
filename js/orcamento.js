@@ -287,22 +287,20 @@ function renderOrcamentoTable() {
     return;
   }
 
-  // Helper local para truncar a 9 caracteres com botão de lupa (compatível web e mobile)
-  const _renderTruncado9 = (titulo, valorCompleto, prefixoDestaque = '') => {
-    const txt = (valorCompleto || '').toString().trim();
+  // Helper local para exibir até 9 caracteres seguidos de reticências com botão de lupa
+  const _renderTruncado9 = (titulo, textoExibicao, valorCompleto) => {
+    const txt = (textoExibicao || '').toString().trim();
     if (!txt || txt === '—' || txt === '-') return '—';
+    const full = (valorCompleto || txt).toString().trim();
     const esc = window.escapeHtml || (s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'));
     const trunc = txt.length > 9 ? esc(txt.substring(0, 9)) + '...' : esc(txt);
     const attrTit = esc(titulo);
-    const attrCont = esc(txt);
+    const attrCont = esc(full);
     return `
-      <div style="display:flex; flex-direction:column; gap:2px;">
-        ${prefixoDestaque ? `<div style="font-size:11px; font-weight:700;">${prefixoDestaque}</div>` : ''}
-        <span class="mobile-cell-wrap" style="white-space:nowrap; display:inline-flex; align-items:center; gap:2px; font-size:11px;">
-          <span>${trunc}</span>
-          <button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTit}" data-conteudo="${attrCont}" title="Ver ${attrTit} completo">🔍</button>
-        </span>
-      </div>
+      <span class="mobile-cell-wrap" style="white-space:nowrap; display:inline-flex; align-items:center; gap:4px; font-size:11px;">
+        <span>${trunc}</span>
+        <button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTit}" data-conteudo="${attrCont}" title="Ver ${attrTit} completo">🔍</button>
+      </span>
     `;
   };
 
@@ -318,26 +316,26 @@ function renderOrcamentoTable() {
     return `
       <tr style="border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.04)'" onmouseout="this.style.background='transparent'">
         <td style="padding:8px 10px; font-size:12px; color:#60a5fa; white-space:nowrap;">
-          ${_renderTruncado9('Programa de Ação (PA)', `${row.pa} - ${paDesc}`, row.pa)}
+          ${_renderTruncado9('Programa de Ação (PA)', row.pa, `${row.pa} - ${paDesc}`)}
         </td>
-        <td style="padding:8px 10px; font-size:11px; color:#94a3b8; white-space:nowrap;">
-          ${_renderTruncado9('Fonte de Recurso', `${row.fonte} - ${fonteDesc}`, `<span style="font-family:monospace; letter-spacing:0;">${row.fonte}</span>`)}
+        <td style="padding:8px 10px; font-size:11px; color:#94a3b8; font-family:monospace; white-space:nowrap;">
+          ${_renderTruncado9('Fonte de Recurso', row.fonte, `${row.fonte} - ${fonteDesc}`)}
         </td>
-        <td style="padding:8px 10px; width:80px; min-width:80px; white-space:nowrap;">
+        <td style="padding:8px 10px; white-space:nowrap;">
           <span style="display:inline-flex; align-items:center; gap:4px; padding:2px 6px; border-radius:99px; background:${nat?.cor || '#475569'}22; border:1px solid ${nat?.cor || '#475569'}55; font-size:11px; font-weight:700; color:${nat?.cor || '#94a3b8'};">
             <span>${nat?.icon || '📌'}</span>
             <span style="white-space:nowrap;">${row.despesa}</span>
           </span>
         </td>
         <td style="padding:8px 10px; font-size:12px; color:#e2e8f0; white-space:nowrap;">
-          ${_renderTruncado9('Natureza da Despesa', natCompleto, nat?.nome ? `<span style="font-weight:600; color:#cbd5e1;">${nat.nome.length > 9 ? nat.nome.substring(0, 9) + '...' : nat.nome}</span>` : '')}
+          ${_renderTruncado9('Natureza da Despesa', nat?.nome || row.despesa, natCompleto)}
         </td>
         <td style="padding:8px 10px; text-align:right; font-size:12px; color:#60a5fa; font-family:monospace; white-space:nowrap;">${_fmtBRL(row.inicial)}</td>
         <td style="padding:8px 10px; text-align:right; font-size:12px; color:#f59e0b; font-family:monospace; white-space:nowrap;">${_fmtBRL(row.empenhado)}</td>
         <td style="padding:8px 10px; text-align:right; font-size:12px; color:#34d399; font-family:monospace; white-space:nowrap;">${_fmtBRL(row.anulacao)}</td>
         <td style="padding:8px 10px; text-align:right; font-size:12px; color:#10b981; font-family:monospace; white-space:nowrap;">${_fmtBRL(row.executado)}</td>
         <td style="padding:8px 10px; text-align:right; font-size:12px; color:${saldoNeg ? '#ef4444' : '#a78bfa'}; font-family:monospace; font-weight:700; white-space:nowrap;">${_fmtBRL(row.saldoLiquido)}</td>
-        <td style="padding:8px 12px; min-width:90px;">
+        <td style="padding:8px 12px; min-width:105px;">
           <div style="display:flex; align-items:center; gap:6px;">
             <div style="flex:1; background:rgba(255,255,255,0.08); border-radius:99px; height:6px; overflow:hidden;">
               <div style="height:100%; width:${pct}%; background:${pctCor}; border-radius:99px;"></div>

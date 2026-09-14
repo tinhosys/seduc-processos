@@ -3557,3 +3557,17 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   to { opacity: 1; transform: scale(1); }
 }
 
+/* Tabela Financeira / Orçamentária - Ajuste de Colunas e Dimensionamento */
+#page-financeiro table {
+  table-layout: auto !important;
+  min-width: 980px !important;
+  width: 100% !important;
+}
+
+#page-financeiro th,
+#page-financeiro td {
+  box-sizing: border-box;
+}
+
+
+

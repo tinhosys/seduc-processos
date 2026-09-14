@@ -3,7 +3,24 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.97] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.98] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.98` · **Versão do Sistema:** `GBZ - v1.2.98`
+
+### 🛠️ Correção Definitiva de Sobreposição de Colunas e Remoção de Linhas Duplicadas
+- **Eliminação Total de Colunas Sobrepostas no Orçamento / Financeiro**:
+  - Correção de conflito de dimensionamento onde o `table-layout: fixed` global estava forçando colunas com conteúdos não quebráveis a colidirem e sobreporem umas às outras.
+  - Tabela `#page-financeiro table` atualizada com `table-layout: auto !important; min-width: 980px !important; width: 100% !important;` e `box-sizing: border-box`.
+  - Atribuição de larguras mínimas proporcionais e legíveis para todas as colunas (`PA: 85px`, `Fonte: 115px`, `Cod.: 80px`, `Natureza: 130px`, `Dotação: 95px`, etc.), garantindo que nenhuma coluna seja esmagada.
+- **Remoção de Linhas Duplicadas e Formatação Limpa**:
+  - Refatoração de `_renderTruncado9` em `js/orcamento.js`: removido o empilhamento vertical duplo (`<div>${prefixo}</div>` + `<span>${trunc}</span>` abaixo).
+  - Cada célula agora apresenta uma única linha horizontal elegante (`display: inline-flex; align-items: center; gap: 4px;`) contendo os primeiros 9 dígitos/caracteres com reticências e botão lupa `🔍`, o qual abre o balão flutuante com a íntegra da informação ao ser clicado.
+- **Cache-Busting Global**:
+  - Atualizadas as versões de todos os arquivos de script e estilos para `v=1.2.98`.
+
+---
+
+## [v1.2.97] — 2026-09-13
 
 **Tag:** `v1.2.97` · **Versão do Sistema:** `GBZ - v1.2.97`
 
