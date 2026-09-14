@@ -3,7 +3,22 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.93] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.94] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.94` · **Versão do Sistema:** `GBZ - v1.2.94`
+
+### ⚡ Indicador Animado de Processamento no Compartilhamento
+- **Feedback Visual Imediato ao Clicar em "Compartilhar"**:
+  - Implementado indicador animado com engrenagens e setas circulares giratórias no espaço central do grid de botões superiores (entre os cards de indicadores e os relatórios de impressão).
+  - Animação vetorial SVG ultra-fluida em tempo real utilizando CSS puro (`@keyframes girarHorario`, `@keyframes girarAntiHorario`, `@keyframes pulsarBrilho`) com design moderno nos tons ciano/esmeralda (`#38bdf8`, `#34d399`, `#0284c7`).
+  - Acionamento imediato ao clicar em qualquer opção de compartilhamento WhatsApp (`window.compartilharWhatsAppRelatorio`), fornecendo feedback de carregamento instantâneo antes da abertura do modal de confirmação.
+  - Ocultamento suave automático assim que o modal for renderizado ou cancelado.
+- **Cache-Busting Global**:
+  - Atualizadas as versões de todos os arquivos de script e estilos para `v=1.2.94`.
+
+---
+
+## [v1.2.93] — 2026-09-13
 
 **Tag:** `v1.2.93` · **Versão do Sistema:** `GBZ - v1.2.93`
 

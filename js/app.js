@@ -7164,6 +7164,13 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
  * Função Principal de Compartilhamento via Modal WhatsApp com pré-renderização em background e troca instantânea
  */
 window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
+  // Ativação imediata do Indicador Visual de Processamento (GIF / Engrenagens / Setas em Círculo)
+  const indProc = document.getElementById('indicador-compartilhar-processando');
+  if (indProc) {
+    indProc.style.display = 'inline-flex';
+    indProc.style.opacity = '1';
+  }
+
   // Animação de Ampulheta no botão Compartilhar (Imagem 2 / Imagem 5)
   const btnComp = document.getElementById('btn-compartilhar-topo');
   let btnCompOriginalHtml = '';
@@ -7178,6 +7185,9 @@ window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
       btnComp.innerHTML = btnCompOriginalHtml;
       btnComp.style.opacity = '1';
       btnComp.style.pointerEvents = 'auto';
+    }
+    if (indProc) {
+      indProc.style.display = 'none';
     }
   };
 
@@ -7198,6 +7208,7 @@ window.compartilharWhatsAppRelatorio = function(somenteSelecionados = false) {
   }
 
   if (!lista || lista.length === 0) {
+    restaurarBtnComp();
     alert('Nenhum processo selecionado ou disponível para compartilhamento.');
     return;
   }
