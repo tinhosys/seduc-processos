@@ -3,7 +3,24 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.96] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.2.97] — 2026-09-13 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.2.97` · **Versão do Sistema:** `GBZ - v1.2.97`
+
+### 📊 Otimização de Espaço de Colunas com Truncamento de 9 Dígitos e Lupa Interativa
+- **Compactação Inteligente no Orçamento / Financeiro**:
+  - As colunas **PA**, **Fonte de Recurso** e **Natureza da Despesa** agora exibem os primeiros 9 dígitos/caracteres seguidos de `...` e o botão de lupa interativo `🔍` (`btn-lupa-mobile`).
+  - Ao clicar na lupa, o balão/modal flutuante (`abrirBalaoConteudo`) abre instantaneamente exibindo todo o conteúdo detalhado da célula.
+  - Eliminação completa da quebra vertical de texto (palavras fragmentadas letra a letra) com uso de `white-space: nowrap` e larguras flexíveis.
+- **Padronização para 9 Caracteres na Tabela de Processos**:
+  - `renderMobileCell` e `renderMobileStatusCell` atualizados com limite padrão de 9 caracteres (anteriormente 7) em Município, Nº Processo, Interessado, Objeto, Status e Localização.
+  - Ganho expressivo de espaço horizontal nas tabelas tanto em modo Desktop/Web quanto no Mobile.
+- **Cache-Busting Global**:
+  - Atualizadas as versões de todos os scripts e folhas de estilo para `v=1.2.97`.
+
+---
+
+## [v1.2.96] — 2026-09-13
 
 **Tag:** `v1.2.96` · **Versão do Sistema:** `GBZ - v1.2.96`
 

@@ -1285,7 +1285,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#039;');
 }
 
-function renderMobileCell(titulo, valor, maxChars = 7) {
+function renderMobileCell(titulo, valor, maxChars = 9) {
   const str = (valor || '').toString().trim();
   if (!str || str === '—' || str === '-') {
     return '—';
@@ -1295,8 +1295,9 @@ function renderMobileCell(titulo, valor, maxChars = 7) {
   const attrConteudo = escapeHtml(str);
   return `<span class="mobile-cell-wrap">${trunc}<button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTitulo}" data-conteudo="${attrConteudo}" title="Ver ${attrTitulo} completo">🔍</button></span>`;
 }
+window.renderMobileCell = renderMobileCell;
 
-function renderMobileStatusCell(status, maxChars = 7) {
+function renderMobileStatusCell(status, maxChars = 9) {
   const str = (status || '').toString().trim();
   if (!str || str === '—' || str === '-') return '—';
   const badgeClass = getStatusBadgeClass(str);
@@ -1305,6 +1306,8 @@ function renderMobileStatusCell(status, maxChars = 7) {
   const attrConteudo = escapeHtml(str);
   return `<span class="badge ${badgeClass}" style="padding: 2px 6px; font-size: 10px; display:inline-flex; align-items:center; gap:3px;">${trunc}<button type="button" class="btn-lupa-mobile" onclick="abrirBalaoConteudo(event, this)" data-titulo="${attrTitulo}" data-conteudo="${attrConteudo}" title="Ver Status completo" style="margin-left:2px; padding:0 3px; font-size:9px; background:rgba(255,255,255,0.2); border:1px solid rgba(255,255,255,0.4); color:#fff; border-radius:3px; cursor:pointer;">🔍</button></span>`;
 }
+window.renderMobileStatusCell = renderMobileStatusCell;
+window.escapeHtml = escapeHtml;
 
 function renderMobileDateCell(dataRaw) {
   const dataFmt = formatDate(dataRaw);
@@ -1556,27 +1559,27 @@ function renderProcessos() {
       </td>
       <td class="col-municipio" title="${p.municipio || ''}">
         <span class="desktop-cell-view">${hl(p.municipio, busca)}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Município', p.municipio, 7)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Município', p.municipio, 9)}</span>
       </td>
       <td class="col-numero">
         <span class="desktop-cell-view">${p.numero ? p.numero.split(/\s+/).map(n => hl(n, busca)).join('<br>') : '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Nº Processo', p.numero, 7)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Nº Processo', p.numero, 9)}</span>
       </td>
       <td class="col-interessado" title="${p.interessado}">
         <span class="desktop-cell-view">${hl(p.interessado, busca) || '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado, 7)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado, 9)}</span>
       </td>
       <td class="col-objeto" title="${p.objeto}">
         <span class="desktop-cell-view">${p.objeto || '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Objeto', p.objeto, 7)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Objeto', p.objeto, 9)}</span>
       </td>
       <td class="col-status" style="text-align: center;">
         <span class="desktop-cell-view"><span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span></span>
-        <span class="mobile-cell-view">${renderMobileStatusCell(p.status, 7)}</span>
+        <span class="mobile-cell-view">${renderMobileStatusCell(p.status, 9)}</span>
       </td>
       <td class="col-localizacao" style="text-align: center;">
         <span class="desktop-cell-view">${p.localizacao ? p.localizacao.replace(/\//g, '/<wbr>').replace(/\|/g, '|<wbr>') : '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Localização', p.localizacao, 7)}</span>
+        <span class="mobile-cell-view">${renderMobileCell('Localização', p.localizacao, 9)}</span>
       </td>
       <td class="col-valor">${formatCurrency(p.valorOf)}</td>
       <td class="col-data" style="text-align: center;">
