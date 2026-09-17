@@ -64,7 +64,10 @@ async function carregarProalfa() {
     selecionarTabProalfa(currentTabProalfa);
 
     document.querySelectorAll('#page-proalfa .filter-select, #page-proalfa .search-input')
-      .forEach(el => el.addEventListener('input', filtrarProalfa));
+      .forEach(el => {
+        el.addEventListener('input', filtrarProalfa);
+        el.addEventListener('change', filtrarProalfa);
+      });
 
   } catch (e) {
     console.error('Erro ao carregar proalfa:', e);
@@ -186,7 +189,7 @@ const PROALFA_COMBO_IDS = [
 function getSelectedValuesProalfa(id) {
   const el = document.getElementById(id);
   if (!el) return [];
-  return Array.from(el.selectedOptions).map(o => o.value).filter(v => v !== '');
+  return Array.from(el.options).filter(o => o.selected && o.value !== '').map(o => o.value);
 }
 
 // ─── PREENCHER COMBOS ─────────────────────────────────────────────────────────
@@ -242,6 +245,16 @@ function preencherCombosProalfa() {
     window.initMultiSelect('proalfa-ano');
     window.initMultiSelect('proalfa-etapa');
   }
+
+  PROALFA_COMBO_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.removeEventListener('change', filtrarProalfa);
+      el.removeEventListener('input', filtrarProalfa);
+      el.addEventListener('change', filtrarProalfa);
+      el.addEventListener('input', filtrarProalfa);
+    }
+  });
 }
 
 // ─── LIMPAR FILTROS ──────────────────────────────────────────────────────────

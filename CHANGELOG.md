@@ -3,7 +3,20 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.3.00] — 2026-09-17 🟢 VERSÃO ATUAL
+## [v1.3.01] — 2026-09-17 🟢 VERSÃO ATUAL
+
+**Tag:** `v1.3.01` · **Versão do Sistema:** `GBZ - v1.3.01`
+
+### 🛠️ Correções e Ajustes
+
+#### ⚡ Disparo e Sincronização de Eventos nos Combos Multiseleção (Proalfa / Censo)
+- **Disparo Duplo de Eventos (`change` e `input`)**: O componente `MultiSelect` agora dispara tanto o evento `'change'` quanto o evento `'input'` ao marcar/desmarcar itens ou utilizar os botões "Todos" e "Nenhum".
+- **Leitura Segura de Opções Selecionadas**: Atualizado `getSelectedValuesProalfa` para ler diretamente o estado `.selected` de todas as opções de cada `<select>`, evitando divergências de sincronização com o elemento de seleção nativo.
+- **Vínculo Automático de Listeners**: Registrados os listeners de `'change'` e `'input'` em todos os combos da tela Proalfa (`PROALFA_COMBO_IDS`), garantindo filtragem imediata em tempo real ao selecionar qualquer item.
+
+---
+
+## [v1.3.00] — 2026-09-17
 
 **Tag:** `v1.3.00` · **Versão do Sistema:** `GBZ - v1.3.00`
 

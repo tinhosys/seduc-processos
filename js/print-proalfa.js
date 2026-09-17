@@ -3,7 +3,7 @@ function getFilteredProalfaData() {
   const getSelected = (id) => {
     const el = document.getElementById(id);
     if (!el) return [];
-    return Array.from(el.selectedOptions).map(o => o.value).filter(v => v !== '');
+    return Array.from(el.options).filter(o => o.selected && o.value !== '').map(o => o.value);
   };
 
   const selSuper  = getSelected('proalfa-super');
