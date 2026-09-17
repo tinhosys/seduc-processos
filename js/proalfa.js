@@ -170,47 +170,93 @@ function selecionarTabProalfa(tabId) {
   filtrarProalfa();
 }
 
+// ─── HELPERS MULTI-SELECT PROALFA ─────────────────────────────────────────────
+const PROALFA_COMBO_IDS = [
+  'proalfa-ano',
+  'proalfa-super',
+  'proalfa-dependencia',
+  'proalfa-municipio',
+  'proalfa-etapa',
+  'proalfa-distrito',
+  'proalfa-escola',
+  'proalfa-localizacao',
+  'proalfa-loc-dif'
+];
+
+function getSelectedValuesProalfa(id) {
+  const el = document.getElementById(id);
+  if (!el) return [];
+  return Array.from(el.selectedOptions).map(o => o.value).filter(v => v !== '');
+}
+
 // ─── PREENCHER COMBOS ─────────────────────────────────────────────────────────
 function preencherCombosProalfa() {
   if (!proalfaData) proalfaData = {};
-  const data = proalfaData[currentTabProalfa] || [];
 
-  const superSet = new Set();
-  const munSet   = new Set();
-  const distSet  = new Set();
-  const locSet   = new Set();   // r[6] Localização
+  const superSet  = new Set();
+  const depSet    = new Set();
+  const munSet    = new Set();
+  const distSet   = new Set();
+  const escolaSet = new Set();
+  const locSet    = new Set();   // r[6] Localização
   const locDifSet = new Set();  // r[7] Localização Diferenciada
 
-  data.forEach(r => {
-    if (r[0]) superSet.add(r[0]);
-    if (r[1]) munSet.add(r[1]);
-    if (r[2]) distSet.add(r[2]);
-    if (r[6]) locSet.add(r[6]);
-    if (r[7] && r[7] !== 'Não') locDifSet.add(r[7]);
+  // Acumular valores de todas as abas para combos completos
+  Object.values(proalfaData || {}).forEach(rows => {
+    (rows || []).forEach(r => {
+      if (r[0]) superSet.add(r[0]);
+      if (r[1]) munSet.add(r[1]);
+      if (r[2]) distSet.add(r[2]);
+      if (r[4] && r[4] !== '-') escolaSet.add(r[4]);
+      if (r[5]) depSet.add(r[5]);
+      if (r[6]) locSet.add(r[6]);
+      if (r[7] && r[7] !== 'Não') locDifSet.add(r[7]);
+    });
   });
 
   const fill = (id, set, includeNao = false) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const cur = el.value;
+    const selectedBefore = getSelectedValuesProalfa(id);
     let opts = '<option value="">Todos</option>';
     if (includeNao) opts += '<option value="Não">Não</option>';
     opts += [...set].sort().map(s => `<option value="${s}">${s}</option>`).join('');
     el.innerHTML = opts;
-    if ([...set, 'Não', ''].includes(cur)) el.value = cur;
+
+    Array.from(el.options).forEach(opt => {
+      if (selectedBefore.includes(opt.value)) opt.selected = true;
+    });
+
+    if (window.initMultiSelect) window.initMultiSelect(id);
   };
 
   fill('proalfa-super',       superSet);
+  fill('proalfa-dependencia', depSet);
   fill('proalfa-municipio',   munSet);
   fill('proalfa-distrito',    distSet);
+  fill('proalfa-escola',      escolaSet);
   fill('proalfa-localizacao', locSet);
-  fill('proalfa-loc-dif',     locDifSet, true); // Permite filtrar os que são "Não"
+  fill('proalfa-loc-dif',     locDifSet, true);
+
+  if (window.initMultiSelect) {
+    window.initMultiSelect('proalfa-ano');
+    window.initMultiSelect('proalfa-etapa');
+  }
 }
 
 // ─── LIMPAR FILTROS ──────────────────────────────────────────────────────────
 function limparFiltrosProalfa() {
-  document.querySelectorAll('#page-proalfa .filter-select, #page-proalfa .search-input')
-    .forEach(el => { el.value = ''; });
+  const buscaEl = document.getElementById('proalfa-busca');
+  if (buscaEl) buscaEl.value = '';
+
+  PROALFA_COMBO_IDS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      Array.from(el.options).forEach(opt => { opt.selected = false; });
+      if (window.initMultiSelect) window.initMultiSelect(id);
+    }
+  });
+
   filtrarProalfa();
 }
 
@@ -219,21 +265,60 @@ function filtrarProalfa() {
   const tabConf = TAB_CONFIG.find(t => t.id === currentTabProalfa);
   if (!tabConf) return;
   const isDoc = tabConf.type === 'docentes';
+  const isEstadual = currentTabProalfa.includes('Estadual') || currentTabProalfa.includes('Est.');
 
-  const busca       = (document.getElementById('proalfa-busca')?.value || '').toLowerCase();
-  const filterSuper = document.getElementById('proalfa-super')?.value || '';
-  const filterMun   = document.getElementById('proalfa-municipio')?.value || '';
-  const filterDist  = document.getElementById('proalfa-distrito')?.value || '';
-  const filterLoc   = document.getElementById('proalfa-localizacao')?.value || '';
-  const filterLocD  = document.getElementById('proalfa-loc-dif')?.value || '';
+  const busca     = (document.getElementById('proalfa-busca')?.value || '').toLowerCase();
+  const selSuper  = getSelectedValuesProalfa('proalfa-super');
+  const selDep    = getSelectedValuesProalfa('proalfa-dependencia');
+  const selMun    = getSelectedValuesProalfa('proalfa-municipio');
+  const selEtapa  = getSelectedValuesProalfa('proalfa-etapa');
+  const selDist   = getSelectedValuesProalfa('proalfa-distrito');
+  const selEscola = getSelectedValuesProalfa('proalfa-escola');
+  const selLoc    = getSelectedValuesProalfa('proalfa-localizacao');
+  const selLocD   = getSelectedValuesProalfa('proalfa-loc-dif');
 
   const dataTab = (proalfaData && proalfaData[currentTabProalfa]) ? proalfaData[currentTabProalfa] : [];
   const filtrados = dataTab.filter(r => {
-    if (filterSuper && r[0] !== filterSuper) return false;
-    if (filterMun   && r[1] !== filterMun)   return false;
-    if (filterDist  && r[2] !== filterDist)  return false;
-    if (filterLoc   && r[6] !== filterLoc)   return false;
-    if (filterLocD  && r[7] !== filterLocD)  return false;
+    if (selSuper.length  && !selSuper.includes(r[0]))  return false;
+    if (selDep.length    && !selDep.includes(r[5]))    return false;
+    if (selMun.length    && !selMun.includes(r[1]))    return false;
+    if (selDist.length   && !selDist.includes(r[2]))   return false;
+    if (selEscola.length && !selEscola.includes(r[4])) return false;
+    if (selLoc.length    && !selLoc.includes(r[6]))    return false;
+    if (selLocD.length   && !selLocD.includes(r[7]))   return false;
+
+    // Filtro por Etapa / Ano Escolar (1º, 2º, 3º, 4º, 5º)
+    if (selEtapa.length) {
+      let hasEtapaValue = false;
+      selEtapa.forEach(etapa => {
+        let val = 0;
+        if (!isDoc) {
+          // Matrículas: 1º=r[9], 2º=r[10], 3º=r[11], 4º=r[12], 5º=r[13]
+          if (etapa === '1º') val = Number(r[9]) || 0;
+          if (etapa === '2º') val = Number(r[10]) || 0;
+          if (etapa === '3º') val = Number(r[11]) || 0;
+          if (etapa === '4º') val = Number(r[12]) || 0;
+          if (etapa === '5º') val = Number(r[13]) || 0;
+        } else if (isEstadual) {
+          // Docentes Estadual: 1º=r[9], 2º=r[10], 3º=r[11], 4º=r[12], 5º=r[13]
+          if (etapa === '1º') val = Number(r[9]) || 0;
+          if (etapa === '2º') val = Number(r[10]) || 0;
+          if (etapa === '3º') val = Number(r[11]) || 0;
+          if (etapa === '4º') val = Number(r[12]) || 0;
+          if (etapa === '5º') val = Number(r[13]) || 0;
+        } else {
+          // Docentes Municipal: 1º=r[11], 2º=r[12], 3º=r[13], 4º=r[14], 5º=r[15]
+          if (etapa === '1º') val = Number(r[11]) || 0;
+          if (etapa === '2º') val = Number(r[12]) || 0;
+          if (etapa === '3º') val = Number(r[13]) || 0;
+          if (etapa === '4º') val = Number(r[14]) || 0;
+          if (etapa === '5º') val = Number(r[15]) || 0;
+        }
+        if (val > 0) hasEtapaValue = true;
+      });
+      if (!hasEtapaValue) return false;
+    }
+
     if (busca && !r.join(' ').toLowerCase().includes(busca)) return false;
     return true;
   });

@@ -1,30 +1,70 @@
 
 function getFilteredProalfaData() {
-  const filterSuper = document.getElementById('proalfa-super')?.value || '';
-  const filterMun   = document.getElementById('proalfa-municipio')?.value || '';
-  const filterDist  = document.getElementById('proalfa-distrito')?.value || '';
-  const filterLoc   = document.getElementById('proalfa-localizacao')?.value || '';
-  const filterLocD  = document.getElementById('proalfa-loc-dif')?.value || '';
-  const busca       = (document.getElementById('proalfa-busca')?.value || '').toLowerCase();
+  const getSelected = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return [];
+    return Array.from(el.selectedOptions).map(o => o.value).filter(v => v !== '');
+  };
 
-  const applyFilters = (row) => {
-    if(filterSuper && row[0] !== filterSuper) return false;
-    if(filterMun   && row[1] !== filterMun)   return false;
-    if(filterDist  && row[2] !== filterDist)  return false;
-    if(filterLoc   && row[6] !== filterLoc)   return false;
-    if(filterLocD  && row[7] !== filterLocD)  return false;
-    if(busca) {
+  const selSuper  = getSelected('proalfa-super');
+  const selDep    = getSelected('proalfa-dependencia');
+  const selMun    = getSelected('proalfa-municipio');
+  const selEtapa  = getSelected('proalfa-etapa');
+  const selDist   = getSelected('proalfa-distrito');
+  const selEscola = getSelected('proalfa-escola');
+  const selLoc    = getSelected('proalfa-localizacao');
+  const selLocD   = getSelected('proalfa-loc-dif');
+  const busca     = (document.getElementById('proalfa-busca')?.value || '').toLowerCase();
+
+  const applyFilters = (row, isDoc = false, isEstadual = false) => {
+    if (selSuper.length  && !selSuper.includes(row[0]))  return false;
+    if (selDep.length    && !selDep.includes(row[5]))    return false;
+    if (selMun.length    && !selMun.includes(row[1]))    return false;
+    if (selDist.length   && !selDist.includes(row[2]))   return false;
+    if (selEscola.length && !selEscola.includes(row[4])) return false;
+    if (selLoc.length    && !selLoc.includes(row[6]))    return false;
+    if (selLocD.length   && !selLocD.includes(row[7]))   return false;
+
+    if (selEtapa.length) {
+      let hasEtapaValue = false;
+      selEtapa.forEach(etapa => {
+        let val = 0;
+        if (!isDoc) {
+          if (etapa === '1º') val = Number(row[9]) || 0;
+          if (etapa === '2º') val = Number(row[10]) || 0;
+          if (etapa === '3º') val = Number(row[11]) || 0;
+          if (etapa === '4º') val = Number(row[12]) || 0;
+          if (etapa === '5º') val = Number(row[13]) || 0;
+        } else if (isEstadual) {
+          if (etapa === '1º') val = Number(row[9]) || 0;
+          if (etapa === '2º') val = Number(row[10]) || 0;
+          if (etapa === '3º') val = Number(row[11]) || 0;
+          if (etapa === '4º') val = Number(row[12]) || 0;
+          if (etapa === '5º') val = Number(row[13]) || 0;
+        } else {
+          if (etapa === '1º') val = Number(row[11]) || 0;
+          if (etapa === '2º') val = Number(row[12]) || 0;
+          if (etapa === '3º') val = Number(row[13]) || 0;
+          if (etapa === '4º') val = Number(row[14]) || 0;
+          if (etapa === '5º') val = Number(row[15]) || 0;
+        }
+        if (val > 0) hasEtapaValue = true;
+      });
+      if (!hasEtapaValue) return false;
+    }
+
+    if (busca) {
       const text = row.join(' ').toLowerCase();
-      if(!text.includes(busca)) return false;
+      if (!text.includes(busca)) return false;
     }
     return true;
   };
 
   return {
-    docMun: (proalfaData['Docentes_Rede_Municipal_2025'] || []).filter(applyFilters),
-    docEst: (proalfaData['Docentes_Rede_Est.2025-EF-AI'] || []).filter(applyFilters),
-    aluMun: (proalfaData['Matrículas_Municipal_2025'] || []).filter(applyFilters),
-    aluEst: (proalfaData['Matrículas_Estadual_2025-EF-AI'] || []).filter(applyFilters)
+    docMun: (proalfaData['Docentes_Rede_Municipal_2025'] || []).filter(r => applyFilters(r, true, false)),
+    docEst: (proalfaData['Docentes_Rede_Est.2025-EF-AI'] || []).filter(r => applyFilters(r, true, true)),
+    aluMun: (proalfaData['Matrículas_Municipal_2025'] || []).filter(r => applyFilters(r, false, false)),
+    aluEst: (proalfaData['Matrículas_Estadual_2025-EF-AI'] || []).filter(r => applyFilters(r, false, true))
   };
 }
 
@@ -626,3 +666,100 @@ function imprimirContatos() {
 
   openPrintWindow(content, 'RELATÓRIO DE CONTATOS MUNICIPAIS (PREFEITOS E SECRETÁRIOS)', null, 'CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS');
 }
+
+function imprimirRelatorioEscolasGenerico() {
+  const data = getFilteredProalfaData();
+  const schoolMap = new Map();
+
+  const getOrCreateSchool = (r) => {
+    const key = (r[3] && Number(r[3]) > 0) ? String(r[3]) : `${r[1]}_${r[4]}`;
+    if (!schoolMap.has(key)) {
+      schoolMap.set(key, {
+        inep: r[3] || '-',
+        escola: r[4] || '-',
+        municipio: r[1] || '-',
+        dependencia: r[5] || '-',
+        localizacao: r[6] || '-',
+        alunos: 0,
+        professores: 0
+      });
+    }
+    return schoolMap.get(key);
+  };
+
+  // Matrículas
+  [...data.aluMun, ...data.aluEst].forEach(r => {
+    const sc = getOrCreateSchool(r);
+    const a1 = Number(r[9]) || 0;
+    const a2 = Number(r[10]) || 0;
+    const a3 = Number(r[11]) || 0;
+    const a4 = Number(r[12]) || 0;
+    const a5 = Number(r[13]) || 0;
+    sc.alunos += (a1 + a2 + a3 + a4 + a5);
+  });
+
+  // Docentes
+  [...data.docMun, ...data.docEst].forEach(r => {
+    const sc = getOrCreateSchool(r);
+    sc.professores += (Number(r[8]) || 0);
+  });
+
+  const list = Array.from(schoolMap.values());
+  list.sort((a, b) => {
+    if (a.municipio !== b.municipio) return a.municipio.localeCompare(b.municipio);
+    return a.escola.localeCompare(b.escola);
+  });
+
+  let totalAlunos = 0;
+  let totalProfessores = 0;
+  let rowsHtml = '';
+
+  list.forEach((sc, idx) => {
+    totalAlunos += sc.alunos;
+    totalProfessores += sc.professores;
+    rowsHtml += `
+      <tr>
+        <td class="text-center">${idx + 1}</td>
+        <td class="text-left" style="font-weight:600;">${sc.escola}</td>
+        <td class="text-left">${sc.municipio}</td>
+        <td class="text-center">${sc.dependencia}</td>
+        <td class="text-center">${sc.localizacao}</td>
+        <td class="text-center" style="font-weight:bold;">${sc.alunos.toLocaleString('pt-BR')}</td>
+        <td class="text-center" style="font-weight:bold;">${sc.professores.toLocaleString('pt-BR')}</td>
+      </tr>
+    `;
+  });
+
+  const content = `
+    <div style="text-align:center; margin-bottom: 20px;">
+      <h2 style="margin: 0; font-size: 18px; text-transform: uppercase; color: #1e293b; font-family: Arial, sans-serif;">Relatório de Escolas</h2>
+      <div style="font-size: 12px; color: #64748b; margin-top: 4px; font-family: Arial, sans-serif;">Quantitativo de Alunos e Professores</div>
+    </div>
+    <table class="striped" style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif;">
+      <thead>
+        <tr>
+          <th style="width: 5%; text-align: center;">Nº</th>
+          <th style="width: 35%; text-align: left;">Nome da Escola</th>
+          <th style="width: 20%; text-align: left;">Município</th>
+          <th style="width: 15%; text-align: center;">Dependência Administrativa</th>
+          <th style="width: 11%; text-align: center;">Localização</th>
+          <th style="width: 7%; text-align: center;">Alunos</th>
+          <th style="width: 7%; text-align: center;">Professores</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rowsHtml.length > 0 ? rowsHtml : '<tr><td colspan="7" class="text-center">Nenhuma escola encontrada para os parâmetros informados</td></tr>'}
+      </tbody>
+      <tfoot>
+        <tr style="background-color: #e2e8f0; font-weight: bold; font-size: 11px;">
+          <td colspan="5" class="text-right" style="padding: 8px;">Total Geral (${list.length} escolas):</td>
+          <td class="text-center" style="padding: 8px;">${totalAlunos.toLocaleString('pt-BR')}</td>
+          <td class="text-center" style="padding: 8px;">${totalProfessores.toLocaleString('pt-BR')}</td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+
+  openPrintWindow(content, 'Relatório de Escolas', 'Quantitativo de Alunos e Professores', '');
+}
+

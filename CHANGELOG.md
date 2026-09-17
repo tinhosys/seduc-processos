@@ -3,9 +3,28 @@
 > Sistema de Acompanhamento de Convênios, Contratos e Escolas
 > Repositório: `seduc-processos` · Branch: `main`
 
-## [v1.2.99] — 2026-09-13 🟢 VERSÃO ATUAL
+## [v1.3.00] — 2026-09-17 🟢 VERSÃO ATUAL
 
-**Tag:** `v1.2.99` · **Versão do Sistema:** `GBZ - v1.2.99`
+**Tag:** `v1.3.00` · **Versão do Sistema:** `GBZ - v1.3.00`
+
+### 🚀 Novas Funcionalidades e Melhorias
+
+#### 🔍 Novos Combos de Busca por Multiseleção
+- **Dependência Administrativa**: Novo combo de filtro por multiseleção (`Municipal`, `Estadual`, etc.).
+- **Ano Escolar / Série**: Novo combo de filtro por multiseleção para anos do Ensino Fundamental (`1º Ano`, `2º Ano`, `3º Ano`, `4º Ano`, `5º Ano`).
+- **Escola**: Novo combo de filtro por multiseleção para busca pelo nome das escolas.
+- **Busca Interna nos Combos**: Todos os 9 combos da aba Censo/Proalfa possuem busca textual interna em tempo real dentro do menu suspenso (`custom-multiselect-search`).
+
+#### 🖨️ Relatório Genérico de Escolas
+- Novo botão **`IV - RELATÓRIO ESCOLAS`** adicionado no topo da aba Proalfa/Censo.
+- Impressão formatada em layout genérico e limpo (sem timbre/emissor), contendo:
+  - `Nº`, `Nome da Escola`, `Município`, `Dependência Administrativa`, `Localização`, `Total de Alunos` e `Total de Professores`.
+  - Soma total consolidada de alunos e professores ao final do relatório.
+
+---
+
+## [v1.2.99] — 2026-09-13
+
 
 ### 🎨 Reorganização das Colunas Orçamentárias e Alinhamento à Direita da Topbar
 - **Alinhamento dos Botões da Topbar à Direita**:
