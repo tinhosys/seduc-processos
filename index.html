@@ -62,7 +62,7 @@
     }
 
     /* ============================================================
-       GBZ v1.2.88 - MODO/FUNÇÃO MOBILE: CÉLULAS EM 7 DÍGITOS + BALÃO
+       GBZ v1.3.01 - MODO/FUNÇÃO MOBILE: CÉLULAS EM 7 DÍGITOS + BALÃO
        ============================================================ */
     .mobile-cell-view {
       display: none !important;
@@ -314,7 +314,7 @@
     }
 
     /* ============================================================
-       GBZ v1.2.88 - COLUNAS ANCORADAS EXCLUSIVAS DA TABELA DE PROCESSOS (GDSM)
+       GBZ v1.3.01 - COLUNAS ANCORADAS EXCLUSIVAS DA TABELA DE PROCESSOS (GDSM)
        Evita que outras tabelas (GMAC, etc.) tenham a primeira coluna esmagada a 40px!
        ============================================================ */
     #page-processos .table-wrap th:first-child,
@@ -1253,6 +1253,11 @@
             <div class="stat-label">Pagos</div>
             <div class="stat-value" id="stat-pago">0</div>
           </div>
+          <div class="stat-card red" style="cursor: pointer;" id="card-stat-cancelados" onclick="if(typeof window.filtrarPorCanceladosDashboard==='function'){window.filtrarPorCanceladosDashboard();}else if(typeof filtrarPorCanceladosDashboard==='function'){filtrarPorCanceladosDashboard();}" title="Clique para ver os Processos Cancelados">
+            <div class="stat-icon">🚫</div>
+            <div class="stat-label">Cancelados</div>
+            <div class="stat-value" id="stat-cancelado" style="color: #f87171;">0</div>
+          </div>
           <div class="stat-card green super-card" style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">
             <div class="super-row">
               <span class="super-label">Valor Total</span>
@@ -1439,6 +1444,10 @@
               <span id="qtd-registros-filtrados" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:38px; min-height:38px; max-height:38px; min-width:170px; width:170px; box-sizing:border-box;">
                 0 Processos
               </span>
+              <button id="balao-aviso-cancelados" type="button" onclick="if(typeof window.filtrarPorCancelados==='function'){window.filtrarPorCancelados();}else if(typeof filtrarPorCancelados==='function'){filtrarPorCancelados();}" title="Clique para mostrar processos cancelados na lista" class="balao-aviso-cancelados" style="display:none;">
+                <span class="balao-icon">⚠️</span>
+                <span id="balao-qtd-cancelados" class="balao-num">0</span>
+              </button>
               <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:38px; min-width:38px; height:38px; min-height:38px; max-height:38px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
               </button>
