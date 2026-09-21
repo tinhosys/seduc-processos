@@ -1,5 +1,37 @@
 
-// Função global para normalizar o valor da célula do Dígito (GBZ - v1.2.88)
+// ============================================================
+// GBZ v1.3.01 - TRATAMENTO DE PROCESSOS CANCELADOS & BALÃO DE AVISO
+// ============================================================
+window.filtrarPorCancelados = function() {
+  const selStatus = document.getElementById('filtro-status');
+  let canceladoOptVal = 'CANCELADO';
+  if (selStatus) {
+    const optFound = Array.from(selStatus.options).find(o => normalizar(o.value) === 'cancelado');
+    if (optFound) canceladoOptVal = optFound.value;
+  }
+  state.filtros.status = [canceladoOptVal];
+  state.paginaAtual = 1;
+
+  if (selStatus) {
+    Array.from(selStatus.options).forEach(opt => {
+      opt.selected = (normalizar(opt.value) === 'cancelado');
+    });
+    if (selStatus._multiSelectInstance) {
+      selStatus._multiSelectInstance.update();
+    }
+  }
+  renderProcessos();
+};
+
+window.filtrarPorCanceladosDashboard = function() {
+  window.filtrarPorCancelados();
+  if (typeof navegar === 'function') {
+    navegar('processos');
+  }
+};
+
+
+// Função global para normalizar o valor da célula do Dígito (GBZ - v1.3.01)
 // Remove ,00 ou .00 se for formatação numérica de planilha, preserva texto livre e limita a 8 caracteres
 window.limparDigitoValor = function(val) {
   if (val === null || val === undefined) return '';
@@ -57,7 +89,7 @@ window.limparFiltros = function() {
 var limparFiltros = window.limparFiltros;
 
 
-// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.2.88)
+// Função global para copiar número do processo (SEI) com feedback visual imediato (GBZ - v1.3.01)
 window.copiarSeiLinha = function(btn) {
   const row = btn.closest('div');
   const input = row ? row.querySelector('.form-numero-item') : null;
@@ -471,6 +503,7 @@ function renderDashboard() {
   const countStatus = (s) => processos.filter(p => normalizar(p.status) === normalizar(s)).length;
   const valorTotal  = processos.reduce((a,p) => a + (p.valorOf || 0), 0);
   const autorizados = processos.filter(p => normalizar(p.status) === 'autorizado').length;
+  const cancelados  = processos.filter(p => normalizar(p.status) === 'cancelado').length;
   const pagos       = processos.filter(p => normalizar(p.status) === 'pago').length;
   const pendentes   = processos.filter(p => ['pendente','notificar','notificado','p/ autorizo','p/autorizo','para autorizo'].includes(normalizar(p.status))).length;
   const prioridade  = processos.filter(p => normalizar(p.status) === 'prioridade').length;
@@ -482,6 +515,8 @@ function renderDashboard() {
   document.getElementById('stat-valor-total-global').textContent = formatCurrency(valorTotal);
   document.getElementById('stat-valor-a-pagar').textContent = formatCurrency(valorAPagar);
   document.getElementById('stat-autorizado').textContent = autorizados.toLocaleString('pt-BR');
+  const elStatCancelado = document.getElementById('stat-cancelado');
+  if (elStatCancelado) elStatCancelado.textContent = cancelados.toLocaleString('pt-BR');
   document.getElementById('stat-pago').textContent       = pagos.toLocaleString('pt-BR');
   document.getElementById('stat-pendente').textContent   = pendentes.toLocaleString('pt-BR');
   document.getElementById('stat-prioridade').textContent = prioridade.toLocaleString('pt-BR');
@@ -1196,6 +1231,13 @@ function getFiltrados() {
     }
   };
   filterByMultiple('status', status);
+  // Regra v1.3.01: Não mostrar CANCELADO na relação, exceto se for explicitamente parametrizado no filtro de status
+  const statusParametrizadoCancelado = Array.isArray(status)
+    ? status.some(s => normalizar(s) === 'cancelado')
+    : (normalizar(status) === 'cancelado');
+  if (!statusParametrizadoCancelado) {
+    lista = lista.filter(p => normalizar(p.status) !== 'cancelado');
+  }
   filterByMultiple('localizacao', localizacao);
   filterByMultiple('municipio', municipio);
   filterByMultiple('objeto', objeto);
@@ -1273,7 +1315,7 @@ function getFiltrados() {
 }
 
 // ============================================================
-// GBZ v1.2.88 - FUNÇÕES AUXILIARES PARA CÉLULAS E BALÃO MOBILE
+// GBZ v1.3.01 - FUNÇÕES AUXILIARES PARA CÉLULAS E BALÃO MOBILE
 // ============================================================
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
@@ -1615,6 +1657,98 @@ function renderProcessos() {
   const elQtd = document.getElementById('qtd-registros-filtrados');
   if (elQtd) elQtd.innerHTML = `<span>${total === 1 ? 'Processo' : 'Processos'}</span> <span>${total.toLocaleString('pt-BR')}</span>`;
 
+  // GBZ v1.3.01: Balão de aviso vermelho com contagem de cancelados no parâmetro atual
+  const elBalaoCancelados = document.getElementById('balao-aviso-cancelados');
+  const elBalaoQtd = document.getElementById('balao-qtd-cancelados');
+  if (elBalaoCancelados && elBalaoQtd) {
+    // Quantidade de cancelados que satisfazem todos os parâmetros atuais (exceto o próprio filtro de status)
+    const procsNoParametro = (function() {
+      let l = carregarProcessos();
+      const { busca, localizacao, municipio, objeto, prefixo, alerta, marca, categoria, tipo, ano } = state.filtros;
+      if (alerta === 'sim') l = l.filter(p => String(p.alerta || '').trim() === '1');
+      else if (alerta === 'nao') l = l.filter(p => String(p.alerta || '').trim() !== '1');
+      if (marca === 'sim') l = l.filter(p => p.marca === '1' || p.marca === 'SIM');
+      else if (marca === 'nao') l = l.filter(p => p.marca !== '1' && p.marca !== 'SIM');
+      if (busca) {
+        const q = normalizar(busca);
+        l = l.filter(p =>
+          normalizar(p.numero).includes(q) ||
+          normalizar(p.interessado).includes(q) ||
+          normalizar(p.municipio).includes(q) ||
+          normalizar(p.objeto).includes(q) ||
+          normalizar(p.obs).includes(q) ||
+          normalizar(p.anotacao).includes(q) ||
+          normalizar(p.prefixo).includes(q) ||
+          normalizar(p.status).includes(q) ||
+          normalizar(p.localizacao).includes(q) ||
+          normalizar(p.agrupamento).includes(q) ||
+          String(p.ano || '').includes(q)
+        );
+      }
+      const fByMulti = (campo, valor) => {
+        if (!valor || (Array.isArray(valor) && valor.length === 0)) return;
+        if (Array.isArray(valor)) {
+          l = l.filter(p => {
+            const valNorm = normalizar(p[campo]);
+            return valor.some(v => valNorm === normalizar(v));
+          });
+        } else {
+          l = l.filter(p => normalizar(p[campo]) === normalizar(valor));
+        }
+      };
+      fByMulti('localizacao', localizacao);
+      fByMulti('municipio', municipio);
+      fByMulti('objeto', objeto);
+      fByMulti('categoria', categoria);
+      fByMulti('tipo', tipo);
+      fByMulti('ano', ano);
+      fByMulti('agrupamento', state.filtros.agrupamento);
+      const condD = state.filtros.digitoCond || 'todos';
+      const valDRaw = String(state.filtros.digito || '').trim();
+      if (condD !== 'todos' || valDRaw !== '') {
+        const alvs = valDRaw ? valDRaw.split(/[,;\s]+/).map(v => v.trim()).filter(Boolean) : [];
+        const nMatch = (pD, alv) => {
+          const d1 = window.limparDigitoValor(pD).toLowerCase();
+          const d2 = window.limparDigitoValor(alv).toLowerCase();
+          if (!d1 && !d2) return true;
+          if (!d1 || !d2) return false;
+          return d1 === d2;
+        };
+        if (condD === '=') {
+          if (alvs.length > 0) l = l.filter(p => alvs.some(alv => nMatch(p.digito || p.DIGITO || '', alv)));
+          else l = l.filter(p => String(p.digito || p.DIGITO || '').trim() === '');
+        } else if (condD === '<>') {
+          if (alvs.length > 0) l = l.filter(p => !alvs.some(alv => nMatch(p.digito || p.DIGITO || '', alv)));
+          else l = l.filter(p => String(p.digito || p.DIGITO || '').trim() !== '');
+        }
+      }
+      if (state.filtros.prefixo && state.filtros.prefixo.length > 0) {
+        if (Array.isArray(state.filtros.prefixo)) {
+          l = l.filter(p => state.filtros.prefixo.some(v => normalizar(p.prefixo).includes(normalizar(v))));
+        } else {
+          l = l.filter(p => normalizar(p.prefixo).includes(normalizar(state.filtros.prefixo)));
+        }
+      }
+      if (state.filtros.cam) l = l.filter(p => p.CAM === '1');
+      if (state.filtros.gab) l = l.filter(p => p.GAB === '1');
+      if (state.filtros.cc)  l = l.filter(p => p.CC  === '1');
+      return l;
+    })();
+
+    const qtdCanceladosNoParametro = procsNoParametro.filter(p => normalizar(p.status) === 'cancelado').length;
+    const jaFiltradoCancelado = Array.isArray(state.filtros.status)
+      ? state.filtros.status.some(s => normalizar(s) === 'cancelado')
+      : (normalizar(state.filtros.status) === 'cancelado');
+
+    if (qtdCanceladosNoParametro > 0 && !jaFiltradoCancelado) {
+      elBalaoCancelados.style.display = 'inline-flex';
+      elBalaoQtd.textContent = qtdCanceladosNoParametro.toLocaleString('pt-BR');
+      elBalaoCancelados.title = qtdCanceladosNoParametro + (qtdCanceladosNoParametro === 1 ? ' processo cancelado no parâmetro atual. Clique para exibir.' : ' processos cancelados no parâmetro atual. Clique para exibir.');
+    } else {
+      elBalaoCancelados.style.display = 'none';
+    }
+  }
+
   // Botão exportar
   const btnExportar = document.getElementById('btn-exportar');
   if (btnExportar) {
@@ -1701,7 +1835,7 @@ window.popularDigitosDisponiveis = function() {
         ? inputVal.split(/[,;\s]+/).map(v => window.limparDigitoValor(v)).filter(Boolean) 
         : [];
       
-      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.2.88)
+      // Removida a palavra DÍGITO do dropbox, mantendo somente o valor real da célula (GBZ - v1.3.01)
       container.innerHTML = distinctDigitos.map(dig => {
         const isChecked = currentSelected.includes(dig);
         return `
@@ -4866,7 +5000,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 
 
 // ============================================================
-// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.2.88)
+// MÓDULO: TODAS ESCOLAS — Multi-aba Google Sheets (v1.3.01)
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
@@ -5725,7 +5859,7 @@ window.getTypeBadge = getTypeBadge;
 
 
 // =========================================================================
-// PAINEL DE INFORMAÇÕES DO SISTEMA, DIAGNÓSTICO & MÉTRICAS (GBZ - v1.2.88)
+// PAINEL DE INFORMAÇÕES DO SISTEMA, DIAGNÓSTICO & MÉTRICAS (GBZ - v1.3.01)
 // =========================================================================
 
 let _sysInfoTimer = null;
@@ -5921,7 +6055,7 @@ async function carregarPainelSistemaInfo() {
     elEntrada.textContent = dtEntrada.toLocaleDateString('pt-BR') + ' ' + dtEntrada.toLocaleTimeString('pt-BR');
   }
 
-  // Cronômetro da sessão ativa (GBZ - v1.2.88)
+  // Cronômetro da sessão ativa (GBZ - v1.3.01)
   const elTempo = document.getElementById('sysinfo-tempo-sessao');
   if (_sysInfoTimer) clearInterval(_sysInfoTimer);
   const formatarTempoAtivo = () => {
@@ -5936,7 +6070,7 @@ async function carregarPainelSistemaInfo() {
   formatarTempoAtivo();
   _sysInfoTimer = setInterval(formatarTempoAtivo, 1000);
 
-  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.2.88)
+  // Renderizar tabela de conexões/usuários com detecção de usuários ativos em tempo real (GBZ - v1.3.01)
   const isUsuarioAtivoAgora = (dataStr, isCurrent, u) => {
     if (isCurrent) return true;
     
@@ -6016,7 +6150,7 @@ async function carregarPainelSistemaInfo() {
 
       let statusBadge = '';
       if (isCurrent) {
-        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.2.88)
+        // Destaque amarelo ouro exclusivo para Você / Elton (GBZ - v1.3.01)
         statusBadge = '<span style="color:#fbbf24; font-weight:800; background:rgba(245,158,11,0.22); padding:4px 12px; border-radius:6px; border:1px solid #f59e0b; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 12px rgba(245,158,11,0.35); font-size:11.5px;">👑 Online (Você)</span>';
       } else if (ativo) {
         statusBadge = '<span style="color:#10b981; font-weight:800; background:rgba(16,185,129,0.2); padding:4px 12px; border-radius:6px; border:1px solid #10b981; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3); font-size:11.5px;">🟢 Online</span>';
