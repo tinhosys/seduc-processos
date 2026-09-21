@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.2.99">
+  <link rel="stylesheet" href="css/style.css?v=1.3.00">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -62,7 +62,7 @@
     }
 
     /* ============================================================
-       GBZ v1.2.88 - MODO/FUNÇÃO MOBILE: CÉLULAS EM 7 DÍGITOS + BALÃO
+       GBZ v1.3.01 - MODO/FUNÇÃO MOBILE: CÉLULAS EM 7 DÍGITOS + BALÃO
        ============================================================ */
     .mobile-cell-view {
       display: none !important;
@@ -314,7 +314,7 @@
     }
 
     /* ============================================================
-       GBZ v1.2.88 - COLUNAS ANCORADAS EXCLUSIVAS DA TABELA DE PROCESSOS (GDSM)
+       GBZ v1.3.01 - COLUNAS ANCORADAS EXCLUSIVAS DA TABELA DE PROCESSOS (GDSM)
        Evita que outras tabelas (GMAC, etc.) tenham a primeira coluna esmagada a 40px!
        ============================================================ */
     #page-processos .table-wrap th:first-child,
@@ -637,7 +637,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.99</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.00</div>
   </div>
 </div>
   
@@ -889,7 +889,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.2.99</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.00</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1253,6 +1253,11 @@
             <div class="stat-label">Pagos</div>
             <div class="stat-value" id="stat-pago">0</div>
           </div>
+          <div class="stat-card red" style="cursor: pointer;" id="card-stat-cancelados" onclick="if(typeof window.filtrarPorCanceladosDashboard==='function'){window.filtrarPorCanceladosDashboard();}else if(typeof filtrarPorCanceladosDashboard==='function'){filtrarPorCanceladosDashboard();}" title="Clique para ver os Processos Cancelados">
+            <div class="stat-icon">🚫</div>
+            <div class="stat-label">Cancelados</div>
+            <div class="stat-value" id="stat-cancelado" style="color: #f87171;">0</div>
+          </div>
           <div class="stat-card green super-card" style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">
             <div class="super-row">
               <span class="super-label">Valor Total</span>
@@ -1439,6 +1444,10 @@
               <span id="qtd-registros-filtrados" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:38px; min-height:38px; max-height:38px; min-width:170px; width:170px; box-sizing:border-box;">
                 0 Processos
               </span>
+              <button id="balao-aviso-cancelados" type="button" onclick="if(typeof window.filtrarPorCancelados==='function'){window.filtrarPorCancelados();}else if(typeof filtrarPorCancelados==='function'){filtrarPorCancelados();}" title="Clique para mostrar processos cancelados na lista" class="balao-aviso-cancelados" style="display:none;">
+                <span class="balao-icon">⚠️</span>
+                <span id="balao-qtd-cancelados" class="balao-num">0</span>
+              </button>
               <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:38px; min-width:38px; height:38px; min-height:38px; max-height:38px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
               </button>
@@ -2218,7 +2227,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.2.99
+              GBZ - v1.3.00
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2491,7 +2500,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.2.99] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.00] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -3447,8 +3456,12 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:4px;"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
           III - MEMÓRIA CÁLC.
         </button>
-        <button onclick="window.open('https://docs.google.com/spreadsheets/d/12w-tBU6lMlKR7mncvbfoKjKGcvCZftd12CFKxdtf7ac/edit?gid=392130906#gid=392130906', '_blank')" style="flex:1; min-width:130px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.5); color:#10b981; padding:0 16px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.3)'" onmouseout="this.style.background='rgba(16,185,129,0.15)'">
+        <button onclick="window.open('https://docs.google.com/spreadsheets/d/12w-tBU6lMlKR7mncvbfoKjKGcvCZftd12CFKxdtf7ac/edit?gid=392130906#gid=392130906', '_blank')" style="flex:1; min-width:120px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.5); color:#10b981; padding:0 14px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(16,185,129,0.3)'" onmouseout="this.style.background='rgba(16,185,129,0.15)'">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg><span class="btn-text">Planilha</span></button>
+        <button onclick="imprimirRelatorioEscolasGenerico()" style="flex:1; min-width:140px; background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.5); color:#c084fc; padding:0 12px; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; min-height:55px; transition:background 0.2s;" onmouseover="this.style.background='rgba(168,85,247,0.3)'" onmouseout="this.style.background='rgba(168,85,247,0.15)'" title="Relatório Básico de Escolas (Alunos e Professores)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          IV - RELATÓRIO ESCOLAS
+        </button>
       </div>
     </div>
     <div class="filters-container">
@@ -3458,12 +3471,15 @@
         </div>
       </div>
       <div class="filters-grid" style="display:flex; flex-wrap:wrap; gap:10px; width:100%;">
-        <div class="filter-group" style="flex:0.5; min-width:90px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">ANO</label><select id="proalfa-ano" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="2025">2025</option></select></div>
-        <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">SUPER</label><select id="proalfa-super" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
-        <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">MUNICÍPIO</label><select id="proalfa-municipio" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
-        <div class="filter-group" style="flex:1.5; min-width:180px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">DISTRITO</label><select id="proalfa-distrito" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
-        <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOCALIZAÇÃO</label><select id="proalfa-localizacao" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
-        <div class="filter-group" style="flex:1; min-width:140px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOC. DIFERENCIADA</label><select id="proalfa-loc-dif" style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:0.5; min-width:80px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">ANO</label><select id="proalfa-ano" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="2025">2025</option></select></div>
+        <div class="filter-group" style="flex:1.2; min-width:150px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">SUPER</label><select id="proalfa-super" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1.2; min-width:150px;"><label style="font-size:11px; text-transform:uppercase; color:#facc15; margin-bottom:4px; display:block;" title="Dependência Administrativa">DEP. ADM.</label><select id="proalfa-dependencia" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1.2; min-width:150px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">MUNICÍPIO</label><select id="proalfa-municipio" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1.2; min-width:150px;"><label style="font-size:11px; text-transform:uppercase; color:#fb923c; margin-bottom:4px; display:block;" title="Anos / Séries do Ensino Fundamental">ANO ESCOLAR</label><select id="proalfa-etapa" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="1º">1º Ano</option><option value="2º">2º Ano</option><option value="3º">3º Ano</option><option value="4º">4º Ano</option><option value="5º">5º Ano</option></select></div>
+        <div class="filter-group" style="flex:1; min-width:130px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">DISTRITO</label><select id="proalfa-distrito" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1.5; min-width:170px;"><label style="font-size:11px; text-transform:uppercase; color:#c084fc; margin-bottom:4px; display:block;">ESCOLA</label><select id="proalfa-escola" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1; min-width:130px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOCALIZAÇÃO</label><select id="proalfa-localizacao" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
+        <div class="filter-group" style="flex:1; min-width:130px;"><label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); margin-bottom:4px; display:block;">LOC. DIFERENCIADA</label><select id="proalfa-loc-dif" multiple style="width:100%; padding:10px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer;" class="filter-select"><option value="">Todos</option></select></div>
       </div>
       <div style="margin-top: 15px; display:flex; justify-content:space-between; align-items:stretch; gap: 20px;">
         <div style="display:flex; align-items:stretch; gap:15px; flex:1;">
@@ -3769,13 +3785,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.2.99"></script>
-  <script src="js/app.js?v=1.2.99"></script>
-  <script src="js/auth-sap.js?v=1.2.99"></script>
-  <script src="js/escolas.js?v=1.2.99" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.3.00"></script>
+  <script src="js/app.js?v=1.3.00"></script>
+  <script src="js/auth-sap.js?v=1.3.00"></script>
+  <script src="js/escolas.js?v=1.3.00" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
-  <script src="js/mapa.js?v=1.2.99"></script>
-  <script src="js/contatos.js?v=1.2.99"></script>
+  <script src="js/mapa.js?v=1.3.00"></script>
+  <script src="js/contatos.js?v=1.3.00"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -3948,15 +3964,15 @@
   <!-- ============= PRINT LAYOUT: ANÁLISE ============= -->
   <div id="print-layout-analise" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.2.99"></script>
+  <script src="js/multi-select.js?v=1.3.01"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.2.99"></script>
-  <script src="js/gmac.js?v=1.2.99"></script>
-  <script src="js/orcamento.js?v=1.2.99"></script>
-  <script src="js/gdsm.js?v=1.2.99"></script>
-  <script src="js/print-proalfa.js?v=1.2.99"></script>
-  <script src="js/proalfa.js?v=1.2.99"></script>
+  <script src="js/diarias.js?v=1.3.01"></script>
+  <script src="js/gmac.js?v=1.3.01"></script>
+  <script src="js/orcamento.js?v=1.3.01"></script>
+  <script src="js/gdsm.js?v=1.3.01"></script>
+  <script src="js/print-proalfa.js?v=1.3.01"></script>
+  <script src="js/proalfa.js?v=1.3.01"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
