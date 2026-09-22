@@ -8034,6 +8034,50 @@ function restaurarPadraoRedacao(numSecao) {
   mostrarNotificacaoToast('Seção ' + numSecao + ' restaurada para o padrão oficial!');
 }
 
+
+// Estado dos níveis de detalhe das seções ('mais' | 'menos')
+window._niveisSecao = {
+  4: 'mais',
+  5: 'mais'
+};
+
+function setNivelInfoSecao(numSecao, nivel) {
+  window._niveisSecao[numSecao] = nivel;
+  
+  const btnMais = document.getElementById('btn-nivel-' + numSecao + '-mais');
+  const btnMenos = document.getElementById('btn-nivel-' + numSecao + '-menos');
+  
+  if (nivel === 'mais') {
+    if (btnMais) {
+      btnMais.style.background = '#0284c7'; // Azul escuro/médio vibrante
+      btnMais.style.color = '#fff';
+      btnMais.style.boxShadow = '0 2px 6px rgba(2,132,199,0.4)';
+    }
+    if (btnMenos) {
+      btnMenos.style.background = 'none';
+      btnMenos.style.color = '#94a3b8';
+      btnMenos.style.boxShadow = 'none';
+    }
+    mostrarNotificacaoToast('Seção ' + numSecao + ': Modo "Mais Informações" ativado.');
+  } else {
+    if (btnMais) {
+      btnMais.style.background = 'none';
+      btnMais.style.color = '#94a3b8';
+      btnMais.style.boxShadow = 'none';
+    }
+    if (btnMenos) {
+      btnMenos.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)'; // Amarelo/Laranja elegante
+      btnMenos.style.color = '#fff';
+      btnMenos.style.boxShadow = '0 2px 6px rgba(245,158,11,0.4)';
+    }
+    mostrarNotificacaoToast('Seção ' + numSecao + ': Modo "Menos Informações" ativado.');
+  }
+  
+  // Reexecuta o agente IA com o novo nível selecionado
+  aplicarIARedacao(numSecao);
+}
+window.setNivelInfoSecao = setNivelInfoSecao;
+
 function aplicarIARedacao(numSecao) {
   var d = extrairDadosProcessoAtual();
   var el = document.getElementById('relatorio-caixa-' + numSecao);
@@ -8057,21 +8101,44 @@ function aplicarIARedacao(numSecao) {
     } else if (numSecao === 3) {
       el.value = 'A Lei Federal nº 14.113/2020 (FUNDEB, art. 14, §1º, IV) estabelece o regime de colaboração como critério estruturante de gestão e repasse. Em perfeita harmonia, a Constituição de Rondônia (arts. 187 e 188) e a Lei Estadual nº 5.735/2024 (Programa Proalfa Rondônia - Eixo 2: Infraestrutura Física e Pedagógica) respaldam a cooperação técnico-financeira para dotar as escolas municipais de instalações e recursos condignos.';
     } else if (numSecao === 4) {
-      // IA SINTETIZA O OFÍCIO + PLANO DE TRABALHO ENTRE 5 E 9 LINHAS
-      var resumoOficio = d.oficio ? d.oficio.replace(/\s+/g, ' ').trim() : 'a modernização estrutural e aquisição de materiais para a escola';
-      var resumoPlano = d.plano ? d.plano.replace(/\s+/g, ' ').trim() : 'ações direcionadas ao acolhimento e aperfeiçoamento das rotinas pedagógicas';
+      // Determina nível de detalhe ('mais' ou 'menos')
+      var nivel4 = (window._niveisSecao && window._niveisSecao[4]) || 'mais';
+      var refOficio = d.oficio ? d.oficio.replace(/\s+/g, ' ').trim() : 'expediente de solicitação municipal';
+      var refPlano = d.plano ? d.plano.replace(/\s+/g, ' ').trim() : 'proposta técnica instruída';
 
-      if (d.isDesfav) {
-        el.value = 'Após acurada análise técnica do Ofício de Solicitação (' + resumoOficio + ') e do respectivo Plano de Trabalho (' + resumoPlano + '), alusivo ao pleito de R$ ' + d.valor + ' em benefício da ' + d.escola + ' (' + d.municipio + '/RO), apurou-se inadequação instrumental e déficit de detalhamento quanto aos objetivos pedagógicos e ao cronograma físico-financeiro. As justificativas aportadas não evidenciam de modo conclusivo a vinculação direta com as diretrizes do Proalfa Rondônia (Lei nº 5.735/2024 - Eixo 2), inexistindo elementos suficientes para justificar o aporte estadual no presente momento processual.';
+      if (nivel4 === 'mais') {
+        // NÍVEL '+ INFORMAÇÕES' (AZUL - Análise Técnica Pormenorizada no Proalfa sem 'encher linguiça')
+        if (d.isDesfav) {
+          el.value = 'Procedida à instrução instrutória dos autos nº ' + d.numero + ', instaurados a partir do Ofício (' + refOficio + ') do Município de ' + d.municipio + '/RO, constatou-se a inviabilidade técnica da pretendida destinação do montante estimado de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + '. Da detida leitura do Plano de Trabalho (' + refPlano + '), extrai-se inconsistência material e déficit quanto à correlação pedagógica exigida pelas balizas do Eixo 2 do Proalfa Rondônia, disciplinado pela Lei Estadual nº 5.735/2024, cuja destinação legal vincula recursos à garantia do letramento e suporte às salas de aula. A instrução apresentada carece de detalhamento técnico idôneo, omitindo parâmetros quantitativos essenciais e pesquisa mercadológica em fontes oficiais, o que obsta o regular aporte de recursos do Estado no presente momento processual.';
+        } else {
+          el.value = 'A análise técnica dos autos nº ' + d.numero + ' evidencia que a solicitação formalizada pelo Município de ' + d.municipio + '/RO por meio do Ofício (' + refOficio + ') cumpre os requisitos de admissibilidade pedagógica e orçamentária vigentes. O Plano de Trabalho (' + refPlano + ') detalha o investimento estimado em R$ ' + d.valor + ', destinado especificamente à execução de ' + d.objeto.toLowerCase() + ' em favor da ' + d.escola + '. A consecução desse objeto guarda estrita consonância com as diretrizes e metas finalísticas do Eixo 2 do Proalfa Rondônia, instituído pela Lei Estadual nº 5.735/2024, ao propiciar a modernização da infraestrutura física e o fortalecimento do ambiente escolar indispensável ao ciclo de aprendizagem e alfabetização, legitimando o amparo do Estado em regime de colaboração.';
+        }
       } else {
-        el.value = 'A partir da detida análise do Ofício de Solicitação (' + resumoOficio + ') e do correspondente Plano de Trabalho (' + resumoPlano + '), verifica-se que a pretensão do Município de ' + d.municipio + '/RO, orçada em R$ ' + d.valor + ' para a ' + d.escola + ', alinha-se aos parâmetros de conveniência técnica e pedagógica da SEDUC. O fornecimento de ' + d.objeto.toLowerCase() + ' atende de forma prioritária às demandas da comunidade discente, convergindo com o Eixo 2 do Proalfa Rondônia (Lei Estadual nº 5.735/2024) ao consolidar ambientes escolares estruturados, salubres e indutores da aprendizagem.';
+        // NÍVEL '- INFORMAÇÕES' (AMARELO - Síntese Técnica Concisa e Cirúrgica)
+        if (d.isDesfav) {
+          el.value = 'Verifica-se que o Processo nº ' + d.numero + ', relativo ao Ofício de solicitação do Município de ' + d.municipio + '/RO, não preenche as condições de admissibilidade técnica para o montante de R$ ' + d.valor + '. O Plano de Trabalho apresentado não comprova nexo com as diretrizes do Eixo 2 do Proalfa (Lei Estadual nº 5.735/2024) para ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ', constatando-se ausência de justificação pedagógica apta à pactuação.';
+        } else {
+          el.value = 'O pleito constante do Processo nº ' + d.numero + ', encaminhado via Ofício pelo Município de ' + d.municipio + '/RO, atende aos critérios técnicos estabelecidos. O Plano de Trabalho fundamenta satisfatoriamente a destinação de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + ', demonstrando alinhamento estrito às metas do Eixo 2 do Proalfa Rondônia (Lei Estadual nº 5.735/2024) e conformidade orçamentária.';
+        }
       }
     } else if (numSecao === 5) {
-      // IA GERA CONCLUSÃO ENTRE 3 E 5 LINHAS
-      if (d.isDesfav) {
-        el.value = 'Em face das inconformidades técnicas e documentais registradas, manifestamo-nos DESFAVORAVELMENTE ao acolhimento do pedido na fase atual, recomendando a devolução do feito ao Município de ' + d.municipio + '/RO para readequação do Plano de Trabalho e posterior reavaliação dos autos.';
+      // Determina nível de detalhe ('mais' ou 'menos')
+      var nivel5 = (window._niveisSecao && window._niveisSecao[5]) || 'mais';
+
+      if (nivel5 === 'mais') {
+        // NÍVEL '+ INFORMAÇÕES' (AZUL - Conclusão Robusta com Competência e Salvaguardas)
+        if (d.isDesfav) {
+          el.value = 'Diante das razões técnicas fundamentadas, manifesta-se formalmente em sentido DESFAVORÁVEL ao atendimento da solicitação originada pelo Município de ' + d.municipio + '/RO no importe de R$ ' + d.valor + ' (Processo nº ' + d.numero + '). A presente manifestação delimita a competência desta pasta instrutora e obsta o prosseguimento do Plano de Trabalho para ' + d.objeto.toLowerCase() + ', recomendando a devolução do feito à origem para saneamento e posterior reavaliação superior.';
+        } else {
+          el.value = 'Ante o exposto, esta unidade técnica manifesta-se FAVORAVELMENTE à celebração do regime de colaboração com o Município de ' + d.municipio + '/RO, no montante de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ', com fulcro na Lei Estadual nº 5.735/2024. Ressalva-se que a formalização definitiva compete à deliberação da autoridade superior, cabendo a vinculação exclusiva dos recursos ao Plano de Trabalho instruído nos autos nº ' + d.numero + '.';
+        }
       } else {
-        el.value = 'Pelo exposto, com esteio nas diretrizes do regime de colaboração e na Lei Estadual nº 5.735/2024, manifestamo-nos FAVORAVELMENTE à cooperação com o Município de ' + d.municipio + '/RO, submetendo os autos à deliberação superior quanto à conveniência e aos trâmites de formalização.';
+        // NÍVEL '- INFORMAÇÕES' (AMARELO - Despacho Terminativo Ultra-Sucinto)
+        if (d.isDesfav) {
+          el.value = 'Manifestação DESFAVORÁVEL ao pleito do Município de ' + d.municipio + '/RO (Processo nº ' + d.numero + '), ante a inviabilidade técnica de custeio de ' + d.objeto.toLowerCase() + ' e inconformidade do Plano de Trabalho. Encaminhe-se à deliberação superior para saneamento ou arquivamento.';
+        } else {
+          el.value = 'Manifestação FAVORÁVEL ao pleito do Município de ' + d.municipio + '/RO (Processo nº ' + d.numero + ', R$ ' + d.valor + '), condicionando-se a celebração à deliberação superior e fiel execução do Plano de Trabalho para ' + d.objeto.toLowerCase() + '. Encaminhem-se os autos.';
+        }
       }
     }
 
@@ -8134,7 +8201,7 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.07
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.08
 // Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
 // Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
 // =========================================================================

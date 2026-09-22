@@ -673,7 +673,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.07</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.08</div>
   </div>
 </div>
   
@@ -925,7 +925,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.07</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.08</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2020,9 +2020,7 @@
             <div id="tab-content-objetivo" style="display:none; padding:24px; background:rgba(255,255,255,0.02); border:1px solid rgba(16,185,129,0.25); border-radius:14px; margin-bottom:24px; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
               
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
-                <div style="display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.8px;">
-                  <span>📜</span> <span>Manifestação Técnica</span>
-                </div>
+                
                 
                 <!-- CHAVE MANIFESTAÇÃO: FAVORÁVEL / DESFAVORÁVEL -->
                 <div style="display:flex; align-items:center; gap:12px; background:rgba(0,0,0,0.3); padding:6px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.1);">
@@ -2142,11 +2140,21 @@
                       </label>
                       <span style="font-size:11px; color:#94a3b8;">(Interpretado com IA dos campos acima: Ofício e Plano de Trabalho - limite 5 a 9 linhas)</span>
                     </div>
-                    <div style="display:flex; gap:6px;">
-                      <button type="button" onclick="aplicarIARedacao(4)" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.35);" title="Agente de IA: interpretar e sintetizar dados do campo vermelho e amarelo (5-9 linhas)">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                      <!-- Seletor de Nível: Mais / Menos Informações -->
+                      <div class="toggle-nivel-info" style="display:flex; background:rgba(15,23,42,0.85); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:2px; gap:2px;">
+                        <button type="button" id="btn-nivel-4-mais" onclick="setNivelInfoSecao(4, 'mais')" class="btn" style="background:#0284c7; color:#fff; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(2,132,199,0.35); transition:all 0.2s;" title="Mais informações: Análise técnica detalhada fundamentada no Proalfa">
+                          ➕ Mais Informações
+                        </button>
+                        <button type="button" id="btn-nivel-4-menos" onclick="setNivelInfoSecao(4, 'menos')" class="btn" style="background:none; color:#94a3b8; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; transition:all 0.2s;" title="Menos informações: Síntese técnica direta e concisa">
+                          ➖ Menos Informações
+                        </button>
+                      </div>
+
+                      <button type="button" onclick="aplicarIARedacao(4)" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.35);" title="Agente de IA: sintetizar redação conforme nível selecionado">
                         🤖 IA Sintetizar
                       </button>
-                      <button type="button" onclick="restaurarPadraoRedacao(4)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar redação padrão da análise">
+                      <button type="button" onclick="restaurarPadraoRedacao(4)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:5px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar redação padrão da análise">
                         📄 Padrão
                       </button>
                     </div>
@@ -2163,11 +2171,21 @@
                       </label>
                       <span style="font-size:11px; color:#94a3b8;">(Despacho conclusivo conforme chave Favorável / Desfavorável - limite 3 a 5 linhas)</span>
                     </div>
-                    <div style="display:flex; gap:6px;">
-                      <button type="button" onclick="aplicarIARedacao(5)" class="btn" style="background:linear-gradient(135deg,#a855f7,#7e22ce); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(168,85,247,0.35);" title="Refinar redação da conclusão com IA">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                      <!-- Seletor de Nível: Mais / Menos Informações -->
+                      <div class="toggle-nivel-info" style="display:flex; background:rgba(15,23,42,0.85); border:1px solid rgba(255,255,255,0.15); border-radius:8px; padding:2px; gap:2px;">
+                        <button type="button" id="btn-nivel-5-mais" onclick="setNivelInfoSecao(5, 'mais')" class="btn" style="background:#0284c7; color:#fff; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(2,132,199,0.35); transition:all 0.2s;" title="Mais informações: Conclusão detalhada com salvaguardas e competência">
+                          ➕ Mais Informações
+                        </button>
+                        <button type="button" id="btn-nivel-5-menos" onclick="setNivelInfoSecao(5, 'menos')" class="btn" style="background:none; color:#94a3b8; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; transition:all 0.2s;" title="Menos informações: Despacho terminativo ultra-sucinto">
+                          ➖ Menos Informações
+                        </button>
+                      </div>
+
+                      <button type="button" onclick="aplicarIARedacao(5)" class="btn" style="background:linear-gradient(135deg,#a855f7,#7e22ce); color:#fff; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(168,85,247,0.35);" title="Refinar redação da conclusão com IA">
                         🤖 IA Concluir
                       </button>
-                      <button type="button" onclick="restaurarPadraoRedacao(5)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar conclusão padrão do SEI">
+                      <button type="button" onclick="restaurarPadraoRedacao(5)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:5px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar conclusão padrão do SEI">
                         📄 Padrão
                       </button>
                     </div>
@@ -2345,7 +2363,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.07
+              GBZ - v1.3.08
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2618,7 +2636,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.07] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.08] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
