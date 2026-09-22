@@ -253,12 +253,14 @@ function alternarGuiaFormulario(guia) {
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
   const tabObjeto = document.getElementById('tab-content-objeto');
   const tabObjetivo = document.getElementById('tab-content-objetivo');
+  const btnManifestacao = document.getElementById('btn-gerar-manifestacao');
 
   if (!tabObjeto || !tabObjetivo) return;
 
   if (guia === 'objetivo') {
     tabObjeto.style.display = 'none';
     tabObjetivo.style.display = 'block';
+    if (btnManifestacao) btnManifestacao.style.display = 'inline-flex';
     if (btnObjeto) {
       btnObjeto.style.background = 'none';
       btnObjeto.style.color = 'var(--text-secondary)';
@@ -274,6 +276,7 @@ function alternarGuiaFormulario(guia) {
   } else {
     tabObjeto.style.display = 'block';
     tabObjetivo.style.display = 'none';
+    if (btnManifestacao) btnManifestacao.style.display = 'none';
     if (btnObjeto) {
       btnObjeto.style.background = 'linear-gradient(135deg,#10b981,#059669)';
       btnObjeto.style.color = '#ffffff';
@@ -5048,8 +5051,7 @@ function imprimirManifestoTCE() {
 
     '<div class="sec-title">4. Conclus&atilde;o</div>' +
     secao5Html +
-    '\n';
-
+    '\n' +
     '<div class="data-bloco">Porto Velho - RO, ' + todayLong + '.</div>' +
 
     '<div class="ass-bloco">' +
@@ -8118,3 +8120,205 @@ window.aplicarIARedacao = aplicarIARedacao;
 window.carregarTodasSecoesPadrao = carregarTodasSecoesPadrao;
 window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
+
+// =========================================================================
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM JPG (v1.3.05)
+// Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
+// Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas e texto justificado)
+// =========================================================================
+
+async function gerarManifestacaoJPG() {
+  const modal = document.getElementById('modal-manifestacao-jpg');
+  const loading = document.getElementById('manifestacao-jpg-loading');
+  const imgEl = document.getElementById('manifestacao-jpg-preview-img');
+  const btnDownload = document.getElementById('btn-download-manifestacao-jpg');
+
+  if (modal) {
+    modal.style.display = 'flex';
+    if (loading) loading.style.display = 'block';
+    if (imgEl) imgEl.style.display = 'none';
+  }
+
+  // Coleta dados das 5 caixas
+  var g = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
+  var cx1 = g('relatorio-caixa-1');
+  var cx2 = g('relatorio-caixa-2');
+  var cx3 = g('relatorio-caixa-3');
+  var cx4 = g('relatorio-caixa-4');
+  var cx5 = g('relatorio-caixa-5');
+
+  // Se alguma estiver vazia, carrega o padrão preliminar para garantir
+  if (!cx1) { restaurarPadraoRedacao(1); cx1 = g('relatorio-caixa-1'); }
+  if (!cx2) { restaurarPadraoRedacao(2); cx2 = g('relatorio-caixa-2'); }
+  if (!cx3) { restaurarPadraoRedacao(3); cx3 = g('relatorio-caixa-3'); }
+  if (!cx4) { restaurarPadraoRedacao(4); cx4 = g('relatorio-caixa-4'); }
+  if (!cx5) { restaurarPadraoRedacao(5); cx5 = g('relatorio-caixa-5'); }
+
+  var inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  var numProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || '0029.028061/2026-61';
+
+  // Formatação do Bloco 1 (Identificação / Metadados)
+  var linhasCx1 = (cx1 || '').split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
+  var metaLinesHtml = linhasCx1.map(function(linha){
+    var idx = linha.indexOf(':');
+    if (idx > 0) {
+      var k = linha.substring(0, idx);
+      var v = linha.substring(idx + 1);
+      return '<div style="margin-bottom:3px;"><span style="font-weight:bold;color:#000;">' + k + ':</span>' + v + '</div>';
+    }
+    return '<div style="margin-bottom:3px;">' + linha + '</div>';
+  }).join('');
+
+  // Formatação dos blocos textuais 2, 3, 4, 5
+  var formatarSecao = function(texto) {
+    if (!texto) return '';
+    return texto.split('\n\n').map(function(p){
+      return '<p style="text-align:justify; text-indent:1.25cm; margin:0 0 7px 0; line-height:1.35; color:#000; font-size:10pt;">' + p.replace(/\n/g, '<br>') + '</p>';
+    }).join('');
+  };
+
+  var secao2Html = formatarSecao(cx2);
+  var secao3Html = formatarSecao(cx3);
+  var secao4Html = formatarSecao(cx4);
+
+  var styledCx5 = (cx5 || '').replace(/FAVORAVELMENTE/g, '<strong>FAVORAVELMENTE</strong>')
+                             .replace(/DESFAVORAVELMENTE/g, '<strong>DESFAVORAVELMENTE</strong>');
+  var secao5Html = formatarSecao(styledCx5);
+
+  // HTML da Manifestação Técnica exatamente no modelo da Imagem 2 (Barras cinzas, sem borda externa, 17cm de largura, margem 5mm)
+  var htmlConteudo = `
+    <div id="container-manifestacao-render" style="width:642px; max-height:907px; box-sizing:border-box; padding:19px; background:#ffffff; font-family:Arial, Helvetica, sans-serif; color:#000; overflow:hidden; border:none; position:relative;">
+      
+      <!-- Título Principal Centralizado -->
+      <div style="text-align:center; font-size:11.5pt; font-weight:bold; color:#000; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">
+        MANIFESTAÇÃO
+      </div>
+
+      <!-- Seção 1: Identificação (Metadados em cima) -->
+      <div style="font-size:9pt; line-height:1.35; margin-bottom:12px; color:#111; text-align:justify;">
+        ${metaLinesHtml}
+      </div>
+
+      <!-- Seção 2: Fundamentação Constitucional e Legal -->
+      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:9.5pt; color:#111; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+        1. Fundamentação Constitucional e Legal
+      </div>
+      <div style="margin-bottom:10px;">
+        ${secao2Html}
+      </div>
+
+      <!-- Seção 3: Fortalecimento pelo FUNDEB e Legislação Estadual -->
+      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:9.5pt; color:#111; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+        2. Fortalecimento pelo FUNDEB e Legislação Estadual
+      </div>
+      <div style="margin-bottom:10px;">
+        ${secao3Html}
+      </div>
+
+      <!-- Seção 4: Da Análise e Justificativa -->
+      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:9.5pt; color:#111; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+        3. Da Análise e Justificativa
+      </div>
+      <div style="margin-bottom:10px;">
+        ${secao4Html}
+      </div>
+
+      <!-- Seção 5: Conclusão -->
+      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:9.5pt; color:#111; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+        4. Conclusão
+      </div>
+      <div style="margin-bottom:4px;">
+        ${secao5Html}
+      </div>
+
+    </div>
+  `;
+
+  // Elemento invisível para html2canvas renderizar
+  const tempWrapper = document.createElement('div');
+  tempWrapper.style.position = 'fixed';
+  tempWrapper.style.left = '-9999px';
+  tempWrapper.style.top = '0';
+  tempWrapper.innerHTML = htmlConteudo;
+  document.body.appendChild(tempWrapper);
+
+  try {
+    if (typeof html2canvas !== 'function') {
+      throw new Error('Biblioteca html2canvas não encontrada.');
+    }
+
+    const targetElem = tempWrapper.firstElementChild;
+    const canvas = await html2canvas(targetElem, {
+      scale: 2, // Garante nitidez na leitura do texto
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false
+    });
+
+    const jpgUrl = canvas.toDataURL('image/jpeg', 0.95);
+    window._ultimaManifestacaoJPGUrl = jpgUrl;
+
+    if (imgEl) {
+      imgEl.src = jpgUrl;
+      imgEl.style.display = 'block';
+    }
+    if (btnDownload) {
+      btnDownload.href = jpgUrl;
+      btnDownload.download = 'Manifestacao_Tecnica_' + (numProc.replace(/[^0-9a-zA-Z]/g, '_')) + '.jpg';
+    }
+    if (loading) loading.style.display = 'none';
+  } catch (err) {
+    console.error('Erro ao gerar imagem JPG da Manifestação:', err);
+    alert('Não foi possível renderizar a imagem: ' + err.message);
+    if (loading) loading.style.display = 'none';
+  } finally {
+    if (tempWrapper.parentNode) tempWrapper.parentNode.removeChild(tempWrapper);
+  }
+}
+
+function fecharModalManifestacaoJPG() {
+  const modal = document.getElementById('modal-manifestacao-jpg');
+  if (modal) modal.style.display = 'none';
+}
+
+async function copiarImagemManifestacaoJPG() {
+  if (!window._ultimaManifestacaoJPGUrl) {
+    alert('Gere a imagem antes de copiar.');
+    return;
+  }
+  try {
+    const res = await fetch(window._ultimaManifestacaoJPGUrl);
+    const blob = await res.blob();
+    if (navigator.clipboard && window.ClipboardItem) {
+      const img = new Image();
+      img.src = window._ultimaManifestacaoJPGUrl;
+      img.onload = async function() {
+        const c = document.createElement('canvas');
+        c.width = img.width;
+        c.height = img.height;
+        const ctx = c.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        c.toBlob(async function(pngBlob) {
+          try {
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': pngBlob })
+            ]);
+            mostrarNotificacaoToast('📋 Imagem copiada para a área de transferência!');
+          } catch (e) {
+            console.warn('ClipboardItem error, copying as link', e);
+            mostrarNotificacaoToast('Imagem pronta! Clique no botão Baixar Imagem (JPG).');
+          }
+        }, 'image/png');
+      };
+    } else {
+      mostrarNotificacaoToast('Imagem pronta! Clique no botão Baixar Imagem (JPG).');
+    }
+  } catch (err) {
+    console.error('Erro ao copiar imagem:', err);
+    mostrarNotificacaoToast('Use o botão Baixar Imagem (JPG) para salvar o arquivo.');
+  }
+}
+
+window.gerarManifestacaoJPG = gerarManifestacaoJPG;
+window.fecharModalManifestacaoJPG = fecharModalManifestacaoJPG;
+window.copiarImagemManifestacaoJPG = copiarImagemManifestacaoJPG;
