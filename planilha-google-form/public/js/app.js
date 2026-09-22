@@ -2176,7 +2176,7 @@ function renderFormulario() {
     setVal('relatorio-caixa-1', p.relatorioCaixa1 || '');
     setVal('relatorio-caixa-2', p.relatorioCaixa2 || '');
     setVal('relatorio-caixa-3', p.relatorioCaixa3 || '');
-    setVal('relatorio-caixa-4', p.relatorioCaixa4 || '');
+    setVal('relatorio-caixa-4', (p.relatorioCaixa4 && p.relatorioCaixa4.trim()) ? p.relatorioCaixa4 : (p.obs || ''));
     setVal('relatorio-caixa-5', p.relatorioCaixa5 || '');
     if (typeof verificarEPreencherPadroesIniciais === 'function') {
       verificarEPreencherPadroesIniciais();
@@ -8027,16 +8027,12 @@ function restaurarPadraoRedacao(numSecao) {
     el.value = 'A Lei nº 14.113/2020, que regulamenta o FUNDEB, condiciona o recebimento de complementação de recursos federais à existência de regime de colaboração formalizado entre Estado e Municípios (Art. 14, §1º, IV). No âmbito local, a Constituição do Estado de Rondônia (Arts. 187 e 188) reitera os princípios de igualdade de acesso e a cooperação interfederativa.\n\n' +
                'Ademais, a Lei Estadual nº 5.735/2024, que institui o Programa de Alfabetização do Estado de Rondônia (Proalfa Rondônia), estabelece o dever do Estado em prestar cooperação técnica e financeira para o fortalecimento das políticas educacionais municipais. O Eixo 2 do referido programa foca especificamente na melhoria da infraestrutura física e pedagógica das unidades escolares.';
   } else if (numSecao === 4) {
-    // No item 4, o padrão busca os dados de 'Detalhamento' na íntegra
-    var detalheIntegra = (d.detalhamento || d.oficio || '').trim();
+    // REGRA DE OURO: No item 4, o padrão busca única e exclusivamente os dados do campo 'Detalhamento'
+    var detalheIntegra = (d.detalhamento || '').trim();
     if (detalheIntegra) {
       el.value = detalheIntegra;
     } else {
-      if (d.isDesfav) {
-        el.value = 'Ao compulsar os autos instruídos pelo Ofício de Solicitação (' + (d.oficio || 'expediente de solicitação municipal') + ') e pelo correspondente Plano de Trabalho (' + (d.plano || 'documentação técnica acostada') + '), referente à demanda estimada em R$ ' + d.valor + ' para atendimento da ' + d.escola + ' do Município de ' + d.municipio + '/RO, constata-se carência de consistência técnica na discriminação das metas e no cronograma físico-financeiro da despesa. Não restou demonstrada a relação causal direta entre a aquisição pretendida e a efetiva elevação dos indicadores educacionais ou do processo de alfabetização na rede pública. Desse modo, no estágio documental em que os autos se encontram, a proposta não atende aos requisitos e diretrizes fixados pelo Eixo 2 do Programa Proalfa Rondônia para a celebração do regime de colaboração estadual.';
-      } else {
-        el.value = 'Compulsando o Ofício de Solicitação (' + (d.oficio || 'expediente de solicitação municipal') + ') e o respectivo Plano de Trabalho (' + (d.plano || 'proposta de trabalho instruída') + '), verifica-se que a solicitação apresentada pelo Município de ' + d.municipio + '/RO amolda-se plenamente aos objetivos do Proalfa Rondônia, contemplando ' + d.objeto.toLowerCase() + ' para a ' + d.escola + ', com valor global estimado em R$ ' + d.valor + '. As intervenções propostas mostram-se essenciais e prioritárias para modernizar a infraestrutura física e tecnológica da unidade escolar, fortalecendo as práticas pedagógicas e garantindo ambientes confortáveis, salubres e adequados ao pleno desenvolvimento dos estudantes, em estrita consonância com as metas do Eixo 2 do programa.';
-      }
+      el.value = 'Sem detalhamento informado.';
     }
   } else if (numSecao === 5) {
     if (d.isDesfav) {
@@ -8124,26 +8120,59 @@ function aplicarIARedacao(numSecao) {
     } else if (numSecao === 3) {
       el.value = 'A Lei Federal nº 14.113/2020 (FUNDEB, art. 14, §1º, IV) estabelece o regime de colaboração como critério estruturante de gestão e repasse. Em perfeita harmonia, a Constituição de Rondônia (arts. 187 e 188) e a Lei Estadual nº 5.735/2024 (Programa Proalfa Rondônia - Eixo 2: Infraestrutura Física e Pedagógica) respaldam a cooperação técnico-financeira para dotar as escolas municipais de instalações e recursos condignos.';
     } else if (numSecao === 4) {
-      // Determina nível de detalhe ('mais' ou 'menos')
+      // REGRA DE OURO DA IA: Sintetiza única e exclusivamente os dados do campo 'Detalhamento'
       var nivel4 = (window._niveisSecao && window._niveisSecao[4]) || 'mais';
-      var baseDet = (d.detalhamento || d.oficio || '').replace(/\s+/g, ' ').trim();
-      var refDet = baseDet ? (' (' + (baseDet.length > 140 ? baseDet.substring(0, 140) + '...' : baseDet) + ')') : '';
-      var refPlano = d.plano ? d.plano.replace(/\s+/g, ' ').trim() : 'proposta técnica instruída';
+      var detalheBase = (d.detalhamento || '').trim();
 
-      if (nivel4 === 'mais') {
-        // NÍVEL '+ INFORMAÇÕES' (Análise Técnica Pormenorizada fundamentada no Detalhamento e no Proalfa)
-        if (d.isDesfav) {
-          el.value = 'Procedida à instrução instrutória dos autos nº ' + d.numero + ', instaurados a partir da solicitação' + refDet + ' do Município de ' + d.municipio + '/RO, constatou-se a inviabilidade técnica da pretendida destinação do montante estimado de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + '. Da detida leitura do detalhamento apresentado e do Plano de Trabalho (' + refPlano + '), extrai-se inconsistência material e déficit quanto à correlação pedagógica exigida pelas balizas do Eixo 2 do Proalfa Rondônia, disciplinado pela Lei Estadual nº 5.735/2024, cuja destinação legal vincula recursos à garantia do letramento e suporte às salas de aula. A instrução técnica carece de parâmetros quantitativos essenciais e pesquisa mercadológica em fontes oficiais, o que obsta o regular aporte de recursos do Estado no presente momento processual.';
-        } else {
-          el.value = 'A análise técnica dos autos nº ' + d.numero + ' evidencia que a solicitação formalizada pelo Município de ' + d.municipio + '/RO' + refDet + ' cumpre os requisitos de admissibilidade pedagógica e orçamentária vigentes. O detalhamento instruído fundamenta o investimento estimado em R$ ' + d.valor + ', destinado especificamente à execução de ' + d.objeto.toLowerCase() + ' em favor da ' + d.escola + '. A consecução desse objeto guarda estrita consonância com as diretrizes e metas finalísticas do Eixo 2 do Proalfa Rondônia, instituído pela Lei Estadual nº 5.735/2024, ao propiciar a modernização da infraestrutura física e tecnológica e o fortalecimento do ambiente escolar indispensável ao ciclo de aprendizagem e alfabetização, legitimando o amparo do Estado em regime de colaboração.';
-        }
+      if (!detalheBase) {
+        el.value = 'Sem detalhamento informado para sintetização.';
       } else {
-        // NÍVEL '- INFORMAÇÕES' (Síntese Técnica Direta e Concisa com base no Detalhamento)
-        if (d.isDesfav) {
-          el.value = 'Verifica-se que o Processo nº ' + d.numero + ', relativo à solicitação do Município de ' + d.municipio + '/RO' + refDet + ', não preenche as condições de admissibilidade técnica para o montante de R$ ' + d.valor + '. O detalhamento da proposta não comprova nexo com as diretrizes do Eixo 2 do Proalfa (Lei Estadual nº 5.735/2024) para ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ', constatando-se ausência de justificação pedagógica apta à pactuação.';
-        } else {
-          el.value = 'O pleito constante do Processo nº ' + d.numero + ', encaminhado pelo Município de ' + d.municipio + '/RO' + refDet + ', atende aos critérios técnicos estabelecidos. O detalhamento apresentado fundamenta satisfatoriamente a destinação de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + ', demonstrando alinhamento estrito às metas do Eixo 2 do Proalfa Rondônia (Lei Estadual nº 5.735/2024) e plena conformidade orçamentária.';
-        }
+        // Função inteligente de síntese do Detalhamento
+        var sintetizarDetalhamento = function(texto, modo) {
+          // Limpa múltiplos espaços e normaliza quebras
+          var limpo = texto.replace(/\r\n/g, '\n').trim();
+          var paragrafos = limpo.split(/\n+/).map(function(p){ return p.trim(); }).filter(Boolean);
+          var frases = [];
+          paragrafos.forEach(function(p) {
+            var fLista = p.match(/[^.!?]+[.!?]+/g) || [p];
+            fLista.forEach(function(f){
+              var fTrim = f.trim();
+              if (fTrim.length > 15) frases.push(fTrim);
+            });
+          });
+
+          if (frases.length === 0) frases = [limpo];
+
+          if (modo === 'mais') {
+            // MODO '+ INFORMAÇÕES' (Síntese técnica analítica estruturada de 5 a 9 linhas)
+            if (frases.length <= 4) {
+              return 'Trata-se da análise técnica do detalhamento da demanda, cujo teor fundamenta: ' + frases.join(' ') + 
+                     '\n\nA proposta delineia as especificações essenciais para a consecução dos objetivos educacionais pactuados, demonstrando a necessidade direta dos itens descritos para atendimento da demanda escolar.';
+            }
+            var p1 = frases.slice(0, 2).join(' ');
+            var p2 = frases.slice(2, 5).join(' ');
+            var conclusao = frases.slice(5).join(' ');
+            var resultado = 'Trata-se da análise técnica da solicitação com base no detalhamento instruído: ' + p1;
+            if (p2) {
+              resultado += '\n\nQuanto ao escopo e itens planejados, destaca-se que: ' + p2;
+            }
+            if (conclusao) {
+              var concResumo = conclusao.length > 250 ? conclusao.substring(0, 250) + '...' : conclusao;
+              resultado += '\n\nEm síntese, os investimentos detalhados atendem às especificações técnicas necessárias à execução do objeto.';
+            }
+            return resultado;
+          } else {
+            // MODO '- INFORMAÇÕES' (Síntese direta, concisa e objetiva de 3 a 5 linhas)
+            var pCurto = frases.slice(0, 2).join(' ');
+            if (pCurto.length > 280) {
+              pCurto = pCurto.substring(0, 280) + '...';
+            }
+            return 'Síntese do detalhamento da solicitação: ' + pCurto + 
+                   ' As informações prestadas delimitam a necessidade do atendimento e o escopo dos itens discriminados.';
+          }
+        };
+
+        el.value = sintetizarDetalhamento(detalheBase, nivel4);
       }
     } else if (numSecao === 5) {
       // Determina nível de detalhe ('mais' ou 'menos')
@@ -8225,7 +8254,7 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.09
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.10
 // Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
 // Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
 // =========================================================================
