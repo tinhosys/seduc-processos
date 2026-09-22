@@ -3423,7 +3423,7 @@ function imprimirPadrao(filtrados = getFiltrados()) {
             <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${index + 1}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${prefixoFormatado}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:11%;">${p.municipio || '-'}</td>
-            <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+            <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:9px; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:15%;">${p.interessado || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; text-transform: uppercase; font-size:10px; width:8%;">${p.status || '-'}</td>
@@ -3540,7 +3540,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${index + 1}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
-        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
@@ -3749,7 +3749,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
-          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
@@ -3987,7 +3987,7 @@ function imprimirDetalhado() {
         <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${i + 1}</td>
         <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${prefixoFormatado}</td>
         <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:11%;">${p.municipio || '-'}</td>
-        <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+        <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:9px; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
         <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:15%;">${p.interessado || '-'}</td>
         <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
         <td style="border: 1px solid #ccc; padding: 2px; text-transform: uppercase; font-size:10px; width:8%;">${p.status || '-'}</td>
@@ -7004,15 +7004,39 @@ window.renderizarCanvasRelatorioPadrao = function(lista, isSelecao) {
   const horaHoje = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const dataHoraFull = dataHoje + ', ' + new Date().toLocaleTimeString('pt-BR');
 
+  // Função utilitária para quebra inteligente de linha por palavras inteiras (sem quebrar sílabas)
+  const quebrarTextoPorPalavras = (texto, maxLargura, maxLinhas = 2) => {
+    if (!texto) return [];
+    const palavras = String(texto).trim().split(/\s+/).filter(Boolean);
+    if (palavras.length === 0) return [];
+    const linhas = [];
+    let linhaAtual = "";
+    for (let i = 0; i < palavras.length; i++) {
+      const p = palavras[i];
+      const teste = linhaAtual ? (linhaAtual + " " + p) : p;
+      if (ctx.measureText(teste).width <= maxLargura || !linhaAtual) {
+        linhaAtual = teste;
+      } else {
+        linhas.push(linhaAtual);
+        linhaAtual = p;
+        if (maxLinhas && linhas.length === maxLinhas - 1) break;
+      }
+    }
+    if (linhaAtual && (!maxLinhas || linhas.length < maxLinhas)) {
+      linhas.push(linhaAtual);
+    }
+    return linhas;
+  };
+
   const cols = [
     { label: 'Nº', width: 36, align: 'center' },
     { label: 'PREFIXO', width: 86, align: 'left' },
-    { label: 'MUNICÍPIO', width: 130, align: 'left' },
-    { label: 'PROCESSO SEI', width: 144, align: 'left' },
-    { label: 'INTERESSADO', width: 174, align: 'left' },
-    { label: 'OBJETO / FINALIDADE', width: 260, align: 'left' },
-    { label: 'STATUS', width: 105, align: 'left' },
-    { label: 'LOCAL', width: 85, align: 'left' },
+    { label: 'MUNICÍPIO', width: 120, align: 'left' },
+    { label: 'PROCESSO SEI', width: 160, align: 'left' },
+    { label: 'INTERESSADO', width: 164, align: 'left' },
+    { label: 'OBJETO / FINALIDADE', width: 250, align: 'left' },
+    { label: 'STATUS', width: 114, align: 'left' },
+    { label: 'LOCAL', width: 90, align: 'left' },
     { label: 'DATA', width: 75, align: 'center' },
     { label: 'VALOR R$', width: 105, align: 'right' }
   ];
@@ -7145,55 +7169,50 @@ window.renderizarCanvasRelatorioPadrao = function(lista, isSelecao) {
       } else if (c.label === 'MUNICÍPIO') {
         ctx.font = '10px Arial, sans-serif';
         ctx.fillStyle = '#0f172a';
-        let val = (p.municipio || '-').trim();
-        if (val.length > 18) {
-          ctx.fillText(val.substring(0, 16), textX, y + 17);
-          ctx.fillText(val.substring(16, 32), textX, y + 31);
+        const val = (p.municipio || '-').trim();
+        const linhasMun = quebrarTextoPorPalavras(val, c.width - 12, 2);
+        if (linhasMun.length === 1) {
+          ctx.fillText(linhasMun[0], textX, y + 26);
+        } else if (linhasMun.length >= 2) {
+          ctx.fillText(linhasMun[0], textX, y + 17);
+          ctx.fillText(linhasMun[1], textX, y + 31);
         } else {
-          ctx.fillText(val, textX, y + 26);
+          ctx.fillText('-', textX, y + 26);
         }
       } else if (c.label === 'PROCESSO SEI') {
-        ctx.font = '9.5px Arial, sans-serif';
+        // REGRA DE OURO: Processo na mesma linha sempre
+        ctx.font = '9px Arial, sans-serif';
         ctx.fillStyle = '#0284c7';
-        let val = (p.numero || p.processo || '-').trim();
-        if (val.length > 16) {
-          ctx.fillText(val.substring(0, 15), textX, y + 17);
-          ctx.fillText(val.substring(15, 30), textX, y + 31);
-        } else {
-          ctx.fillText(val, textX, y + 26);
-        }
+        const val = (p.numero || p.processo || '-').trim();
+        ctx.fillText(val, textX, y + 26);
       } else if (c.label === 'INTERESSADO') {
-        ctx.font = '10px Arial, sans-serif';
+        ctx.font = '9.5px Arial, sans-serif';
         ctx.fillStyle = '#0f172a';
-        let val = (p.interessado || '-').trim();
-        if (val.includes(' - ')) {
-          const parts = val.split(' - ');
-          ctx.fillText(parts[0].substring(0, 26), textX, y + 17);
-          ctx.fillText(('- ' + parts.slice(1).join(' - ')).substring(0, 26), textX, y + 31);
-        } else if (val.includes(' | ')) {
-          const parts = val.split(' | ');
-          ctx.fillText(parts[0].substring(0, 26), textX, y + 17);
-          ctx.fillText(('| ' + parts.slice(1).join(' | ')).substring(0, 26), textX, y + 31);
-        } else if (val.length > 24) {
-          ctx.fillText(val.substring(0, 24), textX, y + 17);
-          ctx.fillText(val.substring(24, 48), textX, y + 31);
+        const val = (p.interessado || '-').trim();
+        const linhasInteressado = quebrarTextoPorPalavras(val, c.width - 12, 2);
+        if (linhasInteressado.length === 1) {
+          ctx.fillText(linhasInteressado[0], textX, y + 26);
+        } else if (linhasInteressado.length >= 2) {
+          ctx.fillText(linhasInteressado[0], textX, y + 17);
+          ctx.fillText(linhasInteressado[1], textX, y + 31);
         } else {
-          ctx.fillText(val, textX, y + 26);
+          ctx.fillText('-', textX, y + 26);
         }
       } else if (c.label === 'OBJETO / FINALIDADE') {
         ctx.font = '9.5px Arial, sans-serif';
         ctx.fillStyle = '#1e293b';
-        let val = (p.objeto || '-').trim();
-        if (val.length > 36) {
-          const mid = val.lastIndexOf(' ', 35);
-          const splitIdx = mid > 15 ? mid : 35;
-          ctx.fillText(val.substring(0, splitIdx).trim(), textX, y + 17);
-          ctx.fillText(val.substring(splitIdx).trim().substring(0, 36), textX, y + 31);
+        const val = (p.objeto || '-').trim();
+        const linhasObj = quebrarTextoPorPalavras(val, c.width - 12, 2);
+        if (linhasObj.length === 1) {
+          ctx.fillText(linhasObj[0], textX, y + 26);
+        } else if (linhasObj.length >= 2) {
+          ctx.fillText(linhasObj[0], textX, y + 17);
+          ctx.fillText(linhasObj[1], textX, y + 31);
         } else {
-          ctx.fillText(val, textX, y + 26);
+          ctx.fillText('-', textX, y + 26);
         }
       } else if (c.label === 'STATUS') {
-        ctx.font = 'bold 9.5px Arial, sans-serif';
+        ctx.font = 'bold 9px Arial, sans-serif';
         let val = (p.status || '-').trim().toUpperCase();
         if (val.includes('AUTORIZADO') || val.includes('PAGO') || val.includes('CONCLU')) {
           ctx.fillStyle = '#047857';
@@ -7205,31 +7224,28 @@ window.renderizarCanvasRelatorioPadrao = function(lista, isSelecao) {
           ctx.fillStyle = '#475569';
         }
 
-        if (val.startsWith('N/') || val.startsWith('N/ ')) {
-          ctx.fillText('N/', textX, y + 17);
-          ctx.fillText(val.substring(2).trim().substring(0, 12), textX, y + 31);
-        } else if (val.startsWith('P/') || val.startsWith('P/ ')) {
-          ctx.fillText('P/', textX, y + 17);
-          ctx.fillText(val.substring(2).trim().substring(0, 12), textX, y + 31);
-        } else if (val.length > 13) {
-          ctx.fillText(val.substring(0, 12), textX, y + 17);
-          ctx.fillText(val.substring(12, 24), textX, y + 31);
+        // Quebra SEMPRE por palavras inteiras (sem cortar sílabas)
+        const linhasStatus = quebrarTextoPorPalavras(val, c.width - 10, 2);
+        if (linhasStatus.length === 1) {
+          ctx.fillText(linhasStatus[0], textX, y + 26);
+        } else if (linhasStatus.length >= 2) {
+          ctx.fillText(linhasStatus[0], textX, y + 17);
+          ctx.fillText(linhasStatus[1], textX, y + 31);
         } else {
-          ctx.fillText(val, textX, y + 26);
+          ctx.fillText('-', textX, y + 26);
         }
       } else if (c.label === 'LOCAL') {
-        ctx.font = '9.5px Arial, sans-serif';
+        ctx.font = '9px Arial, sans-serif';
         ctx.fillStyle = '#0f172a';
         let val = (p.local || p.localizacao || '-').trim();
-        if (val.includes('|')) {
-          const parts = val.split('|');
-          ctx.fillText(parts[0].trim().substring(0, 13), textX, y + 17);
-          ctx.fillText(('| ' + parts.slice(1).join('|').trim()).substring(0, 13), textX, y + 31);
-        } else if (val.length > 12) {
-          ctx.fillText(val.substring(0, 11), textX, y + 17);
-          ctx.fillText(val.substring(11, 23), textX, y + 31);
+        const linhasLocal = quebrarTextoPorPalavras(val, c.width - 10, 2);
+        if (linhasLocal.length === 1) {
+          ctx.fillText(linhasLocal[0], textX, y + 26);
+        } else if (linhasLocal.length >= 2) {
+          ctx.fillText(linhasLocal[0], textX, y + 17);
+          ctx.fillText(linhasLocal[1], textX, y + 31);
         } else {
-          ctx.fillText(val, textX, y + 26);
+          ctx.fillText('-', textX, y + 26);
         }
       } else if (c.label === 'DATA') {
         ctx.font = '10px Arial, sans-serif';
@@ -7355,7 +7371,7 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
-          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:12%;">${(p.numero || '-').replace(/\s+/g, '<br>')}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
@@ -7400,7 +7416,7 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
           <span>Total: <b>${lista.length} processos</b></span> &nbsp;|&nbsp; <span>Valor Total: <b>R$ ${formatNumberOnly(totalValor)}</b></span>
         </div>
       </div>
-      <table style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word;">
+      <table style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-break:normal; overflow-wrap:break-word; hyphens:none;">
         <colgroup>
           <col style="width: 3%;"><col style="width: 7%;"><col style="width: 11%;"><col style="width: 12%;"><col style="width: 14%;">
           <col style="width: 19%;"><col style="width: 8%;"><col style="width: 7%;"><col style="width: 7%;"><col style="width: 12%;">
@@ -8254,7 +8270,7 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.10
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.11
 // Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
 // Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
 // =========================================================================
