@@ -254,6 +254,7 @@ class MultiSelect {
         });
         this.updateButtonText();
         this.select.dispatchEvent(new Event("change", { bubbles: true }));
+        this.select.dispatchEvent(new Event("input", { bubbles: true }));
       }
     });
 
@@ -270,6 +271,7 @@ class MultiSelect {
         opt.selected = checkbox.checked;
         this.updateButtonText();
         this.select.dispatchEvent(new Event("change", { bubbles: true }));
+        this.select.dispatchEvent(new Event("input", { bubbles: true }));
       });
 
       item.appendChild(checkbox);
