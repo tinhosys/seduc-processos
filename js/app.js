@@ -4809,206 +4809,193 @@ function copiarManifestoTCE() {
 
 // ──────────────────────────────────────────────────────────────────────────────
 // RELATÓRIO PDF COMPLETO — SEDUC-RO / CAM
-// Substitui a função imprimirManifestoTCE em js/app.js (v1.3.02)
+// Substitui a função imprimirManifestoTCE em js/app.js (v1.3.03 - Padrão SEI Rondônia)
+if (typeof setManifestacaoTipo !== 'function') {
+  window.setManifestacaoTipo = function(tipo) {
+    var hiddenInput = document.getElementById('form-manifestacao-tipo');
+    var btnFav = document.getElementById('btn-manifestacao-fav');
+    var btnDesfav = document.getElementById('btn-manifestacao-desfav');
+    if (hiddenInput) hiddenInput.value = tipo;
 
-// Controle da Chave de Manifestação Técnica (Favorável / Desfavorável - Imagem 4)
-function setManifestacaoTipo(tipo) {
-  const hiddenInput = document.getElementById('form-manifestacao-tipo');
-  const btnFav = document.getElementById('btn-manifestacao-fav');
-  const btnDesfav = document.getElementById('btn-manifestacao-desfav');
-  if (hiddenInput) hiddenInput.value = tipo;
-
-  if (tipo === 'favoravel') {
-    if (btnFav) {
-      btnFav.style.background = 'linear-gradient(135deg,#10b981,#059669)';
-      btnFav.style.color = '#fff';
-      btnFav.style.fontWeight = '800';
-      btnFav.style.boxShadow = '0 2px 8px rgba(16,185,129,0.35)';
+    if (tipo === 'favoravel') {
+      if (btnFav) {
+        btnFav.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+        btnFav.style.color = '#fff';
+        btnFav.style.fontWeight = '800';
+        btnFav.style.boxShadow = '0 2px 8px rgba(16,185,129,0.35)';
+      }
+      if (btnDesfav) {
+        btnDesfav.style.background = 'none';
+        btnDesfav.style.color = '#94a3b8';
+        btnDesfav.style.fontWeight = '700';
+        btnDesfav.style.boxShadow = 'none';
+      }
+    } else {
+      if (btnDesfav) {
+        btnDesfav.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+        btnDesfav.style.color = '#fff';
+        btnDesfav.style.fontWeight = '800';
+        btnDesfav.style.boxShadow = '0 2px 8px rgba(239,68,68,0.35)';
+      }
+      if (btnFav) {
+        btnFav.style.background = 'none';
+        btnFav.style.color = '#94a3b8';
+        btnFav.style.fontWeight = '700';
+        btnFav.style.boxShadow = 'none';
+      }
     }
-    if (btnDesfav) {
-      btnDesfav.style.background = 'none';
-      btnDesfav.style.color = '#94a3b8';
-      btnDesfav.style.fontWeight = '700';
-      btnDesfav.style.boxShadow = 'none';
-    }
-  } else {
-    if (btnDesfav) {
-      btnDesfav.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
-      btnDesfav.style.color = '#fff';
-      btnDesfav.style.fontWeight = '800';
-      btnDesfav.style.boxShadow = '0 2px 8px rgba(239,68,68,0.35)';
-    }
-    if (btnFav) {
-      btnFav.style.background = 'none';
-      btnFav.style.color = '#94a3b8';
-      btnFav.style.fontWeight = '700';
-      btnFav.style.boxShadow = 'none';
-    }
-  }
-}
-window.setManifestacaoTipo = setManifestacaoTipo;
-
-
-// ============================================================
-// REDAÇÕES TÉCNICAS PROFISSIONAIS: FAVORÁVEL E DESFAVORÁVEL (CAM/SEDUC-RO)
-// ============================================================
-function gerarRedacaoRelatorioCAM(tipoManifestacao, p) {
-  p = p || {};
-  const ff = function(v) { return (v && String(v).trim()) ? String(v).trim() : ''; };
-  const escola = ff(p.interessado) || 'Unidade Escolar';
-  const mun = ff(p.municipio) || 'Rondônia';
-  const objeto = ff(p.objeto) || 'ações de melhoria da infraestrutura e aquisição de materiais pedagógicos';
-  const oficio = ff(p.detalhamentoItens); // Imagem 5: Ofício de Solicitação / Itens pedidos
-  const plano = ff(p.demaisObservacoes);   // Imagem 5: Plano de Trabalho / Demais observações
-
-  let textoOficioEPlano = '';
-  if (oficio && plano) {
-    textoOficioEPlano = ' Conforme demonstrado no <b>Ofício de Solicitação</b> (' + oficio + ') e detalhado no <b>Plano de Trabalho</b> (' + plano + '), ';
-  } else if (oficio) {
-    textoOficioEPlano = ' Conforme demonstrado no <b>Ofício de Solicitação</b> (' + oficio + '), ';
-  } else if (plano) {
-    textoOficioEPlano = ' Conforme previsto no <b>Plano de Trabalho</b> (' + plano + '), ';
-  }
-
-  if (tipoManifestacao === 'desfavoravel') {
-    return {
-      tituloManifestacao: 'DESFAVORÁVEL',
-      item1: 'O exame técnico do pleito formulado para a unidade escolar <b>' + escola + '</b>, no município de <b>' + mun + '</b>, tendo por objeto <b>' + objeto + '</b>, evidenciou incongruências materiais e carência de aderência estrita às finalidades pedagógicas prioritárias da cooperação federativa estadual.' +
-             (textoOficioEPlano ? '<br><br>' + textoOficioEPlano + 'a peça instrutória não apresenta elementos técnicos bastantes que demonstrem a relação causal direta entre o investimento pretendido e a melhoria efetiva do ambiente pedagógico e dos resultados de aprendizagem.' : '<br><br>Conquanto o expediente invoque a necessidade de intervenção, a ausência de detalhamento pormenorizado impede a constatação de seu real impacto sobre a ambiência escolar e sobre os objetivos educacionais de ensino.') +
-             '<br><br>A ausência de consistência técnica no cronograma ou na especificação dos itens obsta a verificação da viabilidade e eficácia da demanda.',
-      
-      item2: 'Não se olvida que o regime de colaboração federativa estatuído nos <b>arts. 205, 30, inciso VI, e 211, § 4º, da Constituição Federal de 1988</b>, bem como nos <b>arts. 8º e 10, incisos II e VI, da Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996 - LDB)</b>, impõe ao Estado o dever de atuar supletivamente em apoio aos entes municipais. Contudo, essa atuação vincula-se às normas do <b>Novo FUNDEB (Lei Federal nº 14.113/2020, arts. 14, § 1º, IV, e 50)</b>, que exigem que as transferências em regime de colaboração estejam respaldadas na efetividade e no alcance compartilhado de resultados educacionais mensuráveis.' +
-             '<br><br>No âmbito estadual, a <b>Lei Estadual nº 5.735/2024 (Proalfa Rondônia)</b> condiciona os aportes e apoios estaduais — mormente no tocante ao seu <b>Eixo 2 (Infraestrutura Física e Pedagógica)</b> — à demonstração inequívoca de sinergia com o desenvolvimento cognitivo e alfabetizador dos estudantes, em estrita observância aos <b>arts. 187 e 188 da Constituição do Estado de Rondônia</b>. A ausência de comprovação técnica cabal obsta o reconhecimento da conformidade legal indispensável à celebração do ato cooperativo.',
-      
-      item3: 'Por todo o exposto, ante a desconformidade com as diretrizes do <b>Proalfa Rondônia (Eixo 2)</b> e as inconsistências constatadas na instrução processual, esta Gerência manifesta-se de forma <strong>DESFAVORÁVEL</strong> ao prosseguimento da solicitação em seu estágio atual.' +
-             '<br><br>Recomenda-se a devolução dos autos à municipalidade de <b>' + mun + '</b> para a realização de <b>saneamento prévio</b>, oportunizando-se a correção das pendências apontadas, o redimensionamento do Plano de Trabalho e a devida comprovação do liame pedagógico, como condição impreterível para eventual reapreciação técnica.'
-    };
-  }
-
-  // Padrão: FAVORÁVEL
-  return {
-    tituloManifestacao: 'FAVORÁVEL',
-    item1: 'O investimento contemplará <b>' + objeto + '</b> na unidade escolar <b>' + escola + '</b>, localizada no município de <b>' + mun + '</b>. ' +
-           (textoOficioEPlano ? '<br><br>' + textoOficioEPlano + 'o pleito visa a consecução direta de ações voltadas à melhoria da infraestrutura e dos recursos pedagógicos da rede pública.' : '') +
-           '<br><br>Essa iniciativa fortalecerá substancialmente a capacidade de atendimento da instituição escolar, aprimorando as condições de ensino-aprendizagem e garantindo padrões adequados de conforto, acolhimento e funcionalidade aos ambientes educacionais. O atendimento a esta demanda contribui de forma direta para a elevação dos índices de desenvolvimento da educação básica e o pleno bem-estar da comunidade escolar.',
-    
-    item2: 'A cooperação técnica e financeira pretendida encontra pleno amparo na arquitetura constitucional e legal do federalismo cooperativo. A <b>Constituição Federal de 1988 (arts. 205, 30, VI, e 211, § 4º)</b> e a <b>Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996, arts. 8º e 10)</b> consagram o dever compartilhado entre Estado e Municípios para assegurar a universalização do ensino com padrão de qualidade.' +
-           '<br><br>A <b>Lei Federal nº 14.113/2020 (Novo FUNDEB, art. 14, § 1º, IV)</b> condiciona o recebimento de recursos federais à formalização de regimes de colaboração entre Estado e Municípios. Em harmonia com esse preceito e com os <b>arts. 187 e 188 da Constituição do Estado de Rondônia</b>, a <b>Lei Estadual nº 5.735/2024 (Proalfa Rondônia)</b> estabelece o dever estatal de cooperação técnica e financeira, destacando no <b>Eixo 2</b> o fortalecimento prioritário da infraestrutura física e pedagógica das unidades de ensino.',
-    
-    item3: 'Diante do exposto e em atendimento à solicitação formulada pelo Requerente, esta Gerência manifesta-se <strong>FAVORAVELMENTE</strong> ao pleito do Município de <strong>' + mun + '</strong>, fundamentado na Lei Estadual nº 5.735/2024 e nas normas de colaboração federativa.' +
-           '<br><br>Submetemos os presentes autos à apreciação superior para deliberação quanto à oportunidade, conveniência administrativa e celebração do respectivo regime de colaboração.'
   };
 }
 
+// Helper para valor monetário formatado
+function formatarValorMoeda(v) {
+  if (!v) return '0,00';
+  var n = parseFloat(String(v).replace(/[R$\s]/g, '').replace(/\./g, '').replace(',', '.'));
+  if (isNaN(n) || n === 0) return '0,00';
+  return n.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// Brasão Oficial de Rondônia (Vetorial)
+var BRASAO_RO_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 115' width='65' height='75'><path d='M50 5 L88 22 L88 60 C88 84 50 108 50 108 C50 108 12 84 12 60 L12 22 Z' fill='%23002B7F' stroke='%23008000' stroke-width='3'/><path d='M50 14 L78 28 L78 58 C78 77 50 96 50 96 C50 96 22 77 22 58 L22 28 Z' fill='%23FFFFFF'/><polygon points='50,22 58,40 78,40 62,52 68,70 50,58 32,70 38,52 22,40 42,40' fill='%23FFD700' stroke='%23B8860B' stroke-width='1'/><circle cx='50' cy='50' r='14' fill='%23002B7F'/><polygon points='50,38 54,46 63,46 56,52 59,60 50,55 41,60 44,52 37,46 46,46' fill='%23FFFFFF'/><path d='M18 64 Q50 90 82 64' fill='none' stroke='%23008000' stroke-width='4'/></svg>";
+
 function gerarTextoManifestoTCE(p) {
   p = p || {};
-  const tipoManifestacao = (p.manifestacaoTipo || 'favoravel').toLowerCase();
-  const red = gerarRedacaoRelatorioCAM(tipoManifestacao, p);
-  const dataExtenso = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+  var tipoManifestacao = (p.manifestacaoTipo || 'favoravel').toLowerCase();
+  var numeroProc = p.numero || '0029.028061/2026-61';
+  var escola = p.interessado || 'Unidade Escolar';
+  var mun = p.municipio || 'Porto Velho';
+  var obj = p.objeto || 'aquisição de material permanente';
+  var oficio = (p.detalhamentoItens || '').trim();
+  var plano = (p.demaisObservacoes || '').trim();
+  var vl = formatarValorMoeda(p.valorOf || p.valorPlan);
 
-  return 'RELATÓRIO DE MONITORAMENTO & MANIFESTAÇÃO TÉCNICA (CAM/SEDUC-RO)\n' +
-         'Processo: ' + (p.numero || 'S/N') + ' | Município: ' + (p.municipio || '-') + '\n' +
-         'Interessado/Escola: ' + (p.interessado || '-') + '\n' +
-         'Objeto: ' + (p.objeto || '-') + '\n' +
-         'Parecer: ' + red.tituloManifestacao + '\n\n' +
-         '1. IMPACTO E OBJETIVO DO INVESTIMENTO\n' +
-         red.item1.replace(/<[^>]+>/g, '') + '\n\n' +
-         '2. FORTALECIMENTO PELO FUNDEB E LEGISLAÇÃO ESTADUAL\n' +
-         red.item2.replace(/<[^>]+>/g, '') + '\n\n' +
-         '3. CONCLUSÃO E MANIFESTAÇÃO TÉCNICA\n' +
-         red.item3.replace(/<[^>]+>/g, '') + '\n\n' +
-         'Porto Velho - RO, ' + dataExtenso + '.';
+  var secao3 = '';
+  var secao4 = '';
+
+  if (tipoManifestacao === 'desfavoravel') {
+    secao3 = 'Ao compulsar os autos instruídos pelo Ofício de Solicitação (' + (oficio || 'expediente de solicitação') + ') e pelo respectivo Plano de Trabalho (' + (plano || 'documento anexo') + '), referente à demanda estimada em R$ ' + vl + ' para a ' + escola + ' do Município de ' + mun + '/RO, constata-se carência de consistência técnica na discriminação das metas e no cronograma físico-financeiro. Não restou demonstrada a relação causal direta entre a aquisição pretendida e a efetiva elevação dos indicadores educacionais da unidade. Desse modo, no estágio em que os autos se encontram, a proposta não preenche os requisitos mínimos fixados pelo Eixo 2 do Programa Proalfa Rondônia para celebração de regime cooperativo.';
+    secao4 = 'Diante do exposto, manifestamo-nos DESFAVORAVELMENTE à aprovação do pleito no presente estágio, sugerindo a devolução dos autos ao Município de ' + mun + '/RO para realização de saneamento prévio e complementação do Plano de Trabalho, como condição necessária para posterior deliberação superior.';
+  } else {
+    secao3 = 'Compulsando o Ofício de Solicitação (' + (oficio || 'expediente de solicitação') + ') e o Plano de Trabalho (' + (plano || 'documento de planejamento') + '), verifica-se que a solicitação apresentada pelo Município de ' + mun + '/RO amolda-se plenamente aos objetivos do Proalfa Rondônia, contemplando ' + (obj ? obj.toLowerCase() : 'aquisição de materiais e adequações pedagógicas') + ' para a ' + escola + ', no valor estimado de R$ ' + vl + '. As intervenções mostram-se essenciais para modernizar a infraestrutura e qualificar os ambientes pedagógicos da unidade, em consonância com o Eixo 2 do referido programa estadual, atendendo às necessidades discentes e fortalecendo o processo de ensino-aprendizagem.';
+    secao4 = 'Diante do exposto, e em atendimento à solicitação da municipalidade, esta Gerência manifesta-se FAVORAVELMENTE ao pleito do Município de ' + mun + '/RO, fundamentado na Lei Estadual nº 5.735/2024. Submetemos os presentes autos à apreciação superior para deliberação quanto à oportunidade, conveniência administrativa e viabilidade de celebração do regime de colaboração.';
+  }
+
+  return 'GOVERNO DO ESTADO DE RONDÔNIA\n' +
+         'SECRETARIA DE ESTADO DA EDUCAÇÃO - SEDUC\n' +
+         'Gerência de Diagnóstico Situacional dos Municípios - SEDUC-GDSM / CAM\n\n' +
+         'MANIFESTAÇÃO TÉCNICA (' + (tipoManifestacao === 'desfavoravel' ? 'DESFAVORÁVEL' : 'FAVORÁVEL') + ')\n' +
+         'Processo: ' + numeroProc + ' | Município: ' + mun + '/RO\n' +
+         'Assunto: Manifestação de interesse em regime de colaboração - ' + obj + ' para a ' + escola + '\n\n' +
+         '1. Fundamentação Constitucional e Legal\n' +
+         'A legislação educacional brasileira estabelece o dever de cooperação entre os entes federados para a garantia do direito à educação (CF Art. 205, 30 VI, 211 §4º e LDB nº 9.394/96 Arts. 8º e 10).\n\n' +
+         '2. Fortalecimento pelo FUNDEB e Legislação Estadual\n' +
+         'A Lei nº 14.113/2020 (FUNDEB Art. 14 §1º IV), Constituição de RO (Arts. 187 e 188) e Lei Estadual nº 5.735/2024 (Proalfa Rondônia - Eixo 2).\n\n' +
+         '3. Da Análise e Justificativa\n' + secao3 + '\n\n' +
+         '4. Conclusão\n' + secao4;
 }
 
 function imprimirManifestoTCE() {
   var p = window._manifestoProcessoAtual || {};
 
   var ff = function(v) { return (v && String(v).trim()) ? String(v).trim() : ''; };
-  var fv = function(v) {
-    var n = parseFloat(String(v || 0).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.'));
-    return (n > 0) ? 'R$&nbsp;' + n.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '';
-  };
-
-  var today = new Date().toLocaleDateString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric'});
-  var numero    = ff(p.numero)      || 'S/N';
-  var municipio = ff(p.municipio)   || '&mdash;';
-  var escola    = ff(p.interessado) || '&mdash;';
-  var objeto    = ff(p.objeto)      || '&mdash;';
-  var ano       = ff(p.ano)         || '&mdash;';
-  var obs       = ff(p.obs);
-  var valorOf   = fv(p.valorOf);
-  var valorPlan = fv(p.valorPlan);
-
-  var categMap = {F:'Fomento',C:'Conv&ecirc;nio',TC:'Termo de Coopera&ccedil;&atilde;o'};
-  var tipoMap  = {OB:'Obras',MP:'Mat. Permanente',MC:'Mat. Consumo',SI:'Sistema',TR:'Treinamento',OU:'Outros'};
-  var categ = categMap[ff(p.categoria)] || ff(p.categoria) || '&mdash;';
-  var tipo  = tipoMap[(ff(p.tipo)||'').toUpperCase()] || ff(p.tipo) || '&mdash;';
-
+  var numeroProc = ff(p.numero) || '0029.028061/2026-61';
+  var mun        = ff(p.municipio) || 'Porto Velho';
+  var escola     = ff(p.interessado) || 'Unidade Escolar Municipal';
+  var objeto     = ff(p.objeto) || 'aquisição de material permanente';
+  var oficio     = ff(p.detalhamentoItens);
+  var plano      = ff(p.demaisObservacoes);
+  var vl         = formatarValorMoeda(p.valorOf || p.valorPlan);
   var tipoManifestacao = (p.manifestacaoTipo || 'favoravel').toLowerCase();
-  var red = gerarRedacaoRelatorioCAM(tipoManifestacao, p);
+  var isDesfav   = (tipoManifestacao === 'desfavoravel');
+
+  var todayLong = new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'long', year:'numeric'});
+
+  // SEÇÃO 3: RIGOROSAMENTE ENTRE 5 E 9 LINHAS NO IMPRESSO A4 (Arial 11pt, recuo 1.25cm, 1.4 linha)
+  var secao3Html = '';
+  if (isDesfav) {
+    secao3Html = 'Ao compulsar os autos instruídos pelo Ofício de Solicitação (' + (oficio || 'expediente de solicitação municipal') + ') e pelo correspondente Plano de Trabalho (' + (plano || 'documentação técnica acostada') + '), referente à demanda estimada em R$ ' + vl + ' para atendimento da ' + escola + ' do Município de ' + mun + '/RO, constata-se carência de consistência técnica na discriminação das metas e no cronograma físico-financeiro da despesa. Não restou demonstrada a relação causal direta entre a aquisição pretendida e a efetiva elevação dos indicadores educacionais ou do processo de alfabetização na rede pública. Desse modo, no estágio documental em que os autos se encontram, a proposta não atende aos requisitos e diretrizes fixados pelo Eixo 2 do Programa Proalfa Rondônia para a celebração do regime de colaboração estadual.';
+  } else {
+    secao3Html = 'Compulsando o Ofício de Solicitação (' + (oficio || 'expediente de solicitação municipal') + ') e o respectivo Plano de Trabalho (' + (plano || 'proposta de trabalho instruída') + '), verifica-se que a solicitação apresentada pelo Município de ' + mun + '/RO amolda-se plenamente aos objetivos do Proalfa Rondônia, contemplando ' + objeto.toLowerCase() + ' para a ' + escola + ', com valor global estimado em R$ ' + vl + '. As intervenções propostas mostram-se essenciais e prioritárias para modernizar a infraestrutura física e tecnológica da unidade escolar, fortalecendo as práticas pedagógicas e garantindo ambientes confortáveis, salubres e adequados ao pleno desenvolvimento dos estudantes, em estrita consonância com as metas do Eixo 2 do programa.';
+  }
+
+  // SEÇÃO 4: RIGOROSAMENTE ENTRE 3 E 5 LINHAS NO IMPRESSO A4
+  var secao4Html = '';
+  if (isDesfav) {
+    secao4Html = 'Diante do exposto, esta Gerência manifesta-se <strong>DESFAVORAVELMENTE</strong> ao prosseguimento e aprovação do pleito na presente instrução processual, recomendando o retorno dos autos ao Município de ' + mun + '/RO para realização de saneamento prévio e complementação do Plano de Trabalho, como condição indispensável para posterior apreciação e deliberação superior.';
+  } else {
+    secao4Html = 'Diante do exposto, e em atendimento à solicitação formulada pela municipalidade, esta Gerência manifesta-se <strong>FAVORAVELMENTE</strong> ao pleito do Município de ' + mun + '/RO, fundamentado na Lei Estadual nº 5.735/2024. Submetemos os presentes autos à apreciação superior para deliberação quanto à oportunidade, conveniência administrativa e viabilidade de celebração do regime de colaboração.';
+  }
 
   var css =
-    '@page{size:A4 portrait;margin:12mm 15mm 12mm 15mm}*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;font-size:9.5pt;color:#111;background:#fff;line-height:1.45;position:relative}' +
-    '.hdr{display:flex;align-items:center;gap:15px;border-bottom:2.5px solid #1a3a6b;padding-bottom:10px;margin-bottom:12px}.hdr-txt{flex:1}' +
-    '.hdr-gov{font-weight:800;color:#0f172a;font-size:11pt;letter-spacing:0.5px;text-transform:uppercase}.hdr-sec{font-weight:700;color:#0284c7;font-size:10pt;text-transform:uppercase}.hdr-dep{font-weight:700;color:#334155;font-size:9pt;text-transform:uppercase}' +
-    '.tbar{background:#1a3a6b;color:#fff;text-align:center;padding:7px 15px;border-radius:4px;margin-bottom:12px;font-size:11pt;font-weight:bold;text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between;align-items:center;}' +
-    '.sec-title{font-size:10pt;font-weight:bold;color:#1a3a6b;text-transform:uppercase;border-bottom:1px solid #cbd5e1;padding-bottom:3px;margin:14px 0 7px 0}' +
-    '.info-table{width:100%;border-collapse:collapse;margin-bottom:12px;font-size:9.5pt}.info-table td{padding:4px 2px;vertical-align:top}.info-table .lbl{font-weight:bold;color:#334155;width:15%;padding-right:5px}.info-table .val{width:35%;border-bottom:1px solid #f1f5f9}' +
-    '.obs-block{border:1px solid #000;padding:8px 12px;font-size:9pt;white-space:pre-wrap;line-height:1.4;margin-bottom:10px;background:#fafafa;}' +
-    '.legal-text{font-size:9.5pt;line-height:1.5;text-align:justify;text-indent:2em;margin-bottom:8px;color:#1e293b}' +
-    '.badge-parecer{font-size:9pt;padding:3px 10px;border-radius:4px;font-weight:800;letter-spacing:0.5px;color:#fff;}' +
-    '.badge-fav{background:#10b981;}' +
-    '.badge-desfav{background:#ef4444;}' +
-    '.bottom-container{position:fixed;bottom:0;left:0;right:0;background:#fff;padding-top:10px;}' +
-    '.ft{border-top:1px solid #1a3a6b;padding-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:#64748b}.ft-logo{font-weight:bold;color:#1a3a6b}' +
-    'body{padding-bottom:50px;}' +
-    '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
+    '@page{size:A4 portrait;margin:18mm 20mm 18mm 25mm}*{box-sizing:border-box;margin:0;padding:0}' +
+    'body{font-family:Arial,Helvetica,sans-serif;font-size:11pt;color:#000;background:#fff;line-height:1.45;position:relative;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+    '.hdr-sei{text-align:center;margin-bottom:18px;line-height:1.3}' +
+    '.hdr-brasao{margin-bottom:8px;}' +
+    '.hdr-title{font-size:11pt;font-weight:bold;text-transform:uppercase;color:#000;margin:0;}' +
+    '.hdr-sub{font-size:10.5pt;font-weight:bold;color:#000;margin:2px 0;}' +
+    '.hdr-dept{font-size:9.5pt;font-weight:normal;color:#333;margin:2px 0 0 0;}' +
+    '.doc-title{text-align:center;font-size:12pt;font-weight:bold;margin:16px 0 14px 0;text-transform:uppercase;letter-spacing:0.5px;position:relative;}' +
+    '.badge-sei{display:inline-block;padding:3px 10px;font-size:9pt;font-weight:bold;border-radius:4px;margin-left:10px;vertical-align:middle;}' +
+    '.badge-sei-fav{background:#dcfce7;color:#166534;border:1px solid #166534;}' +
+    '.badge-sei-desfav{background:#fee2e2;color:#991b1b;border:1px solid #991b1b;}' +
+    '.meta-box{margin-bottom:14px;font-size:10.5pt;line-height:1.4;text-align:justify;}' +
+    '.meta-line{margin-bottom:4px;}' +
+    '.meta-label{font-weight:bold;color:#000;}' +
+    '.sec-title{font-size:11pt;font-weight:bold;margin-top:14px;margin-bottom:4px;text-align:justify;color:#000;}' +
+    '.p-sei{text-align:justify;text-indent:1.25cm;margin-top:0;margin-bottom:8px;line-height:1.45;color:#000;}' +
+    '.data-bloco{text-align:right;margin-top:22px;margin-bottom:28px;font-size:11pt;color:#000;}' +
+    '.ass-bloco{text-align:center;margin-top:24px;page-break-inside:avoid;}' +
+    '.ass-nome{font-weight:bold;font-size:11pt;color:#000;}' +
+    '.ass-cargo{font-size:9.5pt;color:#333;margin-top:2px;}' +
+    '.tarja-sei{margin-top:28px;border:1px solid #888;background:#fafafa;padding:6px 12px;font-size:8pt;line-height:1.35;text-align:left;color:#333;page-break-inside:avoid;}' +
+    '.tarja-sei strong{color:#000;}' +
+    '@media print{body{margin:0;padding:0;}}';
 
   var h = '<!DOCTYPE html>\n<html lang="pt-BR">\n<head>\n<meta charset="UTF-8">\n' +
-    '<title>Relat&oacute;rio de Monitoramento &mdash; ' + numero + '</title>\n' +
+    '<title>Manifesta&ccedil;&atilde;o SEI &mdash; ' + numeroProc + '</title>\n' +
     '<style>' + css + '</style>\n</head>\n<body>\n' +
-    '<div class="hdr"><div class="hdr-txt">' +
-    '<div class="hdr-gov">GOVERNO DO ESTADO DE ROND&Ocirc;NIA</div>' +
-    '<div class="hdr-sec">SEDUC - SECRETARIA DE ESTADO DA EDUCA&Ccedil;&Atilde;O</div>' +
-    '<div class="hdr-dep">CAM - COORDENADORIA DE ARTICULA&Ccedil;&Atilde;O COM OS MUNIC&Iacute;PIOS</div></div></div>' +
-    '<div class="tbar">' +
-    '<span>RELAT&Oacute;RIO DE MONITORAMENTO</span>' +
-    '<span class="badge-parecer ' + (tipoManifestacao === 'desfavoravel' ? 'badge-desfav' : 'badge-fav') + '">' +
-    (tipoManifestacao === 'desfavoravel' ? 'MANIFESTA&Ccedil;&Atilde;O DESFAVOR&Aacute;VEL' : 'MANIFESTA&Ccedil;&Atilde;O FAVOR&Aacute;VEL') +
-    '</span>' +
+    '<div class="hdr-sei">' +
+    '<div class="hdr-brasao"><img src="' + BRASAO_RO_SVG + '" alt="Brasão Rondônia" width="55" height="65"></div>' +
+    '<div class="hdr-title">GOVERNO DO ESTADO DE ROND&Ocirc;NIA</div>' +
+    '<div class="hdr-sub">Secretaria de Estado da Educa&ccedil;&atilde;o - SEDUC</div>' +
+    '<div class="hdr-dept">Ger&ecirc;ncia de Diagn&oacute;stico Situacional dos Munic&iacute;pios - SEDUC-GDSM / CAM</div>' +
     '</div>' +
-    '<table class="info-table">' +
-    '<tr><td class="lbl">Processo:</td><td class="val"><strong>' + numero + '</strong></td><td class="lbl">Munic&iacute;pio:</td><td class="val">' + municipio + '</td></tr>' +
-    '<tr><td class="lbl">Escola:</td><td class="val" colspan="3">' + escola + '</td></tr>' +
-    '<tr><td class="lbl">Objeto:</td><td class="val" colspan="3">' + objeto + '</td></tr>' +
-    '<tr><td class="lbl">Ano:</td><td class="val">' + ano + '</td><td class="lbl">Categoria:</td><td class="val">' + categ + '</td></tr>' +
-    '<tr><td class="lbl">Tipo:</td><td class="val">' + tipo + '</td><td class="lbl">Valor:</td><td class="val">';
+    
+    '<div class="doc-title">' +
+    '<span>MANIFESTA&Ccedil;&Atilde;O T&Eacute;CNICA</span>' +
+    '<span class="badge-sei ' + (isDesfav ? 'badge-sei-desfav' : 'badge-sei-fav') + '">' + (isDesfav ? 'DESFAVOR&Aacute;VEL' : 'FAVOR&Aacute;VEL') + '</span>' +
+    '</div>' +
 
-  var vl = valorOf || valorPlan;
-  if (vl) {
-      h += '<strong>' + vl + '</strong>';
-  } else {
-      h += '&mdash;';
-  }
-  h += '</td></tr></table>';
+    '<div class="meta-box">' +
+    '<div class="meta-line"><span class="meta-label">Processo:</span> ' + numeroProc + '</div>' +
+    '<div class="meta-line"><span class="meta-label">Assunto:</span> Manifesta&ccedil;&atilde;o de interesse em regime de colabora&ccedil;&atilde;o - ' + objeto.toLowerCase() + ' para a ' + escola + ' do Munic&iacute;pio de ' + mun + '/RO.</div>' +
+    '<div class="meta-line"><span class="meta-label">Refer&ecirc;ncia:</span> ' + (oficio || 'Of&iacute;cio de Solicita&ccedil;&atilde;o') + '</div>' +
+    '</div>' +
 
-  if (obs) {
-    h += '<div class="sec-title">OBSERVA&Ccedil;&Otilde;ES ESPEC&Iacute;FICAS</div><div class="obs-block">' + obs + '</div>';
-  }
+    '<div class="sec-title">1. Fundamenta&ccedil;&atilde;o Constitucional e Legal</div>' +
+    '<p class="p-sei">A legisla&ccedil;&atilde;o educacional brasileira estabelece o dever de coopera&ccedil;&atilde;o entre os entes federados para a garantia do direito &agrave; educa&ccedil;&atilde;o. A Constitui&ccedil;&atilde;o Federal, em seu artigo 205, define a educa&ccedil;&atilde;o como um direito de todos e dever do Estado, promovida com a colabora&ccedil;&atilde;o da sociedade. Complementarmente, o artigo 30, inciso VI, atribui aos Munic&iacute;pios a compet&ecirc;ncia para manter programas de educa&ccedil;&atilde;o infantil e ensino fundamental com a coopera&ccedil;&atilde;o t&eacute;cnica e financeira da Uni&atilde;o e do Estado.</p>' +
+    '<p class="p-sei">O regime de colabora&ccedil;&atilde;o &eacute; refor&ccedil;ado pelo artigo 211, &sect;4&ordm;, da Carta Magna, e detalhado pela Lei de Diretrizes e Bases da Educa&ccedil;&atilde;o Nacional (LDB - Lei n&ordm; 9.394/1996). Em seus artigos 8&ordm; e 10, a LDB incumbe os Estados de organizar seus sistemas de ensino e definir, em conjunto com os Munic&iacute;pios, formas de colabora&ccedil;&atilde;o na oferta do ensino fundamental, assegurando a universaliza&ccedil;&atilde;o do ensino obrigat&oacute;rio.</p>' +
 
-  h += '<div class="sec-title">1. IMPACTO E OBJETIVO DO INVESTIMENTO</div>' +
-       '<p class="legal-text">' + red.item1 + '</p>';
+    '<div class="sec-title">2. Fortalecimento pelo FUNDEB e Legisla&ccedil;&atilde;o Estadual</div>' +
+    '<p class="p-sei">A Lei n&ordm; 14.113/2020, que regulamenta o FUNDEB, condiciona o recebimento de complementa&ccedil;&atilde;o de recursos federais &agrave; exist&ecirc;ncia de regime de colabora&ccedil;&atilde;o formalizado entre Estado e Munic&iacute;pios (Art. 14, &sect;1&ordm;, IV). No &acirc;mbito local, a Constitui&ccedil;&atilde;o do Estado de Rond&ocirc;nia (Arts. 187 e 188) reitera os princ&iacute;pios de igualdade de acesso e a coopera&ccedil;&atilde;o interfederativa.</p>' +
+    '<p class="p-sei">Ademais, a Lei Estadual n&ordm; 5.735/2024, que institui o Programa de Alfabetiza&ccedil;&atilde;o do Estado de Rond&ocirc;nia (Proalfa Rond&ocirc;nia), estabelece o dever do Estado em prestar coopera&ccedil;&atilde;o t&eacute;cnica e financeira para o fortalecimento das pol&iacute;ticas educacionais municipais. O Eixo 2 do referido programa foca especificamente na melhoria da infraestrutura f&iacute;sica e pedag&oacute;gica das unidades escolares.</p>' +
 
-  h += '<div class="sec-title">2. FORTALECIMENTO PELO FUNDEB E LEGISLA&Ccedil;&Atilde;O ESTADUAL</div>' +
-       '<p class="legal-text">' + red.item2 + '</p>';
+    '<div class="sec-title">3. Da An&aacute;lise e Justificativa</div>' +
+    '<p class="p-sei">' + secao3Html + '</p>' +
 
-  h += '<div class="sec-title">3. CONCLUS&Atilde;O E MANIFESTA&Ccedil;&Atilde;O</div>' +
-       '<p class="legal-text">' + red.item3 + '</p>';
+    '<div class="sec-title">4. Conclus&atilde;o</div>' +
+    '<p class="p-sei">' + secao4Html + '</p>' +
 
-  // Bottom Fixed Container
-  h += '<div class="bottom-container">' +
-       '<div class="ft"><span class="ft-logo">CAM - COORDENADORIA DE ARTICULA&Ccedil;&Atilde;O COM OS MUNIC&Iacute;PIOS</span><span>Relat&oacute;rio Gerencial de Monitoramento (v1.3.02)</span><span>Emitido em: ' + today + '</span></div>' +
-       '</div>';
+    '<div class="data-bloco">Porto Velho - RO, ' + todayLong + '.</div>' +
+
+    '<div class="ass-bloco">' +
+    '<div class="ass-nome">ELTON MARCOS MACHADO</div>' +
+    '<div class="ass-cargo">Coordenador de Articula&ccedil;&atilde;o com os Munic&iacute;pios &mdash; CAM/SEDUC</div>' +
+    '</div>' +
+
+    '<div class="tarja-sei">' +
+    'Documento emitido e autenticado eletronicamente em conformidade com as diretrizes do Sistema Eletr&ocirc;nico de Informa&ccedil;&otilde;es (SEI) e da Coordenadoria de Articula&ccedil;&atilde;o com os Munic&iacute;pios (CAM/SEDUC-RO). C&oacute;digo Verificador: <strong>73966580</strong> | Processo Refer&ecirc;ncia: <strong>' + numeroProc + '</strong>.' +
+    '</div>';
 
   h += '<script>window.onload=function(){setTimeout(function(){window.print();},500);};<\/script></body></html>';
 

@@ -576,6 +576,42 @@
     }
   </style>
 
+<script>
+  window.setManifestacaoTipo = function(tipo) {
+    var hiddenInput = document.getElementById('form-manifestacao-tipo');
+    var btnFav = document.getElementById('btn-manifestacao-fav');
+    var btnDesfav = document.getElementById('btn-manifestacao-desfav');
+    if (hiddenInput) hiddenInput.value = tipo;
+
+    if (tipo === 'favoravel') {
+      if (btnFav) {
+        btnFav.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+        btnFav.style.color = '#fff';
+        btnFav.style.fontWeight = '800';
+        btnFav.style.boxShadow = '0 2px 8px rgba(16,185,129,0.35)';
+      }
+      if (btnDesfav) {
+        btnDesfav.style.background = 'none';
+        btnDesfav.style.color = '#94a3b8';
+        btnDesfav.style.fontWeight = '700';
+        btnDesfav.style.boxShadow = 'none';
+      }
+    } else {
+      if (btnDesfav) {
+        btnDesfav.style.background = 'linear-gradient(135deg,#ef4444,#dc2626)';
+        btnDesfav.style.color = '#fff';
+        btnDesfav.style.fontWeight = '800';
+        btnDesfav.style.boxShadow = '0 2px 8px rgba(239,68,68,0.35)';
+      }
+      if (btnFav) {
+        btnFav.style.background = 'none';
+        btnFav.style.color = '#94a3b8';
+        btnFav.style.fontWeight = '700';
+        btnFav.style.boxShadow = 'none';
+      }
+    }
+  };
+</script>
 </head>
 
 <body>
@@ -637,7 +673,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.02</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.03</div>
   </div>
 </div>
   
@@ -889,7 +925,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.02</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.03</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2206,7 +2242,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.02
+              GBZ - v1.3.03
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2479,7 +2515,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.02] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.03] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -3765,7 +3801,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.3.00"></script>
-  <script src="js/app.js?v=1.3.00"></script>
+  <script src="js/app.js?v=1.3.03.1790040195457"></script>
   <script src="js/auth-sap.js?v=1.3.00"></script>
   <script src="js/escolas.js?v=1.3.00" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>
