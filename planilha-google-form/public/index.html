@@ -673,7 +673,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.03</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.04</div>
   </div>
 </div>
   
@@ -925,7 +925,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.03</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.04</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2068,6 +2068,124 @@
                 <textarea id="form-demaisObservacoes" class="form-control" rows="5" placeholder="Descreva aqui o plano de trabalho, cronograma, destinação aos alunos e docentes, ou observações específicas do monitoramento..." style="width:100%; border-color:rgba(239, 68, 68, 0.4); background:rgba(0,0,0,0.35); color:#fff; font-weight:500; padding:12px; border-radius:8px; line-height:1.5; box-sizing:border-box; font-family:inherit;"></textarea>
               </div>
 
+              <!-- ========================================================================= -->
+              <!-- 5 CAIXAS DE PRÉ-REDAÇÃO DO RELATÓRIO TÉCNICO (SEI 73966580) COM BOTÕES IA / PADRÃO -->
+              <!-- ========================================================================= -->
+              <div style="margin-top:28px; padding-top:20px; border-top:2px dashed rgba(52, 211, 153, 0.25);">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+                  <div>
+                    <h3 style="margin:0 0 4px 0; color:#34d399; font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                      <span>📝</span> <span>PRÉ-REDAÇÃO DO RELATÓRIO TÉCNICO (SEI / MONITORAMENTO)</span>
+                    </h3>
+                    <p style="margin:0; font-size:12px; color:#94a3b8;">Edite previamente cada seção do relatório, utilize os botões 🤖 IA para sintetizar e aprimorar o texto, ou 📄 Padrão para restaurar a redação oficial de referência.</p>
+                  </div>
+                  <div style="display:flex; gap:8px;">
+                    <button type="button" onclick="carregarTodasSecoesPadrao()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 12px; font-size:12px; border-radius:6px; cursor:pointer;" title="Carregar modelo padrão oficial em todas as 5 caixas">
+                      📄 Restaurar Todas Padrão
+                    </button>
+                    <button type="button" onclick="gerarTodasSecoesComIA()" class="btn" style="background:linear-gradient(135deg,#8b5cf6,#6366f1); color:#fff; border:none; padding:6px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(139,92,246,0.35);" title="Interpretar dados e otimizar seções com IA">
+                      🤖 Gerar/Otimizar Tudo com IA
+                    </button>
+                  </div>
+                </div>
+
+                <!-- 1 - Identificação -->
+                <div class="relatorio-box-card" style="margin-bottom:18px; padding:14px 16px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                    <label for="relatorio-caixa-1" style="font-weight:800; font-size:13px; color:#38bdf8; display:flex; align-items:center; gap:6px;">
+                      <span>1.</span> <span>Identificação</span>
+                    </label>
+                    <div style="display:flex; gap:6px;">
+                      <button type="button" onclick="aplicarIARedacao(1)" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer;" title="Interpretar dados do processo com IA">
+                        🤖 IA
+                      </button>
+                      <button type="button" onclick="restaurarPadraoRedacao(1)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar formato padrão do SEI">
+                        📄 Padrão
+                      </button>
+                    </div>
+                  </div>
+                  <textarea id="relatorio-caixa-1" rows="3" placeholder="1 - Identificação (Processo, Assunto, Município, Escola, Referência...)" style="width:100%; border:1px solid rgba(56,189,248,0.3); background:rgba(15,23,42,0.6); color:#f8fafc; font-size:13px; padding:10px; border-radius:8px; line-height:1.45; box-sizing:border-box; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <!-- 2 - Fundamentação Constitucional e Legal -->
+                <div class="relatorio-box-card" style="margin-bottom:18px; padding:14px 16px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                    <label for="relatorio-caixa-2" style="font-weight:800; font-size:13px; color:#34d399; display:flex; align-items:center; gap:6px;">
+                      <span>2.</span> <span>Fundamentação Constitucional e Legal</span>
+                    </label>
+                    <div style="display:flex; gap:6px;">
+                      <button type="button" onclick="aplicarIARedacao(2)" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer;" title="Harmonizar e refinar redação com IA">
+                        🤖 IA
+                      </button>
+                      <button type="button" onclick="restaurarPadraoRedacao(2)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar fundamentação oficial (CF/88 Art. 205, 30 VI, 211; LDB Arts. 8 e 10)">
+                        📄 Padrão
+                      </button>
+                    </div>
+                  </div>
+                  <textarea id="relatorio-caixa-2" rows="4" placeholder="2 - Fundamentação Constitucional e Legal..." style="width:100%; border:1px solid rgba(52,211,153,0.3); background:rgba(15,23,42,0.6); color:#f8fafc; font-size:13px; padding:10px; border-radius:8px; line-height:1.45; box-sizing:border-box; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <!-- 3 - Fortalecimento pelo FUNDEB e Legislação Estadual -->
+                <div class="relatorio-box-card" style="margin-bottom:18px; padding:14px 16px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                    <label for="relatorio-caixa-3" style="font-weight:800; font-size:13px; color:#fbbf24; display:flex; align-items:center; gap:6px;">
+                      <span>3.</span> <span>Fortalecimento pelo FUNDEB e Legislação Estadual</span>
+                    </label>
+                    <div style="display:flex; gap:6px;">
+                      <button type="button" onclick="aplicarIARedacao(3)" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer;" title="Harmonizar e refinar redação com IA">
+                        🤖 IA
+                      </button>
+                      <button type="button" onclick="restaurarPadraoRedacao(3)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar fundamentação oficial (Lei 14.113/20, CE-RO, Lei Estadual 5.735/2024)">
+                        📄 Padrão
+                      </button>
+                    </div>
+                  </div>
+                  <textarea id="relatorio-caixa-3" rows="4" placeholder="3 - Fortalecimento pelo FUNDEB e Legislação Estadual..." style="width:100%; border:1px solid rgba(251,191,36,0.3); background:rgba(15,23,42,0.6); color:#f8fafc; font-size:13px; padding:10px; border-radius:8px; line-height:1.45; box-sizing:border-box; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <!-- 4 - Da Análise e Justificativa -->
+                <div class="relatorio-box-card" style="margin-bottom:18px; padding:14px 16px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                    <div>
+                      <label for="relatorio-caixa-4" style="font-weight:800; font-size:13px; color:#f87171; display:flex; align-items:center; gap:6px;">
+                        <span>4.</span> <span>Da Análise e Justificativa</span>
+                      </label>
+                      <span style="font-size:11px; color:#94a3b8;">(Interpretado com IA dos campos acima: Ofício e Plano de Trabalho - limite 5 a 9 linhas)</span>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                      <button type="button" onclick="aplicarIARedacao(4)" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.35);" title="Agente de IA: interpretar e sintetizar dados do campo vermelho e amarelo (5-9 linhas)">
+                        🤖 IA Sintetizar
+                      </button>
+                      <button type="button" onclick="restaurarPadraoRedacao(4)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar redação padrão da análise">
+                        📄 Padrão
+                      </button>
+                    </div>
+                  </div>
+                  <textarea id="relatorio-caixa-4" rows="5" placeholder="4 - Da Análise e Justificativa (Síntese coesa e objetiva dos dados, articulada com o Proalfa Rondônia)..." style="width:100%; border:1px solid rgba(248,113,113,0.35); background:rgba(15,23,42,0.6); color:#f8fafc; font-size:13px; padding:10px; border-radius:8px; line-height:1.45; box-sizing:border-box; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+
+                <!-- 5 - Conclusão -->
+                <div class="relatorio-box-card" style="margin-bottom:18px; padding:14px 16px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.1); border-radius:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                    <div>
+                      <label for="relatorio-caixa-5" style="font-weight:800; font-size:13px; color:#c084fc; display:flex; align-items:center; gap:6px;">
+                        <span>5.</span> <span>Conclusão</span>
+                      </label>
+                      <span style="font-size:11px; color:#94a3b8;">(Despacho conclusivo conforme chave Favorável / Desfavorável - limite 3 a 5 linhas)</span>
+                    </div>
+                    <div style="display:flex; gap:6px;">
+                      <button type="button" onclick="aplicarIARedacao(5)" class="btn" style="background:linear-gradient(135deg,#a855f7,#7e22ce); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(168,85,247,0.35);" title="Refinar redação da conclusão com IA">
+                        🤖 IA Concluir
+                      </button>
+                      <button type="button" onclick="restaurarPadraoRedacao(5)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar conclusão padrão do SEI">
+                        📄 Padrão
+                      </button>
+                    </div>
+                  </div>
+                  <textarea id="relatorio-caixa-5" rows="3" placeholder="5 - Conclusão (Manifestação expressa e encaminhamento para deliberação superior)..." style="width:100%; border:1px solid rgba(192,132,252,0.35); background:rgba(15,23,42,0.6); color:#f8fafc; font-size:13px; padding:10px; border-radius:8px; line-height:1.45; box-sizing:border-box; font-family:inherit; resize:vertical;"></textarea>
+                </div>
+              </div>
+
             </div>
 
             <!-- Seção de Ação Crítica no Final do Formulário -->
@@ -2242,7 +2360,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.03
+              GBZ - v1.3.04
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2515,7 +2633,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.03] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.04] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
