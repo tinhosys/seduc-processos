@@ -8134,7 +8134,7 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.06
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.07
 // Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
 // Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
 // =========================================================================
@@ -8245,10 +8245,14 @@ async function gerarManifestacaoJPG() {
     </div>
   `;
 
-  const tempWrapper = document.createElement('div');
+    const tempWrapper = document.createElement('div');
+  tempWrapper.id = 'temp-manifestacao-render-wrapper';
   tempWrapper.style.position = 'fixed';
-  tempWrapper.style.left = '-9999px';
+  tempWrapper.style.left = '0';
   tempWrapper.style.top = '0';
+  tempWrapper.style.zIndex = '-99999';
+  tempWrapper.style.opacity = '1';
+  tempWrapper.style.pointerEvents = 'none';
   tempWrapper.innerHTML = htmlConteudo;
   document.body.appendChild(tempWrapper);
 
