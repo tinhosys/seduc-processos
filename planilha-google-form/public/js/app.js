@@ -7993,7 +7993,8 @@ function extrairDadosProcessoAtual() {
     municipio: g('form-municipio') || 'Porto Velho',
     escola: g('form-interessado') || 'Unidade Escolar Municipal',
     objeto: g('form-objeto') || 'aquisição de material permanente e pedagógico',
-    oficio: g('form-detalhamentoItens'),
+    detalhamento: g('form-obs'),
+    oficio: g('form-detalhamentoItens') || g('form-obs'),
     plano: g('form-demaisObservacoes'),
     valor: valorFormatado,
     tipo: tipoManif.toLowerCase(),
@@ -8007,10 +8008,18 @@ function restaurarPadraoRedacao(numSecao) {
   if (!el) return;
 
   if (numSecao === 1) {
-    var refOficio = d.oficio ? (d.oficio.length > 50 ? d.oficio.substring(0, 50) + '...' : d.oficio) : 'Ofício de Solicitação';
+    // Referência enriquecida: parte do Objeto + elementos do Detalhamento (+1 linha se houver dados)
+    var parteObj = d.objeto ? d.objeto.trim() : '';
+    var baseDet = (d.detalhamento || d.oficio || '').replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+    var refTexto = parteObj;
+    if (baseDet) {
+      if (refTexto) refTexto += ' - ' + (baseDet.length > 90 ? baseDet.substring(0, 90) + '...' : baseDet);
+      else refTexto = (baseDet.length > 110 ? baseDet.substring(0, 110) + '...' : baseDet);
+    }
+    if (!refTexto) refTexto = 'Ofício de Solicitação Municipal';
     el.value = 'Processo: ' + d.numero + '\n' +
                'Assunto: Manifestação de interesse em regime de colaboração - ' + d.objeto.toLowerCase() + ' para a ' + d.escola + ' do Município de ' + d.municipio + '/RO.\n' +
-               'Referência: ' + refOficio;
+               'Referência: ' + refTexto;
   } else if (numSecao === 2) {
     el.value = 'A legislação educacional brasileira estabelece o dever de cooperação entre os entes federados para a garantia do direito à educação. A Constituição Federal, em seu artigo 205, define a educação como um direito de todos e dever do Estado, promovida com a colaboração da sociedade. Complementarmente, o artigo 30, inciso VI, atribui aos Municípios a competência para manter programas de educação infantil e ensino fundamental com a cooperação técnica e financeira da União e do Estado.\n\n' +
                'O regime de colaboração é reforçado pelo artigo 211, §4º, da Carta Magna, e detalhado pela Lei de Diretrizes e Bases da Educação Nacional (LDB - Lei nº 9.394/1996). Em seus artigos 8º e 10, a LDB incumbe os Estados de organizar seus sistemas de ensino e definir, em conjunto com os Municípios, formas de colaboração na oferta do ensino fundamental, assegurando a universalização do ensino obrigatório.';
@@ -8018,10 +8027,16 @@ function restaurarPadraoRedacao(numSecao) {
     el.value = 'A Lei nº 14.113/2020, que regulamenta o FUNDEB, condiciona o recebimento de complementação de recursos federais à existência de regime de colaboração formalizado entre Estado e Municípios (Art. 14, §1º, IV). No âmbito local, a Constituição do Estado de Rondônia (Arts. 187 e 188) reitera os princípios de igualdade de acesso e a cooperação interfederativa.\n\n' +
                'Ademais, a Lei Estadual nº 5.735/2024, que institui o Programa de Alfabetização do Estado de Rondônia (Proalfa Rondônia), estabelece o dever do Estado em prestar cooperação técnica e financeira para o fortalecimento das políticas educacionais municipais. O Eixo 2 do referido programa foca especificamente na melhoria da infraestrutura física e pedagógica das unidades escolares.';
   } else if (numSecao === 4) {
-    if (d.isDesfav) {
-      el.value = 'Ao compulsar os autos instruídos pelo Ofício de Solicitação (' + (d.oficio || 'expediente de solicitação municipal') + ') e pelo correspondente Plano de Trabalho (' + (d.plano || 'documentação técnica acostada') + '), referente à demanda estimada em R$ ' + d.valor + ' para atendimento da ' + d.escola + ' do Município de ' + d.municipio + '/RO, constata-se carência de consistência técnica na discriminação das metas e no cronograma físico-financeiro da despesa. Não restou demonstrada a relação causal direta entre a aquisição pretendida e a efetiva elevação dos indicadores educacionais ou do processo de alfabetização na rede pública. Desse modo, no estágio documental em que os autos se encontram, a proposta não atende aos requisitos e diretrizes fixados pelo Eixo 2 do Programa Proalfa Rondônia para a celebração do regime de colaboração estadual.';
+    // No item 4, o padrão busca os dados de 'Detalhamento' na íntegra
+    var detalheIntegra = (d.detalhamento || d.oficio || '').trim();
+    if (detalheIntegra) {
+      el.value = detalheIntegra;
     } else {
-      el.value = 'Compulsando o Ofício de Solicitação (' + (d.oficio || 'expediente de solicitação municipal') + ') e o respectivo Plano de Trabalho (' + (d.plano || 'proposta de trabalho instruída') + '), verifica-se que a solicitação apresentada pelo Município de ' + d.municipio + '/RO amolda-se plenamente aos objetivos do Proalfa Rondônia, contemplando ' + d.objeto.toLowerCase() + ' para a ' + d.escola + ', com valor global estimado em R$ ' + d.valor + '. As intervenções propostas mostram-se essenciais e prioritárias para modernizar a infraestrutura física e tecnológica da unidade escolar, fortalecendo as práticas pedagógicas e garantindo ambientes confortáveis, salubres e adequados ao pleno desenvolvimento dos estudantes, em estrita consonância com as metas do Eixo 2 do programa.';
+      if (d.isDesfav) {
+        el.value = 'Ao compulsar os autos instruídos pelo Ofício de Solicitação (' + (d.oficio || 'expediente de solicitação municipal') + ') e pelo correspondente Plano de Trabalho (' + (d.plano || 'documentação técnica acostada') + '), referente à demanda estimada em R$ ' + d.valor + ' para atendimento da ' + d.escola + ' do Município de ' + d.municipio + '/RO, constata-se carência de consistência técnica na discriminação das metas e no cronograma físico-financeiro da despesa. Não restou demonstrada a relação causal direta entre a aquisição pretendida e a efetiva elevação dos indicadores educacionais ou do processo de alfabetização na rede pública. Desse modo, no estágio documental em que os autos se encontram, a proposta não atende aos requisitos e diretrizes fixados pelo Eixo 2 do Programa Proalfa Rondônia para a celebração do regime de colaboração estadual.';
+      } else {
+        el.value = 'Compulsando o Ofício de Solicitação (' + (d.oficio || 'expediente de solicitação municipal') + ') e o respectivo Plano de Trabalho (' + (d.plano || 'proposta de trabalho instruída') + '), verifica-se que a solicitação apresentada pelo Município de ' + d.municipio + '/RO amolda-se plenamente aos objetivos do Proalfa Rondônia, contemplando ' + d.objeto.toLowerCase() + ' para a ' + d.escola + ', com valor global estimado em R$ ' + d.valor + '. As intervenções propostas mostram-se essenciais e prioritárias para modernizar a infraestrutura física e tecnológica da unidade escolar, fortalecendo as práticas pedagógicas e garantindo ambientes confortáveis, salubres e adequados ao pleno desenvolvimento dos estudantes, em estrita consonância com as metas do Eixo 2 do programa.';
+      }
     }
   } else if (numSecao === 5) {
     if (d.isDesfav) {
@@ -8091,11 +8106,19 @@ function aplicarIARedacao(numSecao) {
 
   setTimeout(function() {
     if (numSecao === 1) {
-      var oficioLimpo = d.oficio ? d.oficio.replace(/\r?\n/g, ' ').substring(0, 70).trim() : 'Ofício de Solicitação Municipal';
+      // Referência enriquecida: parte do Objeto + elementos do Detalhamento (+1 linha)
+      var parteObj = d.objeto ? d.objeto.trim() : '';
+      var baseDet = (d.detalhamento || d.oficio || '').replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+      var refTexto = parteObj;
+      if (baseDet) {
+        if (refTexto) refTexto += ' - ' + (baseDet.length > 90 ? baseDet.substring(0, 90) + '...' : baseDet);
+        else refTexto = (baseDet.length > 110 ? baseDet.substring(0, 110) + '...' : baseDet);
+      }
+      if (!refTexto) refTexto = 'Ofício de Solicitação Municipal';
       el.value = 'Processo: ' + d.numero + '\n' +
                  'Interessado: ' + d.escola + ' - Município de ' + d.municipio + '/RO\n' +
                  'Objeto: ' + d.objeto + ' (Valor Estimado: R$ ' + d.valor + ')\n' +
-                 'Referência: ' + oficioLimpo;
+                 'Referência: ' + refTexto;
     } else if (numSecao === 2) {
       el.value = 'A ordem constitucional e o ordenamento educacional pátrio consagram a colaboração federativa como pilar do direito à educação (CF/88, arts. 205, 30, VI, e 211, §4º). Nesse mesmo diapasão, a Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996, arts. 8º e 10) preconiza a atuação articulada e solidária entre Estado e Municípios para assegurar a universalização e a qualidade do ensino público.';
     } else if (numSecao === 3) {
@@ -8103,22 +8126,23 @@ function aplicarIARedacao(numSecao) {
     } else if (numSecao === 4) {
       // Determina nível de detalhe ('mais' ou 'menos')
       var nivel4 = (window._niveisSecao && window._niveisSecao[4]) || 'mais';
-      var refOficio = d.oficio ? d.oficio.replace(/\s+/g, ' ').trim() : 'expediente de solicitação municipal';
+      var baseDet = (d.detalhamento || d.oficio || '').replace(/\s+/g, ' ').trim();
+      var refDet = baseDet ? (' (' + (baseDet.length > 140 ? baseDet.substring(0, 140) + '...' : baseDet) + ')') : '';
       var refPlano = d.plano ? d.plano.replace(/\s+/g, ' ').trim() : 'proposta técnica instruída';
 
       if (nivel4 === 'mais') {
-        // NÍVEL '+ INFORMAÇÕES' (AZUL - Análise Técnica Pormenorizada no Proalfa sem 'encher linguiça')
+        // NÍVEL '+ INFORMAÇÕES' (Análise Técnica Pormenorizada fundamentada no Detalhamento e no Proalfa)
         if (d.isDesfav) {
-          el.value = 'Procedida à instrução instrutória dos autos nº ' + d.numero + ', instaurados a partir do Ofício (' + refOficio + ') do Município de ' + d.municipio + '/RO, constatou-se a inviabilidade técnica da pretendida destinação do montante estimado de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + '. Da detida leitura do Plano de Trabalho (' + refPlano + '), extrai-se inconsistência material e déficit quanto à correlação pedagógica exigida pelas balizas do Eixo 2 do Proalfa Rondônia, disciplinado pela Lei Estadual nº 5.735/2024, cuja destinação legal vincula recursos à garantia do letramento e suporte às salas de aula. A instrução apresentada carece de detalhamento técnico idôneo, omitindo parâmetros quantitativos essenciais e pesquisa mercadológica em fontes oficiais, o que obsta o regular aporte de recursos do Estado no presente momento processual.';
+          el.value = 'Procedida à instrução instrutória dos autos nº ' + d.numero + ', instaurados a partir da solicitação' + refDet + ' do Município de ' + d.municipio + '/RO, constatou-se a inviabilidade técnica da pretendida destinação do montante estimado de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + '. Da detida leitura do detalhamento apresentado e do Plano de Trabalho (' + refPlano + '), extrai-se inconsistência material e déficit quanto à correlação pedagógica exigida pelas balizas do Eixo 2 do Proalfa Rondônia, disciplinado pela Lei Estadual nº 5.735/2024, cuja destinação legal vincula recursos à garantia do letramento e suporte às salas de aula. A instrução técnica carece de parâmetros quantitativos essenciais e pesquisa mercadológica em fontes oficiais, o que obsta o regular aporte de recursos do Estado no presente momento processual.';
         } else {
-          el.value = 'A análise técnica dos autos nº ' + d.numero + ' evidencia que a solicitação formalizada pelo Município de ' + d.municipio + '/RO por meio do Ofício (' + refOficio + ') cumpre os requisitos de admissibilidade pedagógica e orçamentária vigentes. O Plano de Trabalho (' + refPlano + ') detalha o investimento estimado em R$ ' + d.valor + ', destinado especificamente à execução de ' + d.objeto.toLowerCase() + ' em favor da ' + d.escola + '. A consecução desse objeto guarda estrita consonância com as diretrizes e metas finalísticas do Eixo 2 do Proalfa Rondônia, instituído pela Lei Estadual nº 5.735/2024, ao propiciar a modernização da infraestrutura física e o fortalecimento do ambiente escolar indispensável ao ciclo de aprendizagem e alfabetização, legitimando o amparo do Estado em regime de colaboração.';
+          el.value = 'A análise técnica dos autos nº ' + d.numero + ' evidencia que a solicitação formalizada pelo Município de ' + d.municipio + '/RO' + refDet + ' cumpre os requisitos de admissibilidade pedagógica e orçamentária vigentes. O detalhamento instruído fundamenta o investimento estimado em R$ ' + d.valor + ', destinado especificamente à execução de ' + d.objeto.toLowerCase() + ' em favor da ' + d.escola + '. A consecução desse objeto guarda estrita consonância com as diretrizes e metas finalísticas do Eixo 2 do Proalfa Rondônia, instituído pela Lei Estadual nº 5.735/2024, ao propiciar a modernização da infraestrutura física e tecnológica e o fortalecimento do ambiente escolar indispensável ao ciclo de aprendizagem e alfabetização, legitimando o amparo do Estado em regime de colaboração.';
         }
       } else {
-        // NÍVEL '- INFORMAÇÕES' (AMARELO - Síntese Técnica Concisa e Cirúrgica)
+        // NÍVEL '- INFORMAÇÕES' (Síntese Técnica Direta e Concisa com base no Detalhamento)
         if (d.isDesfav) {
-          el.value = 'Verifica-se que o Processo nº ' + d.numero + ', relativo ao Ofício de solicitação do Município de ' + d.municipio + '/RO, não preenche as condições de admissibilidade técnica para o montante de R$ ' + d.valor + '. O Plano de Trabalho apresentado não comprova nexo com as diretrizes do Eixo 2 do Proalfa (Lei Estadual nº 5.735/2024) para ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ', constatando-se ausência de justificação pedagógica apta à pactuação.';
+          el.value = 'Verifica-se que o Processo nº ' + d.numero + ', relativo à solicitação do Município de ' + d.municipio + '/RO' + refDet + ', não preenche as condições de admissibilidade técnica para o montante de R$ ' + d.valor + '. O detalhamento da proposta não comprova nexo com as diretrizes do Eixo 2 do Proalfa (Lei Estadual nº 5.735/2024) para ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ', constatando-se ausência de justificação pedagógica apta à pactuação.';
         } else {
-          el.value = 'O pleito constante do Processo nº ' + d.numero + ', encaminhado via Ofício pelo Município de ' + d.municipio + '/RO, atende aos critérios técnicos estabelecidos. O Plano de Trabalho fundamenta satisfatoriamente a destinação de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + ', demonstrando alinhamento estrito às metas do Eixo 2 do Proalfa Rondônia (Lei Estadual nº 5.735/2024) e conformidade orçamentária.';
+          el.value = 'O pleito constante do Processo nº ' + d.numero + ', encaminhado pelo Município de ' + d.municipio + '/RO' + refDet + ', atende aos critérios técnicos estabelecidos. O detalhamento apresentado fundamenta satisfatoriamente a destinação de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + ', demonstrando alinhamento estrito às metas do Eixo 2 do Proalfa Rondônia (Lei Estadual nº 5.735/2024) e plena conformidade orçamentária.';
         }
       }
     } else if (numSecao === 5) {
@@ -8201,7 +8225,7 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.08
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.09
 // Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
 // Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
 // =========================================================================
@@ -8251,7 +8275,7 @@ async function gerarManifestacaoJPG() {
   var formatarSecao = function(texto) {
     if (!texto) return '';
     return texto.split('\n\n').map(function(p){
-      return '<p style="text-align:justify; text-indent:1.25cm; margin:0 0 7px 0; line-height:1.35; color:#000; font-size:10pt;">' + p.replace(/\n/g, '<br>') + '</p>';
+      return '<p style="text-align:justify; text-indent:1.25cm; margin:0 0 7px 0; line-height:1.35; color:#000; font-family:Arial, sans-serif; font-size:10pt;">' + p.replace(/\n/g, '<br>') + '</p>';
     }).join('');
   };
 
@@ -8265,20 +8289,15 @@ async function gerarManifestacaoJPG() {
 
   // HTML da Manifestação Técnica exatamente no modelo da Imagem 2 (Barras cinzas, sem borda externa, 17cm de largura, margem 5mm)
   var htmlConteudo = `
-    <div id="container-manifestacao-render" style="width:642px; max-height:907px; box-sizing:border-box; padding:19px; background:#ffffff; font-family:Arial, Helvetica, sans-serif; color:#000; overflow:hidden; border:none; position:relative;">
+    <div id="container-manifestacao-render" style="width:642px; max-height:907px; box-sizing:border-box; padding:19px 24px; background:#ffffff; font-family:Arial, sans-serif; font-size:10pt; color:#000; overflow:hidden; border:none; position:relative;">
       
-      <!-- Título Principal Centralizado -->
-      <div style="text-align:center; font-size:11.5pt; font-weight:bold; color:#000; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:12px;">
-        MANIFESTAÇÃO
-      </div>
-
-      <!-- Seção 1: Identificação (Metadados em cima) -->
-      <div style="font-size:9pt; line-height:1.35; margin-bottom:12px; color:#111; text-align:justify;">
+      <!-- Seção 1: Identificação (Iniciando no topo, margem 5mm topo e base, fonte Arial 10) -->
+      <div style="font-size:10pt; line-height:1.35; margin-bottom:10px; color:#000; text-align:justify; font-family:Arial, sans-serif;">
         ${metaLinesHtml}
       </div>
 
       <!-- Seção 2: Fundamentação Constitucional e Legal -->
-      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:9.5pt; color:#111; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:10pt; font-family:Arial, sans-serif; color:#000; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
         1. Fundamentação Constitucional e Legal
       </div>
       <div style="margin-bottom:10px;">
@@ -8286,7 +8305,7 @@ async function gerarManifestacaoJPG() {
       </div>
 
       <!-- Seção 3: Fortalecimento pelo FUNDEB e Legislação Estadual -->
-      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:9.5pt; color:#111; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:10pt; font-family:Arial, sans-serif; color:#000; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
         2. Fortalecimento pelo FUNDEB e Legislação Estadual
       </div>
       <div style="margin-bottom:10px;">
@@ -8294,7 +8313,7 @@ async function gerarManifestacaoJPG() {
       </div>
 
       <!-- Seção 4: Da Análise e Justificativa -->
-      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:9.5pt; color:#111; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:10pt; font-family:Arial, sans-serif; color:#000; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
         3. Da Análise e Justificativa
       </div>
       <div style="margin-bottom:10px;">
@@ -8302,7 +8321,7 @@ async function gerarManifestacaoJPG() {
       </div>
 
       <!-- Seção 5: Conclusão -->
-      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:9.5pt; color:#111; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
+      <div style="background:#e5e7eb; padding:3.5px 8px; font-weight:bold; font-size:10pt; font-family:Arial, sans-serif; color:#000; margin-bottom:6px; -webkit-print-color-adjust:exact; print-color-adjust:exact;">
         4. Conclusão
       </div>
       <div style="margin-bottom:4px;">
