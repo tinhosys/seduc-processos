@@ -673,7 +673,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.05</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.06</div>
   </div>
 </div>
   
@@ -925,7 +925,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.05</div>
+    <div style='text-align: center; color: #475569; font-size: 11px; margin-top: 25px;'>GBZ - v1.3.06</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2008,7 +2008,13 @@
             </div>
 
           
+                        <!-- BOTÃO EXCLUIR REGISTRO (APENAS NA ABA 1: OBJETO) -->
+            <div id="container-excluir-form" style="display:none; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(239, 68, 68, 0.25); justify-content: flex-end; width: 100%;">
+              <button type="button" class="btn btn-danger" id="btn-excluir-form" onclick="confirmarExcluirForm()" style="background-color: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'">
+                🗑️ Excluir definitivamente este registro da planilha
+              </button>
             </div>
+</div>
             
             <!-- GUIA 2: OBJETIVO (CAMPOS DA PLANILHA & DEMAIS OBSERVAÇÕES) -->
             <div id="tab-content-objetivo" style="display:none; padding:24px; background:rgba(255,255,255,0.02); border:1px solid rgba(16,185,129,0.25); border-radius:14px; margin-bottom:24px; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
@@ -2172,12 +2178,7 @@
 
             </div>
 
-            <!-- Seção de Ação Crítica no Final do Formulário -->
-            <div id="container-excluir-form" style="display:none; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(239, 68, 68, 0.25); display: flex; justify-content: flex-end; width: 100%;">
-              <button type="button" class="btn btn-danger" id="btn-excluir-form" onclick="confirmarExcluirForm()" style="background-color: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'">
-                🗑️ Excluir definitivamente este registro da planilha
-              </button>
-            </div>
+
   
   </form>
         </div>
@@ -2344,7 +2345,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.05
+              GBZ - v1.3.06
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2617,7 +2618,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.05] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.06] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -5053,6 +5054,98 @@ function mudarAbaDiarias(aba, el) {
     </div>
   </div>
 
+
+  <!-- ============= MODAL: MANIFESTO SINTÉTICO TCE-RO ============= -->
+  <div class="modal-overlay" id="modal-manifesto-tce" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+    <div style="background:#0f172a; border:1px solid rgba(59,130,246,0.4); width:100%; max-width:850px; max-height:90vh; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.6); overflow:hidden;">
+      
+      <!-- Modal Header -->
+      <div style="padding:20px 24px; background:linear-gradient(135deg,#1e293b,#0f172a); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:24px;">📜</span>
+          <div>
+            <h3 style="margin:0; font-size:18px; color:#f8fafc; font-weight:800;">Manifestação Técnica & Relatório Sintético (TCE-RO)</h3>
+            <p style="margin:2px 0 0 0; font-size:12px; color:#94a3b8;">Fundamentação Legal (CF Art. 205/211, LDB 9394/96, Fundeb 14113/20, Lei Est. 5735/24)</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalManifestoTCE()" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Preview) -->
+      <div style="padding:24px; overflow-y:auto; flex:1; background:#0b1120;">
+        <div id="manifesto-tce-texto-preview" style="white-space:pre-wrap; font-family:'Segoe UI', system-ui, sans-serif; font-size:13.5px; line-height:1.7; color:#e2e8f0; background:rgba(255,255,255,0.03); padding:24px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); user-select:text;"></div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding:16px 24px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+        <button type="button" onclick="fecharModalManifestoTCE()" class="btn btn-ghost" style="padding:10px 20px;">Fechar</button>
+        <div style="display:flex; gap:12px;">
+          <button type="button" onclick="copiarManifestoTCE()" style="background:rgba(255,255,255,0.08); color:#fff; border:1px solid rgba(255,255,255,0.15); font-weight:700; padding:10px 20px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">📋 Copiar Texto</button>
+          <button type="button" onclick="imprimirManifestoTCE()" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; font-weight:700; padding:10px 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(59,130,246,0.4); display:inline-flex; align-items:center; gap:6px;">🖨️Imprimir / Gerar PDF</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============= MODAL POPUP: MANIFESTAÇÃO TÉCNICA (IMAGEM / EXPORTAÇÃO) ============= -->
+  <div class="modal-overlay" id="modal-manifestacao-jpg" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:99999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+    <div style="background:#0f172a; border:1px solid rgba(59,130,246,0.4); width:100%; max-width:880px; max-height:95vh; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.8); overflow:hidden;">
+      
+      <!-- Modal Header -->
+      <div style="padding:16px 20px; background:linear-gradient(135deg,#1e293b,#0f172a); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:22px;">📜</span>
+          <div>
+            <h3 style="margin:0; font-size:16px; color:#f8fafc; font-weight:800;">Manifestação Técnica &mdash; Exportação</h3>
+            <p style="margin:2px 0 0 0; font-size:11.5px; color:#94a3b8;">17 cm largura &times; máx. 24 cm altura &bull; Margem 5 mm &bull; Sem bordas externas</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalManifestacaoJPG()" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Preview da Imagem da Manifestação) -->
+      <div style="padding:20px; overflow-y:auto; flex:1; background:#0b1120; display:flex; justify-content:center; align-items:flex-start;">
+        <div id="manifestacao-jpg-loading" style="display:none; color:#38bdf8; font-weight:700; font-size:14px; padding:35px; text-align:center;">
+          <span class="anim-ampulheta" style="font-size:24px; margin-right:8px;">⏳</span> Processando e renderizando o layout do relatório...
+        </div>
+        <img id="manifestacao-jpg-preview-img" src="" alt="Manifestação Técnica" style="max-width:100%; height:auto; box-shadow:0 10px 30px rgba(0,0,0,0.6); background:#fff; display:none;">
+      </div>
+
+      <!-- Modal Footer com Todos os Botões Solicitados -->
+      <div style="padding:14px 20px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <button type="button" onclick="fecharModalManifestacaoJPG()" class="btn btn-ghost" style="padding:8px 18px; font-size:13px;">Fechar</button>
+        
+        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+          <!-- 1. Botão Copiar -->
+          <button type="button" onclick="copiarImagemManifestacaoJPG()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.2); font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;">
+            📋 Copiar Imagem
+          </button>
+          
+          <!-- 2. Botão JPG -->
+          <button type="button" onclick="salvarManifestacaoFormato('jpg')" class="btn" style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border:none; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;" title="Baixar como imagem JPG">
+            🖼️ JPG
+          </button>
+          
+          <!-- 3. Botão PNG -->
+          <button type="button" onclick="salvarManifestacaoFormato('png')" class="btn" style="background:linear-gradient(135deg,#06b6d4,#0891b2); color:#fff; border:none; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;" title="Baixar como imagem PNG transparente/nítida">
+            🖼️ PNG
+          </button>
+          
+          <!-- 4. Botão PDF -->
+          <button type="button" onclick="salvarManifestacaoFormato('pdf')" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;" title="Baixar documento em formato PDF">
+            📄 PDF
+          </button>
+          
+          <!-- 5. Botão Salvar (Download Principal) -->
+          <button type="button" onclick="salvarManifestacaoPrincipal()" class="btn btn-success" style="padding:8px 20px; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:6px;" title="Salvar relatório gerado">
+            💾 Salvar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- ============= MODAL: MANIFESTO SINTÉTICO TCE-RO ============= -->
   <div class="modal-overlay" id="modal-manifesto-tce" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">

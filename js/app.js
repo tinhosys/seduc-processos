@@ -254,6 +254,7 @@ function alternarGuiaFormulario(guia) {
   const tabObjeto = document.getElementById('tab-content-objeto');
   const tabObjetivo = document.getElementById('tab-content-objetivo');
   const btnManifestacao = document.getElementById('btn-gerar-manifestacao');
+  const containerExcluir = document.getElementById('container-excluir-form');
 
   if (!tabObjeto || !tabObjetivo) return;
 
@@ -261,6 +262,9 @@ function alternarGuiaFormulario(guia) {
     tabObjeto.style.display = 'none';
     tabObjetivo.style.display = 'block';
     if (btnManifestacao) btnManifestacao.style.display = 'inline-flex';
+    // O botão excluir demarcado em amarelo NUNCA deve aparecer na aba de manifestação técnica
+    if (containerExcluir) containerExcluir.style.display = 'none';
+
     if (btnObjeto) {
       btnObjeto.style.background = 'none';
       btnObjeto.style.color = 'var(--text-secondary)';
@@ -277,6 +281,13 @@ function alternarGuiaFormulario(guia) {
     tabObjeto.style.display = 'block';
     tabObjetivo.style.display = 'none';
     if (btnManifestacao) btnManifestacao.style.display = 'none';
+
+    // Na aba 1 (Objeto), exibe o container excluir se estiver editando um processo
+    if (containerExcluir) {
+      const isEditando = typeof state !== 'undefined' && state.editandoId;
+      containerExcluir.style.display = isEditando ? 'flex' : 'none';
+    }
+
     if (btnObjeto) {
       btnObjeto.style.background = 'linear-gradient(135deg,#10b981,#059669)';
       btnObjeto.style.color = '#ffffff';
@@ -2255,7 +2266,8 @@ function renderFormulario() {
 
   const containerExcluir = document.getElementById('container-excluir-form');
   if (containerExcluir) {
-    containerExcluir.style.display = processo ? 'flex' : 'none';
+    const tabObjetoVisible = document.getElementById('tab-content-objeto')?.style.display !== 'none';
+    containerExcluir.style.display = (processo && tabObjetoVisible) ? 'flex' : 'none';
   }
 }
 
@@ -8122,16 +8134,15 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM JPG (v1.3.05)
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.06
 // Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
-// Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas e texto justificado)
+// Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
 // =========================================================================
 
 async function gerarManifestacaoJPG() {
   const modal = document.getElementById('modal-manifestacao-jpg');
   const loading = document.getElementById('manifestacao-jpg-loading');
   const imgEl = document.getElementById('manifestacao-jpg-preview-img');
-  const btnDownload = document.getElementById('btn-download-manifestacao-jpg');
 
   if (modal) {
     modal.style.display = 'flex';
@@ -8147,7 +8158,7 @@ async function gerarManifestacaoJPG() {
   var cx4 = g('relatorio-caixa-4');
   var cx5 = g('relatorio-caixa-5');
 
-  // Se alguma estiver vazia, carrega o padrão preliminar para garantir
+  // Se alguma estiver vazia, carrega o padrão preliminar para garantir integridade
   if (!cx1) { restaurarPadraoRedacao(1); cx1 = g('relatorio-caixa-1'); }
   if (!cx2) { restaurarPadraoRedacao(2); cx2 = g('relatorio-caixa-2'); }
   if (!cx3) { restaurarPadraoRedacao(3); cx3 = g('relatorio-caixa-3'); }
@@ -8234,7 +8245,6 @@ async function gerarManifestacaoJPG() {
     </div>
   `;
 
-  // Elemento invisível para html2canvas renderizar
   const tempWrapper = document.createElement('div');
   tempWrapper.style.position = 'fixed';
   tempWrapper.style.left = '-9999px';
@@ -8255,6 +8265,10 @@ async function gerarManifestacaoJPG() {
       logging: false
     });
 
+    // Guarda referências globais do canvas e dados
+    window._manifestacaoCanvas = canvas;
+    window._manifestacaoProcNum = numProc;
+
     const jpgUrl = canvas.toDataURL('image/jpeg', 0.95);
     window._ultimaManifestacaoJPGUrl = jpgUrl;
 
@@ -8262,13 +8276,9 @@ async function gerarManifestacaoJPG() {
       imgEl.src = jpgUrl;
       imgEl.style.display = 'block';
     }
-    if (btnDownload) {
-      btnDownload.href = jpgUrl;
-      btnDownload.download = 'Manifestacao_Tecnica_' + (numProc.replace(/[^0-9a-zA-Z]/g, '_')) + '.jpg';
-    }
     if (loading) loading.style.display = 'none';
   } catch (err) {
-    console.error('Erro ao gerar imagem JPG da Manifestação:', err);
+    console.error('Erro ao gerar imagem da Manifestação:', err);
     alert('Não foi possível renderizar a imagem: ' + err.message);
     if (loading) loading.style.display = 'none';
   } finally {
@@ -8282,43 +8292,96 @@ function fecharModalManifestacaoJPG() {
 }
 
 async function copiarImagemManifestacaoJPG() {
-  if (!window._ultimaManifestacaoJPGUrl) {
+  if (!window._manifestacaoCanvas && !window._ultimaManifestacaoJPGUrl) {
     alert('Gere a imagem antes de copiar.');
     return;
   }
   try {
-    const res = await fetch(window._ultimaManifestacaoJPGUrl);
-    const blob = await res.blob();
-    if (navigator.clipboard && window.ClipboardItem) {
-      const img = new Image();
-      img.src = window._ultimaManifestacaoJPGUrl;
-      img.onload = async function() {
-        const c = document.createElement('canvas');
-        c.width = img.width;
-        c.height = img.height;
-        const ctx = c.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        c.toBlob(async function(pngBlob) {
-          try {
+    if (window._manifestacaoCanvas && window._manifestacaoCanvas.toBlob) {
+      window._manifestacaoCanvas.toBlob(async function(pngBlob) {
+        try {
+          if (navigator.clipboard && window.ClipboardItem) {
             await navigator.clipboard.write([
               new ClipboardItem({ 'image/png': pngBlob })
             ]);
             mostrarNotificacaoToast('📋 Imagem copiada para a área de transferência!');
-          } catch (e) {
-            console.warn('ClipboardItem error, copying as link', e);
-            mostrarNotificacaoToast('Imagem pronta! Clique no botão Baixar Imagem (JPG).');
+          } else {
+            mostrarNotificacaoToast('Clipboard não suportado no navegador. Use o botão Salvar ou JPG.');
           }
-        }, 'image/png');
-      };
+        } catch (e) {
+          console.warn('Erro ao copiar blob:', e);
+          mostrarNotificacaoToast('Clique no botão JPG, PNG ou Salvar para baixar.');
+        }
+      }, 'image/png');
     } else {
-      mostrarNotificacaoToast('Imagem pronta! Clique no botão Baixar Imagem (JPG).');
+      mostrarNotificacaoToast('Imagem pronta! Utilize os botões para salvar.');
     }
   } catch (err) {
     console.error('Erro ao copiar imagem:', err);
-    mostrarNotificacaoToast('Use o botão Baixar Imagem (JPG) para salvar o arquivo.');
+    mostrarNotificacaoToast('Use os botões de download para salvar a imagem.');
   }
+}
+
+function salvarManifestacaoFormato(formato) {
+  const canvas = window._manifestacaoCanvas;
+  if (!canvas) {
+    alert('Gere a manifestação primeiro.');
+    return;
+  }
+
+  const numProc = window._manifestacaoProcNum || '0029_028061_2026_61';
+  const nomeLimpo = 'Manifestacao_Tecnica_' + (numProc.replace(/[^0-9a-zA-Z]/g, '_'));
+
+  if (formato === 'jpg' || formato === 'jpeg') {
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+    dispararDownloadArquivo(dataUrl, nomeLimpo + '.jpg');
+    mostrarNotificacaoToast('🖼️ Imagem JPG baixada com sucesso!');
+  } else if (formato === 'png') {
+    const dataUrl = canvas.toDataURL('image/png');
+    dispararDownloadArquivo(dataUrl, nomeLimpo + '.png');
+    mostrarNotificacaoToast('🖼️ Imagem PNG baixada com sucesso!');
+  } else if (formato === 'pdf') {
+    try {
+      const { jsPDF } = window.jspdf || {};
+      if (!jsPDF) {
+        alert('Biblioteca jsPDF não encontrada.');
+        return;
+      }
+      // PDF no formato 170mm x 240mm (ou A4 proporcional)
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [170, 240]
+      });
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      doc.addImage(imgData, 'JPEG', 0, 0, 170, 240);
+      doc.save(nomeLimpo + '.pdf');
+      mostrarNotificacaoToast('📄 Documento PDF baixado com sucesso!');
+    } catch (e) {
+      console.error('Erro ao gerar PDF:', e);
+      alert('Erro ao gerar PDF: ' + e.message);
+    }
+  }
+}
+
+function salvarManifestacaoPrincipal() {
+  // Salva no formato padrão de imagem JPG
+  salvarManifestacaoFormato('jpg');
+}
+
+function dispararDownloadArquivo(url, nomeArquivo) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nomeArquivo;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(function() {
+    if (a.parentNode) a.parentNode.removeChild(a);
+  }, 100);
 }
 
 window.gerarManifestacaoJPG = gerarManifestacaoJPG;
 window.fecharModalManifestacaoJPG = fecharModalManifestacaoJPG;
 window.copiarImagemManifestacaoJPG = copiarImagemManifestacaoJPG;
+window.salvarManifestacaoFormato = salvarManifestacaoFormato;
+window.salvarManifestacaoPrincipal = salvarManifestacaoPrincipal;
