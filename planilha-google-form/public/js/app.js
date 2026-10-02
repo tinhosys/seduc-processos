@@ -8270,7 +8270,7 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.11
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.12
 // Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
 // Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
 // =========================================================================
@@ -8520,3 +8520,21 @@ window.fecharModalManifestacaoJPG = fecharModalManifestacaoJPG;
 window.copiarImagemManifestacaoJPG = copiarImagemManifestacaoJPG;
 window.salvarManifestacaoFormato = salvarManifestacaoFormato;
 window.salvarManifestacaoPrincipal = salvarManifestacaoPrincipal;
+
+// ============================================================
+// GBZ v1.3.12 - AÇÃO DE PREENCHER DATA DE HOJE NO FORMULÁRIO
+// ============================================================
+function inserirDataHoje() {
+  const dateInput = document.getElementById('form-data');
+  if (dateInput) {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    dateInput.value = `${yyyy}-${mm}-${dd}`;
+    dateInput.dispatchEvent(new Event('input', { bubbles: true }));
+    dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
+window.inserirDataHoje = inserirDataHoje;
+

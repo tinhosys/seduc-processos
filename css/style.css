@@ -2131,8 +2131,8 @@ thead th {
   top: 100%;
   left: 0;
   width: 100%;
-  max-height: 250px;
-  overflow-y: auto;
+  max-height: none;
+  overflow: hidden;
   background: #1e293b;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 8px;
@@ -2575,24 +2575,27 @@ thead th {
 }
 
 .custom-multiselect-dropdown {
-  overflow-x: hidden !important;
+  overflow: hidden !important;
+  max-height: none !important;
 }
 
-.custom-multiselect-items-container::-webkit-scrollbar,
 .custom-multiselect-dropdown::-webkit-scrollbar {
-  width: 7px;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
-.custom-multiselect-items-container::-webkit-scrollbar-track,
-.custom-multiselect-dropdown::-webkit-scrollbar-track {
+
+.custom-multiselect-items-container::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-multiselect-items-container::-webkit-scrollbar-track {
   background: #0f172a;
 }
-.custom-multiselect-items-container::-webkit-scrollbar-thumb,
-.custom-multiselect-dropdown::-webkit-scrollbar-thumb {
+.custom-multiselect-items-container::-webkit-scrollbar-thumb {
   background: #475569;
   border-radius: 4px;
 }
-.custom-multiselect-items-container::-webkit-scrollbar-thumb:hover,
-.custom-multiselect-dropdown::-webkit-scrollbar-thumb:hover {
+.custom-multiselect-items-container::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
 
