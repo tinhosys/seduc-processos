@@ -1,4 +1,4 @@
-﻿
+
 // ============================================================
 // GBZ v1.3.01 - TRATAMENTO DE PROCESSOS CANCELADOS & BALÃO DE AVISO
 // ============================================================
@@ -4226,6 +4226,196 @@ function imprimirAnalise() {
   }, 1000);
 };
 window.imprimirAnalise = imprimirAnalise;
+
+function imprimirAnaliseSintetica() {
+  updatePrintDateTime();
+  const filtrados = getFiltrados();
+  let totalGeral = 0;
+  
+  // Extract active filters
+  const fGeral = document.getElementById('filtro-geral') ? document.getElementById('filtro-geral').value : '';
+  const fStatus = document.getElementById('filtro-status') ? document.getElementById('filtro-status').value : 'Todos';
+  const fLocalizacao = document.getElementById('filtro-localizacao') ? document.getElementById('filtro-localizacao').value : 'Todos';
+  const fPrefixo = document.getElementById('filtro-prefixo') ? document.getElementById('filtro-prefixo').value : 'Todos';
+  const fMunicipio = document.getElementById('filtro-municipio') ? document.getElementById('filtro-municipio').value : 'Todos';
+  
+  let filtrosAplicados = [];
+  if (fGeral) filtrosAplicados.push("Busca: '" + fGeral + "'");
+  if (fStatus && fStatus !== 'Todos') filtrosAplicados.push("Status: " + fStatus);
+  if (fLocalizacao && fLocalizacao !== 'Todos') filtrosAplicados.push("Localização: " + fLocalizacao);
+  if (fPrefixo && fPrefixo !== 'Todos') filtrosAplicados.push("Prefixo: " + fPrefixo);
+  if (fMunicipio && fMunicipio !== 'Todos') filtrosAplicados.push("Município: " + fMunicipio);
+  if (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) {
+    const fAgrup = document.getElementById('filtro-agrupamento') ? document.getElementById('filtro-agrupamento').value : '';
+    if (fAgrup && fAgrup !== 'Todos') filtrosAplicados.push("Agrupamento: " + fAgrup);
+    if (state.filtros.digitoCond && state.filtros.digitoCond !== 'todos') { 
+      const dVal = state.filtros.digito || '(vazio)'; 
+      filtrosAplicados.push(`Dígito: ${state.filtros.digitoCond} ${dVal}`); 
+    } else if (state.filtros.digito) { 
+      filtrosAplicados.push(`Dígito: = ${state.filtros.digito}`); 
+    }
+  }
+  
+  const filtrosTexto = filtrosAplicados.length > 0 
+    ? "Filtros aplicados (" + filtrosAplicados.join(', ') + ")" 
+    : "Todos os processos (sem filtros aplicados)";
+
+  // Estrutura por Status e Prefixos
+  const analiseStatus = {};
+  let valPago = 0;
+  let qtdePago = 0;
+  const prefixosPagoMap = {};
+  const locaisPagoMap = {};
+
+  filtrados.forEach(p => {
+    const val = p.valorOf || 0;
+    totalGeral += val;
+    const st = (p.status || 'SEM STATUS').trim().toUpperCase();
+    const pref = (p.prefixo || 'SEM PREFIXO').trim().toUpperCase();
+    const loc = (p.localizacao || 'Sem Local').trim();
+
+    if (!analiseStatus[st]) {
+      analiseStatus[st] = { qtde: 0, valor: 0, prefixos: {}, locais: {} };
+    }
+    analiseStatus[st].qtde++;
+    analiseStatus[st].valor += val;
+
+    if (!analiseStatus[st].prefixos[pref]) analiseStatus[st].prefixos[pref] = { qtde: 0, valor: 0 };
+    analiseStatus[st].prefixos[pref].qtde++;
+    analiseStatus[st].prefixos[pref].valor += val;
+
+    if (!analiseStatus[st].locais[loc]) analiseStatus[st].locais[loc] = 0;
+    analiseStatus[st].locais[loc]++;
+
+    // Acumula grupo PAGO
+    if (st === 'PAGO' || st.includes('PAGO')) {
+      valPago += val;
+      qtdePago++;
+      if (!prefixosPagoMap[pref]) prefixosPagoMap[pref] = { qtde: 0, valor: 0 };
+      prefixosPagoMap[pref].qtde++;
+      prefixosPagoMap[pref].valor += val;
+
+      if (!locaisPagoMap[loc]) locaisPagoMap[loc] = 0;
+      locaisPagoMap[loc]++;
+    }
+  });
+
+  const pctPago = ((valPago / (totalGeral || 1)) * 100).toFixed(1);
+
+  // Lista de Prefixos PAGO
+  const arrPrefPago = Object.entries(prefixosPagoMap).sort((a,b) => b[1].qtde - a[1].qtde);
+  const prefixosPagoStr = arrPrefPago.length > 0
+    ? arrPrefPago.map(([pref, obj]) => `${pref} (${obj.qtde} proc${obj.qtde > 1 ? 's' : ''})`).join(', ')
+    : 'Nenhum prefixo registrado';
+
+  // Lista de Locais PAGO
+  const arrLocPago = Object.entries(locaisPagoMap).sort((a,b) => b[1] - a[1]);
+  const locaisPagoStr = arrLocPago.length > 0
+    ? arrLocPago.map(([loc, count]) => `${loc} (${count})`).join(', ')
+    : 'Sem local';
+
+  // GRUPO 2: TODOS OS STATUS (ordenados por valor decrescente)
+  const arrStatus = Object.keys(analiseStatus).sort((a,b) => analiseStatus[b].valor - analiseStatus[a].valor);
+
+  let conteudoStatusTodos = '';
+  arrStatus.forEach((st, idx) => {
+    const bgColor = (idx % 2 === 0) ? '#f2f2f2' : '#ffffff';
+    const obj = analiseStatus[st];
+    const pct = ((obj.valor / (totalGeral || 1)) * 100).toFixed(1);
+
+    const arrPref = Object.entries(obj.prefixos).sort((a,b) => b[1].qtde - a[1].qtde);
+    const prefixosStr = arrPref.map(([pref, pObj]) => `${pref} (${pObj.qtde} proc${pObj.qtde > 1 ? 's' : ''})`).join(', ');
+
+    const arrLoc = Object.entries(obj.locais).sort((a,b) => b[1] - a[1]);
+    const locaisStr = arrLoc.slice(0, 5).map(l => `${l[0]} (${l[1]})`).join(', ');
+
+    conteudoStatusTodos += `
+      <div class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; border-left:${(idx % 2 === 0) ? '4px solid transparent' : '4px solid #000'}; margin-bottom:8px; background:${bgColor}; padding:10px 14px; border:1px solid #cbd5e1; border-left-width:4px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h4 style="margin:0; font-size:13.5px; color:#0f172a; font-weight:bold;">${st}</h4>
+          <strong style="font-size:14px; color:#0f172a;">${formatCurrency(obj.valor)} (${pct}%)</strong>
+        </div>
+        <div style="font-size:11px; margin-top:5px; color:#334155; line-height:1.5;">
+          <strong>Quantidade:</strong> ${obj.qtde} processo(s)<br>
+          <strong>Prefixos:</strong> ${prefixosStr || 'Nenhum'}<br>
+          <strong>Localização:</strong> ${locaisStr || 'Sem local'}
+        </div>
+      </div>
+    `;
+  });
+
+  const html = `
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonHeader('SÍNTESE DE ANÁLISE - PAGO E STATUS POR PREFIXO')}</td></tr></thead>
+      <tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>
+        
+        <div class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; margin-bottom:20px; font-size:12px; text-align:justify; line-height:1.6; padding:10px 14px; border:1px solid #ccc; background:#f8fafc; border-radius:4px;">
+          <strong>SÍNTESE ANALÍTICA:</strong> Parâmetros buscados: <em>${filtrosTexto}</em>.<br>
+          O presente cenário totaliza <strong>${formatCurrency(totalGeral)}</strong> distribuídos em <strong>${filtrados.length}</strong> processo(s). 
+          Abaixo apresentamos a consolidação dividida em 2 grupos principais: <strong>GRUPO 1 (PROCESSOS PAGOS)</strong> e <strong>GRUPO 2 (TODOS OS STATUS)</strong>, detalhando os prefixos envolvidos, quantidade de processos, valores e localização.
+        </div>
+
+        <!-- GRUPO 1: PAGO -->
+        <div style="margin-bottom:24px;">
+          <div style="margin:0 0 10px 0; font-size:13px; font-weight:bold; color:#065f46; background:#dcfce7; padding:6px 10px; border-radius:4px; border:1px solid #86efac; text-transform:uppercase; display:flex; justify-content:space-between; align-items:center;">
+            <span>GRUPO 1: PROCESSOS PAGOS (PAGO)</span>
+            <span style="font-size:12px;">Total: ${formatCurrency(valPago)} (${pctPago}%)</span>
+          </div>
+          <div class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; border-left:5px solid #10b981; background:#f0fdf4; padding:12px 14px; border:1px solid #bbf7d0; border-left-width:5px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <h4 style="margin:0; font-size:14px; color:#065f46; font-weight:bold;">PAGO</h4>
+              <strong style="font-size:14.5px; color:#065f46;">${formatCurrency(valPago)} (${pctPago}%)</strong>
+            </div>
+            <div style="font-size:11.5px; line-height:1.6; color:#1e293b;">
+              <strong>Quantidade:</strong> ${qtdePago} processo(s)<br>
+              <strong>Prefixos:</strong> ${prefixosPagoStr}<br>
+              <strong>Localização:</strong> ${locaisPagoStr}
+            </div>
+          </div>
+        </div>
+
+        <!-- GRUPO 2: TODOS OS STATUS SEPARADOS POR STATUS -->
+        <div style="margin-bottom:20px;">
+          <div style="margin:0 0 10px 0; font-size:13px; font-weight:bold; color:#0f172a; background:#f1f5f9; padding:6px 10px; border-radius:4px; border:1px solid #cbd5e1; text-transform:uppercase;">
+            GRUPO 2: DEMONSTRATIVO GERAL SEPARADO POR STATUS (TODOS OS STATUS)
+          </div>
+          ${conteudoStatusTodos}
+        </div>
+
+        <div style="margin-top:25px; border-top:2px solid #ea580c; padding-top:10px; text-align:right;">
+          <div style="font-size:14px; font-weight:bold; color:#ea580c; display:inline-block;">TOTAL GERAL DOS RECURSOS: ${formatCurrency(totalGeral)}</div>
+        </div>
+        
+      </td></tr></tbody>
+      <tfoot><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonFooter()}</td></tr></tfoot>
+    </table>
+  `;
+
+  const layoutEl = document.getElementById('print-layout-sintetico');
+  if (layoutEl) {
+    layoutEl.innerHTML = html;
+    layoutEl.style.display = 'block';
+  }
+  
+  const layoutAnalise = document.getElementById('print-layout-analise');
+  if (layoutAnalise) layoutAnalise.style.display = 'none';
+  const layoutDet = document.getElementById('print-layout-detalhado');
+  if (layoutDet) layoutDet.style.display = 'none';
+
+  document.body.classList.add('print-mode-sintetico');
+  document.body.classList.remove('print-mode-analise', 'print-mode-detalhado');
+
+  const orig = document.title;
+  document.title = 'CAM_SINTETICO_' + getFormattedDateForTitle();
+  window.print();
+  setTimeout(() => document.title = orig, 1000);
+  
+  setTimeout(() => {
+    document.body.classList.remove('print-mode-sintetico');
+    if (layoutEl) layoutEl.style.display = 'none';
+  }, 1000);
+}
+window.imprimirAnaliseSintetica = imprimirAnaliseSintetica;
 
 // ---- GERENCIAMENTO DE ACESSOS (CRUD) ----
 

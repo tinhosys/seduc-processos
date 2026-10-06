@@ -1301,11 +1301,22 @@ mark {
   body.print-mode-analise #export-buttons,
   body.print-mode-analise .charts-grid,
   body.print-mode-analise .dashboard,
-  body.print-mode-analise > section:not(#page-processos) {
+  body.print-mode-analise > section:not(#page-processos),
+  body.print-mode-sintetico .sidebar,
+  body.print-mode-sintetico .topbar,
+  body.print-mode-sintetico .section-header,
+  body.print-mode-sintetico .filters-bar,
+  body.print-mode-sintetico .table-wrap,
+  body.print-mode-sintetico .pagination,
+  body.print-mode-sintetico #export-buttons,
+  body.print-mode-sintetico .charts-grid,
+  body.print-mode-sintetico .dashboard,
+  body.print-mode-sintetico > section:not(#page-processos) {
     display: none !important;
   }
 
-  body.print-mode-analise #print-layout-analise {
+  body.print-mode-analise #print-layout-analise,
+  body.print-mode-sintetico #print-layout-sintetico {
     display: block !important;
     position: absolute;
     top: 0;
@@ -1315,7 +1326,7 @@ mark {
   }
   
   /* Reset padding for print */
-  body.print-mode-detalhado, body.print-mode-analise {
+  body.print-mode-detalhado, body.print-mode-analise, body.print-mode-sintetico {
     padding: 0 !important;
     margin: 0 !important;
   }
