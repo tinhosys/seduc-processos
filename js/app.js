@@ -1,4 +1,4 @@
-
+﻿
 // ============================================================
 // GBZ v1.3.01 - TRATAMENTO DE PROCESSOS CANCELADOS & BALÃO DE AVISO
 // ============================================================
@@ -2138,7 +2138,7 @@ function renderFormulario() {
     document.getElementById('form-objeto').value      = p.objeto      || '';
     document.getElementById('form-valorOf').value     = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
     document.getElementById('form-valorPlan').value   = p.valorPlan ? maskCurrency((p.valorPlan * 100).toFixed(0)) : '';
-    document.getElementById('form-data').value        = p.data        || '';
+    let _dVal = p.data || ''; if (_dVal.includes('/')) { const _parts = _dVal.split('/'); if (_parts.length === 3) _dVal = _parts[2] + '-' + _parts[1] + '-' + _parts[0]; } document.getElementById('form-data').value = _dVal;
     
     // Set toggles
     const setToggle = (id, val) => {
@@ -2324,7 +2324,7 @@ function salvarFormulario(e) {
     diferenca:   valOf - valPlan,
     status:      document.getElementById('form-status').value,
     localizacao: document.getElementById('form-localizacao').value,
-    data:        document.getElementById('form-data').value,
+    data: (document.getElementById('form-data').value && document.getElementById('form-data').value.includes('-')) ? document.getElementById('form-data').value.split('-').reverse().join('/') : document.getElementById('form-data').value,
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
 
@@ -8270,7 +8270,7 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.12
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.13
 // Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
 // Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
 // =========================================================================
@@ -8522,7 +8522,7 @@ window.salvarManifestacaoFormato = salvarManifestacaoFormato;
 window.salvarManifestacaoPrincipal = salvarManifestacaoPrincipal;
 
 // ============================================================
-// GBZ v1.3.12 - AÇÃO DE PREENCHER DATA DE HOJE NO FORMULÁRIO
+// GBZ v1.3.13 - AÇÃO DE PREENCHER DATA DE HOJE NO FORMULÁRIO
 // ============================================================
 function inserirDataHoje() {
   const dateInput = document.getElementById('form-data');

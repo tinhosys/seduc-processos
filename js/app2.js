@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // SEDUC — App Principal (Router + UI)
 // ============================================================
 
@@ -508,7 +508,7 @@ function addProcessoInputToDOM(valor = '', isFirst = false) {
     document.getElementById('form-objeto').value      = p.objeto      || '';
     document.getElementById('form-valorOf').value     = formatarMoedaValor(p.valorOf);
     document.getElementById('form-valorPlan').value   = formatarMoedaValor(p.valorPlan);
-    document.getElementById('form-data').value        = p.data        || '';
+    let _dVal = p.data || ''; if (_dVal.includes('/')) { const _parts = _dVal.split('/'); if (_parts.length === 3) _dVal = _parts[2] + '-' + _parts[1] + '-' + _parts[0]; } document.getElementById('form-data').value = _dVal;
     document.getElementById('form-obs').value         = p.obs         || '';
     document.getElementById('form-anotacao').value    = p.anotacao    || '';
   } else {
@@ -540,7 +540,7 @@ function salvarFormulario(e) {
     diferenca:   valorOficial - valorPlanilha,
     status:      document.getElementById('form-status').value,
     localizacao: document.getElementById('form-localizacao').value,
-    data:        document.getElementById('form-data').value,
+    data: (document.getElementById('form-data').value && document.getElementById('form-data').value.includes('-')) ? document.getElementById('form-data').value.split('-').reverse().join('/') : document.getElementById('form-data').value,
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
   };
