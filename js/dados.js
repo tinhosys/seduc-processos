@@ -186,6 +186,7 @@ const mapToApp = (row) => {
     CC: (row['CASA CIVIL'] === '1' || row['CASA CIVIL'] === 1 || row['CC'] === '1' || row['CC'] === 1 || String(row['CASA CIVIL']).toLowerCase() === 'sim') ? '1' : '0',
     ano: row['ANO'] || row['ano'] || '',
     agrupamento: row['AGRUPAMENTO'] || row['Agrupamento'] || row.agrupamento || agrupamentoCalculado,
+    executivo: String(row['EXECUTIVO'] || row['Executivo'] || row['executivo'] || row.executivo || '').trim(),
     tipoAuditorio: row['TIPO AUDITORIO'] || row['tipo auditorio'] || row.tipoAuditorio || '',
     quadra: row['QUADRA'] || row['quadra'] || row.quadra || '',
     patio: row['PATIO'] || row['patio'] || row.patio || '',
@@ -235,6 +236,7 @@ const mapToSheet = (dados) => {
     'CASA CIVIL': (dados.CC === '1' || dados.CC === 1) ? '1' : '0',
     'ANO': dados.ano || '',
     'AGRUPAMENTO': dados.agrupamento || '',
+    'EXECUTIVO': dados.executivo || '',
     'TIPO AUDITORIO': dados.tipoAuditorio || '',
     'QUADRA': dados.quadra || '',
     'PATIO': dados.patio || '',
@@ -379,7 +381,8 @@ async function importarExcel(file) {
           "DATA/HORA EDIÇÃO",
           "marca",
           "CATEGORIA",
-          "TIPO"
+          "TIPO",
+          "EXECUTIVO"
         ];
 
         // Mapear colunas pelo cabeçalho
@@ -402,6 +405,7 @@ async function importarExcel(file) {
         const idxData        = getIdx('data');
         const idxAnotacao    = getIdx('anota');
         const idxPrefixo     = getIdx('prefix');
+        const idxExecutivo   = getIdx('executiv');
 
         const existentes = carregarProcessos();
         const numerosExistentes = new Set(existentes.map(p => p.numero).filter(Boolean));
@@ -438,6 +442,7 @@ async function importarExcel(file) {
             numero:      numero,
             interessado: idxInteressado >= 0 ? String(row[idxInteressado] || '').trim() : '',
             objeto:      idxObjeto      >= 0 ? String(row[idxObjeto]      || '').trim() : '',
+            executivo:   idxExecutivo   >= 0 ? String(row[idxExecutivo]   || '').trim() : '',
             valorOf:     idxValorOf     >= 0 ? Number(row[idxValorOf])   || 0 : 0,
             valorPlan:   idxValorPlan   >= 0 ? Number(row[idxValorPlan]) || 0 : 0,
             diferenca:   idxDiferenca   >= 0 ? Number(row[idxDiferenca]) || 0 : 0,
@@ -503,6 +508,7 @@ function exportarExcel(filtrados) {
       'Processo':        p.numero,
       'Interessado':     p.interessado,
       'Objeto':          p.objeto,
+      'Executivo':       p.executivo    || '',
       'Valor Oficial':   p.valorOf,
       'Valor Planilha':  p.valorPlan,
       'Diferença':       p.diferenca,

@@ -2236,6 +2236,7 @@ thead th {
   width: 100% !important;
 }
 
+.filter-row .custom-multiselect,
 .filter-row-grid-6 .custom-multiselect {
   width: 100% !important;
   max-width: 100% !important;
@@ -2243,6 +2244,7 @@ thead th {
   box-sizing: border-box !important;
 }
 
+.filter-row .custom-multiselect-btn,
 .filter-row-grid-6 .custom-multiselect-btn {
   height: 38px !important;
   min-height: 38px !important;
@@ -2259,6 +2261,7 @@ thead th {
   justify-content: space-between !important;
 }
 
+.filter-row .custom-multiselect-text,
 .filter-row-grid-6 .custom-multiselect-text {
   font-size: 12px !important;
   font-weight: 700 !important;

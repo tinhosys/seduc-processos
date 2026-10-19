@@ -367,7 +367,8 @@ const defaultHeaders = [
   "OFICIO",
   "METRAGEM (M²)",
   "DETALHAMENTO ITENS",
-  "DEMAIS OBSERVACOES"
+  "DEMAIS OBSERVACOES",
+  "EXECUTIVO"
 ];
 
 async function getAllRows() {
@@ -454,7 +455,7 @@ async function getAllRows() {
 }
 
 app.get("/api/version", (req, res) => {
-  res.json({ version: "1.0.7", timestamp: "2026-07-08T23:30:00Z" });
+  res.json({ version: "1.0.8", timestamp: "2026-10-19T16:25:00Z" });
 });
 
 app.get("/api/registros", authMiddleware, async (req, res) => {
@@ -553,6 +554,8 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
       val = data.detalhamentoItens || data['DETALHAMENTO ITENS'] || '';
     } else if (hLow.includes('demais')) {
       val = data.demaisObservacoes || data['DEMAIS OBSERVACOES'] || '';
+    } else if (hLow.includes('executivo')) {
+      val = data.executivo !== undefined ? data.executivo : (data.EXECUTIVO !== undefined ? data.EXECUTIVO : '');
     }
 
     if (hLow.includes('contato')) {
@@ -1367,35 +1370,58 @@ app.delete("/api/contatos/:id", editorOnly, async (req, res) => {
 });
 async function garantirColunasAdicionais() {
   try {
-    console.log("🔍 Verificando se as colunas 'Marca', 'CATEGORIA' e 'TIPO' existem nas abas de processos...");
+    console.log("🔍 Verificando se as colunas adicionais ('Marca', 'CATEGORIA', 'TIPO', 'CAM', 'GAB', 'CC', 'EXECUTIVO') existem nas abas de processos...");
     const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
     const allSheets = response.data.sheets;
     const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos' && s.properties.title.toLowerCase() !== 'escolas' && s.properties.title.toLowerCase() !== 'escola');
 
     for (const s of processSheets) {
       const tabName = s.properties.title;
+      const sheetId = s.properties.sheetId;
+      const safeTitle = tabName.replace(/'/g, "''");
       const headerRes = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: `${tabName}!A1:ZZ1`
+        range: `'${safeTitle}'!A1:ZZ1`
       });
       let headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
       if (headers.length > 0) {
-        const colunasParaGarantir = ["Marca", "CATEGORIA", "TIPO", "CAM", "GAB", "CC"];
-        
+        const colunasParaGarantir = ["Marca", "CATEGORIA", "TIPO", "CAM", "GAB", "CC", "EXECUTIVO"];
+        const toAdd = [];
         for (const col of colunasParaGarantir) {
           const hasCol = headers.some(h => (h || "").toLowerCase().trim() === col.toLowerCase());
           if (!hasCol) {
-            const nextColLetter = columnToLetter(headers.length + 1);
-            const range = `${tabName}!${nextColLetter}1`;
-            await sheets.spreadsheets.values.update({
-              spreadsheetId: SPREADSHEET_ID,
-              range: range,
-              valueInputOption: "USER_ENTERED",
-              requestBody: { values: [[col]] }
-            });
-            console.log(`✅ Coluna '${col}' adicionada na aba: ${tabName} (posição ${nextColLetter}1)`);
-            headers.push(col); // Atualiza cabeçalhos locais para calcular a letra da próxima coluna corretamente
+            toAdd.push(col);
           }
+        }
+
+        if (toAdd.length > 0) {
+          await sheets.spreadsheets.batchUpdate({
+            spreadsheetId: SPREADSHEET_ID,
+            requestBody: {
+              requests: [
+                {
+                  appendDimension: {
+                    sheetId: sheetId,
+                    dimension: "COLUMNS",
+                    length: toAdd.length
+                  }
+                }
+              ]
+            }
+          });
+
+          const startCol = headers.length + 1;
+          const startLetter = columnToLetter(startCol);
+          const endLetter = columnToLetter(startCol + toAdd.length - 1);
+          const range = `'${safeTitle}'!${startLetter}1:${endLetter}1`;
+          await sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_ID,
+            range: range,
+            valueInputOption: "USER_ENTERED",
+            requestBody: { values: [toAdd] }
+          });
+          console.log(`✅ Colunas [${toAdd.join(', ')}] adicionadas na aba: ${tabName} (${range})`);
+          headers.push(...toAdd);
         }
       }
     }

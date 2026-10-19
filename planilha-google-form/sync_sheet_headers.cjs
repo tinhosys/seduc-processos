@@ -22,7 +22,8 @@ const requiredHeaders = [
   "OFICIO",
   "METRAGEM (M²)",
   "DETALHAMENTO ITENS",
-  "DEMAIS OBSERVAÇÕES"
+  "DEMAIS OBSERVAÇÕES",
+  "EXECUTIVO"
 ];
 
 function columnToLetter(column) {

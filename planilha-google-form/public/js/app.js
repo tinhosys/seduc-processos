@@ -46,7 +46,7 @@ window.formatarDigitoInteiro = window.limparDigitoValor;
 // Função global para limpar todos os filtros de processos
 window.limparFiltros = function() {
   if (typeof state !== 'undefined' && state && state.filtros) {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
     state.paginaAtual = 1;
   }
   const fb = document.getElementById('filtro-busca');
@@ -61,7 +61,7 @@ window.limparFiltros = function() {
   });
 
   // Limpar todos os selects múltiplos e simples
-  ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto',
+  ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto','filtro-executivo',
    'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -318,6 +318,7 @@ let state = {
     municipio: [],
     super: [],
     objeto: [],
+    executivo: [],
     prefixo: [],
     apontamento: false,
     alerta: '',
@@ -1191,7 +1192,7 @@ function getSuperPorMunicipio(mun) {
 // ---- LISTA DE PROCESSOS ----
 function getFiltrados() {
   let lista = carregarProcessos();
-  const { busca, status, localizacao, municipio, objeto, prefixo, alerta, marca, categoria, tipo, ano } = state.filtros;
+  const { busca, status, localizacao, municipio, objeto, executivo, prefixo, alerta, marca, categoria, tipo, ano } = state.filtros;
 
   if (alerta === 'sim') {
     lista = lista.filter(p => String(p.alerta || '').trim() === '1');
@@ -1212,6 +1213,7 @@ function getFiltrados() {
       normalizar(p.interessado).includes(q) ||
       normalizar(p.municipio).includes(q) ||
       normalizar(p.objeto).includes(q) ||
+      normalizar(p.executivo).includes(q) ||
       normalizar(p.obs).includes(q) ||
       normalizar(p.anotacao).includes(q) ||
       normalizar(p.prefixo).includes(q) ||
@@ -1255,6 +1257,7 @@ function getFiltrados() {
   filterByMultiple('localizacao', localizacao);
   filterByMultiple('municipio', municipio);
   filterByMultiple('objeto', objeto);
+  filterByMultiple('executivo', executivo);
   filterByMultiple('categoria', categoria);
   filterByMultiple('tipo', tipo);
   filterByMultiple('ano', ano);
@@ -1543,6 +1546,7 @@ function renderProcessos() {
   preencherSelectFiltro('filtro-municipio',   [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-prefixo',     [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-objeto',      [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
+  preencherSelectFiltro('filtro-executivo',   [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-ano',         [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
   // Mapeamento de categorias e tipos para exibição amigável
@@ -1574,6 +1578,7 @@ function renderProcessos() {
   preencherDatalist('list-prefixos', 'prefixo');
   preencherDatalist('list-interessados', 'interessado');
   preencherDatalist('list-objetos', 'objeto');
+  preencherDatalist('list-executivos', 'executivo');
   preencherDatalist('list-agrupamentos', 'agrupamento');
   preencherDatalist('list-municipios', 'municipio');
   preencherDatalist('list-anos', 'ano');
@@ -1678,7 +1683,7 @@ function renderProcessos() {
     // Quantidade de cancelados que satisfazem todos os parâmetros atuais (exceto o próprio filtro de status)
     const procsNoParametro = (function() {
       let l = carregarProcessos();
-      const { busca, localizacao, municipio, objeto, prefixo, alerta, marca, categoria, tipo, ano } = state.filtros;
+      const { busca, localizacao, municipio, objeto, executivo, prefixo, alerta, marca, categoria, tipo, ano } = state.filtros;
       if (alerta === 'sim') l = l.filter(p => String(p.alerta || '').trim() === '1');
       else if (alerta === 'nao') l = l.filter(p => String(p.alerta || '').trim() !== '1');
       if (marca === 'sim') l = l.filter(p => p.marca === '1' || p.marca === 'SIM');
@@ -1690,6 +1695,7 @@ function renderProcessos() {
           normalizar(p.interessado).includes(q) ||
           normalizar(p.municipio).includes(q) ||
           normalizar(p.objeto).includes(q) ||
+          normalizar(p.executivo).includes(q) ||
           normalizar(p.obs).includes(q) ||
           normalizar(p.anotacao).includes(q) ||
           normalizar(p.prefixo).includes(q) ||
@@ -1713,6 +1719,7 @@ function renderProcessos() {
       fByMulti('localizacao', localizacao);
       fByMulti('municipio', municipio);
       fByMulti('objeto', objeto);
+      fByMulti('executivo', executivo);
       fByMulti('categoria', categoria);
       fByMulti('tipo', tipo);
       fByMulti('ano', ano);
@@ -1890,6 +1897,7 @@ function preencherSelectFiltro(id, opcoes) {
   else if (id === 'filtro-localizacao') placeholder = 'LOCALIZAÇÃO';
   else if (id === 'filtro-municipio') placeholder = 'MUNICÍPIO';
   else if (id === 'filtro-objeto') placeholder = 'OBJETO';
+  else if (id === 'filtro-executivo') placeholder = 'EXECUTIVO';
   else if (id === 'filtro-ano') placeholder = 'ANO';
   else if (id === 'filtro-prefixo') placeholder = 'PREFIXO';
   else if (id === 'filtro-agrupamento') placeholder = 'AGRUPAMENTO';
@@ -2082,10 +2090,13 @@ function renderFormulario() {
   fillSelect('list-anos', anos_list, '');
   const agrupamentos_list = [...new Set(carregarProcessos().map(x => String(x.agrupamento || '')).filter(Boolean))].sort();
   fillSelect('list-agrupamentos', agrupamentos_list, '');
+  const executivos_list = [...new Set(carregarProcessos().map(x => String(x.executivo || '')).filter(Boolean))].sort();
+  fillSelect('list-executivos', executivos_list, '');
 
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
+    if (document.getElementById('form-executivo')) document.getElementById('form-executivo').value = p.executivo || '';
     document.getElementById('form-digito').value = window.limparDigitoValor(p.digito || p.DIGITO || '');
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
@@ -2199,6 +2210,7 @@ function renderFormulario() {
     if (typeof setManifestacaoTipo === 'function') setManifestacaoTipo('favoravel');
     document.getElementById('form-ano').value = '';
     document.getElementById('form-agrupamento').value = '';
+    if (document.getElementById('form-executivo')) document.getElementById('form-executivo').value = '';
     document.getElementById('form-digito').value = '';
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
@@ -2319,6 +2331,7 @@ function salvarFormulario(e) {
     numero:      numerosJoined,
     interessado: document.getElementById('form-interessado').value.trim(),
     objeto:      document.getElementById('form-objeto').value.trim(),
+    executivo:   document.getElementById('form-executivo') ? document.getElementById('form-executivo').value.trim() : '',
     valorOf:     valOf,
     valorPlan:   valPlan,
     diferenca:   valOf - valPlan,
@@ -2511,6 +2524,7 @@ function abrirDetalhe(id) {
       <div class="info-item"><label>Objeto</label><p>${p.objeto || '—'}</p></div>
       <div class="info-item"><label>Localização</label><p>${p.localizacao || '—'}</p></div>
       <div class="info-item"><label>Data</label><p>${formatDate(p.data)}</p></div>
+      ${p.executivo ? `<div class="info-item"><label>Executivo</label><p>${p.executivo}</p></div>` : ''}
     </div>
 
 
@@ -2880,6 +2894,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filtro-super')?.addEventListener('change', () => aplicarFiltro('super', null));
   document.getElementById('filtro-municipio')?.addEventListener('change', () => aplicarFiltro('municipio', null));
   document.getElementById('filtro-objeto')?.addEventListener('change', () => aplicarFiltro('objeto', null));
+  document.getElementById('filtro-executivo')?.addEventListener('change', () => aplicarFiltro('executivo', null));
   document.getElementById('filtro-categoria')?.addEventListener('change', () => aplicarFiltro('categoria', null));
   document.getElementById('filtro-tipo')?.addEventListener('change', () => aplicarFiltro('tipo', null));
   const filtroAnoEl = document.getElementById('filtro-ano');
@@ -2980,7 +2995,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.limparFiltros = function() {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
     state.paginaAtual = 1;
     const fb = document.getElementById('filtro-busca');
     if (fb) fb.value = '';
@@ -2994,7 +3009,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Limpar todos os selects múltiplos e simples
-    ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto',
+    ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto','filtro-executivo',
      'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -3069,6 +3084,7 @@ document.addEventListener('DOMContentLoaded', () => {
       preencherSelectFiltro('filtro-municipio', [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
       preencherSelectFiltro('filtro-prefixo', [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
       preencherSelectFiltro('filtro-objeto', [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
+      preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
       preencherSelectFiltro('filtro-ano', [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b) => b - a));
       preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
 
@@ -5300,6 +5316,7 @@ function gerarRelatorioMonitoramento() {
     ano:               g('form-ano'),
     agrupamento:       g('form-agrupamento'),
     data:              g('form-data'),
+    executivo:         g('form-executivo'),
     status:            g('form-status'),
     localizacao:       g('form-localizacao'),
     obs:               g('form-obs'),
@@ -6729,7 +6746,8 @@ window.verificarInconsistenciasPlanilhaCMD = async function() {
     { key: 'categoria', label: 'Categoria' },
     { key: 'tipo', label: 'Tipo' },
     { key: 'prefixo', label: 'Prefixo' },
-    { key: 'agrupamento', label: 'Agrupamento' }
+    { key: 'agrupamento', label: 'Agrupamento' },
+    { key: 'executivo', label: 'Executivo' }
   ];
 
   pool.forEach(p => {
