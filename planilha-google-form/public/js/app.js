@@ -145,12 +145,13 @@ window.podeAcessarDashboard = function() {
 
 window.isUsuarioAdmin = function() {
   try {
-    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
-    const nivel = String(uData.nivel || '').toLowerCase().trim();
-    if (nivel === 'admin' || nivel === 'adm') return true;
+    const raw = sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data");
+    if (raw) {
+      const uData = JSON.parse(raw);
+      const nivel = String(uData.nivel || uData.role || '').toLowerCase().trim();
+      return (nivel === 'admin' || nivel === 'adm' || nivel === 'administrador');
+    }
     if (document.body && document.body.classList.contains('role-adm')) return true;
-    const elRole = document.getElementById('user-role');
-    if (elRole && elRole.textContent && elRole.textContent.toLowerCase().includes('admin')) return true;
   } catch(e) {}
   return false;
 };
@@ -1213,7 +1214,7 @@ function getFiltrados() {
       normalizar(p.interessado).includes(q) ||
       normalizar(p.municipio).includes(q) ||
       normalizar(p.objeto).includes(q) ||
-      normalizar(p.executivo).includes(q) ||
+      ((typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) && normalizar(p.executivo).includes(q)) ||
       normalizar(p.obs).includes(q) ||
       normalizar(p.anotacao).includes(q) ||
       normalizar(p.prefixo).includes(q) ||
@@ -1257,7 +1258,7 @@ function getFiltrados() {
   filterByMultiple('localizacao', localizacao);
   filterByMultiple('municipio', municipio);
   filterByMultiple('objeto', objeto);
-  filterByMultiple('executivo', executivo);
+  if (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) { filterByMultiple('executivo', executivo); }
   filterByMultiple('categoria', categoria);
   filterByMultiple('tipo', tipo);
   filterByMultiple('ano', ano);
@@ -1546,7 +1547,21 @@ function renderProcessos() {
   preencherSelectFiltro('filtro-municipio',   [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-prefixo',     [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-objeto',      [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
-  preencherSelectFiltro('filtro-executivo',   [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
+  const _isAdmRender = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
+  const _contFiltroExec = document.getElementById('container-filtro-executivo');
+  if (_contFiltroExec) _contFiltroExec.style.setProperty('display', _isAdmRender ? 'block' : 'none', 'important');
+  if (_isAdmRender) {
+    preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
+  } else {
+    state.filtros.executivo = [];
+    const _selExec = document.getElementById('filtro-executivo');
+    if (_selExec) {
+      _selExec.innerHTML = '<option value="">EXECUTIVO</option>';
+      if (_selExec._multiSelectInstance && _selExec._multiSelectInstance.wrapper) {
+        _selExec._multiSelectInstance.wrapper.style.setProperty('display', 'none', 'important');
+      }
+    }
+  }
   preencherSelectFiltro('filtro-ano',         [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
   // Mapeamento de categorias e tipos para exibição amigável
@@ -1578,7 +1593,7 @@ function renderProcessos() {
   preencherDatalist('list-prefixos', 'prefixo');
   preencherDatalist('list-interessados', 'interessado');
   preencherDatalist('list-objetos', 'objeto');
-  preencherDatalist('list-executivos', 'executivo');
+  if (_isAdmRender) { preencherDatalist('list-executivos', 'executivo'); } else { const _dlExec = document.getElementById('list-executivos'); if (_dlExec) _dlExec.innerHTML = ''; }
   preencherDatalist('list-agrupamentos', 'agrupamento');
   preencherDatalist('list-municipios', 'municipio');
   preencherDatalist('list-anos', 'ano');
@@ -1719,7 +1734,7 @@ function renderProcessos() {
       fByMulti('localizacao', localizacao);
       fByMulti('municipio', municipio);
       fByMulti('objeto', objeto);
-      fByMulti('executivo', executivo);
+      if (_isAdmRender) { fByMulti('executivo', executivo); }
       fByMulti('categoria', categoria);
       fByMulti('tipo', tipo);
       fByMulti('ano', ano);
@@ -2088,15 +2103,32 @@ function renderFormulario() {
   
   const anos_list = [...new Set(carregarProcessos().map(x => String(x.ano || '')).filter(Boolean))].sort((a,b)=>b-a);
   fillSelect('list-anos', anos_list, '');
+  const isAdminForm = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
   const agrupamentos_list = [...new Set(carregarProcessos().map(x => String(x.agrupamento || '')).filter(Boolean))].sort();
   fillSelect('list-agrupamentos', agrupamentos_list, '');
-  const executivos_list = [...new Set(carregarProcessos().map(x => String(x.executivo || '')).filter(Boolean))].sort();
-  fillSelect('list-executivos', executivos_list, '');
+  const groupFormExec = document.getElementById('group-form-executivo');
+  const inputFormExec = document.getElementById('form-executivo');
+  if (isAdminForm) {
+    const executivos_list = [...new Set(carregarProcessos().map(x => String(x.executivo || '')).filter(Boolean))].sort();
+    fillSelect('list-executivos', executivos_list, '');
+    if (groupFormExec) groupFormExec.style.setProperty('display', '', 'important');
+    if (inputFormExec) {
+      inputFormExec.disabled = false;
+      inputFormExec.style.removeProperty('display');
+    }
+  } else {
+    fillSelect('list-executivos', [], '');
+    if (groupFormExec) groupFormExec.style.setProperty('display', 'none', 'important');
+    if (inputFormExec) {
+      inputFormExec.disabled = true;
+      inputFormExec.style.setProperty('display', 'none', 'important');
+    }
+  }
 
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
-    if (document.getElementById('form-executivo')) document.getElementById('form-executivo').value = p.executivo || '';
+    if (inputFormExec) inputFormExec.value = isAdminForm ? (p.executivo || '') : '';
     document.getElementById('form-digito').value = window.limparDigitoValor(p.digito || p.DIGITO || '');
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
@@ -2331,7 +2363,7 @@ function salvarFormulario(e) {
     numero:      numerosJoined,
     interessado: document.getElementById('form-interessado').value.trim(),
     objeto:      document.getElementById('form-objeto').value.trim(),
-    executivo:   document.getElementById('form-executivo') ? document.getElementById('form-executivo').value.trim() : '',
+    executivo:   (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) ? (document.getElementById('form-executivo') ? document.getElementById('form-executivo').value.trim() : '') : (state.editandoId ? (buscarProcessoPorId(state.editandoId)?.executivo || '') : ''),
     valorOf:     valOf,
     valorPlan:   valPlan,
     diferenca:   valOf - valPlan,
@@ -2524,7 +2556,7 @@ function abrirDetalhe(id) {
       <div class="info-item"><label>Objeto</label><p>${p.objeto || '—'}</p></div>
       <div class="info-item"><label>Localização</label><p>${p.localizacao || '—'}</p></div>
       <div class="info-item"><label>Data</label><p>${formatDate(p.data)}</p></div>
-      ${p.executivo ? `<div class="info-item"><label>Executivo</label><p>${p.executivo}</p></div>` : ''}
+      ${(typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin() && p.executivo) ? `<div class="info-item action-adm"><label>Executivo</label><p>${p.executivo}</p></div>` : ''}
     </div>
 
 
@@ -3084,7 +3116,21 @@ document.addEventListener('DOMContentLoaded', () => {
       preencherSelectFiltro('filtro-municipio', [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
       preencherSelectFiltro('filtro-prefixo', [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
       preencherSelectFiltro('filtro-objeto', [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
-      preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
+      const _isAdmPop = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
+      const _contExecPop = document.getElementById('container-filtro-executivo');
+      if (_contExecPop) _contExecPop.style.setProperty('display', _isAdmPop ? 'block' : 'none', 'important');
+      if (_isAdmPop) {
+        preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
+      } else {
+        state.filtros.executivo = [];
+        const _selExecPop = document.getElementById('filtro-executivo');
+        if (_selExecPop) {
+          _selExecPop.innerHTML = '<option value="">EXECUTIVO</option>';
+          if (_selExecPop._multiSelectInstance && _selExecPop._multiSelectInstance.wrapper) {
+            _selExecPop._multiSelectInstance.wrapper.style.setProperty('display', 'none', 'important');
+          }
+        }
+      }
       preencherSelectFiltro('filtro-ano', [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b) => b - a));
       preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
 
@@ -3168,6 +3214,7 @@ function exportarExcel() {
     };
     // Campos confidenciais: visíveis SOMENTE ao perfil ADMIN
     if (isAdmin) {
+      row["Executivo"] = p.executivo || '';
       row["Agrupamento"] = p.agrupamento || '';
       row["Dígito"] = p.digito || p.DIGITO || '';
       row["Anotação Interna"] = p.anotacao || '';

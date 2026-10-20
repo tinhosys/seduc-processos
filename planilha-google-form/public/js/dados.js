@@ -508,7 +508,6 @@ function exportarExcel(filtrados) {
       'Processo':        p.numero,
       'Interessado':     p.interessado,
       'Objeto':          p.objeto,
-      'Executivo':       p.executivo    || '',
       'Valor Oficial':   p.valorOf,
       'Valor Planilha':  p.valorPlan,
       'Diferença':       p.diferenca,
@@ -518,6 +517,7 @@ function exportarExcel(filtrados) {
       'Data':            p.data,
     };
     if (isAdmin) {
+      item['Executivo'] = p.executivo || '';
       item['Agrupamento'] = p.agrupamento || '';
       item['Dígito'] = p.digito || p.DIGITO || '';
       item['Anotação'] = p.anotacao || '';

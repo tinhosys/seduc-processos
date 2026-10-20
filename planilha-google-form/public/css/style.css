@@ -1553,7 +1553,11 @@ body.role-leitor td:nth-child(10) {
 }
 
 /* ==================== CONTROLE DE ACESSO (ADM ONLY) ==================== */
-body:not(.role-adm) .action-adm {
+body:not(.role-adm) .action-adm,
+body:not(.role-adm) #container-filtro-executivo,
+body:not(.role-adm) #filtro-executivo,
+body:not(.role-adm) #group-form-executivo,
+body:not(.role-adm) #form-executivo {
   display: none !important;
 }
 

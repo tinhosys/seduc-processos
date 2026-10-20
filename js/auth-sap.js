@@ -49,12 +49,13 @@ window.podeAcessarDashboard = function() {
 
 window.isUsuarioAdmin = function() {
   try {
-    const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
-    const nivel = String(uData.nivel || '').toLowerCase().trim();
-    if (nivel === 'admin' || nivel === 'adm') return true;
+    const raw = sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data");
+    if (raw) {
+      const uData = JSON.parse(raw);
+      const nivel = String(uData.nivel || uData.role || '').toLowerCase().trim();
+      return (nivel === 'admin' || nivel === 'adm' || nivel === 'administrador');
+    }
     if (document.body && document.body.classList.contains('role-adm')) return true;
-    const elRole = document.getElementById('user-role');
-    if (elRole && elRole.textContent && elRole.textContent.toLowerCase().includes('admin')) return true;
   } catch(e) {}
   return false;
 };
@@ -99,6 +100,7 @@ function getSessionToken() {
 
 // Salva sessão no sessionStorage ou localStorage dependendo de manterConectado
 function salvarSessao(token, usuario, manterConectado = false) {
+  limparSessao();
   if (manterConectado) {
     localStorage.setItem(SAP_SESSION_KEY, token);
     localStorage.setItem(SAP_USER_KEY, JSON.stringify(usuario));
@@ -126,6 +128,7 @@ function aplicarPermissoes(nivel) {
     if (elNome) elNome.textContent = 'Usuário: ' + (uData.nome || 'Desconhecido');
     if (elWa) elWa.textContent = 'WhatsApp: ' + (uData.whatsapp || '');
   } catch(e) {}
+  nivel = String(nivel || uData.nivel || '').toLowerCase().trim();
   const body = document.body;
 
   // Remove classes anteriores
@@ -133,7 +136,7 @@ function aplicarPermissoes(nivel) {
 
   if (nivel === 'leitor') {
     body.classList.add('role-leitor');
-  } else if (nivel === 'adm' || nivel === 'admin') {
+  } else if (nivel === 'adm' || nivel === 'admin' || nivel === 'administrador') {
     body.classList.add('role-adm');
   } else if (nivel === 'gerente') {
     body.classList.add('role-gerente');
@@ -141,10 +144,12 @@ function aplicarPermissoes(nivel) {
     body.classList.add('role-editor');
   }
 
+  const isAdminUser = (nivel === 'adm' || nivel === 'admin' || nivel === 'administrador');
+
   // Atualiza badge de perfil na topbar
   const elRole = document.getElementById('user-role');
   if (elRole) {
-    if (nivel === 'adm' || nivel === 'admin') {
+    if (isAdminUser) {
       elRole.textContent = '👑 Admin';
       elRole.style.color = '#3b82f6';
     } else {
@@ -154,7 +159,6 @@ function aplicarPermissoes(nivel) {
     }
   }
 
-  const isAdminUser = (nivel === 'adm' || nivel === 'admin');
   if (typeof window.atualizarBotoesModulos === "function") window.atualizarBotoesModulos();
   document.querySelectorAll('.action-adm').forEach(el => {
     if (el.tagName === 'SELECT' && (el.classList.contains('custom-multiselect-hidden') || el.multiple)) {
@@ -167,6 +171,29 @@ function aplicarPermissoes(nivel) {
       el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
     }
   });
+
+  // Controle estrito do filtro e campo EXECUTIVO (exclusivo ADMIN)
+  const containerFiltroExec = document.getElementById('container-filtro-executivo');
+  if (containerFiltroExec) {
+    containerFiltroExec.style.setProperty('display', isAdminUser ? 'block' : 'none', 'important');
+  }
+  const selFiltroExec = document.getElementById('filtro-executivo');
+  if (selFiltroExec && selFiltroExec._multiSelectInstance && selFiltroExec._multiSelectInstance.wrapper) {
+    selFiltroExec._multiSelectInstance.wrapper.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  }
+  const groupFormExec = document.getElementById('group-form-executivo');
+  if (groupFormExec) {
+    groupFormExec.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  }
+  const inputFormExec = document.getElementById('form-executivo');
+  if (inputFormExec) {
+    inputFormExec.disabled = !isAdminUser;
+    if (!isAdminUser) inputFormExec.style.setProperty('display', 'none', 'important');
+    else inputFormExec.style.removeProperty('display');
+  }
+  if (!isAdminUser && typeof state !== 'undefined' && state && state.filtros) {
+    state.filtros.executivo = [];
+  }
 
   // Controle restrito do Dashboard (somente Elton, Admin, 69 99922-1336)
   const canDash = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
@@ -253,7 +280,7 @@ async function realizarLogin() {
     // Sucesso: salvar sessão e carregar app
     const manterCheckbox = document.getElementById('login-manter');
     const manterConectado = manterCheckbox ? manterCheckbox.checked : false;
-    salvarSessao(data.token, { whatsapp: data.whatsapp, nome: data.nome, nivel: data.nivel }, manterConectado);
+    salvarSessao(data.token, { whatsapp: data.whatsapp, nome: data.nome, nivel: String(data.nivel || '').toLowerCase().trim(), setor: data.setor || '' }, manterConectado);
 
     // Atualiza topbar
     const elName = document.getElementById('user-name');
@@ -266,6 +293,7 @@ async function realizarLogin() {
     await inicializarDados();
     if (typeof window.popularFiltrosProcessos === 'function') window.popularFiltrosProcessos();
     if (typeof renderProcessos === 'function') renderProcessos();
+    aplicarPermissoes(data.nivel);
 
     const isAdminLog = (data.nivel === 'adm' || data.nivel === 'admin');
     const canDashLog = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
@@ -338,6 +366,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (typeof atualizarContador === 'function') atualizarContador();
         if (typeof window.popularFiltrosProcessos === 'function') window.popularFiltrosProcessos();
         if (typeof renderProcessos === 'function') renderProcessos();
+        aplicarPermissoes(usuario.nivel);
 
         const isAdminSess = (usuario.nivel === 'adm' || usuario.nivel === 'admin');
         const canDashSess = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
