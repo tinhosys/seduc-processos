@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.16">
+  <link rel="stylesheet" href="css/style.css?v=1.3.18">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -700,7 +700,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.17</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.18</div>
   </div>
 </div>
   
@@ -952,7 +952,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.17</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.18</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2104,20 +2104,50 @@
               <!-- 5 CAIXAS DA MANIFESTAÇÃO TÉCNICA COM BOTÕES IA / PADRÃO -->
               <!-- ========================================================================= -->
               <div style="margin-top:12px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
                   <div>
-                    <h3 style="margin:0 0 4px 0; color:#34d399; font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                    <h3 style="margin:0 0 4px 0; color:#34d399; font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                       <span>📝</span> <span>CAMPOS DA MANIFESTAÇÃO TÉCNICA</span>
+                      <span id="badge-padrao-relatorio-atual" style="background:rgba(245,158,11,0.18); color:#fcd34d; border:1px solid rgba(245,158,11,0.45); padding:2px 10px; border-radius:12px; font-size:11px; font-weight:800;">Padrão Original</span>
                     </h3>
-                    <p style="margin:0; font-size:12px; color:#94a3b8;">Preencha e ajuste as seções 1, 2, 3, 4 e 5. Use 🤖 IA para otimizar ou 📄 Padrão para restaurar o texto canônico.</p>
+                    <p style="margin:0; font-size:12px; color:#94a3b8;">Botão <strong style="color:#fbbf24;">Laranja</strong> restaura o original; botão <strong style="color:#f87171;">Vermelho</strong> cria um novo padrão de relatório a cada clique com base no Script CAM e nos documentos marcados.</p>
                   </div>
-                  <div style="display:flex; gap:8px;">
-                    <button type="button" onclick="carregarTodasSecoesPadrao()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 12px; font-size:12px; border-radius:6px; cursor:pointer;" title="Carregar modelo padrão oficial em todas as 5 caixas">
-                      📄 Restaurar Todas Padrão
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <!-- BOTÃO LARANJA (IMAGEM 4): RESTAURA ORIGINAL -->
+                    <button type="button" onclick="carregarTodasSecoesPadrao()" class="btn" style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border:1px solid #fbbf24; padding:7px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(245,158,11,0.35);" title="Restaurar o modelo original padrão em todas as 5 caixas">
+                      📄 Restaurar Todas Padrão (Original)
                     </button>
-                    <button type="button" onclick="gerarTodasSecoesComIA()" class="btn" style="background:linear-gradient(135deg,#8b5cf6,#6366f1); color:#fff; border:none; padding:6px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(139,92,246,0.35);" title="Interpretar dados e otimizar seções com IA">
-                      🤖 Gerar/Otimizar Tudo com IA
+                    <!-- BOTÃO VERMELHO (IMAGEM 4): CRIAR OUTRAS POSSIBILIDADES DE RELATÓRIO A CADA CLIQUE -->
+                    <button type="button" onclick="gerarTodasSecoesComIA()" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:1px solid #f87171; padding:7px 16px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 10px rgba(239,68,68,0.45);" title="Criar um novo padrão de relatório a cada clique com base no Script CAM e na análise de todos os documentos marcados">
+                      🤖 Gerar/Otimizar Tudo com IA (Novo Padrão a Cada Clique)
                     </button>
+                  </div>
+                </div>
+
+                <!-- PAINEL DE CHECKS PARA APONTAR AS REFERÊNCIAS DOCUMENTAIS NO RELATÓRIO (IMAGEM 4) -->
+                <div id="painel-checks-referencias-relatorio" style="margin-bottom:16px; padding:12px 14px; background:rgba(15,23,42,0.75); border:1px solid rgba(56,189,248,0.28); border-radius:10px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                    <span style="font-size:12px; font-weight:800; color:#38bdf8; display:flex; align-items:center; gap:6px;">
+                      <span>☑️</span> <span>APONTAR REFERÊNCIAS E DOCUMENTOS ANALISADOS NO RELATÓRIO (SCRIPT CAM V1.0)</span>
+                    </span>
+                    <span id="resumo-checks-referencias" style="font-size:11px; color:#94a3b8;">Selecione os documentos e elementos que compõem a base do relatório</span>
+                  </div>
+                  <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.06);">
+                    <label style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:#e2e8f0; cursor:pointer; background:rgba(255,255,255,0.04); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
+                      <input type="checkbox" id="chk-ref-citar-docs" checked onchange="atualizarReferenciasRelatorio()" style="accent-color:#10b981; cursor:pointer;">
+                      <span>Apontar documentos marcados como referência</span>
+                    </label>
+                    <label style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:#e2e8f0; cursor:pointer; background:rgba(255,255,255,0.04); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
+                      <input type="checkbox" id="chk-ref-coerencia-legalidade" checked onchange="atualizarReferenciasRelatorio()" style="accent-color:#10b981; cursor:pointer;">
+                      <span>Incluir coerência, conexão e legalidade entre os documentos</span>
+                    </label>
+                    <label style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:#e2e8f0; cursor:pointer; background:rgba(255,255,255,0.04); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
+                      <input type="checkbox" id="chk-ref-pendencias-solucoes" checked onchange="atualizarReferenciasRelatorio()" style="accent-color:#10b981; cursor:pointer;">
+                      <span>Incluir pendências e soluções da Matriz CAM</span>
+                    </label>
+                  </div>
+                  <div id="lista-checks-documentos-referencia" style="display:flex; flex-wrap:wrap; gap:8px;">
+                    <span style="font-size:11px; color:#64748b;">Anexe documentos na aba "Repositório & Análise CAM" para listá-los aqui com check de referência.</span>
                   </div>
                 </div>
 
@@ -2273,64 +2303,59 @@
                 </div>
               </div>
 
-              <!-- GRID SUPERIOR DE 2 COLUNAS: LADO ESQUERDO DROPZONE PLANO DE TRABALHO | LADO DIREITO DOCUMENTOS GUARDADOS (IMAGEM 2 E 3) -->
-              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:18px; margin-bottom:20px; align-items:stretch;">
-                
-                <!-- COLUNA 1: DROPZONE DO PLANO DE TRABALHO (VERDE LIMÃO / DESTAQUE - IMAGEM 2) -->
-                <div id="dropzone-plano-trabalho" style="border:2px dashed #10b981; background:rgba(16,185,129,0.04); border-radius:12px; padding:22px 18px; text-align:center; cursor:pointer; transition:all 0.25s ease; display:flex; flex-direction:column; justify-content:center; align-items:center; position:relative;"
-                     ondragover="handleDropzoneOver(event)" ondragleave="handleDropzoneLeave(event)" ondrop="handleDropzoneDrop(event)" onclick="document.getElementById('input-file-repositorio').click()">
-                  <input type="file" id="input-file-repositorio" style="display:none;" accept=".pdf,.doc,.docx,.txt" onchange="handleFileInputChange(event)">
-                  <div style="font-size:36px; margin-bottom:6px; filter:drop-shadow(0 2px 8px rgba(16,185,129,0.3));">📑</div>
-                  <h4 style="margin:0 0 6px 0; color:#f8fafc; font-size:15px; font-weight:800;">
-                    Arraste no verde o <span style="color:#10b981; text-decoration:underline;">Plano de Trabalho</span>
-                  </h4>
-                  <p style="margin:0 0 10px 0; color:#94a3b8; font-size:12px; line-height:1.4;">
-                    Solte o arquivo PDF aqui para leitura automática e aplicação das regras gravadas do Script CAM.
-                  </p>
-                  <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:3px 12px; font-size:11px; color:#cbd5e1;">
-                    <span>⚡ Script CAM V1.0 Gravado</span>
-                    <span>•</span>
-                    <span>Objeto, Valores e Metas</span>
-                  </div>
-                </div>
+              <!-- REPOSITÓRIO UNIFICADO DE DOCUMENTOS E ANEXOS (SEM O QUADRO AMARELO SEPARADO DA IMAGEM 1, ANALISANDO TODOS OS DOCUMENTOS MARCADOS NO VERDE CONFORME O SCRIPT) -->
+              <div id="dropzone-plano-trabalho" style="background:rgba(0,0,0,0.25); border:2px dashed rgba(16,185,129,0.55); border-radius:12px; padding:18px; margin-bottom:20px; transition:all 0.25s ease;"
+                   ondragover="handleDropzoneOver(event)" ondragleave="handleDropzoneLeave(event)" ondrop="handleDropzoneDrop(event)">
+                <input type="file" id="input-file-repositorio" style="display:none;" accept=".pdf,.doc,.docx,.txt" multiple onchange="handleFileInputChange(event)">
 
-                <!-- COLUNA 2: LISTAGEM DE DOCUMENTOS E ANEXOS GUARDADOS (REPOSICIONADO PARA O TOPO DIREITO - IMAGEM 3) -->
-                <div style="background:rgba(0,0,0,0.22); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
                   <div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:8px;">
-                      <h4 style="margin:0; font-size:13px; color:#f8fafc; font-weight:800; display:flex; align-items:center; gap:6px;">
-                        <span>📁</span> <span>Documentos e Anexos Guardados no Processo</span>
-                      </h4>
-                      <button type="button" onclick="document.getElementById('input-file-repositorio').click()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.12); padding:4px 10px; font-size:11px; border-radius:6px; cursor:pointer;" title="Anexar outro arquivo">
-                        + Anexar
-                      </button>
-                    </div>
-                    
-                    <div id="repositorio-lista-arquivos" style="display:flex; flex-direction:column; gap:8px; max-height:180px; overflow-y:auto; padding-right:4px;">
-                      <!-- Exibido dinamicamente via JS -->
-                      <div id="repositorio-vazio-msg" style="padding:18px 12px; text-align:center; color:#64748b; font-size:12px; background:rgba(0,0,0,0.12); border-radius:8px; border:1px dashed rgba(255,255,255,0.06);">
-                        Nenhum documento guardado ainda neste processo. Arraste o Plano de Trabalho ao lado.
-                      </div>
-                    </div>
+                    <h4 style="margin:0 0 3px 0; font-size:14px; color:#f8fafc; font-weight:800; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                      <span>📁</span> <span>Documentos e Anexos Guardados no Processo</span>
+                      <span id="badge-docs-selecionados" style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700;">0 selecionados</span>
+                    </h4>
+                    <span style="font-size:11.5px; color:#94a3b8;">Marque (☑️) os documentos que devem ser analisados em conjunto sob a luz do Script Padrão (Script CAM V1.0) e apontados como referência.</span>
                   </div>
-                  <div style="margin-top:8px; text-align:right;">
-                    <span style="font-size:10.5px; color:#64748b;">Os documentos ficam associados ao número SEI deste processo.</span>
+                  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                    <button type="button" onclick="alternarSelecaoTodosDocumentos()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 12px; font-size:11.5px; font-weight:700; border-radius:6px; cursor:pointer;" title="Marcar ou desmarcar todos os documentos para análise">
+                      ☑️ Marcar / Desmarcar Todos
+                    </button>
+                    <button type="button" onclick="analisarConjuntoDocumentalCAM()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:6px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(16,185,129,0.35);" title="Analisar em conjunto todos os documentos marcados sob a luz do Script CAM V1.0">
+                      ⚡ Analisar Conjunto Documental (Script CAM)
+                    </button>
+                    <button type="button" onclick="document.getElementById('input-file-repositorio').click()" class="btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:1px solid #60a5fa; padding:6px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer;" title="Anexar um ou mais documentos (PDF, DOCX, TXT)">
+                      + Anexar Documentos
+                    </button>
                   </div>
                 </div>
 
+                <div id="repositorio-lista-arquivos" style="display:flex; flex-direction:column; gap:8px; max-height:240px; overflow-y:auto; padding-right:4px;">
+                  <!-- Exibido dinamicamente via JS -->
+                  <div id="repositorio-vazio-msg" onclick="document.getElementById('input-file-repositorio').click()" style="padding:24px 14px; text-align:center; color:#94a3b8; font-size:12.5px; background:rgba(16,185,129,0.04); border-radius:8px; border:1px dashed rgba(16,185,129,0.35); cursor:pointer;">
+                    📑 Nenhum documento guardado ainda neste processo. Clique em <strong>+ Anexar Documentos</strong> ou solte os arquivos PDF aqui para análise conjunta pelo Script CAM V1.0.
+                  </div>
+                </div>
+
+                <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                  <span style="font-size:11px; color:#34d399; font-weight:600;">⚡ Motor Script CAM V1.0: Coerência • Conexão Documental • Legalidade • Metas e Valores</span>
+                  <span style="font-size:10.5px; color:#64748b;">Os documentos ficam associados ao número SEI deste processo.</span>
+                </div>
               </div>
 
               <!-- PAINEL DE ANÁLISE TÉCNICA CAM & OPORTUNÔMETRO (DINÂMICO) -->
               <div id="painel-analise-cam-resultado" style="display:none; background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.3); border-radius:12px; padding:20px; margin-bottom:20px; box-shadow:0 6px 20px rgba(0,0,0,0.4);">
                 <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:14px;">
                   <div>
-                    <span style="font-size:11px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px; display:inline-block; margin-bottom:4px;">Resultado do Diagnóstico Técnico</span>
-                    <h4 id="cam-analise-titulo-doc" style="margin:0; font-size:16px; color:#fff; font-weight:800;">Plano de Trabalho Analisado</h4>
-                    <span id="cam-analise-doc-info" style="font-size:12px; color:#94a3b8;">Arquivo: documento.pdf</span>
+                    <span style="font-size:11px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px; display:inline-block; margin-bottom:4px;">Resultado do Diagnóstico Técnico do Conjunto Documental (Script CAM V1.0)</span>
+                    <h4 id="cam-analise-titulo-doc" style="margin:0; font-size:16px; color:#fff; font-weight:800;">Conjunto de Documentos Analisado</h4>
+                    <span id="cam-analise-doc-info" style="font-size:12px; color:#94a3b8;">Documentos verificados sob a luz do Script Padrão</span>
                   </div>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                    <button type="button" onclick="aplicarAnaliseCAMNaManifestacao()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:8px 18px; font-size:12.5px; font-weight:800; border-radius:8px; cursor:pointer; box-shadow:0 4px 12px rgba(16,185,129,0.35); display:inline-flex; align-items:center; gap:6px;">
+                    <button type="button" onclick="aplicarAnaliseCAMNaManifestacao()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:8px 16px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; box-shadow:0 4px 12px rgba(16,185,129,0.35); display:inline-flex; align-items:center; gap:6px;">
                       <span>✍️</span> <span>Aplicar na Manifestação Técnica</span>
+                    </button>
+                    <button type="button" onclick="entregarRelatorioFinalCAM()" class="btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; padding:8px 16px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; box-shadow:0 4px 12px rgba(59,130,246,0.35); display:inline-flex; align-items:center; gap:6px;" title="Aplica a análise conjunta e entrega o documento final único no padrão da Imagem 5">
+                      <span>📄</span> <span>Entregar Documento Final (Padrão Imagem 5)</span>
                     </button>
                     <button type="button" onclick="limparAnaliseCAM()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:8px 14px; font-size:12px; border-radius:8px; cursor:pointer;">
                       Limpar
@@ -2361,7 +2386,7 @@
                   <!-- CARD 2: GRAU DE COERÊNCIA DO PROJETO BÁSICO (%) -->
                   <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:16px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                      <span style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase;">📊 Grau de Coerência</span>
+                      <span style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase;">📊 Coerência, Conexão e Legalidade</span>
                       <span id="cam-coerencia-valor" style="font-size:22px; font-weight:900; color:#38bdf8;">88%</span>
                     </div>
                     <!-- Barra de Coerência -->
@@ -2388,16 +2413,29 @@
 
                 </div>
 
-                <!-- MATRIZ DE CONFORMIDADE INTERNA COM BOTÕES 'RESUMA AS RAZÕES DO RESULTADO' (IMAGEM 1) -->
-                <div style="background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,255,255,0.06); padding:14px;">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <h5 style="margin:0; font-size:12px; color:#f8fafc; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
-                      📋 Matriz de Verificação de Conformidade (Script CAM V1.0)
+                <!-- MATRIZ DE VERIFICAÇÃO DE CONFORMIDADE (MARCADA DE VERDE NA IMAGEM 2) COM COERÊNCIA, SOLUÇÃO E 2 BOTÕES POR ESTÁGIO -->
+                <div style="background:rgba(0,0,0,0.25); border-radius:10px; border:1px solid rgba(16,185,129,0.35); padding:16px; margin-bottom:18px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+                    <h5 style="margin:0; font-size:12.5px; color:#34d399; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
+                      📋 Matriz de Verificação de Conformidade, Coerência e Solução (Script CAM V1.0)
                     </h5>
-                    <span style="font-size:11px; color:#94a3b8;">Clique em "Razões" para ver a justificativa do critério</span>
+                    <span style="font-size:11px; color:#94a3b8;">Use os 2 botões de cada estágio para definir (✓ Conforme / ⏳ Pendente) e ver Coerência & Solução</span>
                   </div>
-                  <div id="cam-matriz-itens" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px; font-size:12px;">
-                    <!-- Itens gerados dinamicamente via JS com botões para resumir razões -->
+                  <div id="cam-matriz-itens" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:12px; font-size:12px;">
+                    <!-- Itens gerados dinamicamente via JS com coerência, solução e 2 botões por estágio -->
+                  </div>
+                </div>
+
+                <!-- RELATÓRIO CONSOLIDADO DE COERÊNCIA, CONEXÃO, LEGALIDADE E PENDÊNCIAS ENTREGUE PELA ANÁLISE (IMAGEM 2) -->
+                <div id="cam-relatorio-pendencias-box" style="background:rgba(0,0,0,0.32); border:1px solid rgba(56,189,248,0.3); border-radius:10px; padding:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
+                    <h5 style="margin:0; font-size:12.5px; color:#38bdf8; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
+                      📑 Relatório do Conjunto Documental: Coerência, Conexão, Legalidade e Solução de Pendências
+                    </h5>
+                    <span id="cam-status-pendencias-resumo" style="font-size:11px; font-weight:700; color:#fbbf24;"></span>
+                  </div>
+                  <div id="cam-relatorio-pendencias-conteudo" style="font-size:12.5px; color:#e2e8f0; line-height:1.55;">
+                    <!-- Preenchido dinamicamente pelo analisador conjunto -->
                   </div>
                 </div>
 
@@ -2445,36 +2483,45 @@
         </div>
       </div>
 
-      <!-- ============= MODAL: DETALHAMENTO DAS RAZÕES DO RESULTADO (IMAGEM 1) ============= -->
+      <!-- ============= MODAL: DETALHAMENTO DE COERÊNCIA, RAZÕES E SOLUÇÃO DO ESTÁGIO (IMAGEM 2) ============= -->
       <div id="modal-razoes-resultado-cam" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); z-index:99999; justify-content:center; align-items:center; padding:20px;">
-        <div style="background:#0f172a; border:1px solid rgba(56,189,248,0.4); border-radius:14px; max-width:620px; width:100%; box-shadow:0 12px 36px rgba(0,0,0,0.8); overflow:hidden;">
+        <div style="background:#0f172a; border:1px solid rgba(56,189,248,0.4); border-radius:14px; max-width:680px; width:100%; box-shadow:0 12px 36px rgba(0,0,0,0.8); overflow:hidden;">
           <div style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:rgba(56,189,248,0.08);">
             <div style="display:flex; align-items:center; gap:10px;">
               <span id="modal-razoes-icon" style="font-size:22px;">📋</span>
               <div>
-                <h3 id="modal-razoes-titulo" style="margin:0; color:#f8fafc; font-size:15px; font-weight:800;">Razões do Resultado</h3>
-                <span id="modal-razoes-subtitulo" style="font-size:11px; color:#94a3b8;">Critério avaliado pelo Script CAM</span>
+                <h3 id="modal-razoes-titulo" style="margin:0; color:#f8fafc; font-size:15px; font-weight:800;">Diagnóstico e Solução do Estágio</h3>
+                <span id="modal-razoes-subtitulo" style="font-size:11px; color:#94a3b8;">Critério avaliado sob a luz do Script CAM V1.0</span>
               </div>
             </div>
             <button type="button" onclick="fecharModalRazoesCAM()" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; padding:4px 8px;">✕</button>
           </div>
           <div style="padding:20px; display:flex; flex-direction:column; gap:14px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:10px 14px; border-radius:8px;">
-              <span style="font-size:12px; color:#cbd5e1; font-weight:700;">Status do Critério:</span>
-              <span id="modal-razoes-badge" style="font-size:12px; font-weight:800; padding:3px 10px; border-radius:6px;"></span>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); padding:10px 14px; border-radius:8px; flex-wrap:wrap; gap:8px;">
+              <span style="font-size:12px; color:#cbd5e1; font-weight:700;">Definição do Estágio:</span>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <span id="modal-razoes-badge" style="font-size:12px; font-weight:800; padding:4px 10px; border-radius:6px;"></span>
+              </div>
             </div>
             <div>
-              <label style="display:block; font-size:12px; color:#94a3b8; font-weight:700; margin-bottom:6px;">Fundamentação Técnica e Razões do Diagnóstico:</label>
-              <div id="modal-razoes-corpo" style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08); padding:14px; border-radius:8px; font-size:13px; color:#f8fafc; line-height:1.5; white-space:pre-wrap;">
+              <label style="display:block; font-size:12px; color:#38bdf8; font-weight:700; margin-bottom:6px;">🔍 Coerência, Conexão Documental e Legalidade:</label>
+              <div id="modal-razoes-corpo" style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.08); padding:12px 14px; border-radius:8px; font-size:12.5px; color:#f8fafc; line-height:1.5; white-space:pre-wrap;">
+              </div>
+            </div>
+            <div>
+              <label style="display:block; font-size:12px; color:#34d399; font-weight:700; margin-bottom:6px;">💡 Solução Técnica / Providência de Saneamento:</label>
+              <div id="modal-solucao-corpo" style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); padding:12px 14px; border-radius:8px; font-size:12.5px; color:#e2e8f0; line-height:1.5; white-space:pre-wrap;">
               </div>
             </div>
             <div style="background:rgba(56,189,248,0.05); border-left:3px solid #38bdf8; padding:10px 12px; border-radius:4px; font-size:11.5px; color:#94a3b8;">
-              <strong style="color:#38bdf8;">Regra do Script Mestre:</strong> As exigências decorrem do regime de colaboração da SEDUC/RO e da Lei Estadual nº 5.735/2024.
+              <strong style="color:#38bdf8;">Regra do Script Mestre:</strong> Análise conjunta de coerência, conexão e legalidade entre os documentos instruídos nos autos (CF/88, LDB, FUNDEB e Lei Estadual nº 5.735/2024).
             </div>
           </div>
-          <div style="padding:12px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.25); text-align:right;">
+          <div style="padding:12px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.25); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div id="modal-razoes-botoes-estagio" style="display:flex; gap:8px;">
+            </div>
             <button type="button" onclick="fecharModalRazoesCAM()" class="btn" style="background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:8px 18px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
-              Entendido
+              Fechar
             </button>
           </div>
         </div>
@@ -2640,7 +2687,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.17
+              GBZ - v1.3.18
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4199,7 +4246,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.3.16"></script>
-  <script src="js/app.js?v=1.3.16"></script>
+  <script src="js/app.js?v=1.3.18"></script>
   <script src="js/auth-sap.js?v=1.3.16"></script>
   <script src="js/escolas.js?v=1.3.00" charset="utf-8"></script>
   <script src="js/open-location-code.js"></script>

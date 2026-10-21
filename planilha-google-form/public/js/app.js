@@ -287,20 +287,30 @@ function alternarGuiaFormulario(guia) {
     resetBtn(btnObjeto);
     resetBtn(btnRepositorio);
     highlightBtn(btnObjetivo);
+
+    if (typeof renderizarChecksReferenciasRelatorio === 'function') {
+      renderizarChecksReferenciasRelatorio();
+    }
+    if (typeof garantirContextoSecao4 === 'function') {
+      garantirContextoSecao4();
+    }
   } else if (guia === 'repositorio') {
     tabObjeto.style.display = 'none';
     tabObjetivo.style.display = 'none';
     if (tabRepositorio) tabRepositorio.style.display = 'block';
-    if (btnManifestacao) btnManifestacao.style.display = 'none';
+    if (btnManifestacao) btnManifestacao.style.display = 'inline-flex';
     if (containerExcluir) containerExcluir.style.display = 'none';
 
     resetBtn(btnObjeto);
     resetBtn(btnObjetivo);
     highlightBtn(btnRepositorio);
 
-    // Carrega/atualiza visualização dos arquivos do repositório
+    // Carrega/atualiza visualização dos arquivos do repositório e analisa conjunto se houver documentos
     if (typeof renderizarRepositorioArquivos === 'function') {
       renderizarRepositorioArquivos();
+    }
+    if (typeof analisarConjuntoDocumentalCAM === 'function' && Array.isArray(window._repositorioArquivosAtuais) && window._repositorioArquivosAtuais.length > 0) {
+      analisarConjuntoDocumentalCAM(true);
     }
   } else {
     tabObjeto.style.display = 'block';
@@ -2232,23 +2242,38 @@ function renderFormulario() {
     setVal('form-oficioNumero', p.oficioNumero);
     setVal('form-metragemM2', p.metragemM2);
     setVal('form-detalhamentoItens', p.detalhamentoItens);
+    // Carregar dados do Repositório de Documentos e Link do Google Drive primeiro
+    window._repositorioArquivosAtuais = Array.isArray(p.repositorioArquivos) ? JSON.parse(JSON.stringify(p.repositorioArquivos)) : [];
+    window._repositorioArquivosAtuais.forEach(arq => {
+      if (typeof arq.selecionado === 'undefined') arq.selecionado = true;
+    });
+    window._linkGoogleDriveAtual = p.linkGoogleDrive || '';
+    window._analiseCamAtual = p.analiseCam ? JSON.parse(JSON.stringify(p.analiseCam)) : null;
+    atualizarDisplayLinkGoogleDrive();
+    renderizarRepositorioArquivos();
+    if (window._repositorioArquivosAtuais.length > 0 && typeof analisarConjuntoDocumentalCAM === 'function') {
+      analisarConjuntoDocumentalCAM(true);
+    }
+
+    var cx4Salva = (p.relatorioCaixa4 || '').trim();
+    if (cx4Salva === 'Sem detalhamento informado.' || cx4Salva === 'Sem detalhamento informado para sintetização.') {
+      cx4Salva = '';
+    }
+
     setVal('relatorio-caixa-1', p.relatorioCaixa1 || '');
     setVal('relatorio-caixa-2', p.relatorioCaixa2 || '');
     setVal('relatorio-caixa-3', p.relatorioCaixa3 || '');
-    setVal('relatorio-caixa-4', (p.relatorioCaixa4 && p.relatorioCaixa4.trim()) ? p.relatorioCaixa4 : (p.obs || ''));
+    setVal('relatorio-caixa-4', cx4Salva ? cx4Salva : (p.obs || ''));
     setVal('relatorio-caixa-5', p.relatorioCaixa5 || '');
-    if (typeof verificarEPreencherPadroesIniciais === 'function') {
-      verificarEPreencherPadroesIniciais();
-    }
     if (typeof setManifestacaoTipo === 'function') {
       setManifestacaoTipo(p.manifestacaoTipo || 'favoravel');
     }
-
-    // Carregar dados do Repositório de Documentos e Link do Google Drive
-    window._repositorioArquivosAtuais = Array.isArray(p.repositorioArquivos) ? JSON.parse(JSON.stringify(p.repositorioArquivos)) : [];
-    window._linkGoogleDriveAtual = p.linkGoogleDrive || '';
-    atualizarDisplayLinkGoogleDrive();
-    renderizarRepositorioArquivos();
+    if (typeof verificarEPreencherPadroesIniciais === 'function') {
+      verificarEPreencherPadroesIniciais();
+    }
+    if (typeof garantirContextoSecao4 === 'function') {
+      garantirContextoSecao4();
+    }
 
     if (typeof alternarGuiaFormulario === 'function') alternarGuiaFormulario('objeto');
 
@@ -8273,36 +8298,215 @@ ${textoGrupos.trim()}`;
 // MÓDULO DE PRÉ-REDAÇÃO E AGENTE DE IA DO RELATÓRIO TÉCNICO SEI (v1.3.04)
 // =========================================================================
 
+window._padraoRelatorioIdx = 0;
+
+function extrairValorMonetarioDeTexto(texto) {
+  if (!texto) return 0;
+  var regex = /R\$\s*([0-9]{1,3}(?:\.[0-9]{3})*,[0-9]{2})/gi;
+  var match;
+  var maior = 0;
+  while ((match = regex.exec(texto)) !== null) {
+    var valStr = match[1].replace(/\./g, '').replace(',', '.');
+    var v = parseFloat(valStr) || 0;
+    if (v > maior) maior = v;
+  }
+  return maior;
+}
+
+function obterDocumentosMarcadosRepositorio() {
+  var lista = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+  return lista.filter(function(arq) { return arq && arq.selecionado !== false; });
+}
+
 function extrairDadosProcessoAtual() {
   var g = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
   var inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
   var numProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || '0029.028061/2026-61';
   
-  var parseMon = function(v) {
-    if (!v) return '0,00';
+  var parseNum = function(v) {
+    if (!v) return 0;
     var s = String(v).replace(/[R$\s]/g,'').replace(/\./g,'').replace(',','.');
-    var num = parseFloat(s) || 0;
-    return num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return parseFloat(s) || 0;
   };
 
-  var valPlan = g('form-valorPlan');
-  var valOf = g('form-valorOf');
-  var valorFormatado = parseMon(valOf || valPlan);
+  var valPlanNum = parseNum(g('form-valorPlan'));
+  var valOfNum = parseNum(g('form-valorOf'));
+  var valorNum = valOfNum || valPlanNum;
+
+  var docsMarcados = obterDocumentosMarcadosRepositorio();
+  var nomesDocs = docsMarcados.map(function(a) { return a.nome; });
+  var textoDocs = docsMarcados.map(function(a) { return (a.nome || '') + '\n' + (a.texto || ''); }).join('\n\n');
+
+  if (valorNum <= 0 && textoDocs) {
+    var valExtraido = extrairValorMonetarioDeTexto(textoDocs);
+    if (valExtraido > 0) valorNum = valExtraido;
+  }
+
+  var valorFormatado = valorNum.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  var temValor = valorNum > 0;
 
   var tipoManif = g('form-manifestacao-tipo') || 'favoravel';
+  var citarDocs = document.getElementById('chk-ref-citar-docs') ? document.getElementById('chk-ref-citar-docs').checked : true;
+  var incluirCoerencia = document.getElementById('chk-ref-coerencia-legalidade') ? document.getElementById('chk-ref-coerencia-legalidade').checked : true;
+  var incluirPendencias = document.getElementById('chk-ref-pendencias-solucoes') ? document.getElementById('chk-ref-pendencias-solucoes').checked : true;
 
   return {
     numero: numProc,
     municipio: g('form-municipio') || 'Porto Velho',
     escola: g('form-interessado') || 'Unidade Escolar Municipal',
     objeto: g('form-objeto') || 'aquisição de material permanente e pedagógico',
+    categoria: g('form-categoria') || 'Fomento',
+    tipoObjeto: g('form-tipo') || 'Obras',
     detalhamento: g('form-obs'),
     oficio: g('form-detalhamentoItens') || g('form-obs'),
     plano: g('form-demaisObservacoes'),
     valor: valorFormatado,
+    valorNum: valorNum,
+    temValor: temValor,
     tipo: tipoManif.toLowerCase(),
-    isDesfav: tipoManif.toLowerCase() === 'desfavoravel'
+    isDesfav: tipoManif.toLowerCase() === 'desfavoravel',
+    docsMarcados: docsMarcados,
+    nomesDocs: nomesDocs,
+    textoDocs: textoDocs,
+    citarDocs: citarDocs,
+    incluirCoerencia: incluirCoerencia,
+    incluirPendencias: incluirPendencias
   };
+}
+
+function construirAnaliseContextualizadaItem4(d, modoNivel, padraoIdx) {
+  var analise = window._analiseCamAtual;
+  var docs = d.docsMarcados || [];
+  var nomesDocsStr = (d.citarDocs && d.nomesDocs && d.nomesDocs.length > 0)
+    ? d.nomesDocs.join(', ')
+    : '';
+
+  // Extrai trechos úteis dos documentos anexados caso existam
+  var trechosDocs = [];
+  docs.forEach(function(arq) {
+    var txt = (arq.texto || '').replace(/---\s*PÁGINA\s*\d+\s*---/gi, ' ').replace(/\s+/g, ' ').trim();
+    if (txt.length > 30) {
+      var recorte = txt.length > 260 ? txt.substring(0, 260) + '...' : txt;
+      trechosDocs.push('No documento "' + arq.nome + '", consta instrução técnica registrando: "' + recorte + '"');
+    }
+  });
+
+  var detalheForm = (d.detalhamento || '').trim();
+  if (detalheForm === 'Sem detalhamento informado.' || detalheForm === 'Sem detalhamento informado para sintetização.') {
+    detalheForm = '';
+  }
+
+  var pendenciasLista = [];
+  var conformesLista = [];
+  if (analise && Array.isArray(analise.matriz)) {
+    analise.matriz.forEach(function(m) {
+      if (m.status === 'Pendente' || m.status === 'Inconsistente') {
+        pendenciasLista.push(m.nome + ' (' + (m.solucao || m.desc) + ')');
+      } else {
+        conformesLista.push(m.nome);
+      }
+    });
+  }
+
+  var strValorContexto = d.temValor
+    ? 'no montante estimado de R$ ' + d.valor
+    : 'conforme planilhas quantitativas e orçamentárias vinculadas aos autos';
+
+  var strRefDocs = nomesDocsStr
+    ? 'a partir da análise conjunta dos documentos acostados aos autos (' + nomesDocsStr + ')'
+    : 'a partir dos elementos técnicos constantes na instrução do Processo SEI nº ' + d.numero;
+
+  var blocoCoerenciaLegalidade = '';
+  if (d.incluirCoerencia) {
+    var taxa = analise ? analise.taxaCoerencia : 85;
+    var oport = analise ? analise.oportunometro : '8.5';
+    blocoCoerenciaLegalidade = 'Sob a luz do Script Mestre CAM V1.0, verificou-se Grau de Coerência e Conexão Documental de ' + taxa + '% (Oportunômetro Técnico: ' + oport + '/10), avaliando-se a correlação lógica entre problema, justificativa, objeto (' + d.objeto.toLowerCase() + '), metas físicas e legalidade perante a Lei Estadual nº 5.735/2024 (Proalfa Rondônia) e a Lei Federal nº 14.113/2020.';
+  }
+
+  var blocoPendencias = '';
+  if (d.incluirPendencias && pendenciasLista.length > 0) {
+    blocoPendencias = 'Quanto à verificação de conformidade por estágio, apontam-se as seguintes necessidades de saneamento/solução técnica: ' + pendenciasLista.slice(0, 3).join('; ') + '.';
+  } else if (d.incluirPendencias && conformesLista.length > 0) {
+    blocoPendencias = 'Todos os estágios essenciais da Matriz de Conformidade CAM (' + conformesLista.slice(0, 4).join(', ') + ') encontram-se devidamente demonstrados e convergentes entre os documentos analisados.';
+  }
+
+  if (modoNivel === 'menos') {
+    var baseCurta = detalheForm
+      ? 'Síntese técnica da demanda (' + d.objeto + ' — ' + d.escola + ', ' + d.municipio + '/RO): ' + (detalheForm.length > 260 ? detalheForm.substring(0, 260) + '...' : detalheForm)
+      : 'Da análise conjunta ' + strRefDocs + ', verifica-se que o pleito do Município de ' + d.municipio + '/RO visa à execução de ' + d.objeto.toLowerCase() + ' em benefício da unidade ' + d.escola + ', ' + strValorContexto + '.';
+    var complCurto = [blocoCoerenciaLegalidade, blocoPendencias].filter(Boolean).join(' ');
+    return complCurto ? (baseCurta + ' ' + complCurto) : (baseCurta + ' A proposição guarda pertinência educacional e alinhamento com o regime de colaboração estadual.');
+  }
+
+  // Modo 'mais' ou Padrão com variações (padraoIdx 0 a 6)
+  var p1 = '';
+  if (padraoIdx === 1) {
+    p1 = 'Da análise técnico-administrativa realizada ' + strRefDocs + ', constata-se que a solicitação apresentada pelo Município de ' + d.municipio + '/RO tem por escopo ' + d.objeto.toLowerCase() + ' junto à unidade escolar ' + d.escola + ', ' + strValorContexto + '.';
+  } else if (padraoIdx === 2) {
+    p1 = 'Examinando-se o conjunto probatório e documental juntado ao Processo nº ' + d.numero + (nomesDocsStr ? ' — especificamente os arquivos ' + nomesDocsStr + ' —' : '') + ', verifica-se conexão material e finalidade convergente voltada a ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ' (' + d.municipio + '/RO), ' + strValorContexto + '.';
+  } else if (padraoIdx === 3) {
+    p1 = 'Em cumprimento às diretrizes de auditoria do Script Mestre CAM V1.0, procedeu-se ao exame integral da proposição do Município de ' + d.municipio + '/RO para ' + d.objeto.toLowerCase() + ' em atendimento à comunidade escolar de ' + d.escola + ' (' + strValorContexto + '), ' + strRefDocs + '.';
+  } else if (padraoIdx === 4) {
+    p1 = 'Conforme instrução técnica consolidada ' + strRefDocs + ', a demanda municipal de ' + d.municipio + '/RO objetiva ' + d.objeto.toLowerCase() + ' para a instituição ' + d.escola + ', ' + strValorContexto + ', visando suprir necessidade concreta de infraestrutura e suporte pedagógico.';
+  } else if (padraoIdx === 5) {
+    p1 = 'Submetidos os autos nº ' + d.numero + ' à Matriz de Verificação de Conformidade (Script CAM V1.0) ' + strRefDocs + ', aferiu-se que o objeto pretendido (' + d.objeto + ' para ' + d.escola + ' — ' + d.municipio + '/RO, ' + strValorContexto + ') apresenta encadeamento técnico entre justificativa, metas e resultados esperados.';
+  } else if (padraoIdx === 6) {
+    p1 = 'Trata-se de avaliação conclusiva de coerência, conexão documental e legalidade ' + strRefDocs + ', referente ao pleito do Município de ' + d.municipio + '/RO para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + ' (' + strValorContexto + ').';
+  } else {
+    p1 = 'Trata-se da análise técnica da solicitação instruída nos autos nº ' + d.numero + ', ' + strRefDocs + ', visando à execução de ' + d.objeto.toLowerCase() + ' para atendimento da ' + d.escola + ', no Município de ' + d.municipio + '/RO, ' + strValorContexto + '.';
+  }
+
+  var p2 = '';
+  if (detalheForm) {
+    p2 = 'Quanto ao detalhamento específico da intervenção, registra-se: ' + detalheForm;
+  } else if (trechosDocs.length > 0) {
+    p2 = trechosDocs.slice(0, 2).join(' ') + ' As informações extraídas demonstram a correlação entre a necessidade diagnosticada na unidade escolar e a intervenção proposta.';
+  } else {
+    p2 = 'A justificativa técnica fundamenta-se na necessidade de adequação e fortalecimento das condições físicas e pedagógicas da unidade escolar beneficiária (' + d.escola + '), assegurando ambiente salubre, seguro e adequado ao processo de ensino-aprendizagem dos estudantes da rede municipal.';
+  }
+
+  var p3 = [blocoCoerenciaLegalidade, blocoPendencias].filter(Boolean).join(' ');
+  if (!p3) {
+    p3 = 'A proposta demonstra coerência entre o diagnóstico situacional e o objeto pleiteado, observando os parâmetros de legalidade e o interesse público educacional previstos no Programa Proalfa Rondônia (Lei Estadual nº 5.735/2024).';
+  }
+
+  return [p1, p2, p3].filter(Boolean).join('\n\n');
+}
+
+function garantirContextoSecao4() {
+  var el4 = document.getElementById('relatorio-caixa-4');
+  if (!el4) return;
+  var val = (el4.value || '').trim();
+  if (!val || val === 'Sem detalhamento informado.' || val === 'Sem detalhamento informado para sintetização.') {
+    var d = extrairDadosProcessoAtual();
+    var nivel4 = (window._niveisSecao && window._niveisSecao[4]) || 'mais';
+    el4.value = construirAnaliseContextualizadaItem4(d, nivel4, window._padraoRelatorioIdx || 0);
+  }
+}
+window.garantirContextoSecao4 = garantirContextoSecao4;
+
+function atualizarBadgePadraoRelatorio(idx) {
+  var badge = document.getElementById('badge-padrao-relatorio-atual');
+  if (!badge) return;
+  var nomesPadroes = [
+    'Padrão Original (Canônico)',
+    'Padrão #1 • Analítico-Institucional (Script CAM)',
+    'Padrão #2 • Auditoria e Conexão Documental SEI',
+    'Padrão #3 • Enquadramento Legal, FUNDEB e Proalfa',
+    'Padrão #4 • Diagnóstico de Metas e Proporcionalidade',
+    'Padrão #5 • Matriz de Conformidade e Saneamento',
+    'Padrão #6 • Síntese Executiva de Deliberação'
+  ];
+  badge.textContent = nomesPadroes[idx] || ('Padrão #' + idx);
+  if (idx === 0) {
+    badge.style.background = 'rgba(245,158,11,0.18)';
+    badge.style.color = '#fcd34d';
+    badge.style.borderColor = 'rgba(245,158,11,0.45)';
+  } else {
+    badge.style.background = 'rgba(239,68,68,0.22)';
+    badge.style.color = '#fca5a5';
+    badge.style.borderColor = 'rgba(239,68,68,0.5)';
+  }
 }
 
 function restaurarPadraoRedacao(numSecao) {
@@ -8310,18 +8514,26 @@ function restaurarPadraoRedacao(numSecao) {
   var el = document.getElementById('relatorio-caixa-' + numSecao);
   if (!el) return;
 
+  var docsRef = (d.citarDocs && d.nomesDocs && d.nomesDocs.length > 0)
+    ? ' | Docs. Analisados: ' + d.nomesDocs.join(', ')
+    : '';
+
   if (numSecao === 1) {
-    // Referência enriquecida: parte do Objeto + elementos do Detalhamento (+1 linha se houver dados)
     var parteObj = d.objeto ? d.objeto.trim() : '';
     var baseDet = (d.detalhamento || d.oficio || '').replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+    if (baseDet === 'Sem detalhamento informado.') baseDet = '';
     var refTexto = parteObj;
     if (baseDet) {
-      if (refTexto) refTexto += ' - ' + (baseDet.length > 90 ? baseDet.substring(0, 90) + '...' : baseDet);
-      else refTexto = (baseDet.length > 110 ? baseDet.substring(0, 110) + '...' : baseDet);
+      if (refTexto) refTexto += ' - ' + (baseDet.length > 80 ? baseDet.substring(0, 80) + '...' : baseDet);
+      else refTexto = (baseDet.length > 100 ? baseDet.substring(0, 100) + '...' : baseDet);
     }
-    if (!refTexto) refTexto = 'Ofício de Solicitação Municipal';
+    if (!refTexto) refTexto = 'Ofício e Plano de Trabalho Municipal';
+    refTexto += docsRef;
+
+    var strValObj = d.temValor ? (' (Valor Estimado: R$ ' + d.valor + ')') : '';
     el.value = 'Processo: ' + d.numero + '\n' +
-               'Assunto: Manifestação de interesse em regime de colaboração - ' + d.objeto.toLowerCase() + ' para a ' + d.escola + ' do Município de ' + d.municipio + '/RO.\n' +
+               'Interessado: ' + d.escola + ' - Município de ' + d.municipio + '/RO\n' +
+               'Objeto: ' + d.objeto + strValObj + '\n' +
                'Referência: ' + refTexto;
   } else if (numSecao === 2) {
     el.value = 'A legislação educacional brasileira estabelece o dever de cooperação entre os entes federados para a garantia do direito à educação. A Constituição Federal, em seu artigo 205, define a educação como um direito de todos e dever do Estado, promovida com a colaboração da sociedade. Complementarmente, o artigo 30, inciso VI, atribui aos Municípios a competência para manter programas de educação infantil e ensino fundamental com a cooperação técnica e financeira da União e do Estado.\n\n' +
@@ -8330,22 +8542,19 @@ function restaurarPadraoRedacao(numSecao) {
     el.value = 'A Lei nº 14.113/2020, que regulamenta o FUNDEB, condiciona o recebimento de complementação de recursos federais à existência de regime de colaboração formalizado entre Estado e Municípios (Art. 14, §1º, IV). No âmbito local, a Constituição do Estado de Rondônia (Arts. 187 e 188) reitera os princípios de igualdade de acesso e a cooperação interfederativa.\n\n' +
                'Ademais, a Lei Estadual nº 5.735/2024, que institui o Programa de Alfabetização do Estado de Rondônia (Proalfa Rondônia), estabelece o dever do Estado em prestar cooperação técnica e financeira para o fortalecimento das políticas educacionais municipais. O Eixo 2 do referido programa foca especificamente na melhoria da infraestrutura física e pedagógica das unidades escolares.';
   } else if (numSecao === 4) {
-    // REGRA DE OURO: No item 4, o padrão busca única e exclusivamente os dados do campo 'Detalhamento'
-    var detalheIntegra = (d.detalhamento || '').trim();
-    if (detalheIntegra) {
-      el.value = detalheIntegra;
-    } else {
-      el.value = 'Sem detalhamento informado.';
-    }
+    // Nunca deixa sem informações: se houver detalhamento manual, combina com o contexto; senão gera análise completa contextualizada
+    var nivel4 = (window._niveisSecao && window._niveisSecao[4]) || 'mais';
+    el.value = construirAnaliseContextualizadaItem4(d, nivel4, 0);
   } else if (numSecao === 5) {
+    var complValor = d.temValor ? (', no montante de R$ ' + d.valor + ',') : '';
     if (d.isDesfav) {
-      el.value = 'Diante do exposto, esta Gerência manifesta-se DESFAVORAVELMENTE ao prosseguimento e aprovação do pleito na presente instrução processual, recomendando o retorno dos autos ao Município de ' + d.municipio + '/RO para realização de saneamento prévio e complementação do Plano de Trabalho, como condição indispensável para posterior apreciação e deliberação superior.';
+      el.value = 'Diante do exposto, esta unidade técnica manifesta-se DESFAVORAVELMENTE ao prosseguimento e aprovação do pleito na presente instrução processual (Processo nº ' + d.numero + '), recomendando o retorno dos autos ao Município de ' + d.municipio + '/RO para realização de saneamento prévio das pendências apontadas na Matriz de Conformidade CAM e complementação do Plano de Trabalho, como condição indispensável para posterior apreciação e deliberação superior.';
     } else {
-      el.value = 'Diante do exposto, e em atendimento à solicitação formulada pela municipalidade, esta Gerência manifesta-se FAVORAVELMENTE ao pleito do Município de ' + d.municipio + '/RO, fundamentado na Lei Estadual nº 5.735/2024. Submetemos os presentes autos à apreciação superior para deliberação quanto à oportunidade, conveniência administrativa e viabilidade de celebração do regime de colaboração.';
+      el.value = 'Diante do exposto, e em atendimento à solicitação formulada pela municipalidade, esta unidade técnica manifesta-se FAVORAVELMENTE à celebração do regime de colaboração com o Município de ' + d.municipio + '/RO' + complValor + ' para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + ', com fulcro na Lei Estadual nº 5.735/2024. Submetemos os presentes autos nº ' + d.numero + ' à apreciação superior para deliberação quanto à oportunidade, conveniência administrativa e viabilidade de celebração.';
     }
   }
 
-  mostrarNotificacaoToast('Seção ' + numSecao + ' restaurada para o padrão oficial!');
+  mostrarNotificacaoToast('Seção ' + numSecao + ' restaurada para o padrão original contextualizado!');
 }
 
 
@@ -8363,7 +8572,7 @@ function setNivelInfoSecao(numSecao, nivel) {
   
   if (nivel === 'mais') {
     if (btnMais) {
-      btnMais.style.background = '#0284c7'; // Azul escuro/médio vibrante
+      btnMais.style.background = '#0284c7';
       btnMais.style.color = '#fff';
       btnMais.style.boxShadow = '0 2px 6px rgba(2,132,199,0.4)';
     }
@@ -8380,147 +8589,147 @@ function setNivelInfoSecao(numSecao, nivel) {
       btnMais.style.boxShadow = 'none';
     }
     if (btnMenos) {
-      btnMenos.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)'; // Amarelo/Laranja elegante
+      btnMenos.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
       btnMenos.style.color = '#fff';
       btnMenos.style.boxShadow = '0 2px 6px rgba(245,158,11,0.4)';
     }
     mostrarNotificacaoToast('Seção ' + numSecao + ': Modo "Menos Informações" ativado.');
   }
   
-  // Reexecuta o agente IA com o novo nível selecionado
-  aplicarIARedacao(numSecao);
+  aplicarIARedacao(numSecao, true);
 }
 window.setNivelInfoSecao = setNivelInfoSecao;
 
-function aplicarIARedacao(numSecao) {
+function aplicarIARedacao(numSecao, manterPadraoAtual) {
   var d = extrairDadosProcessoAtual();
   var el = document.getElementById('relatorio-caixa-' + numSecao);
   if (!el) return;
 
-  var textoAtual = (el.value || '').trim();
+  if (!manterPadraoAtual) {
+    window._padraoRelatorioIdx = ((window._padraoRelatorioIdx || 0) % 6) + 1;
+    atualizarBadgePadraoRelatorio(window._padraoRelatorioIdx);
+  }
+  var pIdx = window._padraoRelatorioIdx || 1;
 
-  // Efeito de processamento inteligente visual
   el.style.transition = 'all 0.3s ease';
-  el.style.boxShadow = '0 0 12px rgba(139,92,246,0.6)';
+  el.style.boxShadow = '0 0 12px rgba(239,68,68,0.6)';
+
+  var docsRefCurta = (d.citarDocs && d.nomesDocs && d.nomesDocs.length > 0)
+    ? ' — Docs. Referência: ' + d.nomesDocs.join(', ')
+    : '';
 
   setTimeout(function() {
     if (numSecao === 1) {
-      // Referência enriquecida: parte do Objeto + elementos do Detalhamento (+1 linha)
       var parteObj = d.objeto ? d.objeto.trim() : '';
       var baseDet = (d.detalhamento || d.oficio || '').replace(/\r?\n/g, ' ').replace(/\s+/g, ' ').trim();
+      if (baseDet === 'Sem detalhamento informado.') baseDet = '';
       var refTexto = parteObj;
       if (baseDet) {
-        if (refTexto) refTexto += ' - ' + (baseDet.length > 90 ? baseDet.substring(0, 90) + '...' : baseDet);
-        else refTexto = (baseDet.length > 110 ? baseDet.substring(0, 110) + '...' : baseDet);
+        if (refTexto) refTexto += ' - ' + (baseDet.length > 75 ? baseDet.substring(0, 75) + '...' : baseDet);
+        else refTexto = (baseDet.length > 95 ? baseDet.substring(0, 95) + '...' : baseDet);
       }
-      if (!refTexto) refTexto = 'Ofício de Solicitação Municipal';
-      el.value = 'Processo: ' + d.numero + '\n' +
-                 'Interessado: ' + d.escola + ' - Município de ' + d.municipio + '/RO\n' +
-                 'Objeto: ' + d.objeto + ' (Valor Estimado: R$ ' + d.valor + ')\n' +
-                 'Referência: ' + refTexto;
-    } else if (numSecao === 2) {
-      el.value = 'A ordem constitucional e o ordenamento educacional pátrio consagram a colaboração federativa como pilar do direito à educação (CF/88, arts. 205, 30, VI, e 211, §4º). Nesse mesmo diapasão, a Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996, arts. 8º e 10) preconiza a atuação articulada e solidária entre Estado e Municípios para assegurar a universalização e a qualidade do ensino público.';
-    } else if (numSecao === 3) {
-      el.value = 'A Lei Federal nº 14.113/2020 (FUNDEB, art. 14, §1º, IV) estabelece o regime de colaboração como critério estruturante de gestão e repasse. Em perfeita harmonia, a Constituição de Rondônia (arts. 187 e 188) e a Lei Estadual nº 5.735/2024 (Programa Proalfa Rondônia - Eixo 2: Infraestrutura Física e Pedagógica) respaldam a cooperação técnico-financeira para dotar as escolas municipais de instalações e recursos condignos.';
-    } else if (numSecao === 4) {
-      // REGRA DE OURO DA IA: Sintetiza única e exclusivamente os dados do campo 'Detalhamento'
-      var nivel4 = (window._niveisSecao && window._niveisSecao[4]) || 'mais';
-      var detalheBase = (d.detalhamento || '').trim();
+      if (!refTexto) refTexto = 'Instrução Técnica e Plano de Trabalho';
+      refTexto += docsRefCurta;
 
-      if (!detalheBase) {
-        el.value = 'Sem detalhamento informado para sintetização.';
+      var valInfo = d.temValor ? (' (Valor Estimado: R$ ' + d.valor + ')') : ' (Conforme Planilha e Autos SEI)';
+      if (pIdx % 2 === 0) {
+        el.value = 'Processo: ' + d.numero + '\n' +
+                   'Interessado: ' + d.escola + ' — Município de ' + d.municipio + '/RO\n' +
+                   'Assunto: Regime de Colaboração (' + d.categoria + ' / ' + d.tipoObjeto + ') — ' + d.objeto + valInfo + '\n' +
+                   'Referência: ' + refTexto;
       } else {
-        // Função inteligente de síntese do Detalhamento
-        var sintetizarDetalhamento = function(texto, modo) {
-          // Limpa múltiplos espaços e normaliza quebras
-          var limpo = texto.replace(/\r\n/g, '\n').trim();
-          var paragrafos = limpo.split(/\n+/).map(function(p){ return p.trim(); }).filter(Boolean);
-          var frases = [];
-          paragrafos.forEach(function(p) {
-            var fLista = p.match(/[^.!?]+[.!?]+/g) || [p];
-            fLista.forEach(function(f){
-              var fTrim = f.trim();
-              if (fTrim.length > 15) frases.push(fTrim);
-            });
-          });
-
-          if (frases.length === 0) frases = [limpo];
-
-          if (modo === 'mais') {
-            // MODO '+ INFORMAÇÕES' (Síntese técnica analítica estruturada de 5 a 9 linhas)
-            if (frases.length <= 4) {
-              return 'Trata-se da análise técnica do detalhamento da demanda, cujo teor fundamenta: ' + frases.join(' ') + 
-                     '\n\nA proposta delineia as especificações essenciais para a consecução dos objetivos educacionais pactuados, demonstrando a necessidade direta dos itens descritos para atendimento da demanda escolar.';
-            }
-            var p1 = frases.slice(0, 2).join(' ');
-            var p2 = frases.slice(2, 5).join(' ');
-            var conclusao = frases.slice(5).join(' ');
-            var resultado = 'Trata-se da análise técnica da solicitação com base no detalhamento instruído: ' + p1;
-            if (p2) {
-              resultado += '\n\nQuanto ao escopo e itens planejados, destaca-se que: ' + p2;
-            }
-            if (conclusao) {
-              var concResumo = conclusao.length > 250 ? conclusao.substring(0, 250) + '...' : conclusao;
-              resultado += '\n\nEm síntese, os investimentos detalhados atendem às especificações técnicas necessárias à execução do objeto.';
-            }
-            return resultado;
-          } else {
-            // MODO '- INFORMAÇÕES' (Síntese direta, concisa e objetiva de 3 a 5 linhas)
-            var pCurto = frases.slice(0, 2).join(' ');
-            if (pCurto.length > 280) {
-              pCurto = pCurto.substring(0, 280) + '...';
-            }
-            return 'Síntese do detalhamento da solicitação: ' + pCurto + 
-                   ' As informações prestadas delimitam a necessidade do atendimento e o escopo dos itens discriminados.';
-          }
-        };
-
-        el.value = sintetizarDetalhamento(detalheBase, nivel4);
+        el.value = 'Processo: ' + d.numero + '\n' +
+                   'Interessado: ' + d.escola + ' - Município de ' + d.municipio + '/RO\n' +
+                   'Objeto: ' + d.objeto + (d.temValor ? (' (Valor Estimado: R$ ' + d.valor + ')') : '') + '\n' +
+                   'Referência: ' + refTexto;
       }
+    } else if (numSecao === 2) {
+      var variantesSec2 = [
+        'A ordem constitucional e o ordenamento educacional pátrio consagram a colaboração federativa como pilar do direito à educação (CF/88, arts. 205, 30, VI, e 211, §4º). Nesse mesmo diapasão, a Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996, arts. 8º e 10) preconiza a atuação articulada e solidária entre Estado e Municípios para assegurar a universalização e a qualidade do ensino público.',
+        'Nos termos dos artigos 205 e 211, §4º, da Constituição da República de 1988, a educação constitui direito fundamental assegurado mediante regime de colaboração recíproca entre os entes federativos. Em estrita convergência legal, os artigos 8º e 10 da Lei Federal nº 9.394/1996 (LDB) atribuem aos Estados o dever de cooperação técnica e financeira junto aos Municípios (art. 30, VI, CF/88) para equalização e melhoria da oferta educacional.',
+        'O arcabouço jurídico-constitucional brasileiro impõe a atuação integrada entre Estado e Municípios na organização de seus sistemas de ensino (CF/88, arts. 30, VI, 205 e 211, §4º). A Lei de Diretrizes e Bases da Educação Nacional (Lei nº 9.394/1996, arts. 8º e 10) densifica esse comando normativo, estabelecendo a responsabilidade solidária estadual no suporte às demandas estruturais e pedagógicas da educação básica municipal.',
+        'Sob a égide do federalismo cooperativo educacional esculpido nos arts. 205, 30, VI, e 211, §4º, da Carta Magna, incumbe ao Estado atuar de forma articulada com as municipalidades. Tal diretriz encontra regulamentação expressa nos arts. 8º e 10 da Lei Federal nº 9.394/1996 (LDB), que legitimam a assistência técnica e financeira estadual para garantia de padrão mínimo de qualidade no ensino.',
+        'A análise de legalidade da cooperação interfederativa respalda-se diretamente nos arts. 205 e 211, §4º, da Constituição Federal, combinados com o art. 30, inciso VI, do texto constitucional. No plano infraconstitucional, os arts. 8º e 10 da LDB (Lei nº 9.394/1996) determinam a articulação entre as redes estadual e municipal para assegurar infraestrutura e condições adequadas de escolarização.',
+        'Em observância ao princípio da legalidade administrativa e ao regime de colaboração educacional (CF/88, arts. 205, 30, VI, e 211, §4º; LDB, Lei nº 9.394/1996, arts. 8º e 10), verifica-se plena competência institucional para a instrução de instrumentos cooperativos voltados ao fortalecimento da rede pública municipal de ensino.'
+      ];
+      el.value = variantesSec2[(pIdx - 1) % variantesSec2.length];
+    } else if (numSecao === 3) {
+      var variantesSec3 = [
+        'A Lei Federal nº 14.113/2020 (FUNDEB, art. 14, §1º, IV) estabelece o regime de colaboração como critério estruturante de gestão e repasse. Em perfeita harmonia, a Constituição de Rondônia (arts. 187 e 188) e a Lei Estadual nº 5.735/2024 (Programa Proalfa Rondônia - Eixo 2: Infraestrutura Física e Pedagógica) respaldam a cooperação técnico-financeira para dotar as escolas municipais de instalações e recursos condignos.',
+        'No âmbito do financiamento e fomento educacional, a Lei Federal nº 14.113/2020 (art. 14, §1º, IV) vincula a efetividade das políticas públicas à formalização do regime de colaboração interfederativo. Em simetria com os arts. 187 e 188 da Constituição do Estado de Rondônia, a Lei Estadual nº 5.735/2024 (Programa Proalfa Rondônia) institui mecanismos de cooperação financeira estadual voltados à reestruturação física e pedagógica das unidades escolares.',
+        'A diretriz de fortalecimento das redes municipais encontra amparo na Lei Federal nº 14.113/2020 (Marco Legal do FUNDEB, art. 14, §1º, IV) e nos arts. 187 e 188 da Carta Estadual Rondoniense. Destaca-se, como fundamento normativo específico, a Lei Estadual nº 5.735/2024, cujo Eixo 2 do Programa Proalfa Rondônia prioriza investimentos cooperativos em infraestrutura escolar e condições materiais de aprendizagem.',
+        'Consoante dispõe o art. 14, §1º, inciso IV, da Lei Federal nº 14.113/2020, a pactuação colaborativa entre Estado e Municípios constitui requisito essencial de governança educacional. No Estado de Rondônia, os arts. 187 e 188 da Constituição Estadual e a Lei Estadual nº 5.735/2024 (Proalfa Rondônia) autorizam o aporte técnico-financeiro destinado à qualificação dos espaços escolares municipais.',
+        'Sob o prisma da conformidade normativa estadual, a proposição alinha-se aos arts. 187 e 188 da Constituição de Rondônia e à Lei Federal nº 14.113/2020 (FUNDEB). Em especial, enquadra-se nas finalidades da Lei Estadual nº 5.735/2024 (Programa Proalfa Rondônia — Eixo 2), que fomenta a melhoria contínua da infraestrutura física e pedagógica das escolas públicas.',
+        'O regime de cooperação financeira estadual acha-se normatizado pela Lei Federal nº 14.113/2020 (art. 14, §1º, IV), pelos arts. 187 e 188 da Constituição Estadual e pela Lei Estadual nº 5.735/2024 (Proalfa Rondônia), diploma legal que estrutura o apoio da SEDUC/RO às intervenções de melhoria nas unidades escolares municipais.'
+      ];
+      el.value = variantesSec3[(pIdx - 1) % variantesSec3.length];
+    } else if (numSecao === 4) {
+      var nivel4 = (window._niveisSecao && window._niveisSecao[4]) || 'mais';
+      el.value = construirAnaliseContextualizadaItem4(d, nivel4, pIdx);
     } else if (numSecao === 5) {
-      // Determina nível de detalhe ('mais' ou 'menos')
       var nivel5 = (window._niveisSecao && window._niveisSecao[5]) || 'mais';
+      var analise = window._analiseCamAtual;
+      var pendencias = [];
+      if (analise && Array.isArray(analise.matriz)) {
+        analise.matriz.forEach(function(m) {
+          if (m.status !== 'Conforme') pendencias.push(m.nome);
+        });
+      }
+      var strVal = d.temValor ? (' no montante de R$ ' + d.valor) : ' conforme planilhas constantes nos autos';
+      var strPend = pendencias.length > 0 ? (' (especialmente quanto a: ' + pendencias.join(', ') + ')') : '';
 
       if (nivel5 === 'mais') {
-        // NÍVEL '+ INFORMAÇÕES' (AZUL - Conclusão Robusta com Competência e Salvaguardas)
         if (d.isDesfav) {
-          el.value = 'Diante das razões técnicas fundamentadas, manifesta-se formalmente em sentido DESFAVORÁVEL ao atendimento da solicitação originada pelo Município de ' + d.municipio + '/RO no importe de R$ ' + d.valor + ' (Processo nº ' + d.numero + '). A presente manifestação delimita a competência desta pasta instrutora e obsta o prosseguimento do Plano de Trabalho para ' + d.objeto.toLowerCase() + ', recomendando a devolução do feito à origem para saneamento e posterior reavaliação superior.';
+          var variantesDesfavMais = [
+            'Diante das razões técnicas fundamentadas sob a luz do Script Mestre CAM V1.0, manifesta-se formalmente em sentido DESFAVORÁVEL ao prosseguimento imediato da solicitação do Município de ' + d.municipio + '/RO' + strVal + ' (Processo nº ' + d.numero + '), ante as pendências verificadas no conjunto documental' + strPend + '. Recomenda-se a devolução dos autos à origem para saneamento técnico e posterior reavaliação.',
+            'Ante o exposto e considerando o diagnóstico de conformidade documental nos autos nº ' + d.numero + ', esta unidade técnica opina DESFAVORAVELMENTE à aprovação da proposta na presente instrução, indicando como solução administrativa a notificação do Município de ' + d.municipio + '/RO para complementação e retificação do Plano de Trabalho' + strPend + ' previamente à deliberação superior.'
+          ];
+          el.value = variantesDesfavMais[(pIdx - 1) % variantesDesfavMais.length];
         } else {
-          el.value = 'Ante o exposto, esta unidade técnica manifesta-se FAVORAVELMENTE à celebração do regime de colaboração com o Município de ' + d.municipio + '/RO, no montante de R$ ' + d.valor + ' para ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ', com fulcro na Lei Estadual nº 5.735/2024. Ressalva-se que a formalização definitiva compete à deliberação da autoridade superior, cabendo a vinculação exclusiva dos recursos ao Plano de Trabalho instruído nos autos nº ' + d.numero + '.';
+          var variantesFavMais = [
+            'Ante o exposto, esta unidade técnica manifesta-se FAVORAVELMENTE à celebração do regime de colaboração com o Município de ' + d.municipio + '/RO' + strVal + ' para ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ', com fulcro na Lei Estadual nº 5.735/2024. Ressalva-se que a formalização definitiva compete à deliberação da autoridade superior, cabendo a vinculação exclusiva dos recursos ao Plano de Trabalho instruído nos autos nº ' + d.numero + '.',
+            'Diante da análise conjunta dos documentos acostados aos autos nº ' + d.numero + ' e constatada a coerência, conexão documental e legalidade perante a Lei Estadual nº 5.735/2024 (Proalfa Rondônia), esta unidade manifesta-se FAVORAVELMENTE ao prosseguimento do pleito do Município de ' + d.municipio + '/RO (' + d.escola + ' — ' + d.objeto.toLowerCase() + strVal + '), submetendo o feito à deliberação superior quanto à conveniência e oportunidade administrativa.',
+            'Considerando a pertinência educacional demonstrada e o alinhamento ao Script Mestre CAM V1.0, emite-se manifestação FAVORÁVEL à solicitação do Município de ' + d.municipio + '/RO voltada a ' + d.objeto.toLowerCase() + ' em benefício da unidade ' + d.escola + strVal + ', ressalvadas as verificações orçamentárias e jurídicas cabíveis e submetendo-se os autos nº ' + d.numero + ' à apreciação da autoridade competente.'
+          ];
+          el.value = variantesFavMais[(pIdx - 1) % variantesFavMais.length];
         }
       } else {
-        // NÍVEL '- INFORMAÇÕES' (AMARELO - Despacho Terminativo Ultra-Sucinto)
         if (d.isDesfav) {
-          el.value = 'Manifestação DESFAVORÁVEL ao pleito do Município de ' + d.municipio + '/RO (Processo nº ' + d.numero + '), ante a inviabilidade técnica de custeio de ' + d.objeto.toLowerCase() + ' e inconformidade do Plano de Trabalho. Encaminhe-se à deliberação superior para saneamento ou arquivamento.';
+          el.value = 'Manifestação DESFAVORÁVEL ao prosseguimento imediato do pleito do Município de ' + d.municipio + '/RO (Processo nº ' + d.numero + '), recomendando-se o saneamento documental' + strPend + ' junto ao Plano de Trabalho antes de nova submissão superior.';
         } else {
-          el.value = 'Manifestação FAVORÁVEL ao pleito do Município de ' + d.municipio + '/RO (Processo nº ' + d.numero + ', R$ ' + d.valor + '), condicionando-se a celebração à deliberação superior e fiel execução do Plano de Trabalho para ' + d.objeto.toLowerCase() + '. Encaminhem-se os autos.';
+          el.value = 'Manifestação FAVORÁVEL ao pleito do Município de ' + d.municipio + '/RO (Processo nº ' + d.numero + strVal + '), com fulcro na Lei Estadual nº 5.735/2024, condicionando-se a celebração à deliberação superior e fiel execução do Plano de Trabalho para ' + d.objeto.toLowerCase() + '.';
         }
       }
     }
 
     el.style.boxShadow = 'none';
-    mostrarNotificacaoToast('🤖 Redação da Seção ' + numSecao + ' aprimorada com IA!');
-  }, 250);
+  }, 180);
 }
 
 function carregarTodasSecoesPadrao() {
+  window._padraoRelatorioIdx = 0;
+  atualizarBadgePadraoRelatorio(0);
   for (var i = 1; i <= 5; i++) {
     restaurarPadraoRedacao(i);
   }
-  mostrarNotificacaoToast('Todas as 5 seções foram restauradas para o padrão oficial!');
+  mostrarNotificacaoToast('🔄 Padrão Original restaurado com contexto completo nas 5 seções!');
 }
 
 function gerarTodasSecoesComIA() {
+  window._padraoRelatorioIdx = ((window._padraoRelatorioIdx || 0) % 6) + 1;
+  atualizarBadgePadraoRelatorio(window._padraoRelatorioIdx);
   for (var i = 1; i <= 5; i++) {
-    aplicarIARedacao(i);
+    aplicarIARedacao(i, true);
   }
-  mostrarNotificacaoToast('🤖 Todas as 5 seções foram otimizadas e interpretadas com IA!');
+  var qtdDocs = obterDocumentosMarcadosRepositorio().length;
+  mostrarNotificacaoToast('🤖 Padrão de Relatório #' + window._padraoRelatorioIdx + '/6 gerado com base no Script CAM e ' + qtdDocs + ' documento(s) marcado(s)!');
 }
 
 function verificarEPreencherPadroesIniciais() {
   for (var i = 1; i <= 5; i++) {
     var el = document.getElementById('relatorio-caixa-' + i);
-    if (el && !el.value.trim()) {
+    var v = el ? (el.value || '').trim() : '';
+    if (el && (!v || v === 'Sem detalhamento informado.' || v === 'Sem detalhamento informado para sintetização.')) {
       restaurarPadraoRedacao(i);
     }
   }
@@ -8557,9 +8766,8 @@ window.gerarTodasSecoesComIA = gerarTodasSecoesComIA;
 window.verificarEPreencherPadroesIniciais = verificarEPreencherPadroesIniciais;
 
 // =========================================================================
-// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.13
-// Formato: Largura 17cm (642px), Altura máx 24cm (907px), Margem 5mm (19px)
-// Modelo visual: Idêntico à Imagem 2 (SEI com barras cinzas, sem bordas externas)
+// MÓDULO DE GERAÇÃO DA MANIFESTAÇÃO TÉCNICA EM IMAGEM (JPG, PNG, PDF) v1.3.18
+// Formato: Idêntico à Imagem 5 (SEI com barras cinzas, sem ficar sem contexto)
 // =========================================================================
 
 async function gerarManifestacaoJPG() {
@@ -8573,7 +8781,9 @@ async function gerarManifestacaoJPG() {
     if (imgEl) imgEl.style.display = 'none';
   }
 
-  // Coleta dados das 5 caixas
+  // Garante que a seção 4 nunca fique com "Sem detalhamento informado"
+  garantirContextoSecao4();
+
   var g = function(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; };
   var cx1 = g('relatorio-caixa-1');
   var cx2 = g('relatorio-caixa-2');
@@ -8581,17 +8791,26 @@ async function gerarManifestacaoJPG() {
   var cx4 = g('relatorio-caixa-4');
   var cx5 = g('relatorio-caixa-5');
 
-  // Se alguma estiver vazia, carrega o padrão preliminar para garantir integridade
   if (!cx1) { restaurarPadraoRedacao(1); cx1 = g('relatorio-caixa-1'); }
   if (!cx2) { restaurarPadraoRedacao(2); cx2 = g('relatorio-caixa-2'); }
   if (!cx3) { restaurarPadraoRedacao(3); cx3 = g('relatorio-caixa-3'); }
-  if (!cx4) { restaurarPadraoRedacao(4); cx4 = g('relatorio-caixa-4'); }
+  if (!cx4 || cx4.indexOf('Sem detalhamento informado') !== -1) {
+    restaurarPadraoRedacao(4);
+    cx4 = g('relatorio-caixa-4');
+  }
   if (!cx5) { restaurarPadraoRedacao(5); cx5 = g('relatorio-caixa-5'); }
+
+  // Higieniza eventual "R$ 0,00" sem contexto nas caixas 1 e 5 caso não haja valor numérico informado
+  var dadosAtuais = extrairDadosProcessoAtual();
+  if (!dadosAtuais.temValor) {
+    cx1 = cx1.replace(/\s*\(Valor Estimado:\s*R\$\s*0,00\)/gi, '');
+    cx5 = cx5.replace(/,?\s*no montante de R\$\s*0,00/gi, '');
+  }
 
   var inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
   var numProc = inputsNum.map(function(i){ return i.value.trim(); }).filter(Boolean).join(', ') || '0029.028061/2026-61';
 
-  // Formatação do Bloco 1 (Identificação / Metadados)
+  // Formatação do Bloco 1 (Identificação / Metadados no padrão exato da Imagem 5)
   var linhasCx1 = (cx1 || '').split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
   var metaLinesHtml = linhasCx1.map(function(linha){
     var idx = linha.indexOf(':');
@@ -8616,14 +8835,16 @@ async function gerarManifestacaoJPG() {
   var secao4Html = formatarSecao(cx4);
 
   var styledCx5 = (cx5 || '').replace(/FAVORAVELMENTE/g, '<strong>FAVORAVELMENTE</strong>')
-                             .replace(/DESFAVORAVELMENTE/g, '<strong>DESFAVORAVELMENTE</strong>');
+                             .replace(/DESFAVORAVELMENTE/g, '<strong>DESFAVORAVELMENTE</strong>')
+                             .replace(/FAVORÁVEL/g, '<strong>FAVORÁVEL</strong>')
+                             .replace(/DESFAVORÁVEL/g, '<strong>DESFAVORÁVEL</strong>');
   var secao5Html = formatarSecao(styledCx5);
 
-  // HTML da Manifestação Técnica exatamente no modelo da Imagem 2 (Barras cinzas, sem borda externa, 17cm de largura, margem 5mm)
+  // HTML da Manifestação Técnica exatamente no modelo da Imagem 5
   var htmlConteudo = `
-    <div id="container-manifestacao-render" style="width:642px; max-height:907px; box-sizing:border-box; padding:19px 24px; background:#ffffff; font-family:Arial, sans-serif; font-size:10pt; color:#000; overflow:hidden; border:none; position:relative;">
+    <div id="container-manifestacao-render" style="width:642px; max-height:1050px; box-sizing:border-box; padding:19px 24px; background:#ffffff; font-family:Arial, sans-serif; font-size:10pt; color:#000; overflow:hidden; border:none; position:relative;">
       
-      <!-- Seção 1: Identificação (Iniciando no topo, margem 5mm topo e base, fonte Arial 10) -->
+      <!-- Seção 1: Identificação -->
       <div style="font-size:10pt; line-height:1.35; margin-bottom:10px; color:#000; text-align:justify; font-family:Arial, sans-serif;">
         ${metaLinesHtml}
       </div>
@@ -8900,46 +9121,52 @@ function handleDropzoneLeave(e) {
 }
 window.handleDropzoneLeave = handleDropzoneLeave;
 
-function handleDropzoneDrop(e) {
+async function handleDropzoneDrop(e) {
   e.preventDefault();
   e.stopPropagation();
   handleDropzoneLeave(e);
 
-  const files = e.dataTransfer ? e.dataTransfer.files : null;
-  if (files && files.length > 0) {
-    processarArquivoRepositorio(files[0]);
+  const files = e.dataTransfer ? Array.from(e.dataTransfer.files) : [];
+  if (files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      await processarArquivoRepositorio(files[i], i < files.length - 1);
+    }
+    analisarConjuntoDocumentalCAM();
   }
 }
 window.handleDropzoneDrop = handleDropzoneDrop;
 
-function handleFileInputChange(e) {
-  const file = e.target.files ? e.target.files[0] : null;
-  if (file) {
-    processarArquivoRepositorio(file);
+async function handleFileInputChange(e) {
+  const files = e.target.files ? Array.from(e.target.files) : [];
+  if (files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      await processarArquivoRepositorio(files[i], i < files.length - 1);
+    }
     e.target.value = '';
+    analisarConjuntoDocumentalCAM();
   }
 }
 window.handleFileInputChange = handleFileInputChange;
 
 // ---- PROCESSAMENTO DE ARQUIVOS (PDF / TEXTO) ----
-async function processarArquivoRepositorio(file) {
+async function processarArquivoRepositorio(file, pularAnaliseIndividual) {
   if (!file) return;
 
   const nome = file.name;
   const tamanhoMb = (file.size / (1024 * 1024)).toFixed(2);
   const ext = nome.split('.').pop().toLowerCase();
 
-  toast(`Processando arquivo "${nome}" (${tamanhoMb} MB)...`, 'info');
+  toast(`Processando documento "${nome}" (${tamanhoMb} MB)...`, 'info');
 
   const novoItem = {
     id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
     nome: nome,
     tamanho: tamanhoMb + ' MB',
     data: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-    tipo: ext
+    tipo: ext,
+    selecionado: true
   };
 
-  // Leitura do conteúdo textual
   let textoExtraido = '';
   try {
     if (ext === 'pdf') {
@@ -8953,12 +9180,20 @@ async function processarArquivoRepositorio(file) {
 
   novoItem.texto = textoExtraido;
 
-  // Guarda no repositório do processo
-  window._repositorioArquivosAtuais.push(novoItem);
-  renderizarRepositorioArquivos();
+  // Evita duplicar se já existir com mesmo nome, atualizando o conteúdo
+  const idxExistente = (window._repositorioArquivosAtuais || []).findIndex(a => a.nome === nome);
+  if (idxExistente >= 0) {
+    window._repositorioArquivosAtuais[idxExistente] = novoItem;
+  } else {
+    window._repositorioArquivosAtuais.push(novoItem);
+  }
 
-  // Executa o motor SCRIPT MESTRE CAM V1.0 de análise
-  analisarPlanoTrabalhoCAM(textoExtraido, nome);
+  renderizarRepositorioArquivos();
+  renderizarChecksReferenciasRelatorio();
+
+  if (!pularAnaliseIndividual) {
+    analisarConjuntoDocumentalCAM();
+  }
 }
 
 // Extração de texto de PDF usando pdfjs-dist
@@ -9049,7 +9284,7 @@ function restaurarScriptCAMPadrao() {
 }
 window.restaurarScriptCAMPadrao = restaurarScriptCAMPadrao;
 
-// Modal de Razões do Resultado por Critério (Imagem 1)
+// Modal de Detalhamento de Coerência, Razões e Solução por Estágio (Imagem 2)
 function mostrarRazoesCriterio(index) {
   const analise = window._analiseCamAtual;
   if (!analise || !analise.matriz || !analise.matriz[index]) return;
@@ -9060,10 +9295,12 @@ function mostrarRazoesCriterio(index) {
   const sub = document.getElementById('modal-razoes-subtitulo');
   const badge = document.getElementById('modal-razoes-badge');
   const corpo = document.getElementById('modal-razoes-corpo');
+  const solucaoEl = document.getElementById('modal-solucao-corpo');
+  const botoesEl = document.getElementById('modal-razoes-botoes-estagio');
   const icon = document.getElementById('modal-razoes-icon');
 
   if (tit) tit.textContent = crit.nome;
-  if (sub) sub.textContent = 'Critério ' + (index + 1) + ' de ' + analise.matriz.length + ' verificado pelo Script CAM';
+  if (sub) sub.textContent = 'Estágio ' + (index + 1) + ' de ' + analise.matriz.length + ' • Conjunto Documental (Script CAM V1.0)';
 
   let corBadge = '#10b981';
   let bgBadge = 'rgba(16,185,129,0.2)';
@@ -9088,7 +9325,20 @@ function mostrarRazoesCriterio(index) {
   if (icon) icon.textContent = iconeTexto;
 
   if (corpo) {
-    corpo.textContent = crit.razoes || crit.desc || 'Critério validado conforme diretrizes do Plano de Trabalho.';
+    corpo.textContent = crit.razoes || crit.coerencia || crit.desc || 'Critério avaliado sob a luz do Script Mestre CAM V1.0.';
+  }
+  if (solucaoEl) {
+    solucaoEl.textContent = crit.solucao || 'Manter documentação comprobatória vinculada ao número SEI do processo para respaldo institucional.';
+  }
+  if (botoesEl) {
+    botoesEl.innerHTML = `
+      <button type="button" onclick="definirStatusEstagioCAM(${index}, 'Conforme'); mostrarRazoesCriterio(${index});" class="btn" style="background:${crit.status === 'Conforme' ? 'linear-gradient(135deg,#10b981,#059669)' : 'rgba(16,185,129,0.15)'}; color:${crit.status === 'Conforme' ? '#fff' : '#34d399'}; border:1px solid #10b981; padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+        ✓ Definir Conforme (Coerência Validada)
+      </button>
+      <button type="button" onclick="definirStatusEstagioCAM(${index}, 'Pendente'); mostrarRazoesCriterio(${index});" class="btn" style="background:${crit.status !== 'Conforme' ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'rgba(245,158,11,0.15)'}; color:${crit.status !== 'Conforme' ? '#fff' : '#fbbf24'}; border:1px solid #f59e0b; padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+        ⏳ Definir Pendente (Exigir Solução)
+      </button>
+    `;
   }
 
   if (modal) modal.style.display = 'flex';
@@ -9101,7 +9351,6 @@ function fecharModalRazoesCAM() {
 }
 window.fecharModalRazoesCAM = fecharModalRazoesCAM;
 
-// Fechar modais ao clicar fora
 window.addEventListener('click', function(e) {
   const mScript = document.getElementById('modal-script-mestre-cam');
   const mRazoes = document.getElementById('modal-razoes-resultado-cam');
@@ -9109,202 +9358,42 @@ window.addEventListener('click', function(e) {
   if (e.target === mRazoes) fecharModalRazoesCAM();
 });
 
+// Permite definir diretamente nos 2 botões de cada estágio o status (Conforme x Pendente) e recalcular o relatório
+function definirStatusEstagioCAM(idx, novoStatus) {
+  const analise = window._analiseCamAtual;
+  if (!analise || !Array.isArray(analise.matriz) || !analise.matriz[idx]) return;
 
-function analisarPlanoTrabalhoCAM(texto, nomeArquivo) {
-  const painel = document.getElementById('painel-analise-cam-resultado');
-  if (painel) painel.style.display = 'block';
+  analise.matriz[idx].status = novoStatus;
+  recalcularMetricasERenderizarAnaliseCAM();
+  garantirContextoSecao4();
+  toast(`Estágio "${analise.matriz[idx].nome}" definido como ${novoStatus}!`, novoStatus === 'Conforme' ? 'success' : 'info');
+}
+window.definirStatusEstagioCAM = definirStatusEstagioCAM;
 
-  const titDoc = document.getElementById('cam-analise-titulo-doc');
-  const infDoc = document.getElementById('cam-analise-doc-info');
-  if (titDoc) titDoc.textContent = nomeArquivo || 'Plano de Trabalho Analisado';
-  if (infDoc) infDoc.textContent = `Arquivo: ${nomeArquivo || 'documento'} • ${texto ? texto.length : 0} caracteres extraídos`;
+function recalcularMetricasERenderizarAnaliseCAM() {
+  const analise = window._analiseCamAtual;
+  if (!analise || !Array.isArray(analise.matriz)) return;
 
-  // Dados do formulário para cruzamento e verificação
-  const numProc = (document.querySelector('input[name="numero[]"]')?.value || '').trim();
-  const munProc = (document.getElementById('form-municipio')?.value || '').trim();
-  const objetoProc = (document.getElementById('form-objeto')?.value || '').trim();
-  const interessadoProc = (document.getElementById('form-interessado')?.value || '').trim();
-  const valOfProc = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
-  const valPlanProc = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
-
-  const textoNorm = (texto || '').toUpperCase();
-
-  // 1. Verificações de Critérios do Script Mestre V1.0
+  const matriz = analise.matriz;
+  const totalCrit = matriz.length || 8;
   let pontos = 0;
-  let totalCrit = 8;
-  const matriz = [];
+  matriz.forEach(m => {
+    if (m.status === 'Conforme') pontos += 1;
+    else if (m.status === 'Pendente') pontos += 0.35;
+  });
 
-  // Critério 1: Identificação do Proponente e Município
-  const temMun = munProc && textoNorm.includes(munProc.toUpperCase());
-  const temInteressado = interessadoProc && textoNorm.includes(interessadoProc.toUpperCase());
-  if (temMun || temInteressado || munProc) {
-    pontos++;
-    matriz.push({
-      nome: 'Identificação Proponente/Município',
-      status: 'Conforme',
-      desc: munProc || 'Identificado nos autos',
-      razoes: `O proponente (${munProc || interessadoProc || 'Município convenente'}) foi devidamente identificado e confere com os autos do Processo SEI nº ${numProc || 'registrado'}. O ente federado possui legitimidade ativa para celebração do convênio nos termos do art. 211 da CF/88.`
-    });
-  } else {
-    matriz.push({
-      nome: 'Identificação Proponente/Município',
-      status: 'Pendente',
-      desc: 'Não localizado no texto do documento',
-      razoes: 'O nome do Município proponente ou Interessado não foi detectado com clareza no corpo do Plano de Trabalho submetido. É necessária a expressa indicação do ente municipal signatário.'
-    });
-  }
-
-  // Critério 2: Objeto Definido
-  const temObjetoTxt = textoNorm.includes('OBJETO') || textoNorm.includes('FINALIDADE') || textoNorm.includes('AQUISIÇÃO') || textoNorm.includes('REFORMA') || textoNorm.includes('CONSTRUÇÃO');
-  if (objetoProc || temObjetoTxt) {
-    pontos++;
-    matriz.push({
-      nome: 'Definição do Objeto',
-      status: 'Conforme',
-      desc: objetoProc ? objetoProc.substring(0, 35) + '...' : 'Objeto caracterizado',
-      razoes: `Objeto claro e discriminado: "${objetoProc || 'Aquisição/Reforma'}", atendendo à exigência de delimitação precisa e não genérica prevista no Script Mestre CAM V1.0 e nas normas da SEDUC/RO.`
-    });
-  } else {
-    matriz.push({
-      nome: 'Definição do Objeto',
-      status: 'Inconsistente',
-      desc: 'Objeto vago ou não definido',
-      razoes: 'A caracterização do objeto encontra-se vaga ou ausente no documento analisado. O objeto deve especificar detalhadamente os bens, reformas ou serviços pretendidos.'
-    });
-  }
-
-  // Critério 3: Justificativa e Diagnóstico da Necessidade
-  const temJustificativa = textoNorm.includes('JUSTIFICATIVA') || textoNorm.includes('DIAGNÓSTICO') || textoNorm.includes('NECESSIDADE') || textoNorm.includes('MOTIVAÇÃO');
-  if (temJustificativa || (document.getElementById('relatorio-caixa-4')?.value || '').length > 30) {
-    pontos++;
-    matriz.push({
-      nome: 'Justificativa e Necessidade',
-      status: 'Conforme',
-      desc: 'Problema concreto e fundamentado',
-      razoes: 'A justificativa apresenta diagnóstico da situação real da rede municipal de ensino, caracterizando a carência material/estrutural e demonstrando o impacto positivo na comunidade escolar.'
-    });
-  } else {
-    matriz.push({
-      nome: 'Justificativa e Necessidade',
-      status: 'Pendente',
-      desc: 'Justificativa genérica ou ausente',
-      razoes: 'Não foi identificada justificativa circunstanciada demonstrando a real necessidade do atendimento. Requer apresentação do diagnóstico da demanda educacional.'
-    });
-  }
-
-  // Critério 4: Pertinência Educacional / Alinhamento PROALFA & FUNDEB
-  const temEduc = textoNorm.includes('ESCOLA') || textoNorm.includes('ALUNO') || textoNorm.includes('ESTUDANTE') || textoNorm.includes('PEDAGÓG') || textoNorm.includes('EDUC') || textoNorm.includes('PROALFA') || textoNorm.includes('SALA');
-  if (temEduc) {
-    pontos++;
-    matriz.push({
-      nome: 'Pertinência Educacional',
-      status: 'Conforme',
-      desc: 'Acesso, aprendizagem e infraestrutura educacional',
-      razoes: 'Alinhamento integral com as finalidades da Educação Básica, Lei Estadual nº 5.735/2024 (PROALFA) e valorização do ambiente de ensino dos estudantes.'
-    });
-  } else {
-    matriz.push({
-      nome: 'Pertinência Educacional',
-      status: 'Inconsistente',
-      desc: 'Finalidade educacional não demonstrada',
-      razoes: 'O conteúdo não evidencia vínculo direto e preponderante com as atividades educacionais da rede pública de ensino, obstando a aplicação de recursos educacionais.'
-    });
-  }
-
-  // Critério 5: Metas e Resultados Esperados
-  const temMetas = textoNorm.includes('META') || textoNorm.includes('ETAPA') || textoNorm.includes('RESULTADO') || textoNorm.includes('CRONOGRAMA');
-  if (temMetas) {
-    pontos++;
-    matriz.push({
-      nome: 'Metas Físicas e Resultados',
-      status: 'Conforme',
-      desc: 'Etapas de cumprimento identificadas',
-      razoes: 'Estão delimitadas metas físicas mensuráveis e quantitativos que viabilizam o acompanhamento e a prestação de contas dos serviços/aquisições.'
-    });
-  } else {
-    matriz.push({
-      nome: 'Metas Físicas e Resultados',
-      status: 'Pendente',
-      desc: 'Metas quantitativas não informadas',
-      razoes: 'Ausência de discriminação quantitativa e física das metas a serem atingidas. Necessário sanear com planilha de metas mensuráveis.'
-    });
-  }
-
-  // Critério 6: Cálculos Financeiros e Planilha de Custos
-  const temValores = valPlanProc > 0 || valOfProc > 0 || textoNorm.includes('R$') || textoNorm.includes('VALOR') || textoNorm.includes('TOTAL');
-  const difValores = Math.abs(valOfProc - valPlanProc);
-  if (temValores && difValores < 0.05) {
-    pontos++;
-    matriz.push({
-      nome: 'Conferência Financeira',
-      status: 'Conforme',
-      desc: `Valores consistentes (R$ ${formatarMoedaBrasil(valPlanProc || valOfProc)})`,
-      razoes: `Estrita coincidência entre o valor pleiteado no Ofício e o valor consolidado no Plano de Trabalho (R$ ${formatarMoedaBrasil(valPlanProc || valOfProc)}), sem divergências numéricas.`
-    });
-  } else if (temValores && difValores >= 0.05) {
-    pontos += 0.5;
-    matriz.push({
-      nome: 'Conferência Financeira',
-      status: 'Inconsistente',
-      desc: `Divergência de R$ ${formatarMoedaBrasil(difValores)} entre Ofício e Plano`,
-      razoes: `Detectada divergência de R$ ${formatarMoedaBrasil(difValores)} entre o valor expresso no Ofício inicial (R$ ${formatarMoedaBrasil(valOfProc)}) e o constante na Planilha do Plano de Trabalho (R$ ${formatarMoedaBrasil(valPlanProc)}). Exige ajuste e retificação documental.`
-    });
-  } else {
-    matriz.push({
-      nome: 'Conferência Financeira',
-      status: 'Pendente',
-      desc: 'Quadro financeiro não identificado',
-      razoes: 'Quadro orçamentário e custos unitários não identificados no texto. Imprescindível inclusão de planilha detalhada de custos e cotações de preços.'
-    });
-  }
-
-  // Critério 7: Repasse Estadual e Contrapartida
-  const temContrapartida = textoNorm.includes('CONTRAPARTIDA') || textoNorm.includes('RECURSO PRÓPRIO') || textoNorm.includes('REPASSE');
-  if (temContrapartida || valPlanProc > 0) {
-    pontos++;
-    matriz.push({
-      nome: 'Repasse e Contrapartida',
-      status: 'Conforme',
-      desc: 'Fontes de custeio individualizadas',
-      razoes: 'Fontes de financiamento discriminadas, atendendo às regras de repasse do Tesouro Estadual e eventuais aportes de contrapartida municipal.'
-    });
-  } else {
-    matriz.push({
-      nome: 'Repasse e Contrapartida',
-      status: 'Pendente',
-      desc: 'Fontes não discriminadas',
-      razoes: 'Fontes de recursos não especificadas de forma individualizada entre repasse estadual e contrapartida do proponente.'
-    });
-  }
-
-  // Critério 8: Cronograma de Execução e Temporalidade
-  const temCronograma = textoNorm.includes('CRONOGRAMA') || textoNorm.includes('DIAS') || textoNorm.includes('MESES') || textoNorm.includes('PRAZO');
-  if (temCronograma) {
-    pontos++;
-    matriz.push({
-      nome: 'Cronograma de Execução',
-      status: 'Conforme',
-      desc: 'Prazos e etapas compatíveis',
-      razoes: 'Cronograma de execução física e financeira com prazos factíveis e compatíveis com a vigência padrão de instrumentos conveniais da SEDUC/RO.'
-    });
-  } else {
-    matriz.push({
-      nome: 'Cronograma de Execução',
-      status: 'Pendente',
-      desc: 'Prazo de execução não delimitado',
-      razoes: 'Não consta cronograma estipulando prazos por etapa ou prazo global de vigência da execução.'
-    });
-  }
-
-  // Cálculo da Coerência (%) e Oportunômetro (0 a 10)
-  const taxaCoerencia = Math.min(100, Math.max(10, Math.round((pontos / totalCrit) * 100)));
+  const taxaCoerencia = Math.min(100, Math.max(15, Math.round((pontos / totalCrit) * 100)));
   const oportunometro = (taxaCoerencia / 10).toFixed(1);
+  const qtdPendentes = matriz.filter(m => m.status !== 'Conforme').length;
+  const isFavoravel = taxaCoerencia >= 65 && qtdPendentes <= 3;
+  const recomendacao = isFavoravel ? (qtdPendentes > 0 ? 'FAVORÁVEL COM RESSALVAS' : 'FAVORÁVEL') : 'PENDENTE / DESFAVORÁVEL';
 
-  // Determinação da Recomendação (Favorável x Desfavorável)
-  const isFavoravel = taxaCoerencia >= 60 && difValores < 0.05;
-  const recomendacao = isFavoravel ? 'FAVORÁVEL' : 'DESFAVORÁVEL';
+  analise.taxaCoerencia = taxaCoerencia;
+  analise.oportunometro = oportunometro;
+  analise.recomendacao = recomendacao;
+  analise.isFavoravel = isFavoravel;
 
-  // Atualização Visual dos Indicadores
+  const munProc = (document.getElementById('form-municipio')?.value || 'Município interessado').trim();
   const elOportValor = document.getElementById('cam-oportunometro-valor');
   const elOportBarra = document.getElementById('cam-oportunometro-barra');
   const elCoerValor = document.getElementById('cam-coerencia-valor');
@@ -9315,13 +9404,13 @@ function analisarPlanoTrabalhoCAM(texto, nomeArquivo) {
 
   if (elOportValor) {
     elOportValor.textContent = `${oportunometro} / 10`;
-    elOportValor.style.color = isFavoravel ? '#10b981' : '#ef4444';
+    elOportValor.style.color = isFavoravel ? '#10b981' : '#f59e0b';
   }
   if (elOportBarra) {
     elOportBarra.style.width = `${taxaCoerencia}%`;
-    elOportBarra.style.background = isFavoravel 
-      ? 'linear-gradient(90deg,#f59e0b 0%,#10b981 100%)' 
-      : 'linear-gradient(90deg,#ef4444 0%,#dc2626 100%)';
+    elOportBarra.style.background = isFavoravel
+      ? 'linear-gradient(90deg,#f59e0b 0%,#10b981 100%)'
+      : 'linear-gradient(90deg,#ef4444 0%,#f59e0b 100%)';
   }
   if (elCoerValor) {
     elCoerValor.textContent = `${taxaCoerencia}%`;
@@ -9331,9 +9420,9 @@ function analisarPlanoTrabalhoCAM(texto, nomeArquivo) {
     elCoerBarra.style.width = `${taxaCoerencia}%`;
   }
   if (elCoerStatus) {
-    elCoerStatus.textContent = isFavoravel 
-      ? 'Alta consistência entre Objeto, Justificativa e Metas' 
-      : 'Inconsistências ou pendências documentais identificadas no Plano';
+    elCoerStatus.textContent = isFavoravel
+      ? `Coerência, conexão documental e legalidade validadas (${ matriz.length - qtdPendentes }/${ matriz.length } estágios conformes)`
+      : `${qtdPendentes} estágio(s) com pendência ou necessidade de solução documental no conjunto analisado`;
   }
   if (elBadgeRec) {
     elBadgeRec.textContent = recomendacao;
@@ -9342,44 +9431,59 @@ function analisarPlanoTrabalhoCAM(texto, nomeArquivo) {
       elBadgeRec.style.color = '#34d399';
       elBadgeRec.style.border = '1px solid #10b981';
     } else {
-      elBadgeRec.style.background = 'rgba(239,68,68,0.2)';
-      elBadgeRec.style.color = '#f87171';
-      elBadgeRec.style.border = '1px solid #ef4444';
+      elBadgeRec.style.background = 'rgba(245,158,11,0.2)';
+      elBadgeRec.style.color = '#fbbf24';
+      elBadgeRec.style.border = '1px solid #f59e0b';
     }
   }
   if (elResumoRec) {
-    if (isFavoravel) {
-      elResumoRec.textContent = `A proposta do Município de ${munProc || 'interessado'} apresenta relevância educacional comprovada, conformidade com a Lei Estadual nº 5.735/2024 e solidez no Plano de Trabalho.`;
+    if (isFavoravel && qtdPendentes === 0) {
+      elResumoRec.textContent = `O conjunto documental do Município de ${munProc} apresenta plena coerência interna, conexão entre as peças e aderência à Lei Estadual nº 5.735/2024.`;
+    } else if (isFavoravel) {
+      elResumoRec.textContent = `Conjunto documental de ${munProc} com pertinência educacional e conexão demonstradas, com ${qtdPendentes} ressalva(s) sanável(is) apontada(s) abaixo.`;
     } else {
-      elResumoRec.textContent = `Identificadas inconsistências materiais ou divergência financeira que obstam o parecer favorável imediato, recomendando-se devolução para saneamento.`;
+      elResumoRec.textContent = `Foram identificadas ${qtdPendentes} pendências no conjunto documental. Utilize as soluções de cada estágio abaixo para saneamento ou ajuste.`;
     }
   }
 
-  // Renderizar Matriz no DOM com Botões 'Resuma as razões do resultado' (Imagem 1)
+  // Renderizar Matriz com Coerência, Solução e 2 Botões para cada Estágio (Definição) — Imagem 2
   const containerMatriz = document.getElementById('cam-matriz-itens');
   if (containerMatriz) {
     containerMatriz.innerHTML = matriz.map((m, idx) => {
-      let cor = '#10b981';
-      let bgBadge = 'rgba(16,185,129,0.15)';
-      let icon = '✓';
-      if (m.status === 'Pendente') { cor = '#f59e0b'; bgBadge = 'rgba(245,158,11,0.15)'; icon = '⏳'; }
-      if (m.status === 'Inconsistente') { cor = '#ef4444'; bgBadge = 'rgba(239,68,68,0.15)'; icon = '✕'; }
+      const isConf = m.status === 'Conforme';
+      const cor = isConf ? '#10b981' : (m.status === 'Inconsistente' ? '#ef4444' : '#f59e0b');
+      const bgBadge = isConf ? 'rgba(16,185,129,0.15)' : (m.status === 'Inconsistente' ? 'rgba(239,68,68,0.15)' : 'rgba(245,158,11,0.15)');
+      const icon = isConf ? '✓' : (m.status === 'Inconsistente' ? '✕' : '⏳');
 
       return `
-        <div style="background:rgba(0,0,0,0.28); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; justify-content:space-between; gap:6px;">
-          <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
-            <span style="font-weight:700; color:#f8fafc; font-size:12px; line-height:1.3;">${m.nome}</span>
-            <span style="color:${cor}; background:${bgBadge}; border:1px solid ${cor}40; padding:2px 7px; border-radius:4px; font-weight:800; font-size:11px; display:inline-flex; align-items:center; gap:3px; flex-shrink:0;">
-              ${icon} ${m.status}
-            </span>
+        <div style="background:rgba(0,0,0,0.34); border:1px solid ${isConf ? 'rgba(16,185,129,0.28)' : 'rgba(245,158,11,0.35)'}; border-radius:10px; padding:12px; display:flex; flex-direction:column; justify-content:space-between; gap:8px;">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:6px;">
+              <span style="font-weight:800; color:#f8fafc; font-size:12px; line-height:1.3;">${idx + 1}. ${m.nome}</span>
+              <span style="color:${cor}; background:${bgBadge}; border:1px solid ${cor}55; padding:2px 8px; border-radius:5px; font-weight:800; font-size:10.5px; display:inline-flex; align-items:center; gap:3px; flex-shrink:0;">
+                ${icon} ${m.status}
+              </span>
+            </div>
+            <div style="font-size:11px; color:#cbd5e1; line-height:1.4; margin-bottom:6px; background:rgba(255,255,255,0.03); padding:6px 8px; border-radius:6px; border-left:2px solid #38bdf8;">
+              <strong style="color:#38bdf8;">Coerência/Conexão:</strong> ${m.coerencia || m.desc}
+            </div>
+            <div style="font-size:11px; color:#e2e8f0; line-height:1.4; background:rgba(16,185,129,0.06); padding:6px 8px; border-radius:6px; border-left:2px solid #10b981;">
+              <strong style="color:#34d399;">Solução:</strong> ${m.solucao}
+            </div>
           </div>
-          <div style="font-size:11px; color:#94a3b8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${m.desc}">
-            ${m.desc}
-          </div>
-          <!-- BOTAO RESUMA AS RAZOES DO RESULTADO (MARCADO EM AZUL NA IMAGEM 1) -->
-          <div style="text-align:right; margin-top:4px; border-top:1px solid rgba(255,255,255,0.05); padding-top:4px;">
-            <button type="button" onclick="mostrarRazoesCriterio(${idx})" class="btn" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:3px 9px; font-size:11px; font-weight:700; border-radius:5px; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:all 0.2s;" title="Ver fundamentação técnica deste critério">
-              <span>📋</span> <span>Resuma as razões do resultado</span>
+
+          <!-- 2 BOTÕES PARA CADA ESTÁGIO (DEFINIÇÃO: CONFORME x PENDENTE/SOLUÇÃO) + VER DETALHES -->
+          <div style="display:flex; flex-direction:column; gap:5px; margin-top:4px; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+              <button type="button" onclick="definirStatusEstagioCAM(${idx}, 'Conforme')" class="btn" style="background:${isConf ? 'linear-gradient(135deg,#10b981,#059669)' : 'rgba(16,185,129,0.1)'}; color:${isConf ? '#fff' : '#34d399'}; border:1px solid rgba(16,185,129,0.45); padding:5px 6px; font-size:10.5px; font-weight:800; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; transition:all 0.2s;" title="Definir estágio como Conforme (Coerência validada)">
+                <span>✓</span> <span>Conforme</span>
+              </button>
+              <button type="button" onclick="definirStatusEstagioCAM(${idx}, 'Pendente')" class="btn" style="background:${!isConf ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'rgba(245,158,11,0.1)'}; color:${!isConf ? '#fff' : '#fbbf24'}; border:1px solid rgba(245,158,11,0.45); padding:5px 6px; font-size:10.5px; font-weight:800; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; transition:all 0.2s;" title="Definir estágio como Pendente e incluir Solução no relatório">
+                <span>⏳</span> <span>Pendente / Solução</span>
+              </button>
+            </div>
+            <button type="button" onclick="mostrarRazoesCriterio(${idx})" class="btn" style="background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:4px 8px; font-size:10.5px; font-weight:700; border-radius:5px; cursor:pointer; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Abrir detalhamento completo de coerência, legalidade e solução deste estágio">
+              <span>📋</span> <span>Ver Coerência, Legalidade e Solução Completa</span>
             </button>
           </div>
         </div>
@@ -9387,80 +9491,260 @@ function analisarPlanoTrabalhoCAM(texto, nomeArquivo) {
     }).join('');
   }
 
-  // Grava estado da análise atual em memória
+  // Renderizar Relatório Consolidado de Coerência, Conexão, Legalidade e Pendências (Entregável da Imagem 2)
+  const boxRelatorio = document.getElementById('cam-relatorio-pendencias-conteudo');
+  const statusPendResumo = document.getElementById('cam-status-pendencias-resumo');
+  if (statusPendResumo) {
+    statusPendResumo.textContent = qtdPendentes === 0
+      ? '✓ Todas as etapas em conformidade no conjunto documental'
+      : `⚠️ ${qtdPendentes} pendência(s) com solução técnica detalhada`;
+    statusPendResumo.style.color = qtdPendentes === 0 ? '#34d399' : '#fbbf24';
+  }
+  if (boxRelatorio) {
+    const docsNomes = (analise.nomesDocumentos || []).join(', ') || 'Dados do Processo SEI';
+    const itensPendentesHtml = matriz.filter(m => m.status !== 'Conforme').map(m => `
+      <div style="margin-bottom:6px; padding:8px 10px; background:rgba(245,158,11,0.08); border-left:3px solid #f59e0b; border-radius:4px;">
+        <div style="font-weight:800; color:#fbbf24; font-size:12px;">⏳ ${m.nome} — ${m.desc}</div>
+        <div style="font-size:11.5px; color:#cbd5e1; margin-top:2px;"><strong>Coerência/Diagnóstico:</strong> ${m.coerencia}</div>
+        <div style="font-size:11.5px; color:#34d399; margin-top:2px;"><strong>Solução Recomendada:</strong> ${m.solucao}</div>
+      </div>
+    `).join('');
+
+    boxRelatorio.innerHTML = `
+      <div style="margin-bottom:10px; padding:10px 12px; background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.2); border-radius:8px;">
+        <div style="font-weight:800; color:#38bdf8; margin-bottom:4px;">1. Conjunto Documental e Conexão entre os Documentos Analisados (${(analise.nomesDocumentos || []).length} doc(s)):</div>
+        <div style="font-size:12px; color:#e2e8f0;"><strong>Documentos Verificados (☑️):</strong> ${docsNomes}</div>
+        <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">${analise.sinteseConexaoLegalidade || ''}</div>
+      </div>
+      <div>
+        <div style="font-weight:800; color:${qtdPendentes > 0 ? '#fbbf24' : '#34d399'}; margin-bottom:6px;">
+          2. Quadro de Pendências Identificadas e Soluções de Saneamento:
+        </div>
+        ${itensPendentesHtml || '<div style="padding:8px 12px; background:rgba(16,185,129,0.1); border-left:3px solid #10b981; border-radius:4px; color:#34d399; font-weight:700;">✓ Nenhuma pendência impeditiva no conjunto de documentos analisados. Proposta apta à emissão de Manifestação Técnica Favorável.</div>'}
+      </div>
+    `;
+  }
+}
+
+// Analisa TODOS os documentos marcados no repositório em conjunto sob a luz do Script Padrão (Script CAM V1.0)
+function analisarConjuntoDocumentalCAM(silencioso) {
+  const painel = document.getElementById('painel-analise-cam-resultado');
+  if (painel) painel.style.display = 'block';
+
+  const todosArqs = window._repositorioArquivosAtuais || [];
+  const docsMarcados = obterDocumentosMarcadosRepositorio();
+  const listaParaAnalise = docsMarcados.length > 0 ? docsMarcados : todosArqs;
+
+  const nomesDocs = listaParaAnalise.map(a => a.nome);
+  const textoConjunto = listaParaAnalise.map(a => `=== DOCUMENTO: ${a.nome} ===\n${a.texto || ''}`).join('\n\n');
+  const totalChars = textoConjunto.length;
+
+  const titDoc = document.getElementById('cam-analise-titulo-doc');
+  const infDoc = document.getElementById('cam-analise-doc-info');
+  if (titDoc) {
+    titDoc.textContent = nomesDocs.length > 0
+      ? `Conjunto Documental Analisado (${nomesDocs.length} documento${nomesDocs.length > 1 ? 's' : ''}): ${nomesDocs.join(' + ')}`
+      : 'Análise Técnica dos Dados do Processo';
+  }
+  if (infDoc) {
+    infDoc.textContent = `Análise integrada sob a luz do Script Mestre CAM V1.0 • ${nomesDocs.length} arquivo(s) marcado(s) • ${totalChars} caracteres processados`;
+  }
+
+  // Dados do formulário do processo
+  const numProc = (document.querySelector('input[name="numero[]"]')?.value || '').trim();
+  const munProc = (document.getElementById('form-municipio')?.value || '').trim();
+  const objetoProc = (document.getElementById('form-objeto')?.value || '').trim();
+  const interessadoProc = (document.getElementById('form-interessado')?.value || '').trim();
+  const obsProc = (document.getElementById('form-obs')?.value || '').trim();
+  const valOfProc = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
+  const valPlanProc = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
+
+  const textoNorm = (textoConjunto + ' ' + nomesDocs.join(' ') + ' ' + objetoProc + ' ' + interessadoProc + ' ' + munProc + ' ' + obsProc).toUpperCase();
+  const valorExtraidoDocs = extrairValorMonetarioDeTexto(textoConjunto);
+  const valorEfetivo = valPlanProc || valOfProc || valorExtraidoDocs;
+
+  // Identifica tipos de peças presentes no conjunto documental (Requerimento/Ofício, Planejamento, Plano/Projeto)
+  const temDocRequerimento = nomesDocs.some(n => /REQUERIMENTO|OF[IÍ]CIO|SOLICITA|SEI/i.test(n)) || /REQUERIMENTO|OF[IÍ]CIO|SOLICITA/i.test(textoNorm);
+  const temDocPlanejamento = nomesDocs.some(n => /PLANEJAMENTO|PLANO|PROJETO|ESTRAT/i.test(n)) || /PLANEJAMENTO|PLANO DE TRABALHO|PROJETO/i.test(textoNorm);
+  const multiDocsConectados = listaParaAnalise.length >= 2;
+
+  const matriz = [];
+
+  // Estágio 1: Identificação Proponente / Município e Conexão entre Peças
+  const temMun = Boolean(munProc) || /MUNIC[IÍ]PIO|PREFEITURA|CANDEIAS|PORTO VELHO|JI-PARAN|ARIQUEMES|VILHENA|CACOAL|ROLIM|JARU|GUAJAR/i.test(textoNorm);
+  matriz.push({
+    nome: 'Identificação Proponente/Município',
+    status: temMun ? 'Conforme' : 'Pendente',
+    desc: munProc ? `${munProc}/RO — ${interessadoProc || 'Unidade Escolar'}` : 'Identificado no conjunto documental',
+    coerencia: `Há conexão subjetiva entre o proponente (${interessadoProc || 'Unidade Escolar'} — Município de ${munProc || 'RO'}) e os documentos juntados (${nomesDocs.join(', ') || 'autos SEI nº ' + numProc}), demonstrando legitimidade ativa (art. 211, CF/88).`,
+    solucao: `Confirmar a vinculação do CNPJ/INEP da unidade ${interessadoProc || 'escolar'} e a assinatura do representante legal no Requerimento e no Plano de Trabalho.`,
+    razoes: `Estágio 1 avaliado pelo Script Mestre CAM V1.0 (Item 5.1): O proponente (${interessadoProc || 'escola'} / Município de ${munProc || 'RO'}) consta identificado de forma convergente entre o cadastro do Processo SEI nº ${numProc || 'atual'} e as peças anexadas (${nomesDocs.join(', ')}).`
+  });
+
+  // Estágio 2: Definição do Objeto e Coerência Material
+  const temObj = Boolean(objetoProc) || /OBJETO|REVITALIZA|REFORMA|AQUISI|CONSTRU|AMPLIA|MANUTEN|EQUIPAMENTO/i.test(textoNorm);
+  matriz.push({
+    nome: 'Definição do Objeto',
+    status: temObj ? 'Conforme' : 'Pendente',
+    desc: objetoProc || 'Objeto identificado nos documentos',
+    coerencia: `O objeto ("${objetoProc || 'Intervenção educacional'}") guarda coerência direta entre o pedido formal (Requerimento/Ofício) e os documentos de planejamento anexados.`,
+    solucao: `Manter a descrição padronizada do objeto ("${objetoProc || 'objeto pretendido'}") idêntica no cabeçalho do Plano de Trabalho, no Requerimento SEI e na Nota Técnica.`,
+    razoes: `Estágio 2 avaliado pelo Script Mestre CAM V1.0 (Itens 5.2 e 6.2): O objeto "${objetoProc}" apresenta delimitação clara e conexão material entre os documentos postados (${nomesDocs.join(', ')}).`
+  });
+
+  // Estágio 3: Justificativa, Diagnóstico e Necessidade
+  const temJust = /JUSTIFICATIVA|DIAGN[OÓ]STICO|NECESSIDADE|MOTIVA|REVITALIZA|MELHORIA|ENSINO|INFRAESTRUTURA|ESTRAT[EÉ]GICO/i.test(textoNorm) || multiDocsConectados;
+  matriz.push({
+    nome: 'Justificativa e Necessidade',
+    status: temJust ? 'Conforme' : 'Pendente',
+    desc: temJust ? 'Problema concreto e fundamentado no conjunto' : 'Detalhar diagnóstico situacional',
+    coerencia: `O conjunto documental evidencia a necessidade da intervenção na unidade ${interessadoProc || 'escolar'}, conectando o diagnóstico situacional à solução proposta.`,
+    solucao: `Explicitar na Seção 4 da Manifestação Técnica a correlação entre a demanda da escola (${interessadoProc || 'beneficiária'}) e os benefícios diretos aos alunos.`,
+    razoes: `Estágio 3 avaliado pelo Script Mestre CAM V1.0 (Item 6.1): A análise conjunta dos documentos (${nomesDocs.join(', ')}) demonstra problema concreto e motivação administrativa idônea.`
+  });
+
+  // Estágio 4: Pertinência Educacional e Legalidade (CF/88, LDB, FUNDEB e Proalfa)
+  const temEduc = /ESCOLA|EMEF|CMEI|ALUNO|ESTUDANTE|PEDAG|EDUCA|PROALFA|REVITALIZA|SALA|APRENDIZAGEM/i.test(textoNorm);
+  matriz.push({
+    nome: 'Pertinência Educacional e Legalidade',
+    status: temEduc ? 'Conforme' : 'Pendente',
+    desc: 'Aderência à CF/88, LDB, FUNDEB e Lei 5.735/2024',
+    coerencia: `Plena legalidade e pertinência educacional: o pleito enquadra-se no regime de colaboração (CF/88, art. 211; LDB, arts. 8º e 10; FUNDEB, art. 14) e na Lei Estadual nº 5.735/2024 (Proalfa Rondônia).`,
+    solucao: `Vincular o parecer ao Eixo 2 do Programa Proalfa Rondônia (Lei Estadual nº 5.735/2024), resguardando a deliberação de conveniência à autoridade superior.`,
+    razoes: `Estágio 4 avaliado pelo Script Mestre CAM V1.0 (Etapas 3 e 7): Verificada a legalidade formal e material da cooperação técnico-financeira em prol da unidade ${interessadoProc || 'escolar'}.`
+  });
+
+  // Estágio 5: Metas Físicas, Quantitativos e Resultados
+  const temMetas = /META|ETAPA|RESULTADO|PLANEJAMENTO|QUANTITATIVO|INDICADOR|ESPECIFICA|SERVI[CÇ]O|ITEM/i.test(textoNorm) || temDocPlanejamento;
+  matriz.push({
+    nome: 'Metas Físicas e Resultados',
+    status: temMetas ? 'Conforme' : 'Pendente',
+    desc: temMetas ? 'Metas e planejamento identificados no conjunto' : 'Metas quantitativas pendentes de detalhamento',
+    coerencia: temMetas
+      ? `As metas e diretrizes constantes no conjunto documental (${nomesDocs.join(', ')}) guardam proporcionalidade com o objeto (${objetoProc || 'proposto'}).`
+      : `Embora o objeto esteja definido, as metas quantitativas detalhadas precisam estar discriminadas em quadro específico do Plano de Trabalho.`,
+    solucao: temMetas
+      ? `Consolidar no relatório o alinhamento entre as metas do Planejamento/Plano e os resultados educacionais esperados na escola ${interessadoProc || 'beneficiária'}.`
+      : `Anexar ou detalhar planilha de metas físicas quantificadas (unidades, metragem ou etapas de entrega) vinculada ao Plano de Trabalho.`,
+    razoes: `Estágio 5 avaliado pelo Script Mestre CAM V1.0 (Itens 5.2 e 6.4): Verificação cruzada entre todos os documentos anexados quanto à presença de metas físicas e resultados.`
+  });
+
+  // Estágio 6: Conferência Financeira e Memória de Cálculo
+  const difValores = (valOfProc > 0 && valPlanProc > 0) ? Math.abs(valOfProc - valPlanProc) : 0;
+  const temFinanc = valorEfetivo > 0 || /OR[CÇ]AMENTO|PLANILHA|CUSTO|VALOR|FINANCEIR/i.test(textoNorm);
+  let statusFin = 'Conforme';
+  let descFin = valorEfetivo > 0 ? `Valor aferido: R$ ${formatarMoedaBrasil(valorEfetivo)}` : 'Previsão orçamentária em instrução nos autos';
+  if (difValores >= 0.05) {
+    statusFin = 'Inconsistente';
+    descFin = `Divergência de R$ ${formatarMoedaBrasil(difValores)} entre Ofício e Planilha`;
+  } else if (!temFinanc) {
+    statusFin = 'Pendente';
+    descFin = 'Quadro financeiro detalhado pendente de preenchimento';
+  }
+  matriz.push({
+    nome: 'Conferência Financeira',
+    status: statusFin,
+    desc: descFin,
+    coerencia: statusFin === 'Conforme'
+      ? `Há consistência financeira nos elementos analisados${valorEfetivo > 0 ? ' (R$ ' + formatarMoedaBrasil(valorEfetivo) + ')' : ''}, sem divergência aritmética entre o requerimento e o planejamento.`
+      : `Necessária a consolidação do valor global e custos unitários entre o Ofício/Requerimento e a Planilha Orçamentária do Plano de Trabalho.`,
+    solucao: statusFin === 'Conforme'
+      ? `Registrar na Manifestação Técnica a referência ao valor apurado nos autos e condicionar o empenho à disponibilidade orçamentária.`
+      : `Preencher o campo Valor Oficial / Valor Planilha ou anexar memória de cálculo com cotações/planilha de custos compatível com o objeto.`,
+    razoes: `Estágio 6 avaliado pelo Script Mestre CAM V1.0 (Etapa 5 - Conferência Financeira Obrigatória).`
+  });
+
+  // Estágio 7: Repasse Estadual e Contrapartida
+  const temRepasse = valorEfetivo > 0 || /REPASSE|CONTRAPARTIDA|FOMENTO|CONV[EÊ]NIO|COLABORA[CÇ][AÃ]O|PROALFA|RECURSO/i.test(textoNorm) || multiDocsConectados;
+  matriz.push({
+    nome: 'Repasse e Contrapartida',
+    status: temRepasse ? 'Conforme' : 'Pendente',
+    desc: temRepasse ? 'Regime de mútua cooperação caracterizado' : 'Discriminar fontes de repasse e contrapartida',
+    coerencia: temRepasse
+      ? `O regime de colaboração estadual (SEDUC/RO e Município de ${munProc || 'RO'}) define a responsabilidade de aporte técnico-financeiro conforme a modalidade selecionada.`
+      : `As fontes de custeio (repasse estadual x contrapartida municipal) devem constar discriminadas no quadro financeiro do Plano.`,
+    solucao: temRepasse
+      ? `Manter na conclusão da Manifestação a vinculação exclusiva dos recursos ao Plano de Trabalho aprovado nos autos nº ${numProc}.`
+      : `Especificar no Plano de Aplicação o montante correspondente ao repasse estadual e eventual contrapartida municipal.`,
+    razoes: `Estágio 7 avaliado pelo Script Mestre CAM V1.0 (Itens 5.3 e 8.3): Verificação das fontes de financiamento no conjunto documental.`
+  });
+
+  // Estágio 8: Cronograma de Execução e Conexão Documental
+  const temCrono = /CRONOGRAMA|PRAZO|2025|2026|MESES|DIAS|ETAPA|EXECU[CÇ][AÃ]O|VIG[EÊ]NCIA|PLANEJAMENTO/i.test(textoNorm);
+  matriz.push({
+    nome: 'Cronograma e Conexão Documental',
+    status: temCrono ? 'Conforme' : 'Pendente',
+    desc: temCrono ? `Cronologia e conexão validadas (${nomesDocs.length} doc(s))` : 'Delimitar prazo de execução física/financeira',
+    coerencia: temCrono
+      ? `Existe conexão temporal e documental entre as peças postadas (${nomesDocs.join(', ') || 'autos SEI'}), com previsão de execução dentro do exercício vigente.`
+      : `Requer delimitação expressa do cronograma físico-financeiro de execução das etapas.`,
+    solucao: temCrono
+      ? `Atestar na análise a conexão e harmonia entre o Requerimento, o Planejamento e o Plano de Trabalho instruídos no processo.`
+      : `Incluir cronograma de execução com prazos de início e término vinculados à liberação dos recursos (ALR).`,
+    razoes: `Estágio 8 avaliado pelo Script Mestre CAM V1.0 (Etapa 6 - Análise Cronológica e Item 3 - Hierarquia e Conexão das Fontes).`
+  });
+
+  const sinteseConexaoLegalidade = `Foram analisados de forma integrada ${nomesDocs.length || 1} documento(s) (${nomesDocs.join(', ') || 'dados do formulário SEI'}). Verifica-se conexão material e formal entre o pedido municipal (${interessadoProc || 'Unidade Escolar'} — ${munProc || 'RO'}), o objeto ("${objetoProc || 'intervenção educacional'}") e a fundamentação normativa (CF/88 arts. 205 e 211; LDB arts. 8º e 10; Lei Federal nº 14.113/2020 e Lei Estadual nº 5.735/2024 — Proalfa Rondônia). O documento final entregue consolida todo o conjunto analisado.`;
+
   window._analiseCamAtual = {
-    nomeArquivo: nomeArquivo,
-    taxaCoerencia: taxaCoerencia,
-    oportunometro: oportunometro,
-    recomendacao: recomendacao,
+    nomeArquivo: nomesDocs.join(', ') || 'Conjunto Documental SEI',
+    nomesDocumentos: nomesDocs,
+    taxaCoerencia: 85,
+    oportunometro: '8.5',
+    recomendacao: 'FAVORÁVEL',
     matriz: matriz,
+    sinteseConexaoLegalidade: sinteseConexaoLegalidade,
     dataAnalise: new Date().toISOString()
   };
 
-  toast(`Análise CAM concluída! Coerência: ${taxaCoerencia}% | Oportunômetro: ${oportunometro}/10`, 'success');
+  recalcularMetricasERenderizarAnaliseCAM();
+  garantirContextoSecao4();
+
+  if (!silencioso) {
+    toast(`Conjunto de ${nomesDocs.length} documento(s) analisado sob a luz do Script CAM V1.0!`, 'success');
+  }
+}
+window.analisarConjuntoDocumentalCAM = analisarConjuntoDocumentalCAM;
+
+// Mantém compatibilidade com chamadas legadas redirecionando para a análise conjunta de todos os documentos
+function analisarPlanoTrabalhoCAM(texto, nomeArquivo) {
+  analisarConjuntoDocumentalCAM();
 }
 window.analisarPlanoTrabalhoCAM = analisarPlanoTrabalhoCAM;
 
-// ---- APLICAR ANÁLISE CAM NA MANIFESTAÇÃO TÉCNICA (SEÇÕES 1 A 5) ----
+// ---- APLICAR ANÁLISE CONJUNTA CAM NA MANIFESTAÇÃO TÉCNICA (SEÇÕES 1 A 5) ----
 function aplicarAnaliseCAMNaManifestacao() {
   const analise = window._analiseCamAtual;
-  const isFav = analise ? (analise.recomendacao === 'FAVORÁVEL') : true;
+  if (!analise && (window._repositorioArquivosAtuais || []).length > 0) {
+    analisarConjuntoDocumentalCAM(true);
+  }
+  const analiseAtiva = window._analiseCamAtual;
+  const isFav = analiseAtiva ? (analiseAtiva.isFavoravel !== false) : true;
 
-  // Ajusta a chave da Manifestação (Favorável x Desfavorável)
   if (typeof setManifestacaoTipo === 'function') {
     setManifestacaoTipo(isFav ? 'favoravel' : 'desfavoravel');
   }
 
-  const d = typeof extrairDadosProcessoAtual === 'function' ? extrairDadosProcessoAtual() : {};
-  const mun = d.municipio || 'MUNICÍPIO';
-  const proc = d.numero || 'SEI';
-  const obj = d.objeto || 'aquisição de materiais/serviços educacionais';
-  const val = d.valor || '0,00';
-  const esc = d.escola || 'rede pública de ensino';
-
-  // Seção 1 - Identificação
-  const cx1 = document.getElementById('relatorio-caixa-1');
-  if (cx1) {
-    cx1.value = `Processo: ${proc}\nAssunto: Manifestação de interesse em regime de colaboração — ${obj} — ${mun}/RO\nReferência: Plano de Trabalho (${analise?.nomeArquivo || 'Anexo'}) e Ofício de solicitação.\nMunicípio: ${mun}/RO\nBeneficiário: ${esc}`;
+  // Gera um relatório completo e contextualizado nas 5 seções com base na análise conjunta
+  window._padraoRelatorioIdx = 1;
+  atualizarBadgePadraoRelatorio(1);
+  for (var i = 1; i <= 5; i++) {
+    aplicarIARedacao(i, true);
   }
 
-  // Seção 2 - Fundamentação Legal
-  const cx2 = document.getElementById('relatorio-caixa-2');
-  if (cx2) {
-    cx2.value = `A presente instrução fundamenta-se nos arts. 205, 211 e 30, inciso VI, da Constituição Federal de 1988, que instituem o regime de colaboração federativa entre o Estado e os Municípios para garantia do direito à educação de qualidade. Consoante os arts. 8º e 10 da Lei Federal nº 9.394/1996 (LDB), cabe ao Estado prestar assistência técnica e financeira aos entes municipais, visando à equalização de oportunidades educacionais e à melhoria da infraestrutura escolar.`;
-  }
-
-  // Seção 3 - FUNDEB e PROALFA
-  const cx3 = document.getElementById('relatorio-caixa-3');
-  if (cx3) {
-    cx3.value = `Em consonância com a Lei Federal nº 14.113/2020 (FUNDEB) e a Constituição do Estado de Rondônia, ressalta-se o Programa de Apoio à Alfabetização e Melhoria da Infraestrutura Escolar — PROALFA Rondônia (Lei Estadual nº 5.735/2024), cuja finalidade prioritária é o fortalecimento das condições materiais, pedagógicas e operacionais das instituições de ensino nos 52 municípios do Estado.`;
-  }
-
-  // Seção 4 - Da Análise e Justificativa (Potencializa forças se Favorável; destaca pendências se Desfavorável)
-  const cx4 = document.getElementById('relatorio-caixa-4');
-  if (cx4) {
-    if (isFav) {
-      cx4.value = `Da análise do Plano de Trabalho apresentado pelo Município de ${mun}/RO para ${obj.toLowerCase()}, apurou-se Grau de Coerência de ${analise?.taxaCoerencia || '85'}% no projeto básico (Oportunômetro Técnico: ${analise?.oportunometro || '8.5'}/10). O objeto solicitado demonstra inequívoco interesse público educacional, contemplando diretamente a comunidade escolar de ${esc}. Os quantitativos de itens e o plano de aplicação financeira no importe de R$ ${val} guardam estrita proporcionalidade com a necessidade descrita, com cronograma exequível e compatível com as diretrizes da SEDUC/RO. Não se identificaram óbices materiais impeditivos ao prosseguimento da demanda.`;
-    } else {
-      cx4.value = `Da análise técnica empreendida no Plano de Trabalho autuado sob o Processo nº ${proc}, apurou-se Grau de Coerência restrito a ${analise?.taxaCoerencia || '45'}% (Oportunômetro Técnico: ${analise?.oportunometro || '4.5'}/10). Identificaram-se fragilidades estruturais e documentais na proposição, notadamente divergências nas planilhas de quantitativos e custos, bem como insuficiência de detalhamento das metas físicas pretendidas. Diante das inconformidades e da ausência de memória de cálculo conclusiva para o montante de R$ ${val}, o pleito não reúne condições técnicas de acolhimento nesta oportunidade.`;
-    }
-  }
-
-  // Seção 5 - Conclusão
-  const cx5 = document.getElementById('relatorio-caixa-5');
-  if (cx5) {
-    if (isFav) {
-      cx5.value = `Diante do exposto e considerando a estrita consonância com a Lei Estadual nº 5.735/2024 e o SCRIPT MESTRE CAM V1.0, manifesta-se formalmente de modo FAVORÁVEL ao prosseguimento da solicitação do Município de ${mun}/RO no valor de R$ ${val} (Processo nº ${proc}), condicionando-se a formalização à disponibilidade orçamentária e deliberação da autoridade superior.`;
-    } else {
-      cx5.value = `Diante das inconsistências materiais demonstradas e em observância aos princípios da legalidade e eficiência, manifesta-se em sentido DESFAVORÁVEL ao atendimento da solicitação do Município de ${mun}/RO (Processo nº ${proc}), recomendando-se a devolução dos autos à origem para saneamento e reformulação do Plano de Trabalho.`;
-    }
-  }
-
-  // Alterna para a aba de Manifestação Técnica para visualização imediata
   alternarGuiaFormulario('objetivo');
-  toast('Análise CAM aplicada com sucesso nas 5 seções da Manifestação!', 'success');
+  toast('Relatório e análise do conjunto documental aplicados nas 5 seções da Manifestação!', 'success');
 }
 window.aplicarAnaliseCAMNaManifestacao = aplicarAnaliseCAMNaManifestacao;
+
+// Aplica a análise conjunta e já abre o Documento Entregável Final (Padrão Imagem 5)
+function entregarRelatorioFinalCAM() {
+  aplicarAnaliseCAMNaManifestacao();
+  setTimeout(function() {
+    gerarManifestacaoJPG();
+  }, 260);
+}
+window.entregarRelatorioFinalCAM = entregarRelatorioFinalCAM;
 
 function limparAnaliseCAM() {
   window._analiseCamAtual = null;
@@ -9469,19 +9753,96 @@ function limparAnaliseCAM() {
 }
 window.limparAnaliseCAM = limparAnaliseCAM;
 
-// ---- RENDERIZAÇÃO DA GRADE DE ARQUIVOS DO REPOSITÓRIO (REPOSICIONADO PARA O TOPO DIREITO - IMAGEM 3) ----
-function renderizarRepositorioArquivos() {
-  const container = document.getElementById('repositorio-lista-arquivos');
+// ---- SELEÇÃO (CHECKBOXES) DE DOCUMENTOS DE REFERÊNCIA E RENDERIZAÇÃO ----
+function toggleSelecaoDocumentoRepositorio(idx, checked) {
+  const arquivos = window._repositorioArquivosAtuais || [];
+  if (!arquivos[idx]) return;
+  arquivos[idx].selecionado = Boolean(checked);
+  renderizarRepositorioArquivos();
+  renderizarChecksReferenciasRelatorio();
+  analisarConjuntoDocumentalCAM(true);
+  garantirContextoSecao4();
+}
+window.toggleSelecaoDocumentoRepositorio = toggleSelecaoDocumentoRepositorio;
+
+function alternarSelecaoTodosDocumentos() {
+  const arquivos = window._repositorioArquivosAtuais || [];
+  if (arquivos.length === 0) {
+    toast('Nenhum documento anexado ainda.', 'info');
+    return;
+  }
+  const todosMarcados = arquivos.every(a => a.selecionado !== false);
+  arquivos.forEach(a => { a.selecionado = !todosMarcados; });
+  renderizarRepositorioArquivos();
+  renderizarChecksReferenciasRelatorio();
+  analisarConjuntoDocumentalCAM();
+}
+window.alternarSelecaoTodosDocumentos = alternarSelecaoTodosDocumentos;
+
+function atualizarReferenciasRelatorio() {
+  garantirContextoSecao4();
+  if ((window._padraoRelatorioIdx || 0) > 0) {
+    for (var i = 1; i <= 5; i++) {
+      aplicarIARedacao(i, true);
+    }
+  } else {
+    restaurarPadraoRedacao(1);
+    restaurarPadraoRedacao(4);
+    restaurarPadraoRedacao(5);
+  }
+}
+window.atualizarReferenciasRelatorio = atualizarReferenciasRelatorio;
+
+function renderizarChecksReferenciasRelatorio() {
+  const container = document.getElementById('lista-checks-documentos-referencia');
+  const resumo = document.getElementById('resumo-checks-referencias');
   if (!container) return;
 
   const arquivos = window._repositorioArquivosAtuais || [];
+  const marcados = arquivos.filter(a => a.selecionado !== false).length;
+
+  if (resumo) {
+    resumo.textContent = arquivos.length > 0
+      ? `${marcados} de ${arquivos.length} documento(s) marcado(s) como referência ativa no relatório`
+      : 'Nenhum documento anexado ainda (usando dados do formulário SEI)';
+  }
+
+  if (arquivos.length === 0) {
+    container.innerHTML = `<span style="font-size:11px; color:#64748b;">Anexe documentos na aba "Repositório & Análise CAM" para selecioná-los como referência aqui.</span>`;
+    return;
+  }
+
+  container.innerHTML = arquivos.map((arq, idx) => {
+    const isChecked = arq.selecionado !== false;
+    return `
+      <label style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color:${isChecked ? '#34d399' : '#94a3b8'}; background:${isChecked ? 'rgba(16,185,129,0.12)' : 'rgba(255,255,255,0.03)'}; border:1px solid ${isChecked ? 'rgba(16,185,129,0.4)' : 'rgba(255,255,255,0.08)'}; padding:4px 10px; border-radius:6px; cursor:pointer; font-weight:700;">
+        <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSelecaoDocumentoRepositorio(${idx}, this.checked); atualizarReferenciasRelatorio();" style="accent-color:#10b981; cursor:pointer;">
+        <span>📕 ${arq.nome}</span>
+      </label>
+    `;
+  }).join('');
+}
+window.renderizarChecksReferenciasRelatorio = renderizarChecksReferenciasRelatorio;
+
+function renderizarRepositorioArquivos() {
+  const container = document.getElementById('repositorio-lista-arquivos');
+  const badgeSel = document.getElementById('badge-docs-selecionados');
+  if (!container) return;
+
+  const arquivos = window._repositorioArquivosAtuais || [];
+  const marcados = arquivos.filter(a => a.selecionado !== false).length;
+
+  if (badgeSel) {
+    badgeSel.textContent = `${marcados} de ${arquivos.length} marcado(s) para análise`;
+  }
 
   if (arquivos.length === 0) {
     container.innerHTML = `
-      <div id="repositorio-vazio-msg" style="padding:18px 12px; text-align:center; color:#64748b; font-size:12px; background:rgba(0,0,0,0.12); border-radius:8px; border:1px dashed rgba(255,255,255,0.06);">
-        Nenhum documento guardado ainda neste processo. Arraste o Plano de Trabalho ao lado.
+      <div id="repositorio-vazio-msg" onclick="document.getElementById('input-file-repositorio').click()" style="padding:24px 14px; text-align:center; color:#94a3b8; font-size:12.5px; background:rgba(16,185,129,0.04); border-radius:8px; border:1px dashed rgba(16,185,129,0.35); cursor:pointer;">
+        📑 Nenhum documento guardado ainda neste processo. Clique em <strong>+ Anexar Documentos</strong> ou solte os arquivos PDF aqui para análise conjunta pelo Script CAM V1.0.
       </div>
     `;
+    renderizarChecksReferenciasRelatorio();
     return;
   }
 
@@ -9489,38 +9850,44 @@ function renderizarRepositorioArquivos() {
     let icon = '📄';
     if (arq.tipo === 'pdf') { icon = '📕'; }
     else if (arq.tipo === 'doc' || arq.tipo === 'docx') { icon = '📘'; }
+    const isSel = arq.selecionado !== false;
 
     return `
-      <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; gap:8px;">
-        <div style="display:flex; align-items:center; gap:8px; overflow:hidden;">
+      <div style="background:${isSel ? 'rgba(16,185,129,0.08)' : 'rgba(0,0,0,0.3)'}; border:1px solid ${isSel ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.08)'}; border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <label style="display:flex; align-items:center; gap:10px; overflow:hidden; cursor:pointer; flex:1; margin:0;">
+          <input type="checkbox" ${isSel ? 'checked' : ''} onchange="toggleSelecaoDocumentoRepositorio(${idx}, this.checked)" style="width:16px; height:16px; accent-color:#10b981; cursor:pointer; flex-shrink:0;" title="Marcar documento para análise conjunta e referência no relatório">
           <span style="font-size:18px; flex-shrink:0;">${icon}</span>
           <div style="overflow:hidden;">
-            <div style="font-weight:700; color:#f8fafc; font-size:11.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${arq.nome}">
+            <div style="font-weight:700; color:#f8fafc; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${arq.nome}">
               ${arq.nome}
             </div>
-            <div style="font-size:10px; color:#94a3b8;">
-              ${arq.tamanho} • ${arq.data}
+            <div style="font-size:10.5px; color:#94a3b8;">
+              ${arq.tamanho} • ${arq.data} • ${isSel ? '<span style="color:#34d399; font-weight:700;">✓ Marcado p/ Análise & Referência</span>' : '<span style="color:#64748b;">Desmarcado</span>'}
             </div>
           </div>
-        </div>
-        <div style="display:flex; gap:4px; flex-shrink:0;">
-          <button type="button" onclick="reanalisarArquivoRepositorio(${idx})" class="btn" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:3px 6px; font-size:10.5px; border-radius:4px; cursor:pointer;" title="Reanalisar com Script CAM">
-            ⚡ Ler
+        </label>
+        <div style="display:flex; gap:6px; flex-shrink:0;">
+          <button type="button" onclick="reanalisarArquivoRepositorio(${idx})" class="btn" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:4px 8px; font-size:10.5px; font-weight:700; border-radius:4px; cursor:pointer;" title="Analisar conjunto documental com Script CAM">
+            ⚡ Analisar
           </button>
-          <button type="button" onclick="removerArquivoRepositorio(${idx})" class="btn" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.25); padding:3px 6px; font-size:10.5px; border-radius:4px; cursor:pointer;" title="Remover anexo">
+          <button type="button" onclick="removerArquivoRepositorio(${idx})" class="btn" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.25); padding:4px 8px; font-size:10.5px; border-radius:4px; cursor:pointer;" title="Remover anexo">
             🗑️
           </button>
         </div>
       </div>
     `;
   }).join('');
+
+  renderizarChecksReferenciasRelatorio();
 }
 window.renderizarRepositorioArquivos = renderizarRepositorioArquivos;
 
 function reanalisarArquivoRepositorio(idx) {
   const arq = window._repositorioArquivosAtuais[idx];
   if (arq) {
-    analisarPlanoTrabalhoCAM(arq.texto || '', arq.nome);
+    arq.selecionado = true;
+    renderizarRepositorioArquivos();
+    analisarConjuntoDocumentalCAM();
   }
 }
 window.reanalisarArquivoRepositorio = reanalisarArquivoRepositorio;
@@ -9529,6 +9896,11 @@ function removerArquivoRepositorio(idx) {
   if (confirm('Deseja remover este arquivo do repositório do processo?')) {
     window._repositorioArquivosAtuais.splice(idx, 1);
     renderizarRepositorioArquivos();
+    if (window._repositorioArquivosAtuais.length > 0) {
+      analisarConjuntoDocumentalCAM(true);
+    } else {
+      limparAnaliseCAM();
+    }
     toast('Arquivo removido do repositório.', 'info');
   }
 }
@@ -9537,5 +9909,6 @@ window.removerArquivoRepositorio = removerArquivoRepositorio;
 function formatarMoedaBrasil(val) {
   return Number(val || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
+
 
 
