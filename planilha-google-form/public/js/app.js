@@ -10120,7 +10120,7 @@ function gerarAnaliseNeutraItem4(d, nivel4) {
   const pendencias = [];
   const conformes = [];
   if (analise && Array.isArray(analise.matriz)) {
-    analise.matriz.forEach(m => {
+    analise.matriz.forEach(function(m) {
       if (m.status !== 'Conforme') {
         pendencias.push(m.nome + ': ' + (m.solucao || m.desc));
       } else {
@@ -10148,28 +10148,16 @@ function gerarAnaliseNeutraItem4(d, nivel4) {
 
   let p3 = '';
   if (pendencias.length > 0) {
-    p3 = '2. PONTOS CRÍTICOS E INCONSISTÊNCIAS REAIS IDENTIFICADAS:
-' +
-      pendencias.map((p, idx) => '   (' + String.fromCharCode(97 + idx) + ') ' + p).join('
-') + '
-
-' +
+    p3 = '2. PONTOS CRÍTICOS E INCONSISTÊNCIAS REAIS IDENTIFICADAS:\n' +
+      pendencias.map(function(p, idx) { return '   (' + String.fromCharCode(97 + idx) + ') ' + p; }).join('\n') + '\n\n' +
       '3. VIABILIDADE TÉCNICA E EXEQUÍVEL: Diante dos apontamentos acima descritos, a proposição requer saneamento prévio e complementação instrutória para assegurar a exata correlação entre as cotações orçamentárias, o cronograma físico de entrega e o plano de aplicação dos recursos estaduais.';
   } else {
-    p3 = '2. CONSISTÊNCIA TÉCNICA E ORÇAMENTÁRIA: Da conferência dos memoriais, planilhas quantitativas e cotações de preços anexadas, verifica-se coerência material entre os quantitativos e os valores médios de mercado para o montante de R$ ' + val + ', com cronograma executivo compatível com o exercício financeiro.
-
-' +
+    p3 = '2. CONSISTÊNCIA TÉCNICA E ORÇAMENTÁRIA: Da conferência dos memoriais, planilhas quantitativas e cotações de preços anexadas, verifica-se coerência material entre os quantitativos e os valores médios de mercado para o montante de R$ ' + val + ', com cronograma executivo compatível com o exercício financeiro.\n\n' +
       '3. VIABILIDADE E CRITÉRIOS DE EFETIVIDADE: Identifica-se suficiência das informações fornecidas para a execução do objeto pactuado, restando demonstrado o nexo causal com a melhoria da infraestrutura escolar.';
   }
 
   let p4 = '4. RESPONSABILIDADE PELAS CONSEQUÊNCIAS E ENCAMINHAMENTO: Em juízo estritamente técnico e desprovido de tendências subjetivas, recomenda-se que a decisão administrativa pondere os custos de oportunidade e exija as garantias de fiscalização e prestação de contas, assegurando que o aporte atenda com economicidade e eficácia a comunidade discente.';
 
-  return p1 + '
-
-' + p2 + '
-
-' + p3 + '
-
-' + p4;
+  return p1 + '\n\n' + p2 + '\n\n' + p3 + '\n\n' + p4;
 }
 window.gerarAnaliseNeutraItem4 = gerarAnaliseNeutraItem4;
