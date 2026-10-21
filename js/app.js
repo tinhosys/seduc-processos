@@ -10533,10 +10533,26 @@ window.aplicarAnaliseNeutraEmTodasAsSecoes = aplicarAnaliseNeutraEmTodasAsSecoes
 window._comboCalibragemAtivo = 'combo_frieza_total';
 
 function alternarTodosAgentes(ativar) {
-  const ids = ['calib-agente-juridico', 'calib-agente-orcamento', 'calib-agente-metas', 'calib-agente-frieza'];
+  const ids = [
+    'calib-agente-juridico',
+    'calib-agente-orcamento',
+    'calib-agente-metas',
+    'calib-agente-frieza',
+    'calib-agente-tce',
+    'calib-agente-proalfa',
+    'calib-agente-engenharia',
+    'calib-agente-redundancia'
+  ];
   ids.forEach(function(id) {
     const el = document.getElementById(id);
-    if (el) el.checked = Boolean(ativar);
+    if (el) {
+      if (ativar) {
+        el.checked = true;
+      } else {
+        // Mínimo: mantém apenas Jurídico ativo
+        el.checked = (id === 'calib-agente-juridico');
+      }
+    }
   });
   atualizarCalibragemEGerar();
 }
@@ -10567,14 +10583,11 @@ function aplicarComboCalibragem(tipoCombo) {
     if (badgeCombo) badgeCombo.textContent = 'COMBO 1: TRIAGEM EXPRESSA';
     setMotorIACalibragem('flash_turbo');
     setNivelProfundidadeAnalitica('basico');
-    const jur = document.getElementById('calib-agente-juridico');
-    const orc = document.getElementById('calib-agente-orcamento');
-    const met = document.getElementById('calib-agente-metas');
-    const fri = document.getElementById('calib-agente-frieza');
-    if (jur) jur.checked = true;
-    if (orc) orc.checked = false;
-    if (met) met.checked = false;
-    if (fri) fri.checked = false;
+    const todos = ['calib-agente-juridico','calib-agente-orcamento','calib-agente-metas','calib-agente-frieza','calib-agente-tce','calib-agente-proalfa','calib-agente-engenharia','calib-agente-redundancia'];
+    todos.forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.checked = (id === 'calib-agente-juridico' || id === 'calib-agente-redundancia');
+    });
     toast('🌱 COMBO 1 (Triagem Expressa) ativado!', 'info');
   } else if (tipoCombo === 'combo_padrao') {
     if (badgeCombo) badgeCombo.textContent = 'COMBO 2: EQUILIBRADO PADRÃO';
