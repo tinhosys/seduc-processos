@@ -721,7 +721,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.21</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.22</div>
   </div>
 </div>
   
@@ -973,7 +973,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.21</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.22</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2125,7 +2125,194 @@
               </div>
 
               <!-- ========================================================================= -->
-              <!-- 5 CAIXAS DA MANIFESTAÇÃO TÉCNICA COM BOTÕES IA / PADRÃO -->
+<!-- ========================================================================= -->
+              <!-- PAINEL DE CALIBRAGEM DA FORÇA DA ANÁLISE & COMBOS ANALÍTICOS (V1.3.22 - IMAGEM 2) -->
+              <!-- ========================================================================= -->
+              <div id="painel-calibragem-forca-analise" style="margin-bottom:18px; background:linear-gradient(135deg, rgba(15,23,42,0.96), rgba(30,41,59,0.96)); border:1px solid rgba(56,189,248,0.4); border-radius:14px; padding:18px 20px; box-shadow:0 8px 24px rgba(0,0,0,0.45);">
+                
+                <!-- CABEÇALHO DO PAINEL -->
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:12px;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:24px;">🎛️</span>
+                    <div>
+                      <h4 style="margin:0; font-size:14px; font-weight:900; color:#38bdf8; text-transform:uppercase; letter-spacing:0.8px;">
+                        Painel de Calibragem da Força da Análise Técnica
+                      </h4>
+                      <span style="font-size:11.5px; color:#94a3b8;">
+                        Regule a intensidade da análise, combine agentes paralelos, motores de IA e selecione COMBOS pré-calibrados sob a legislação vigente
+                      </span>
+                    </div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                    <!-- INDICADOR DINÂMICO DE COMBO ATIVO -->
+                    <span id="badge-combo-ativo" style="background:linear-gradient(135deg, rgba(139,92,246,0.25), rgba(236,72,153,0.25)); color:#f472b6; border:1px solid rgba(236,72,153,0.5); padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800; display:inline-flex; align-items:center; gap:5px; box-shadow:0 0 10px rgba(236,72,153,0.2);">
+                      <span>✨</span> <span id="label-combo-ativo">COMBO 5: AUDITORIA TOTAL (FRIEZA DA LEI)</span>
+                    </span>
+                    <span id="badge-calibragem-status" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:4px 12px; border-radius:20px; font-size:11px; font-weight:800;">
+                      ⚡ RIGOR: POWER
+                    </span>
+                  </div>
+                </div>
+
+                <!-- SEÇÃO DE COMBOS INTELIGENTES PRÉ-DEFINIDOS (IA + AGENTES + NÍVEIS) -->
+                <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(56,189,248,0.25); border-radius:10px; padding:12px 14px; margin-bottom:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+                    <span style="font-size:11.5px; font-weight:900; color:#f8fafc; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px;">
+                      <span>⚡</span> <span>COMBOS PRÉ-CONFIGURADOS (IA + AGENTES EM PARALELO + NÍVEL ANALÍTICO):</span>
+                    </span>
+                    <span style="font-size:10.5px; color:#94a3b8;">Clique em qualquer COMBO para aplicar a calibragem completa instantaneamente</span>
+                  </div>
+                  
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:8px;">
+                    <!-- COMBO 1: TRIAGEM EXPRESSA -->
+                    <button type="button" onclick="aplicarComboCalibragem('combo_triagem')" id="btn-combo-triagem" class="btn btn-combo-opt" style="background:rgba(255,255,255,0.05); color:#cbd5e1; border:1px solid rgba(255,255,255,0.1); padding:8px 10px; font-size:11px; font-weight:700; border-radius:8px; cursor:pointer; text-align:left; transition:all 0.2s;" title="Flash Turbo + Agente Jurídico + BÁSICO">
+                      <div style="font-weight:800; color:#38bdf8; margin-bottom:2px;">🌱 COMBO 1: TRIAGEM EXPRESSA</div>
+                      <div style="font-size:9.5px; color:#94a3b8; line-height:1.2;">Flash Turbo • Agente Jurídico • Básico (Mais Branda)</div>
+                    </button>
+
+                    <!-- COMBO 2: EQUILIBRADO PADRÃO -->
+                    <button type="button" onclick="aplicarComboCalibragem('combo_padrao')" id="btn-combo-padrao" class="btn btn-combo-opt" style="background:rgba(255,255,255,0.05); color:#cbd5e1; border:1px solid rgba(255,255,255,0.1); padding:8px 10px; font-size:11px; font-weight:700; border-radius:8px; cursor:pointer; text-align:left; transition:all 0.2s;" title="Gemini 1.5 Pro + Agente Jurídico & Metas + MÉDIO">
+                      <div style="font-weight:800; color:#34d399; margin-bottom:2px;">⚖️ COMBO 2: EQUILIBRADO PADRÃO</div>
+                      <div style="font-size:9.5px; color:#94a3b8; line-height:1.2;">Gemini 1.5 Pro • Jurídico + Metas • Médio</div>
+                    </button>
+
+                    <!-- COMBO 3: AUDITORIA ORÇAMENTÁRIA -->
+                    <button type="button" onclick="aplicarComboCalibragem('combo_orcamentario')" id="btn-combo-orcamentario" class="btn btn-combo-opt" style="background:rgba(255,255,255,0.05); color:#cbd5e1; border:1px solid rgba(255,255,255,0.1); padding:8px 10px; font-size:11px; font-weight:700; border-radius:8px; cursor:pointer; text-align:left; transition:all 0.2s;" title="Claude 3.5 Sonnet + Agente Orçamentário & Jurídico + ALTO PLUS">
+                      <div style="font-weight:800; color:#60a5fa; margin-bottom:2px;">💰 COMBO 3: FISCAL ORÇAMENTÁRIO</div>
+                      <div style="font-size:9.5px; color:#94a3b8; line-height:1.2;">Claude 3.5 • Orçamento + Jurídico • Alto Plus</div>
+                    </button>
+
+                    <!-- COMBO 4: CONFORMIDADE 76 CRITÉRIOS -->
+                    <button type="button" onclick="aplicarComboCalibragem('combo_76_criterios')" id="btn-combo-76_criterios" class="btn btn-combo-opt" style="background:rgba(255,255,255,0.05); color:#cbd5e1; border:1px solid rgba(255,255,255,0.1); padding:8px 10px; font-size:11px; font-weight:700; border-radius:8px; cursor:pointer; text-align:left; transition:all 0.2s;" title="Ensemble Multi-IA + 4 Agentes em Paralelo + MEGA">
+                      <div style="font-weight:800; color:#c084fc; margin-bottom:2px;">🔮 COMBO 4: CONFORMIDADE MEGA</div>
+                      <div style="font-size:9.5px; color:#94a3b8; line-height:1.2;">Ensemble • 4 Agentes • Mega (76 Critérios)</div>
+                    </button>
+
+                    <!-- COMBO 5: AUDITORIA TOTAL (FRIEZA DA LEI - POWER) -->
+                    <button type="button" onclick="aplicarComboCalibragem('combo_frieza_total')" id="btn-combo-frieza_total" class="btn btn-combo-opt" style="background:linear-gradient(135deg,rgba(139,92,246,0.3),rgba(236,72,153,0.3)); color:#fff; border:1px solid rgba(236,72,153,0.6); padding:8px 10px; font-size:11px; font-weight:800; border-radius:8px; cursor:pointer; text-align:left; box-shadow:0 2px 10px rgba(236,72,153,0.25);" title="Ensemble Multi-IA + 4 Agentes com Frieza da Lei + POWER">
+                      <div style="font-weight:900; color:#f472b6; margin-bottom:2px;">💥 COMBO 5: AUDITORIA TOTAL</div>
+                      <div style="font-size:9.5px; color:#fbcfe8; line-height:1.2;">Ensemble • 4 Agentes • Power (Frieza da Lei)</div>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- GRADE DE CALIBRAGEM PERSONALIZADA (3 COLUNAS CONFORME IMAGEM 2) -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px;">
+                  
+                  <!-- COLUNA 1: NÍVEIS DE PROFUNDIDADE ANALÍTICA (IMAGEM 2) -->
+                  <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                      <span style="font-size:12px; font-weight:800; color:#cbd5e1; text-transform:uppercase;">
+                        • Níveis de Profundidade Analítica:
+                      </span>
+                      <span style="font-size:10px; color:#94a3b8;">(Da mais branda à mais dura)</span>
+                    </div>
+                    
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                      <!-- BÁSICO -->
+                      <button type="button" onclick="setNivelProfundidadeAnalitica('basico')" id="btn-prof-basico" class="btn btn-prof-opt" style="background:rgba(255,255,255,0.04); color:#94a3b8; border:1px solid rgba(255,255,255,0.08); padding:7px 10px; font-size:11.5px; font-weight:700; border-radius:6px; cursor:pointer; text-align:left; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>🌱 <strong>BÁSICO</strong> (Triagem rápida)</span>
+                        <span style="font-size:10px; color:#64748b; font-weight:600;">Mais branda</span>
+                      </button>
+                      
+                      <!-- MÉDIO -->
+                      <button type="button" onclick="setNivelProfundidadeAnalitica('medio')" id="btn-prof-medio" class="btn btn-prof-opt" style="background:rgba(255,255,255,0.04); color:#94a3b8; border:1px solid rgba(255,255,255,0.08); padding:7px 10px; font-size:11.5px; font-weight:700; border-radius:6px; cursor:pointer; text-align:left; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>⚖️ <strong>MÉDIO</strong> (Padrão)</span>
+                        <span style="font-size:10px; color:#64748b; font-weight:600;">Equilibrada</span>
+                      </button>
+                      
+                      <!-- ALTO PLUS -->
+                      <button type="button" onclick="setNivelProfundidadeAnalitica('alto_plus')" id="btn-prof-alto_plus" class="btn btn-prof-opt" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.4); padding:7px 10px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer; text-align:left; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>🚀 <strong>ALTO PLUS</strong> (Normativo)</span>
+                        <span style="font-size:10px; color:#93c5fd; font-weight:700;">Técnica</span>
+                      </button>
+                      
+                      <!-- MEGA -->
+                      <button type="button" onclick="setNivelProfundidadeAnalitica('mega')" id="btn-prof-mega" class="btn btn-prof-opt" style="background:rgba(255,255,255,0.04); color:#94a3b8; border:1px solid rgba(255,255,255,0.08); padding:7px 10px; font-size:11.5px; font-weight:700; border-radius:6px; cursor:pointer; text-align:left; display:flex; align-items:center; justify-content:space-between; transition:all 0.2s;">
+                        <span>🔮 <strong>MEGA</strong> (76 Critérios completos)</span>
+                        <span style="font-size:10px; color:#64748b; font-weight:600;">Exaustiva</span>
+                      </button>
+                      
+                      <!-- POWER -->
+                      <button type="button" onclick="setNivelProfundidadeAnalitica('power')" id="btn-prof-power" class="btn btn-prof-opt" style="background:linear-gradient(135deg,#8b5cf6,#ec4899); color:#fff; border:none; padding:7px 10px; font-size:11.5px; font-weight:900; border-radius:6px; cursor:pointer; text-align:left; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 8px rgba(236,72,153,0.35); transition:all 0.2s;">
+                        <span>💥 <strong>POWER</strong> (Frieza da Lei + Conexão)</span>
+                        <span style="font-size:10px; color:#fdf2f8; font-weight:800;">Mais dura</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- COLUNA 2: AGENTES ESPECIALISTAS EM PARALELO (IMAGEM 2) -->
+                  <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                      <span style="font-size:12px; font-weight:800; color:#cbd5e1; text-transform:uppercase;">
+                        • Agentes Especialistas em Paralelo:
+                      </span>
+                      <div style="display:flex; gap:4px;">
+                        <button type="button" onclick="alternarTodosAgentes(true)" class="btn" style="background:rgba(255,255,255,0.06); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:2px 6px; font-size:10px; border-radius:4px; cursor:pointer;">Todos</button>
+                        <button type="button" onclick="alternarTodosAgentes(false)" class="btn" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); padding:2px 6px; font-size:10px; border-radius:4px; cursor:pointer;">Mínimo</button>
+                      </div>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:8px; font-size:11.5px; color:#e2e8f0;">
+                      <label style="display:flex; align-items:center; gap:8px; cursor:pointer; background:rgba(255,255,255,0.03); padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <input type="checkbox" id="calib-agente-juridico" checked onchange="atualizarCalibragemEGerar()" style="accent-color:#38bdf8; width:16px; height:16px; cursor:pointer;">
+                        <span>⚖️ <strong>Agente Jurídico</strong> (LINDB, CF/88, Lei 9.784/99)</span>
+                      </label>
+                      <label style="display:flex; align-items:center; gap:8px; cursor:pointer; background:rgba(255,255,255,0.03); padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <input type="checkbox" id="calib-agente-orcamento" checked onchange="atualizarCalibragemEGerar()" style="accent-color:#38bdf8; width:16px; height:16px; cursor:pointer;">
+                        <span>💰 <strong>Agente Orçamentário</strong> (Cotações, SINAPI, BDI)</span>
+                      </label>
+                      <label style="display:flex; align-items:center; gap:8px; cursor:pointer; background:rgba(255,255,255,0.03); padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <input type="checkbox" id="calib-agente-metas" checked onchange="atualizarCalibragemEGerar()" style="accent-color:#38bdf8; width:16px; height:16px; cursor:pointer;">
+                        <span>🎯 <strong>Agente de Metas & Cronograma Físico</strong></span>
+                      </label>
+                      <label style="display:flex; align-items:center; gap:8px; cursor:pointer; background:rgba(255,255,255,0.03); padding:6px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.06);">
+                        <input type="checkbox" id="calib-agente-frieza" checked onchange="atualizarCalibragemEGerar()" style="accent-color:#38bdf8; width:16px; height:16px; cursor:pointer;">
+                        <span>🔍 <strong>Agente de Frieza da Lei</strong> (Sem Maquiagem)</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- COLUNA 3: MOTORES / IAS SELECIONÁVEIS (IMAGEM 2) -->
+                  <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                      <span style="font-size:12px; font-weight:800; color:#cbd5e1; text-transform:uppercase;">
+                        • Motores / IAs Selecionáveis:
+                      </span>
+                      <span id="badge-ia-selecionada" style="font-size:10px; color:#38bdf8; font-weight:800;">Gemini 1.5 Pro</span>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:12px;">
+                      <button type="button" onclick="setMotorIACalibragem('gemini_pro')" id="btn-ia-calib-gemini_pro" class="btn btn-ia-calib-opt" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8); color:#fff; border:none; padding:8px 6px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer; text-align:center;">
+                        ✨ Gemini 1.5 Pro
+                      </button>
+                      <button type="button" onclick="setMotorIACalibragem('flash_turbo')" id="btn-ia-calib-flash_turbo" class="btn btn-ia-calib-opt" style="background:rgba(255,255,255,0.05); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); padding:8px 6px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; text-align:center;">
+                        ⚡ Flash Turbo
+                      </button>
+                      <button type="button" onclick="setMotorIACalibragem('claude_sonnet')" id="btn-ia-calib-claude_sonnet" class="btn btn-ia-calib-opt" style="background:rgba(255,255,255,0.05); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); padding:8px 6px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; text-align:center;">
+                        🧠 Claude 3.5 Sonnet
+                      </button>
+                      <button type="button" onclick="setMotorIACalibragem('ensemble')" id="btn-ia-calib-ensemble" class="btn btn-ia-calib-opt" style="background:rgba(255,255,255,0.05); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); padding:8px 6px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; text-align:center;">
+                        🌐 Ensemble Multi-IA
+                      </button>
+                    </div>
+
+                    <!-- BOTÕES DE AÇÃO: DISPARAR MANIFESTAÇÃO CALIBRADA -->
+                    <div style="display:flex; flex-direction:column; gap:6px;">
+                      <button type="button" onclick="setManifestacaoTipo('neutro')" class="btn" style="background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; width:100%; padding:8px 10px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 10px rgba(2,132,199,0.45); display:flex; align-items:center; justify-content:center; gap:6px;" title="Disparar a análise estritamente neutra e fria conforme os parâmetros acima">
+                        <span>⚖️</span> <span>Aplicar Análise Neutra Nua & Crua</span>
+                      </button>
+                      <button type="button" onclick="atualizarCalibragemEGerar()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); width:100%; padding:6px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:5px;">
+                        <span>🔄</span> <span>Recalcular Seções com Esta Calibragem</span>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+
+                            <!-- 5 CAIXAS DA MANIFESTAÇÃO TÉCNICA COM BOTÕES IA / PADRÃO -->
               <!-- ========================================================================= -->
               <div style="margin-top:12px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:12px;">
@@ -2794,7 +2981,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.21
+              GBZ - v1.3.22
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3067,7 +3254,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.21] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.22] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 

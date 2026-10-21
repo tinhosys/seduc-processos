@@ -10524,3 +10524,99 @@ function aplicarAnaliseNeutraEmTodasAsSecoes() {
   garantirContextoSecao4();
 }
 window.aplicarAnaliseNeutraEmTodasAsSecoes = aplicarAnaliseNeutraEmTodasAsSecoes;
+
+
+// =========================================================================
+// GERENCIADOR DE COMBOS ANALÍTICOS (IA + AGENTES EM PARALELO + NÍVEIS)
+// =========================================================================
+
+window._comboCalibragemAtivo = 'combo_frieza_total';
+
+function alternarTodosAgentes(ativar) {
+  const ids = ['calib-agente-juridico', 'calib-agente-orcamento', 'calib-agente-metas', 'calib-agente-frieza'];
+  ids.forEach(function(id) {
+    const el = document.getElementById(id);
+    if (el) el.checked = Boolean(ativar);
+  });
+  atualizarCalibragemEGerar();
+}
+window.alternarTodosAgentes = alternarTodosAgentes;
+
+function aplicarComboCalibragem(tipoCombo) {
+  window._comboCalibragemAtivo = tipoCombo;
+
+  // Botões de combos
+  const listaCombos = ['combo_triagem', 'combo_padrao', 'combo_orcamentario', 'combo_76_criterios', 'combo_frieza_total'];
+  listaCombos.forEach(function(c) {
+    const btn = document.getElementById('btn-' + c.replace('_', '-'));
+    if (!btn) return;
+    if (c === tipoCombo) {
+      btn.style.background = 'linear-gradient(135deg,rgba(139,92,246,0.3),rgba(236,72,153,0.3))';
+      btn.style.border = '1px solid rgba(236,72,153,0.6)';
+      btn.style.boxShadow = '0 2px 10px rgba(236,72,153,0.3)';
+    } else {
+      btn.style.background = 'rgba(255,255,255,0.05)';
+      btn.style.border = '1px solid rgba(255,255,255,0.1)';
+      btn.style.boxShadow = 'none';
+    }
+  });
+
+  const badgeCombo = document.getElementById('label-combo-ativo');
+
+  if (tipoCombo === 'combo_triagem') {
+    if (badgeCombo) badgeCombo.textContent = 'COMBO 1: TRIAGEM EXPRESSA';
+    setMotorIACalibragem('flash_turbo');
+    setNivelProfundidadeAnalitica('basico');
+    const jur = document.getElementById('calib-agente-juridico');
+    const orc = document.getElementById('calib-agente-orcamento');
+    const met = document.getElementById('calib-agente-metas');
+    const fri = document.getElementById('calib-agente-frieza');
+    if (jur) jur.checked = true;
+    if (orc) orc.checked = false;
+    if (met) met.checked = false;
+    if (fri) fri.checked = false;
+    toast('🌱 COMBO 1 (Triagem Expressa) ativado!', 'info');
+  } else if (tipoCombo === 'combo_padrao') {
+    if (badgeCombo) badgeCombo.textContent = 'COMBO 2: EQUILIBRADO PADRÃO';
+    setMotorIACalibragem('gemini_pro');
+    setNivelProfundidadeAnalitica('medio');
+    const jur = document.getElementById('calib-agente-juridico');
+    const orc = document.getElementById('calib-agente-orcamento');
+    const met = document.getElementById('calib-agente-metas');
+    const fri = document.getElementById('calib-agente-frieza');
+    if (jur) jur.checked = true;
+    if (orc) orc.checked = false;
+    if (met) met.checked = true;
+    if (fri) fri.checked = false;
+    toast('⚖️ COMBO 2 (Equilibrado Padrão) ativado!', 'info');
+  } else if (tipoCombo === 'combo_orcamentario') {
+    if (badgeCombo) badgeCombo.textContent = 'COMBO 3: FISCAL ORÇAMENTÁRIO';
+    setMotorIACalibragem('claude_sonnet');
+    setNivelProfundidadeAnalitica('alto_plus');
+    const jur = document.getElementById('calib-agente-juridico');
+    const orc = document.getElementById('calib-agente-orcamento');
+    const met = document.getElementById('calib-agente-metas');
+    const fri = document.getElementById('calib-agente-frieza');
+    if (jur) jur.checked = true;
+    if (orc) orc.checked = true;
+    if (met) met.checked = false;
+    if (fri) fri.checked = false;
+    toast('💰 COMBO 3 (Fiscal Orçamentário) ativado!', 'info');
+  } else if (tipoCombo === 'combo_76_criterios') {
+    if (badgeCombo) badgeCombo.textContent = 'COMBO 4: CONFORMIDADE MEGA (76 CRITÉRIOS)';
+    setMotorIACalibragem('ensemble');
+    setNivelProfundidadeAnalitica('mega');
+    alternarTodosAgentes(true);
+    toast('🔮 COMBO 4 (Mega 76 Critérios) ativado!', 'info');
+  } else {
+    // combo_frieza_total
+    if (badgeCombo) badgeCombo.textContent = 'COMBO 5: AUDITORIA TOTAL (FRIEZA DA LEI)';
+    setMotorIACalibragem('ensemble');
+    setNivelProfundidadeAnalitica('power');
+    alternarTodosAgentes(true);
+    toast('💥 COMBO 5 (Auditoria Total Frieza da Lei) ativado!', 'success');
+  }
+
+  atualizarCalibragemEGerar();
+}
+window.aplicarComboCalibragem = aplicarComboCalibragem;
