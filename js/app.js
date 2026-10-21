@@ -10107,7 +10107,7 @@ function restaurarScriptFundamentosPadrao() {
 }
 window.restaurarScriptFundamentosPadrao = restaurarScriptFundamentosPadrao;
 
-// Harmonização da Análise Neutra (Item 4) sob os 5 Pilares e 76 Critérios
+// Harmonização da Análise Neutra (Item 4) sob a Frieza da Lei, 5 Pilares e 76 Critérios (Nua e Crua)
 function gerarAnaliseNeutraItem4(d, nivel4) {
   const analise = window._analiseCamAtual;
   const mun = d.municipio || 'Município interessado';
@@ -10115,49 +10115,223 @@ function gerarAnaliseNeutraItem4(d, nivel4) {
   const obj = d.objeto || 'objeto pretendido';
   const val = d.valor || '0,00';
   const proc = d.numero || 'SEI';
+  const nivelAudit = window._camNivelAuditoria || 'power';
 
-  // Identifica inconsistências reais apuradas nos documentos
-  const pendencias = [];
+  // Identifica inconsistências reais e conflitos com as regras dos scripts
+  const conflitos = [];
   const conformes = [];
   if (analise && Array.isArray(analise.matriz)) {
     analise.matriz.forEach(function(m) {
       if (m.status !== 'Conforme') {
-        pendencias.push(m.nome + ': ' + (m.solucao || m.desc));
+        conflitos.push({
+          regra: m.nome,
+          inconsistencia: m.desc,
+          coerencia: m.coerencia,
+          solucaoObrigatoria: m.solucao
+        });
       } else {
         conformes.push(m.nome);
       }
     });
   }
 
-  // Seção de Análise Neutra desprovida de tendência
-  if (nivel4 === 'menos') {
-    let txt = 'Exame técnico imparcial sob a luz dos 5 Pilares de Decisão Administrativa (LINDB arts. 20-22 e Lei nº 9.784/99): o pleito de ' + mun + '/RO (Proc. ' + proc + ', R$ ' + val + ') apresenta enquadramento formal perante a Lei Estadual nº 5.735/2024. ';
-    if (pendencias.length > 0) {
-      txt += 'Contudo, identificam-se óbices e pendências técnicas que exigem saneamento prévio: ' + pendencias.slice(0, 2).join('; ') + '. ';
-      txt += 'A aprovação fica estritamente vinculada ao atendimento dessas condicionantes antes de qualquer empenho.';
-    } else {
-      txt += 'Constatada viabilidade técnica e orçamentária para a execução de ' + obj.toLowerCase() + ', cabendo à autoridade competente a deliberação discricionária de conveniência e oportunidade.';
-    }
-    return txt;
-  }
+  // Cabeçalho da Análise Nua e Crua sem maquiagem
+  let p1 = 'ANÁLISE TÉCNICA E NEUTRA (FRIEZA DA LEI — SEM MAQUIAGEM)\n' +
+    'Processo SEI nº ' + proc + ' | Interessado: ' + mun + '/RO — ' + esc + ' | Objeto: ' + obj + ' | Valor: R$ ' + val + '\n' +
+    'Fundamentação de Auditoria: CF/88 (art. 37 e 211), Lei Federal nº 9.784/99, LINDB (arts. 20 a 22) e Lei Estadual nº 5.735/2024 (Proalfa Rondônia). Modo de Auditoria: ' + nivelAudit.toUpperCase() + '.';
 
-  // Nível Mais / Completo
-  let p1 = 'Trata-se de análise técnica e neutra do Projeto Básico e conjunto documental autuados sob o Processo nº ' + proc + ', submetido pelo Município de ' + mun + '/RO para execução de ' + obj.toLowerCase() + ' na unidade ' + esc + ', com valor estimado em R$ ' + val + '. A presente manifestação rege-se pelos princípios da legalidade, razoabilidade, impessoalidade, transparência e responsabilidade pelas consequências práticas (CF/88, art. 37, e LINDB, arts. 20 a 22).';
-
-  let p2 = '1. LEGALIDADE E LEGITIMIDADE: A intervenção requerida enquadra-se no âmbito do regime de colaboração educacional e encontra respaldo no Eixo 2 da Lei Estadual nº 5.735/2024 (Proalfa Rondônia). A formalização atende aos requisitos constitucionais (arts. 205 e 211, CF/88) quanto à finalidade educacional pública.';
+  let p2 = '1. EXAME DE CONFORMIDADE ESTRITA:\n' +
+    'Em estrita observância ao princípio da impessoalidade e legalidade estrita, a presente análise afasta qualquer subjetividade ou benevolência retórica, limitando-se ao cotejo objetivo entre os documentos instruídos nos autos e os requisitos regulamentares exigidos para transferências voluntárias e acordos de colaboração.';
 
   let p3 = '';
-  if (pendencias.length > 0) {
-    p3 = '2. PONTOS CRÍTICOS E INCONSISTÊNCIAS REAIS IDENTIFICADAS:\n' +
-      pendencias.map(function(p, idx) { return '   (' + String.fromCharCode(97 + idx) + ') ' + p; }).join('\n') + '\n\n' +
-      '3. VIABILIDADE TÉCNICA E EXEQUÍVEL: Diante dos apontamentos acima descritos, a proposição requer saneamento prévio e complementação instrutória para assegurar a exata correlação entre as cotações orçamentárias, o cronograma físico de entrega e o plano de aplicação dos recursos estaduais.';
+  if (conflitos.length > 0) {
+    p3 = '2. CONFLITOS REAIS E PONTOS DE INCONGRUÊNCIA IDENTIFICADOS (' + conflitos.length + ' PENDÊNCIA' + (conflitos.length > 1 ? 'S' : '') + '):\n' +
+      conflitos.map(function(c, idx) {
+        return '   [' + (idx + 1) + '] CONFLITO COM A REGRA "' + c.regra.toUpperCase() + '":\n' +
+               '       - Fato Apurado: ' + c.inconsistencia + '\n' +
+               '       - Diagnóstico de Coerência: ' + c.coerencia + '\n' +
+               '       - Exigência de Regularização (Sem Maquiagem): ' + c.solucaoObrigatoria;
+      }).join('\n\n') + '\n\n' +
+      '3. VIABILIDADE CONDICIONADA E RISCO OPERACIONAL:\n' +
+      'Sob a ótica da Lei de Introdução às Normas do Direito Brasileiro (LINDB, art. 20), a celebração do ajuste no estado atual acarreta risco de paralisação ou responsabilização na fase de prestação de contas. É juridicamente inadmissível maquiar as falhas apuradas. Impõe-se a emissão de notificação formal ao proponente para saneamento integral das pendências antes de qualquer ato autorizativo de despesa.';
   } else {
-    p3 = '2. CONSISTÊNCIA TÉCNICA E ORÇAMENTÁRIA: Da conferência dos memoriais, planilhas quantitativas e cotações de preços anexadas, verifica-se coerência material entre os quantitativos e os valores médios de mercado para o montante de R$ ' + val + ', com cronograma executivo compatível com o exercício financeiro.\n\n' +
-      '3. VIABILIDADE E CRITÉRIOS DE EFETIVIDADE: Identifica-se suficiência das informações fornecidas para a execução do objeto pactuado, restando demonstrado o nexo causal com a melhoria da infraestrutura escolar.';
+    p3 = '2. AFERIÇÃO DE COERÊNCIA E CONEXÃO DOCUMENTAL:\n' +
+      'Confrontadas as peças instrutórias com a matriz de 76 critérios de auditoria, verifica-se convergência material entre o termo de referência, o plano de trabalho e as cotações orçamentárias. Não foram localizadas sobreposições indevidas ou omissões aritméticas no importe de R$ ' + val + '.\n\n' +
+      '3. EXAME DE ECONOMICIDADE E EFETIVIDADE:\n' +
+      'A relação de custos apresentada demonstra razoabilidade perante a média dos valores praticados na administração pública estadual para intervenções análogas em ' + esc + '.';
   }
 
-  let p4 = '4. RESPONSABILIDADE PELAS CONSEQUÊNCIAS E ENCAMINHAMENTO: Em juízo estritamente técnico e desprovido de tendências subjetivas, recomenda-se que a decisão administrativa pondere os custos de oportunidade e exija as garantias de fiscalização e prestação de contas, assegurando que o aporte atenda com economicidade e eficácia a comunidade discente.';
+  let p4 = '4. DECISÃO RESPONSÁVEL E ENCAMINHAMENTO FINAL:\n' +
+    'Com fulcro nos 20 princípios de decisão responsável e na avaliação das consequências práticas da decisão administrativa (art. 20 da LINDB), submete-se o presente parecer à autoridade superior com recomendação de ' +
+    (conflitos.length > 0 ? 'DILIGÊNCIA SANEADORA PRÉVIA para retificação dos itens em conflito.' : 'PROSSEGUIMENTO CONDICIONADO à disponibilidade orçamentária e regular prestação de contas.');
 
   return p1 + '\n\n' + p2 + '\n\n' + p3 + '\n\n' + p4;
 }
 window.gerarAnaliseNeutraItem4 = gerarAnaliseNeutraItem4;
+
+
+// =========================================================================
+// AMBIENTE UAU DE ANÁLISE DE 1º MUNDO — V1.3.20
+// Motores de IA, Agentes Autônomos, Níveis de Auditoria e Relógios Dinâmicos
+// =========================================================================
+
+window._camNivelAuditoria = 'power';
+window._camMotorIA = 'gemini_pro';
+window._usarScriptFundamentos = true;
+window._usarScriptOriginal = true;
+
+function atualizarUsoScriptsAnalise() {
+  const checkFund = document.getElementById('check-script-fundamentos');
+  const checkOrig = document.getElementById('check-script-original');
+  window._usarScriptFundamentos = checkFund ? checkFund.checked : true;
+  window._usarScriptOriginal = checkOrig ? checkOrig.checked : true;
+  if (!window._usarScriptFundamentos && !window._usarScriptOriginal) {
+    if (checkFund) checkFund.checked = true;
+    window._usarScriptFundamentos = true;
+    toast('Pelo menos um script deve permanecer ativo para a análise!', 'warning');
+  }
+  analisarConjuntoDocumentalCAM(true);
+}
+window.atualizarUsoScriptsAnalise = atualizarUsoScriptsAnalise;
+
+function ativarAmbosScripts(rodarAnalise) {
+  const checkFund = document.getElementById('check-script-fundamentos');
+  const checkOrig = document.getElementById('check-script-original');
+  if (checkFund) checkFund.checked = true;
+  if (checkOrig) checkOrig.checked = true;
+  window._usarScriptFundamentos = true;
+  window._usarScriptOriginal = true;
+  toast('Ambos os Scripts (Fundamentos & Original Gravado) ativados para a análise!', 'success');
+  if (rodarAnalise) analisarConjuntoDocumentalCAM();
+}
+window.ativarAmbosScripts = ativarAmbosScripts;
+
+function definirNivelAuditoriaCAM(nivel) {
+  window._camNivelAuditoria = nivel;
+  const botoes = ['basico', 'medio', 'alto_plus', 'mega', 'power'];
+  botoes.forEach(function(b) {
+    const btn = document.getElementById('btn-nv-' + b);
+    if (!btn) return;
+    if (b === nivel) {
+      if (b === 'power') {
+        btn.style.background = 'linear-gradient(135deg,#8b5cf6,#ec4899)';
+        btn.style.color = '#fff';
+        btn.style.border = 'none';
+        btn.style.boxShadow = '0 2px 10px rgba(236,72,153,0.4)';
+      } else if (b === 'mega') {
+        btn.style.background = 'rgba(168,85,247,0.3)';
+        btn.style.color = '#e9d5ff';
+        btn.style.border = '1px solid #c084fc';
+      } else if (b === 'alto_plus') {
+        btn.style.background = 'rgba(59,130,246,0.3)';
+        btn.style.color = '#93c5fd';
+        btn.style.border = '1px solid #60a5fa';
+      } else if (b === 'medio') {
+        btn.style.background = 'rgba(16,185,129,0.3)';
+        btn.style.color = '#6ee7b7';
+        btn.style.border = '1px solid #34d399';
+      } else {
+        btn.style.background = 'rgba(148,163,184,0.3)';
+        btn.style.color = '#f1f5f9';
+        btn.style.border = '1px solid #94a3b8';
+      }
+    } else {
+      btn.style.background = 'rgba(255,255,255,0.05)';
+      btn.style.color = '#94a3b8';
+      btn.style.border = '1px solid rgba(255,255,255,0.1)';
+      btn.style.boxShadow = 'none';
+    }
+  });
+
+  const badgePower = document.getElementById('badge-ia-power-mode');
+  if (badgePower) {
+    badgePower.textContent = '⚡ MODO: ' + nivel.replace('_', ' ').toUpperCase();
+  }
+  toast('Nível de Auditoria ajustado para ' + nivel.toUpperCase(), 'info');
+  analisarConjuntoDocumentalCAM(true);
+}
+window.definirNivelAuditoriaCAM = definirNivelAuditoriaCAM;
+
+function definirMotorIACAM(motor) {
+  window._camMotorIA = motor;
+  const motores = ['gemini_pro', 'gemini_flash', 'claude_opus', 'ensemble'];
+  motores.forEach(function(m) {
+    const btn = document.getElementById('btn-ia-' + m);
+    if (!btn) return;
+    if (m === motor) {
+      btn.style.background = 'linear-gradient(135deg,#3b82f6,#1d4ed8)';
+      btn.style.color = '#fff';
+      btn.style.border = 'none';
+      btn.style.boxShadow = '0 2px 8px rgba(59,130,246,0.5)';
+    } else {
+      btn.style.background = 'rgba(255,255,255,0.05)';
+      btn.style.color = '#94a3b8';
+      btn.style.border = '1px solid rgba(255,255,255,0.1)';
+      btn.style.boxShadow = 'none';
+    }
+  });
+  toast('Motor IA selecionado: ' + motor, 'info');
+}
+window.definirMotorIACAM = definirMotorIACAM;
+
+// Dispara a análise estritamente neutra e sem maquiagem diretamente no formulário
+function aplicarAnaliseNeutraAgora() {
+  if (typeof setManifestacaoTipo === 'function') {
+    setManifestacaoTipo('neutro');
+  }
+  aplicarAnaliseCAMNaManifestacao();
+  toast('⚖️ Análise Neutra (Nua e Crua) gerada com sucesso!', 'success');
+}
+window.aplicarAnaliseNeutraAgora = aplicarAnaliseNeutraAgora;
+
+// =========================================================================
+// ATUALIZAÇÃO VISUAL DOS RELÓGIOS DINÂMICOS & GAUGES CIRCULARES
+// =========================================================================
+function atualizarRelogiosAnaliseCAM(oportunometro, coerencia, riscoPercent) {
+  // 1. Relógio Oportunômetro (Needle e Arco)
+  const needle = document.getElementById('gauge-oportunometro-needle');
+  const arc = document.getElementById('gauge-oportunometro-arc');
+  if (needle) {
+    // Escala 0 a 10 mapeada para ângulo de -90deg a +90deg
+    const val = Math.max(0, Math.min(10, parseFloat(oportunometro) || 8.5));
+    // Ângulo de 180 a 0 graus
+    const rad = Math.PI - (val / 10) * Math.PI;
+    const r = 36;
+    const cx = 50, cy = 50;
+    const x2 = cx + r * Math.cos(rad);
+    const y2 = cy - r * Math.sin(rad);
+    needle.setAttribute('x2', x2.toFixed(1));
+    needle.setAttribute('y2', y2.toFixed(1));
+  }
+
+  // 2. Gauge Coerência
+  const circleCoer = document.getElementById('gauge-coerencia-circle');
+  if (circleCoer) {
+    const coerVal = Math.max(0, Math.min(100, parseInt(coerencia, 10) || 88));
+    circleCoer.setAttribute('stroke-dasharray', coerVal + ', 100');
+    if (coerVal >= 80) circleCoer.setAttribute('stroke', '#38bdf8');
+    else if (coerVal >= 60) circleCoer.setAttribute('stroke', '#f59e0b');
+    else circleCoer.setAttribute('stroke', '#ef4444');
+  }
+
+  // 3. Termômetro de Risco & Conflitos
+  const circleRisco = document.getElementById('gauge-risco-circle');
+  const elRiscoVal = document.getElementById('cam-risco-valor');
+  const elRiscoStatus = document.getElementById('cam-risco-status');
+  const risco = Math.max(0, Math.min(100, Math.round(riscoPercent !== undefined ? riscoPercent : (100 - (parseInt(coerencia, 10) || 88)))));
+
+  if (circleRisco) {
+    circleRisco.setAttribute('stroke-dasharray', risco + ', 100');
+    if (risco <= 20) circleRisco.setAttribute('stroke', '#10b981');
+    else if (risco <= 45) circleRisco.setAttribute('stroke', '#f59e0b');
+    else circleRisco.setAttribute('stroke', '#ef4444');
+  }
+  if (elRiscoVal) {
+    elRiscoVal.textContent = risco + '%';
+    elRiscoVal.style.color = risco <= 20 ? '#34d399' : (risco <= 45 ? '#fbbf24' : '#f87171');
+  }
+  if (elRiscoStatus) {
+    elRiscoStatus.textContent = risco <= 20 ? 'Risco Baixo de Rejeição' : (risco <= 45 ? 'Atenção aos Conflitos' : 'Alto Risco / Objeções');
+  }
+}
+window.atualizarRelogiosAnaliseCAM = atualizarRelogiosAnaliseCAM;

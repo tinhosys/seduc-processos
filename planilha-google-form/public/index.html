@@ -700,7 +700,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.19</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.20</div>
   </div>
 </div>
   
@@ -952,7 +952,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.19</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.20</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2315,15 +2315,30 @@
                   </p>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                  <!-- SEGUNDO BOTÃO: SCRIPT DE FUNDAMENTOS E CRITÉRIOS DE DECISÃO RESPONSÁVEL (MARCAÇÃO VERDE IMAGEM 1) -->
-                  <button type="button" onclick="abrirEditorScriptFundamentos()" class="btn" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.45); padding:8px 14px; font-size:12.5px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s; box-shadow:0 2px 8px rgba(16,185,129,0.25);" title="Critérios e Princípios para uma Decisão Responsável na Administração Pública (CF/88, LINDB e Lei 9.784/99)">
-                    <span>📜</span> <span>Script de Fundamentos (Ver / Editar)</span>
-                  </button>
+                  <!-- SELEÇÃO DE MOTORES DE SCRIPT (CHECKBOXES PARA USAR FUNDAMENTOS, ORIGINAL OU AMBOS) -->
+                  <div style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.35); padding:4px 8px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); flex-wrap:wrap;">
+                    
+                    <!-- SCRIPT DE FUNDAMENTOS (VERDE) -->
+                    <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.4); padding:4px 10px; border-radius:8px;">
+                      <input type="checkbox" id="check-script-fundamentos" checked onchange="atualizarUsoScriptsAnalise()" style="width:16px; height:16px; accent-color:#10b981; cursor:pointer;" title="Ativar o Script de Fundamentos (Princípios, Critérios e Frieza da Lei)">
+                      <button type="button" onclick="abrirEditorScriptFundamentos()" class="btn" style="background:none; border:none; color:#34d399; font-size:12px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:2px 0;" title="Ver e Editar o Script de Fundamentos">
+                        <span>📜</span> <span>Script de Fundamentos (Ver / Editar)</span>
+                      </button>
+                    </div>
 
-                  <!-- BOTÃO VER / EDITAR SCRIPT MESTRE CAM (MARCADO EM LARANJA NA IMAGEM 2) -->
-                  <button type="button" onclick="abrirEditorScriptCAM()" class="btn" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.35); padding:8px 14px; font-size:12.5px; font-weight:700; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;" title="Visualizar e editar as regras do Script Mestre CAM V1.0">
-                    <span>⚙️</span> <span>Script Original Gravado (Ver / Editar)</span>
-                  </button>
+                    <!-- SCRIPT ORIGINAL GRAVADO (LARANJA) -->
+                    <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.4); padding:4px 10px; border-radius:8px;">
+                      <input type="checkbox" id="check-script-original" checked onchange="atualizarUsoScriptsAnalise()" style="width:16px; height:16px; accent-color:#f59e0b; cursor:pointer;" title="Ativar o Script Original Gravado (Script CAM V1.0 - Estrutura de Parecer Técnico)">
+                      <button type="button" onclick="abrirEditorScriptCAM()" class="btn" style="background:none; border:none; color:#fbbf24; font-size:12px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:2px 0;" title="Ver e Editar o Script Original Gravado">
+                        <span>⚙️</span> <span>Script Original Gravado (Ver / Editar)</span>
+                      </button>
+                    </div>
+
+                    <!-- ATALHO AMBOS -->
+                    <button type="button" onclick="ativarAmbosScripts(true)" class="btn" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:5px 8px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;" title="Ativar ambos os scripts conjuntamente">
+                      ⚡ Ambos
+                    </button>
+                  </div>
 
                   <button type="button" onclick="promptLinkGoogleDriveProcesso()" class="btn" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.35); padding:8px 14px; font-size:12.5px; font-weight:700; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;">
                     <img src="https://ssl.gstatic.com/images/branding/product/1x/drive_2020q4_32dp.png" alt="Drive" style="width:16px; height:16px; object-fit:contain;">
@@ -2395,57 +2410,90 @@
                   </div>
                 </div>
 
-                <!-- CARDS DE PONTUAÇÃO: GRAU DE COERÊNCIA & OPORTUNÔMETRO (0 A 10) -->
-                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px; margin-bottom:20px;">
+                <!-- MOSTRADORES & RELÓGIOS DE AUDITORIA DE 1º MUNDO (GAUGES CIRCULARES & MEDIDORES DINÂMICOS) -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:20px;">
                   
-                  <!-- CARD 1: OPORTUNÔMETRO (ESCALA DE 0 A 10) -->
-                  <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                      <span style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase;">🎯 Oportunômetro Técnico</span>
-                      <span id="cam-oportunometro-valor" style="font-size:22px; font-weight:900; color:#10b981;">8.5 / 10</span>
+                  <!-- RELÓGIO 1: OPORTUNÔMETRO CIRCULAR COM AGULHA E GRAUS -->
+                  <div style="background:radial-gradient(circle at top, rgba(16,185,129,0.12), rgba(0,0,0,0.45)); border:1px solid rgba(16,185,129,0.3); border-radius:12px; padding:14px; text-align:center; position:relative;">
+                    <span style="font-size:11px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">
+                      🎯 OPORTUNÔMETRO TÉCNICO
+                    </span>
+                    <!-- Relógio SVG Medidor -->
+                    <div style="position:relative; width:120px; height:70px; margin:0 auto 6px auto; overflow:hidden;">
+                      <svg viewBox="0 0 100 55" style="width:100%; height:100%;">
+                        <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10" stroke-linecap="round"/>
+                        <path id="gauge-oportunometro-arc" d="M 10 50 A 40 40 0 0 1 78 22" fill="none" stroke="url(#grad-oport)" stroke-width="10" stroke-linecap="round"/>
+                        <defs>
+                          <linearGradient id="grad-oport" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#ef4444"/>
+                            <stop offset="50%" stop-color="#f59e0b"/>
+                            <stop offset="100%" stop-color="#10b981"/>
+                          </linearGradient>
+                        </defs>
+                        <!-- Agulha -->
+                        <line id="gauge-oportunometro-needle" x1="50" y1="50" x2="72" y2="24" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="50" cy="50" r="5" fill="#38bdf8"/>
+                      </svg>
                     </div>
-                    <!-- Barra de Escala de 0 a 10 -->
-                    <div style="background:rgba(255,255,255,0.08); border-radius:10px; height:12px; width:100%; overflow:hidden; position:relative; margin-bottom:8px;">
-                      <div id="cam-oportunometro-barra" style="background:linear-gradient(90deg,#ef4444 0%,#f59e0b 50%,#10b981 100%); height:100%; width:85%; border-radius:10px; transition:width 0.6s ease;"></div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b; font-weight:700;">
-                      <span>0 (Crítico)</span>
-                      <span>5 (Regular)</span>
-                      <span>10 (Excelente)</span>
-                    </div>
+                    <div id="cam-oportunometro-valor" style="font-size:22px; font-weight:900; color:#10b981; line-height:1;">8.5 / 10</div>
+                    <div id="cam-oportunometro-barra" style="display:none; width:85%;"></div>
+                    <div style="font-size:10px; color:#94a3b8; font-weight:700; margin-top:4px;">Índice de Oportunidade e Conexão</div>
                   </div>
 
-                  <!-- CARD 2: GRAU DE COERÊNCIA DO PROJETO BÁSICO (%) -->
-                  <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                      <span style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase;">📊 Coerência, Conexão e Legalidade</span>
-                      <span id="cam-coerencia-valor" style="font-size:22px; font-weight:900; color:#38bdf8;">88%</span>
+                  <!-- RELÓGIO 2: GRAU DE COERÊNCIA CIRCULAR (%) -->
+                  <div style="background:radial-gradient(circle at top, rgba(56,189,248,0.12), rgba(0,0,0,0.45)); border:1px solid rgba(56,189,248,0.3); border-radius:12px; padding:14px; text-align:center; position:relative;">
+                    <span style="font-size:11px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">
+                      📊 GRAU DE COERÊNCIA TÉCNICA
+                    </span>
+                    <!-- Gauge Circular -->
+                    <div style="position:relative; width:80px; height:80px; margin:0 auto 4px auto;">
+                      <svg viewBox="0 0 36 36" style="width:100%; height:100%; transform:rotate(-90deg);">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3.6"/>
+                        <path id="gauge-coerencia-circle" stroke-dasharray="88, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#38bdf8" stroke-width="3.6" stroke-linecap="round"/>
+                      </svg>
+                      <div id="cam-coerencia-valor" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:#38bdf8;">88%</div>
                     </div>
-                    <!-- Barra de Coerência -->
-                    <div style="background:rgba(255,255,255,0.08); border-radius:10px; height:12px; width:100%; overflow:hidden; position:relative; margin-bottom:8px;">
-                      <div id="cam-coerencia-barra" style="background:linear-gradient(90deg,#38bdf8,#6366f1); height:100%; width:88%; border-radius:10px; transition:width 0.6s ease;"></div>
-                    </div>
-                    <div id="cam-coerencia-status" style="font-size:11px; color:#94a3b8; font-weight:600;">
-                      Alta consistência entre Objeto, Justificativa e Metas
-                    </div>
+                    <div id="cam-coerencia-barra" style="display:none; width:88%;"></div>
+                    <div id="cam-coerencia-status" style="font-size:10px; color:#cbd5e1; font-weight:600; line-height:1.2;">Harmonia entre Objeto e Recursos</div>
                   </div>
 
-                  <!-- CARD 3: RECOMENDAÇÃO TÉCNICA SUGERIDA -->
-                  <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:10px; padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                      <span style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase;">⚖️ Parecer Sugerido</span>
-                      <span id="cam-badge-recomendacao" style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981; padding:4px 10px; border-radius:6px; font-size:12px; font-weight:800;">
-                        FAVORÁVEL
-                      </span>
+                  <!-- RELÓGIO 3: MEDIDOR DE RISCO E CONFLITOS DE REGRAS (FRIEZA DA LEI) -->
+                  <div style="background:radial-gradient(circle at top, rgba(239,68,68,0.12), rgba(0,0,0,0.45)); border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:14px; text-align:center;">
+                    <span style="font-size:11px; font-weight:800; color:#f87171; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">
+                      ⚡ TERMÔMETRO DE RISCO & CONFLITO
+                    </span>
+                    <div style="position:relative; width:80px; height:80px; margin:0 auto 4px auto;">
+                      <svg viewBox="0 0 36 36" style="width:100%; height:100%; transform:rotate(-90deg);">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3.6"/>
+                        <path id="gauge-risco-circle" stroke-dasharray="12, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#ef4444" stroke-width="3.6" stroke-linecap="round"/>
+                      </svg>
+                      <div id="cam-risco-valor" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:#f87171;">12%</div>
                     </div>
-                    <p id="cam-recomendacao-resumo" style="margin:0; font-size:12px; color:#cbd5e1; line-height:1.4;">
-                      A proposta apresenta pertinência educacional demonstrada e alinhamento às diretrizes do regime de colaboração da SEDUC/RO.
-                    </p>
+                    <div id="cam-risco-status" style="font-size:10px; color:#cbd5e1; font-weight:600; line-height:1.2;">Risco Baixo de Rejeição</div>
+                  </div>
+
+                  <!-- CARD 4: RECOMENDAÇÃO TÉCNICA SUGERIDA -->
+                  <div style="background:radial-gradient(circle at top, rgba(99,102,241,0.12), rgba(0,0,0,0.45)); border:1px solid rgba(99,102,241,0.3); border-radius:12px; padding:14px; display:flex; flex-direction:column; justify-content:space-between;">
+                    <div>
+                      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span style="font-size:11px; font-weight:800; color:#a5b4fc; text-transform:uppercase;">⚖️ PARECER SUGERIDO</span>
+                        <span id="cam-badge-recomendacao" style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981; padding:3px 8px; border-radius:6px; font-size:11px; font-weight:900;">
+                          FAVORÁVEL
+                        </span>
+                      </div>
+                      <p id="cam-recomendacao-resumo" style="margin:0; font-size:11px; color:#cbd5e1; line-height:1.35;">
+                        Pertinência educacional e conexão documental validadas pelo Script CAM.
+                      </p>
+                    </div>
+                    <div style="margin-top:8px; display:flex; gap:6px;">
+                      <button type="button" onclick="aplicarAnaliseNeutraAgora()" class="btn" style="background:rgba(255,255,255,0.08); color:#f8fafc; border:1px solid rgba(255,255,255,0.2); padding:5px 8px; font-size:10px; font-weight:800; border-radius:5px; cursor:pointer; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Disparar a análise estritamente neutra e crua sem maquiagem">
+                        ⚖️ Aplicar Análise Nua & Crua
+                      </button>
+                    </div>
                   </div>
 
                 </div>
 
-                <!-- MATRIZ DE VERIFICAÇÃO DE CONFORMIDADE (MARCADA DE VERDE NA IMAGEM 2) COM COERÊNCIA, SOLUÇÃO E 2 BOTÕES POR ESTÁGIO -->
                 <div style="background:rgba(0,0,0,0.25); border-radius:10px; border:1px solid rgba(16,185,129,0.35); padding:16px; margin-bottom:18px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                     <div style="display:flex; align-items:center; gap:8px;">
@@ -2725,7 +2773,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.19
+              GBZ - v1.3.20
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2998,7 +3046,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.19] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.20] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
