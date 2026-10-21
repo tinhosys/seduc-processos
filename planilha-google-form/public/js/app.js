@@ -9912,3 +9912,130 @@ function formatarMoedaBrasil(val) {
 
 
 
+
+
+// =========================================================================
+// FUNÇÕES DE INCOERÊNCIAS CAM & MODAL DE DIAGNÓSTICO (IMAGEM 1)
+// =========================================================================
+
+function verificarEAtualizarBotaoIncoerencias(matriz) {
+  const btn = document.getElementById('btn-cam-incoerencias');
+  const lbl = document.getElementById('label-cam-incoerencias-count');
+  if (!btn) return;
+
+  if (!matriz || !Array.isArray(matriz)) {
+    btn.style.display = 'none';
+    return;
+  }
+
+  const incoerencias = matriz.filter(m => m.status === 'Inconsistente' || m.status === 'Pendente');
+
+  if (incoerencias.length > 0) {
+    btn.style.display = 'inline-flex';
+    if (lbl) {
+      lbl.textContent = incoerencias.length + ' Incoerência' + (incoerencias.length > 1 ? 's' : '') + ' Detectada' + (incoerencias.length > 1 ? 's' : '');
+    }
+  } else {
+    btn.style.display = 'none';
+  }
+}
+window.verificarEAtualizarBotaoIncoerencias = verificarEAtualizarBotaoIncoerencias;
+
+function abrirModalIncoerenciasCAM() {
+  const analise = window._analiseCamAtual;
+  const modal = document.getElementById('modal-incoerencias-cam');
+  const lista = document.getElementById('lista-incoerencias-itens');
+  if (!modal || !lista) return;
+
+  const matriz = analise ? (analise.matriz || []) : [];
+  const incoerencias = matriz.filter(m => m.status === 'Inconsistente' || m.status === 'Pendente');
+
+  if (incoerencias.length === 0) {
+    lista.innerHTML = '<div style="padding:16px; text-align:center; color:#10b981; font-weight:700;">Nenhuma incoerência ou pendência detectada pelo Script CAM! Todos os critérios atendidos.</div>';
+  } else {
+    lista.innerHTML = incoerencias.map(item => {
+      const isIncons = item.status === 'Inconsistente';
+      const cor = isIncons ? '#ef4444' : '#f59e0b';
+      const bg = isIncons ? 'rgba(239,68,68,0.1)' : 'rgba(245,158,11,0.1)';
+      const icon = isIncons ? '✕' : '⏳';
+
+      return `
+        <div style="background:${bg}; border:1px solid ${cor}40; border-radius:8px; padding:12px 14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <strong style="color:#f8fafc; font-size:13px;">${item.nome}</strong>
+            <span style="color:${cor}; font-size:11px; font-weight:800; border:1px solid ${cor}; padding:2px 6px; border-radius:4px;">
+              ${icon} ${item.status}
+            </span>
+          </div>
+          <div style="font-size:12px; color:#cbd5e1; margin-bottom:6px;">
+            <strong>Coerência / Apontamento:</strong> ${item.coerencia || item.desc}
+          </div>
+          <div style="font-size:11.5px; color:#94a3b8; line-height:1.4;">
+            <strong>Determinação / Regularização:</strong> ${item.solucao || item.razoes || 'Necessário saneamento prévio e complementação dos autos com planilha orçamentária e detalhamento executivo.'}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  modal.style.display = 'flex';
+}
+window.abrirModalIncoerenciasCAM = abrirModalIncoerenciasCAM;
+
+function fecharModalIncoerenciasCAM() {
+  const modal = document.getElementById('modal-incoerencias-cam');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalIncoerenciasCAM = fecharModalIncoerenciasCAM;
+
+// =========================================================================
+// FUNÇÕES DE APLICAÇÃO DE ASPECTOS: POTENCIAIS (VERDE) E FRAQUEZAS (VERMELHO) (IMAGEM 5)
+// =========================================================================
+
+function aplicarAspectoSecao(numSecao, aspecto) {
+  var d = extrairDadosProcessoAtual();
+  var el = document.getElementById('relatorio-caixa-' + numSecao);
+  if (!el) return;
+
+  var mun = d.municipio || 'MUNICÍPIO';
+  var esc = d.escola || 'escola da rede municipal';
+  var obj = d.objeto || 'aquisição de material permanente';
+  var val = d.valor || '0,00';
+  var proc = d.numero || 'SEI';
+
+  // Efeito visual na caixa
+  el.style.transition = 'all 0.3s ease';
+  el.style.boxShadow = aspecto === 'potenciais' ? '0 0 12px rgba(16,185,129,0.5)' : '0 0 12px rgba(239,68,68,0.5)';
+
+  setTimeout(function() {
+    if (numSecao === 2) {
+      if (aspecto === 'potenciais') {
+        el.value = 'A ordem constitucional e o ordenamento educacional pátrio consagram a colaboração federativa como instrumento indeclinável de equalização social e garantia do direito à educação de qualidade (CF/88, arts. 205, 30, VI, e 211, §4º). Nesse mesmo sentido, a Lei nº 9.394/1996 (LDB, arts. 8º e 10) impõe ao Estado o dever de prestar cooperação técnica e financeira articulada aos Municípios, valorizando a primazia do interesse público educacional e o fortalecimento da oferta regular de ensino.';
+      } else {
+        el.value = 'A atuação estatal em cooperação federativa subordina-se estritamente aos princípios da legalidade, impessoalidade e eficiência (CF/88, art. 37, caput; art. 211). A assistência técnica e financeira entre Estado e Municípios (LDB nº 9.394/1996, arts. 8º e 10) possui caráter supletivo e condicionado, exigindo a prévia e cabal comprovação da habilitação jurídica, tempestividade e estrita observância das normas orçamentárias estaduais, não configurando direito subjetivo incondicionado do ente proponente.';
+      }
+    } else if (numSecao === 3) {
+      if (aspecto === 'potenciais') {
+        el.value = 'Em consonância com o marco regulatório do FUNDEB (Lei Federal nº 14.113/2020, art. 14, §1º, IV) e a Constituição de Rondônia (arts. 187 e 188), sobressai o Programa de Apoio à Alfabetização e Melhoria da Infraestrutura Escolar — PROALFA Rondônia (Lei Estadual nº 5.735/2024, Eixo 2). O programa potencializa investimentos diretos nos ambientes de aprendizagem, criando condições pedagógicas e estruturais adequadas para acelerar a alfabetização dos estudantes da rede pública municipal.';
+      } else {
+        el.value = 'A Lei Federal nº 14.113/2020 (FUNDEB) e a Lei Estadual nº 5.735/2024 (Proalfa Rondônia) vinculam a transferência de recursos à rigorosa demonstração do nexo de causalidade pedagógico e à conformidade aos padrões mínimos de infraestrutura. Quaisquer falhas de aderência aos eixos temáticos estaduais ou ausência de monitoramento de metas educacionais obstam o enquadramento do pleito, sob pena de desvio de finalidade na aplicação de recursos públicos educacionais.';
+      }
+    } else if (numSecao === 4) {
+      if (aspecto === 'potenciais') {
+        el.value = 'Da análise técnica empreendida no Plano de Trabalho autuado sob o Processo SEI nº ' + proc + ', constata-se a plena viabilidade e solidez da proposição submetida pelo Município de ' + mun + '/RO. O objeto delineado (' + obj.toLowerCase() + ') guarda estrita coerência com a justificativa apresentada, destinando-se ao fortalecimento do ambiente escolar na ' + esc + '. Os quantitativos demandados e o orçamento estimado no montante de R$ ' + val + ' mostram-se compatíveis com os parâmetros de mercado e com a capacidade operacional de execução no prazo previsto, atendendo aos padrões de excelência fixados pelo Script CAM.';
+      } else {
+        el.value = 'Da análise detalhada dos elementos do Projeto Básico e do Plano de Trabalho autuados sob o Processo nº ' + proc + ', identificam-se fragilidades relevantes que exigem prudência da equipe técnica: (a) insuficiência de detalhamento das especificações técnicas e cotações de preços de mercado para o montante de R$ ' + val + '; (b) ausência de cronograma físico-financeiro com marcos objetivos de entrega; (c) carência de demonstração cabal do impacto pedagógico direto na ' + esc + '. Tais inconsistências demandam determinação de saneamento ou manifestação desfavorável na fase instrutória.';
+      }
+    } else if (numSecao === 5) {
+      if (aspecto === 'potenciais') {
+        el.value = 'Ante o exposto e considerando a sólida fundamentação técnica e pedagógica evidenciada nos autos, esta unidade manifesta-se formalmente em sentido FAVORÁVEL à celebração do regime de colaboração com o Município de ' + mun + '/RO no importe de R$ ' + val + ' (Processo SEI nº ' + proc + '), com fulcro na Lei Estadual nº 5.735/2024, submetendo os autos à deliberação superior para formalização e empenho.';
+      } else {
+        el.value = 'Diante das incongruências e fragilidades materiais apontadas no exame do Projeto Básico, manifesta-se esta gerência em sentido DESFAVORÁVEL (ou FAVORÁVEL COM RESSALVAS ESTRITAS), condicionando qualquer deliberação ao cumprimento prévio das determinações de regularização e saneamento documental pelo Município de ' + mun + '/RO (Processo nº ' + proc + '). Submetam-se os autos à consideração superior.';
+      }
+    }
+
+    el.style.boxShadow = 'none';
+    mostrarNotificacaoToast((aspecto === 'potenciais' ? '🟢 Potenciais' : '🔴 Fraquezas') + ' aplicados à Seção ' + numSecao + '!');
+  }, 200);
+}
+window.aplicarAspectoSecao = aplicarAspectoSecao;

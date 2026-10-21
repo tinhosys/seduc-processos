@@ -2071,10 +2071,13 @@
                   <span style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px;">Manifestação:</span>
                   <input type="hidden" id="form-manifestacao-tipo" value="favoravel">
                   <div style="display:flex; background:rgba(255,255,255,0.05); border-radius:8px; padding:3px; gap:4px; border:1px solid rgba(255,255,255,0.08);">
-                    <button type="button" id="btn-manifestacao-fav" onclick="setManifestacaoTipo('favoravel')" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:6px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(16,185,129,0.35); transition:all 0.2s;">
+                    <button type="button" id="btn-manifestacao-fav" onclick="setManifestacaoTipo('favoravel')" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:6px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(16,185,129,0.35); transition:all 0.2s;" title="Manifestação Técnica Favorável à celebração">
                       ✓ FAVORÁVEL
                     </button>
-                    <button type="button" id="btn-manifestacao-desfav" onclick="setManifestacaoTipo('desfavoravel')" style="background:none; color:#94a3b8; border:none; padding:6px 14px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer; transition:all 0.2s;">
+                    <button type="button" id="btn-manifestacao-neutro" onclick="setManifestacaoTipo('neutro')" style="background:none; color:#94a3b8; border:none; padding:6px 14px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer; transition:all 0.2s;" title="Manifestação Neutra / Frieza da Lei com ressalvas estritas conforme Script Padrão">
+                      ⚖️ NEUTRO
+                    </button>
+                    <button type="button" id="btn-manifestacao-desfav" onclick="setManifestacaoTipo('desfavoravel')" style="background:none; color:#94a3b8; border:none; padding:6px 14px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer; transition:all 0.2s;" title="Manifestação Técnica Desfavorável com devolução">
                       ✕ DESFAVORÁVEL
                     </button>
                   </div>
@@ -2176,6 +2179,12 @@
                       <span>2.</span> <span>Fundamentação Constitucional e Legal</span>
                     </label>
                     <div style="display:flex; gap:6px;">
+                      <button type="button" onclick="aplicarAspectoSecao(2, 'potenciais')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:4px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(16,185,129,0.35);" title="Potencializar aspectos constitucionais e cooperação federativa">
+                        🟢 Potenciais
+                      </button>
+                      <button type="button" onclick="aplicarAspectoSecao(2, 'fraqueza')" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:4px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.35);" title="Apontar fraquezas, limites de competência e estrita observância legal">
+                        🔴 Fraquezas
+                      </button>
                       <button type="button" onclick="aplicarIARedacao(2)" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer;" title="Harmonizar e refinar redação com IA">
                         🤖 IA
                       </button>
@@ -2194,6 +2203,12 @@
                       <span>3.</span> <span>Fortalecimento pelo FUNDEB e Legislação Estadual</span>
                     </label>
                     <div style="display:flex; gap:6px;">
+                      <button type="button" onclick="aplicarAspectoSecao(3, 'potenciais')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:4px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(16,185,129,0.35);" title="Potencializar alinhamento ao Proalfa e valorização da aprendizagem">
+                        🟢 Potenciais
+                      </button>
+                      <button type="button" onclick="aplicarAspectoSecao(3, 'fraqueza')" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:4px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.35);" title="Destacar exigências rígidas do FUNDEB e condicionantes do Proalfa">
+                        🔴 Fraquezas
+                      </button>
                       <button type="button" onclick="aplicarIARedacao(3)" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:none; padding:4px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer;" title="Harmonizar e refinar redação com IA">
                         🤖 IA
                       </button>
@@ -2225,7 +2240,13 @@
                         </button>
                       </div>
 
-                      <button type="button" onclick="aplicarIARedacao(4)" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.35);" title="Agente de IA: sintetizar redação conforme nível selecionado">
+                      <button type="button" onclick="aplicarAspectoSecao(4, 'potenciais')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:5px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(16,185,129,0.35);" title="Potencializar pontos fortes do projeto, impacto pedagógico e coerência dos custos">
+                        🟢 Potenciais
+                      </button>
+                      <button type="button" onclick="aplicarAspectoSecao(4, 'fraqueza')" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:5px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.35);" title="Destacar fraquezas técnicas, divergências de planilha ou omissões do projeto">
+                        🔴 Fraquezas
+                      </button>
+                      <button type="button" onclick="aplicarIARedacao(4)" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(99,102,241,0.35);" title="Agente de IA: sintetizar redação conforme nível selecionado">
                         🤖 IA Sintetizar
                       </button>
                       <button type="button" onclick="restaurarPadraoRedacao(4)" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:5px 10px; font-size:11px; font-weight:600; border-radius:6px; cursor:pointer;" title="Restaurar redação padrão da análise">
@@ -2256,6 +2277,12 @@
                         </button>
                       </div>
 
+                      <button type="button" onclick="aplicarAspectoSecao(5, 'potenciais')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:5px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(16,185,129,0.35);" title="Conclusão com ênfase na aprovação do projeto e viabilidade">
+                        🟢 Potenciais
+                      </button>
+                      <button type="button" onclick="aplicarAspectoSecao(5, 'fraqueza')" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:5px 10px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.35);" title="Conclusão com ressalvas estritas, determinações corretivas ou desfavorabilidade">
+                        🔴 Fraquezas
+                      </button>
                       <button type="button" onclick="aplicarIARedacao(5)" class="btn" style="background:linear-gradient(135deg,#a855f7,#7e22ce); color:#fff; border:none; padding:5px 12px; font-size:11px; font-weight:700; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(168,85,247,0.35);" title="Refinar redação da conclusão com IA">
                         🤖 IA Concluir
                       </button>
@@ -2416,9 +2443,15 @@
                 <!-- MATRIZ DE VERIFICAÇÃO DE CONFORMIDADE (MARCADA DE VERDE NA IMAGEM 2) COM COERÊNCIA, SOLUÇÃO E 2 BOTÕES POR ESTÁGIO -->
                 <div style="background:rgba(0,0,0,0.25); border-radius:10px; border:1px solid rgba(16,185,129,0.35); padding:16px; margin-bottom:18px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-                    <h5 style="margin:0; font-size:12.5px; color:#34d399; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
-                      📋 Matriz de Verificação de Conformidade, Coerência e Solução (Script CAM V1.0)
-                    </h5>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <h5 style="margin:0; font-size:12.5px; color:#34d399; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
+                        📋 Matriz de Verificação de Conformidade, Coerência e Solução (Script CAM V1.0)
+                      </h5>
+                      <!-- BOTÃO INCOERÊNCIAS: EXIBIDO SE E SOMENTE SE HOUVER ALGUMA INCOERÊNCIA (MARCADO EM AMARELO NA IMAGEM 1) -->
+                      <button type="button" id="btn-cam-incoerencias" onclick="abrirModalIncoerenciasCAM()" style="display:none; background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:4px 10px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.4);" title="Visualizar inconsistências e pendências técnicas detectadas">
+                        ⚠️ <span id="label-cam-incoerencias-count">Incoerências</span>
+                      </button>
+                    </div>
                     <span style="font-size:11px; color:#94a3b8;">Use os 2 botões de cada estágio para definir (✓ Conforme / ⏳ Pendente) e ver Coerência & Solução</span>
                   </div>
                   <div id="cam-matriz-itens" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:12px; font-size:12px;">
@@ -2960,7 +2993,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.16] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.18] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -5525,6 +5558,37 @@ function mudarAbaDiarias(aba, el) {
     </div>
   </div>
 
+
+
+      <!-- ============= MODAL: INCOERÊNCIAS E INCONSISTÊNCIAS TÉCNICAS CAM (IMAGEM 1) ============= -->
+      <div id="modal-incoerencias-cam" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); z-index:99999; justify-content:center; align-items:center; padding:20px;">
+        <div style="background:#0f172a; border:1px solid rgba(239,68,68,0.5); border-radius:14px; max-width:680px; width:100%; box-shadow:0 12px 36px rgba(0,0,0,0.85); overflow:hidden;">
+          <div style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:rgba(239,68,68,0.1);">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:24px;">⚠️</span>
+              <div>
+                <h3 style="margin:0; color:#f8fafc; font-size:15px; font-weight:800;">Incoerências e Pendências Detectadas no Projeto Básico</h3>
+                <span style="font-size:11px; color:#fca5a5;">Análise técnica com base no Script Mestre CAM V1.0</span>
+              </div>
+            </div>
+            <button type="button" onclick="fecharModalIncoerenciasCAM()" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; padding:4px 8px;">✕</button>
+          </div>
+          <div style="padding:20px; max-height:65vh; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
+            <div style="font-size:12.5px; color:#cbd5e1; line-height:1.45;">
+              O motor de diagnóstico identificou os seguintes pontos de inconformidade, divergência ou necessidade de saneamento prévio no Plano de Trabalho / Projeto Básico:
+            </div>
+            <div id="lista-incoerencias-itens" style="display:flex; flex-direction:column; gap:10px;">
+              <!-- Preenchido via JS com os itens Inconsistentes e Pendentes -->
+            </div>
+          </div>
+          <div style="padding:12px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.25); display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:11px; color:#94a3b8;">Estes apontamentos constarão no Parecer em caso de parecer desfavorável ou ressalvas.</span>
+            <button type="button" onclick="fecharModalIncoerenciasCAM()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 16px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
+              Fechar
+            </button>
+          </div>
+        </div>
+      </div>
 
 </body>
 </html>
