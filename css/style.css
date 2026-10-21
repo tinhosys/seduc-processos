@@ -1264,7 +1264,7 @@ mark {
 @media print {
   .page-number::after {
     counter-increment: page;
-    content: "P�gina " counter(page);
+    content: "Página " counter(page);
   }
 }
 
@@ -1681,7 +1681,7 @@ input:checked + .slider:before {
   margin-bottom: 12px;
 }
 
-/* Responsive Prefixo & Localiza��o Grid */
+/* Responsive Prefixo & Localização Grid */
 .prefixo-loc-grid {
   display: grid;
   grid-template-columns: 1fr 320px;
@@ -1839,10 +1839,10 @@ input:checked + .slider:before {
 }
 
 /* ============================================================
-   RESPONSIVIDADE E BOT�ES HEADER NO CELULAR
+   RESPONSIVIDADE E BOTÕES HEADER NO CELULAR
    ============================================================ */
 @media (max-width: 768px) {
-  /* Altera comportamento do flex da se��o de header no celular */
+  /* Altera comportamento do flex da seção de header no celular */
   .section-header {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -1855,7 +1855,7 @@ input:checked + .slider:before {
     flex: none !important;
   }
 
-  /* Faz os bot�es dividirem o espa�o em grid de 2x2 no celular */
+  /* Faz os botões dividirem o espaço em grid de 2x2 no celular */
   .header-buttons, 
   .section-header .header-buttons {
     display: grid !important;
@@ -1865,7 +1865,7 @@ input:checked + .slider:before {
     flex: none !important;
   }
 
-  /* Diminui fonte e padding dos bot�es de a��o no celular */
+  /* Diminui fonte e padding dos botões de ação no celular */
   .header-buttons .btn {
     padding: 8px 6px !important;
     font-size: 11px !important;
@@ -1873,7 +1873,7 @@ input:checked + .slider:before {
     justify-content: center !important;
   }
 
-  /* Oculta os textos dos bot�es se a tela for muito estreita, mantendo apenas �cones/emojis */
+  /* Oculta os textos dos botões se a tela for muito estreita, mantendo apenas ícones/emojis */
   @media (max-width: 480px) {
     .btn-text {
       display: none !important;
@@ -1921,7 +1921,7 @@ tbody tr.linha-pago:hover td {
 }
 
 /* ============================================================
-   DESTAQUE DO CALEND�RIO
+   DESTAQUE DO CALENDÁRIO
    ============================================================ */
 #form-data::-webkit-calendar-picker-indicator {
   cursor: pointer;
@@ -2000,7 +2000,7 @@ tbody tr.linha-pago:hover td {
 }
 
 input:checked + .slider {
-  background-color: #ef4444; /* Vermelho por padr�o quando ligado (pendente) */
+  background-color: #ef4444; /* Vermelho por padrão quando ligado (pendente) */
 }
 
 input:focus + .slider {
@@ -2008,7 +2008,7 @@ input:focus + .slider {
 }
 
 .autorizacao-toggles.all-on input:checked + .slider {
-  background-color: #10b981; /* Verde APENAS quando todos est�o ON */
+  background-color: #10b981; /* Verde APENAS quando todos estão ON */
 }
 
 .autorizacao-toggles.all-on input:focus + .slider {
