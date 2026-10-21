@@ -5355,7 +5355,7 @@ function imprimirManifestoTCE() {
     
     '<div class="doc-title">' +
     '<span>MANIFESTA&Ccedil;&Atilde;O T&Eacute;CNICA</span>' +
-    '<span class="badge-sei ' + (isDesfav ? 'badge-sei-desfav' : 'badge-sei-fav') + '">' + (isDesfav ? 'DESFAVOR&Aacute;VEL' : 'FAVOR&Aacute;VEL') + '</span>' +
+    '' + (tipoManifestacao === 'neutro' ? '<span class="badge-sei" style="background:#f1f5f9;color:#334155;border:1px solid #64748b;">NEUTRO / CONDICIONADO</span>' : ('<span class="badge-sei ' + (isDesfav ? 'badge-sei-desfav' : 'badge-sei-fav') + '">' + (isDesfav ? 'DESFAVOR&Aacute;VEL' : 'FAVOR&Aacute;VEL') + '</span>')) + '' +
     '</div>' +
 
     '<div class="meta-box">' +
@@ -8375,6 +8375,10 @@ function extrairDadosProcessoAtual() {
 }
 
 function construirAnaliseContextualizadaItem4(d, modoNivel, padraoIdx) {
+  // Se a manifestação estiver selecionada como NEUTRO, aplica a análise imparcial sob os 5 Pilares e 76 Critérios
+  if (d && d.isNeutro && typeof gerarAnaliseNeutraItem4 === 'function') {
+    return gerarAnaliseNeutraItem4(d, modoNivel);
+  }
   var analise = window._analiseCamAtual;
   var docs = d.docsMarcados || [];
   var nomesDocsStr = (d.citarDocs && d.nomesDocs && d.nomesDocs.length > 0)
@@ -10039,3 +10043,133 @@ function aplicarAspectoSecao(numSecao, aspecto) {
   }, 200);
 }
 window.aplicarAspectoSecao = aplicarAspectoSecao;
+
+
+// =========================================================================
+// SCRIPT DE FUNDAMENTOS E CRITÉRIOS PARA UMA DECISÃO RESPONSÁVEL (CAM / SEDUC)
+// =========================================================================
+
+const DEFAULT_SCRIPT_FUNDAMENTOS = "# SCRIPT DE FUNDAMENTOS E CRITÉRIOS PARA UMA DECISÃO RESPONSÁVEL (CAM / SEDUC-RO)\n# Base Normativa: CF/88 (art. 37, 205, 211), Lei Federal nº 9.784/1999, LINDB (arts. 20 a 22), LDB (Lei nº 9.394/1996) e Lei Estadual nº 5.735/2024 (Proalfa Rondônia)\n\n========================================================================================\n1. PRINCÍPIOS FUNDAMENTAIS DA DECISÃO ADMINISTRATIVA\n========================================================================================\n1.  Legalidade: Respeito estrito às leis, normas e regulamentos aplicáveis.\n2.  Coerência: Compatibilidade lógica entre os fatos narrados, fundamentos e conclusão.\n3.  Bom senso: Avaliação equilibrada, evitando decisões absurdas ou excessivamente rígidas.\n4.  Razoabilidade: Adequação da decisão às circunstâncias fáticas reais.\n5.  Proporcionalidade: Equilíbrio entre os meios utilizados e os fins pretendidos.\n6.  Moralidade: Observância da ética, honestidade e boa-fé administrativa.\n7.  Impessoalidade: Ausência de favorecimentos, perseguições ou interesses particulares.\n8.  Isonomia: Tratamento igual aos casos equivalentes, respeitadas as diferenças relevantes.\n9.  Justiça: Respeito aos direitos e consideração das consequências para os envolvidos.\n10. Equidade: Consideração das particularidades de cada situação, dentro dos limites legais.\n11. Finalidade pública: Atendimento exclusivo ao interesse público e à finalidade da norma.\n12. Motivação: Fundamentação clara, congruente e suficiente dos fatos e razões jurídicas.\n13. Transparência: Acesso e inteligibilidade para fiscalização e controle social.\n14. Eficiência: Melhor aproveitamento dos recursos disponíveis para alcançar resultados.\n15. Economicidade: Prevenção rigorosa de sobrepreço, desperdícios e custos desnecessários.\n16. Eficácia: Capacidade de atingir as metas físicas e o objetivo pactuado.\n17. Efetividade: Produção de resultados concretos e benefícios reais aos estudantes.\n18. Segurança jurídica: Previsibilidade, estabilidade e respeito às situações consolidadas.\n19. Boa-fé: Atuação honesta, leal e confiável de todos os partícipes.\n20. Interesse coletivo: Primazia do benefício educacional gerado para a coletividade.\n\n========================================================================================\n2. CRITÉRIOS TÉCNICOS, ADMINISTRATIVOS E GERENCIAIS\n========================================================================================\n21. Competência: Verificação se a autoridade possui atribuição legal para deliberar.\n22. Conveniência: Adequação da medida ao interesse administrativo no caso concreto.\n23. Oportunidade: Avaliação do momento apropriado e tempestividade do repasse.\n24. Viabilidade técnica: Existência de condições técnicas reais para executar o objeto.\n25. Viabilidade financeira: Suficiência de recursos e compatibilidade das cotações.\n26. Viabilidade orçamentária: Dotação prévia e disponibilidade de empenho orçamentário.\n27. Viabilidade operacional: Pessoal, estrutura e capacidade da rede escolar.\n28. Planejamento: Alinhamento aos planos estadual e municipal de educação.\n29. Prioridade: Precedência da demanda em relação a carências mais prementes.\n30. Necessidade: Existência de problema real comprovado que justifique o aporte.\n31. Adequação: Solução técnica apropriada ao diagnóstico apresentado.\n32. Suficiência de informações: Dados e documentos que permitam instrução conclusiva.\n33. Comprovação dos fatos: Evidências idôneas e documentais acostadas ao processo.\n34. Consistência técnica: Coincidência entre orçamentos, memoriais e metas.\n35. Temporalidade: Cronologia lógica entre ofício, plano e vigência pretendida.\n36. Exequibilidade: Prazos e custos compatíveis com a execução no exercício.\n37. Sustentabilidade: Capacidade de manutenção e continuidade dos bens/serviços.\n38. Análise de alternativas: Comparação de soluções menos onerosas ou mais eficientes.\n39. Análise de riscos: Identificação prévia de riscos jurídicos, operacionais e de prazo.\n40. Controle e monitoramento: Instrumentos de fiscalização e prestação de contas.\n\n========================================================================================\n3. CRITÉRIOS HUMANOS, INSTITUCIONAIS E ESTRATÉGICOS\n========================================================================================\n41. Prudência: Prevenção contra decisões precipitadas ou insuficientemente fundamentadas.\n42. Responsabilidade: Assunção consciente dos efeitos e impactos do ato decisório.\n43. Sensibilidade social: Atenção à realidade e vulnerabilidade das escolas atendidas.\n44. Empatia: Compreensão da carência comunitária sem renunciar à técnica legal.\n45. Imparcialidade: Julgamento estritamente técnico e desprovido de juízos prévios.\n46. Integridade: Fidelidade absoluta às normas públicas e repúdio a conflitos de interesse.\n47. Prevenção: Antecipação de óbices executivos e exigência de garantias.\n48. Precaução: Medidas cautelares em hipóteses de incerteza técnica grave.\n49. Consequências práticas: Ponderação dos efeitos da aprovação ou da rejeição do pleito.\n50. Impacto social: Identificação clara do público discente beneficiado.\n51. Impacto institucional: Reflexos sobre a gestão e reputação da SEDUC/RO.\n52. Continuidade administrativa: Não interrupção de ações pedagógicas em andamento.\n53. Precedentes administrativos: Manutenção de padrão decisório uniforme.\n54. Participação: Escuta qualificada dos técnicos e dirigentes educacionais.\n55. Contraditório: Concessão de prazo para esclarecimentos antes do indeferimento.\n56. Ampla defesa: Possibilidade de reanálise de documentos complementares.\n57. Celeridade: Tramitação rápida sem sacrifício do rigor analítico.\n58. Objetividade: Manifestações técnicas concisas, desprovidas de retórica vazia.\n59. Clareza: Redação acessível, escoimada de ambiguidades ou contradições.\n60. Rastreabilidade: Cadeia de documentos SEI devidamente referenciada e assinada.\n\n========================================================================================\n4. CRITÉRIOS COMPLEMENTARES DE QUALIDADE E CONTROLE\n========================================================================================\n61. Completude: Enfrentamento de todas as exigências legais do regime de colaboração.\n62. Congruência: Harmonia exata entre o pedido municipal, o exame e o despacho.\n63. Pertinência: Uso exclusivo de fundamentos jurídicos e técnicos aderentes ao objeto.\n64. Necessidade de diligências: Apontamento objetivo de documentos em falta para saneamento.\n65. Correção de cálculos: Verificação minuciosa de somas, cotações e percentuais.\n66. Regularidade documental: Certidões, habilitação jurídica e poderes do signatário.\n67. Compatibilidade normativa: Subordinação à LDB, FUNDEB e Lei Estadual nº 5.735/2024.\n68. Proteção de direitos: Garantia do direito à educação inclusiva e com dignidade.\n69. Proteção de dados: Resguardo de dados protegidos pela LGPD nos autos do SEI.\n70. Prevenção de conflitos de interesses: Impedimento legal de avaliadores.\n71. Custo-benefício: Retorno educacional proporcional ao volume de recursos aportados.\n72. Custo de oportunidade: Avaliação da destinação de recursos públicos limitados.\n73. Reversibilidade: Possibilidade de cancelamento do repasse em caso de descumprimento.\n74. Gestão de consequências adversas: Previsão de salvaguardas para atrasos e falhas.\n75. Prestação de contas: Formatação prévia de relatórios e notas fiscais comprobatórias.\n76. Possibilidade de revisão: Rito recursal e de reexame conforme a Lei nº 9.784/1999.\n\n========================================================================================\n5. OS CINCO PILARES DA ADMINISTRAÇÃO PÚBLICA (LINDB ARTS. 20 A 22)\n========================================================================================\n01. LEGALIDADE: Pode ser feito segundo o ordenamento jurídico vigente?\n02. LEGITIMIDADE: É justificável perante o interesse público da educação básica?\n03. RAZOABILIDADE: É uma medida equilibrada perante o custo e a necessidade?\n04. VIABILIDADE: Existem condições materiais, técnicas e temporais para executar?\n05. RESPONSABILIDADE: Quais são os efeitos concretos e consequências da decisão?\n";
+
+function obterScriptFundamentosAtual() {
+  try {
+    return localStorage.getItem('seduc_script_fundamentos_v1') || DEFAULT_SCRIPT_FUNDAMENTOS;
+  } catch (e) {
+    return DEFAULT_SCRIPT_FUNDAMENTOS;
+  }
+}
+window.obterScriptFundamentosAtual = obterScriptFundamentosAtual;
+
+function abrirEditorScriptFundamentos() {
+  const modal = document.getElementById('modal-script-fundamentos');
+  const txtArea = document.getElementById('textarea-script-fundamentos-editor');
+  const statusMsg = document.getElementById('script-fundamentos-status-msg');
+  if (statusMsg) statusMsg.textContent = '';
+  if (txtArea) {
+    txtArea.value = obterScriptFundamentosAtual();
+  }
+  if (modal) {
+    modal.style.display = 'flex';
+  }
+}
+window.abrirEditorScriptFundamentos = abrirEditorScriptFundamentos;
+
+function fecharModalScriptFundamentos() {
+  const modal = document.getElementById('modal-script-fundamentos');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalScriptFundamentos = fecharModalScriptFundamentos;
+
+function salvarScriptFundamentos() {
+  const txtArea = document.getElementById('textarea-script-fundamentos-editor');
+  const statusMsg = document.getElementById('script-fundamentos-status-msg');
+  if (!txtArea) return;
+  try {
+    localStorage.setItem('seduc_script_fundamentos_v1', txtArea.value);
+    if (statusMsg) statusMsg.textContent = '✓ Script de Fundamentos salvo com sucesso!';
+    toast('Script de Fundamentos atualizado no navegador!', 'success');
+    setTimeout(() => { fecharModalScriptFundamentos(); }, 800);
+  } catch (e) {
+    toast('Erro ao salvar script: ' + e.message, 'error');
+  }
+}
+window.salvarScriptFundamentos = salvarScriptFundamentos;
+
+function restaurarScriptFundamentosPadrao() {
+  if (confirm('Deseja restaurar as diretrizes originais do Script de Fundamentos?')) {
+    const txtArea = document.getElementById('textarea-script-fundamentos-editor');
+    if (txtArea) txtArea.value = DEFAULT_SCRIPT_FUNDAMENTOS;
+    try {
+      localStorage.removeItem('seduc_script_fundamentos_v1');
+    } catch (e) {}
+    toast('Script de Fundamentos restaurado!', 'info');
+  }
+}
+window.restaurarScriptFundamentosPadrao = restaurarScriptFundamentosPadrao;
+
+// Harmonização da Análise Neutra (Item 4) sob os 5 Pilares e 76 Critérios
+function gerarAnaliseNeutraItem4(d, nivel4) {
+  const analise = window._analiseCamAtual;
+  const mun = d.municipio || 'Município interessado';
+  const esc = d.escola || 'unidade escolar beneficiária';
+  const obj = d.objeto || 'objeto pretendido';
+  const val = d.valor || '0,00';
+  const proc = d.numero || 'SEI';
+
+  // Identifica inconsistências reais apuradas nos documentos
+  const pendencias = [];
+  const conformes = [];
+  if (analise && Array.isArray(analise.matriz)) {
+    analise.matriz.forEach(m => {
+      if (m.status !== 'Conforme') {
+        pendencias.push(m.nome + ': ' + (m.solucao || m.desc));
+      } else {
+        conformes.push(m.nome);
+      }
+    });
+  }
+
+  // Seção de Análise Neutra desprovida de tendência
+  if (nivel4 === 'menos') {
+    let txt = 'Exame técnico imparcial sob a luz dos 5 Pilares de Decisão Administrativa (LINDB arts. 20-22 e Lei nº 9.784/99): o pleito de ' + mun + '/RO (Proc. ' + proc + ', R$ ' + val + ') apresenta enquadramento formal perante a Lei Estadual nº 5.735/2024. ';
+    if (pendencias.length > 0) {
+      txt += 'Contudo, identificam-se óbices e pendências técnicas que exigem saneamento prévio: ' + pendencias.slice(0, 2).join('; ') + '. ';
+      txt += 'A aprovação fica estritamente vinculada ao atendimento dessas condicionantes antes de qualquer empenho.';
+    } else {
+      txt += 'Constatada viabilidade técnica e orçamentária para a execução de ' + obj.toLowerCase() + ', cabendo à autoridade competente a deliberação discricionária de conveniência e oportunidade.';
+    }
+    return txt;
+  }
+
+  // Nível Mais / Completo
+  let p1 = 'Trata-se de análise técnica e neutra do Projeto Básico e conjunto documental autuados sob o Processo nº ' + proc + ', submetido pelo Município de ' + mun + '/RO para execução de ' + obj.toLowerCase() + ' na unidade ' + esc + ', com valor estimado em R$ ' + val + '. A presente manifestação rege-se pelos princípios da legalidade, razoabilidade, impessoalidade, transparência e responsabilidade pelas consequências práticas (CF/88, art. 37, e LINDB, arts. 20 a 22).';
+
+  let p2 = '1. LEGALIDADE E LEGITIMIDADE: A intervenção requerida enquadra-se no âmbito do regime de colaboração educacional e encontra respaldo no Eixo 2 da Lei Estadual nº 5.735/2024 (Proalfa Rondônia). A formalização atende aos requisitos constitucionais (arts. 205 e 211, CF/88) quanto à finalidade educacional pública.';
+
+  let p3 = '';
+  if (pendencias.length > 0) {
+    p3 = '2. PONTOS CRÍTICOS E INCONSISTÊNCIAS REAIS IDENTIFICADAS:
+' +
+      pendencias.map((p, idx) => '   (' + String.fromCharCode(97 + idx) + ') ' + p).join('
+') + '
+
+' +
+      '3. VIABILIDADE TÉCNICA E EXEQUÍVEL: Diante dos apontamentos acima descritos, a proposição requer saneamento prévio e complementação instrutória para assegurar a exata correlação entre as cotações orçamentárias, o cronograma físico de entrega e o plano de aplicação dos recursos estaduais.';
+  } else {
+    p3 = '2. CONSISTÊNCIA TÉCNICA E ORÇAMENTÁRIA: Da conferência dos memoriais, planilhas quantitativas e cotações de preços anexadas, verifica-se coerência material entre os quantitativos e os valores médios de mercado para o montante de R$ ' + val + ', com cronograma executivo compatível com o exercício financeiro.
+
+' +
+      '3. VIABILIDADE E CRITÉRIOS DE EFETIVIDADE: Identifica-se suficiência das informações fornecidas para a execução do objeto pactuado, restando demonstrado o nexo causal com a melhoria da infraestrutura escolar.';
+  }
+
+  let p4 = '4. RESPONSABILIDADE PELAS CONSEQUÊNCIAS E ENCAMINHAMENTO: Em juízo estritamente técnico e desprovido de tendências subjetivas, recomenda-se que a decisão administrativa pondere os custos de oportunidade e exija as garantias de fiscalização e prestação de contas, assegurando que o aporte atenda com economicidade e eficácia a comunidade discente.';
+
+  return p1 + '
+
+' + p2 + '
+
+' + p3 + '
+
+' + p4;
+}
+window.gerarAnaliseNeutraItem4 = gerarAnaliseNeutraItem4;

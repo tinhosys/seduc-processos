@@ -700,7 +700,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.18</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.19</div>
   </div>
 </div>
   
@@ -952,7 +952,7 @@
 
 
 <div class="sidebar-footer">
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.18</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.19</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -2315,6 +2315,11 @@
                   </p>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                  <!-- SEGUNDO BOTÃO: SCRIPT DE FUNDAMENTOS E CRITÉRIOS DE DECISÃO RESPONSÁVEL (MARCAÇÃO VERDE IMAGEM 1) -->
+                  <button type="button" onclick="abrirEditorScriptFundamentos()" class="btn" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.45); padding:8px 14px; font-size:12.5px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s; box-shadow:0 2px 8px rgba(16,185,129,0.25);" title="Critérios e Princípios para uma Decisão Responsável na Administração Pública (CF/88, LINDB e Lei 9.784/99)">
+                    <span>📜</span> <span>Script de Fundamentos (Ver / Editar)</span>
+                  </button>
+
                   <!-- BOTÃO VER / EDITAR SCRIPT MESTRE CAM (MARCADO EM LARANJA NA IMAGEM 2) -->
                   <button type="button" onclick="abrirEditorScriptCAM()" class="btn" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.35); padding:8px 14px; font-size:12.5px; font-weight:700; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;" title="Visualizar e editar as regras do Script Mestre CAM V1.0">
                     <span>⚙️</span> <span>Script Original Gravado (Ver / Editar)</span>
@@ -2720,7 +2725,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.18
+              GBZ - v1.3.19
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -2993,7 +2998,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.18] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.19] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -5586,6 +5591,43 @@ function mudarAbaDiarias(aba, el) {
             <button type="button" onclick="fecharModalIncoerenciasCAM()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 16px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
               Fechar
             </button>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ============= MODAL: SCRIPT DE FUNDAMENTOS E CRITÉRIOS DE DECISÃO RESPONSÁVEL ============= -->
+      <div id="modal-script-fundamentos" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:99999; justify-content:center; align-items:center; padding:20px;">
+        <div style="background:#0f172a; border:1px solid rgba(16,185,129,0.5); border-radius:14px; max-width:880px; width:100%; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 12px 36px rgba(0,0,0,0.85); overflow:hidden;">
+          <div style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.08);">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:24px;">📜</span>
+              <div>
+                <h3 style="margin:0; color:#f8fafc; font-size:15px; font-weight:800;">Script de Fundamentos: Princípios e Critérios para uma Decisão Responsável</h3>
+                <span style="font-size:11px; color:#94a3b8;">CF/88 art. 37, LINDB arts. 20 a 22, Lei nº 9.784/1999 e Lei Estadual nº 5.735/2024</span>
+              </div>
+            </div>
+            <button type="button" onclick="fecharModalScriptFundamentos()" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; padding:4px 8px;">✕</button>
+          </div>
+          <div style="padding:20px; flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <span style="font-size:12px; color:#cbd5e1; font-weight:700;">Critérios de Validação Técnica e Decisória:</span>
+              <button type="button" onclick="restaurarScriptFundamentosPadrao()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; border-radius:6px; cursor:pointer;">
+                🔄 Restaurar Script de Fundamentos Original
+              </button>
+            </div>
+            <textarea id="textarea-script-fundamentos-editor" rows="18" style="width:100%; border:1px solid rgba(16,185,129,0.35); background:rgba(0,0,0,0.5); color:#f8fafc; font-size:12px; padding:12px; border-radius:8px; line-height:1.45; font-family:monospace; resize:vertical; box-sizing:border-box;"></textarea>
+          </div>
+          <div style="padding:14px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.25); display:flex; justify-content:space-between; align-items:center;">
+            <span id="script-fundamentos-status-msg" style="font-size:11.5px; color:#10b981;"></span>
+            <div style="display:flex; gap:10px;">
+              <button type="button" onclick="fecharModalScriptFundamentos()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:8px 16px; font-size:12px; border-radius:6px; cursor:pointer;">
+                Cancelar
+              </button>
+              <button type="button" onclick="salvarScriptFundamentos()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:8px 20px; font-size:12.5px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(16,185,129,0.35);">
+                💾 Salvar Alterações no Script
+              </button>
+            </div>
           </div>
         </div>
       </div>
