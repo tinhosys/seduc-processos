@@ -10115,9 +10115,16 @@ function gerarAnaliseNeutraItem4(d, nivel4) {
   const obj = d.objeto || 'objeto pretendido';
   const val = d.valor || '0,00';
   const proc = d.numero || 'SEI';
-  const nivelAudit = window._camNivelAuditoria || 'power';
+  const nivelAudit = window._forcaAnaliseNivel || window._camNivelAuditoria || 'power';
+  
+  // Scripts ativos
+  const usaFundamentos = window._usarScriptFundamentos !== false;
+  const usaOriginal = window._usarScriptOriginal !== false;
+  const scriptsAtivosStr = (usaFundamentos && usaOriginal)
+    ? 'Ambos (Script de Fundamentos da Decisão Responsável + Script Mestre CAM V1.0)'
+    : (usaFundamentos ? 'Script de Fundamentos (20 Princípios e Critérios de Decisão Responsável)' : 'Script Original Gravado (Script CAM V1.0)');
 
-  // Identifica inconsistências reais e conflitos com as regras dos scripts
+  // Identifica conflitos reais apurados nos documentos com as regras dos scripts selecionados
   const conflitos = [];
   const conformes = [];
   if (analise && Array.isArray(analise.matriz)) {
@@ -10138,32 +10145,34 @@ function gerarAnaliseNeutraItem4(d, nivel4) {
   // Cabeçalho da Análise Nua e Crua sem maquiagem
   let p1 = 'ANÁLISE TÉCNICA E NEUTRA (FRIEZA DA LEI — SEM MAQUIAGEM)\n' +
     'Processo SEI nº ' + proc + ' | Interessado: ' + mun + '/RO — ' + esc + ' | Objeto: ' + obj + ' | Valor: R$ ' + val + '\n' +
-    'Fundamentação de Auditoria: CF/88 (art. 37 e 211), Lei Federal nº 9.784/99, LINDB (arts. 20 a 22) e Lei Estadual nº 5.735/2024 (Proalfa Rondônia). Modo de Auditoria: ' + nivelAudit.toUpperCase() + '.';
+    'Scripts Utilizados como Base: ' + scriptsAtivosStr + '.\n' +
+    'Calibragem do Rigor: MODO ' + nivelAudit.toUpperCase() + ' (Auditoria sob estrita legalidade, sem benevolência retórica).';
 
-  let p2 = '1. EXAME DE CONFORMIDADE ESTRITA:\n' +
-    'Em estrita observância ao princípio da impessoalidade e legalidade estrita, a presente análise afasta qualquer subjetividade ou benevolência retórica, limitando-se ao cotejo objetivo entre os documentos instruídos nos autos e os requisitos regulamentares exigidos para transferências voluntárias e acordos de colaboração.';
+  let p2 = '1. DELIMITAÇÃO DA ANÁLISE SOB AS REGRAS VIGENTES:\n' +
+    'O presente exame afasta qualquer juízo de conveniência política ou simpatia institucional. Avalia-se estritamente se o conjunto probatório instruído pelo proponente atende ou viola as exigências legais e os critérios previstos nos scripts operacionais homologados.';
 
   let p3 = '';
   if (conflitos.length > 0) {
-    p3 = '2. CONFLITOS REAIS E PONTOS DE INCONGRUÊNCIA IDENTIFICADOS (' + conflitos.length + ' PENDÊNCIA' + (conflitos.length > 1 ? 'S' : '') + '):\n' +
+    p3 = '2. PONTOS EM CONFLITO DIRETO COM AS REGRAS DOS SCRIPTS (' + conflitos.length + ' INCONGRUÊNCIA' + (conflitos.length > 1 ? 'S' : '') + ' DETECTADA' + (conflitos.length > 1 ? 'S' : '') + '):\n' +
       conflitos.map(function(c, idx) {
-        return '   [' + (idx + 1) + '] CONFLITO COM A REGRA "' + c.regra.toUpperCase() + '":\n' +
-               '       - Fato Apurado: ' + c.inconsistencia + '\n' +
-               '       - Diagnóstico de Coerência: ' + c.coerencia + '\n' +
-               '       - Exigência de Regularização (Sem Maquiagem): ' + c.solucaoObrigatoria;
+        return '   [' + (idx + 1) + '] VIOLAÇÃO / PENDÊNCIA PERANTE A REGRA "' + c.regra.toUpperCase() + '":\n' +
+               '       • Situação Encontrada nos Autos: ' + c.inconsistencia + '\n' +
+               '       • Descompasso Apurado: ' + c.coerencia + '\n' +
+               '       • Conduta Legal Exigida para Saneamento (Sem Maquiagem): ' + c.solucaoObrigatoria;
       }).join('\n\n') + '\n\n' +
-      '3. VIABILIDADE CONDICIONADA E RISCO OPERACIONAL:\n' +
-      'Sob a ótica da Lei de Introdução às Normas do Direito Brasileiro (LINDB, art. 20), a celebração do ajuste no estado atual acarreta risco de paralisação ou responsabilização na fase de prestação de contas. É juridicamente inadmissível maquiar as falhas apuradas. Impõe-se a emissão de notificação formal ao proponente para saneamento integral das pendências antes de qualquer ato autorizativo de despesa.';
+      '3. RISCO JURÍDICO E RESPONSABILIZAÇÃO PRÁTICA (LINDB, ARTS. 20 A 22):\n' +
+      'Sob a ótica da legalidade e da responsabilidade fiscal, dar prosseguimento a repasses sem o saneamento dos itens acima acarreta vício na instrução processual e risco de rejeição em órgãos de controle interno e externo. É dever funcional apontar as irregularidades de forma nua e crua.';
   } else {
-    p3 = '2. AFERIÇÃO DE COERÊNCIA E CONEXÃO DOCUMENTAL:\n' +
-      'Confrontadas as peças instrutórias com a matriz de 76 critérios de auditoria, verifica-se convergência material entre o termo de referência, o plano de trabalho e as cotações orçamentárias. Não foram localizadas sobreposições indevidas ou omissões aritméticas no importe de R$ ' + val + '.\n\n' +
-      '3. EXAME DE ECONOMICIDADE E EFETIVIDADE:\n' +
-      'A relação de custos apresentada demonstra razoabilidade perante a média dos valores praticados na administração pública estadual para intervenções análogas em ' + esc + '.';
+    p3 = '2. AFERIÇÃO DE CONFORMIDADE ESTRITA:\n' +
+      'Confrontadas as peças do processo com os critérios dos scripts (' + scriptsAtivosStr + '), não se constataram omissões materiais impeditivas ou divergências financeiras no montante de R$ ' + val + '.\n\n' +
+      '3. EFETIVIDADE E ADEQUAÇÃO AOS FINS PÚBLICOS:\n' +
+      'O objeto atende aos requisitos de interesse coletivo, proporcionalidade e economicidade fixados na legislação estadual (Lei nº 5.735/2024).';
   }
 
-  let p4 = '4. DECISÃO RESPONSÁVEL E ENCAMINHAMENTO FINAL:\n' +
-    'Com fulcro nos 20 princípios de decisão responsável e na avaliação das consequências práticas da decisão administrativa (art. 20 da LINDB), submete-se o presente parecer à autoridade superior com recomendação de ' +
-    (conflitos.length > 0 ? 'DILIGÊNCIA SANEADORA PRÉVIA para retificação dos itens em conflito.' : 'PROSSEGUIMENTO CONDICIONADO à disponibilidade orçamentária e regular prestação de contas.');
+  let p4 = '4. CONCLUSÃO TÉCNICA E ENCAMINHAMENTO FINAL:\n' +
+    (conflitos.length > 0
+      ? 'Recomenda-se a notificação expressa do Município proponente com a fixação de prazo para emenda e saneamento cabal das falhas apuradas, suspendendo-se qualquer ato de celebração ou repasse até a regularização.'
+      : 'Restando demonstrada a conformidade documental estrita perante os scripts e a legislação, submetem-se os autos à autoridade máxima para juízo discricionário de oportunidade e conveniência.');
 
   return p1 + '\n\n' + p2 + '\n\n' + p3 + '\n\n' + p4;
 }
@@ -10335,3 +10344,183 @@ function atualizarRelogiosAnaliseCAM(oportunometro, coerencia, riscoPercent) {
   }
 }
 window.atualizarRelogiosAnaliseCAM = atualizarRelogiosAnaliseCAM;
+
+
+// =========================================================================
+// CONTROLADORES DO PAINEL DE CALIBRAGEM DA FORÇA DA ANÁLISE (IMAGEM 2)
+// =========================================================================
+
+window._forcaAnaliseNivel = 'power';
+window._forcaAnaliseMotor = 'gemini_pro';
+
+function setNivelProfundidadeAnalitica(nivel) {
+  window._forcaAnaliseNivel = nivel;
+  if (typeof window.definirNivelAuditoriaCAM === 'function') {
+    window.definirNivelAuditoriaCAM(nivel);
+  }
+  const niveis = ['basico', 'medio', 'alto_plus', 'mega', 'power'];
+  niveis.forEach(function(nv) {
+    const btn = document.getElementById('btn-prof-' + nv);
+    if (!btn) return;
+    if (nv === nivel) {
+      if (nv === 'power') {
+        btn.style.background = 'linear-gradient(135deg,#8b5cf6,#ec4899)';
+        btn.style.color = '#fff';
+        btn.style.border = 'none';
+        btn.style.boxShadow = '0 2px 8px rgba(236,72,153,0.35)';
+      } else if (nv === 'mega') {
+        btn.style.background = 'rgba(168,85,247,0.3)';
+        btn.style.color = '#e9d5ff';
+        btn.style.border = '1px solid #c084fc';
+      } else if (nv === 'alto_plus') {
+        btn.style.background = 'rgba(59,130,246,0.3)';
+        btn.style.color = '#93c5fd';
+        btn.style.border = '1px solid #60a5fa';
+      } else if (nv === 'medio') {
+        btn.style.background = 'rgba(16,185,129,0.3)';
+        btn.style.color = '#6ee7b7';
+        btn.style.border = '1px solid #34d399';
+      } else {
+        btn.style.background = 'rgba(148,163,184,0.3)';
+        btn.style.color = '#f1f5f9';
+        btn.style.border = '1px solid #94a3b8';
+      }
+      btn.style.fontWeight = '800';
+    } else {
+      btn.style.background = 'rgba(255,255,255,0.04)';
+      btn.style.color = '#94a3b8';
+      btn.style.border = '1px solid rgba(255,255,255,0.08)';
+      btn.style.boxShadow = 'none';
+      btn.style.fontWeight = '700';
+    }
+  });
+
+  const badgeStatus = document.getElementById('badge-calibragem-status');
+  if (badgeStatus) {
+    const labels = {
+      basico: '🌱 RIGOR: BÁSICO (Triagem Branda)',
+      medio: '⚖️ RIGOR: MÉDIO (Padrão)',
+      alto_plus: '🚀 RIGOR: ALTO PLUS (Normativo)',
+      mega: '🔮 RIGOR: MEGA (76 Critérios)',
+      power: '💥 RIGOR: POWER (Frieza da Lei)'
+    };
+    badgeStatus.textContent = labels[nivel] || ('⚡ RIGOR: ' + nivel.toUpperCase());
+  }
+
+  toast('Calibragem ajustada: Nível ' + nivel.toUpperCase(), 'info');
+  atualizarCalibragemEGerar();
+}
+window.setNivelProfundidadeAnalitica = setNivelProfundidadeAnalitica;
+
+function setMotorIACalibragem(motor) {
+  window._forcaAnaliseMotor = motor;
+  if (typeof window.definirMotorIACAM === 'function') {
+    window.definirMotorIACAM(motor);
+  }
+  const motores = ['gemini_pro', 'flash_turbo', 'claude_sonnet', 'ensemble'];
+  motores.forEach(function(m) {
+    const btn = document.getElementById('btn-ia-calib-' + m);
+    if (!btn) return;
+    if (m === motor) {
+      btn.style.background = 'linear-gradient(135deg,#3b82f6,#1d4ed8)';
+      btn.style.color = '#fff';
+      btn.style.border = 'none';
+      btn.style.boxShadow = '0 2px 8px rgba(59,130,246,0.45)';
+      btn.style.fontWeight = '800';
+    } else {
+      btn.style.background = 'rgba(255,255,255,0.05)';
+      btn.style.color = '#94a3b8';
+      btn.style.border = '1px solid rgba(255,255,255,0.1)';
+      btn.style.boxShadow = 'none';
+      btn.style.fontWeight = '700';
+    }
+  });
+  toast('Motor de IA calibrado: ' + motor, 'info');
+  atualizarCalibragemEGerar();
+}
+window.setMotorIACalibragem = setMotorIACalibragem;
+
+function atualizarCalibragemEGerar() {
+  const d = extrairDadosProcessoAtual();
+  if (d.tipo === 'neutro') {
+    aplicarAnaliseNeutraEmTodasAsSecoes();
+  } else {
+    for (var i = 1; i <= 5; i++) {
+      aplicarIARedacao(i, true);
+    }
+  }
+}
+window.atualizarCalibragemEGerar = atualizarCalibragemEGerar;
+
+// Acionado imediatamente quando o usuário clica em FAVORÁVEL, NEUTRO ou DESFAVORÁVEL
+function onManifestacaoTipoChanged(tipo) {
+  if (tipo === 'neutro') {
+    aplicarAnaliseNeutraEmTodasAsSecoes();
+    toast('⚖️ Manifestação Neutra (Nua e Crua) gerada com base nos scripts selecionados!', 'success');
+  } else if (tipo === 'desfavoravel') {
+    for (var i = 1; i <= 5; i++) {
+      aplicarIARedacao(i, true);
+    }
+    toast('✕ Manifestação Desfavorável gerada com foco em apontamento de pendências!', 'warning');
+  } else {
+    for (var i = 1; i <= 5; i++) {
+      aplicarIARedacao(i, true);
+    }
+    toast('✓ Manifestação Favorável gerada!', 'success');
+  }
+}
+window.onManifestacaoTipoChanged = onManifestacaoTipoChanged;
+
+// Gera a Manifestação Técnica completa sob a ótica Neutra (Nua e Crua, apontando o que está contrário aos scripts)
+function aplicarAnaliseNeutraEmTodasAsSecoes() {
+  const d = extrairDadosProcessoAtual();
+  d.isNeutro = true;
+
+  // Caixa 1: Identificação com alerta de auditoria fria
+  const el1 = document.getElementById('relatorio-caixa-1');
+  if (el1) {
+    const docsStr = d.nomesDocs.length > 0 ? d.nomesDocs.join(', ') : 'Autos do Processo SEI';
+    el1.value = 'Processo: ' + d.numero + '\n' +
+                'Interessado: ' + d.escola + ' — Município de ' + d.municipio + '/RO\n' +
+                'Assunto: Exame Técnico Imparcial sob a Frieza da Lei — ' + d.objeto + (d.temValor ? ' (R$ ' + d.valor + ')' : '') + '\n' +
+                'Regras de Auditoria: CF/88, LINDB (arts. 20 a 22), Lei nº 9.784/99 e Lei Estadual nº 5.735/2024. Peças Analisadas: ' + docsStr;
+  }
+
+  // Caixa 2: Fundamentação Constitucional e Legal Estrita
+  const el2 = document.getElementById('relatorio-caixa-2');
+  if (el2) {
+    el2.value = 'A atuação técnica desta equipe pauta-se pelo princípio da impessoalidade e legalidade estrita (CF/88, art. 37, caput). A cooperação federativa em educação (CF/88, arts. 205 e 211, §4º; LDB, arts. 8º e 10) pressupõe o estrito adimplemento das exigências formais e materiais, sendo vedada qualquer concessão discricionária desprovida de lastro documental probatório idôneo.\n\n' +
+                'Nos termos do art. 20 da LINDB (Decreto-Lei nº 4.657/1942), as decisões não se apoiarão em valores jurídicos abstratos sem a consideração das consequências práticas. Assim, a viabilidade do pleito subordina-se à regularidade de cada elemento instrutório.';
+  }
+
+  // Caixa 3: Legislação Estadual e Critérios de Responsabilidade
+  const el3 = document.getElementById('relatorio-caixa-3');
+  if (el3) {
+    el3.value = 'A Lei nº 14.113/2020 (FUNDEB, art. 14) e a Lei Estadual nº 5.735/2024 (Proalfa Rondônia) exigem aderência dos investimentos ao padrão mínimo de infraestrutura e resultados educacionais mensuráveis.\n\n' +
+                'Conforme as diretrizes dos Scripts de Auditoria selecionados (Script de Fundamentos da Decisão Responsável e Script Mestre CAM V1.0), qualquer disparidade entre a justificativa, as cotações financeiras e o cronograma executivo enseja ressalva formal e impede a liberação de recursos antes do saneamento cabal.';
+  }
+
+  // Caixa 4: Análise Neutra Nua e Crua apontando o que está contrário aos scripts
+  const el4 = document.getElementById('relatorio-caixa-4');
+  if (el4) {
+    el4.value = gerarAnaliseNeutraItem4(d, 'mais');
+  }
+
+  // Caixa 5: Conclusão Imparcial sob a LINDB
+  const el5 = document.getElementById('relatorio-caixa-5');
+  if (el5) {
+    const analise = window._analiseCamAtual;
+    let pendencias = [];
+    if (analise && Array.isArray(analise.matriz)) {
+      pendencias = analise.matriz.filter(m => m.status !== 'Conforme');
+    }
+    if (pendencias.length > 0) {
+      el5.value = 'Diante do exposto e em juízo estritamente técnico (Frieza da Lei), manifesta-se pela IMPOSSIBILIDADE DE APROVAÇÃO IMEDIATA sem antes promover a notificação formal do Município de ' + d.municipio + '/RO para retificação dos itens em desacordo com as regras dos scripts e complementação do Plano de Trabalho autuado no Processo nº ' + d.numero + '. O prosseguimento fica condicionado à regularização prévia.';
+    } else {
+      el5.value = 'Diante do cotejo técnico efetuado sob a frieza da lei, atesta-se a conformidade dos elementos instrutórios do Processo nº ' + d.numero + ' com as regras vigentes, cabendo à autoridade competente a decisão discricionária quanto à celebração do ajuste para a unidade ' + d.escola + ' (' + d.municipio + '/RO).';
+    }
+  }
+
+  garantirContextoSecao4();
+}
+window.aplicarAnaliseNeutraEmTodasAsSecoes = aplicarAnaliseNeutraEmTodasAsSecoes;
