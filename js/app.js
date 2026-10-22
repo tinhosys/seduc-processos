@@ -8422,9 +8422,7 @@ function construirAnaliseContextualizadaItem4(d, modoNivel, padraoIdx) {
 
   var blocoCoerenciaLegalidade = '';
   if (d.incluirCoerencia) {
-    var taxa = analise ? analise.taxaCoerencia : 85;
-    var oport = analise ? analise.oportunometro : '8.5';
-    blocoCoerenciaLegalidade = 'Sob a luz do Script Mestre CAM V1.0, verificou-se Grau de Coerência e Conexão Documental de ' + taxa + '% (Oportunômetro Técnico: ' + oport + '/10), avaliando-se a correlação lógica entre problema, justificativa, objeto (' + d.objeto.toLowerCase() + '), metas físicas e legalidade perante a Lei Estadual nº 5.735/2024 (Proalfa Rondônia) e a Lei Federal nº 14.113/2020.';
+    blocoCoerenciaLegalidade = 'Do cotejo analítico entre as peças instrutórias dos autos, verifica-se harmonia fática e correlação direta entre o diagnóstico situacional apresentado pelo Município de ' + d.municipio + '/RO, a justificativa da demanda e as especificações de ' + d.objeto.toLowerCase() + ' em benefício da unidade ' + d.escola + ', em estrita consonância com os objetivos do regime de colaboração educacional e as diretrizes da Lei Estadual nº 5.735/2024 (Proalfa Rondônia) e da Lei Federal nº 14.113/2020.';
   }
 
   var blocoPendencias = '';
@@ -8449,11 +8447,11 @@ function construirAnaliseContextualizadaItem4(d, modoNivel, padraoIdx) {
   } else if (padraoIdx === 2) {
     p1 = 'Examinando-se o conjunto probatório e documental juntado ao Processo nº ' + d.numero + (nomesDocsStr ? ' — especificamente os arquivos ' + nomesDocsStr + ' —' : '') + ', verifica-se conexão material e finalidade convergente voltada a ' + d.objeto.toLowerCase() + ' na escola ' + d.escola + ' (' + d.municipio + '/RO), ' + strValorContexto + '.';
   } else if (padraoIdx === 3) {
-    p1 = 'Em cumprimento às diretrizes de auditoria do Script Mestre CAM V1.0, procedeu-se ao exame integral da proposição do Município de ' + d.municipio + '/RO para ' + d.objeto.toLowerCase() + ' em atendimento à comunidade escolar de ' + d.escola + ' (' + strValorContexto + '), ' + strRefDocs + '.';
+    p1 = 'Em cumprimento às diretrizes técnicas e operacionais aplicáveis à instrução processual, procedeu-se ao exame integral da proposição encaminhada pelo Município de ' + d.municipio + '/RO para ' + d.objeto.toLowerCase() + ' em atendimento à comunidade escolar de ' + d.escola + ' (' + strValorContexto + '), ' + strRefDocs + '.';
   } else if (padraoIdx === 4) {
     p1 = 'Conforme instrução técnica consolidada ' + strRefDocs + ', a demanda municipal de ' + d.municipio + '/RO objetiva ' + d.objeto.toLowerCase() + ' para a instituição ' + d.escola + ', ' + strValorContexto + ', visando suprir necessidade concreta de infraestrutura e suporte pedagógico.';
   } else if (padraoIdx === 5) {
-    p1 = 'Submetidos os autos nº ' + d.numero + ' à Matriz de Verificação de Conformidade (Script CAM V1.0) ' + strRefDocs + ', aferiu-se que o objeto pretendido (' + d.objeto + ' para ' + d.escola + ' — ' + d.municipio + '/RO, ' + strValorContexto + ') apresenta encadeamento técnico entre justificativa, metas e resultados esperados.';
+    p1 = 'Procedida à minuciosa conferência dos autos nº ' + d.numero + ' ' + strRefDocs + ', aferiu-se que o objeto pretendido (' + d.objeto + ' para ' + d.escola + ' — ' + d.municipio + '/RO, ' + strValorContexto + ') apresenta encadeamento lógico e substancial entre o diagnóstico da necessidade, as metas físicas delimitadas e os resultados pedagógicos esperados.';
   } else if (padraoIdx === 6) {
     p1 = 'Trata-se de avaliação conclusiva de coerência, conexão documental e legalidade ' + strRefDocs + ', referente ao pleito do Município de ' + d.municipio + '/RO para ' + d.objeto.toLowerCase() + ' na unidade ' + d.escola + ' (' + strValorContexto + ').';
   } else {
@@ -10143,25 +10141,24 @@ function gerarAnaliseNeutraItem4(d, nivel4) {
   }
 
   // Cabeçalho da Análise Nua e Crua sem maquiagem
-  let p1 = 'ANÁLISE TÉCNICA E NEUTRA (FRIEZA DA LEI — SEM MAQUIAGEM)\n' +
-    'Processo SEI nº ' + proc + ' | Interessado: ' + mun + '/RO — ' + esc + ' | Objeto: ' + obj + ' | Valor: R$ ' + val + '\n' +
-    'Scripts Utilizados como Base: ' + scriptsAtivosStr + '.\n' +
-    'Calibragem do Rigor: MODO ' + nivelAudit.toUpperCase() + ' (Auditoria sob estrita legalidade, sem benevolência retórica).';
+  let p1 = 'PARECER TÉCNICO DE VIABILIDADE E CONFORMIDADE NORMATIVA\n' +
+    'Processo nº ' + proc + ' | Proponente: Município de ' + mun + '/RO — ' + esc + ' | Objeto: ' + obj + ' | Valor Estimado: R$ ' + val + '\n' +
+    'Fundamentação Regulatória: Constituição Federal (arts. 37, 205 e 211), LINDB (arts. 20 a 22), Lei Federal nº 9.784/1999 e Lei Estadual nº 5.735/2024.';
 
-  let p2 = '1. DELIMITAÇÃO DA ANÁLISE SOB AS REGRAS VIGENTES:\n' +
-    'O presente exame afasta qualquer juízo de conveniência política ou simpatia institucional. Avalia-se estritamente se o conjunto probatório instruído pelo proponente atende ou viola as exigências legais e os critérios previstos nos scripts operacionais homologados.';
+  let p2 = '1. EXAME OBJETIVO DE ADMISSIBILIDADE E LEGALIDADE ESTRITA:\n' +
+    'A presente manifestação decorre de rigorosa conferência técnico-documental, pautando-se exclusivamente pelo princípio da impessoalidade e pelo cotejo das peças encartadas pelo ente municipal frente às exigências formais e materiais que regem a celebração de parcerias e transferências voluntárias na administração pública.';
 
   let p3 = '';
   if (conflitos.length > 0) {
-    p3 = '2. PONTOS EM CONFLITO DIRETO COM AS REGRAS DOS SCRIPTS (' + conflitos.length + ' INCONGRUÊNCIA' + (conflitos.length > 1 ? 'S' : '') + ' DETECTADA' + (conflitos.length > 1 ? 'S' : '') + '):\n' +
+    p3 = '2. PONTOS DE ATENÇÃO E INCONGRUÊNCIAS DOCUMENTAIS APURADAS (' + conflitos.length + ' APONTAMENTO' + (conflitos.length > 1 ? 'S' : '') + '):\n' +
       conflitos.map(function(c, idx) {
-        return '   [' + (idx + 1) + '] VIOLAÇÃO / PENDÊNCIA PERANTE A REGRA "' + c.regra.toUpperCase() + '":\n' +
-               '       • Situação Encontrada nos Autos: ' + c.inconsistencia + '\n' +
-               '       • Descompasso Apurado: ' + c.coerencia + '\n' +
-               '       • Conduta Legal Exigida para Saneamento (Sem Maquiagem): ' + c.solucaoObrigatoria;
+        return '   [' + (idx + 1) + '] EXIGÊNCIA TÉCNICA: ' + c.regra.toUpperCase() + '\n' +
+               '       • Situação Identificada nos Autos: ' + c.inconsistencia + '\n' +
+               '       • Apontamento Técnico: ' + c.coerencia + '\n' +
+               '       • Medida Saneadora Indispensável: ' + c.solucaoObrigatoria;
       }).join('\n\n') + '\n\n' +
-      '3. RISCO JURÍDICO E RESPONSABILIZAÇÃO PRÁTICA (LINDB, ARTS. 20 A 22):\n' +
-      'Sob a ótica da legalidade e da responsabilidade fiscal, dar prosseguimento a repasses sem o saneamento dos itens acima acarreta vício na instrução processual e risco de rejeição em órgãos de controle interno e externo. É dever funcional apontar as irregularidades de forma nua e crua.';
+      '3. AVALIAÇÃO DE CONSEQUÊNCIAS PRÁTICAS E SEGURANÇA JURÍDICA (LINDB, ARTS. 20 A 22):\n' +
+      'Em estrita conformidade com os postulados da responsabilidade decisória e prevenindo futuras glosas ou apontamentos de auditoria pelos órgãos de fiscalização, a continuidade dos atos autorizativos de despesa demanda a prévia regularização formal das condicionantes identificadas, assegurando total higidez jurídica ao termo de colaboração.';
   } else {
     p3 = '2. AFERIÇÃO DE CONFORMIDADE ESTRITA:\n' +
       'Confrontadas as peças do processo com os critérios dos scripts (' + scriptsAtivosStr + '), não se constataram omissões materiais impeditivas ou divergências financeiras no montante de R$ ' + val + '.\n\n' +
@@ -10483,7 +10480,7 @@ function aplicarAnaliseNeutraEmTodasAsSecoes() {
     el1.value = 'Processo: ' + d.numero + '\n' +
                 'Interessado: ' + d.escola + ' — Município de ' + d.municipio + '/RO\n' +
                 'Assunto: Exame Técnico Imparcial sob a Frieza da Lei — ' + d.objeto + (d.temValor ? ' (R$ ' + d.valor + ')' : '') + '\n' +
-                'Regras de Auditoria: CF/88, LINDB (arts. 20 a 22), Lei nº 9.784/99 e Lei Estadual nº 5.735/2024. Peças Analisadas: ' + docsStr;
+                'Fundamentação: CF/88 (arts. 205 e 211), LINDB (arts. 20 a 22) e Lei Estadual nº 5.735/2024. Documentos Analisados: ' + docsStr;
   }
 
   // Caixa 2: Fundamentação Constitucional e Legal Estrita
