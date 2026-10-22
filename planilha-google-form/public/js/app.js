@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.28
+// Versão do Sistema: v1.3.29
 // ============================================================
-window.APP_VERSION = 'v1.3.28';
+window.APP_VERSION = 'v1.3.29';
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
 if (typeof window.abrirModalPrestacaoContas !== 'function') {
@@ -10501,6 +10501,7 @@ window.entregarRelatorioFinalCAM = entregarRelatorioFinalCAM;
 
 function limparAnaliseCAM() {
   window._analiseCamAtual = null;
+  window._auditoriaAntiGravityV2Atual = null;
   window._travaDemandaDivergente = false;
   window._motivoTravaDemanda = '';
   const banner = document.getElementById('banner-conformidade-demanda');
@@ -10510,6 +10511,11 @@ function limparAnaliseCAM() {
   }
   const painel = document.getElementById('painel-analise-cam-resultado');
   if (painel) painel.style.display = 'none';
+  const painelAG = document.getElementById('painel-resumo-auditoria-antigravity-v2');
+  if (painelAG) {
+    painelAG.style.display = 'none';
+    painelAG.innerHTML = '';
+  }
 }
 window.limparAnaliseCAM = limparAnaliseCAM;
 
@@ -10599,7 +10605,7 @@ function renderizarRepositorioArquivos() {
   if (arquivos.length === 0) {
     container.innerHTML = `
       <div id="repositorio-vazio-msg" onclick="document.getElementById('input-file-repositorio').click()" style="padding:24px 14px; text-align:center; color:#94a3b8; font-size:12.5px; background:rgba(16,185,129,0.04); border-radius:8px; border:1px dashed rgba(16,185,129,0.35); cursor:pointer;">
-        📑 Nenhum documento guardado ainda neste processo. Clique em <strong>+ Anexar Documentos</strong> ou solte os arquivos PDF aqui para análise conjunta pelo Script CAM V1.0.
+        📑 Nenhum documento guardado ainda neste processo. Clique em <strong>+ Anexar Documentos</strong> (ex.: <strong>Doc A: Ofício/Solicitação</strong> e <strong>Doc B: Plano de Trabalho/Aplicação</strong>) e clique em <strong>🛡️ Auditoria Parcerias v2.0 & Gerar Documento</strong>.
       </div>
     `;
     renderizarChecksReferenciasRelatorio();
@@ -10611,6 +10617,13 @@ function renderizarRepositorioArquivos() {
     if (arq.tipo === 'pdf') { icon = '📕'; }
     else if (arq.tipo === 'doc' || arq.tipo === 'docx') { icon = '📘'; }
     const isSel = arq.selecionado !== false;
+    const papelAG = typeof classificarPapelDocumentoAntiGravity === 'function'
+      ? classificarPapelDocumentoAntiGravity(arq, idx, arquivos)
+      : (idx === 0 ? 'DOC_A' : 'DOC_B');
+    const isDocA = papelAG === 'DOC_A';
+    const labelPapel = isDocA ? '📑 DOC A: Ofício/Solicitação' : '📊 DOC B: Plano de Trabalho';
+    const corPapel = isDocA ? '#fbbf24' : '#38bdf8';
+    const bgPapel = isDocA ? 'rgba(245,158,11,0.16)' : 'rgba(56,189,248,0.16)';
 
     return `
       <div style="background:${isSel ? 'rgba(16,185,129,0.08)' : 'rgba(0,0,0,0.3)'}; border:1px solid ${isSel ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.08)'}; border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
@@ -10618,8 +10631,11 @@ function renderizarRepositorioArquivos() {
           <input type="checkbox" ${isSel ? 'checked' : ''} onchange="toggleSelecaoDocumentoRepositorio(${idx}, this.checked)" style="width:16px; height:16px; accent-color:#10b981; cursor:pointer; flex-shrink:0;" title="Marcar documento para análise conjunta e referência no relatório">
           <span style="font-size:18px; flex-shrink:0;">${icon}</span>
           <div style="overflow:hidden;">
-            <div style="font-weight:700; color:#f8fafc; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${arq.nome}">
-              ${arq.nome}
+            <div style="font-weight:700; color:#f8fafc; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:flex; align-items:center; gap:6px; flex-wrap:wrap;" title="${arq.nome}">
+              <span>${arq.nome}</span>
+              <span onclick="event.preventDefault(); event.stopPropagation(); alternarPapelDocumentoAntiGravity(${idx});" style="background:${bgPapel}; color:${corPapel}; border:1px solid ${corPapel}; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:800; cursor:pointer;" title="Clique para alternar entre DOC A (Ofício/Solicitação) e DOC B (Plano de Trabalho/Aplicação) na Auditoria AntiGravity v2.0">
+                ${labelPapel} ⇄
+              </span>
             </div>
             <div style="font-size:10.5px; color:#94a3b8;">
               ${arq.tamanho} • ${arq.data} • <span style="color:#38bdf8; font-weight:700;">💾 Fora de Memória</span> • ${isSel ? '<span style="color:#34d399; font-weight:700;">✓ Marcado p/ Análise</span>' : '<span style="color:#64748b;">Desmarcado</span>'}
@@ -10635,6 +10651,9 @@ function renderizarRepositorioArquivos() {
           </button>
           <button type="button" onclick="reanalisarArquivoRepositorio(${idx})" class="btn" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:4px 8px; font-size:10.5px; font-weight:700; border-radius:4px; cursor:pointer;" title="Fazer refresh e reanalisar conjunto documental com Script CAM">
             ⚡ Analisar
+          </button>
+          <button type="button" onclick="executarAuditoriaComparativaAntiGravityV2(true)" class="btn" style="background:rgba(239,68,68,0.18); color:#fca5a5; border:1px solid rgba(239,68,68,0.45); padding:4px 8px; font-size:10.5px; font-weight:800; border-radius:4px; cursor:pointer;" title="Auditar documento sob o Script AntiGravity v2.0 (Doc A x Doc B) e gerar Relatório + Minuta">
+            🛡️ Auditar v2.0
           </button>
           <button type="button" onclick="removerArquivoRepositorio(${idx})" class="btn" style="background:rgba(239,68,68,0.16); color:#f87171; border:1px solid rgba(239,68,68,0.4); padding:4px 9px; font-size:10.5px; font-weight:800; border-radius:4px; cursor:pointer;" title="Lixeira: Excluir documento do processo e liberar memória">
             🗑️ Excluir
@@ -11882,3 +11901,1211 @@ function aplicarComboCalibragem(tipoCombo) {
   atualizarCalibragemEGerar();
 }
 window.aplicarComboCalibragem = aplicarComboCalibragem;
+
+
+// =========================================================================
+// SISTEMA ANTIGRAVITY v2.0 — AGENTE AntiGravity_Convenio_Auditor v2.0.0
+// Script Completo de Auditoria e Análise Comparativa de Parcerias
+// Link de Referência: https://docs.google.com/document/d/1QC2IifPCQDgn01796k1Zo_e9fJRpbb59/edit
+// =========================================================================
+
+const DEFAULT_SCRIPT_ANTIGRAVITY_V2 = `SCRIPT COMPLETO DE AUDITORIA E ANÁLISE COMPARATIVA DE PARCERIAS (SISTEMA ANTIGRAVITY v2.0)
+Referência Oficial: https://docs.google.com/document/d/1QC2IifPCQDgn01796k1Zo_e9fJRpbb59/edit
+
+1. ESPECIFICAÇÃO TÉCNICA DO AGENTE
+Nome do Agente: AntiGravity_Convenio_Auditor
+Versão: 2.0.0
+Domínio de Aplicação: Análise de Convênios, Termos de Fomento, Termos de Colaboração e Repasses Públicos.
+Objetivo: Executar a validação cruzada automatizada entre documentos institucionais de solicitação (Ofício/Requerimento) e documentos técnicos operacionais (Plano de Trabalho/Plano de Aplicação), identificando divergências financeiras, cadastrais, formais e de conteúdo.
+
+2. ARQUITETURA DE PIPELINE DO AGENTE
+                     ┌───────────────────────────────┐
+                     │    ENTRADA DE DOCUMENTOS      │
+                     │  - Doc A: Ofício/Solicitação  │
+                     │  - Doc B: Plano de Trabalho   │
+                     └───────────────┬───────────────┘
+                                     │
+                                     ▼
+                     ┌───────────────────────────────┐
+                     │ ETAPA 1: OCR & EXTRAÇÃO LLM   │
+                     │  - Parsing via JSON Schema    │
+                     └───────────────┬───────────────┘
+                                     │
+                                     ▼
+                     ┌───────────────────────────────┐
+                     │  ETAPA 2: MOTORES DE REGRAS   │
+                     │  - Regra FIN-01 (Valores)     │
+                     │  - Regra OBJ-02 (Escopo)      │
+                     │  - Regra REP-03 (Signatários) │
+                     └───────────────┬───────────────┘
+                                     │
+                                     ▼
+                     ┌───────────────────────────────┐
+                     │ ETAPA 3: ÁRVORE DE DECISÃO    │
+                     │  - Classificação de Risco     │
+                     └───────────────┬───────────────┘
+                                     │
+                                     ▼
+                     ┌───────────────────────────────┐
+                     │   ETAPA 4: SAÍDA E MINUTAS    │
+                     │  - Relatório de Conformidade  │
+                     │  - Minuta de Notificação      │
+                     └───────────────────────────────┘
+
+3. PROMPT DO SISTEMA (SYSTEM PROMPT COMPLETO)
+SISTEMA: AntiGravity_Convenio_Auditor
+PAPEIS E RESPONSABILIDADES:
+Você é um auditor sênior de controle interno e especialista em parcerias públicas no âmbito da Lei Federal nº 13.019/2014 e normas estaduais/municipais de convênios.
+
+INSTRUÇÕES DE EXECUÇÃO:
+Ao receber o 'DOCUMENTO_A' (Ofício de Solicitação) e o 'DOCUMENTO_B' (Plano de Trabalho):
+
+1. PARSING E ESTRUTURAÇÃO DE DADOS:
+   Extraia estritamente os dados estruturados conforme o esquema JSON definido abaixo.
+
+2. EXECUÇÃO DE REGRAS DE NEGÓCIO:
+
+   [REGRA FIN-01: EQUIVALÊNCIA FINANCEIRA]
+   - Calcule: DIFERENCA_VALOR = | VALOR_TOTAL_DOC_A - VALOR_TOTAL_DOC_B |
+   - Se DIFERENCA_VALOR > 0.00:
+     - Status: FALHA
+     - Severidade: ALTA
+     - Mensagem: "Divergência financeira entre o valor solicitado (R$ X) e a planilha orçamentária (R$ Y). Diferença de R$ Z."
+
+   [REGRA OBJ-02: COERÊNCIA E ESCOPO DO OBJETO]
+   - Extraia a lista de itens/exemplos do DOCUMENTO_A (lista_A).
+   - Extraia a lista oficial de bens do Plano de Aplicação no DOCUMENTO_B (lista_B).
+   - Verifique:
+     a) Itens presentes em lista_A que NÃO constam em lista_B.
+     b) Itens de alta relevância/valor presentes em lista_B que NUNCA foram mencionados em lista_A.
+   - Se houver discrepância:
+     - Status: ADVERTÊNCIA / FALHA
+     - Severidade: MÉDIA
+     - Mensagem: "Incoerência na especificação dos bens descritos na solicitação versus plano de aplicação."
+
+   [REGRA REP-03: LEGITIMIDADE DA REPRESENTAÇÃO LEGAL]
+   - Compare NOMES, CARGOS e ATOS DE DESIGNAÇÃO dos signatários do DOC_A e DOC_B.
+   - Se NOME_SIGNATARIO_A != NOME_SIGNATARIO_B:
+     - Status: FALHA
+     - Severidade: ALTA
+     - Mensagem: "Divergência de representação legal entre os instrumentos. Necessário comprovar competência ou padronizar signatário."
+
+3. GERAÇÃO DE RELATÓRIO E AÇÕES DILIGENCIAIS:
+   Gere uma matriz comparativa completa e a Minuta de Notificação Administrativa pronta para envio ao proponente.
+
+4. SCHEMAS DE EXTRAÇÃO JSON (DATA EXTRACTION CONFIG)
+4.1 Schema do Documento A (Ofício): DocumentoA_Oficio (numero_oficio, data_emissao, orgao_emissor, unidade_beneficiaria, destinatario, valor_solicitado, objetivo_geral, itens_mencionados_exemplo, signatario)
+4.2 Schema do Documento B (Plano de Trabalho): DocumentoB_PlanoDeTrabalho (entidade_proponente, cnpj, responsavel_legal, valor_total_recurso_concedente, valor_total_contrapartida, plano_de_aplicacao)
+
+5. ÁRVORE DE DECISÃO E LÓGICA DE AUDITORIA
+- [DIFERENÇA FINANCEIRA] > 0.00? ==> [CRÍTICO] - Exige Adequação Orçamentária / [CONFORME]
+- [DIVERGÊNCIA DE SIGNATÁRIO]? ==> [ALTO] - Solicitada Comprovação de Representação/Ata / [CONFORME]
+- [ITENS CITADOS NO OFÍCIO AUSENTES NO PLANO]? ==> [MÉDIO] - Requer Alinhamento Descritivo do Objeto / [CONFORME]
+- AVALIAÇÃO DE RESULTADO FINAL:
+  * Contém Erros Críticos ou Altos ==> [PENDENTE DE ADEQUAÇÃO / NOTIFICAR CONVENENTE]
+  * Sem Erros ==> [APROVADO TECNICAMENTE]
+
+6. TEMPLATE COMPLETO DE OUTPUT DA IA (RELATÓRIO DE ANÁLISE + MINUTA DE NOTIFICAÇÃO ADMINISTRATIVA)
+7. MÓDULO DE TRATAMENTO DE ERROS (EXCEPTION HANDLING):
+- ERR_OCR_UNREADABLE: Documento com baixa resolução ou assinatura sobreposta ao texto.
+- ERR_MISSING_SECTION: Ausência do quadro 'Plano de Aplicação' no Plano de Trabalho.
+- ERR_CURRENCY_FORMAT: Valores expressos de forma divergente entre algarismos e extenso.`;
+
+function obterScriptAntiGravityV2Atual() {
+  try {
+    return localStorage.getItem('seduc_script_antigravity_v2') || DEFAULT_SCRIPT_ANTIGRAVITY_V2;
+  } catch (e) {
+    return DEFAULT_SCRIPT_ANTIGRAVITY_V2;
+  }
+}
+window.obterScriptAntiGravityV2Atual = obterScriptAntiGravityV2Atual;
+
+function abrirEditorScriptAntiGravityV2() {
+  const modal = document.getElementById('modal-script-antigravity-v2');
+  const txtArea = document.getElementById('textarea-script-antigravity-v2-editor');
+  const statusMsg = document.getElementById('script-antigravity-v2-status-msg');
+  if (statusMsg) statusMsg.textContent = '';
+  if (txtArea) txtArea.value = obterScriptAntiGravityV2Atual();
+  if (modal) modal.style.display = 'flex';
+}
+window.abrirEditorScriptAntiGravityV2 = abrirEditorScriptAntiGravityV2;
+
+function fecharModalScriptAntiGravityV2() {
+  const modal = document.getElementById('modal-script-antigravity-v2');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalScriptAntiGravityV2 = fecharModalScriptAntiGravityV2;
+
+function salvarScriptAntiGravityV2() {
+  const txtArea = document.getElementById('textarea-script-antigravity-v2-editor');
+  const statusMsg = document.getElementById('script-antigravity-v2-status-msg');
+  if (!txtArea) return;
+  try {
+    localStorage.setItem('seduc_script_antigravity_v2', txtArea.value);
+    if (statusMsg) statusMsg.textContent = '✓ Script AntiGravity v2.0 salvo com sucesso!';
+    toast('Script de Auditoria de Parcerias AntiGravity v2.0 salvo!', 'success');
+    setTimeout(function() {
+      fecharModalScriptAntiGravityV2();
+    }, 650);
+  } catch (e) {
+    toast('Erro ao salvar Script v2.0: ' + e.message, 'error');
+  }
+}
+window.salvarScriptAntiGravityV2 = salvarScriptAntiGravityV2;
+
+function restaurarScriptAntiGravityV2Padrao() {
+  const txtArea = document.getElementById('textarea-script-antigravity-v2-editor');
+  if (txtArea) txtArea.value = DEFAULT_SCRIPT_ANTIGRAVITY_V2;
+  try {
+    localStorage.removeItem('seduc_script_antigravity_v2');
+  } catch (e) {}
+  toast('Script AntiGravity v2.0 restaurado ao padrão original!', 'info');
+}
+window.restaurarScriptAntiGravityV2Padrao = restaurarScriptAntiGravityV2Padrao;
+
+// Classifica cada documento anexado no quadro amarelo como DOC_A (Ofício/Solicitação) ou DOC_B (Plano de Trabalho/Aplicação)
+function classificarPapelDocumentoAntiGravity(arq, idx, todosArquivos) {
+  if (!arq) return 'DOC_B';
+  if (arq.papelAntiGravity === 'DOC_A' || arq.papelAntiGravity === 'DOC_B') {
+    return arq.papelAntiGravity;
+  }
+  const nome = (arq.nome || '').toLowerCase();
+  const texto = (arq.texto || '').toLowerCase().slice(0, 2500);
+
+  if (/of[ií]cio|solicita[cç][aã]o|requerimento|encaminhamento|pedido|carta/i.test(nome)) {
+    return 'DOC_A';
+  }
+  if (/plano\s*de\s*trabalho|plano\s*de\s*aplica|planilha|or[cç]ament|termo|projeto\s*b[aá]sico/i.test(nome)) {
+    return 'DOC_B';
+  }
+  if (/of[ií]cio\s*n[º°o]/i.test(texto) && !/plano\s*de\s*aplica[cç][aã]o/i.test(texto)) {
+    return 'DOC_A';
+  }
+  if (/plano\s*de\s*trabalho|plano\s*de\s*aplica[cç][aã]o|cronograma\s*de\s*desembolso/i.test(texto)) {
+    return 'DOC_B';
+  }
+  return idx === 0 ? 'DOC_A' : 'DOC_B';
+}
+window.classificarPapelDocumentoAntiGravity = classificarPapelDocumentoAntiGravity;
+
+function alternarPapelDocumentoAntiGravity(idx) {
+  const arquivos = window._repositorioArquivosAtuais || [];
+  if (!arquivos[idx]) return;
+  const atual = classificarPapelDocumentoAntiGravity(arquivos[idx], idx, arquivos);
+  arquivos[idx].papelAntiGravity = (atual === 'DOC_A') ? 'DOC_B' : 'DOC_A';
+  salvarDocumentosPersistidosProcessoAtual();
+  renderizarRepositorioArquivos();
+  toast('Documento "' + arquivos[idx].nome + '" classificado como ' + (arquivos[idx].papelAntiGravity === 'DOC_A' ? 'DOC A (Ofício/Solicitação)' : 'DOC B (Plano de Trabalho)'), 'info');
+  if (window._auditoriaAntiGravityV2Atual) {
+    executarAuditoriaComparativaAntiGravityV2(false);
+  }
+}
+window.alternarPapelDocumentoAntiGravity = alternarPapelDocumentoAntiGravity;
+
+// Utilitários de parsing monetário e textual para o Agente AntiGravity_Convenio_Auditor v2.0
+function converterMoedaBRParaNumero(str) {
+  if (typeof str === 'number') return isNaN(str) ? 0 : str;
+  if (!str) return 0;
+  const limpo = String(str).replace(/[R$\s]/g, '').trim();
+  if (!limpo) return 0;
+  if (limpo.indexOf(',') >= 0) {
+    const num = parseFloat(limpo.replace(/\./g, '').replace(',', '.'));
+    return isNaN(num) ? 0 : Math.round(num * 100) / 100;
+  }
+  const num = parseFloat(limpo);
+  return isNaN(num) ? 0 : Math.round(num * 100) / 100;
+}
+
+function formatarNumeroMoedaBR(num) {
+  const val = typeof num === 'number' && !isNaN(num) ? num : 0;
+  return val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function extrairValoresMonetariosDeTexto(texto) {
+  if (!texto) return [];
+  const regex = /R\$\s*([0-9]{1,3}(?:\.[0-9]{3})*(?:,[0-9]{2})|[0-9]+(?:,[0-9]{2}))/gi;
+  const encontrados = [];
+  let m;
+  while ((m = regex.exec(texto)) !== null) {
+    const val = converterMoedaBRParaNumero(m[1]);
+    if (val > 0) encontrados.push(val);
+  }
+  return encontrados;
+}
+
+function extrairSignatarioDeTexto(texto, fallbackNome, fallbackCargo, fallbackAto) {
+  if (!texto) {
+    return {
+      nome: fallbackNome || 'Não identificado documentalmente',
+      cargo: fallbackCargo || 'Representante / Signatário',
+      decreto_portaria: fallbackAto || 'Ato de designação/posse não informado'
+    };
+  }
+  let nome = '';
+  let cargo = '';
+  let ato = '';
+
+  const mAssinado = texto.match(/(?:Assinado\s+(?:eletronicamente\s+)?por|Signat[aá]rio|Respons[aá]vel\s+Legal|Prefeito(?:a)?\s+Municipal|Secret[aá]rio(?:a)?\s+Municipal|Presidente(?:\s+do\s+Conselho)?)[:\s\-–]+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][A-Za-záéíóúâêôãõç\s]{5,60})/i);
+  if (mAssinado && mAssinado[1]) {
+    nome = mAssinado[1].split(/\r?\n/)[0].trim();
+  }
+
+  const mCargo = texto.match(/(Prefeito(?:a)?\s+Municipal|Secret[aá]rio(?:a)?\s+(?:Municipal|de\s+Estado)[^,\n\r]{0,35}|Presidente\s+do\s+Conselho\s+Escolar|Diretor(?:a)?\s+Escolar|Coordenador(?:a)?\s+Regional)/i);
+  if (mCargo && mCargo[1]) {
+    cargo = mCargo[1].trim();
+  }
+
+  const mAto = texto.match(/((?:Decreto|Portaria|Ata\s+de\s+Elei[cç][aã]o|Termo\s+de\s+Posse)\s*(?:n[º°o.]?\s*)?[0-9./\-A-Za-z]{2,30})/i);
+  if (mAto && mAto[1]) {
+    ato = mAto[1].trim();
+  }
+
+  return {
+    nome: nome || fallbackNome || 'Não identificado documentalmente',
+    cargo: cargo || fallbackCargo || 'Representante Legal / Signatário',
+    decreto_portaria: ato || fallbackAto || 'Não consta nos autos'
+  };
+}
+
+function extrairItensMencionadosTexto(texto, objetoPadrao) {
+  const catalogo = [
+    'Central de Ar Condicionado', 'Ar Condicionado', 'Split', 'Climatizador',
+    'Computador', 'Desktop', 'Notebook', 'Impressora', 'Projetor Multimídia', 'Datashow', 'Lousa Digital',
+    'Smart TV', 'Televisor', 'Caixa de Som', 'Microfone',
+    'Carteira Escolar', 'Conjunto Aluno', 'Conjunto Professor', 'Mesa', 'Cadeira', 'Armário de Aço', 'Estante',
+    'Quadro Branco', 'Bebedouro Industrial', 'Freezer', 'Geladeira', 'Refrigerador', 'Fogão Industrial', 'Liquidificador Industrial',
+    'Batedeira', 'Forno', 'Utensílios de Cozinha', 'Ventilador',
+    'Ônibus Escolar', 'Transporte Escolar', 'Caminhonete', 'Veículo',
+    'Reforma', 'Ampliação', 'Pintura', 'Cobertura', 'Subestação Elétrica', 'Quadra Poliesportiva',
+    'Kit Pedagógico', 'Livros Didáticos', 'Material Esportivo', 'Instrumentos Musicais', 'Parque Infantil', 'Playground'
+  ];
+
+  const fonte = (texto || '') + ' ' + (objetoPadrao || '');
+  const encontrados = [];
+  catalogo.forEach(function(item) {
+    const rx = new RegExp('\\b' + item.replace(/\s+/g, '\\s+') + 's?\\b', 'i');
+    if (rx.test(fonte) && encontrados.indexOf(item) === -1) {
+      encontrados.push(item);
+    }
+  });
+
+  if (encontrados.length === 0 && objetoPadrao) {
+    const partes = objetoPadrao
+      .split(/[,;•\n]+|\s+e\s+/i)
+      .map(function(s) { return s.trim(); })
+      .filter(function(s) { return s.length > 3 && s.length < 75; });
+    partes.slice(0, 6).forEach(function(p) { encontrados.push(p); });
+  }
+  return encontrados;
+}
+
+function extrairPlanoAplicacaoDeTexto(texto, valorTotalPadrao, itensBase) {
+  const plano = [];
+  if (texto) {
+    // Tenta extrair linhas de tabela com quantidade e valores monetários
+    const linhas = texto.split(/\r?\n/);
+    let itemCounter = 1;
+    for (let i = 0; i < linhas.length; i++) {
+      const ln = linhas[i].trim();
+      if (ln.length < 8) continue;
+      const vals = extrairValoresMonetariosDeTexto(ln);
+      if (vals.length >= 1) {
+        const valorTotalLinha = vals[vals.length - 1];
+        const valorUnitLinha = vals.length >= 2 ? vals[vals.length - 2] : valorTotalLinha;
+        const mQtd = ln.match(/\b([1-9][0-9]{0,3})\s*(?:un|und|unid|kit|cj|conj|pç|pc|serv|m2|m²|global)?\b/i);
+        const qtd = mQtd ? parseInt(mQtd[1], 10) : (valorUnitLinha > 0 ? Math.max(1, Math.round(valorTotalLinha / valorUnitLinha)) : 1);
+        const descLimpa = ln
+          .replace(/R\$\s*[0-9.,]+/gi, '')
+          .replace(/^\d+[\s.\-–)]+/, '')
+          .trim();
+        if (descLimpa.length >= 4 && !/total\s*geral|subtotal|repasse|contrapartida|valor\s*solicitado/i.test(descLimpa)) {
+          plano.push({
+            item_num: itemCounter++,
+            descricao_item: descLimpa.slice(0, 90),
+            unidade: 'UN',
+            quantidade: qtd || 1,
+            valor_unitario: Math.round((valorTotalLinha / (qtd || 1)) * 100) / 100,
+            valor_total: valorTotalLinha
+          });
+        }
+      }
+      if (plano.length >= 12) break;
+    }
+  }
+
+  if (plano.length === 0) {
+    const listaBase = (Array.isArray(itensBase) && itensBase.length > 0)
+      ? itensBase
+      : ['Equipamentos e Materiais Permanentes conforme Plano de Aplicação'];
+    const totalRef = valorTotalPadrao > 0 ? valorTotalPadrao : 0;
+    const valorPorItem = listaBase.length > 0 && totalRef > 0
+      ? Math.round((totalRef / listaBase.length) * 100) / 100
+      : 0;
+    listaBase.forEach(function(desc, idx) {
+      const isUltimo = idx === listaBase.length - 1;
+      const somaAnterior = valorPorItem * idx;
+      const vTotal = isUltimo && totalRef > 0 ? Math.max(0, Math.round((totalRef - somaAnterior) * 100) / 100) : valorPorItem;
+      plano.push({
+        item_num: idx + 1,
+        descricao_item: desc,
+        unidade: 'UN',
+        quantidade: 1,
+        valor_unitario: vTotal,
+        valor_total: vTotal
+      });
+    });
+  }
+  return plano;
+}
+
+// =========================================================================
+// MOTOR PRINCIPAL: executarAuditoriaComparativaAntiGravityV2(abrirModal)
+// Analisa os documentos no local amarelo (#repositorio-lista-arquivos) sob o
+// SCRIPT COMPLETO DE AUDITORIA E ANÁLISE COMPARATIVA DE PARCERIAS v2.0
+// =========================================================================
+function executarAuditoriaComparativaAntiGravityV2(abrirModal) {
+  const todosArquivos = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+  const arquivosMarcados = todosArquivos.filter(function(a) { return a.selecionado !== false; });
+  const docsParaAnalise = arquivosMarcados.length > 0 ? arquivosMarcados : todosArquivos;
+
+  // Dados cadastrais do formulário do processo SEI
+  const numProcesso = (document.getElementById('f-processo')?.value || '').trim() || '0029.000000/2026-00';
+  const municipio = (document.getElementById('f-municipio')?.value || '').trim() || 'Município Proponente';
+  const escolaBeneficiaria = (document.getElementById('f-escola')?.value || '').trim() || ('Rede Pública / Unidade Escolar de ' + municipio);
+  const cnpjForm = (document.getElementById('f-cnpj')?.value || '').trim() || '00.000.000/0001-00';
+  const oficioForm = (document.getElementById('f-oficio')?.value || '').trim() || 'Ofício s/nº - Gabinete/Proponente';
+  const seiOficioForm = (document.getElementById('f-sei-oficio')?.value || '').trim();
+  const seiPlanoForm = (document.getElementById('f-sei-plano')?.value || '').trim();
+  const objetoForm = (document.getElementById('f-objeto')?.value || '').trim() || 'Execução de parceria educacional / aquisição de bens e equipamentos';
+  const valorGlobalForm = converterMoedaBRParaNumero(document.getElementById('f-valor')?.value || '');
+  const valorRepasseForm = converterMoedaBRParaNumero(document.getElementById('f-repasse')?.value || '');
+  const valorContrapartidaForm = converterMoedaBRParaNumero(document.getElementById('f-contrapartida')?.value || '');
+
+  // Separa os documentos do quadro amarelo em DOC A (Ofício/Solicitação) e DOC B (Plano de Trabalho)
+  const docsA = [];
+  const docsB = [];
+  docsParaAnalise.forEach(function(arq, idx) {
+    const papel = classificarPapelDocumentoAntiGravity(arq, idx, docsParaAnalise);
+    if (papel === 'DOC_A') docsA.push(arq);
+    else docsB.push(arq);
+  });
+
+  // Se houver apenas 1 documento anexado, usa-o como fonte primária e confronta com os dados cadastrais/segundo documento
+  const textoDocA = docsA.map(function(d) { return d.texto || ''; }).join('\n\n');
+  const textoDocB = docsB.map(function(d) { return d.texto || ''; }).join('\n\n');
+  const nomesDocA = docsA.map(function(d) { return d.nome; }).join(', ') || (seiOficioForm ? ('Ofício SEI ' + seiOficioForm) : 'Ofício de Solicitação (Dados do Processo)');
+  const nomesDocB = docsB.map(function(d) { return d.nome; }).join(', ') || (seiPlanoForm ? ('Plano de Trabalho SEI ' + seiPlanoForm) : 'Plano de Trabalho / Aplicação (Dados do Processo)');
+
+  // -------------------------------------------------------------------------
+  // ETAPA 1: OCR & EXTRAÇÃO LLM — PARSING VIA JSON SCHEMA (4.1 e 4.2)
+  // -------------------------------------------------------------------------
+  const valoresExtraidosA = extrairValoresMonetariosDeTexto(textoDocA);
+  const valoresExtraidosB = extrairValoresMonetariosDeTexto(textoDocB);
+
+  const valorBaseFormulario = valorRepasseForm > 0 ? valorRepasseForm : (valorGlobalForm > 0 ? valorGlobalForm : 0);
+  const valorSolicitadoDocA = valoresExtraidosA.length > 0
+    ? Math.max.apply(null, valoresExtraidosA)
+    : valorBaseFormulario;
+
+  const valorTotalConcedenteDocB = valoresExtraidosB.length > 0
+    ? Math.max.apply(null, valoresExtraidosB)
+    : (valorGlobalForm > 0 ? valorGlobalForm : valorSolicitadoDocA);
+
+  const mNumOficio = textoDocA.match(/Of[ií]cio\s*(?:n[º°o.]?\s*)?([0-9]{1,5}(?:\/[0-9]{4})?(?:\s*[-–/]\s*[A-Za-z0-9.\-]+)?)/i);
+  const numeroOficioExtraido = (mNumOficio && mNumOficio[1]) ? ('Ofício nº ' + mNumOficio[1].trim()) : oficioForm;
+
+  const mDataDocA = textoDocA.match(/\b(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2})\b/);
+  const dataEmissaoDocA = mDataDocA ? mDataDocA[1] : new Date().toISOString().slice(0, 10);
+
+  const mCnpjDocB = (textoDocB + ' ' + textoDocA).match(/\b\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\b/);
+  const cnpjExtraido = mCnpjDocB ? mCnpjDocB[0] : cnpjForm;
+
+  const signatarioDocA = extrairSignatarioDeTexto(
+    textoDocA,
+    docsA.length > 0 ? ('Titular Emissor (' + municipio + ')') : ('Gestor Solicitante - ' + municipio),
+    'Secretário(a) / Dirigente Solicitante',
+    'Portaria/Ato do Órgão Emissor'
+  );
+
+  const responsavelLegalDocB = extrairSignatarioDeTexto(
+    textoDocB,
+    docsB.length > 0 && docsA.length > 0 && textoDocA !== textoDocB
+      ? ('Presidente / Responsável Técnico (' + escolaBeneficiaria + ')')
+      : signatarioDocA.nome,
+    docsB.length > 0 && docsA.length > 0 && textoDocA !== textoDocB
+      ? 'Presidente do Conselho Escolar / Proponente'
+      : signatarioDocA.cargo,
+    'Decreto/Ata de Posse da Unidade Executora'
+  );
+
+  const itensMencionadosA = extrairItensMencionadosTexto(textoDocA, objetoForm);
+  const itensMencionadosB = extrairItensMencionadosTexto(textoDocB, objetoForm);
+  const planoAplicacaoB = extrairPlanoAplicacaoDeTexto(textoDocB, valorTotalConcedenteDocB, itensMencionadosB);
+
+  const somaPlanoAplicacaoB = Math.round(planoAplicacaoB.reduce(function(acc, it) {
+    return acc + (Number(it.valor_total) || 0);
+  }, 0) * 100) / 100;
+
+  // Schema 4.1: DocumentoA_Oficio
+  const schemaDocA = {
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    title: 'DocumentoA_Oficio',
+    arquivo_origem: nomesDocA,
+    numero_oficio: numeroOficioExtraido,
+    data_emissao: dataEmissaoDocA,
+    orgao_emissor: 'Prefeitura / Secretaria Municipal ou Unidade de ' + municipio,
+    unidade_beneficiaria: escolaBeneficiaria,
+    destinatario: {
+      nome: 'Secretaria de Estado da Educação de Rondônia',
+      cargo: 'Secretário(a) de Estado da Educação / GDSM',
+      orgao: 'SEDUC/RO'
+    },
+    valor_solicitado: valorSolicitadoDocA,
+    objetivo_geral: objetoForm,
+    itens_mencionados_exemplo: itensMencionadosA,
+    signatario: {
+      nome: signatarioDocA.nome,
+      cargo: signatarioDocA.cargo
+    }
+  };
+
+  // Schema 4.2: DocumentoB_PlanoDeTrabalho
+  const schemaDocB = {
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    title: 'DocumentoB_PlanoDeTrabalho',
+    arquivo_origem: nomesDocB,
+    entidade_proponente: escolaBeneficiaria + ' (' + municipio + '/RO)',
+    cnpj: cnpjExtraido,
+    responsavel_legal: {
+      nome: responsavelLegalDocB.nome,
+      cargo: responsavelLegalDocB.cargo,
+      decreto_portaria: responsavelLegalDocB.decreto_portaria
+    },
+    valor_total_recurso_concedente: valorTotalConcedenteDocB,
+    valor_total_contrapartida: valorContrapartidaForm,
+    soma_itens_plano_aplicacao: somaPlanoAplicacaoB,
+    plano_de_aplicacao: planoAplicacaoB
+  };
+
+  // -------------------------------------------------------------------------
+  // MÓDULO DE TRATAMENTO DE ERROS (SEÇÃO 7 DO SCRIPT: EXCEPTION HANDLING)
+  // -------------------------------------------------------------------------
+  const excecoesDetectadas = [];
+  docsParaAnalise.forEach(function(d) {
+    const txtLen = (d.texto || '').trim().length;
+    if (txtLen < 40) {
+      excecoesDetectadas.push({
+        codigo: 'ERR_OCR_UNREADABLE',
+        severidade: 'ALTA',
+        arquivo: d.nome,
+        mensagem: 'Documento "' + d.nome + '" com baixa resolução, digitalização em imagem pura ou assinatura sobreposta ao texto (OCR extraiu menos de 40 caracteres).'
+      });
+    }
+  });
+
+  if (docsB.length === 0 || (textoDocB.length > 0 && !/plano\s*de\s*aplica|valor\s*unit|quant|item|or[cç]ament/i.test(textoDocB))) {
+    excecoesDetectadas.push({
+      codigo: 'ERR_MISSING_SECTION',
+      severidade: 'MÉDIA',
+      arquivo: nomesDocB,
+      mensagem: 'Ausência de quadro formal "Plano de Aplicação" detalhado (item, unidade, quantidade, valor unitário e valor total) ou documento B não anexado separadamente.'
+    });
+  }
+
+  if (valorSolicitadoDocA <= 0 && valorTotalConcedenteDocB <= 0) {
+    excecoesDetectadas.push({
+      codigo: 'ERR_CURRENCY_FORMAT',
+      severidade: 'ALTA',
+      arquivo: nomesDocA + ' / ' + nomesDocB,
+      mensagem: 'Valores financeiros não localizados em formato monetário padrão (R$ X.XXX,XX) ou divergentes entre algarismos e extenso.'
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // ETAPA 2: EXECUÇÃO DOS MOTORES DE REGRAS (FIN-01, OBJ-02, REP-03)
+  // -------------------------------------------------------------------------
+
+  // [REGRA FIN-01: EQUIVALÊNCIA FINANCEIRA]
+  const diferencaValor = Math.round(Math.abs(schemaDocA.valor_solicitado - schemaDocB.valor_total_recurso_concedente) * 100) / 100;
+  const semValorInformado = (schemaDocA.valor_solicitado <= 0 && schemaDocB.valor_total_recurso_concedente <= 0);
+  const regraFIN01 = {
+    codigo: 'FIN-01',
+    dimensao: 'Equivalência Financeira',
+    docA_resumo: 'R$ ' + formatarNumeroMoedaBR(schemaDocA.valor_solicitado),
+    docB_resumo: 'R$ ' + formatarNumeroMoedaBR(schemaDocB.valor_total_recurso_concedente),
+    diferenca: diferencaValor,
+    falha: diferencaValor > 0.00 || semValorInformado,
+    statusLabel: (diferencaValor > 0.00 || semValorInformado) ? '❌ FALHA' : '✅ OK',
+    severidade: (diferencaValor > 0.00 || semValorInformado) ? 'Alta' : 'Baixa (Conforme)',
+    arvoreStatus: (diferencaValor > 0.00 || semValorInformado)
+      ? '[CRÍTICO] - Exige Adequação Orçamentária'
+      : '[CONFORME]',
+    mensagem: diferencaValor > 0.00
+      ? ('Divergência financeira entre o valor solicitado no Ofício (R$ ' + formatarNumeroMoedaBR(schemaDocA.valor_solicitado) + ') e a planilha orçamentária do Plano de Trabalho (R$ ' + formatarNumeroMoedaBR(schemaDocB.valor_total_recurso_concedente) + '). Diferença de R$ ' + formatarNumeroMoedaBR(diferencaValor) + '.')
+      : (semValorInformado
+          ? 'Valor financeiro zerado ou não comprovado documentalmente entre o Ofício (Doc A) e o Plano de Trabalho (Doc B).'
+          : 'Equivalência financeira exata comprovada entre o valor solicitado no Ofício e o Plano de Aplicação (Diferença de R$ 0,00).')
+  };
+
+  // [REGRA OBJ-02: COERÊNCIA E ESCOPO DO OBJETO]
+  const listaA = schemaDocA.itens_mencionados_exemplo || [];
+  const listaB = (schemaDocB.plano_de_aplicacao || []).map(function(i) { return i.descricao_item; });
+  const itensAPresentesSoEmA = listaA.filter(function(itemA) {
+    return !listaB.some(function(itemB) {
+      return itemB.toLowerCase().indexOf(itemA.toLowerCase()) >= 0 || itemA.toLowerCase().indexOf(itemB.toLowerCase()) >= 0;
+    });
+  });
+  const itensBPresentesSoEmB = listaB.filter(function(itemB) {
+    return !listaA.some(function(itemA) {
+      return itemB.toLowerCase().indexOf(itemA.toLowerCase()) >= 0 || itemA.toLowerCase().indexOf(itemB.toLowerCase()) >= 0;
+    });
+  });
+  const discrepanciaEscopo = itensAPresentesSoEmA.length > 0 || itensBPresentesSoEmB.length > 0 || docsParaAnalise.length < 2;
+  const regraOBJ02 = {
+    codigo: 'OBJ-02',
+    dimensao: 'Escopo e Especificação do Objeto',
+    docA_resumo: listaA.length > 0 ? listaA.join(', ') : objetoForm,
+    docB_resumo: listaB.length > 0 ? listaB.slice(0, 4).join('; ') : 'Quadro de itens do Plano de Aplicação',
+    itensAusentesNoPlano: itensAPresentesSoEmA,
+    itensNaoCitadosNoOficio: itensBPresentesSoEmB,
+    falha: discrepanciaEscopo,
+    statusLabel: discrepanciaEscopo ? '⚠️ AVISO / FALHA' : '✅ OK',
+    severidade: discrepanciaEscopo ? 'Média' : 'Baixa (Conforme)',
+    arvoreStatus: discrepanciaEscopo
+      ? '[MÉDIO] - Requer Alinhamento Descritivo do Objeto'
+      : '[CONFORME]',
+    mensagem: discrepanciaEscopo
+      ? ('Incoerência ou necessidade de detalhamento na especificação dos bens descritos na solicitação (' + (listaA.join(', ') || objetoForm) + ') versus o Plano de Aplicação (' + (listaB.slice(0, 3).join(', ') || 'sem tabela discriminada') + ').')
+      : 'Os itens exemplificados no Ofício de Solicitação guardam correspondência integral com o Plano de Aplicação.'
+  };
+
+  // [REGRA REP-03: LEGITIMIDADE DA REPRESENTAÇÃO LEGAL]
+  const nomeSignA = (schemaDocA.signatario.nome || '').trim();
+  const nomeSignB = (schemaDocB.responsavel_legal.nome || '').trim();
+  const naoIdentificadoSign = /n[aã]o\s*identificado|titular\s*emissor|gestor\s*solicitante|presidente\s*\/\s*respons[aá]vel/i.test(nomeSignA + ' ' + nomeSignB);
+  const divergenciaSignatario = (nomeSignA.toLowerCase() !== nomeSignB.toLowerCase()) || naoIdentificadoSign;
+
+  const regraREP03 = {
+    codigo: 'REP-03',
+    dimensao: 'Representação Legal (Signatários)',
+    docA_resumo: nomeSignA + ' (' + schemaDocA.signatario.cargo + ')',
+    docB_resumo: nomeSignB + ' (' + schemaDocB.responsavel_legal.cargo + ' - ' + schemaDocB.responsavel_legal.decreto_portaria + ')',
+    falha: divergenciaSignatario,
+    statusLabel: divergenciaSignatario ? '❌ FALHA' : '✅ OK',
+    severidade: divergenciaSignatario ? 'Alta' : 'Baixa (Conforme)',
+    arvoreStatus: divergenciaSignatario
+      ? '[ALTO] - Solicitada Comprovação de Representação/Ata'
+      : '[CONFORME]',
+    mensagem: divergenciaSignatario
+      ? 'Divergência ou pendência de comprovação de representação legal entre os instrumentos (Doc A x Doc B). Necessário comprovar competência, portaria/ata de posse ou padronizar signatário.'
+      : 'Identidade de representação legal confirmada entre o Ofício de Solicitação e o Plano de Trabalho.'
+  };
+
+  // Regra Adicional de Qualidade Documental (Unidade Beneficiária)
+  const regraUNID = {
+    codigo: 'CAD-00',
+    dimensao: 'Unidade Beneficiária',
+    docA_resumo: schemaDocA.unidade_beneficiaria,
+    docB_resumo: schemaDocB.entidade_proponente,
+    falha: false,
+    statusLabel: '✅ OK',
+    severidade: 'Baixa',
+    mensagem: 'Unidade beneficiária identificada de forma convergente (' + escolaBeneficiaria + ').'
+  };
+
+  // -------------------------------------------------------------------------
+  // ETAPA 3: ÁRVORE DE DECISÃO E CLASSIFICAÇÃO FINAL DE RISCO
+  // -------------------------------------------------------------------------
+  const contemErrosCriticosOuAltos = regraFIN01.falha || regraREP03.falha || excecoesDetectadas.some(function(e) { return e.severidade === 'ALTA'; });
+  const resultadoFinalStatus = contemErrosCriticosOuAltos
+    ? 'PENDENTE DE ADEQUAÇÃO / NOTIFICAR CONVENENTE'
+    : (regraOBJ02.falha ? 'APROVADO COM RESSALVAS / ALINHAMENTO DESCRITIVO' : 'APROVADO TECNICAMENTE');
+
+  const dataAnalise = new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  // -------------------------------------------------------------------------
+  // ETAPA 4: GERAÇÃO DO TEMPLATE COMPLETO DE OUTPUT (RELATÓRIO + MINUTA)
+  // -------------------------------------------------------------------------
+  const linhasPlanoMd = schemaDocB.plano_de_aplicacao.map(function(it) {
+    return '| ' + it.item_num + ' | ' + it.descricao_item + ' | ' + it.unidade + ' | ' + it.quantidade + ' | R$ ' + formatarNumeroMoedaBR(it.valor_unitario) + ' | R$ ' + formatarNumeroMoedaBR(it.valor_total) + ' |';
+  }).join('\n');
+
+  const blocoExcecoesMd = excecoesDetectadas.length > 0
+    ? '\n## 3.1. ALERTAS DO MÓDULO DE TRATAMENTO DE ERROS (EXCEPTION HANDLING)\n' +
+      excecoesDetectadas.map(function(ex) {
+        return '* **[' + ex.codigo + ' - Severidade ' + ex.severidade + ']** (' + ex.arquivo + '): ' + ex.mensagem;
+      }).join('\n') + '\n'
+    : '';
+
+  const markdownRelatorio = `# RELATÓRIO DE AUDITORIA DE PARCERIAS - ANTIGRAVITY
+
+## 1. DADOS IDENTIFICADORES
+* **Processo:** ${numProcesso}
+* **Entidade Proponente:** ${schemaDocB.entidade_proponente} (CNPJ: ${schemaDocB.cnpj})
+* **Documento A (Solicitação):** ${nomesDocA} (${schemaDocA.numero_oficio})
+* **Documento B (Plano Técnico):** ${nomesDocB}
+* **Data da Análise:** ${dataAnalise}
+* **Auditor Responsável:** Agente AntiGravity_Convenio_Auditor v2.0.0
+* **Resultado Final da Árvore de Decisão:** **[${resultadoFinalStatus}]**
+
+## 2. QUADRO RESUMO DE CONFORMIDADE
+
+| Item Auditado | Documento A (Ofício) | Documento B (Plano de Trabalho) | Status | Severidade |
+| :--- | :--- | :--- | :--- | :--- |
+| **Unidade Beneficiária** | ${regraUNID.docA_resumo} | ${regraUNID.docB_resumo} | ${regraUNID.statusLabel} | ${regraUNID.severidade} |
+| **Valor Global / Repasse (FIN-01)** | ${regraFIN01.docA_resumo} | ${regraFIN01.docB_resumo} | ${regraFIN01.statusLabel} | ${regraFIN01.severidade} |
+| **Signatário / Responsável (REP-03)** | ${regraREP03.docA_resumo} | ${regraREP03.docB_resumo} | ${regraREP03.statusLabel} | ${regraREP03.severidade} |
+| **Escopo dos Bens (OBJ-02)** | ${regraOBJ02.docA_resumo} | ${regraOBJ02.docB_resumo} | ${regraOBJ02.statusLabel} | ${regraOBJ02.severidade} |
+
+## 3. DETALHAMENTO DAS DIVERGÊNCIAS (ACHADOS DE AUDITORIA)
+
+### 3.1. Divergência Financeira [Regra FIN-01] — ${regraFIN01.arvoreStatus}
+${regraFIN01.falha
+  ? `Constatou-se que o ${schemaDocA.numero_oficio} solicita o montante de **R$ ${formatarNumeroMoedaBR(schemaDocA.valor_solicitado)}**, enquanto o Plano de Trabalho detalha o montante de **R$ ${formatarNumeroMoedaBR(schemaDocB.valor_total_recurso_concedente)}**, gerando uma diferença de **R$ ${formatarNumeroMoedaBR(regraFIN01.diferenca)}** que impede a aprovação imediata da nota de empenho sem prévia retificação.`
+  : `Verificou-se exata equivalência financeira entre o valor solicitado no ${schemaDocA.numero_oficio} (**R$ ${formatarNumeroMoedaBR(schemaDocA.valor_solicitado)}**) e o total do Plano de Aplicação (**R$ ${formatarNumeroMoedaBR(schemaDocB.valor_total_recurso_concedente)}**), resultando em diferença de **R$ 0,00**.`}
+
+### 3.2. Divergência de Escopo Material [Regra OBJ-02] — ${regraOBJ02.arvoreStatus}
+${regraOBJ02.falha
+  ? `Na exposição de motivos do Ofício (${nomesDocA}) constam referências a **${regraOBJ02.docA_resumo}**, ao passo que na planilha do Plano de Aplicação (${nomesDocB}) constam **${regraOBJ02.docB_resumo}**. Faz-se necessário o alinhamento descritivo estrito entre a justificativa da solicitação e os itens orçados.`
+  : `Os itens solicitados na peça inaugural guardam plena coerência material e quantitativa com a relação de bens do Plano de Aplicação.`}
+
+### 3.3. Divergência de Representação e Competência [Regra REP-03] — ${regraREP03.arvoreStatus}
+${regraREP03.falha
+  ? `O pedido inaugural vincula-se a **${regraREP03.docA_resumo}**, enquanto o Plano de Trabalho registra **${regraREP03.docB_resumo}**. Ausente comprovação unificada da cadeia de competência ou ata/portaria de designação atualizada nos autos.`
+  : `A representação legal encontra-se devidamente convergente entre o Ofício de Solicitação e o Plano de Trabalho (${regraREP03.docA_resumo}).`}
+${blocoExcecoesMd}
+## 3.4. MEMÓRIA DO PLANO DE APLICAÇÃO EXTRAÍDO (DOCUMENTO B)
+
+| Item | Especificação / Descrição do Bem | Unid. | Qtd. | Valor Unitário | Valor Total |
+| :---: | :--- | :---: | :---: | ---: | ---: |
+${linhasPlanoMd}
+
+---
+
+## 4. MINUTA DE NOTIFICAÇÃO ADMINISTRATIVA (PRONTA PARA USO)
+
+> **À Entidade Proponente:** ${schemaDocB.entidade_proponente}
+> **Assunto:** Diligência Técnica de Adequação Documental — Processo nº ${numProcesso} (${schemaDocA.numero_oficio})
+>
+> Prezado(a) Responsável,
+>
+> Em análise técnica preliminar à documentação apresentada visando a celebração de parceria para aquisição de equipamentos e atendimento à unidade **${escolaBeneficiaria}** (Lei Federal nº 13.019/2014 e legislação estadual aplicável), identificamos impropriedades formais e técnicas que necessitam de saneamento para o regular prosseguimento do feito:
+>
+> 1. **Retificação de Valor [Regra FIN-01]:** ${regraFIN01.falha ? `Adequar o Ofício de Solicitação (R$ ${formatarNumeroMoedaBR(schemaDocA.valor_solicitado)}) ou a Planilha do Plano de Trabalho (R$ ${formatarNumeroMoedaBR(schemaDocB.valor_total_recurso_concedente)}) para que reflitam exatamente o mesmo valor global, eliminando a diferença apurada de R$ ${formatarNumeroMoedaBR(regraFIN01.diferenca)}.` : `Valores conferidos em R$ ${formatarNumeroMoedaBR(schemaDocB.valor_total_recurso_concedente)} (manter demonstrativo de cotações atualizado nos autos).`}
+> 2. **Alinhamento do Objeto [Regra OBJ-02]:** Compatibilizar o texto descritivo do Ofício com os itens efetivamente listados no Plano de Aplicação (${regraOBJ02.docB_resumo}), garantindo que todos os bens pretendidos estejam devidamente justificados.
+> 3. **Regularização de Signatários [Regra REP-03]:** Apresentar cópia da Ata de Eleição/Posse ou Portaria de Designação vigente e unificar o responsável legal signatário entre o Ofício (${schemaDocA.signatario.nome}) e o Plano de Trabalho (${schemaDocB.responsavel_legal.nome}).
+>
+> Concede-se o prazo de **05 (cinco) dias úteis** para a juntada dos documentos retificados no Sistema Eletrônico de Informações (SEI).
+>
+> Atenciosamente,
+> **Setor de Análise Técnica de Parcerias e Convênios — SEDUC/RO (CAM/GDSM)**
+`;
+
+  const resultadoAuditoria = {
+    versaoAgente: 'AntiGravity_Convenio_Auditor v2.0.0',
+    dataAnalise: dataAnalise,
+    numProcesso: numProcesso,
+    municipio: municipio,
+    escolaBeneficiaria: escolaBeneficiaria,
+    resultadoFinalStatus: resultadoFinalStatus,
+    contemErrosCriticosOuAltos: contemErrosCriticosOuAltos,
+    docsAnalisadosCount: docsParaAnalise.length,
+    nomesDocA: nomesDocA,
+    nomesDocB: nomesDocB,
+    schemaDocA: schemaDocA,
+    schemaDocB: schemaDocB,
+    regras: {
+      UNID: regraUNID,
+      FIN01: regraFIN01,
+      OBJ02: regraOBJ02,
+      REP03: regraREP03
+    },
+    excecoes: excecoesDetectadas,
+    markdown: markdownRelatorio
+  };
+
+  window._auditoriaAntiGravityV2Atual = resultadoAuditoria;
+
+  // Renderiza o painel compacto logo abaixo do quadro amarelo (#repositorio-lista-arquivos)
+  renderizarPainelResumoAntiGravityV2(resultadoAuditoria);
+
+  // Preenche o modal completo com o Documento Formatado A4, o Markdown editável e o JSON Schema
+  preencherModalDocumentoAntiGravityV2(resultadoAuditoria);
+
+  if (abrirModal) {
+    const modal = document.getElementById('modal-documento-antigravity-v2');
+    if (modal) modal.style.display = 'flex';
+    toast('🛡️ Auditoria AntiGravity v2.0 concluída e Documento gerado!', contemErrosCriticosOuAltos ? 'warning' : 'success');
+  }
+  return resultadoAuditoria;
+}
+window.executarAuditoriaComparativaAntiGravityV2 = executarAuditoriaComparativaAntiGravityV2;
+
+function renderizarPainelResumoAntiGravityV2(aud) {
+  const painel = document.getElementById('painel-resumo-auditoria-antigravity-v2');
+  if (!painel || !aud) return;
+
+  const corStatus = aud.contemErrosCriticosOuAltos ? '#ef4444' : (aud.regras.OBJ02.falha ? '#f59e0b' : '#10b981');
+  const bgStatus = aud.contemErrosCriticosOuAltos ? 'rgba(239,68,68,0.18)' : (aud.regras.OBJ02.falha ? 'rgba(245,158,11,0.18)' : 'rgba(16,185,129,0.18)');
+
+  painel.style.display = 'block';
+  painel.style.borderColor = corStatus;
+  painel.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.1);">
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span style="font-size:20px;">🛡️</span>
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <strong style="color:#f8fafc; font-size:13px;">RESULTADO AUDITORIA DE PARCERIAS (ANTIGRAVITY v2.0):</strong>
+            <span style="background:${bgStatus}; color:${corStatus}; border:1px solid ${corStatus}; padding:2px 10px; border-radius:12px; font-size:11px; font-weight:900;">
+              [${aud.resultadoFinalStatus}]
+            </span>
+          </div>
+          <div style="font-size:11px; color:#94a3b8; margin-top:2px;">
+            <strong>Doc A:</strong> ${aud.nomesDocA} &nbsp;|&nbsp; <strong>Doc B:</strong> ${aud.nomesDocB} &nbsp;|&nbsp; Analisado em ${aud.dataAnalise}
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button type="button" onclick="document.getElementById('modal-documento-antigravity-v2').style.display='flex'" class="btn" style="background:linear-gradient(135deg,#ef4444,#b91c1c); color:#fff; border:1px solid #fca5a5; padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+          📄 Abrir Relatório & Minuta
+        </button>
+        <button type="button" onclick="baixarDocumentoAntiGravityV2('doc')" class="btn" style="background:rgba(37,99,235,0.2); color:#93c5fd; border:1px solid rgba(59,130,246,0.45); padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+          📘 Baixar .DOC
+        </button>
+        <button type="button" onclick="baixarDocumentoAntiGravityV2('txt')" class="btn" style="background:rgba(245,158,11,0.18); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+          📝 Baixar .TXT
+        </button>
+        <button type="button" onclick="imprimirDocumentoAntiGravityV2()" class="btn" style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.45); padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+          🖨️ PDF / Imprimir
+        </button>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:8px;">
+      <div style="background:rgba(0,0,0,0.35); border:1px solid ${aud.regras.FIN01.falha ? 'rgba(239,68,68,0.45)' : 'rgba(16,185,129,0.35)'}; border-radius:8px; padding:8px 10px;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#f8fafc;">
+          <span>REGRA FIN-01 (Valores)</span>
+          <span>${aud.regras.FIN01.statusLabel}</span>
+        </div>
+        <div style="font-size:11px; color:#cbd5e1; margin-top:3px;">
+          Doc A: <strong>${aud.regras.FIN01.docA_resumo}</strong> vs Doc B: <strong>${aud.regras.FIN01.docB_resumo}</strong>
+        </div>
+        <div style="font-size:10.5px; color:${aud.regras.FIN01.falha ? '#fca5a5' : '#6ee7b7'}; margin-top:2px;">
+          Diferença: R$ ${formatarNumeroMoedaBR(aud.regras.FIN01.diferenca)} (${aud.regras.FIN01.arvoreStatus})
+        </div>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.35); border:1px solid ${aud.regras.OBJ02.falha ? 'rgba(245,158,11,0.45)' : 'rgba(16,185,129,0.35)'}; border-radius:8px; padding:8px 10px;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#f8fafc;">
+          <span>REGRA OBJ-02 (Escopo)</span>
+          <span>${aud.regras.OBJ02.statusLabel}</span>
+        </div>
+        <div style="font-size:11px; color:#cbd5e1; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${aud.regras.OBJ02.docA_resumo}">
+          Itens: ${aud.regras.OBJ02.docA_resumo}
+        </div>
+        <div style="font-size:10.5px; color:${aud.regras.OBJ02.falha ? '#fcd34d' : '#6ee7b7'}; margin-top:2px;">
+          ${aud.regras.OBJ02.arvoreStatus}
+        </div>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.35); border:1px solid ${aud.regras.REP03.falha ? 'rgba(239,68,68,0.45)' : 'rgba(16,185,129,0.35)'}; border-radius:8px; padding:8px 10px;">
+        <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#f8fafc;">
+          <span>REGRA REP-03 (Signatários)</span>
+          <span>${aud.regras.REP03.statusLabel}</span>
+        </div>
+        <div style="font-size:11px; color:#cbd5e1; margin-top:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${aud.regras.REP03.docA_resumo} x ${aud.regras.REP03.docB_resumo}">
+          ${aud.regras.REP03.docA_resumo}
+        </div>
+        <div style="font-size:10.5px; color:${aud.regras.REP03.falha ? '#fca5a5' : '#6ee7b7'}; margin-top:2px;">
+          ${aud.regras.REP03.arvoreStatus}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function preencherModalDocumentoAntiGravityV2(aud) {
+  if (!aud) return;
+
+  const badgeStatus = document.getElementById('badge-status-final-antigravity-v2');
+  if (badgeStatus) {
+    badgeStatus.textContent = aud.resultadoFinalStatus;
+    if (aud.contemErrosCriticosOuAltos) {
+      badgeStatus.style.background = 'rgba(239,68,68,0.25)';
+      badgeStatus.style.color = '#fca5a5';
+      badgeStatus.style.borderColor = '#ef4444';
+    } else {
+      badgeStatus.style.background = 'rgba(16,185,129,0.25)';
+      badgeStatus.style.color = '#6ee7b7';
+      badgeStatus.style.borderColor = '#10b981';
+    }
+  }
+
+  const resumoDocs = document.getElementById('resumo-docs-analisados-agv2');
+  if (resumoDocs) {
+    resumoDocs.textContent = `Documentos auditados no quadro amarelo: ${aud.docsAnalisadosCount} arquivo(s) • Processo ${aud.numProcesso}`;
+  }
+
+  const txtMd = document.getElementById('textarea-agv2-markdown');
+  if (txtMd) txtMd.value = aud.markdown;
+
+  const preJson = document.getElementById('pre-agv2-json-schema');
+  if (preJson) {
+    preJson.textContent = JSON.stringify({
+      agente: aud.versaoAgente,
+      data_execucao: aud.dataAnalise,
+      arvore_decisao_resultado: aud.resultadoFinalStatus,
+      DocumentoA_Oficio: aud.schemaDocA,
+      DocumentoB_PlanoDeTrabalho: aud.schemaDocB,
+      regras_executadas: aud.regras,
+      excecoes_tratadas: aud.excecoes
+    }, null, 2);
+  }
+
+  const divDoc = document.getElementById('aba-agv2-conteudo-doc');
+  if (divDoc) {
+    const linhasPlanoHtml = aud.schemaDocB.plano_de_aplicacao.map(function(it) {
+      return `
+        <tr>
+          <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${it.item_num}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px 8px;">${it.descricao_item}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${it.unidade}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${it.quantidade}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:right;">R$ ${formatarNumeroMoedaBR(it.valor_unitario)}</td>
+          <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:right; font-weight:bold;">R$ ${formatarNumeroMoedaBR(it.valor_total)}</td>
+        </tr>
+      `;
+    }).join('');
+
+    const htmlExcecoes = aud.excecoes.length > 0
+      ? `
+        <div style="margin-top:14px; padding:10px 14px; background:#fffbeb; border:1px solid #f59e0b; border-radius:6px; font-size:12.5px;">
+          <strong>⚠️ Alertas do Módulo de Tratamento de Erros (Exception Handling):</strong>
+          <ul style="margin:6px 0 0 18px; padding:0;">
+            ${aud.excecoes.map(function(e) { return `<li><strong>[${e.codigo} - ${e.severidade}]</strong> (${e.arquivo}): ${e.mensagem}</li>`; }).join('')}
+          </ul>
+        </div>
+      `
+      : '';
+
+    divDoc.innerHTML = `
+      <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:14px; margin-bottom:20px;">
+        <div style="font-size:13px; font-weight:bold; letter-spacing:0.6px; text-transform:uppercase;">GOVERNO DO ESTADO DE RONDÔNIA</div>
+        <div style="font-size:13px; font-weight:bold;">Secretaria de Estado da Educação — SEDUC/RO</div>
+        <div style="font-size:12px; color:#334155;">Coordenadoria de Apoio aos Municípios / Gerência de Diagnóstico Situacional — CAM/GDSM</div>
+        <h2 style="margin:14px 0 4px 0; font-size:17px; font-weight:bold; text-transform:uppercase; color:#0f172a;">
+          RELATÓRIO DE AUDITORIA DE PARCERIAS — ANTIGRAVITY v2.0
+        </h2>
+        <div style="font-size:12px; font-weight:bold; color:${aud.contemErrosCriticosOuAltos ? '#b91c1c' : '#047857'};">
+          CLASSIFICAÇÃO FINAL: [${aud.resultadoFinalStatus}]
+        </div>
+      </div>
+
+      <h3 style="font-size:14px; text-transform:uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-top:16px;">1. Dados Identificadores</h3>
+      <table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:16px;">
+        <tr>
+          <td style="padding:4px 0; width:32%;"><strong>Processo SEI:</strong></td>
+          <td style="padding:4px 0;">${aud.numProcesso}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>Entidade Proponente:</strong></td>
+          <td style="padding:4px 0;">${aud.schemaDocB.entidade_proponente} — CNPJ: ${aud.schemaDocB.cnpj}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>Documento A (Solicitação):</strong></td>
+          <td style="padding:4px 0;">${aud.nomesDocA} (${aud.schemaDocA.numero_oficio})</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>Documento B (Plano Técnico):</strong></td>
+          <td style="padding:4px 0;">${aud.nomesDocB}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>Data da Análise / Auditor:</strong></td>
+          <td style="padding:4px 0;">${aud.dataAnalise} • Agente <strong>${aud.versaoAgente}</strong></td>
+        </tr>
+      </table>
+
+      <h3 style="font-size:14px; text-transform:uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-top:18px;">2. Quadro Resumo de Conformidade (Validação Cruzada Doc A x Doc B)</h3>
+      <table style="width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:16px;">
+        <thead>
+          <tr style="background:#f1f5f9;">
+            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Item Auditado</th>
+            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Documento A (Ofício)</th>
+            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Documento B (Plano de Trabalho)</th>
+            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:center;">Status</th>
+            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:center;">Severidade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Unidade Beneficiária</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.UNID.docA_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.UNID.docB_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:#047857;">${aud.regras.UNID.statusLabel}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${aud.regras.UNID.severidade}</td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Valor Global [FIN-01]</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.FIN01.docA_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.FIN01.docB_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${aud.regras.FIN01.falha ? '#b91c1c' : '#047857'};">${aud.regras.FIN01.statusLabel}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${aud.regras.FIN01.severidade}</td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Signatário [REP-03]</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.REP03.docA_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.REP03.docB_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${aud.regras.REP03.falha ? '#b91c1c' : '#047857'};">${aud.regras.REP03.statusLabel}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${aud.regras.REP03.severidade}</td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Escopo dos Bens [OBJ-02]</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.OBJ02.docA_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.OBJ02.docB_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${aud.regras.OBJ02.falha ? '#b45309' : '#047857'};">${aud.regras.OBJ02.statusLabel}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${aud.regras.OBJ02.severidade}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:14px; text-transform:uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-top:18px;">3. Detalhamento das Divergências (Achados de Auditoria)</h3>
+      <p style="margin:8px 0; text-align:justify;">
+        <strong>3.1. Equivalência Financeira [Regra FIN-01 — ${aud.regras.FIN01.arvoreStatus}]:</strong>
+        ${aud.regras.FIN01.mensagem}
+      </p>
+      <p style="margin:8px 0; text-align:justify;">
+        <strong>3.2. Escopo Material [Regra OBJ-02 — ${aud.regras.OBJ02.arvoreStatus}]:</strong>
+        ${aud.regras.OBJ02.mensagem}
+      </p>
+      <p style="margin:8px 0; text-align:justify;">
+        <strong>3.3. Representação e Competência [Regra REP-03 — ${aud.regras.REP03.arvoreStatus}]:</strong>
+        ${aud.regras.REP03.mensagem}
+      </p>
+      ${htmlExcecoes}
+
+      <h4 style="font-size:13px; margin:16px 0 6px 0;">3.4. Quadro Extraído do Plano de Aplicação (Documento B)</h4>
+      <table style="width:100%; border-collapse:collapse; font-size:12px; margin-bottom:20px;">
+        <thead>
+          <tr style="background:#f8fafc;">
+            <th style="border:1px solid #cbd5e1; padding:5px 6px; text-align:center;">Item</th>
+            <th style="border:1px solid #cbd5e1; padding:5px 6px; text-align:left;">Descrição / Especificação</th>
+            <th style="border:1px solid #cbd5e1; padding:5px 6px; text-align:center;">Unid.</th>
+            <th style="border:1px solid #cbd5e1; padding:5px 6px; text-align:center;">Qtd.</th>
+            <th style="border:1px solid #cbd5e1; padding:5px 6px; text-align:right;">V. Unitário</th>
+            <th style="border:1px solid #cbd5e1; padding:5px 6px; text-align:right;">V. Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${linhasPlanoHtml}
+        </tbody>
+      </table>
+
+      <h3 style="font-size:14px; text-transform:uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-top:22px;">4. Minuta de Notificação Administrativa (Pronta para Uso)</h3>
+      <div style="border:1.5px solid #334155; background:#f8fafc; padding:18px 22px; border-radius:6px; margin-top:10px; text-align:justify;">
+        <p style="margin:0 0 6px 0;"><strong>À Entidade Proponente:</strong> ${aud.schemaDocB.entidade_proponente}</p>
+        <p style="margin:0 0 14px 0;"><strong>Assunto:</strong> Diligência Técnica de Adequação Documental — Processo nº ${aud.numProcesso} (${aud.schemaDocA.numero_oficio})</p>
+        <p style="margin:0 0 10px 0;">Prezado(a) Responsável,</p>
+        <p style="margin:0 0 10px 0;">
+          Em análise técnica preliminar à documentação apresentada visando a celebração de parceria para atendimento à unidade <strong>${aud.escolaBeneficiaria}</strong>, identificamos pontos formais e técnicos que necessitam de saneamento ou ratificação para o regular prosseguimento do feito:
+        </p>
+        <ol style="margin:0 0 12px 20px; padding:0;">
+          <li style="margin-bottom:6px;">
+            <strong>Retificação / Equivalência de Valor [Regra FIN-01]:</strong>
+            ${aud.regras.FIN01.falha
+              ? `Adequar o Ofício de Solicitação (${aud.regras.FIN01.docA_resumo}) ou a Planilha do Plano de Trabalho (${aud.regras.FIN01.docB_resumo}) para que reflitam exatamente o mesmo valor global, sanando a diferença de R$ ${formatarNumeroMoedaBR(aud.regras.FIN01.diferenca)}.`
+              : `Confirmada a equivalência financeira em ${aud.regras.FIN01.docB_resumo}; manter cotações de preços válidas nos autos.`}
+          </li>
+          <li style="margin-bottom:6px;">
+            <strong>Alinhamento do Objeto [Regra OBJ-02]:</strong>
+            Compatibilizar o texto descritivo do Ofício com os itens efetivamente listados no Plano de Aplicação (${aud.regras.OBJ02.docB_resumo}), garantindo que todos os bens pretendidos estejam devidamente justificados.
+          </li>
+          <li style="margin-bottom:6px;">
+            <strong>Regularização de Signatários [Regra REP-03]:</strong>
+            Apresentar cópia da Ata de Posse ou Portaria de Designação vigente e unificar o responsável legal signatário entre o Ofício (${aud.schemaDocA.signatario.nome}) e o Plano de Trabalho (${aud.schemaDocB.responsavel_legal.nome}).
+          </li>
+        </ol>
+        <p style="margin:0 0 14px 0;">
+          Concede-se o prazo de <strong>05 (cinco) dias úteis</strong> para a juntada dos documentos retificados no Sistema Eletrônico de Informações (SEI).
+        </p>
+        <p style="margin:0;">Atenciosamente,<br><strong>Setor de Análise Técnica de Parcerias e Convênios — SEDUC/RO (CAM/GDSM)</strong></p>
+      </div>
+    `;
+  }
+}
+
+function alternarAbaModalAntiGravityV2(aba) {
+  const abas = ['doc', 'md', 'json'];
+  abas.forEach(function(k) {
+    const cont = document.getElementById('aba-agv2-conteudo-' + k);
+    const btn = document.getElementById('tab-agv2-btn-' + k);
+    if (cont) cont.style.display = (k === aba) ? 'block' : 'none';
+    if (btn) {
+      if (k === aba) {
+        btn.style.background = 'linear-gradient(135deg,#ef4444,#b91c1c)';
+        btn.style.color = '#fff';
+        btn.style.border = '1px solid #fca5a5';
+      } else {
+        btn.style.background = 'rgba(255,255,255,0.06)';
+        btn.style.color = '#cbd5e1';
+        btn.style.border = '1px solid rgba(255,255,255,0.15)';
+      }
+    }
+  });
+}
+window.alternarAbaModalAntiGravityV2 = alternarAbaModalAntiGravityV2;
+
+function fecharModalDocumentoAntiGravityV2() {
+  const modal = document.getElementById('modal-documento-antigravity-v2');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalDocumentoAntiGravityV2 = fecharModalDocumentoAntiGravityV2;
+
+function copiarDocumentoAntiGravityV2() {
+  if (!window._auditoriaAntiGravityV2Atual) {
+    executarAuditoriaComparativaAntiGravityV2(false);
+  }
+  const txtMd = document.getElementById('textarea-agv2-markdown');
+  const conteudo = (txtMd && txtMd.value) ? txtMd.value : (window._auditoriaAntiGravityV2Atual?.markdown || '');
+  if (!conteudo) return;
+  navigator.clipboard.writeText(conteudo).then(function() {
+    toast('📋 Relatório e Minuta de Notificação copiados para a área de transferência (pronto para o SEI)!', 'success');
+  }).catch(function() {
+    if (txtMd) {
+      txtMd.select();
+      document.execCommand('copy');
+      toast('📋 Documento copiado para a área de transferência!', 'success');
+    }
+  });
+}
+window.copiarDocumentoAntiGravityV2 = copiarDocumentoAntiGravityV2;
+
+function baixarDocumentoAntiGravityV2(formato) {
+  if (!window._auditoriaAntiGravityV2Atual) {
+    executarAuditoriaComparativaAntiGravityV2(false);
+  }
+  const aud = window._auditoriaAntiGravityV2Atual;
+  if (!aud) return;
+
+  const procSlug = (aud.numProcesso || 'PROCESSO').replace(/[^0-9A-Za-z._-]/g, '_');
+  const txtMd = document.getElementById('textarea-agv2-markdown');
+  const textoEditado = (txtMd && txtMd.value) ? txtMd.value : aud.markdown;
+
+  if (formato === 'txt') {
+    const blob = new Blob([textoEditado], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'RELATORIO_AUDITORIA_PARCERIAS_ANTIGRAVITY_V2_' + procSlug + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 1500);
+    toast('📝 Arquivo .TXT do Relatório + Minuta baixado com sucesso!', 'success');
+    return;
+  }
+
+  // Formato Word (.DOC compatível com Microsoft Word e LibreOffice)
+  const divDoc = document.getElementById('aba-agv2-conteudo-doc');
+  const htmlCorpo = divDoc ? divDoc.innerHTML : ('<pre>' + textoEditado + '</pre>');
+  const docHtmlCompleto = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:w="urn:schemas-microsoft-com:office:word"
+          xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+      <meta charset="utf-8">
+      <title>Relatório de Auditoria de Parcerias - AntiGravity v2.0</title>
+      <style>
+        @page { size: 21cm 29.7cm; margin: 2cm; }
+        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; line-height: 1.5; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #666; padding: 6px; }
+      </style>
+    </head>
+    <body>${htmlCorpo}</body>
+    </html>
+  `;
+  const blobDoc = new Blob(['\ufeff', docHtmlCompleto], { type: 'application/msword;charset=utf-8' });
+  const urlDoc = URL.createObjectURL(blobDoc);
+  const link = document.createElement('a');
+  link.href = urlDoc;
+  link.download = 'RELATORIO_AUDITORIA_PARCERIAS_ANTIGRAVITY_V2_' + procSlug + '.doc';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(function() { URL.revokeObjectURL(urlDoc); }, 1500);
+  toast('📘 Documento Word (.DOC) gerado e baixado com sucesso!', 'success');
+}
+window.baixarDocumentoAntiGravityV2 = baixarDocumentoAntiGravityV2;
+
+function imprimirDocumentoAntiGravityV2() {
+  if (!window._auditoriaAntiGravityV2Atual) {
+    executarAuditoriaComparativaAntiGravityV2(false);
+  }
+  const divDoc = document.getElementById('aba-agv2-conteudo-doc');
+  if (!divDoc) return;
+
+  const win = window.open('', '_blank', 'width=920,height=780');
+  if (!win) {
+    toast('Permita pop-ups para imprimir ou salvar como PDF.', 'warning');
+    return;
+  }
+  win.document.write(`
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+      <meta charset="UTF-8">
+      <title>Relatório de Auditoria de Parcerias - AntiGravity v2.0</title>
+      <style>
+        @page { size: A4; margin: 18mm; }
+        body { font-family: 'Times New Roman', Times, serif; color: #0f172a; line-height: 1.55; font-size: 12pt; margin: 0; padding: 0; }
+        table { width: 100%; border-collapse: collapse; }
+      </style>
+    </head>
+    <body>
+      ${divDoc.innerHTML}
+      <script>
+        window.onload = function() {
+          setTimeout(function() { window.print(); }, 250);
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
+window.imprimirDocumentoAntiGravityV2 = imprimirDocumentoAntiGravityV2;
+
+function aplicarAuditoriaAntiGravityNaManifestacao() {
+  if (!window._auditoriaAntiGravityV2Atual) {
+    executarAuditoriaComparativaAntiGravityV2(false);
+  }
+  const aud = window._auditoriaAntiGravityV2Atual;
+  if (!aud) return;
+
+  const campoSecao4 = document.getElementById('f-redacao-4');
+  const campoSecao5 = document.getElementById('f-redacao-5');
+  if (campoSecao4) {
+    const resumoSec4 =
+      `AUDITORIA COMPARATIVA DE PARCERIAS (AGENTE ANTIGRAVITY v2.0 — DOC A x DOC B):\n` +
+      `• [REGRA FIN-01 - Equivalência Financeira]: Doc A (${aud.regras.FIN01.docA_resumo}) x Doc B (${aud.regras.FIN01.docB_resumo}) -> ${aud.regras.FIN01.statusLabel} (${aud.regras.FIN01.arvoreStatus}). ${aud.regras.FIN01.mensagem}\n` +
+      `• [REGRA OBJ-02 - Escopo do Objeto]: ${aud.regras.OBJ02.statusLabel} (${aud.regras.OBJ02.arvoreStatus}). ${aud.regras.OBJ02.mensagem}\n` +
+      `• [REGRA REP-03 - Representação Legal]: ${aud.regras.REP03.statusLabel} (${aud.regras.REP03.arvoreStatus}). ${aud.regras.REP03.mensagem}`;
+    campoSecao4.value = (campoSecao4.value ? campoSecao4.value.trim() + '\n\n' : '') + resumoSec4;
+  }
+  if (campoSecao5) {
+    campoSecao5.value =
+      `CLASSIFICAÇÃO FINAL ANTIGRAVITY v2.0: [${aud.resultadoFinalStatus}].\n\n` +
+      `MINUTA DE NOTIFICAÇÃO ADMINISTRATIVA:\n` +
+      `1. Retificação de Valor [FIN-01]: Adequar Ofício (${aud.regras.FIN01.docA_resumo}) e Plano de Trabalho (${aud.regras.FIN01.docB_resumo}) para refletirem exatamente o mesmo valor global.\n` +
+      `2. Alinhamento do Objeto [OBJ-02]: Compatibilizar o texto descritivo do Ofício com os itens listados no Plano de Aplicação.\n` +
+      `3. Regularização de Signatários [REP-03]: Apresentar Ata de Posse/Portaria vigente e unificar o responsável legal signatário no prazo de 05 (cinco) dias úteis.`;
+  }
+  if (typeof sincronizarPreviewManifestacao === 'function') {
+    sincronizarPreviewManifestacao();
+  }
+  fecharModalDocumentoAntiGravityV2();
+  toast('✍️ Achados da Auditoria AntiGravity v2.0 e Minuta injetados nas Seções 4 e 5 da Manifestação!', 'success');
+}
+window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNaManifestacao;
+

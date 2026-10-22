@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.28">
+  <link rel="stylesheet" href="css/style.css?v=1.3.29">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -724,7 +724,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.28</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.29</div>
   </div>
 </div>
   
@@ -986,7 +986,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.28</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.29</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1854,7 +1854,7 @@
                 <div style="display:flex; flex-direction:column; line-height:1.2;">
                   <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:13px; font-weight:900; color:#f3e8ff; letter-spacing:0.8px; text-shadow:0 0 8px rgba(168,85,247,0.6);">ANÁLISE INTELIGENTE</span>
-                    <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 6px; border-radius:4px; font-size:10px; font-weight:900; letter-spacing:0.5px; box-shadow:0 0 8px rgba(56,189,248,0.5);">v1.3.28</span>
+                    <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 6px; border-radius:4px; font-size:10px; font-weight:900; letter-spacing:0.5px; box-shadow:0 0 8px rgba(56,189,248,0.5);">v1.3.29</span>
                   </div>
                   <span style="font-size:11px; color:#c084fc; font-weight:700;">Motor Neural CAM • Conexão Integral</span>
                 </div>
@@ -2628,9 +2628,20 @@
                       </button>
                     </div>
 
+                    <!-- SCRIPT AUDITORIA COMPARATIVA DE PARCERIAS ANTIGRAVITY V2.0 (ROXO/VERMELHO) -->
+                    <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(239,68,68,0.14); border:1px solid rgba(239,68,68,0.45); padding:4px 10px; border-radius:8px;">
+                      <input type="checkbox" id="check-script-antigravity-v2" checked onchange="atualizarUsoScriptsAnalise()" style="width:16px; height:16px; accent-color:#ef4444; cursor:pointer;" title="Ativar o Script Completo de Auditoria e Análise Comparativa de Parcerias (AntiGravity v2.0)">
+                      <button type="button" onclick="abrirEditorScriptAntiGravityV2()" class="btn" style="background:none; border:none; color:#fca5a5; font-size:12px; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:2px 0;" title="Ver e Editar o Script AntiGravity_Convenio_Auditor v2.0">
+                        <span>🛡️</span> <span>Script Auditoria v2.0 (Ver / Editar)</span>
+                      </button>
+                      <a href="https://docs.google.com/document/d/1QC2IifPCQDgn01796k1Zo_e9fJRpbb59/edit" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; font-size:11px; font-weight:800; text-decoration:none; border-left:1px solid rgba(255,255,255,0.15); padding-left:6px;" title="Abrir Documento Google Docs do Script AntiGravity v2.0">
+                        📄 Doc ↗
+                      </a>
+                    </div>
+
                     <!-- ATALHO AMBOS -->
-                    <button type="button" onclick="ativarAmbosScripts(true)" class="btn" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:5px 8px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;" title="Ativar ambos os scripts conjuntamente">
-                      ⚡ Ambos
+                    <button type="button" onclick="ativarAmbosScripts(true)" class="btn" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:5px 8px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;" title="Ativar todos os scripts conjuntamente">
+                      ⚡ Todos
                     </button>
                   </div>
 
@@ -2674,18 +2685,26 @@
                     <button type="button" onclick="document.getElementById('input-file-repositorio').click()" class="btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:1px solid #60a5fa; padding:6px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer;" title="Anexar um ou mais documentos (PDF, DOCX, TXT)">
                       + Anexar Documentos
                     </button>
+                    <!-- BOTÃO NO LOCAL MARCADO DE VERMELHO: AUDITORIA COMPARATIVA DE PARCERIAS ANTIGRAVITY V2.0 (ANALISA OS DOCUMENTOS DO LOCAL AMARELO E GERA O DOCUMENTO) -->
+                    <button type="button" id="btn-auditoria-antigravity-v2" onclick="executarAuditoriaComparativaAntiGravityV2(true)" class="btn" style="background:linear-gradient(135deg,#ef4444,#b91c1c); color:#fff; border:1.5px solid #fca5a5; padding:6px 16px; font-size:12px; font-weight:900; border-radius:6px; cursor:pointer; box-shadow:0 3px 12px rgba(239,68,68,0.45); display:inline-flex; align-items:center; gap:6px; letter-spacing:0.2px;" title="Executar Agente AntiGravity_Convenio_Auditor v2.0 nos documentos anexados no quadro amarelo (Doc A: Ofício x Doc B: Plano de Trabalho) e gerar o Relatório + Minuta de Notificação">
+                      <span>🛡️</span> <span>Auditoria Parcerias v2.0 & Gerar Documento</span>
+                    </button>
                   </div>
                 </div>
 
                 <!-- BANNER DINÂMICO: CONFORMIDADE DA DEMANDA (DOCUMENTOS X CADASTRO) & TRAVA -->
                 <div id="banner-conformidade-demanda" style="display:none; margin-bottom:12px; padding:12px 14px; border-radius:8px; font-size:12px; line-height:1.45;"></div>
 
-                <div id="repositorio-lista-arquivos" style="display:flex; flex-direction:column; gap:8px; max-height:240px; overflow-y:auto; padding-right:4px;">
+                <!-- LOCAL MARCADO EM AMARELO: LISTA DE DOCUMENTOS DO PROCESSO ANALISADOS PELO AGENTE ANTIGRAVITY V2.0 (DOC A: OFÍCIO x DOC B: PLANO DE TRABALHO) -->
+                <div id="repositorio-lista-arquivos" style="display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; padding-right:4px; border:1px solid rgba(250,204,21,0.28); border-radius:8px; padding:6px;">
                   <!-- Exibido dinamicamente via JS -->
                   <div id="repositorio-vazio-msg" onclick="document.getElementById('input-file-repositorio').click()" style="padding:24px 14px; text-align:center; color:#94a3b8; font-size:12.5px; background:rgba(16,185,129,0.04); border-radius:8px; border:1px dashed rgba(16,185,129,0.35); cursor:pointer;">
-                    📑 Nenhum documento guardado ainda neste processo. Clique em <strong>+ Anexar Documentos</strong> ou solte os arquivos PDF aqui para análise conjunta pelo Script CAM V1.0.
+                    📑 Nenhum documento guardado ainda neste processo. Clique em <strong>+ Anexar Documentos</strong> (ex.: <strong>Doc A: Ofício/Solicitação</strong> e <strong>Doc B: Plano de Trabalho/Aplicação</strong>) e clique em <strong>🛡️ Auditoria Parcerias v2.0 & Gerar Documento</strong>.
                   </div>
                 </div>
+
+                <!-- PAINEL COMPACTO DO PIPELINE ANTIGRAVITY V2.0 (EXIBIDO APÓS ANALISAR OS DOCUMENTOS DO LOCAL AMARELO) -->
+                <div id="painel-resumo-auditoria-antigravity-v2" style="display:none; margin-top:12px; padding:14px; background:linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.9)); border:1.5px solid rgba(239,68,68,0.45); border-radius:10px; box-shadow:0 4px 16px rgba(0,0,0,0.4);"></div>
 
                 <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
                   <span style="font-size:11px; color:#34d399; font-weight:600;">⚡ Motor Script CAM V1.0: Coerência • Conexão Documental • Legalidade • Metas e Valores</span>
@@ -2997,6 +3016,129 @@
         </div>
       </div>
 
+      <!-- ============= MODAL: DOCUMENTO GERADO DE AUDITORIA DE PARCERIAS + MINUTA (ANTIGRAVITY v2.0) ============= -->
+      <div id="modal-documento-antigravity-v2" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:100005; justify-content:center; align-items:center; padding:18px;">
+        <div style="background:#0f172a; border:1.5px solid rgba(239,68,68,0.55); border-radius:14px; max-width:980px; width:100%; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.9); overflow:hidden;">
+          <!-- Header -->
+          <div style="padding:16px 22px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(239,68,68,0.18), rgba(15,23,42,0.95)); flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:26px;">🛡️</span>
+              <div>
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <h3 style="margin:0; color:#f8fafc; font-size:16px; font-weight:900;">RELATÓRIO DE AUDITORIA DE PARCERIAS & MINUTA DE NOTIFICAÇÃO (ANTIGRAVITY v2.0)</h3>
+                  <span id="badge-status-final-antigravity-v2" style="background:rgba(239,68,68,0.25); color:#fca5a5; border:1px solid #ef4444; padding:2px 10px; border-radius:12px; font-size:11px; font-weight:900;">EM ANÁLISE</span>
+                </div>
+                <span style="font-size:11.5px; color:#94a3b8;">Agente: <strong>AntiGravity_Convenio_Auditor v2.0.0</strong> • Validação Cruzada Doc A (Ofício) x Doc B (Plano de Trabalho) • Regras FIN-01, OBJ-02, REP-03</span>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button type="button" onclick="abrirEditorScriptAntiGravityV2()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.2); padding:6px 12px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;">
+                ⚙️ Ver Script v2.0
+              </button>
+              <button type="button" onclick="fecharModalDocumentoAntiGravityV2()" style="background:none; border:none; color:#94a3b8; font-size:22px; cursor:pointer; padding:4px 8px;">✕</button>
+            </div>
+          </div>
+
+          <!-- Abas de Visualização do Documento -->
+          <div style="padding:10px 22px; background:rgba(0,0,0,0.35); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button type="button" id="tab-agv2-btn-doc" onclick="alternarAbaModalAntiGravityV2('doc')" class="btn" style="background:linear-gradient(135deg,#ef4444,#b91c1c); color:#fff; border:1px solid #fca5a5; padding:6px 14px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+                📄 Documento Oficial Formatado (Relatório + Minuta)
+              </button>
+              <button type="button" id="tab-agv2-btn-md" onclick="alternarAbaModalAntiGravityV2('md')" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 14px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+                ✏️ Texto / Markdown Editável
+              </button>
+              <button type="button" id="tab-agv2-btn-json" onclick="alternarAbaModalAntiGravityV2('json')" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 14px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+                🧩 Extração JSON Schema (Doc A & Doc B)
+              </button>
+            </div>
+            <span id="resumo-docs-analisados-agv2" style="font-size:11px; color:#38bdf8; font-weight:700;"></span>
+          </div>
+
+          <!-- Corpo do Modal -->
+          <div style="padding:20px 22px; flex:1; overflow-y:auto; background:#0b1120;">
+            <!-- ABA 1: Documento A4 Formatado -->
+            <div id="aba-agv2-conteudo-doc" style="background:#ffffff; color:#0f172a; padding:32px 38px; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.5); font-family:'Times New Roman', Times, serif; font-size:14px; line-height:1.6; max-width:840px; margin:0 auto;">
+              <!-- Renderizado via JS -->
+            </div>
+
+            <!-- ABA 2: Markdown / Texto Editável -->
+            <div id="aba-agv2-conteudo-md" style="display:none;">
+              <textarea id="textarea-agv2-markdown" rows="22" style="width:100%; border:1px solid rgba(239,68,68,0.4); background:#050811; color:#f8fafc; font-size:12.5px; padding:14px; border-radius:8px; line-height:1.55; font-family:'Consolas', 'Courier New', monospace; resize:vertical; box-sizing:border-box;"></textarea>
+            </div>
+
+            <!-- ABA 3: JSON Schema Extraído (DocumentoA_Oficio e DocumentoB_PlanoDeTrabalho) -->
+            <div id="aba-agv2-conteudo-json" style="display:none;">
+              <pre id="pre-agv2-json-schema" style="margin:0; border:1px solid rgba(56,189,248,0.35); background:#050811; color:#38bdf8; font-size:12px; padding:16px; border-radius:8px; line-height:1.5; font-family:'Consolas', monospace; overflow-x:auto; white-space:pre-wrap;"></pre>
+            </div>
+          </div>
+
+          <!-- Footer com Ações de Geração de Documento -->
+          <div style="padding:14px 22px; border-top:1px solid rgba(255,255,255,0.1); background:#0f172a; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button type="button" onclick="copiarDocumentoAntiGravityV2()" class="btn" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                📋 Copiar Documento p/ SEI
+              </button>
+              <button type="button" onclick="aplicarAuditoriaAntiGravityNaManifestacao()" class="btn" style="background:rgba(16,185,129,0.16); color:#34d399; border:1px solid rgba(16,185,129,0.45); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                ✍️ Injetar na Manifestação Técnica
+              </button>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              <button type="button" onclick="baixarDocumentoAntiGravityV2('txt')" class="btn" style="background:rgba(245,158,11,0.18); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                📝 Baixar .TXT
+              </button>
+              <button type="button" onclick="baixarDocumentoAntiGravityV2('doc')" class="btn" style="background:linear-gradient(135deg,#2563eb,#1d4ed8); color:#fff; border:1px solid #60a5fa; padding:8px 16px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 3px 10px rgba(37,99,235,0.4);">
+                📘 Baixar Documento Word (.DOC)
+              </button>
+              <button type="button" onclick="imprimirDocumentoAntiGravityV2()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:9px 18px; font-size:12.5px; font-weight:900; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(16,185,129,0.45);">
+                🖨️ Imprimir / Gerar PDF Oficial
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= MODAL: EDITOR DO SCRIPT ANTIGRAVITY V2.0 (AUDITORIA E ANÁLISE COMPARATIVA DE PARCERIAS) ============= -->
+      <div id="modal-script-antigravity-v2" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:100006; justify-content:center; align-items:center; padding:20px;">
+        <div style="background:#0f172a; border:1.5px solid rgba(239,68,68,0.5); border-radius:14px; max-width:880px; width:100%; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 16px 45px rgba(0,0,0,0.85); overflow:hidden;">
+          <div style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:rgba(239,68,68,0.1);">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:22px;">🛡️</span>
+              <div>
+                <h3 style="margin:0; color:#f8fafc; font-size:15px; font-weight:800;">Script Completo de Auditoria e Análise Comparativa de Parcerias (AntiGravity v2.0)</h3>
+                <span style="font-size:11px; color:#94a3b8;">Agente: AntiGravity_Convenio_Auditor v2.0.0 • Regras FIN-01, OBJ-02, REP-03 e JSON Schema</span>
+              </div>
+            </div>
+            <button type="button" onclick="fecharModalScriptAntiGravityV2()" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; padding:4px 8px;">✕</button>
+          </div>
+          <div style="padding:18px 20px; flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                <span style="font-size:12px; color:#cbd5e1; font-weight:700;">Especificação Técnica, Pipeline, Regras e Schemas JSON:</span>
+                <a href="https://docs.google.com/document/d/1QC2IifPCQDgn01796k1Zo_e9fJRpbb59/edit" target="_blank" rel="noopener noreferrer" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:4px 10px; border-radius:6px; font-size:11px; font-weight:800; text-decoration:none;">
+                  📄 Abrir Documento Original no Google Docs ↗
+                </a>
+              </div>
+              <button type="button" onclick="restaurarScriptAntiGravityV2Padrao()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:4px 10px; font-size:11px; border-radius:6px; cursor:pointer;">
+                🔄 Restaurar Script v2.0 Original
+              </button>
+            </div>
+            <textarea id="textarea-script-antigravity-v2-editor" rows="18" style="width:100%; border:1px solid rgba(239,68,68,0.35); background:rgba(0,0,0,0.5); color:#f8fafc; font-size:12px; padding:12px; border-radius:8px; line-height:1.45; font-family:monospace; resize:vertical; box-sizing:border-box;"></textarea>
+          </div>
+          <div style="padding:14px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.25); display:flex; justify-content:space-between; align-items:center;">
+            <span id="script-antigravity-v2-status-msg" style="font-size:11.5px; color:#10b981;"></span>
+            <div style="display:flex; gap:10px;">
+              <button type="button" onclick="fecharModalScriptAntiGravityV2()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:8px 16px; font-size:12px; border-radius:6px; cursor:pointer;">
+                Cancelar
+              </button>
+              <button type="button" onclick="salvarScriptAntiGravityV2()" class="btn" style="background:linear-gradient(135deg,#ef4444,#b91c1c); color:#fff; border:none; padding:8px 20px; font-size:12.5px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(239,68,68,0.4);">
+                💾 Salvar Script v2.0
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
 <!-- ============= PAGE: IMPORTAR ============= -->
       <section class="page" id="page-importar">
 
@@ -3157,7 +3299,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.28
+              GBZ - v1.3.29
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3430,7 +3572,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.28] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.29] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -4715,13 +4857,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.28"></script>
-  <script src="js/app.js?v=1.3.28"></script>
-  <script src="js/auth-sap.js?v=1.3.28"></script>
-  <script src="js/escolas.js?v=1.3.28" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=1.3.28"></script>
-  <script src="js/mapa.js?v=1.3.28"></script>
-  <script src="js/contatos.js?v=1.3.28"></script>
+  <script src="js/dados.js?v=1.3.29"></script>
+  <script src="js/app.js?v=1.3.29"></script>
+  <script src="js/auth-sap.js?v=1.3.29"></script>
+  <script src="js/escolas.js?v=1.3.29" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=1.3.29"></script>
+  <script src="js/mapa.js?v=1.3.29"></script>
+  <script src="js/contatos.js?v=1.3.29"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -4897,15 +5039,15 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.3.28"></script>
+  <script src="js/multi-select.js?v=1.3.29"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.3.28"></script>
-  <script src="js/gmac.js?v=1.3.28"></script>
-  <script src="js/orcamento.js?v=1.3.28"></script>
-  <script src="js/gdsm.js?v=1.3.28"></script>
-  <script src="js/print-proalfa.js?v=1.3.28"></script>
-  <script src="js/proalfa.js?v=1.3.28"></script>
+  <script src="js/diarias.js?v=1.3.29"></script>
+  <script src="js/gmac.js?v=1.3.29"></script>
+  <script src="js/orcamento.js?v=1.3.29"></script>
+  <script src="js/gdsm.js?v=1.3.29"></script>
+  <script src="js/print-proalfa.js?v=1.3.29"></script>
+  <script src="js/proalfa.js?v=1.3.29"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
