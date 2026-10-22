@@ -1,9 +1,20 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.26
+// Versão do Sistema: v1.3.27
 // ============================================================
-window.APP_VERSION = 'v1.3.26';
+window.APP_VERSION = 'v1.3.27';
+
+// Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
+if (typeof window.abrirModalPrestacaoContas !== 'function') {
+  window.abrirModalPrestacaoContas = function() {
+    if (typeof abrirModalPrestacaoContasReal === 'function') {
+      return abrirModalPrestacaoContasReal();
+    }
+    const modal = document.getElementById('modal-prestacao-contas');
+    if (modal) modal.style.display = 'flex';
+  };
+}
 
 // ============================================================
 // GBZ v1.3.01 - TRATAMENTO DE PROCESSOS CANCELADOS & BALÃO DE AVISO
@@ -9249,6 +9260,7 @@ async function abrirModalPrestacaoContas() {
   }
 }
 window.abrirModalPrestacaoContas = abrirModalPrestacaoContas;
+window.abrirModalPrestacaoContasReal = abrirModalPrestacaoContas;
 
 function fecharModalPrestacaoContas() {
   const modal = document.getElementById('modal-prestacao-contas');
@@ -9713,13 +9725,25 @@ function recalcularMetricasERenderizarAnaliseCAM() {
   matriz.forEach(m => {
     if (m.status === 'Conforme') pontos += 1;
     else if (m.status === 'Pendente') pontos += 0.35;
+    else if (m.status === 'Inconsistente') pontos += 0;
   });
 
-  const taxaCoerencia = Math.min(100, Math.max(15, Math.round((pontos / totalCrit) * 100)));
+  const temInconsistente = matriz.some(m => m.status === 'Inconsistente');
+  const taxaCoerencia = temInconsistente
+    ? Math.min(45, Math.max(10, Math.round((pontos / totalCrit) * 100)))
+    : Math.min(100, Math.max(15, Math.round((pontos / totalCrit) * 100)));
   const oportunometro = (taxaCoerencia / 10).toFixed(1);
   const qtdPendentes = matriz.filter(m => m.status !== 'Conforme').length;
-  const isFavoravel = taxaCoerencia >= 65 && qtdPendentes <= 3;
-  const recomendacao = isFavoravel ? (qtdPendentes > 0 ? 'FAVORÁVEL COM RESSALVAS' : 'FAVORÁVEL') : 'PENDENTE / DESFAVORÁVEL';
+  const isFavoravel = !temInconsistente && taxaCoerencia >= 65 && qtdPendentes <= 3;
+  
+  let recomendacao = 'FAVORÁVEL';
+  if (temInconsistente) {
+    recomendacao = 'DESFAVORÁVEL • DEMANDA DIVERGENTE';
+  } else if (!isFavoravel) {
+    recomendacao = 'PENDENTE / DESFAVORÁVEL';
+  } else if (qtdPendentes > 0) {
+    recomendacao = 'FAVORÁVEL COM RESSALVAS';
+  }
 
   analise.taxaCoerencia = taxaCoerencia;
   analise.oportunometro = oportunometro;
@@ -9737,29 +9761,39 @@ function recalcularMetricasERenderizarAnaliseCAM() {
 
   if (elOportValor) {
     elOportValor.textContent = `${oportunometro} / 10`;
-    elOportValor.style.color = isFavoravel ? '#10b981' : '#f59e0b';
+    elOportValor.style.color = temInconsistente ? '#ef4444' : (isFavoravel ? '#10b981' : '#f59e0b');
   }
   if (elOportBarra) {
     elOportBarra.style.width = `${taxaCoerencia}%`;
-    elOportBarra.style.background = isFavoravel
-      ? 'linear-gradient(90deg,#f59e0b 0%,#10b981 100%)'
-      : 'linear-gradient(90deg,#ef4444 0%,#f59e0b 100%)';
+    elOportBarra.style.background = temInconsistente
+      ? 'linear-gradient(90deg,#ef4444 0%,#b91c1c 100%)'
+      : (isFavoravel
+        ? 'linear-gradient(90deg,#f59e0b 0%,#10b981 100%)'
+        : 'linear-gradient(90deg,#ef4444 0%,#f59e0b 100%)');
   }
   if (elCoerValor) {
     elCoerValor.textContent = `${taxaCoerencia}%`;
-    elCoerValor.style.color = isFavoravel ? '#38bdf8' : '#fbbf24';
+    elCoerValor.style.color = temInconsistente ? '#ef4444' : (isFavoravel ? '#38bdf8' : '#fbbf24');
   }
   if (elCoerBarra) {
     elCoerBarra.style.width = `${taxaCoerencia}%`;
+    elCoerBarra.style.background = temInconsistente ? '#ef4444' : (isFavoravel ? '#38bdf8' : '#f59e0b');
   }
   if (elCoerStatus) {
-    elCoerStatus.textContent = isFavoravel
-      ? `Coerência, conexão documental e legalidade validadas (${ matriz.length - qtdPendentes }/${ matriz.length } estágios conformes)`
-      : `${qtdPendentes} estágio(s) com pendência ou necessidade de solução documental no conjunto analisado`;
+    elCoerStatus.textContent = temInconsistente
+      ? `🚨 NÃO CONFORME: ${qtdPendentes} estágio(s) com divergência material de demanda detectada!`
+      : (isFavoravel
+        ? `Coerência, conexão documental e legalidade validadas (${ matriz.length - qtdPendentes }/${ matriz.length } estágios conformes)`
+        : `${qtdPendentes} estágio(s) com pendência ou necessidade de solução documental no conjunto analisado`);
+    elCoerStatus.style.color = temInconsistente ? '#fca5a5' : '#94a3b8';
   }
   if (elBadgeRec) {
     elBadgeRec.textContent = recomendacao;
-    if (isFavoravel) {
+    if (temInconsistente) {
+      elBadgeRec.style.background = 'rgba(239,68,68,0.25)';
+      elBadgeRec.style.color = '#f87171';
+      elBadgeRec.style.border = '1px solid #ef4444';
+    } else if (isFavoravel) {
       elBadgeRec.style.background = 'rgba(16,185,129,0.2)';
       elBadgeRec.style.color = '#34d399';
       elBadgeRec.style.border = '1px solid #10b981';
@@ -9770,13 +9804,24 @@ function recalcularMetricasERenderizarAnaliseCAM() {
     }
   }
   if (elResumoRec) {
-    if (isFavoravel && qtdPendentes === 0) {
+    if (temInconsistente) {
+      elResumoRec.textContent = `🚨 ATENÇÃO: Os documentos carregados divergem do Município de ${munProc} ou dos dados cadastrados no sistema. A análise indica que os arquivos pertencem a outra demanda!`;
+      elResumoRec.style.color = '#fca5a5';
+    } else if (isFavoravel && qtdPendentes === 0) {
       elResumoRec.textContent = `O conjunto documental do Município de ${munProc} apresenta plena coerência interna, conexão entre as peças e aderência à Lei Estadual nº 5.735/2024.`;
+      elResumoRec.style.color = '#cbd5e1';
     } else if (isFavoravel) {
       elResumoRec.textContent = `Conjunto documental de ${munProc} com pertinência educacional e conexão demonstradas, com ${qtdPendentes} ressalva(s) sanável(is) apontada(s) abaixo.`;
+      elResumoRec.style.color = '#cbd5e1';
     } else {
       elResumoRec.textContent = `Foram identificadas ${qtdPendentes} pendências no conjunto documental. Utilize as soluções de cada estágio abaixo para saneamento ou ajuste.`;
+      elResumoRec.style.color = '#cbd5e1';
     }
+  }
+
+  // Atualiza botão de Incoerências com a quantidade encontrada
+  if (typeof verificarEAtualizarBotaoIncoerencias === 'function') {
+    verificarEAtualizarBotaoIncoerencias(matriz);
   }
 
   // Renderizar Matriz com Coerência, Solução e 2 Botões para cada Estágio (Definição) — Imagem 2
@@ -9892,12 +9937,71 @@ function analisarConjuntoDocumentalCAM(silencioso) {
   const objetoProc = (document.getElementById('form-objeto')?.value || '').trim();
   const interessadoProc = (document.getElementById('form-interessado')?.value || '').trim();
   const obsProc = (document.getElementById('form-obs')?.value || '').trim();
+  const anoProc = (document.getElementById('form-ano')?.value || '').trim();
   const valOfProc = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
   const valPlanProc = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
 
+  const textoDocsApenas = (nomesDocs.join(' ') + ' ' + textoConjunto).toUpperCase();
   const textoNorm = (textoConjunto + ' ' + nomesDocs.join(' ') + ' ' + objetoProc + ' ' + interessadoProc + ' ' + munProc + ' ' + obsProc).toUpperCase();
   const valorExtraidoDocs = extrairValorMonetarioDeTexto(textoConjunto);
   const valorEfetivo = valPlanProc || valOfProc || valorExtraidoDocs;
+
+  // Lista dos 52 Municípios de Rondônia para validação cruzada
+  const MUNICIPIOS_RO_LISTA = [
+    'ALTA FLORESTA', 'ALTO ALEGRE', 'ALTO PARAISO', 'ALTO PARAÍSO', 'ALVORADA', 'ARIQUEMES',
+    'BURITIS', 'CABIXI', 'CACAULANDIA', 'CACAULÂNDIA', 'CACOAL', 'CAMPO NOVO', 'CANDEIAS',
+    'CASTANHEIRAS', 'CEREJEIRAS', 'CHUPINGUAIA', 'COLORADO', 'CORUMBIARA', 'COSTA MARQUES',
+    'CUJUBIM', 'ESPIGAO', 'ESPIGÃO', 'GOVERNADOR JORGE', 'GUAJARA', 'GUAJARÁ', 'ITAPUA', 'ITAPUÃ',
+    'JARU', 'JI-PARANA', 'JI-PARANÁ', 'MACHADINHO', 'MINISTRO ANDREAZZA', 'MIRANTE DA SERRA',
+    'MONTE NEGRO', 'NOVA BRASILANDIA', 'NOVA BRASILÂNDIA', 'NOVA MAMORE', 'NOVA MAMORÉ',
+    'NOVA UNIAO', 'NOVA UNIÃO', 'NOVO HORIZONTE', 'OURO PRETO', 'PARECIS', 'PIMENTA BUENO',
+    'PIMENTEIRAS', 'PORTO VELHO', 'PRESIDENTE MEDICI', 'PRESIDENTE MÉDICI', 'PRIMAVERA',
+    'RIO CRESPO', 'ROLIM DE MOURA', 'SANTA LUZIA', 'SAO FELIPE', 'SÃO FELIPE', 'SAO FRANCISCO',
+    'SÃO FRANCISCO', 'SAO MIGUEL', 'SÃO MIGUEL', 'SERINGUEIRAS', 'TEIXEIROPOLIS', 'TEIXEIRÓPOLIS',
+    'THEOBROMA', 'URUPA', 'URUPÁ', 'VALE DO ANARI', 'VALE DO PARAISO', 'VALE DO PARAÍSO', 'VILHENA'
+  ];
+
+  // 1. Verificação da Dimensão Município
+  const munCadastradoNorm = (munProc || '').toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  let munDivergenteDetectado = '';
+  if (munCadastradoNorm) {
+    for (const m of MUNICIPIOS_RO_LISTA) {
+      const mNorm = m.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      if (!munCadastradoNorm.includes(mNorm) && !mNorm.includes(munCadastradoNorm)) {
+        const reNome = new RegExp(`\\b${mNorm}\\b`, 'i');
+        if (reNome.test(nomesDocs.join(' ').normalize("NFD").replace(/[\u0300-\u036f]/g, "")) || reNome.test(textoDocsApenas.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) {
+          munDivergenteDetectado = m;
+          break;
+        }
+      }
+    }
+  }
+
+  // 2. Verificação da Dimensão Entidade / Escola / Interessado
+  const escolaCadastrada = (interessadoProc || '').toUpperCase().replace(/-(?:.*)/, '').trim();
+  const escolaPalavrasChave = escolaCadastrada.split(/[\s,]+/).filter(w => w.length > 3 && !/ESCOLA|EMEF|CMEI|MUNICIPAL|ESTADUAL|COL[EÉ]GIO/i.test(w));
+  let escolaConvergente = true;
+  let escolaDocDetectada = '';
+  if (escolaPalavrasChave.length > 0 && nomesDocs.length > 0) {
+    const achouPalavraEscola = escolaPalavrasChave.some(p => textoDocsApenas.includes(p));
+    if (!achouPalavraEscola) {
+      escolaConvergente = false;
+      const mEsc = textoDocsApenas.match(/(?:ESCOLA|EMEF|CMEI|COL[EÉ]GIO)[\s:]+([^\n\r,\.;]{3,60})/i);
+      if (mEsc && mEsc[1]) escolaDocDetectada = mEsc[1].trim();
+    }
+  }
+
+  // 3. Verificação da Dimensão Processo SEI
+  const regexProc = /\b\d{4}\.?\d{6}\/?\d{4}-?\d{2}\b/g;
+  const procsDocs = (textoDocsApenas.match(regexProc) || []).map(p => p.replace(/[^\d]/g, ''));
+  const numProcLimpo = numProc.replace(/[^\d]/g, '');
+  let procDivergenteDetectado = '';
+  if (numProcLimpo.length >= 10 && procsDocs.length > 0) {
+    const bateProc = procsDocs.some(p => p.includes(numProcLimpo) || numProcLimpo.includes(p));
+    if (!bateProc) {
+      procDivergenteDetectado = (textoDocsApenas.match(regexProc) || [])[0] || 'Divergente';
+    }
+  }
 
   // Identifica tipos de peças presentes no conjunto documental (Requerimento/Ofício, Planejamento, Plano/Projeto)
   const temDocRequerimento = nomesDocs.some(n => /REQUERIMENTO|OF[IÍ]CIO|SOLICITA|SEI/i.test(n)) || /REQUERIMENTO|OF[IÍ]CIO|SOLICITA/i.test(textoNorm);
@@ -9907,23 +10011,54 @@ function analisarConjuntoDocumentalCAM(silencioso) {
   const matriz = [];
 
   // Estágio 1: Identificação Proponente / Município e Conexão entre Peças
-  const temMun = Boolean(munProc) || /MUNIC[IÍ]PIO|PREFEITURA|CANDEIAS|PORTO VELHO|JI-PARAN|ARIQUEMES|VILHENA|CACOAL|ROLIM|JARU|GUAJAR/i.test(textoNorm);
+  let statusEstagio1 = 'Conforme';
+  let descEstagio1 = munProc ? `${munProc}/RO — ${interessadoProc || 'Unidade Escolar'}` : 'Identificado no conjunto documental';
+  let coerenciaEstagio1 = `Há conexão subjetiva entre o proponente (${interessadoProc || 'Unidade Escolar'} — Município de ${munProc || 'RO'}) e os documentos juntados (${nomesDocs.join(', ') || 'autos SEI nº ' + numProc}), demonstrando legitimidade ativa (art. 211, CF/88).`;
+  let solucaoEstagio1 = `Confirmar a vinculação do CNPJ/INEP da unidade ${interessadoProc || 'escolar'} e a assinatura do representante legal no Requerimento e no Plano de Trabalho.`;
+  let razoesEstagio1 = `Estágio 1 avaliado pelo Script Mestre CAM V1.0 (Item 5.1): Proponente e município validados.`;
+
+  if (munDivergenteDetectado) {
+    statusEstagio1 = 'Inconsistente';
+    descEstagio1 = `DIVERGÊNCIA CRÍTICA: Autos cadastrados em ${munProc || 'Município'}, mas documentos pertencem a ${munDivergenteDetectado}`;
+    coerenciaEstagio1 = `INCOERÊNCIA DE DEMANDA: Os documentos carregados (${nomesDocs.join(', ')}) referem-se expressamente ao Município de ${munDivergenteDetectado}, divergindo frontalmente do Município de ${munProc} cadastrado no sistema. Não se trata da mesma demanda processual!`;
+    solucaoEstagio1 = `Remover os documentos anexados pertencentes ao Município de ${munDivergenteDetectado} e juntar o Plano de Trabalho e Ofício legítimos do Município de ${munProc}/RO, ou retificar o cadastro dos autos no sistema.`;
+    razoesEstagio1 = `Estágio 1 reprovado pelo confronto de demanda: Incoerência material entre proponente cadastrado (${munProc}) e documentos juntados (${munDivergenteDetectado}).`;
+  } else if (!escolaConvergente) {
+    statusEstagio1 = 'Inconsistente';
+    descEstagio1 = `Divergência de Entidade/Escola: ${interessadoProc} (Cadastro) x ${escolaDocDetectada || 'Outra Unidade'} (Documentos)`;
+    coerenciaEstagio1 = `A unidade escolar cadastrada (${interessadoProc}) não foi identificada no conjunto documental anexado (${nomesDocs.join(', ')}). Risco de juntada de documentos de outra unidade escolar!`;
+    solucaoEstagio1 = `Conferir se o Plano de Trabalho e Ofício anexados pertencem à escola ${interessadoProc} e atualizar as peças correspondentes.`;
+    razoesEstagio1 = `Estágio 1 reprovado por divergência entre a escola cadastrada e as menções documentais.`;
+  } else if (procDivergenteDetectado) {
+    statusEstagio1 = 'Inconsistente';
+    descEstagio1 = `Nº Processo divergente: ${numProc} (Cadastro) x ${procDivergenteDetectado} (Documento)`;
+    coerenciaEstagio1 = `O número do processo extraído das peças documentais (${procDivergenteDetectado}) não corresponde aos autos cadastrados (${numProc}).`;
+    solucaoEstagio1 = `Validar a numeração dos autos no processo SEI e retificar a peça anexada.`;
+    razoesEstagio1 = `Estágio 1 reprovado por divergência de numeração dos autos SEI.`;
+  }
+
   matriz.push({
     nome: 'Identificação Proponente/Município',
-    status: temMun ? 'Conforme' : 'Pendente',
-    desc: munProc ? `${munProc}/RO — ${interessadoProc || 'Unidade Escolar'}` : 'Identificado no conjunto documental',
-    coerencia: `Há conexão subjetiva entre o proponente (${interessadoProc || 'Unidade Escolar'} — Município de ${munProc || 'RO'}) e os documentos juntados (${nomesDocs.join(', ') || 'autos SEI nº ' + numProc}), demonstrando legitimidade ativa (art. 211, CF/88).`,
-    solucao: `Confirmar a vinculação do CNPJ/INEP da unidade ${interessadoProc || 'escolar'} e a assinatura do representante legal no Requerimento e no Plano de Trabalho.`,
-    razoes: `Estágio 1 avaliado pelo Script Mestre CAM V1.0 (Item 5.1): O proponente (${interessadoProc || 'escola'} / Município de ${munProc || 'RO'}) consta identificado de forma convergente entre o cadastro do Processo SEI nº ${numProc || 'atual'} e as peças anexadas (${nomesDocs.join(', ')}).`
+    status: statusEstagio1,
+    desc: descEstagio1,
+    coerencia: coerenciaEstagio1,
+    solucao: solucaoEstagio1,
+    razoes: razoesEstagio1
   });
 
   // Estágio 2: Definição do Objeto e Coerência Material
   const temObj = Boolean(objetoProc) || /OBJETO|REVITALIZA|REFORMA|AQUISI|CONSTRU|AMPLIA|MANUTEN|EQUIPAMENTO/i.test(textoNorm);
+  let statusEstagio2 = (statusEstagio1 === 'Inconsistente') ? 'Inconsistente' : (temObj ? 'Conforme' : 'Pendente');
+  let descEstagio2 = (statusEstagio1 === 'Inconsistente')
+    ? `Objeto comprometido por divergência de demanda (${objetoProc || 'Indefinido'})`
+    : (objetoProc || 'Objeto identificado nos documentos');
   matriz.push({
     nome: 'Definição do Objeto',
-    status: temObj ? 'Conforme' : 'Pendente',
-    desc: objetoProc || 'Objeto identificado nos documentos',
-    coerencia: `O objeto ("${objetoProc || 'Intervenção educacional'}") guarda coerência direta entre o pedido formal (Requerimento/Ofício) e os documentos de planejamento anexados.`,
+    status: statusEstagio2,
+    desc: descEstagio2,
+    coerencia: statusEstagio2 === 'Conforme'
+      ? `O objeto ("${objetoProc || 'Intervenção educacional'}") guarda coerência direta entre o pedido formal (Requerimento/Ofício) e os documentos de planejamento anexados.`
+      : `O objeto ("${objetoProc || 'Intervenção educacional'}") diverge ou está prejudicado devido à incompatibilidade dos documentos anexados.`,
     solucao: `Manter a descrição padronizada do objeto ("${objetoProc || 'objeto pretendido'}") idêntica no cabeçalho do Plano de Trabalho, no Requerimento SEI e na Nota Técnica.`,
     razoes: `Estágio 2 avaliado pelo Script Mestre CAM V1.0 (Itens 5.2 e 6.2): O objeto "${objetoProc}" apresenta delimitação clara e conexão material entre os documentos postados (${nomesDocs.join(', ')}).`
   });
@@ -9932,7 +10067,7 @@ function analisarConjuntoDocumentalCAM(silencioso) {
   const temJust = /JUSTIFICATIVA|DIAGN[OÓ]STICO|NECESSIDADE|MOTIVA|REVITALIZA|MELHORIA|ENSINO|INFRAESTRUTURA|ESTRAT[EÉ]GICO/i.test(textoNorm) || multiDocsConectados;
   matriz.push({
     nome: 'Justificativa e Necessidade',
-    status: temJust ? 'Conforme' : 'Pendente',
+    status: (statusEstagio1 === 'Inconsistente') ? 'Pendente' : (temJust ? 'Conforme' : 'Pendente'),
     desc: temJust ? 'Problema concreto e fundamentado no conjunto' : 'Detalhar diagnóstico situacional',
     coerencia: `O conjunto documental evidencia a necessidade da intervenção na unidade ${interessadoProc || 'escolar'}, conectando o diagnóstico situacional à solução proposta.`,
     solucao: `Explicitar na Seção 4 da Manifestação Técnica a correlação entre a demanda da escola (${interessadoProc || 'beneficiária'}) e os benefícios diretos aos alunos.`,
@@ -9954,7 +10089,7 @@ function analisarConjuntoDocumentalCAM(silencioso) {
   const temMetas = /META|ETAPA|RESULTADO|PLANEJAMENTO|QUANTITATIVO|INDICADOR|ESPECIFICA|SERVI[CÇ]O|ITEM/i.test(textoNorm) || temDocPlanejamento;
   matriz.push({
     nome: 'Metas Físicas e Resultados',
-    status: temMetas ? 'Conforme' : 'Pendente',
+    status: (statusEstagio1 === 'Inconsistente') ? 'Pendente' : (temMetas ? 'Conforme' : 'Pendente'),
     desc: temMetas ? 'Metas e planejamento identificados no conjunto' : 'Metas quantitativas pendentes de detalhamento',
     coerencia: temMetas
       ? `As metas e diretrizes constantes no conjunto documental (${nomesDocs.join(', ')}) guardam proporcionalidade com o objeto (${objetoProc || 'proposto'}).`
@@ -9972,7 +10107,10 @@ function analisarConjuntoDocumentalCAM(silencioso) {
   let descFin = valorEfetivo > 0 ? `Valor aferido: R$ ${formatarMoedaBrasil(valorEfetivo)}` : 'Previsão orçamentária em instrução nos autos';
   if (difValores >= 0.05) {
     statusFin = 'Inconsistente';
-    descFin = `Divergência de R$ ${formatarMoedaBrasil(difValores)} entre Ofício e Planilha`;
+    descFin = `Divergência de R$ ${formatarMoedaBrasil(difValores)} entre Ofício (R$ ${formatarMoedaBrasil(valOfProc)}) e Planilha (R$ ${formatarMoedaBrasil(valPlanProc)})`;
+  } else if (valOfProc > 0 && valPlanProc === 0) {
+    statusFin = 'Pendente';
+    descFin = `Planilha zerada (R$ 0,00) em confronto com Valor Oficial de R$ ${formatarMoedaBrasil(valOfProc)}`;
   } else if (!temFinanc) {
     statusFin = 'Pendente';
     descFin = 'Quadro financeiro detalhado pendente de preenchimento';
@@ -10009,18 +10147,24 @@ function analisarConjuntoDocumentalCAM(silencioso) {
   const temCrono = /CRONOGRAMA|PRAZO|2025|2026|MESES|DIAS|ETAPA|EXECU[CÇ][AÃ]O|VIG[EÊ]NCIA|PLANEJAMENTO/i.test(textoNorm);
   matriz.push({
     nome: 'Cronograma e Conexão Documental',
-    status: temCrono ? 'Conforme' : 'Pendente',
-    desc: temCrono ? `Cronologia e conexão validadas (${nomesDocs.length} doc(s))` : 'Delimitar prazo de execução física/financeira',
-    coerencia: temCrono
-      ? `Existe conexão temporal e documental entre as peças postadas (${nomesDocs.join(', ') || 'autos SEI'}), com previsão de execução dentro do exercício vigente.`
-      : `Requer delimitação expressa do cronograma físico-financeiro de execução das etapas.`,
+    status: (statusEstagio1 === 'Inconsistente') ? 'Inconsistente' : (temCrono ? 'Conforme' : 'Pendente'),
+    desc: (statusEstagio1 === 'Inconsistente')
+      ? 'Conexão documental rompida por demanda divergente'
+      : (temCrono ? `Cronologia e conexão validadas (${nomesDocs.length} doc(s))` : 'Delimitar prazo de execução física/financeira'),
+    coerencia: (statusEstagio1 === 'Inconsistente')
+      ? `Ruptura na conexão documental: Os documentos postados tratam de processo ou município alheio ao cadastrado.`
+      : (temCrono
+        ? `Existe conexão temporal e documental entre as peças postadas (${nomesDocs.join(', ') || 'autos SEI'}), com previsão de execução dentro do exercício vigente.`
+        : `Requer delimitação expressa do cronograma físico-financeiro de execução das etapas.`),
     solucao: temCrono
       ? `Atestar na análise a conexão e harmonia entre o Requerimento, o Planejamento e o Plano de Trabalho instruídos no processo.`
       : `Incluir cronograma de execução com prazos de início e término vinculados à liberação dos recursos (ALR).`,
     razoes: `Estágio 8 avaliado pelo Script Mestre CAM V1.0 (Etapa 6 - Análise Cronológica e Item 3 - Hierarquia e Conexão das Fontes).`
   });
 
-  const sinteseConexaoLegalidade = `Foram analisados de forma integrada ${nomesDocs.length || 1} documento(s) (${nomesDocs.join(', ') || 'dados do formulário SEI'}). Verifica-se conexão material e formal entre o pedido municipal (${interessadoProc || 'Unidade Escolar'} — ${munProc || 'RO'}), o objeto ("${objetoProc || 'intervenção educacional'}") e a fundamentação normativa (CF/88 arts. 205 e 211; LDB arts. 8º e 10; Lei Federal nº 14.113/2020 e Lei Estadual nº 5.735/2024 — Proalfa Rondônia). O documento final entregue consolida todo o conjunto analisado.`;
+  const sinteseConexaoLegalidade = (statusEstagio1 === 'Inconsistente')
+    ? `⚠️ ALERTA DE NÃO CONFORMIDADE: Foram analisados ${nomesDocs.length || 1} documento(s) (${nomesDocs.join(', ') || 'autos SEI'}). Constatou-se DIVERGÊNCIA MATERIAL DE DEMANDA entre os autos cadastrados (${interessadoProc || 'Unidade Escolar'} — ${munProc || 'RO'}) e os documentos juntados (que apontam para ${munDivergenteDetectado || 'outra entidade/município'}). Instrução processual bloqueada por Trava de Segurança!`
+    : `Foram analisados de forma integrada ${nomesDocs.length || 1} documento(s) (${nomesDocs.join(', ') || 'dados do formulário SEI'}). Verifica-se conexão material e formal entre o pedido municipal (${interessadoProc || 'Unidade Escolar'} — ${munProc || 'RO'}), o objeto ("${objetoProc || 'intervenção educacional'}") e a fundamentação normativa (CF/88 arts. 205 e 211; LDB arts. 8º e 10; Lei Federal nº 14.113/2020 e Lei Estadual nº 5.735/2024 — Proalfa Rondônia). O documento final entregue consolida todo o conjunto analisado.`;
 
   window._analiseCamAtual = {
     nomeArquivo: nomesDocs.join(', ') || 'Conjunto Documental SEI',
@@ -10281,13 +10425,16 @@ function verificarEAtualizarConformidadeDemanda() {
   // 1. Dados cadastrados no formulário do sistema
   const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
   const numProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || (document.querySelector('input[name="numero[]"]')?.value || '').trim();
-  const munProc = (document.getElementById('form-municipio')?.value || '').trim().toUpperCase();
-  const interessadoProc = (document.getElementById('form-interessado')?.value || '').trim().toUpperCase();
+  const munProc = (document.getElementById('form-municipio')?.value || '').trim();
+  const interessadoProc = (document.getElementById('form-interessado')?.value || '').trim();
+  const objetoProc = (document.getElementById('form-objeto')?.value || '').trim();
+  const anoProc = (document.getElementById('form-ano')?.value || '').trim();
   const valOfProc = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
   const valPlanProc = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
   const valorCadastro = valPlanProc || valOfProc || 0;
 
   // 2. Extrai texto e dados de todos os documentos anexados
+  const nomesDocs = arqs.map(a => a.nome || '');
   const textoTotal = arqs.map(a => (a.nome || '') + ' ' + (a.texto || '')).join('\n').toUpperCase();
   
   // Extrai números de processo dos documentos (formato SEI: 0000.000000/0000-00 ou similar)
@@ -10298,52 +10445,86 @@ function verificarEAtualizarConformidadeDemanda() {
   let divergencias = [];
   let conformidades = [];
 
-  // Verificação A: Número do Processo SEI
+  // Verificação 1: Número do Processo SEI
   if (numProcLimpo.length >= 10) {
     if (procsDocs.length > 0) {
       const matchProc = procsDocs.some(p => p.includes(numProcLimpo) || numProcLimpo.includes(p));
       if (matchProc) {
         conformidades.push(`Nº SEI convergente com os autos (${numProc})`);
       } else {
-        // Encontrou processo nos documentos, mas é diferente do cadastrado
-        divergencias.push(`Nº SEI identificado nos documentos (${textoTotal.match(regexProc)[0]}) difere do cadastrado no sistema (${numProc})`);
+        const procDocEnc = (textoTotal.match(regexProc) || [])[0] || 'Divergente';
+        divergencias.push(`Nº SEI identificado nos documentos (${procDocEnc}) difere do cadastrado no sistema (${numProc})`);
       }
     }
   }
 
-  // Verificação B: Município do Proponente / Demanda
-  if (munProc && munProc.length >= 3) {
-    // Lista de principais municípios de RO para verificar se o doc aponta para OUTRO município
-    const outrosMunicipiosRO = [
-      'PORTO VELHO', 'JI-PARANÁ', 'JI-PARANA', 'ARIQUEMES', 'VILHENA', 'CACOAL', 'ROLIM DE MOURA',
-      'JARU', 'GUAJARÁ-MIRIM', 'GUAJARA-MIRIM', 'CANDEIAS DO JAMARI', 'BURITIS', 'MACHADINHO',
-      'PIMENTA BUENO', 'OURO PRETO', 'PRESIDENTE MÉDICI', 'PRESIDENTE MEDICI', 'ESPIGÃO', 'ESPIGAO',
-      'CEREJEIRAS', 'ALTA FLORESTA', 'SÃO MIGUEL', 'SAO MIGUEL', 'COLORADO', 'MONTE NEGRO',
-      'ALTO PARAÍSO', 'ALTO PARAISO', 'ALVORADA', 'NOVA MAMORÉ', 'NOVA MAMORE'
-    ].filter(m => !munProc.includes(m) && !m.includes(munProc));
+  // Verificação 2: Município do Proponente / Demanda
+  const MUNICIPIOS_RO_TODOS = [
+    'ALTA FLORESTA', 'ALTO ALEGRE', 'ALTO PARAISO', 'ALTO PARAÍSO', 'ALVORADA', 'ARIQUEMES',
+    'BURITIS', 'CABIXI', 'CACAULANDIA', 'CACAULÂNDIA', 'CACOAL', 'CAMPO NOVO', 'CANDEIAS',
+    'CASTANHEIRAS', 'CEREJEIRAS', 'CHUPINGUAIA', 'COLORADO', 'CORUMBIARA', 'COSTA MARQUES',
+    'CUJUBIM', 'ESPIGAO', 'ESPIGÃO', 'GOVERNADOR JORGE', 'GUAJARA', 'GUAJARÁ', 'ITAPUA', 'ITAPUÃ',
+    'JARU', 'JI-PARANA', 'JI-PARANÁ', 'MACHADINHO', 'MINISTRO ANDREAZZA', 'MIRANTE DA SERRA',
+    'MONTE NEGRO', 'NOVA BRASILANDIA', 'NOVA BRASILÂNDIA', 'NOVA MAMORE', 'NOVA MAMORÉ',
+    'NOVA UNIAO', 'NOVA UNIÃO', 'NOVO HORIZONTE', 'OURO PRETO', 'PARECIS', 'PIMENTA BUENO',
+    'PIMENTEIRAS', 'PORTO VELHO', 'PRESIDENTE MEDICI', 'PRESIDENTE MÉDICI', 'PRIMAVERA',
+    'RIO CRESPO', 'ROLIM DE MOURA', 'SANTA LUZIA', 'SAO FELIPE', 'SÃO FELIPE', 'SAO FRANCISCO',
+    'SÃO FRANCISCO', 'SAO MIGUEL', 'SÃO MIGUEL', 'SERINGUEIRAS', 'TEIXEIROPOLIS', 'TEIXEIRÓPOLIS',
+    'THEOBROMA', 'URUPA', 'URUPÁ', 'VALE DO ANARI', 'VALE DO PARAISO', 'VALE DO PARAÍSO', 'VILHENA'
+  ];
 
-    const munNoTexto = textoTotal.includes(munProc);
-    if (munNoTexto) {
-      conformidades.push(`Município convergente (${munProc})`);
+  const munCadastradoNorm = (munProc || '').toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  let munDivergenteEncontrado = '';
+  if (munCadastradoNorm) {
+    for (const m of MUNICIPIOS_RO_TODOS) {
+      const mNorm = m.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      if (!munCadastradoNorm.includes(mNorm) && !mNorm.includes(munCadastradoNorm)) {
+        const reNome = new RegExp(`\\b${mNorm}\\b`, 'i');
+        if (reNome.test(nomesDocs.join(' ').normalize("NFD").replace(/[\u0300-\u036f]/g, "")) || reNome.test(textoTotal.normalize("NFD").replace(/[\u0300-\u036f]/g, ""))) {
+          munDivergenteEncontrado = m;
+          break;
+        }
+      }
+    }
+  }
+
+  if (munDivergenteEncontrado) {
+    divergencias.push(`Documento endereçado a outro município (${munDivergenteEncontrado}) diferente do cadastrado (${munProc || 'Não informado'})`);
+  } else if (munProc && textoTotal.includes(munProc.toUpperCase())) {
+    conformidades.push(`Município convergente (${munProc})`);
+  }
+
+  // Verificação 3: Interessado / Unidade Escolar / Entidade
+  const escolaCadastrada = (interessadoProc || '').toUpperCase().replace(/-(?:.*)/, '').trim();
+  const escolaPalavras = escolaCadastrada.split(/[\s,]+/).filter(w => w.length > 3 && !/ESCOLA|EMEF|CMEI|MUNICIPAL|ESTADUAL|COL[EÉ]GIO/i.test(w));
+  if (escolaPalavras.length > 0) {
+    const achouEscola = escolaPalavras.some(p => textoTotal.includes(p));
+    if (achouEscola) {
+      conformidades.push(`Entidade/Escola alinhada (${interessadoProc})`);
     } else {
-      // Checa se os documentos apontam expressamente para outro município
-      const munDivergenteEncontrado = outrosMunicipiosRO.find(m => {
-        const re = new RegExp(`\\b(MUNIC[IÍ]PIO DE|PREFEITURA MUNICIPAL DE|COMARCA DE)\\s+${m}\\b`, 'i');
-        return re.test(textoTotal);
-      });
-      if (munDivergenteEncontrado) {
-        divergencias.push(`Documento endereçado a outro município (${munDivergenteEncontrado}) diferente do cadastrado (${munProc})`);
-      }
+      divergencias.push(`Entidade/Escola cadastrada (${interessadoProc}) não localizada nos documentos carregados`);
     }
   }
 
-  // Verificação C: Valores Financeiros entre Planilha e Ofício
+  // Verificação 4: Valores Financeiros entre Planilha e Ofício
   if (valOfProc > 0 && valPlanProc > 0) {
     const diff = Math.abs(valOfProc - valPlanProc);
     if (diff >= 0.05) {
-      divergencias.push(`Divergência financeira de R$ ${formatarMoedaBrasil(diff)} entre Ofício e Planilha`);
+      divergencias.push(`Divergência financeira de R$ ${formatarMoedaBrasil(diff)} entre Ofício (R$ ${formatarMoedaBrasil(valOfProc)}) e Planilha (R$ ${formatarMoedaBrasil(valPlanProc)})`);
     } else {
       conformidades.push(`Valores alinhados: R$ ${formatarMoedaBrasil(valPlanProc)}`);
+    }
+  } else if (valOfProc > 0 && valPlanProc === 0) {
+    divergencias.push(`Valor da Planilha zerado (R$ 0,00) enquanto o Valor Oficial registra R$ ${formatarMoedaBrasil(valOfProc)}`);
+  }
+
+  // Verificação 5: Ano do Exercício
+  if (anoProc && anoProc.length === 4) {
+    const anosDocs = (textoTotal.match(/\b202[4-9]\b/g) || []);
+    if (anosDocs.length > 0 && !anosDocs.includes(anoProc)) {
+      divergencias.push(`Ano cadastrado (${anoProc}) difere dos exercícios referenciados nos documentos (${Array.from(new Set(anosDocs)).join(', ')})`);
+    } else if (anosDocs.includes(anoProc)) {
+      conformidades.push(`Exercício convergente (${anoProc})`);
     }
   }
 
