@@ -724,7 +724,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 25px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.24</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.26</div>
   </div>
 </div>
   
@@ -986,7 +986,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13px; font-weight: 800; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 5px rgba(56,189,248,0.5);'>GBZ - v1.3.25</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.26</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1852,11 +1852,15 @@
               <div id="badge-topo-ia-destaque" style="display:flex; align-items:center; gap:12px; margin: 0 auto; padding:6px 20px; background:linear-gradient(135deg, rgba(99,102,241,0.28), rgba(168,85,247,0.28)); border:1.5px solid rgba(168,85,247,0.65); border-radius:12px; box-shadow:0 0 20px rgba(168,85,247,0.35);">
                 <img src="img/icone-ai-chip.png" alt="AI Chip" style="width:34px; height:34px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(168,85,247,0.9));">
                 <div style="display:flex; flex-direction:column; line-height:1.2;">
-                  <span style="font-size:13px; font-weight:900; color:#f3e8ff; letter-spacing:0.8px; text-shadow:0 0 8px rgba(168,85,247,0.6);">ANÁLISE INTELIGENTE</span>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:13px; font-weight:900; color:#f3e8ff; letter-spacing:0.8px; text-shadow:0 0 8px rgba(168,85,247,0.6);">ANÁLISE INTELIGENTE</span>
+                    <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 6px; border-radius:4px; font-size:10px; font-weight:900; letter-spacing:0.5px; box-shadow:0 0 8px rgba(56,189,248,0.5);">v1.3.26</span>
+                  </div>
                   <span style="font-size:11px; color:#c084fc; font-weight:700;">Motor Neural CAM • Conexão Integral</span>
                 </div>
               </div>
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
+                <button type="button" id="btn-prestacao-contas" onclick="abrirModalPrestacaoContas()" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:1px solid #818cf8; box-shadow:0 3px 10px rgba(99,102,241,0.35); height: 42px; padding: 0 20px; font-size: 13.5px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;" title="Gerar despacho para verificação de regularidade e prestação de contas da entidade">📋 Prestação de Contas</button>
                 <button type="button" id="btn-gerar-manifestacao" onclick="gerarManifestacaoJPG()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:none; align-items:center; justify-content:center; gap:6px;">📄 Gerar Manifestação</button>
                 <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">Cancelar</button>
                 <button type="submit" class="btn btn-success" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">💾 Salvar Processo</button>
@@ -2666,6 +2670,9 @@
                   </div>
                 </div>
 
+                <!-- BANNER DINÂMICO: CONFORMIDADE DA DEMANDA (DOCUMENTOS X CADASTRO) & TRAVA -->
+                <div id="banner-conformidade-demanda" style="display:none; margin-bottom:12px; padding:12px 14px; border-radius:8px; font-size:12px; line-height:1.45;"></div>
+
                 <div id="repositorio-lista-arquivos" style="display:flex; flex-direction:column; gap:8px; max-height:240px; overflow-y:auto; padding-right:4px;">
                   <!-- Exibido dinamicamente via JS -->
                   <div id="repositorio-vazio-msg" onclick="document.getElementById('input-file-repositorio').click()" style="padding:24px 14px; text-align:center; color:#94a3b8; font-size:12.5px; background:rgba(16,185,129,0.04); border-radius:8px; border:1px dashed rgba(16,185,129,0.35); cursor:pointer;">
@@ -3062,8 +3069,8 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.15); color:#60a5fa; border:1px solid rgba(59,130,246,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
-              GBZ - v1.3.24
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
+              GBZ - v1.3.26
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3336,7 +3343,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.24] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.26] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -5860,6 +5867,70 @@ function mudarAbaDiarias(aba, el) {
           
           <!-- 5. Botão Salvar (Download Principal) -->
           <button type="button" onclick="salvarManifestacaoPrincipal()" class="btn btn-success" style="padding:8px 20px; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:6px;" title="Salvar relatório gerado">
+            💾 Salvar
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============= MODAL POPUP: PRESTAÇÃO DE CONTAS / REGULARIDADE (IMAGEM 4) ============= -->
+  <div id="modal-prestacao-contas" style="display:none; position:fixed; inset:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:999999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; opacity:1; pointer-events:auto; backdrop-filter:blur(4px);">
+    <div style="background:#0f172a; border:1px solid rgba(99,102,241,0.4); width:100%; max-width:880px; max-height:95vh; border-radius:16px; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.8); overflow:hidden;">
+      
+      <!-- Modal Header -->
+      <div style="padding:16px 20px; background:linear-gradient(135deg,#1e1b4b,#0f172a); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:22px;">📋</span>
+          <div>
+            <h3 style="margin:0; font-size:16px; color:#f8fafc; font-weight:800;">Despacho de Prestação de Contas &bull; Regularidade e Aptidão</h3>
+            <p style="margin:2px 0 0 0; font-size:11.5px; color:#c7d2fe;">Consulta de regularidade e inexistência de pendências financeiras / prestação de contas</p>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalPrestacaoContas()" style="background:none; border:none; color:#94a3b8; font-size:24px; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+
+      <!-- Modal Body (Preview da Imagem do Despacho) -->
+      <div style="padding:20px; overflow-y:auto; flex:1; background:#0b1120; display:flex; justify-content:center; align-items:flex-start;">
+        <div id="prestacao-contas-loading" style="display:none; color:#818cf8; font-weight:700; font-size:14px; padding:35px; text-align:center;">
+          <span class="anim-ampulheta" style="font-size:24px; margin-right:8px;">⏳</span> Processando dados do Plano de Trabalho e gerando despacho...
+        </div>
+        <img id="prestacao-contas-preview-img" src="" alt="Despacho Prestação de Contas" style="max-width:100%; height:auto; box-shadow:0 10px 30px rgba(0,0,0,0.6); background:#fff; display:none;">
+      </div>
+
+      <!-- Modal Footer -->
+      <div style="padding:14px 20px; background:#0f172a; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <button type="button" onclick="fecharModalPrestacaoContas()" class="btn btn-ghost" style="padding:8px 18px; font-size:13px;">Fechar</button>
+        
+        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
+          <!-- 1. Botão Copiar Texto -->
+          <button type="button" onclick="copiarTextoPrestacaoContas()" class="btn" style="background:rgba(99,102,241,0.15); color:#a5b4fc; border:1px solid rgba(99,102,241,0.3); font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;">
+            📝 Copiar Texto
+          </button>
+
+          <!-- 2. Botão Copiar Imagem -->
+          <button type="button" onclick="copiarImagemPrestacaoContas()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.2); font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;">
+            📋 Copiar Imagem
+          </button>
+          
+          <!-- 3. Botão JPG -->
+          <button type="button" onclick="salvarPrestacaoContasFormato('jpg')" class="btn" style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border:none; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;" title="Baixar como imagem JPG">
+            🖼️ JPG
+          </button>
+          
+          <!-- 4. Botão PNG -->
+          <button type="button" onclick="salvarPrestacaoContasFormato('png')" class="btn" style="background:linear-gradient(135deg,#06b6d4,#0891b2); color:#fff; border:none; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;" title="Baixar como imagem PNG">
+            🖼️ PNG
+          </button>
+          
+          <!-- 5. Botão PDF -->
+          <button type="button" onclick="salvarPrestacaoContasFormato('pdf')" class="btn" style="background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; font-weight:700; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12.5px; display:inline-flex; align-items:center; gap:6px;" title="Baixar documento em PDF">
+            📄 PDF
+          </button>
+          
+          <!-- 6. Botão Salvar (Download Principal) -->
+          <button type="button" onclick="salvarPrestacaoContasPrincipal()" class="btn btn-success" style="padding:8px 20px; font-size:13px; font-weight:700; display:inline-flex; align-items:center; gap:6px;" title="Salvar despacho gerado">
             💾 Salvar
           </button>
         </div>

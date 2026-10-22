@@ -1,5 +1,11 @@
 
 // ============================================================
+// SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
+// Versão do Sistema: v1.3.26
+// ============================================================
+window.APP_VERSION = 'v1.3.26';
+
+// ============================================================
 // GBZ v1.3.01 - TRATAMENTO DE PROCESSOS CANCELADOS & BALÃO DE AVISO
 // ============================================================
 window.filtrarPorCancelados = function() {
@@ -257,6 +263,7 @@ function alternarGuiaFormulario(guia) {
   const tabObjetivo = document.getElementById('tab-content-objetivo');
   const tabRepositorio = document.getElementById('tab-content-repositorio');
   const btnManifestacao = document.getElementById('btn-gerar-manifestacao');
+  const btnPrestacao = document.getElementById('btn-prestacao-contas');
   const containerExcluir = document.getElementById('container-excluir-form');
 
   if (!tabObjeto || !tabObjetivo) return;
@@ -2476,6 +2483,17 @@ function salvarFormulario(e) {
 
   if (!dados.interessado && !dados.numero) {
     toast('Informe ao menos o Nº do Processo ou o Interessado.', 'error');
+    return;
+  }
+
+  // Trava de Demanda Divergente (confronto entre documentos carregados e dados cadastrados no sistema)
+  if (window._travaDemandaDivergente) {
+    const motivoTrava = window._motivoTravaDemanda || 'Os documentos carregados no repositório pertencem a outra demanda / processo diferente do cadastrado no sistema.';
+    alert('🚫 TRAVA DE SEGURANÇA ATIVADA:\n\n' + motivoTrava + '\n\nOperação de salvamento bloqueada até regularização dos documentos ou dos dados do processo.');
+    if (typeof alternarGuiaFormulario === 'function') {
+      alternarGuiaFormulario('repositorio');
+    }
+    toast('Atenção: Demanda divergente detectada! Não conforme com os dados cadastrados.', 'error');
     return;
   }
 
@@ -9032,6 +9050,319 @@ window.salvarManifestacaoFormato = salvarManifestacaoFormato;
 window.salvarManifestacaoPrincipal = salvarManifestacaoPrincipal;
 
 // ============================================================
+// MÓDULO: DESPACHO DE PRESTAÇÃO DE CONTAS / REGULARIDADE (IMAGEM 4)
+// ============================================================
+
+function formatarCNPJ(cnpjRaw) {
+  if (!cnpjRaw) return '';
+  const num = String(cnpjRaw).replace(/\D/g, '');
+  if (num.length !== 14) return cnpjRaw;
+  return num.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+}
+
+function extrairCNPJEEntidadeDoProcesso() {
+  const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+  
+  // Prioriza documentos cujo nome contenha 'PLANO', 'TRABALHO', 'OFICIO', 'REQUERIMENTO'
+  const arqsOrdenados = [...arqs].sort((a, b) => {
+    const aP = /PLANO|TRABALHO/i.test(a.nome) ? 2 : (/OF[IÍ]CIO|REQUERIMENTO/i.test(a.nome) ? 1 : 0);
+    const bP = /PLANO|TRABALHO/i.test(b.nome) ? 2 : (/OF[IÍ]CIO|REQUERIMENTO/i.test(b.nome) ? 1 : 0);
+    return bP - aP;
+  });
+
+  let cnpjEncontrado = '';
+  let entidadeEncontrada = '';
+
+  const cnpjRegex = /\b(\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2})\b/g;
+
+  for (const a of arqsOrdenados) {
+    const txt = a.texto || '';
+    if (!txt) continue;
+
+    // Busca CNPJ
+    if (!cnpjEncontrado) {
+      const matches = txt.match(cnpjRegex);
+      if (matches && matches.length > 0) {
+        for (const m of matches) {
+          const limpo = m.replace(/\D/g, '');
+          // Filtra CNPJs genéricos inválidos (ex: todos zeros)
+          if (limpo.length === 14 && !/^(\d)\1{13}$/.test(limpo)) {
+            cnpjEncontrado = formatarCNPJ(limpo);
+            break;
+          }
+        }
+      }
+    }
+
+    // Busca Nome da Entidade / Proponente no texto
+    if (!entidadeEncontrada) {
+      const matchProponente = txt.match(/(?:PROPONENTE|ENTIDADE|INTERESSAD[OA]|ORGANIZA[CÇ][AÃ]O|ASSOCIA[CÇ][AÃ]O|INSTITUI[CÇ][AÃ]O|RAZ[AÃ]O\s+SOCIAL)[\s:]+([^\n\r,\.;]{3,120})/i);
+      if (matchProponente && matchProponente[1]) {
+        let cand = matchProponente[1].trim();
+        // Remove rótulos comuns
+        cand = cand.replace(/^(DO\s+|DA\s+|DE\s+|O\s+|A\s+)/i, '').trim();
+        if (cand && !/CNPJ|ENDERE[CÇ]O|TELEFONE|EMAIL|MUNIC[IÍ]PIO/i.test(cand) && cand.length >= 4) {
+          entidadeEncontrada = cand.toUpperCase();
+        }
+      }
+    }
+
+    if (cnpjEncontrado && entidadeEncontrada) break;
+  }
+
+  // Fallbacks cadastrais do formulário
+  if (!entidadeEncontrada) {
+    const formInteressado = (document.getElementById('form-interessado')?.value || '').trim();
+    if (formInteressado) {
+      entidadeEncontrada = formInteressado.toUpperCase();
+    } else {
+      const formMun = (document.getElementById('form-municipio')?.value || '').trim();
+      entidadeEncontrada = formMun ? `MUNICÍPIO DE ${formMun.toUpperCase()}` : '[NOME DA ENTIDADE]';
+    }
+  }
+
+  if (!cnpjEncontrado) {
+    // Tenta encontrar em anotações ou observações
+    const obs = (document.getElementById('form-obs')?.value || '') + ' ' + (document.getElementById('form-demaisObservacoes')?.value || '');
+    const mObs = obs.match(cnpjRegex);
+    if (mObs && mObs.length > 0) {
+      cnpjEncontrado = formatarCNPJ(mObs[0]);
+    } else {
+      cnpjEncontrado = '[XX.XXX.XXX/XXXX-XX]';
+    }
+  }
+
+  return {
+    cnpj: cnpjEncontrado,
+    entidade: entidadeEncontrada
+  };
+}
+window.extrairCNPJEEntidadeDoProcesso = extrairCNPJEEntidadeDoProcesso;
+
+async function abrirModalPrestacaoContas() {
+  const modal = document.getElementById('modal-prestacao-contas');
+  const loading = document.getElementById('prestacao-contas-loading');
+  const imgEl = document.getElementById('prestacao-contas-preview-img');
+
+  if (modal) {
+    modal.style.display = 'flex';
+    if (loading) loading.style.display = 'block';
+    if (imgEl) imgEl.style.display = 'none';
+  }
+
+  const { cnpj, entidade } = extrairCNPJEEntidadeDoProcesso();
+  window._prestacaoContasDados = { cnpj, entidade };
+
+  const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  const numProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || (document.querySelector('input[name="numero[]"]')?.value || '0029.028061/2026-61');
+  const munProc = (document.getElementById('form-municipio')?.value || '').trim();
+
+  // Texto bruto para cópia
+  const textoPuro = `GOVERNO DO ESTADO DE RONDÔNIA\nSECRETARIA DE ESTADO DA EDUCAÇÃO - SEDUC\nPROCESSO: ${numProc}\n\nEncaminham-se os presentes autos a essa unidade, solicitando manifestação quanto à regularidade e à aptidão da entidade ${entidade}, inscrita no CNPJ nº ${cnpj}, para fins de celebração de parceria e eventual recebimento de recursos públicos estaduais.\n\nSolicita-se verificar a existência de eventuais pendências relativas à prestação de contas de recursos anteriormente recebidos, bem como informar se há impedimentos, no âmbito das competências dessa unidade, que possam comprometer a formalização de nova parceria.\n\nApós manifestação, restituam-se os autos a esta Coordenadoria para prosseguimento da instrução processual.`;
+  window._textoPuroPrestacaoContas = textoPuro;
+
+  // HTML estruturado e formatado (exatamente no padrão oficial da Imagem 4)
+  const htmlConteudo = `
+    <div id="container-prestacao-render" style="width:680px; box-sizing:border-box; padding:28px 36px; background:#ffffff; font-family:Arial, Helvetica, sans-serif; font-size:11pt; color:#111827; overflow:hidden; border:1px solid #d1d5db; position:relative; line-height:1.6;">
+      
+      <!-- Cabeçalho Oficial -->
+      <div style="text-align:center; margin-bottom:24px; padding-bottom:14px; border-bottom:2px solid #1e3a8a;">
+        <div style="font-weight:900; font-size:14pt; color:#1e3a8a; letter-spacing:0.5px; text-transform:uppercase;">GOVERNO DO ESTADO DE RONDÔNIA</div>
+        <div style="font-weight:700; font-size:11.5pt; color:#374151; margin-top:3px;">SECRETARIA DE ESTADO DA EDUCAÇÃO &bull; SEDUC/RO</div>
+        <div style="font-size:9.5pt; color:#6b7280; margin-top:2px; font-weight:600;">COORDENADORIA DE APOIO AOS MUNICÍPIOS &bull; CAM</div>
+      </div>
+
+      <!-- Identificação do Processo -->
+      <div style="background:#f3f4f6; padding:10px 14px; border-radius:6px; margin-bottom:22px; font-size:10pt; border-left:4px solid #3b82f6;">
+        <div style="margin-bottom:3px;"><strong style="color:#1e3a8a;">PROCESSO SEI:</strong> <span style="font-weight:700; color:#111827;">${numProc}</span></div>
+        ${munProc ? `<div><strong style="color:#1e3a8a;">MUNICÍPIO:</strong> <span style="font-weight:700; color:#111827;">${munProc.toUpperCase()} / RO</span></div>` : ''}
+      </div>
+
+      <!-- Título do Despacho -->
+      <div style="font-size:12pt; font-weight:800; color:#1e3a8a; margin-bottom:18px; text-align:left; text-transform:uppercase; letter-spacing:0.3px;">
+        DESPACHO DE ENCAMINHAMENTO &bull; CONSULTA DE REGULARIDADE
+      </div>
+
+      <!-- Parágrafo 1 -->
+      <p style="text-align:justify; text-indent:1.5cm; margin:0 0 16px 0; line-height:1.65; font-size:11pt; color:#111827;">
+        Encaminham-se os presentes autos a essa unidade, solicitando manifestação quanto à <strong style="color:#000;">regularidade e à aptidão da entidade ${entidade}</strong>, inscrita no CNPJ nº <strong style="color:#000;">${cnpj}</strong>, para fins de celebração de parceria e eventual recebimento de recursos públicos estaduais.
+      </p>
+
+      <!-- Parágrafo 2 -->
+      <p style="text-align:justify; text-indent:1.5cm; margin:0 0 16px 0; line-height:1.65; font-size:11pt; color:#111827;">
+        Solicita-se verificar a existência de eventuais pendências relativas à prestação de contas de recursos anteriormente recebidos, bem como informar se há impedimentos, no âmbito das competências dessa unidade, que possam comprometer a formalização de nova parceria.
+      </p>
+
+      <!-- Parágrafo 3 -->
+      <p style="text-align:justify; text-indent:1.5cm; margin:0 0 28px 0; line-height:1.65; font-size:11pt; color:#111827;">
+        Após manifestação, restituam-se os autos a esta Coordenadoria para prosseguimento da instrução processual.
+      </p>
+
+      <!-- Rodapé / Data -->
+      <div style="margin-top:30px; text-align:right; font-size:10pt; color:#4b5563; border-top:1px solid #e5e7eb; padding-top:12px;">
+        Porto Velho/RO, ${new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}.
+      </div>
+    </div>
+  `;
+
+  const tempWrapper = document.createElement('div');
+  tempWrapper.id = 'temp-prestacao-render-wrapper';
+  tempWrapper.style.position = 'fixed';
+  tempWrapper.style.left = '0';
+  tempWrapper.style.top = '0';
+  tempWrapper.style.zIndex = '-99999';
+  tempWrapper.style.opacity = '1';
+  tempWrapper.style.pointerEvents = 'none';
+  tempWrapper.innerHTML = htmlConteudo;
+  document.body.appendChild(tempWrapper);
+
+  try {
+    if (typeof html2canvas !== 'function') {
+      throw new Error('Biblioteca html2canvas não encontrada.');
+    }
+
+    const targetElem = tempWrapper.firstElementChild;
+    const canvas = await html2canvas(targetElem, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false
+    });
+
+    window._prestacaoCanvas = canvas;
+    window._prestacaoProcNum = numProc;
+
+    const jpgUrl = canvas.toDataURL('image/jpeg', 0.95);
+    window._ultimaPrestacaoJPGUrl = jpgUrl;
+
+    if (imgEl) {
+      imgEl.src = jpgUrl;
+      imgEl.style.display = 'block';
+    }
+    if (loading) loading.style.display = 'none';
+  } catch (err) {
+    console.error('Erro ao gerar imagem de Prestação de Contas:', err);
+    alert('Não foi possível renderizar o despacho: ' + err.message);
+    if (loading) loading.style.display = 'none';
+  } finally {
+    if (tempWrapper.parentNode) tempWrapper.parentNode.removeChild(tempWrapper);
+  }
+}
+window.abrirModalPrestacaoContas = abrirModalPrestacaoContas;
+
+function fecharModalPrestacaoContas() {
+  const modal = document.getElementById('modal-prestacao-contas');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalPrestacaoContas = fecharModalPrestacaoContas;
+
+async function copiarTextoPrestacaoContas() {
+  const txt = window._textoPuroPrestacaoContas;
+  if (!txt) {
+    toast('Gere o despacho antes de copiar.', 'warning');
+    return;
+  }
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(txt);
+      toast('📝 Texto do despacho copiado para a área de transferência!', 'success');
+    } else {
+      const textarea = document.createElement('textarea');
+      textarea.value = txt;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      toast('📝 Texto copiado com sucesso!', 'success');
+    }
+  } catch (e) {
+    console.warn('Erro ao copiar texto:', e);
+    toast('Erro ao copiar texto.', 'error');
+  }
+}
+window.copiarTextoPrestacaoContas = copiarTextoPrestacaoContas;
+
+async function copiarImagemPrestacaoContas() {
+  if (!window._prestacaoCanvas && !window._ultimaPrestacaoJPGUrl) {
+    alert('Gere a imagem antes de copiar.');
+    return;
+  }
+  try {
+    if (window._prestacaoCanvas && window._prestacaoCanvas.toBlob) {
+      window._prestacaoCanvas.toBlob(async function(pngBlob) {
+        try {
+          if (navigator.clipboard && window.ClipboardItem) {
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': pngBlob })
+            ]);
+            toast('📋 Imagem do despacho copiada para a área de transferência!', 'success');
+          } else {
+            toast('Use o botão JPG ou Salvar para baixar a imagem.', 'info');
+          }
+        } catch (e) {
+          console.warn('Erro ao copiar blob:', e);
+          toast('Use os botões de download para salvar a imagem.', 'info');
+        }
+      }, 'image/png');
+    } else {
+      toast('Imagem pronta! Utilize os botões para salvar.', 'info');
+    }
+  } catch (err) {
+    console.error('Erro ao copiar imagem:', err);
+    toast('Use os botões de download para salvar a imagem.', 'error');
+  }
+}
+window.copiarImagemPrestacaoContas = copiarImagemPrestacaoContas;
+
+function salvarPrestacaoContasFormato(formato) {
+  const canvas = window._prestacaoCanvas;
+  if (!canvas) {
+    alert('Gere o despacho primeiro.');
+    return;
+  }
+
+  const numProc = window._prestacaoProcNum || '0029_028061_2026_61';
+  const nomeLimpo = 'Despacho_Prestacao_Contas_' + (numProc.replace(/[^0-9a-zA-Z]/g, '_'));
+
+  if (formato === 'jpg' || formato === 'jpeg') {
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+    dispararDownloadArquivo(dataUrl, nomeLimpo + '.jpg');
+    toast('🖼️ Despacho JPG baixado com sucesso!', 'success');
+  } else if (formato === 'png') {
+    const dataUrl = canvas.toDataURL('image/png');
+    dispararDownloadArquivo(dataUrl, nomeLimpo + '.png');
+    toast('🖼️ Despacho PNG baixado com sucesso!', 'success');
+  } else if (formato === 'pdf') {
+    try {
+      const { jsPDF } = window.jspdf || {};
+      if (!jsPDF) {
+        alert('Biblioteca jsPDF não encontrada.');
+        return;
+      }
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
+      doc.addImage(imgData, 'JPEG', 10, 10, 190, 0);
+      doc.save(nomeLimpo + '.pdf');
+      toast('📄 Despacho em PDF baixado com sucesso!', 'success');
+    } catch (e) {
+      console.error('Erro ao gerar PDF:', e);
+      alert('Erro ao gerar PDF: ' + e.message);
+    }
+  }
+}
+window.salvarPrestacaoContasFormato = salvarPrestacaoContasFormato;
+
+function salvarPrestacaoContasPrincipal() {
+  salvarPrestacaoContasFormato('jpg');
+}
+window.salvarPrestacaoContasPrincipal = salvarPrestacaoContasPrincipal;
+
+
+// ============================================================
 // GBZ v1.3.13 - AÇÃO DE PREENCHER DATA DE HOJE NO FORMULÁRIO
 // ============================================================
 function inserirDataHoje() {
@@ -9526,6 +9857,9 @@ function recalcularMetricasERenderizarAnaliseCAM() {
       </div>
     `;
   }
+
+  // Confronto de dados da demanda (Documentos carregados x Dados cadastrados no sistema)
+  verificarEAtualizarConformidadeDemanda();
 }
 
 // Analisa TODOS os documentos marcados no repositório em conjunto sob a luz do Script Padrão (Script CAM V1.0)
@@ -9750,6 +10084,13 @@ window.entregarRelatorioFinalCAM = entregarRelatorioFinalCAM;
 
 function limparAnaliseCAM() {
   window._analiseCamAtual = null;
+  window._travaDemandaDivergente = false;
+  window._motivoTravaDemanda = '';
+  const banner = document.getElementById('banner-conformidade-demanda');
+  if (banner) {
+    banner.style.display = 'none';
+    banner.innerHTML = '';
+  }
   const painel = document.getElementById('painel-analise-cam-resultado');
   if (painel) painel.style.display = 'none';
 }
@@ -9915,6 +10256,151 @@ function formatarMoedaBrasil(val) {
 
 
 
+
+// =========================================================================
+// CONFRONTO DE DADOS DA DEMANDA: DOCUMENTOS X CADASTRO DO PROCESSO & TRAVA
+// =========================================================================
+
+window._travaDemandaDivergente = false;
+window._motivoTravaDemanda = '';
+
+function verificarEAtualizarConformidadeDemanda() {
+  const banner = document.getElementById('banner-conformidade-demanda');
+  const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+  
+  if (arqs.length === 0) {
+    window._travaDemandaDivergente = false;
+    window._motivoTravaDemanda = '';
+    if (banner) {
+      banner.style.display = 'none';
+      banner.innerHTML = '';
+    }
+    return;
+  }
+
+  // 1. Dados cadastrados no formulário do sistema
+  const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  const numProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || (document.querySelector('input[name="numero[]"]')?.value || '').trim();
+  const munProc = (document.getElementById('form-municipio')?.value || '').trim().toUpperCase();
+  const interessadoProc = (document.getElementById('form-interessado')?.value || '').trim().toUpperCase();
+  const valOfProc = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
+  const valPlanProc = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
+  const valorCadastro = valPlanProc || valOfProc || 0;
+
+  // 2. Extrai texto e dados de todos os documentos anexados
+  const textoTotal = arqs.map(a => (a.nome || '') + ' ' + (a.texto || '')).join('\n').toUpperCase();
+  
+  // Extrai números de processo dos documentos (formato SEI: 0000.000000/0000-00 ou similar)
+  const regexProc = /\b\d{4}\.?\d{6}\/?\d{4}-?\d{2}\b/g;
+  const procsDocs = (textoTotal.match(regexProc) || []).map(p => p.replace(/[^\d]/g, ''));
+  const numProcLimpo = numProc.replace(/[^\d]/g, '');
+
+  let divergencias = [];
+  let conformidades = [];
+
+  // Verificação A: Número do Processo SEI
+  if (numProcLimpo.length >= 10) {
+    if (procsDocs.length > 0) {
+      const matchProc = procsDocs.some(p => p.includes(numProcLimpo) || numProcLimpo.includes(p));
+      if (matchProc) {
+        conformidades.push(`Nº SEI convergente com os autos (${numProc})`);
+      } else {
+        // Encontrou processo nos documentos, mas é diferente do cadastrado
+        divergencias.push(`Nº SEI identificado nos documentos (${textoTotal.match(regexProc)[0]}) difere do cadastrado no sistema (${numProc})`);
+      }
+    }
+  }
+
+  // Verificação B: Município do Proponente / Demanda
+  if (munProc && munProc.length >= 3) {
+    // Lista de principais municípios de RO para verificar se o doc aponta para OUTRO município
+    const outrosMunicipiosRO = [
+      'PORTO VELHO', 'JI-PARANÁ', 'JI-PARANA', 'ARIQUEMES', 'VILHENA', 'CACOAL', 'ROLIM DE MOURA',
+      'JARU', 'GUAJARÁ-MIRIM', 'GUAJARA-MIRIM', 'CANDEIAS DO JAMARI', 'BURITIS', 'MACHADINHO',
+      'PIMENTA BUENO', 'OURO PRETO', 'PRESIDENTE MÉDICI', 'PRESIDENTE MEDICI', 'ESPIGÃO', 'ESPIGAO',
+      'CEREJEIRAS', 'ALTA FLORESTA', 'SÃO MIGUEL', 'SAO MIGUEL', 'COLORADO', 'MONTE NEGRO',
+      'ALTO PARAÍSO', 'ALTO PARAISO', 'ALVORADA', 'NOVA MAMORÉ', 'NOVA MAMORE'
+    ].filter(m => !munProc.includes(m) && !m.includes(munProc));
+
+    const munNoTexto = textoTotal.includes(munProc);
+    if (munNoTexto) {
+      conformidades.push(`Município convergente (${munProc})`);
+    } else {
+      // Checa se os documentos apontam expressamente para outro município
+      const munDivergenteEncontrado = outrosMunicipiosRO.find(m => {
+        const re = new RegExp(`\\b(MUNIC[IÍ]PIO DE|PREFEITURA MUNICIPAL DE|COMARCA DE)\\s+${m}\\b`, 'i');
+        return re.test(textoTotal);
+      });
+      if (munDivergenteEncontrado) {
+        divergencias.push(`Documento endereçado a outro município (${munDivergenteEncontrado}) diferente do cadastrado (${munProc})`);
+      }
+    }
+  }
+
+  // Verificação C: Valores Financeiros entre Planilha e Ofício
+  if (valOfProc > 0 && valPlanProc > 0) {
+    const diff = Math.abs(valOfProc - valPlanProc);
+    if (diff >= 0.05) {
+      divergencias.push(`Divergência financeira de R$ ${formatarMoedaBrasil(diff)} entre Ofício e Planilha`);
+    } else {
+      conformidades.push(`Valores alinhados: R$ ${formatarMoedaBrasil(valPlanProc)}`);
+    }
+  }
+
+  // 3. Define Conforme ou Não Conforme e aplica Trava
+  const temDivergenciaGrave = divergencias.length > 0;
+  window._travaDemandaDivergente = temDivergenciaGrave;
+  window._motivoTravaDemanda = temDivergenciaGrave ? divergencias.join('; ') : '';
+
+  if (banner) {
+    banner.style.display = 'block';
+    if (temDivergenciaGrave) {
+      banner.style.background = 'linear-gradient(135deg, rgba(239,68,68,0.22), rgba(185,28,28,0.18))';
+      banner.style.border = '1.5px solid #ef4444';
+      banner.style.boxShadow = '0 0 15px rgba(239,68,68,0.25)';
+      banner.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:16px;">🚫</span>
+              <strong style="color:#f87171; font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">NÃO CONFORME &bull; DEMANDA DIVERGENTE DETECTADA (TRAVA ATIVA)</strong>
+            </div>
+            <p style="margin:4px 0 6px 0; color:#fca5a5; font-size:11.5px;">
+              Os documentos carregados no repositório divergem dos dados do processo cadastrado no sistema.
+            </p>
+            <ul style="margin:0; padding-left:18px; color:#fecaca; font-size:11px; line-height:1.45;">
+              ${divergencias.map(d => `<li><strong>${d}</strong></li>`).join('')}
+            </ul>
+          </div>
+          <span style="background:#ef4444; color:#fff; font-weight:800; font-size:11px; padding:4px 10px; border-radius:6px; box-shadow:0 2px 6px rgba(239,68,68,0.4); flex-shrink:0;">
+            🔒 SALVAMENTO BLOQUEADO
+          </span>
+        </div>
+      `;
+    } else {
+      banner.style.background = 'linear-gradient(135deg, rgba(16,185,129,0.18), rgba(5,150,105,0.12))';
+      banner.style.border = '1.5px solid #10b981';
+      banner.style.boxShadow = '0 0 12px rgba(16,185,129,0.2)';
+      banner.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:16px;">✓</span>
+            <div>
+              <strong style="color:#34d399; font-size:12.5px; text-transform:uppercase; letter-spacing:0.5px;">CONFORME &bull; MESMA DEMANDA CONFIRMADA</strong>
+              <div style="font-size:11px; color:#a7f3d0; margin-top:1px;">
+                ${conformidades.join(' &bull; ') || 'Documentos compatíveis com os dados do processo cadastrado.'}
+              </div>
+            </div>
+          </div>
+          <span style="background:rgba(16,185,129,0.25); color:#34d399; border:1px solid #10b981; font-weight:800; font-size:11px; padding:3px 8px; border-radius:6px; flex-shrink:0;">
+            ✓ LIBERADO
+          </span>
+        </div>
+      `;
+    }
+  }
+}
+window.verificarEAtualizarConformidadeDemanda = verificarEAtualizarConformidadeDemanda;
 
 // =========================================================================
 // FUNÇÕES DE INCOERÊNCIAS CAM & MODAL DE DIAGNÓSTICO (IMAGEM 1)
