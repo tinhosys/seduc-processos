@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.27
+// Versão do Sistema: v1.3.28
 // ============================================================
-window.APP_VERSION = 'v1.3.27';
+window.APP_VERSION = 'v1.3.28';
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
 if (typeof window.abrirModalPrestacaoContas !== 'function') {
@@ -323,12 +323,18 @@ function alternarGuiaFormulario(guia) {
     resetBtn(btnObjetivo);
     highlightBtn(btnRepositorio);
 
-    // Carrega/atualiza visualização dos arquivos do repositório e analisa conjunto se houver documentos
-    if (typeof renderizarRepositorioArquivos === 'function') {
-      renderizarRepositorioArquivos();
-    }
-    if (typeof analisarConjuntoDocumentalCAM === 'function' && Array.isArray(window._repositorioArquivosAtuais) && window._repositorioArquivosAtuais.length > 0) {
-      analisarConjuntoDocumentalCAM(true);
+    // Carrega/atualiza visualização dos arquivos do repositório fora de memória e analisa conjunto se houver documentos
+    if (typeof refreshRepositorioProcesso === 'function') {
+      refreshRepositorioProcesso(false);
+    } else {
+      if (typeof renderizarRepositorioArquivos === 'function') {
+        renderizarRepositorioArquivos();
+      }
+      if (typeof analisarConjuntoDocumentalCAM === 'function' && Array.isArray(window._repositorioArquivosAtuais) && window._repositorioArquivosAtuais.length > 0) {
+        analisarConjuntoDocumentalCAM(true);
+      } else if (typeof limparAnaliseCAM === 'function') {
+        limparAnaliseCAM();
+      }
     }
   } else {
     tabObjeto.style.display = 'block';
@@ -2260,17 +2266,29 @@ function renderFormulario() {
     setVal('form-oficioNumero', p.oficioNumero);
     setVal('form-metragemM2', p.metragemM2);
     setVal('form-detalhamentoItens', p.detalhamentoItens);
-    // Carregar dados do Repositório de Documentos e Link do Google Drive primeiro
-    window._repositorioArquivosAtuais = Array.isArray(p.repositorioArquivos) ? JSON.parse(JSON.stringify(p.repositorioArquivos)) : [];
+    // Limpar imediatamente qualquer trava ou análise residual em memória de outro processo (evita bloquear registros)
+    if (typeof limparAnaliseCAM === 'function') {
+      limparAnaliseCAM();
+    }
+    // Carregar dados do Repositório de Documentos (persistidos fora de memória) e Link do Google Drive
+    window._repositorioArquivosAtuais = (typeof carregarDocumentosPersistidosProcesso === 'function')
+      ? carregarDocumentosPersistidosProcesso(p)
+      : (Array.isArray(p.repositorioArquivos) ? JSON.parse(JSON.stringify(p.repositorioArquivos)) : []);
     window._repositorioArquivosAtuais.forEach(arq => {
       if (typeof arq.selecionado === 'undefined') arq.selecionado = true;
     });
     window._linkGoogleDriveAtual = p.linkGoogleDrive || '';
-    window._analiseCamAtual = p.analiseCam ? JSON.parse(JSON.stringify(p.analiseCam)) : null;
+    window._analiseCamAtual = (window._repositorioArquivosAtuais.length > 0 && p.analiseCam) ? JSON.parse(JSON.stringify(p.analiseCam)) : null;
     atualizarDisplayLinkGoogleDrive();
-    renderizarRepositorioArquivos();
-    if (window._repositorioArquivosAtuais.length > 0 && typeof analisarConjuntoDocumentalCAM === 'function') {
-      analisarConjuntoDocumentalCAM(true);
+    if (typeof refreshRepositorioProcesso === 'function') {
+      refreshRepositorioProcesso(true);
+    } else {
+      renderizarRepositorioArquivos();
+      if (window._repositorioArquivosAtuais.length > 0 && typeof analisarConjuntoDocumentalCAM === 'function') {
+        analisarConjuntoDocumentalCAM(true);
+      } else if (typeof limparAnaliseCAM === 'function') {
+        limparAnaliseCAM();
+      }
     }
 
     var cx4Salva = (p.relatorioCaixa4 || '').trim();
@@ -2497,15 +2515,31 @@ function salvarFormulario(e) {
     return;
   }
 
-  // Trava de Demanda Divergente (confronto entre documentos carregados e dados cadastrados no sistema)
-  if (window._travaDemandaDivergente) {
-    const motivoTrava = window._motivoTravaDemanda || 'Os documentos carregados no repositório pertencem a outra demanda / processo diferente do cadastrado no sistema.';
-    alert('🚫 TRAVA DE SEGURANÇA ATIVADA:\n\n' + motivoTrava + '\n\nOperação de salvamento bloqueada até regularização dos documentos ou dos dados do processo.');
-    if (typeof alternarGuiaFormulario === 'function') {
-      alternarGuiaFormulario('repositorio');
+  // Sincroniza documentos persistidos fora de memória para este processo
+  if (typeof salvarDocumentosPersistidosProcessoAtual === 'function') {
+    salvarDocumentosPersistidosProcessoAtual();
+  }
+
+  // Verificação de Demanda Divergente (apenas quando há documentos anexados neste processo; não bloqueia outros registros)
+  const temDocsAnexadosAtivos = Array.isArray(window._repositorioArquivosAtuais) && window._repositorioArquivosAtuais.filter(a => a.selecionado !== false).length > 0;
+  if (window._travaDemandaDivergente && temDocsAnexadosAtivos) {
+    const motivoTrava = window._motivoTravaDemanda || 'Os documentos carregados no repositório apresentam divergência em relação aos dados cadastrados neste processo.';
+    const confirmarSalvarMesmoAssim = confirm(
+      '⚠️ ALERTA DE DIVERGÊNCIA DOCUMENTAL DETECTADA:\n\n' +
+      motivoTrava +
+      '\n\n• Clique em "Cancelar" para ir ao Repositório e excluir o documento na lixeira (🗑️) ou corrigir os dados.\n' +
+      '• Clique em "OK" caso deseje salvar o registro do processo mesmo assim.'
+    );
+    if (!confirmarSalvarMesmoAssim) {
+      if (typeof alternarGuiaFormulario === 'function') {
+        alternarGuiaFormulario('repositorio');
+      }
+      toast('Verifique ou exclua o documento divergente na lixeira (🗑️) do Repositório.', 'warning');
+      return;
     }
-    toast('Atenção: Demanda divergente detectada! Não conforme com os dados cadastrados.', 'error');
-    return;
+  } else {
+    window._travaDemandaDivergente = false;
+    window._motivoTravaDemanda = '';
   }
 
   if (state.editandoId) {
@@ -9474,9 +9508,11 @@ async function handleDropzoneDrop(e) {
   const files = e.dataTransfer ? Array.from(e.dataTransfer.files) : [];
   if (files.length > 0) {
     for (let i = 0; i < files.length; i++) {
-      await processarArquivoRepositorio(files[i], i < files.length - 1);
+      await processarArquivoRepositorio(files[i], true);
     }
-    analisarConjuntoDocumentalCAM();
+    // Sempre faz um refresh completo a cada nova inserção (fora de memória)
+    await refreshRepositorioProcesso(true);
+    toast(`🔄 Refresh concluído: ${files.length} documento(s) inserido(s) e disponível(is) fora de memória!`, 'success');
   }
 }
 window.handleDropzoneDrop = handleDropzoneDrop;
@@ -9485,32 +9521,210 @@ async function handleFileInputChange(e) {
   const files = e.target.files ? Array.from(e.target.files) : [];
   if (files.length > 0) {
     for (let i = 0; i < files.length; i++) {
-      await processarArquivoRepositorio(files[i], i < files.length - 1);
+      await processarArquivoRepositorio(files[i], true);
     }
     e.target.value = '';
-    analisarConjuntoDocumentalCAM();
+    // Sempre faz um refresh completo a cada nova inserção (fora de memória)
+    await refreshRepositorioProcesso(true);
+    toast(`🔄 Refresh concluído: ${files.length} documento(s) inserido(s) e disponível(is) fora de memória!`, 'success');
   }
 }
 window.handleFileInputChange = handleFileInputChange;
 
-// ---- PROCESSAMENTO DE ARQUIVOS (PDF / TEXTO) ----
+// =========================================================================
+// PERSISTÊNCIA DE DOCUMENTOS FORA DE MEMÓRIA (INDEXEDDB + LOCALSTORAGE POR PROCESSO)
+// =========================================================================
+
+function obterChaveProcessoRepositorioAtual(procObj) {
+  if (procObj) {
+    const idP = procObj.id || procObj.numero || '';
+    if (idP) return 'proc_' + String(idP).replace(/[^a-zA-Z0-9_-]/g, '_');
+  }
+  if (typeof state !== 'undefined' && state.editandoId) {
+    return 'proc_' + String(state.editandoId).replace(/[^a-zA-Z0-9_-]/g, '_');
+  }
+  const numInput = (document.querySelector('input[name="numero[]"]')?.value || '').trim();
+  if (numInput) {
+    return 'proc_' + numInput.replace(/[^a-zA-Z0-9_-]/g, '_');
+  }
+  return 'proc_rascunho_atual';
+}
+window.obterChaveProcessoRepositorioAtual = obterChaveProcessoRepositorioAtual;
+
+function abrirBancoRepositorioIDB() {
+  return new Promise((resolve, reject) => {
+    if (typeof indexedDB === 'undefined') {
+      resolve(null);
+      return;
+    }
+    try {
+      const req = indexedDB.open('SeducRepositorioDB_v1', 1);
+      req.onupgradeneeded = function(ev) {
+        const db = ev.target.result;
+        if (!db.objectStoreNames.contains('arquivos_processo')) {
+          db.createObjectStore('arquivos_processo', { keyPath: 'storageKey' });
+        }
+      };
+      req.onsuccess = function(ev) {
+        resolve(ev.target.result);
+      };
+      req.onerror = function() {
+        resolve(null);
+      };
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+async function salvarBinarioForaDeMemoria(storageKey, fileBlob, nome, mimeType, textoExtraido) {
+  const db = await abrirBancoRepositorioIDB();
+  if (!db) return false;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction(['arquivos_processo'], 'readwrite');
+      const store = tx.objectStore('arquivos_processo');
+      store.put({
+        storageKey: storageKey,
+        nome: nome,
+        mimeType: mimeType || 'application/pdf',
+        blob: fileBlob,
+        texto: textoExtraido || '',
+        updatedAt: Date.now()
+      });
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    } catch (e) {
+      resolve(false);
+    }
+  });
+}
+
+async function obterBinarioForaDeMemoria(storageKey) {
+  const db = await abrirBancoRepositorioIDB();
+  if (!db || !storageKey) return null;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction(['arquivos_processo'], 'readonly');
+      const store = tx.objectStore('arquivos_processo');
+      const req = store.get(storageKey);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => resolve(null);
+    } catch (e) {
+      resolve(null);
+    }
+  });
+}
+
+async function removerBinarioForaDeMemoria(storageKey) {
+  const db = await abrirBancoRepositorioIDB();
+  if (!db || !storageKey) return false;
+  return new Promise((resolve) => {
+    try {
+      const tx = db.transaction(['arquivos_processo'], 'readwrite');
+      const store = tx.objectStore('arquivos_processo');
+      store.delete(storageKey);
+      tx.oncomplete = () => resolve(true);
+      tx.onerror = () => resolve(false);
+    } catch (e) {
+      resolve(false);
+    }
+  });
+}
+
+function salvarDocumentosPersistidosProcessoAtual() {
+  const chave = obterChaveProcessoRepositorioAtual();
+  const lista = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+  try {
+    if (lista.length === 0) {
+      localStorage.removeItem('seduc_repo_meta_' + chave);
+    } else {
+      localStorage.setItem('seduc_repo_meta_' + chave, JSON.stringify(lista));
+    }
+  } catch (e) {
+    console.warn('Aviso ao gravar metadados do repositório fora de memória:', e);
+  }
+
+  // Sincroniza imediatamente também no registro do processo ativo (se estiver editando um processo)
+  if (typeof state !== 'undefined' && state.editandoId && typeof buscarProcessoPorId === 'function') {
+    const proc = buscarProcessoPorId(state.editandoId);
+    if (proc) {
+      proc.repositorioArquivos = JSON.parse(JSON.stringify(lista));
+      if (lista.length === 0) {
+        proc.analiseCam = null;
+      } else if (window._analiseCamAtual) {
+        proc.analiseCam = JSON.parse(JSON.stringify(window._analiseCamAtual));
+      }
+      if (typeof salvarDadosLocal === 'function') {
+        try { salvarDadosLocal(); } catch (err) {}
+      }
+    }
+  }
+}
+window.salvarDocumentosPersistidosProcessoAtual = salvarDocumentosPersistidosProcessoAtual;
+
+function carregarDocumentosPersistidosProcesso(procObj) {
+  const chave = obterChaveProcessoRepositorioAtual(procObj);
+  let listaProc = (procObj && Array.isArray(procObj.repositorioArquivos))
+    ? JSON.parse(JSON.stringify(procObj.repositorioArquivos))
+    : [];
+  try {
+    const salvoLS = localStorage.getItem('seduc_repo_meta_' + chave);
+    if (salvoLS) {
+      const parsed = JSON.parse(salvoLS);
+      if (Array.isArray(parsed) && parsed.length > 0 && listaProc.length === 0) {
+        listaProc = parsed;
+      }
+    }
+  } catch (e) {}
+  return listaProc;
+}
+window.carregarDocumentosPersistidosProcesso = carregarDocumentosPersistidosProcesso;
+
+// Faz o refresh completo do repositório (limpa estados fantasmas de memória, sincroniza armazenamento externo e reanalisa)
+async function refreshRepositorioProcesso(forcarReanalise) {
+  const inputEl = document.getElementById('input-file-repositorio');
+  if (inputEl) inputEl.value = '';
+
+  // Limpa travas antigas da memória antes de reavaliar os documentos reais do processo atual
+  window._travaDemandaDivergente = false;
+  window._motivoTravaDemanda = '';
+
+  if (!Array.isArray(window._repositorioArquivosAtuais)) {
+    window._repositorioArquivosAtuais = [];
+  }
+
+  salvarDocumentosPersistidosProcessoAtual();
+  renderizarRepositorioArquivos();
+  renderizarChecksReferenciasRelatorio();
+
+  const badgePersist = document.getElementById('badge-persistencia-docs');
+  if (badgePersist) {
+    const hora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    badgePersist.textContent = `💾 Disponível Fora de Memória • Refresh: ${hora}`;
+  }
+
+  if (window._repositorioArquivosAtuais.length === 0) {
+    limparAnaliseCAM();
+  } else if (forcarReanalise !== false) {
+    analisarConjuntoDocumentalCAM(true);
+  } else {
+    verificarEAtualizarConformidadeDemanda();
+  }
+}
+window.refreshRepositorioProcesso = refreshRepositorioProcesso;
+
+// ---- PROCESSAMENTO DE ARQUIVOS (PDF / TEXTO) COM GRAVAÇÃO FORA DE MEMÓRIA E AUTO-REFRESH ----
 async function processarArquivoRepositorio(file, pularAnaliseIndividual) {
   if (!file) return;
 
   const nome = file.name;
   const tamanhoMb = (file.size / (1024 * 1024)).toFixed(2);
   const ext = nome.split('.').pop().toLowerCase();
+  const chaveProc = obterChaveProcessoRepositorioAtual();
+  const storageKey = chaveProc + '__' + nome.replace(/[^a-zA-Z0-9._-]/g, '_');
 
-  toast(`Processando documento "${nome}" (${tamanhoMb} MB)...`, 'info');
-
-  const novoItem = {
-    id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
-    nome: nome,
-    tamanho: tamanhoMb + ' MB',
-    data: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-    tipo: ext,
-    selecionado: true
-  };
+  toast(`Processando e gravando fora de memória: "${nome}" (${tamanhoMb} MB)...`, 'info');
 
   let textoExtraido = '';
   try {
@@ -9523,21 +9737,38 @@ async function processarArquivoRepositorio(file, pularAnaliseIndividual) {
     console.warn('Não foi possível extrair texto integral do arquivo:', err);
   }
 
-  novoItem.texto = textoExtraido;
+  // Salva o arquivo binário (Blob) no IndexedDB (fora da memória RAM volátil) para ficar sempre disponível para abrir/baixar
+  await salvarBinarioForaDeMemoria(storageKey, file, nome, file.type || (ext === 'pdf' ? 'application/pdf' : 'text/plain'), textoExtraido);
 
-  // Evita duplicar se já existir com mesmo nome, atualizando o conteúdo
-  const idxExistente = (window._repositorioArquivosAtuais || []).findIndex(a => a.nome === nome);
+  const novoItem = {
+    id: 'doc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+    nome: nome,
+    tamanho: tamanhoMb + ' MB',
+    data: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+    tipo: ext,
+    mimeType: file.type || (ext === 'pdf' ? 'application/pdf' : 'text/plain'),
+    storageKey: storageKey,
+    selecionado: true,
+    texto: textoExtraido
+  };
+
+  if (!Array.isArray(window._repositorioArquivosAtuais)) {
+    window._repositorioArquivosAtuais = [];
+  }
+
+  // Evita duplicar se já existir com mesmo nome, atualizando o conteúdo e forçando refresh
+  const idxExistente = window._repositorioArquivosAtuais.findIndex(a => a.nome === nome);
   if (idxExistente >= 0) {
     window._repositorioArquivosAtuais[idxExistente] = novoItem;
   } else {
     window._repositorioArquivosAtuais.push(novoItem);
   }
 
-  renderizarRepositorioArquivos();
-  renderizarChecksReferenciasRelatorio();
+  // Libera referência temporária e persiste fora de memória
+  salvarDocumentosPersistidosProcessoAtual();
 
   if (!pularAnaliseIndividual) {
-    analisarConjuntoDocumentalCAM();
+    await refreshRepositorioProcesso(true);
   }
 }
 
@@ -9683,6 +9914,9 @@ function mostrarRazoesCriterio(index) {
       <button type="button" onclick="definirStatusEstagioCAM(${index}, 'Pendente'); mostrarRazoesCriterio(${index});" class="btn" style="background:${crit.status !== 'Conforme' ? 'linear-gradient(135deg,#f59e0b,#d97706)' : 'rgba(245,158,11,0.15)'}; color:${crit.status !== 'Conforme' ? '#fff' : '#fbbf24'}; border:1px solid #f59e0b; padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
         ⏳ Definir Pendente (Exigir Solução)
       </button>
+      <button type="button" onclick="gerarTxtEstagioIndividualCAM(${index});" class="btn" style="background:rgba(56,189,248,0.18); color:#38bdf8; border:1px solid #38bdf8; padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer;">
+        📄 Gerar TXT deste Estágio
+      </button>
     `;
   }
 
@@ -9699,8 +9933,10 @@ window.fecharModalRazoesCAM = fecharModalRazoesCAM;
 window.addEventListener('click', function(e) {
   const mScript = document.getElementById('modal-script-mestre-cam');
   const mRazoes = document.getElementById('modal-razoes-resultado-cam');
+  const mEditorTxt = document.getElementById('modal-editor-txt-apontamentos-cam');
   if (e.target === mScript) fecharModalScriptCAM();
   if (e.target === mRazoes) fecharModalRazoesCAM();
+  if (e.target === mEditorTxt && typeof fecharModalEditorTxtApontamentosCAM === 'function') fecharModalEditorTxtApontamentosCAM();
 });
 
 // Permite definir diretamente nos 2 botões de cada estágio o status (Conforme x Pendente) e recalcular o relatório
@@ -9824,7 +10060,7 @@ function recalcularMetricasERenderizarAnaliseCAM() {
     verificarEAtualizarBotaoIncoerencias(matriz);
   }
 
-  // Renderizar Matriz com Coerência, Solução e 2 Botões para cada Estágio (Definição) — Imagem 2
+  // Renderizar Matriz com Coerência, Solução, 2 Botões para cada Estágio (Definição) e Botão TXT (Imagem 3)
   const containerMatriz = document.getElementById('cam-matriz-itens');
   if (containerMatriz) {
     containerMatriz.innerHTML = matriz.map((m, idx) => {
@@ -9850,7 +10086,7 @@ function recalcularMetricasERenderizarAnaliseCAM() {
             </div>
           </div>
 
-          <!-- 2 BOTÕES PARA CADA ESTÁGIO (DEFINIÇÃO: CONFORME x PENDENTE/SOLUÇÃO) + VER DETALHES -->
+          <!-- 2 BOTÕES PARA CADA ESTÁGIO (DEFINIÇÃO: CONFORME x PENDENTE/SOLUÇÃO) + BOTÃO GERAR TXT POR ESTÁGIO (IMAGEM 3) -->
           <div style="display:flex; flex-direction:column; gap:5px; margin-top:4px; border-top:1px solid rgba(255,255,255,0.06); padding-top:8px;">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
               <button type="button" onclick="definirStatusEstagioCAM(${idx}, 'Conforme')" class="btn" style="background:${isConf ? 'linear-gradient(135deg,#10b981,#059669)' : 'rgba(16,185,129,0.1)'}; color:${isConf ? '#fff' : '#34d399'}; border:1px solid rgba(16,185,129,0.45); padding:5px 6px; font-size:10.5px; font-weight:800; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; transition:all 0.2s;" title="Definir estágio como Conforme (Coerência validada)">
@@ -9860,31 +10096,58 @@ function recalcularMetricasERenderizarAnaliseCAM() {
                 <span>⏳</span> <span>Pendente / Solução</span>
               </button>
             </div>
-            <button type="button" onclick="mostrarRazoesCriterio(${idx})" class="btn" style="background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:4px 8px; font-size:10.5px; font-weight:700; border-radius:5px; cursor:pointer; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Abrir detalhamento completo de coerência, legalidade e solução deste estágio">
-              <span>📋</span> <span>Ver Coerência, Legalidade e Solução Completa</span>
-            </button>
+            <div style="display:grid; grid-template-columns:1fr auto; gap:6px;">
+              <button type="button" onclick="mostrarRazoesCriterio(${idx})" class="btn" style="background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:4px 8px; font-size:10px; font-weight:700; border-radius:5px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Abrir detalhamento completo de coerência, legalidade e solução deste estágio">
+                <span>📋</span> <span>Ver Coerência e Solução</span>
+              </button>
+              <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:${isConf ? 'rgba(16,185,129,0.18)' : 'rgba(245,158,11,0.2)'}; color:${isConf ? '#34d399' : '#fbbf24'}; border:1px solid ${isConf ? 'rgba(16,185,129,0.45)' : 'rgba(245,158,11,0.5)'}; padding:4px 9px; font-size:10px; font-weight:800; border-radius:5px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Gerar arquivo .TXT deste estágio com status (${m.status}), diagnóstico, solução e campo de resposta/edição">
+                <span>📄</span> <span>TXT</span>
+              </button>
+            </div>
           </div>
         </div>
       `;
     }).join('');
   }
 
-  // Renderizar Relatório Consolidado de Coerência, Conexão, Legalidade e Pendências (Entregável da Imagem 2)
+  // Renderizar Relatório Consolidado de Coerência, Conexão, Legalidade, Conformes e Pendências (Imagens 2, 3 e 4)
   const boxRelatorio = document.getElementById('cam-relatorio-pendencias-conteudo');
   const statusPendResumo = document.getElementById('cam-status-pendencias-resumo');
   if (statusPendResumo) {
     statusPendResumo.textContent = qtdPendentes === 0
-      ? '✓ Todas as etapas em conformidade no conjunto documental'
-      : `⚠️ ${qtdPendentes} pendência(s) com solução técnica detalhada`;
+      ? '✓ Todas as 8 etapas em conformidade no conjunto documental'
+      : `⚠️ ${qtdPendentes} pendência(s) e ${matriz.length - qtdPendentes} conforme(s) com solução detalhada`;
     statusPendResumo.style.color = qtdPendentes === 0 ? '#34d399' : '#fbbf24';
   }
   if (boxRelatorio) {
     const docsNomes = (analise.nomesDocumentos || []).join(', ') || 'Dados do Processo SEI';
-    const itensPendentesHtml = matriz.filter(m => m.status !== 'Conforme').map(m => `
-      <div style="margin-bottom:6px; padding:8px 10px; background:rgba(245,158,11,0.08); border-left:3px solid #f59e0b; border-radius:4px;">
-        <div style="font-weight:800; color:#fbbf24; font-size:12px;">⏳ ${m.nome} — ${m.desc}</div>
-        <div style="font-size:11.5px; color:#cbd5e1; margin-top:2px;"><strong>Coerência/Diagnóstico:</strong> ${m.coerencia}</div>
+    const itensPendentesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status !== 'Conforme').map(({ m, idx }) => `
+      <div style="margin-bottom:8px; padding:10px 12px; background:rgba(245,158,11,0.08); border-left:3px solid ${m.status === 'Inconsistente' ? '#ef4444' : '#f59e0b'}; border-radius:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div style="font-weight:800; color:${m.status === 'Inconsistente' ? '#f87171' : '#fbbf24'}; font-size:12px;">
+            ${m.status === 'Inconsistente' ? '✕' : '⏳'} Estágio ${idx + 1}: ${m.nome} — ${m.desc}
+          </div>
+          <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(245,158,11,0.18); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:2px 8px; font-size:10px; font-weight:800; border-radius:4px; cursor:pointer;" title="Gerar arquivo .TXT deste apontamento para resposta e edição">
+            📄 Gerar TXT deste Apontamento
+          </button>
+        </div>
+        <div style="font-size:11.5px; color:#cbd5e1; margin-top:3px;"><strong>Coerência/Diagnóstico:</strong> ${m.coerencia}</div>
         <div style="font-size:11.5px; color:#34d399; margin-top:2px;"><strong>Solução Recomendada:</strong> ${m.solucao}</div>
+        <div style="margin-top:6px; display:flex; align-items:center; gap:6px;">
+          <span style="font-size:10.5px; color:#94a3b8; font-weight:700; white-space:nowrap;">✏️ Resposta / Edição:</span>
+          <input type="text" value="${(m.respostaEditada || '').replace(/"/g, '&quot;')}" oninput="atualizarRespostaApontamentoCAM(${idx}, this.value)" placeholder="Digite aqui a resposta ou providência adotada (será incluída automaticamente no arquivo .TXT)..." style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.14); border-radius:5px; padding:4px 8px; color:#f8fafc; font-size:11px;">
+        </div>
+      </div>
+    `).join('');
+
+    const itensConformesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status === 'Conforme').map(({ m, idx }) => `
+      <div style="padding:6px 10px; background:rgba(16,185,129,0.07); border-left:3px solid #10b981; border-radius:5px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div style="font-size:11.5px; color:#d1fae5;">
+          <strong style="color:#34d399;">✓ Estágio ${idx + 1}: ${m.nome}</strong> — ${m.desc}
+        </div>
+        <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.35); padding:2px 7px; font-size:10px; font-weight:800; border-radius:4px; cursor:pointer;" title="Gerar arquivo .TXT deste estágio conforme">
+          📄 TXT
+        </button>
       </div>
     `).join('');
 
@@ -9894,12 +10157,22 @@ function recalcularMetricasERenderizarAnaliseCAM() {
         <div style="font-size:12px; color:#e2e8f0;"><strong>Documentos Verificados (☑️):</strong> ${docsNomes}</div>
         <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">${analise.sinteseConexaoLegalidade || ''}</div>
       </div>
-      <div>
+      <div style="margin-bottom:10px;">
         <div style="font-weight:800; color:${qtdPendentes > 0 ? '#fbbf24' : '#34d399'}; margin-bottom:6px;">
-          2. Quadro de Pendências Identificadas e Soluções de Saneamento:
+          2. Quadro de Pendências Identificadas e Soluções de Saneamento (Com Campo p/ Resposta e Exportação .TXT):
         </div>
         ${itensPendentesHtml || '<div style="padding:8px 12px; background:rgba(16,185,129,0.1); border-left:3px solid #10b981; border-radius:4px; color:#34d399; font-weight:700;">✓ Nenhuma pendência impeditiva no conjunto de documentos analisados. Proposta apta à emissão de Manifestação Técnica Favorável.</div>'}
       </div>
+      ${itensConformesHtml ? `
+      <div>
+        <div style="font-weight:800; color:#34d399; margin-bottom:6px; font-size:12px;">
+          3. Etapas Verificadas em Conformidade (${matriz.length - qtdPendentes} de ${matriz.length}):
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:6px;">
+          ${itensConformesHtml}
+        </div>
+      </div>
+      ` : ''}
     `;
   }
 
@@ -10340,8 +10613,8 @@ function renderizarRepositorioArquivos() {
     const isSel = arq.selecionado !== false;
 
     return `
-      <div style="background:${isSel ? 'rgba(16,185,129,0.08)' : 'rgba(0,0,0,0.3)'}; border:1px solid ${isSel ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.08)'}; border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
-        <label style="display:flex; align-items:center; gap:10px; overflow:hidden; cursor:pointer; flex:1; margin:0;">
+      <div style="background:${isSel ? 'rgba(16,185,129,0.08)' : 'rgba(0,0,0,0.3)'}; border:1px solid ${isSel ? 'rgba(16,185,129,0.35)' : 'rgba(255,255,255,0.08)'}; border-radius:8px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+        <label style="display:flex; align-items:center; gap:10px; overflow:hidden; cursor:pointer; flex:1; margin:0; min-width:200px;">
           <input type="checkbox" ${isSel ? 'checked' : ''} onchange="toggleSelecaoDocumentoRepositorio(${idx}, this.checked)" style="width:16px; height:16px; accent-color:#10b981; cursor:pointer; flex-shrink:0;" title="Marcar documento para análise conjunta e referência no relatório">
           <span style="font-size:18px; flex-shrink:0;">${icon}</span>
           <div style="overflow:hidden;">
@@ -10349,16 +10622,22 @@ function renderizarRepositorioArquivos() {
               ${arq.nome}
             </div>
             <div style="font-size:10.5px; color:#94a3b8;">
-              ${arq.tamanho} • ${arq.data} • ${isSel ? '<span style="color:#34d399; font-weight:700;">✓ Marcado p/ Análise & Referência</span>' : '<span style="color:#64748b;">Desmarcado</span>'}
+              ${arq.tamanho} • ${arq.data} • <span style="color:#38bdf8; font-weight:700;">💾 Fora de Memória</span> • ${isSel ? '<span style="color:#34d399; font-weight:700;">✓ Marcado p/ Análise</span>' : '<span style="color:#64748b;">Desmarcado</span>'}
             </div>
           </div>
         </label>
-        <div style="display:flex; gap:6px; flex-shrink:0;">
-          <button type="button" onclick="reanalisarArquivoRepositorio(${idx})" class="btn" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:4px 8px; font-size:10.5px; font-weight:700; border-radius:4px; cursor:pointer;" title="Analisar conjunto documental com Script CAM">
+        <div style="display:flex; gap:6px; flex-shrink:0; align-items:center;">
+          <button type="button" onclick="abrirArquivoRepositorio(${idx})" class="btn" style="background:rgba(16,185,129,0.14); color:#34d399; border:1px solid rgba(16,185,129,0.35); padding:4px 8px; font-size:10.5px; font-weight:700; border-radius:4px; cursor:pointer;" title="Abrir e visualizar o documento gravado fora de memória">
+            👁️ Abrir
+          </button>
+          <button type="button" onclick="baixarArquivoRepositorio(${idx})" class="btn" style="background:rgba(99,102,241,0.14); color:#a5b4fc; border:1px solid rgba(99,102,241,0.35); padding:4px 8px; font-size:10.5px; font-weight:700; border-radius:4px; cursor:pointer;" title="Baixar o documento original guardado no repositório">
+            ⬇️ Baixar
+          </button>
+          <button type="button" onclick="reanalisarArquivoRepositorio(${idx})" class="btn" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:4px 8px; font-size:10.5px; font-weight:700; border-radius:4px; cursor:pointer;" title="Fazer refresh e reanalisar conjunto documental com Script CAM">
             ⚡ Analisar
           </button>
-          <button type="button" onclick="removerArquivoRepositorio(${idx})" class="btn" style="background:rgba(239,68,68,0.12); color:#f87171; border:1px solid rgba(239,68,68,0.25); padding:4px 8px; font-size:10.5px; border-radius:4px; cursor:pointer;" title="Remover anexo">
-            🗑️
+          <button type="button" onclick="removerArquivoRepositorio(${idx})" class="btn" style="background:rgba(239,68,68,0.16); color:#f87171; border:1px solid rgba(239,68,68,0.4); padding:4px 9px; font-size:10.5px; font-weight:800; border-radius:4px; cursor:pointer;" title="Lixeira: Excluir documento do processo e liberar memória">
+            🗑️ Excluir
           </button>
         </div>
       </div>
@@ -10369,40 +10648,334 @@ function renderizarRepositorioArquivos() {
 }
 window.renderizarRepositorioArquivos = renderizarRepositorioArquivos;
 
+// Abre o documento persistido fora de memória (IndexedDB) em uma nova aba ou visualizador de conteúdo
+async function abrirArquivoRepositorio(idx) {
+  const arq = (window._repositorioArquivosAtuais || [])[idx];
+  if (!arq) return;
+
+  const chaveStorage = arq.storageKey || (obterChaveProcessoRepositorioAtual() + '__' + (arq.nome || '').replace(/[^a-zA-Z0-9._-]/g, '_'));
+  const regIDB = await obterBinarioForaDeMemoria(chaveStorage);
+
+  if (regIDB && regIDB.blob) {
+    const url = URL.createObjectURL(regIDB.blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    toast(`Documento "${arq.nome}" aberto a partir do armazenamento fora de memória!`, 'success');
+    return;
+  }
+
+  // Fallback: abre o conteúdo extraído do documento em uma nova janela de leitura ou baixa em TXT
+  const conteudoTexto = (regIDB && regIDB.texto) || arq.texto || 'Documento registrado no processo: ' + arq.nome;
+  const blobTxt = new Blob([conteudoTexto], { type: 'text/plain;charset=utf-8' });
+  const urlTxt = URL.createObjectURL(blobTxt);
+  window.open(urlTxt, '_blank');
+  setTimeout(() => URL.revokeObjectURL(urlTxt), 60000);
+  toast(`Conteúdo de "${arq.nome}" aberto para consulta!`, 'info');
+}
+window.abrirArquivoRepositorio = abrirArquivoRepositorio;
+
+// Faz o download do documento persistido fora de memória
+async function baixarArquivoRepositorio(idx) {
+  const arq = (window._repositorioArquivosAtuais || [])[idx];
+  if (!arq) return;
+
+  const chaveStorage = arq.storageKey || (obterChaveProcessoRepositorioAtual() + '__' + (arq.nome || '').replace(/[^a-zA-Z0-9._-]/g, '_'));
+  const regIDB = await obterBinarioForaDeMemoria(chaveStorage);
+
+  if (regIDB && regIDB.blob) {
+    const url = URL.createObjectURL(regIDB.blob);
+    dispararDownloadArquivo(url, arq.nome);
+    setTimeout(() => URL.revokeObjectURL(url), 15000);
+    toast(`Download de "${arq.nome}" iniciado!`, 'success');
+    return;
+  }
+
+  const conteudoTexto = (regIDB && regIDB.texto) || arq.texto || 'Documento registrado no processo: ' + arq.nome;
+  const blobTxt = new Blob([conteudoTexto], { type: 'text/plain;charset=utf-8' });
+  const urlTxt = URL.createObjectURL(blobTxt);
+  const nomeSaida = arq.nome.toLowerCase().endsWith('.txt') ? arq.nome : (arq.nome + '.txt');
+  dispararDownloadArquivo(urlTxt, nomeSaida);
+  setTimeout(() => URL.revokeObjectURL(urlTxt), 15000);
+  toast(`Conteúdo de "${arq.nome}" baixado!`, 'success');
+}
+window.baixarArquivoRepositorio = baixarArquivoRepositorio;
+
 function reanalisarArquivoRepositorio(idx) {
   const arq = window._repositorioArquivosAtuais[idx];
   if (arq) {
     arq.selecionado = true;
-    renderizarRepositorioArquivos();
-    analisarConjuntoDocumentalCAM();
+    refreshRepositorioProcesso(true);
   }
 }
 window.reanalisarArquivoRepositorio = reanalisarArquivoRepositorio;
 
-function removerArquivoRepositorio(idx) {
-  if (confirm('Deseja remover este arquivo do repositório do processo?')) {
-    window._repositorioArquivosAtuais.splice(idx, 1);
-    renderizarRepositorioArquivos();
-    if (window._repositorioArquivosAtuais.length > 0) {
-      analisarConjuntoDocumentalCAM(true);
-    } else {
-      limparAnaliseCAM();
-    }
-    toast('Arquivo removido do repositório.', 'info');
-  }
+async function removerArquivoRepositorio(idx) {
+  const arq = (window._repositorioArquivosAtuais || [])[idx];
+  if (!arq) return;
+
+  const chaveStorage = arq.storageKey || (obterChaveProcessoRepositorioAtual() + '__' + (arq.nome || '').replace(/[^a-zA-Z0-9._-]/g, '_'));
+  await removerBinarioForaDeMemoria(chaveStorage);
+
+  window._repositorioArquivosAtuais.splice(idx, 1);
+  await refreshRepositorioProcesso(true);
+  toast(`🗑️ Documento "${arq.nome}" excluído e memória atualizada!`, 'info');
 }
 window.removerArquivoRepositorio = removerArquivoRepositorio;
+
+// Lixeira Geral: Exclui todos os documentos do processo atual, limpa memória e desbloqueia qualquer trava (Imagem 1)
+async function excluirTodosArquivosRepositorio() {
+  const arqs = window._repositorioArquivosAtuais || [];
+  for (let i = 0; i < arqs.length; i++) {
+    const arq = arqs[i];
+    const chaveStorage = arq.storageKey || (obterChaveProcessoRepositorioAtual() + '__' + (arq.nome || '').replace(/[^a-zA-Z0-9._-]/g, '_'));
+    await removerBinarioForaDeMemoria(chaveStorage);
+  }
+  window._repositorioArquivosAtuais = [];
+  window._analiseCamAtual = null;
+  window._travaDemandaDivergente = false;
+  window._motivoTravaDemanda = '';
+
+  const chave = obterChaveProcessoRepositorioAtual();
+  try {
+    localStorage.removeItem('seduc_repo_meta_' + chave);
+  } catch (e) {}
+
+  await refreshRepositorioProcesso(false);
+  limparAnaliseCAM();
+  toast('🗑️ Todos os documentos e alertas deste processo foram excluídos e o registro está liberado!', 'success');
+}
+window.excluirTodosArquivosRepositorio = excluirTodosArquivosRepositorio;
+
+// Desbloqueia manualmente a trava de divergência sem precisar apagar os dados do formulário
+function desbloquearTravaDemandaManual() {
+  window._travaDemandaDivergente = false;
+  window._motivoTravaDemanda = '';
+  const banner = document.getElementById('banner-conformidade-demanda');
+  if (banner) {
+    banner.style.display = 'none';
+    banner.innerHTML = '';
+  }
+  toast('🔓 Trava de salvamento desativada! Registro liberado para edição e salvamento.', 'success');
+}
+window.desbloquearTravaDemandaManual = desbloquearTravaDemandaManual;
 
 function formatarMoedaBrasil(val) {
   return Number(val || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+// =========================================================================
+// GERADOR E EDITOR DE ARQUIVOS .TXT DE APONTAMENTOS, CONFORMES E PENDÊNCIAS (IMAGENS 2, 3 E 4)
+// =========================================================================
 
+function atualizarRespostaApontamentoCAM(idx, valorResposta) {
+  const analise = window._analiseCamAtual;
+  if (!analise || !Array.isArray(analise.matriz) || !analise.matriz[idx]) return;
+  analise.matriz[idx].respostaEditada = valorResposta;
+  salvarDocumentosPersistidosProcessoAtual();
+}
+window.atualizarRespostaApontamentoCAM = atualizarRespostaApontamentoCAM;
 
+function construirConteudoTxtApontamentosCAM(filtro, indiceEstagioUnico) {
+  let analise = window._analiseCamAtual;
+  if (!analise || !Array.isArray(analise.matriz)) {
+    analisarConjuntoDocumentalCAM(true);
+    analise = window._analiseCamAtual;
+  }
 
+  const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  const numProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || (document.querySelector('input[name="numero[]"]')?.value || 'Não informado').trim();
+  const munProc = (document.getElementById('form-municipio')?.value || 'Não informado').trim();
+  const interessadoProc = (document.getElementById('form-interessado')?.value || 'Unidade Escolar').trim();
+  const objetoProc = (document.getElementById('form-objeto')?.value || 'Objeto em instrução').trim();
+  const valOfProc = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
+  const valPlanProc = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
+  const dataHora = new Date().toLocaleDateString('pt-BR') + ' às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  const docsVerificados = (analise && Array.isArray(analise.nomesDocumentos) && analise.nomesDocumentos.length > 0)
+    ? analise.nomesDocumentos.join(', ')
+    : 'Dados Cadastrais do Processo SEI';
+
+  const matrizCompleta = (analise && Array.isArray(analise.matriz)) ? analise.matriz : [];
+  let itensSelecionados = matrizCompleta.map((m, idx) => ({ item: m, numeroEstagio: idx + 1 }));
+
+  if (typeof indiceEstagioUnico === 'number' && matrizCompleta[indiceEstagioUnico]) {
+    itensSelecionados = [{ item: matrizCompleta[indiceEstagioUnico], numeroEstagio: indiceEstagioUnico + 1 }];
+  } else if (filtro === 'pendencias') {
+    itensSelecionados = itensSelecionados.filter(x => x.item.status !== 'Conforme');
+  } else if (filtro === 'conformes') {
+    itensSelecionados = itensSelecionados.filter(x => x.item.status === 'Conforme');
+  }
+
+  const totalConformes = matrizCompleta.filter(m => m.status === 'Conforme').length;
+  const totalPendentes = matrizCompleta.filter(m => m.status !== 'Conforme').length;
+
+  const linhas = [];
+  linhas.push('==========================================================================================');
+  linhas.push('GOVERNO DO ESTADO DE RONDÔNIA');
+  linhas.push('SECRETARIA DE ESTADO DA EDUCAÇÃO — SEDUC/RO');
+  linhas.push('GERÊNCIA DE DIAGNÓSTICO SITUACIONAL DOS MUNICÍPIOS — SEDUC-GDSM / CAM');
+  linhas.push('RELATÓRIO TÉCNICO DE APONTAMENTOS, CONFORMES E PENDÊNCIAS PARA RESPOSTA E EDIÇÃO');
+  linhas.push('==========================================================================================');
+  linhas.push(`DATA/HORA DA EMISSÃO : ${dataHora}`);
+  linhas.push(`PROCESSO SEI Nº      : ${numProc}`);
+  linhas.push(`MUNICÍPIO            : ${munProc}/RO`);
+  linhas.push(`ENTIDADE / ESCOLA    : ${interessadoProc}`);
+  linhas.push(`OBJETO               : ${objetoProc}`);
+  linhas.push(`VALOR OFICIAL        : R$ ${formatarMoedaBrasil(valOfProc)} | VALOR PLANILHA: R$ ${formatarMoedaBrasil(valPlanProc)}`);
+  linhas.push(`DOCUMENTOS ANALISADOS: ${docsVerificados}`);
+  linhas.push(`PARECER SUGERIDO     : ${analise ? analise.recomendacao : 'EM ANÁLISE'} (Coerência: ${analise ? analise.taxaCoerencia : 85}% | Oportunômetro: ${analise ? analise.oportunometro : '8.5'}/10)`);
+  linhas.push(`RESUMO DA MATRIZ     : ${totalConformes} Etapa(s) Conforme(s) | ${totalPendentes} Etapa(s) com Pendência/Apontamento`);
+  linhas.push('==========================================================================================');
+  linhas.push('');
+  linhas.push('1. SÍNTESE DO CONJUNTO DOCUMENTAL E CONEXÃO NORMATIVA:');
+  linhas.push(analise && analise.sinteseConexaoLegalidade ? analise.sinteseConexaoLegalidade : 'Análise realizada sob a luz do Script Mestre CAM V1.0.');
+  linhas.push('');
+  linhas.push('------------------------------------------------------------------------------------------');
+
+  if (typeof indiceEstagioUnico === 'number') {
+    linhas.push(`2. DETALHAMENTO DO ESTÁGIO ${indiceEstagioUnico + 1} PARA RESPOSTA E EDIÇÃO:`);
+  } else if (filtro === 'pendencias') {
+    linhas.push(`2. APONTAMENTOS E PENDÊNCIAS IDENTIFICADAS PARA RESPOSTA E SANEAMENTO (${itensSelecionados.length} ITEM(NS)):`);
+  } else if (filtro === 'conformes') {
+    linhas.push(`2. ETAPAS EM CONFORMIDADE VALIDADA (${itensSelecionados.length} ITEM(NS)):`);
+  } else {
+    linhas.push(`2. MATRIZ COMPLETA DE VERIFICAÇÃO — CONFORMES E PENDÊNCIAS (${itensSelecionados.length} ESTÁGIOS):`);
+  }
+  linhas.push('------------------------------------------------------------------------------------------');
+  linhas.push('');
+
+  if (itensSelecionados.length === 0) {
+    linhas.push('Nenhum item enquadrado neste filtro específico. Todas as etapas encontram-se regulares.');
+    linhas.push('');
+  } else {
+    itensSelecionados.forEach(({ item, numeroEstagio }) => {
+      const tagStatus = item.status === 'Conforme'
+        ? '[✓ CONFORME]'
+        : (item.status === 'Inconsistente' ? '[✕ INCONSISTENTE / DIVERGENTE]' : '[⏳ PENDENTE DE SANEAMENTO]');
+
+      linhas.push(`ESTÁGIO 0${numeroEstagio}: ${item.nome.toUpperCase()} — STATUS: ${tagStatus}`);
+      linhas.push(`• Situação / Resumo        : ${item.desc || '-'}`);
+      linhas.push(`• Coerência / Diagnóstico  : ${item.coerencia || '-'}`);
+      linhas.push(`• Fundamentação Script CAM : ${item.razoes || 'Avaliado conforme diretrizes do Script Mestre CAM V1.0.'}`);
+      linhas.push(`• Recomendação / Solução   : ${item.solucao || '-'}`);
+      linhas.push(`• RESPOSTA / PROVIDÊNCIA ADOTADA (CAMPO PARA EDIÇÃO):`);
+      linhas.push(`  ${item.respostaEditada ? item.respostaEditada : '[ Digite aqui a justificativa técnica, correção efetuada ou número SEI do documento juntado ]'}`);
+      linhas.push(`• Documento SEI Comprobatório: _______________________ | Data: ___/___/2026`);
+      linhas.push('------------------------------------------------------------------------------------------');
+      linhas.push('');
+    });
+  }
+
+  linhas.push('3. ESPAÇO PARA DESPACHO / OBSERVAÇÕES COMPLEMENTARES E EDIÇÃO LIVRE:');
+  linhas.push('__________________________________________________________________________________________');
+  linhas.push('__________________________________________________________________________________________');
+  linhas.push('__________________________________________________________________________________________');
+  linhas.push('');
+  linhas.push('Responsável pela Análise / Resposta: _____________________________________________________');
+  linhas.push('Setor / Unidade: SEDUC-GDSM / CAM — Porto Velho/RO');
+  linhas.push('==========================================================================================');
+
+  return linhas.join('\r\n');
+}
+window.construirConteudoTxtApontamentosCAM = construirConteudoTxtApontamentosCAM;
+
+// Gera e baixa imediatamente o arquivo .TXT (conforme solicitado nas Imagens 2, 3 e 4)
+function gerarTxtRelatorioApontamentosCAM(filtro) {
+  const modo = filtro || 'todos';
+  const conteudoTxt = construirConteudoTxtApontamentosCAM(modo);
+
+  const numProc = (document.querySelector('input[name="numero[]"]')?.value || 'PROCESSO').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+  const munProc = (document.getElementById('form-municipio')?.value || 'RO').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+  const sufixo = modo === 'pendencias' ? 'PENDENCIAS_RESPOSTA' : (modo === 'conformes' ? 'CONFORMES' : 'CONFORMES_E_PENDENCIAS');
+  const nomeArquivo = `APONTAMENTOS_CAM_${sufixo}_${munProc}_${numProc}.txt`;
+
+  const blob = new Blob(['\uFEFF' + conteudoTxt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  dispararDownloadArquivo(url, nomeArquivo);
+  setTimeout(() => URL.revokeObjectURL(url), 15000);
+
+  toast(`📄 Arquivo "${nomeArquivo}" gerado com sucesso para resposta e edição!`, 'success');
+}
+window.gerarTxtRelatorioApontamentosCAM = gerarTxtRelatorioApontamentosCAM;
+
+// Gera o arquivo .TXT individual de cada estágio marcado na Imagem 3 (Conforme ou Pendência)
+function gerarTxtEstagioIndividualCAM(idx) {
+  const analise = window._analiseCamAtual;
+  if (!analise || !Array.isArray(analise.matriz) || !analise.matriz[idx]) {
+    analisarConjuntoDocumentalCAM(true);
+  }
+  const m = window._analiseCamAtual?.matriz?.[idx];
+  const conteudoTxt = construirConteudoTxtApontamentosCAM('estagio', idx);
+
+  const numProc = (document.querySelector('input[name="numero[]"]')?.value || 'PROCESSO').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+  const nomeEstagioLimpo = (m ? m.nome : ('ESTAGIO_' + (idx + 1))).replace(/[^a-zA-Z0-9_-]/g, '_').toUpperCase();
+  const statusLimpo = (m ? m.status : 'STATUS').toUpperCase();
+  const nomeArquivo = `ESTAGIO_0${idx + 1}_${statusLimpo}_${nomeEstagioLimpo}_${numProc}.txt`;
+
+  const blob = new Blob(['\uFEFF' + conteudoTxt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  dispararDownloadArquivo(url, nomeArquivo);
+  setTimeout(() => URL.revokeObjectURL(url), 15000);
+
+  toast(`📄 Arquivo TXT do Estágio ${idx + 1} (${m ? m.status : ''}) gerado com sucesso!`, 'success');
+}
+window.gerarTxtEstagioIndividualCAM = gerarTxtEstagioIndividualCAM;
+
+function abrirModalEditorTxtApontamentosCAM(filtroInicial) {
+  const modal = document.getElementById('modal-editor-txt-apontamentos-cam');
+  preencherEditorTxtApontamentosCAM(filtroInicial || 'todos');
+  if (modal) modal.style.display = 'flex';
+}
+window.abrirModalEditorTxtApontamentosCAM = abrirModalEditorTxtApontamentosCAM;
+
+function fecharModalEditorTxtApontamentosCAM() {
+  const modal = document.getElementById('modal-editor-txt-apontamentos-cam');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalEditorTxtApontamentosCAM = fecharModalEditorTxtApontamentosCAM;
+
+function preencherEditorTxtApontamentosCAM(filtro) {
+  const txtArea = document.getElementById('textarea-editor-txt-apontamentos-cam');
+  const statusEl = document.getElementById('status-editor-txt-cam');
+  if (!txtArea) return;
+  txtArea.value = construirConteudoTxtApontamentosCAM(filtro || 'todos');
+  if (statusEl) {
+    const label = filtro === 'pendencias' ? 'Somente Pendências p/ Resposta' : (filtro === 'conformes' ? 'Somente Conformes' : 'Completo (Conformes + Pendências)');
+    statusEl.textContent = `✓ Carregado: ${label}`;
+  }
+}
+window.preencherEditorTxtApontamentosCAM = preencherEditorTxtApontamentosCAM;
+
+function copiarConteudoEditorTxtCAM() {
+  const txtArea = document.getElementById('textarea-editor-txt-apontamentos-cam');
+  if (!txtArea) return;
+  navigator.clipboard.writeText(txtArea.value).then(() => {
+    toast('📋 Conteúdo TXT copiado para a área de transferência!', 'success');
+  }).catch(() => {
+    txtArea.select();
+    document.execCommand('copy');
+    toast('📋 Conteúdo TXT copiado!', 'success');
+  });
+}
+window.copiarConteudoEditorTxtCAM = copiarConteudoEditorTxtCAM;
+
+function baixarTxtDoEditorCAM() {
+  const txtArea = document.getElementById('textarea-editor-txt-apontamentos-cam');
+  const conteudo = txtArea ? txtArea.value : construirConteudoTxtApontamentosCAM('todos');
+  const numProc = (document.querySelector('input[name="numero[]"]')?.value || 'PROCESSO').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+  const munProc = (document.getElementById('form-municipio')?.value || 'RO').trim().replace(/[^a-zA-Z0-9_-]/g, '_');
+  const nomeArquivo = `APONTAMENTOS_EDITADOS_CAM_${munProc}_${numProc}.txt`;
+
+  const blob = new Blob(['\uFEFF' + conteudo], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  dispararDownloadArquivo(url, nomeArquivo);
+  setTimeout(() => URL.revokeObjectURL(url), 15000);
+  toast(`💾 Arquivo "${nomeArquivo}" salvo com suas edições!`, 'success');
+}
+window.baixarTxtDoEditorCAM = baixarTxtDoEditorCAM;
 
 // =========================================================================
-// CONFRONTO DE DADOS DA DEMANDA: DOCUMENTOS X CADASTRO DO PROCESSO & TRAVA
+// CONFRONTO DE DADOS DA DEMANDA: DOCUMENTOS X CADASTRO DO PROCESSO & TRAVA (COM LIXEIRA NA IMAGEM 1)
 // =========================================================================
 
 window._travaDemandaDivergente = false;
@@ -10410,7 +10983,8 @@ window._motivoTravaDemanda = '';
 
 function verificarEAtualizarConformidadeDemanda() {
   const banner = document.getElementById('banner-conformidade-demanda');
-  const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+  const todosArqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+  const arqs = todosArqs.filter(a => a.selecionado !== false);
   
   if (arqs.length === 0) {
     window._travaDemandaDivergente = false;
@@ -10427,13 +11001,11 @@ function verificarEAtualizarConformidadeDemanda() {
   const numProc = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || (document.querySelector('input[name="numero[]"]')?.value || '').trim();
   const munProc = (document.getElementById('form-municipio')?.value || '').trim();
   const interessadoProc = (document.getElementById('form-interessado')?.value || '').trim();
-  const objetoProc = (document.getElementById('form-objeto')?.value || '').trim();
   const anoProc = (document.getElementById('form-ano')?.value || '').trim();
   const valOfProc = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
   const valPlanProc = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
-  const valorCadastro = valPlanProc || valOfProc || 0;
 
-  // 2. Extrai texto e dados de todos os documentos anexados
+  // 2. Extrai texto e dados de todos os documentos anexados e marcados
   const nomesDocs = arqs.map(a => a.nome || '');
   const textoTotal = arqs.map(a => (a.nome || '') + ' ' + (a.texto || '')).join('\n').toUpperCase();
   
@@ -10494,19 +11066,19 @@ function verificarEAtualizarConformidadeDemanda() {
     conformidades.push(`Município convergente (${munProc})`);
   }
 
-  // Verificação 3: Interessado / Unidade Escolar / Entidade
+  // Verificação 3: Interessado / Unidade Escolar / Entidade (somente se texto extraído tiver conteúdo substancial)
   const escolaCadastrada = (interessadoProc || '').toUpperCase().replace(/-(?:.*)/, '').trim();
   const escolaPalavras = escolaCadastrada.split(/[\s,]+/).filter(w => w.length > 3 && !/ESCOLA|EMEF|CMEI|MUNICIPAL|ESTADUAL|COL[EÉ]GIO/i.test(w));
-  if (escolaPalavras.length > 0) {
+  if (escolaPalavras.length > 0 && textoTotal.length > 80) {
     const achouEscola = escolaPalavras.some(p => textoTotal.includes(p));
     if (achouEscola) {
       conformidades.push(`Entidade/Escola alinhada (${interessadoProc})`);
-    } else {
+    } else if (munDivergenteEncontrado) {
       divergencias.push(`Entidade/Escola cadastrada (${interessadoProc}) não localizada nos documentos carregados`);
     }
   }
 
-  // Verificação 4: Valores Financeiros entre Planilha e Ofício
+  // Verificação 4: Valores Financeiros entre Planilha e Ofício (apenas quando ambos estão preenchidos e divergem)
   if (valOfProc > 0 && valPlanProc > 0) {
     const diff = Math.abs(valOfProc - valPlanProc);
     if (diff >= 0.05) {
@@ -10514,21 +11086,19 @@ function verificarEAtualizarConformidadeDemanda() {
     } else {
       conformidades.push(`Valores alinhados: R$ ${formatarMoedaBrasil(valPlanProc)}`);
     }
-  } else if (valOfProc > 0 && valPlanProc === 0) {
-    divergencias.push(`Valor da Planilha zerado (R$ 0,00) enquanto o Valor Oficial registra R$ ${formatarMoedaBrasil(valOfProc)}`);
   }
 
   // Verificação 5: Ano do Exercício
   if (anoProc && anoProc.length === 4) {
     const anosDocs = (textoTotal.match(/\b202[4-9]\b/g) || []);
-    if (anosDocs.length > 0 && !anosDocs.includes(anoProc)) {
+    if (anosDocs.length > 0 && !anosDocs.includes(anoProc) && munDivergenteEncontrado) {
       divergencias.push(`Ano cadastrado (${anoProc}) difere dos exercícios referenciados nos documentos (${Array.from(new Set(anosDocs)).join(', ')})`);
     } else if (anosDocs.includes(anoProc)) {
       conformidades.push(`Exercício convergente (${anoProc})`);
     }
   }
 
-  // 3. Define Conforme ou Não Conforme e aplica Trava
+  // 3. Define Conforme ou Não Conforme e exibe Lixeira para Excluir e Botão de Desbloqueio (Imagem 1)
   const temDivergenciaGrave = divergencias.length > 0;
   window._travaDemandaDivergente = temDivergenciaGrave;
   window._motivoTravaDemanda = temDivergenciaGrave ? divergencias.join('; ') : '';
@@ -10540,22 +11110,32 @@ function verificarEAtualizarConformidadeDemanda() {
       banner.style.border = '1.5px solid #ef4444';
       banner.style.boxShadow = '0 0 15px rgba(239,68,68,0.25)';
       banner.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap;">
-          <div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+          <div style="flex:1; min-width:240px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <span style="font-size:16px;">🚫</span>
-              <strong style="color:#f87171; font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">NÃO CONFORME &bull; DEMANDA DIVERGENTE DETECTADA (TRAVA ATIVA)</strong>
+              <strong style="color:#f87171; font-size:13px; text-transform:uppercase; letter-spacing:0.5px;">NÃO CONFORME &bull; DEMANDA DIVERGENTE DETECTADA</strong>
             </div>
             <p style="margin:4px 0 6px 0; color:#fca5a5; font-size:11.5px;">
-              Os documentos carregados no repositório divergem dos dados do processo cadastrado no sistema.
+              Os documentos carregados no repositório (${nomesDocs.join(', ')}) divergem dos dados deste processo:
             </p>
             <ul style="margin:0; padding-left:18px; color:#fecaca; font-size:11px; line-height:1.45;">
               ${divergencias.map(d => `<li><strong>${d}</strong></li>`).join('')}
             </ul>
           </div>
-          <span style="background:#ef4444; color:#fff; font-weight:800; font-size:11px; padding:4px 10px; border-radius:6px; box-shadow:0 2px 6px rgba(239,68,68,0.4); flex-shrink:0;">
-            🔒 SALVAMENTO BLOQUEADO
-          </span>
+          <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0;">
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button type="button" onclick="excluirTodosArquivosRepositorio()" class="btn" style="background:linear-gradient(135deg,#ef4444,#b91c1c); color:#fff; border:1px solid #fca5a5; font-weight:900; font-size:11.5px; padding:6px 12px; border-radius:6px; cursor:pointer; box-shadow:0 3px 10px rgba(239,68,68,0.45); display:inline-flex; align-items:center; gap:5px;" title="Lixeira: Excluir documento(s) divergente(s), limpar memória e desbloquear imediatamente">
+                🗑️ Excluir Documento(s) / Limpar Bloqueio
+              </button>
+              <button type="button" onclick="desbloquearTravaDemandaManual()" class="btn" style="background:rgba(255,255,255,0.12); color:#f8fafc; border:1px solid rgba(255,255,255,0.3); font-weight:800; font-size:11px; padding:6px 10px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Ignorar alerta e liberar salvamento deste registro">
+                🔓 Liberar Salvamento
+              </button>
+            </div>
+            <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('pendencias')" class="btn" style="background:rgba(245,158,11,0.2); color:#fbbf24; border:1px solid rgba(245,158,11,0.5); font-weight:800; font-size:10.5px; padding:4px 10px; border-radius:5px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;">
+              📄 Gerar TXT com Apontamentos da Divergência
+            </button>
+          </div>
         </div>
       `;
     } else {
@@ -10573,9 +11153,14 @@ function verificarEAtualizarConformidadeDemanda() {
               </div>
             </div>
           </div>
-          <span style="background:rgba(16,185,129,0.25); color:#34d399; border:1px solid #10b981; font-weight:800; font-size:11px; padding:3px 8px; border-radius:6px; flex-shrink:0;">
-            ✓ LIBERADO
-          </span>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('todos')" class="btn" style="background:rgba(16,185,129,0.22); color:#34d399; border:1px solid #10b981; font-weight:800; font-size:11px; padding:4px 10px; border-radius:6px; cursor:pointer;">
+              📄 Gerar TXT
+            </button>
+            <button type="button" onclick="excluirTodosArquivosRepositorio()" class="btn" style="background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.35); font-weight:800; font-size:11px; padding:4px 9px; border-radius:6px; cursor:pointer;" title="Excluir documentos do repositório">
+              🗑️
+            </button>
+          </div>
         </div>
       `;
     }

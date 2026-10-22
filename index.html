@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.18">
+  <link rel="stylesheet" href="css/style.css?v=1.3.28">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -724,7 +724,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.27</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.28</div>
   </div>
 </div>
   
@@ -986,7 +986,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.27</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.28</div>
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
     </aside>
@@ -1854,7 +1854,7 @@
                 <div style="display:flex; flex-direction:column; line-height:1.2;">
                   <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:13px; font-weight:900; color:#f3e8ff; letter-spacing:0.8px; text-shadow:0 0 8px rgba(168,85,247,0.6);">ANÁLISE INTELIGENTE</span>
-                    <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 6px; border-radius:4px; font-size:10px; font-weight:900; letter-spacing:0.5px; box-shadow:0 0 8px rgba(56,189,248,0.5);">v1.3.27</span>
+                    <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 6px; border-radius:4px; font-size:10px; font-weight:900; letter-spacing:0.5px; box-shadow:0 0 8px rgba(56,189,248,0.5);">v1.3.28</span>
                   </div>
                   <span style="font-size:11px; color:#c084fc; font-weight:700;">Motor Neural CAM • Conexão Integral</span>
                 </div>
@@ -2654,12 +2654,19 @@
                     <h4 style="margin:0 0 3px 0; font-size:14px; color:#f8fafc; font-weight:800; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                       <span>📁</span> <span>Documentos e Anexos Guardados no Processo</span>
                       <span id="badge-docs-selecionados" style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700;">0 selecionados</span>
+                      <span id="badge-persistencia-docs" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:2px 8px; border-radius:12px; font-size:10.5px; font-weight:700;" title="Documentos gravados fora da memória volátil (IndexedDB + Processo) com refresh automático a cada inserção">💾 Disponível Fora de Memória • Auto-Refresh Ativo</span>
                     </h4>
                     <span style="font-size:11.5px; color:#94a3b8;">Marque (☑️) os documentos que devem ser analisados em conjunto sob a luz do Script Padrão (Script CAM V1.0) e apontados como referência.</span>
                   </div>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                     <button type="button" onclick="alternarSelecaoTodosDocumentos()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 12px; font-size:11.5px; font-weight:700; border-radius:6px; cursor:pointer;" title="Marcar ou desmarcar todos os documentos para análise">
                       ☑️ Marcar / Desmarcar Todos
+                    </button>
+                    <button type="button" onclick="refreshRepositorioProcesso(true)" class="btn" style="background:rgba(56,189,248,0.14); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Forçar refresh da lista de documentos fora de memória e revalidar">
+                      🔄 Refresh
+                    </button>
+                    <button type="button" onclick="excluirTodosArquivosRepositorio()" class="btn" style="background:rgba(239,68,68,0.16); color:#f87171; border:1px solid rgba(239,68,68,0.4); padding:6px 12px; font-size:11.5px; font-weight:800; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Lixeira: Excluir documentos deste processo e limpar qualquer trava ou cache de memória">
+                      🗑️ Excluir / Limpar
                     </button>
                     <button type="button" onclick="analisarConjuntoDocumentalCAM()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:6px 14px; font-size:12px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 8px rgba(16,185,129,0.35);" title="Analisar em conjunto todos os documentos marcados sob a luz do Script CAM V1.0">
                       ⚡ Analisar Conjunto Documental (Script CAM)
@@ -2793,7 +2800,7 @@
 
                 <div style="background:rgba(0,0,0,0.25); border-radius:10px; border:1px solid rgba(16,185,129,0.35); padding:16px; margin-bottom:18px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                       <h5 style="margin:0; font-size:12.5px; color:#34d399; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
                         📋 Matriz de Verificação de Conformidade, Coerência e Solução (Script CAM V1.0)
                       </h5>
@@ -2801,24 +2808,58 @@
                       <button type="button" id="btn-cam-incoerencias" onclick="abrirModalIncoerenciasCAM()" style="display:none; background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:4px 10px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.4);" title="Visualizar inconsistências e pendências técnicas detectadas">
                         ⚠️ <span id="label-cam-incoerencias-count">Incoerências</span>
                       </button>
+                      <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('todos')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:4px 10px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Gerar arquivo .TXT com todos os Conformes e Pendências da Matriz (Imagem 3)">
+                        📄 Gerar TXT (Conformes e Pendências)
+                      </button>
                     </div>
-                    <span style="font-size:11px; color:#94a3b8;">Use os 2 botões de cada estágio para definir (✓ Conforme / ⏳ Pendente) e ver Coerência & Solução</span>
+                    <span style="font-size:11px; color:#94a3b8;">Use os botões de cada estágio para definir (✓ Conforme / ⏳ Pendente) e gerar o TXT individual ou geral</span>
                   </div>
                   <div id="cam-matriz-itens" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:12px; font-size:12px;">
-                    <!-- Itens gerados dinamicamente via JS com coerência, solução e 2 botões por estágio -->
+                    <!-- Itens gerados dinamicamente via JS com coerência, solução, 2 botões por estágio e botão TXT -->
                   </div>
                 </div>
 
-                <!-- RELATÓRIO CONSOLIDADO DE COERÊNCIA, CONEXÃO, LEGALIDADE E PENDÊNCIAS ENTREGUE PELA ANÁLISE (IMAGEM 2) -->
+                <!-- RELATÓRIO CONSOLIDADO DE COERÊNCIA, CONEXÃO, LEGALIDADE E PENDÊNCIAS ENTREGUE PELA ANÁLISE (IMAGEM 2 & IMAGEM 4) -->
                 <div id="cam-relatorio-pendencias-box" style="background:rgba(0,0,0,0.32); border:1px solid rgba(56,189,248,0.3); border-radius:10px; padding:16px;">
                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:8px;">
                     <h5 style="margin:0; font-size:12.5px; color:#38bdf8; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
                       📑 Relatório do Conjunto Documental: Coerência, Conexão, Legalidade e Solução de Pendências
                     </h5>
-                    <span id="cam-status-pendencias-resumo" style="font-size:11px; font-weight:700; color:#fbbf24;"></span>
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                      <span id="cam-status-pendencias-resumo" style="font-size:11px; font-weight:700; color:#fbbf24;"></span>
+                      <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('todos')" class="btn" style="background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:4px 10px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Baixar arquivo .TXT com apontamentos para resposta e edição">
+                        📄 Baixar .TXT
+                      </button>
+                    </div>
                   </div>
                   <div id="cam-relatorio-pendencias-conteudo" style="font-size:12.5px; color:#e2e8f0; line-height:1.55;">
                     <!-- Preenchido dinamicamente pelo analisador conjunto -->
+                  </div>
+
+                  <!-- BARRA DE AÇÃO TXT MARCADA EM VERMELHO NA IMAGEM 4 -->
+                  <div id="barra-acao-txt-relatorio-cam" style="margin-top:14px; padding:12px 16px; background:linear-gradient(135deg, rgba(16,185,129,0.14), rgba(56,189,248,0.12)); border:1.5px solid rgba(52,211,153,0.5); border-radius:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; box-shadow:0 4px 15px rgba(0,0,0,0.35);">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span style="font-size:18px;">📝</span>
+                      <div>
+                        <div style="font-size:12px; font-weight:900; color:#f8fafc; text-transform:uppercase; letter-spacing:0.4px;">
+                          Exportação de Apontamentos, Conformes e Pendências (.TXT Editável)
+                        </div>
+                        <div style="font-size:11px; color:#94a3b8;">
+                          Gere o arquivo <strong style="color:#34d399;">.txt</strong> estruturado com as recomendações apontadas, status de conformidade/pendências e campos para resposta e edição.
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                      <button type="button" onclick="abrirModalEditorTxtApontamentosCAM()" class="btn" style="background:rgba(255,255,255,0.08); color:#e2e8f0; border:1px solid rgba(255,255,255,0.22); padding:8px 14px; font-size:11.5px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="Visualizar e editar apontamentos e respostas na tela antes de salvar o arquivo .TXT">
+                        <span>✏️</span> <span>Editar / Responder na Tela</span>
+                      </button>
+                      <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('pendencias')" class="btn" style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border:1px solid #fbbf24; padding:8px 14px; font-size:11.5px; font-weight:800; border-radius:8px; cursor:pointer; box-shadow:0 3px 10px rgba(245,158,11,0.35); display:inline-flex; align-items:center; gap:6px;" title="Gerar arquivo .TXT contendo as pendências e recomendações apontadas para resposta e saneamento">
+                        <span>⏳</span> <span>Gerar TXT (Pendências p/ Resposta)</span>
+                      </button>
+                      <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('todos')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:9px 18px; font-size:12.5px; font-weight:900; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.45); display:inline-flex; align-items:center; gap:7px;" title="Gerar arquivo .TXT completo com Conformes, Pendências, Recomendações e Campos para Resposta e Edição">
+                        <span>📄</span> <span>GERAR ARQUIVO TXT (CONFORMES E PENDÊNCIAS P/ RESPOSTA E EDIÇÃO)</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -2901,11 +2942,57 @@
             </div>
           </div>
           <div style="padding:12px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.25); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-            <div id="modal-razoes-botoes-estagio" style="display:flex; gap:8px;">
+            <div id="modal-razoes-botoes-estagio" style="display:flex; gap:8px; flex-wrap:wrap;">
             </div>
             <button type="button" onclick="fecharModalRazoesCAM()" class="btn" style="background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:8px 18px; font-size:12px; font-weight:700; border-radius:6px; cursor:pointer;">
               Fechar
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============= MODAL: EDITOR & GERADOR DE ARQUIVO .TXT DE APONTAMENTOS (IMAGENS 2, 3 E 4) ============= -->
+      <div id="modal-editor-txt-apontamentos-cam" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:100000; justify-content:center; align-items:center; padding:20px;">
+        <div style="background:#0f172a; border:1.5px solid rgba(16,185,129,0.5); border-radius:14px; max-width:900px; width:100%; max-height:90vh; display:flex; flex-direction:column; box-shadow:0 16px 45px rgba(0,0,0,0.85); overflow:hidden;">
+          <div style="padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:rgba(16,185,129,0.1);">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:22px;">📄</span>
+              <div>
+                <h3 style="margin:0; color:#f8fafc; font-size:15px; font-weight:800;">Arquivo .TXT de Apontamentos, Conformes e Pendências (Para Resposta e Edição)</h3>
+                <span style="font-size:11px; color:#94a3b8;">Edite livremente os apontamentos, recomendações e respostas abaixo antes de baixar o arquivo .TXT</span>
+              </div>
+            </div>
+            <button type="button" onclick="fecharModalEditorTxtApontamentosCAM()" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; padding:4px 8px;">✕</button>
+          </div>
+          <div style="padding:16px 20px; flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <button type="button" onclick="preencherEditorTxtApontamentosCAM('todos')" class="btn" style="background:rgba(16,185,129,0.16); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:5px 12px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;">
+                  📋 Carregar Todos (Conformes + Pendências)
+                </button>
+                <button type="button" onclick="preencherEditorTxtApontamentosCAM('pendencias')" class="btn" style="background:rgba(245,158,11,0.16); color:#fbbf24; border:1px solid rgba(245,158,11,0.4); padding:5px 12px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;">
+                  ⏳ Carregar Somente Pendências p/ Saneamento
+                </button>
+                <button type="button" onclick="preencherEditorTxtApontamentosCAM('conformes')" class="btn" style="background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:5px 12px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;">
+                  ✓ Carregar Somente Conformes
+                </button>
+              </div>
+              <span id="status-editor-txt-cam" style="font-size:11px; color:#34d399; font-weight:700;">Pronto para edição e exportação</span>
+            </div>
+            <textarea id="textarea-editor-txt-apontamentos-cam" rows="20" style="width:100%; border:1px solid rgba(56,189,248,0.35); background:#050811; color:#f8fafc; font-size:12.5px; padding:14px; border-radius:8px; line-height:1.55; font-family:'Consolas', 'Courier New', monospace; resize:vertical; box-sizing:border-box;"></textarea>
+          </div>
+          <div style="padding:14px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.3); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <button type="button" onclick="copiarConteudoEditorTxtCAM()" class="btn" style="background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:8px 16px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+              📋 Copiar Texto
+            </button>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <button type="button" onclick="fecharModalEditorTxtApontamentosCAM()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:8px 16px; font-size:12px; border-radius:8px; cursor:pointer;">
+                Fechar
+              </button>
+              <button type="button" onclick="baixarTxtDoEditorCAM()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:9px 22px; font-size:13px; font-weight:900; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.45); display:inline-flex; align-items:center; gap:6px;">
+                💾 Baixar Arquivo .TXT Editado
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -3070,7 +3157,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.27
+              GBZ - v1.3.28
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3343,7 +3430,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.27] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.28] — Módulo de Integridade e Padronização</span>
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
 
@@ -4628,13 +4715,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.27"></script>
-  <script src="js/app.js?v=1.3.27"></script>
-  <script src="js/auth-sap.js?v=1.3.27"></script>
-  <script src="js/escolas.js?v=1.3.27" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=1.3.27"></script>
-  <script src="js/mapa.js?v=1.3.27"></script>
-  <script src="js/contatos.js?v=1.3.27"></script>
+  <script src="js/dados.js?v=1.3.28"></script>
+  <script src="js/app.js?v=1.3.28"></script>
+  <script src="js/auth-sap.js?v=1.3.28"></script>
+  <script src="js/escolas.js?v=1.3.28" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=1.3.28"></script>
+  <script src="js/mapa.js?v=1.3.28"></script>
+  <script src="js/contatos.js?v=1.3.28"></script>
 
   <script>
     // Detector de erros para depuração visual
@@ -4810,15 +4897,15 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.3.27"></script>
+  <script src="js/multi-select.js?v=1.3.28"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.3.27"></script>
-  <script src="js/gmac.js?v=1.3.27"></script>
-  <script src="js/orcamento.js?v=1.3.27"></script>
-  <script src="js/gdsm.js?v=1.3.27"></script>
-  <script src="js/print-proalfa.js?v=1.3.27"></script>
-  <script src="js/proalfa.js?v=1.3.27"></script>
+  <script src="js/diarias.js?v=1.3.28"></script>
+  <script src="js/gmac.js?v=1.3.28"></script>
+  <script src="js/orcamento.js?v=1.3.28"></script>
+  <script src="js/gdsm.js?v=1.3.28"></script>
+  <script src="js/print-proalfa.js?v=1.3.28"></script>
+  <script src="js/proalfa.js?v=1.3.28"></script>
 
 
   <!-- ============= PAGE: CONTROLE ORCAMENTARIO ============= -->
