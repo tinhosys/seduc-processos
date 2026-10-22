@@ -133,13 +133,20 @@ window.newsTickerModule = {
           <button type="button" onclick="newsTickerModule.openConfigModal()" style="background:none; border:none; color:#94a3b8; hover:color:#38bdf8; font-size:14px; cursor:pointer; padding:4px;" title="Configurar Feeds de Notícias (RSS)">
             ⚙️
           </button>
-          <button type="button" onclick="newsTickerModule.toggleVisibilidade()" id="btn-toggle-ticker-view" style="display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.1); padding:3px 8px; border-radius:5px; font-size:10.5px; font-weight:700; cursor:pointer;" title="Ocultar ou fixar barra de notícias">
+          <button type="button" onclick="newsTickerModule.toggleVisibilidade()" id="btn-toggle-ticker-view" style="display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.1); padding:3px 8px; border-radius:5px; font-size:10.5px; font-weight:700; cursor:pointer;" title="Ocultar barra de notícias">
             <span>📌</span>
             <span id="label-ticker-toggle">Ocultar</span>
           </button>
         </div>
 
       </div>
+
+      <!-- BOTÃO FLUTUANTE PARA RESTAURAR / REMOSTRAR O TICKER QUANDO OCULTO (IMAGEM 1) -->
+      <button type="button" id="btn-restore-news-ticker" onclick="newsTickerModule.toggleVisibilidade()" style="display:none; position:fixed; bottom:8px; right:12px; z-index:9998; background:linear-gradient(135deg, #0f172a, #1e293b); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:6px 14px; border-radius:20px; font-size:11.5px; font-weight:800; cursor:pointer; box-shadow:0 4px 15px rgba(0,0,0,0.6); align-items:center; gap:6px; font-family:system-ui,-apple-system,sans-serif; transition:all 0.2s;" title="Clique para exibir novamente a barra de notícias em tempo real">
+        <span>⚡</span>
+        <span>Notícias</span>
+        <span style="font-size:12px;">▲</span>
+      </button>
     `;
 
     document.body.insertAdjacentHTML('beforeend', tickerHtml);
@@ -234,6 +241,7 @@ window.newsTickerModule = {
 
   toggleVisibilidade() {
     const box = document.getElementById('seduc-news-ticker-container');
+    const restoreBtn = document.getElementById('btn-restore-news-ticker');
     const lbl = document.getElementById('label-ticker-toggle');
     if (!box) return;
     this.isHidden = !this.isHidden;
@@ -241,9 +249,12 @@ window.newsTickerModule = {
       box.style.transform = 'translateY(100%)';
       box.style.transition = 'transform 0.3s ease';
       if (lbl) lbl.textContent = 'Mostrar';
+      if (restoreBtn) restoreBtn.style.display = 'inline-flex';
     } else {
       box.style.transform = 'translateY(0)';
+      box.style.transition = 'transform 0.3s ease';
       if (lbl) lbl.textContent = 'Ocultar';
+      if (restoreBtn) restoreBtn.style.display = 'none';
     }
   },
 
