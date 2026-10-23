@@ -12814,8 +12814,16 @@ ${linhasPlanoMd}
     nomesDocB: nomesDocB,
     schemaDocA: schemaDocA,
     schemaDocB: schemaDocB,
+    valOfProc: valOfProc,
+    valPlanProc: valPlanProc,
+    falhaMun: falhaMun,
+    munNoOficio: munNoOficio,
+    munNoPlano: munNoPlano,
+    falhaValTripartite: falhaValTripartite,
+    falhaObjTripartite: falhaObjTripartite,
     regras: {
       UNID: regraUNID,
+      MUN: regraMUN,
       FIN01: regraFIN01,
       OBJ02: regraOBJ02,
       REP03: regraREP03
@@ -12927,6 +12935,14 @@ function renderizarPainelResumoAntiGravityV2(aud) {
 
 function preencherModalDocumentoAntiGravityV2(aud) {
   if (!aud) return;
+
+  const valOfProc = aud.valOfProc !== undefined ? aud.valOfProc : parseCurrency(document.getElementById('form-valorOf')?.value || '0');
+  const valPlanProc = aud.valPlanProc !== undefined ? aud.valPlanProc : parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
+  const falhaMun = aud.falhaMun !== undefined ? aud.falhaMun : false;
+  const munNoOficio = aud.munNoOficio !== undefined ? aud.munNoOficio : true;
+  const munNoPlano = aud.munNoPlano !== undefined ? aud.munNoPlano : true;
+  const falhaValTripartite = aud.falhaValTripartite !== undefined ? aud.falhaValTripartite : false;
+  const falhaObjTripartite = aud.falhaObjTripartite !== undefined ? aud.falhaObjTripartite : false;
 
   const badgeStatus = document.getElementById('badge-status-final-antigravity-v2');
   if (badgeStatus) {
