@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.31
+// Versão do Sistema: v1.3.32
 // ============================================================
-window.APP_VERSION = 'v1.3.31';
+window.APP_VERSION = 'v1.3.32';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -12406,17 +12406,22 @@ function executarAuditoriaComparativaAntiGravityV2(abrirModal) {
   const arquivosMarcados = todosArquivos.filter(function(a) { return a.selecionado !== false; });
   const docsParaAnalise = arquivosMarcados.length > 0 ? arquivosMarcados : todosArquivos;
 
-  // Dados cadastrais do formulário do processo SEI
-  const numProcesso = (document.getElementById('f-processo')?.value || '').trim() || '0029.000000/2026-00';
-  const municipio = (document.getElementById('f-municipio')?.value || '').trim() || 'Município Proponente';
-  const escolaBeneficiaria = (document.getElementById('f-escola')?.value || '').trim() || ('Rede Pública / Unidade Escolar de ' + municipio);
-  const cnpjForm = (document.getElementById('f-cnpj')?.value || '').trim() || '00.000.000/0001-00';
-  const oficioForm = (document.getElementById('f-oficio')?.value || '').trim() || 'Ofício s/nº - Gabinete/Proponente';
+  // Dados cadastrais reais do formulário do processo SEI
+  const inputsNum = Array.from(document.querySelectorAll('input[name="numero[]"]'));
+  const numProcesso = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ') || 
+    (document.querySelector('input[name="numero[]"]')?.value || document.getElementById('f-processo')?.value || '').trim() || '0029.000000/2026-00';
+  const municipio = (document.getElementById('form-municipio')?.value || document.getElementById('f-municipio')?.value || '').trim() || 'Município Proponente';
+  const escolaBeneficiaria = (document.getElementById('form-interessado')?.value || document.getElementById('f-escola')?.value || '').trim() || ('Rede Pública / Unidade Escolar de ' + municipio);
+  const cnpjForm = (document.getElementById('form-cnpj')?.value || document.getElementById('f-cnpj')?.value || '').trim();
+  const oficioForm = (document.getElementById('form-oficioNumero')?.value || document.getElementById('f-oficio')?.value || '').trim() || 'Ofício s/nº - Gabinete/Proponente';
   const seiOficioForm = (document.getElementById('f-sei-oficio')?.value || '').trim();
   const seiPlanoForm = (document.getElementById('f-sei-plano')?.value || '').trim();
-  const objetoForm = (document.getElementById('f-objeto')?.value || '').trim() || 'Execução de parceria educacional / aquisição de bens e equipamentos';
-  const valorGlobalForm = converterMoedaBRParaNumero(document.getElementById('f-valor')?.value || '');
-  const valorRepasseForm = converterMoedaBRParaNumero(document.getElementById('f-repasse')?.value || '');
+  const objetoForm = (document.getElementById('form-objeto')?.value || document.getElementById('f-objeto')?.value || '').trim() || 'Execução de parceria educacional / aquisição de bens e equipamentos';
+  
+  const valOfProc = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
+  const valPlanProc = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
+  const valorGlobalForm = valPlanProc || valOfProc || converterMoedaBRParaNumero(document.getElementById('f-valor')?.value || '');
+  const valorRepasseForm = valPlanProc || valOfProc || converterMoedaBRParaNumero(document.getElementById('f-repasse')?.value || '');
   const valorContrapartidaForm = converterMoedaBRParaNumero(document.getElementById('f-contrapartida')?.value || '');
 
   // Separa os documentos do quadro amarelo em DOC A (Ofício/Solicitação) e DOC B (Plano de Trabalho)
@@ -12440,14 +12445,13 @@ function executarAuditoriaComparativaAntiGravityV2(abrirModal) {
   const valoresExtraidosA = extrairValoresMonetariosDeTexto(textoDocA);
   const valoresExtraidosB = extrairValoresMonetariosDeTexto(textoDocB);
 
-  const valorBaseFormulario = valorRepasseForm > 0 ? valorRepasseForm : (valorGlobalForm > 0 ? valorGlobalForm : 0);
   const valorSolicitadoDocA = valoresExtraidosA.length > 0
     ? Math.max.apply(null, valoresExtraidosA)
-    : valorBaseFormulario;
+    : (valOfProc > 0 ? valOfProc : valorGlobalForm);
 
   const valorTotalConcedenteDocB = valoresExtraidosB.length > 0
     ? Math.max.apply(null, valoresExtraidosB)
-    : (valorGlobalForm > 0 ? valorGlobalForm : valorSolicitadoDocA);
+    : (valPlanProc > 0 ? valPlanProc : valorSolicitadoDocA);
 
   const mNumOficio = textoDocA.match(/Of[ií]cio\s*(?:n[º°o.]?\s*)?([0-9]{1,5}(?:\/[0-9]{4})?(?:\s*[-–/]\s*[A-Za-z0-9.\-]+)?)/i);
   const numeroOficioExtraido = (mNumOficio && mNumOficio[1]) ? ('Ofício nº ' + mNumOficio[1].trim()) : oficioForm;
@@ -12455,8 +12459,24 @@ function executarAuditoriaComparativaAntiGravityV2(abrirModal) {
   const mDataDocA = textoDocA.match(/\b(\d{2}\/\d{2}\/\d{4}|\d{4}-\d{2}-\d{2})\b/);
   const dataEmissaoDocA = mDataDocA ? mDataDocA[1] : new Date().toISOString().slice(0, 10);
 
-  const mCnpjDocB = (textoDocB + ' ' + textoDocA).match(/\b\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\b/);
-  const cnpjExtraido = mCnpjDocB ? mCnpjDocB[0] : cnpjForm;
+  // CNPJ: se vazio no cadastro, extrai do Plano de Trabalho vigente
+  let cnpjExtraido = cnpjForm;
+  if (!cnpjExtraido || cnpjExtraido === '00.000.000/0000-00' || cnpjExtraido === '00.000.000/0001-00') {
+    if (typeof extrairCNPJEEntidadeDoProcesso === 'function') {
+      const ext = extrairCNPJEEntidadeDoProcesso();
+      if (ext && ext.cnpj && !ext.cnpj.includes('X')) {
+        cnpjExtraido = ext.cnpj;
+        const elCnpj = document.getElementById('form-cnpj');
+        if (elCnpj && !elCnpj.value.trim()) elCnpj.value = ext.cnpj;
+      }
+    }
+  }
+  if (!cnpjExtraido) {
+    const mCnpjDocB = (textoDocB + ' ' + textoDocA).match(/\b\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\b/);
+    cnpjExtraido = mCnpjDocB ? mCnpjDocB[0] : '00.000.000/0000-00';
+    const elCnpj = document.getElementById('form-cnpj');
+    if (elCnpj && !elCnpj.value.trim() && cnpjExtraido !== '00.000.000/0000-00') elCnpj.value = cnpjExtraido;
+  }
 
   const signatarioDocA = extrairSignatarioDeTexto(
     textoDocA,
@@ -12639,10 +12659,52 @@ function executarAuditoriaComparativaAntiGravityV2(abrirModal) {
       : 'Identidade de representação legal confirmada entre o Ofício de Solicitação e o Plano de Trabalho.'
   };
 
+  // [REGRA CAD-MUN: CONVERGÊNCIA DE MUNICÍPIO (CADASTRO x OFÍCIO x PLANO)]
+  const munCadNorm = (municipio || '').toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const munNoOficio = (textoDocA || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().includes(munCadNorm);
+  const munNoPlano = (textoDocB || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().includes(munCadNorm);
+  const falhaMun = (!munNoOficio && textoDocA.length > 50) || (!munNoPlano && textoDocB.length > 50);
+
+  const regraMUN = {
+    codigo: 'CAD-MUN',
+    dimensao: 'Convergência de Município',
+    cadastro: municipio,
+    docA_resumo: munNoOficio ? `${municipio} (Citado no Ofício)` : `Não localizado no Ofício`,
+    docB_resumo: munNoPlano ? `${municipio} (Citado no Plano)` : `Não localizado no Plano`,
+    falha: falhaMun,
+    statusLabel: falhaMun ? '❌ DIVERGÊNCIA' : '✅ OK',
+    severidade: falhaMun ? 'Alta' : 'Baixa (Conforme)',
+    mensagem: falhaMun 
+      ? `Município cadastrado no processo ("${municipio}") não localizado ou divergente nos autos documentais (Ofício/Plano).`
+      : `Município "${municipio}" convergente entre cadastro do processo, Ofício de Solicitação e Plano de Trabalho.`
+  };
+
+  // [REGRA CAD-OBJ: CONVERGÊNCIA DO OBJETO (CADASTRO x OFÍCIO x PLANO)]
+  const objCadNorm = (objetoForm || '').toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const palavrasChaveObj = objCadNorm.split(/[\s,;/]+/).filter(w => w.length >= 4 && !/PARA|COM|DOS|DAS|PELO|PELA|SOBRE|ESTE|ESTA|SEDUC|ESTADUAL|MUNICIPAL/i.test(w));
+  const nucleosTema = ['PERMANENTE', 'CONSUMO', 'PINTURA', 'REFORMA', 'CONSTRUCAO', 'AMPLIACAO', 'EQUIPAMENTO', 'MOBILIARIO', 'CLIMATIZACAO', 'PEDAGOGICO'];
+  const nucleosCad = nucleosTema.filter(n => objCadNorm.includes(n));
+  
+  const objNoOficio = nucleosCad.length > 0 
+    ? nucleosCad.some(n => (textoDocA || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().includes(n))
+    : palavrasChaveObj.some(w => (textoDocA || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().includes(w));
+
+  const objNoPlano = nucleosCad.length > 0 
+    ? nucleosCad.some(n => (textoDocB || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().includes(n))
+    : palavrasChaveObj.some(w => (textoDocB || '').normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().includes(w));
+
+  const falhaObjTripartite = (!objNoOficio && textoDocA.length > 60) || (!objNoPlano && textoDocB.length > 60);
+
+  // [REGRA CAD-VAL: CONVERGÊNCIA FINANCEIRA TRIPARTITE (CADASTRO x OFÍCIO x PLANO)]
+  const diffCadOf = valOfProc > 0 ? Math.round(Math.abs(valOfProc - schemaDocA.valor_solicitado) * 100) / 100 : 0;
+  const diffCadPlan = valPlanProc > 0 ? Math.round(Math.abs(valPlanProc - schemaDocB.valor_total_recurso_concedente) * 100) / 100 : 0;
+  const falhaValTripartite = diffCadOf >= 1.00 || diffCadPlan >= 1.00;
+
   // Regra Adicional de Qualidade Documental (Unidade Beneficiária)
   const regraUNID = {
     codigo: 'CAD-00',
     dimensao: 'Unidade Beneficiária',
+    cadastro: escolaBeneficiaria,
     docA_resumo: schemaDocA.unidade_beneficiaria,
     docB_resumo: schemaDocB.entidade_proponente,
     falha: false,
@@ -12928,81 +12990,94 @@ function preencherModalDocumentoAntiGravityV2(aud) {
       : '';
 
     divDoc.innerHTML = `
-      <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:14px; margin-bottom:20px;">
-        <div style="font-size:13px; font-weight:bold; letter-spacing:0.6px; text-transform:uppercase;">GOVERNO DO ESTADO DE RONDÔNIA</div>
-        <div style="font-size:13px; font-weight:bold;">Secretaria de Estado da Educação — SEDUC/RO</div>
-        <div style="font-size:12px; color:#334155;">Coordenadoria de Apoio aos Municípios / Gerência de Diagnóstico Situacional — CAM/GDSM</div>
-        <h2 style="margin:14px 0 4px 0; font-size:17px; font-weight:bold; text-transform:uppercase; color:#0f172a;">
-          RELATÓRIO DE AUDITORIA DE PARCERIAS — ANTIGRAVITY v2.0
+      <div style="text-align:center; border-bottom:2px solid #0f172a; padding-bottom:12px; margin-bottom:18px;">
+        <h2 style="margin:0 0 6px 0; font-size:16px; font-weight:bold; text-transform:uppercase; color:#0f172a; font-family:Arial, Helvetica, sans-serif;">
+          RELATÓRIO DE AUDITORIA DE PARCERIAS — CONFERÊNCIA TRIPARTITE
         </h2>
-        <div style="font-size:12px; font-weight:bold; color:${aud.contemErrosCriticosOuAltos ? '#b91c1c' : '#047857'};">
+        <div style="font-size:12px; font-weight:bold; color:${aud.contemErrosCriticosOuAltos ? '#b91c1c' : '#047857'}; font-family:Arial, Helvetica, sans-serif;">
           CLASSIFICAÇÃO FINAL: [${aud.resultadoFinalStatus}]
         </div>
       </div>
 
-      <h3 style="font-size:14px; text-transform:uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-top:16px;">1. Dados Identificadores</h3>
-      <table style="width:100%; border-collapse:collapse; font-size:13px; margin-bottom:16px;">
+      <h3 style="font-size:13px; font-weight:bold; text-transform:uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-top:14px; font-family:Arial, Helvetica, sans-serif;">1. Dados Identificadores e Cadastrais do Processo</h3>
+      <table style="width:100%; border-collapse:collapse; font-size:11pt; margin-bottom:16px; font-family:Arial, Helvetica, sans-serif;">
         <tr>
-          <td style="padding:4px 0; width:32%;"><strong>Processo SEI:</strong></td>
+          <td style="padding:4px 0; width:30%;"><strong>Processo SEI:</strong></td>
           <td style="padding:4px 0;">${aud.numProcesso}</td>
         </tr>
         <tr>
-          <td style="padding:4px 0;"><strong>Entidade Proponente:</strong></td>
-          <td style="padding:4px 0;">${aud.schemaDocB.entidade_proponente} — CNPJ: ${aud.schemaDocB.cnpj}</td>
+          <td style="padding:4px 0;"><strong>Município:</strong></td>
+          <td style="padding:4px 0;">${aud.municipio} / RO</td>
         </tr>
         <tr>
-          <td style="padding:4px 0;"><strong>Documento A (Solicitação):</strong></td>
+          <td style="padding:4px 0;"><strong>Entidade / Escola Proponente:</strong></td>
+          <td style="padding:4px 0;">${aud.schemaDocB.entidade_proponente}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>CNPJ Proponente:</strong></td>
+          <td style="padding:4px 0;"><strong>${aud.schemaDocB.cnpj}</strong> ${aud.schemaDocB.cnpj && aud.schemaDocB.cnpj !== '00.000.000/0000-00' ? '<span style="color:#047857; font-weight:bold;">(Regular / Extraído)</span>' : '<span style="color:#b91c1c; font-weight:bold;">(Pendente / Não Informado)</span>'}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>Objeto Cadastrado:</strong></td>
+          <td style="padding:4px 0;">${aud.schemaDocA.objetivo_geral}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>Valor Oficial Cadastrado:</strong></td>
+          <td style="padding:4px 0;">R$ ${formatarNumeroMoedaBR(valOfProc || aud.schemaDocA.valor_solicitado)}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>Valor Planilha Cadastrado:</strong></td>
+          <td style="padding:4px 0;">R$ ${formatarNumeroMoedaBR(valPlanProc || aud.schemaDocB.valor_total_recurso_concedente)}</td>
+        </tr>
+        <tr>
+          <td style="padding:4px 0;"><strong>Documento A (Ofício / Solicitação):</strong></td>
           <td style="padding:4px 0;">${aud.nomesDocA} (${aud.schemaDocA.numero_oficio})</td>
         </tr>
         <tr>
-          <td style="padding:4px 0;"><strong>Documento B (Plano Técnico):</strong></td>
+          <td style="padding:4px 0;"><strong>Documento B (Plano de Trabalho):</strong></td>
           <td style="padding:4px 0;">${aud.nomesDocB}</td>
-        </tr>
-        <tr>
-          <td style="padding:4px 0;"><strong>Data da Análise / Auditor:</strong></td>
-          <td style="padding:4px 0;">${aud.dataAnalise} • Agente <strong>${aud.versaoAgente}</strong></td>
         </tr>
       </table>
 
-      <h3 style="font-size:14px; text-transform:uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-top:18px;">2. Quadro Resumo de Conformidade (Validação Cruzada Doc A x Doc B)</h3>
-      <table style="width:100%; border-collapse:collapse; font-size:12.5px; margin-bottom:16px;">
+      <h3 style="font-size:13px; font-weight:bold; text-transform:uppercase; border-bottom:1px solid #cbd5e1; padding-bottom:4px; margin-top:16px; font-family:Arial, Helvetica, sans-serif;">2. Quadro Resumo de Conformidade Tripartite (Cadastro x Ofício x Plano)</h3>
+      <table style="width:100%; border-collapse:collapse; font-size:10.5pt; margin-bottom:16px; font-family:Arial, Helvetica, sans-serif;">
         <thead>
           <tr style="background:#f1f5f9;">
             <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Item Auditado</th>
-            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Documento A (Ofício)</th>
-            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Documento B (Plano de Trabalho)</th>
+            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Cadastro no Sistema</th>
+            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Ofício (Doc A)</th>
+            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:left;">Plano de Trabalho (Doc B)</th>
             <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:center;">Status</th>
-            <th style="border:1px solid #cbd5e1; padding:7px 8px; text-align:center;">Severidade</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Unidade Beneficiária</strong></td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.UNID.docA_resumo}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.UNID.docB_resumo}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:#047857;">${aud.regras.UNID.statusLabel}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${aud.regras.UNID.severidade}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Município</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.municipio}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${munNoOficio ? aud.municipio : 'Não explícito'}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${munNoPlano ? aud.municipio : 'Não explícito'}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${falhaMun ? '#b91c1c' : '#047857'};">${falhaMun ? '❌ DIVERGÊNCIA' : '✅ ALINHADO'}</td>
           </tr>
           <tr>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Valor Global [FIN-01]</strong></td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.FIN01.docA_resumo}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.FIN01.docB_resumo}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${aud.regras.FIN01.falha ? '#b91c1c' : '#047857'};">${aud.regras.FIN01.statusLabel}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${aud.regras.FIN01.severidade}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Entidade / Escola</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.escolaBeneficiaria}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.schemaDocA.unidade_beneficiaria}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.schemaDocB.entidade_proponente}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:#047857;">✅ ALINHADO</td>
           </tr>
           <tr>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Signatário [REP-03]</strong></td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.REP03.docA_resumo}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.REP03.docB_resumo}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${aud.regras.REP03.falha ? '#b91c1c' : '#047857'};">${aud.regras.REP03.statusLabel}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${aud.regras.REP03.severidade}</td>
-          </tr>
-          <tr>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Escopo dos Bens [OBJ-02]</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Objeto / Finalidade</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.schemaDocA.objetivo_geral}</td>
             <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.OBJ02.docA_resumo}</td>
             <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.OBJ02.docB_resumo}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${aud.regras.OBJ02.falha ? '#b45309' : '#047857'};">${aud.regras.OBJ02.statusLabel}</td>
-            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center;">${aud.regras.OBJ02.severidade}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${falhaObjTripartite ? '#b45309' : '#047857'};">${falhaObjTripartite ? '⚠️ VERIFICAR' : '✅ ALINHADO'}</td>
+          </tr>
+          <tr>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;"><strong>Valores Globais</strong></td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">Of: R$ ${formatarNumeroMoedaBR(valOfProc)}<br>Plan: R$ ${formatarNumeroMoedaBR(valPlanProc)}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.FIN01.docA_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px;">${aud.regras.FIN01.docB_resumo}</td>
+            <td style="border:1px solid #cbd5e1; padding:6px 8px; text-align:center; font-weight:bold; color:${(aud.regras.FIN01.falha || falhaValTripartite) ? '#b91c1c' : '#047857'};">${(aud.regras.FIN01.falha || falhaValTripartite) ? '❌ DIVERGÊNCIA' : '✅ ALINHADO'}</td>
           </tr>
         </tbody>
       </table>
@@ -13155,7 +13230,7 @@ function baixarDocumentoAntiGravityV2(formato) {
       <title>Relatório de Auditoria de Parcerias - AntiGravity v2.0</title>
       <style>
         @page { size: 21cm 29.7cm; margin: 2cm; }
-        body { font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; line-height: 1.5; }
+        body { font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #000; line-height: 1.5; }
         table { width: 100%; border-collapse: collapse; }
         th, td { border: 1px solid #666; padding: 6px; }
       </style>
@@ -13196,7 +13271,7 @@ function imprimirDocumentoAntiGravityV2() {
       <title>Relatório de Auditoria de Parcerias - AntiGravity v2.0</title>
       <style>
         @page { size: A4; margin: 18mm; }
-        body { font-family: 'Times New Roman', Times, serif; color: #0f172a; line-height: 1.55; font-size: 12pt; margin: 0; padding: 0; }
+        body { font-family: Arial, Helvetica, sans-serif; color: #0f172a; line-height: 1.5; font-size: 11pt; margin: 0; padding: 0; }
         table { width: 100%; border-collapse: collapse; }
       </style>
     </head>
