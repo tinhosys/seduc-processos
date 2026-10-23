@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.30
+// Versão do Sistema: v1.3.31
 // ============================================================
-window.APP_VERSION = 'v1.3.30';
+window.APP_VERSION = 'v1.3.31';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -2229,6 +2229,16 @@ function renderFormulario() {
     });
 
     document.getElementById('form-interessado').value = p.interessado || '';
+    const cnpjEl = document.getElementById('form-cnpj');
+    if (cnpjEl) {
+      cnpjEl.value = p.cnpj || '';
+      if (!cnpjEl.value.trim() && typeof extrairCNPJEEntidadeDoProcesso === 'function') {
+        const ext = extrairCNPJEEntidadeDoProcesso();
+        if (ext && ext.cnpj && !ext.cnpj.includes('X')) {
+          cnpjEl.value = ext.cnpj;
+        }
+      }
+    }
     document.getElementById('form-objeto').value      = p.objeto      || '';
     document.getElementById('form-valorOf').value     = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
     document.getElementById('form-valorPlan').value   = p.valorPlan ? maskCurrency((p.valorPlan * 100).toFixed(0)) : '';
@@ -2337,6 +2347,7 @@ function renderFormulario() {
     document.getElementById('form-digito').value = '';
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
+    if (document.getElementById('form-cnpj')) document.getElementById('form-cnpj').value = '';
     updateSegmentControl('categoria', '');
     updateSegmentControl('tipo', '');
     document.getElementById('container-numeros').innerHTML = `
@@ -2453,6 +2464,7 @@ function salvarFormulario(e) {
     municipio:   document.getElementById('form-municipio').value.trim(),
     numero:      numerosJoined,
     interessado: document.getElementById('form-interessado').value.trim(),
+    cnpj:        (document.getElementById('form-cnpj')?.value || '').trim(),
     objeto:      document.getElementById('form-objeto').value.trim(),
     executivo:   (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) ? (document.getElementById('form-executivo') ? document.getElementById('form-executivo').value.trim() : '') : (state.editandoId ? (buscarProcessoPorId(state.editandoId)?.executivo || '') : ''),
     valorOf:     valOf,
@@ -9106,6 +9118,40 @@ function formatarCNPJ(cnpjRaw) {
   return num.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
 }
 
+function mascaraCNPJInput(el) {
+  if (!el) return;
+  let v = el.value.replace(/\D/g, '');
+  if (v.length > 14) v = v.substring(0, 14);
+  v = v.replace(/^(\d{2})(\d)/, '$1.$2');
+  v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+  v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
+  v = v.replace(/(\d{4})(\d)/, '$1-$2');
+  el.value = v;
+}
+window.mascaraCNPJInput = mascaraCNPJInput;
+
+function extrairEPreencherCNPJPlano() {
+  const el = document.getElementById('form-cnpj');
+  if (!el) return;
+  const res = extrairCNPJEEntidadeDoProcesso();
+  if (res && res.cnpj && !res.cnpj.includes('X')) {
+    el.value = res.cnpj;
+    if (typeof toast === 'function') toast(`CNPJ ${res.cnpj} extraído do Plano de Trabalho com sucesso!`, 'success');
+  } else {
+    if (typeof toast === 'function') toast('CNPJ não localizado automaticamente no Plano de Trabalho.', 'warning');
+  }
+}
+window.extrairEPreencherCNPJPlano = extrairEPreencherCNPJPlano;
+
+function autoPreencherCNPJSeVazio(el) {
+  if (!el || el.value.trim()) return;
+  const res = extrairCNPJEEntidadeDoProcesso();
+  if (res && res.cnpj && !res.cnpj.includes('X')) {
+    el.value = res.cnpj;
+  }
+}
+window.autoPreencherCNPJSeVazio = autoPreencherCNPJSeVazio;
+
 function extrairCNPJEEntidadeDoProcesso() {
   const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
   
@@ -11120,9 +11166,9 @@ function verificarEAtualizarConformidadeDemanda() {
     conformidades.push(`Município convergente (${munProc})`);
   }
 
-  // Verificação 3: Interessado / Unidade Escolar / Entidade (somente se texto extraído tiver conteúdo substancial)
+  // Verificação 3: Interessado / Unidade Escolar / Entidade (com flexibilidade semântica: EMEIF, ESCOLA, etc.)
   const escolaCadastrada = (interessadoProc || '').toUpperCase().replace(/-(?:.*)/, '').trim();
-  const escolaPalavras = escolaCadastrada.split(/[\s,]+/).filter(w => w.length > 3 && !/ESCOLA|EMEF|CMEI|MUNICIPAL|ESTADUAL|COL[EÉ]GIO/i.test(w));
+  const escolaPalavras = escolaCadastrada.split(/[\s,]+/).filter(w => w.length > 3 && !/ESCOLA|EMEF|EMEIF|CMEI|MUNICIPAL|ESTADUAL|COL[EÉ]GIO|CONSELHO|UNIDADE/i.test(w));
   if (escolaPalavras.length > 0 && textoTotal.length > 80) {
     const achouEscola = escolaPalavras.some(p => textoTotal.includes(p));
     if (achouEscola) {
@@ -11132,17 +11178,74 @@ function verificarEAtualizarConformidadeDemanda() {
     }
   }
 
-  // Verificação 4: Valores Financeiros entre Planilha e Ofício (apenas quando ambos estão preenchidos e divergem)
-  if (valOfProc > 0 && valPlanProc > 0) {
-    const diff = Math.abs(valOfProc - valPlanProc);
-    if (diff >= 0.05) {
-      divergencias.push(`Divergência financeira de R$ ${formatarMoedaBrasil(diff)} entre Ofício (R$ ${formatarMoedaBrasil(valOfProc)}) e Planilha (R$ ${formatarMoedaBrasil(valPlanProc)})`);
+  // Verificação 4: Objeto da Demanda (Comparação flexível com Ofício e Plano de Trabalho)
+  const objetoCadastrado = (document.getElementById('form-objeto')?.value || '').trim();
+  if (objetoCadastrado && textoTotal.length > 60) {
+    const palavrasObjeto = objetoCadastrado
+      .toUpperCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .split(/[\s,;/]+/)
+      .filter(w => w.length >= 4 && !/PARA|COM|DOS|DAS|PELO|PELA|SOBRE|ESTE|ESTA|SEDUC|ESTADUAL|MUNICIPAL|SECRETARIA/i.test(w));
+    
+    // Núcleos semânticos essenciais do objeto
+    const nucleosObjeto = ['PERMANENTE', 'CONSUMO', 'PINTURA', 'REFORMA', 'CONSTRUCAO', 'AMPLIACAO', 'EQUIPAMENTO', 'MOBILIARIO', 'CLIMATIZACAO', 'PEDAGOGICO', 'INFORMATICA', 'LABORATORIO', 'COBERTURA', 'QUADRA', 'MURO', 'INSTALACAO'];
+    const nucleosNoCadastro = nucleosObjeto.filter(n => objetoCadastrado.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(n));
+    
+    let objetoEncontradoNosDocs = false;
+    let nucleosConvergentes = [];
+    
+    if (nucleosNoCadastro.length > 0) {
+      nucleosNoCadastro.forEach(n => {
+        if (textoTotal.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(n)) {
+          nucleosConvergentes.push(n);
+        }
+      });
+      objetoEncontradoNosDocs = nucleosConvergentes.length > 0;
     } else {
-      conformidades.push(`Valores alinhados: R$ ${formatarMoedaBrasil(valPlanProc)}`);
+      objetoEncontradoNosDocs = palavrasObjeto.some(w => textoTotal.normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(w));
+    }
+
+    if (objetoEncontradoNosDocs) {
+      conformidades.push(`Objeto compatível com os documentos (${objetoCadastrado})`);
+    } else {
+      // Se tiver palavras suficientes e não bateu nos documentos
+      divergencias.push(`Objeto cadastrado ("${objetoCadastrado}") não apresenta convergência temática com o Plano de Trabalho e Ofício anexados`);
     }
   }
 
-  // Verificação 5: Ano do Exercício
+  // Verificação 5: Valores Financeiros (Ofício x Planilha x Documentos)
+  const arqPlano = arqs.find(a => /PLANO|TRABALHO/i.test(a.nome || ''));
+  const arqOficio = arqs.find(a => /OF[IÍ]CIO|REQUERIMENTO/i.test(a.nome || ''));
+  
+  const valPlanoDoc = arqPlano ? extrairValorMonetarioDeTexto(arqPlano.texto || '') : 0;
+  const valOficioDoc = arqOficio ? extrairValorMonetarioDeTexto(arqOficio.texto || '') : 0;
+
+  if (valOfProc > 0 && valPlanProc > 0) {
+    const diff = Math.abs(valOfProc - valPlanProc);
+    if (diff >= 0.05) {
+      divergencias.push(`Divergência financeira de R$ ${formatarMoedaBrasil(diff)} entre Ofício cadastrado (R$ ${formatarMoedaBrasil(valOfProc)}) e Planilha cadastrada (R$ ${formatarMoedaBrasil(valPlanProc)})`);
+    } else {
+      conformidades.push(`Valores cadastrados alinhados: R$ ${formatarMoedaBrasil(valPlanProc)}`);
+    }
+  }
+
+  // Se o valor extraído do Plano de Trabalho divergir significativamente do cadastrado
+  if (valPlanoDoc > 0 && valPlanProc > 0) {
+    const diffPlano = Math.abs(valPlanoDoc - valPlanProc);
+    if (diffPlano >= 1.00) {
+      divergencias.push(`Valor do Plano de Trabalho anexado (R$ ${formatarMoedaBrasil(valPlanoDoc)}) diverge do Valor Planilha cadastrado (R$ ${formatarMoedaBrasil(valPlanProc)})`);
+    }
+  }
+
+  // Se o valor extraído do Ofício divergir significativamente do cadastrado
+  if (valOficioDoc > 0 && valOfProc > 0) {
+    const diffOficio = Math.abs(valOficioDoc - valOfProc);
+    if (diffOficio >= 1.00) {
+      divergencias.push(`Valor do Ofício anexado (R$ ${formatarMoedaBrasil(valOficioDoc)}) diverge do Valor Oficial cadastrado (R$ ${formatarMoedaBrasil(valOfProc)})`);
+    }
+  }
+
+  // Verificação 6: Ano do Exercício
   if (anoProc && anoProc.length === 4) {
     const anosDocs = (textoTotal.match(/\b202[4-9]\b/g) || []);
     if (anosDocs.length > 0 && !anosDocs.includes(anoProc) && munDivergenteEncontrado) {
