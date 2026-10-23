@@ -9297,26 +9297,39 @@ function atualizarLabelResultadoCNPJReceita(dadosOuTexto, statusTipo) {
   // Se for string simples de loading ou erro não estruturado
   if (typeof dadosOuTexto === 'string') {
     window._ultimoResultadoCNPJReceitaTexto = dadosOuTexto;
-    lbl.textContent = dadosOuTexto;
-    lbl.title = dadosOuTexto;
-    if (subResumo) subResumo.textContent = dadosOuTexto;
-
-    // Se estiver pesquisando, abre o painel para o usuário ver o status
-    togglePainelReceitaCNPJ(true);
+    const txtLimpo = dadosOuTexto.replace(/⏳|\u23F3|\u231B/g, '').trim();
 
     if (statusTipo === 'loading') {
-      lbl.style.color = '#38bdf8';
+      lbl.innerHTML = `
+        <div style="display:inline-flex; align-items:center; gap:8px; color:#38bdf8; font-weight:600;">
+          <span style="display:inline-block; width:14px; height:14px; border:2px solid rgba(56,189,248,0.25); border-top-color:#38bdf8; border-radius:50%; animation:spinReceita 0.8s linear infinite;"></span>
+          <span>${escapeHTML(txtLimpo)}</span>
+        </div>
+        <style>@keyframes spinReceita { to { transform: rotate(360deg); } }</style>
+      `;
+      if (subResumo) {
+        subResumo.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px;"><span style="display:inline-block; width:10px; height:10px; border:2px solid rgba(56,189,248,0.3); border-top-color:#38bdf8; border-radius:50%; animation:spinReceita 0.8s linear infinite;"></span> <span>Consultando base da Receita Federal...</span></span>`;
+      }
       if (box) {
         box.style.borderColor = 'rgba(56,189,248,0.65)';
         box.style.background = 'rgba(15,23,42,0.95)';
       }
-    } else if (statusTipo === 'inativa' || statusTipo === 'erro') {
+      togglePainelReceitaCNPJ(true);
+      return;
+    }
+
+    lbl.textContent = txtLimpo;
+    lbl.title = txtLimpo;
+    if (subResumo) subResumo.textContent = txtLimpo;
+
+    if (statusTipo === 'inativa' || statusTipo === 'erro') {
       lbl.style.color = '#fca5a5';
       if (box) {
         box.style.borderColor = 'rgba(239,68,68,0.65)';
         box.style.background = 'rgba(127,29,29,0.28)';
       }
     }
+    togglePainelReceitaCNPJ(true);
     return;
   }
 
@@ -9391,7 +9404,7 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
   }
 
   const cnpjFormatado = formatarCNPJ(cnpjLimpo);
-  atualizarLabelResultadoCNPJReceita(`⏳ Consultando CNPJ ${cnpjFormatado} na base da Receita Federal / Serasa (sem Captcha)...`, 'loading');
+  atualizarLabelResultadoCNPJReceita(`Consultando CNPJ ${cnpjFormatado} na base da Receita Federal...`, 'loading');
 
   let dadosReceita = null;
 
@@ -9528,7 +9541,12 @@ async function extrairEPreencherCNPJPlano() {
 
   const textoBtnOriginal = btn ? btn.innerHTML : '';
   if (btn) {
-    btn.innerHTML = '<span>⏳ Extraindo dos Anexos...</span>';
+    btn.innerHTML = `
+      <span style="display:inline-flex; align-items:center; gap:6px;">
+        <span style="display:inline-block; width:12px; height:12px; border:2px solid rgba(56,189,248,0.3); border-top-color:#38bdf8; border-radius:50%; animation:spinReceita 0.8s linear infinite;"></span>
+        <span>Extraindo dos Anexos...</span>
+      </span>
+    `;
     btn.disabled = true;
   }
 
