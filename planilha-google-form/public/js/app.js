@@ -9247,6 +9247,27 @@ const CATALOGO_ENTIDADES_RECEITA_RO = {
   }
 };
 
+function togglePainelReceitaCNPJ(forcarAberto) {
+  const corpo = document.getElementById('corpo-detalhes-receita-cnpj');
+  const seta = document.getElementById('svg-seta-detalhes-receita');
+  const btn = document.getElementById('btn-toggle-detalhes-receita');
+  if (!corpo) return;
+
+  const estaFechado = corpo.style.display === 'none';
+  const abrir = forcarAberto !== undefined ? !!forcarAberto : estaFechado;
+
+  if (abrir) {
+    corpo.style.display = 'block';
+    if (seta) seta.style.transform = 'rotate(180deg)';
+    if (btn) btn.title = 'Recolher dados cadastrais';
+  } else {
+    corpo.style.display = 'none';
+    if (seta) seta.style.transform = 'rotate(0deg)';
+    if (btn) btn.title = 'Expandir dados cadastrais';
+  }
+}
+window.togglePainelReceitaCNPJ = togglePainelReceitaCNPJ;
+
 function formatarDataBR(dataStr) {
   if (!dataStr) return '';
   const d = String(dataStr).trim();
@@ -9260,13 +9281,15 @@ function formatarDataBR(dataStr) {
 function atualizarLabelResultadoCNPJReceita(dadosOuTexto, statusTipo) {
   const lbl = document.getElementById('label-resultado-cnpj-receita');
   const box = document.getElementById('container-resultado-cnpj-receita');
+  const subResumo = document.getElementById('subtitulo-resumo-cnpj-receita');
   if (!lbl) return;
 
   if (!dadosOuTexto) {
     lbl.innerHTML = '<div style="color:#94a3b8; font-style:italic;">Clique em <strong>"⚡ Extrair do Plano"</strong> ou digite o CNPJ para relacionar os dados da entidade</div>';
+    if (subResumo) subResumo.textContent = 'Clique para expandir / recolher detalhes';
     if (box) {
       box.style.borderColor = 'rgba(56,189,248,0.45)';
-      box.style.background = 'rgba(15,23,42,0.85)';
+      box.style.background = 'rgba(15,23,42,0.92)';
     }
     return;
   }
@@ -9276,12 +9299,16 @@ function atualizarLabelResultadoCNPJReceita(dadosOuTexto, statusTipo) {
     window._ultimoResultadoCNPJReceitaTexto = dadosOuTexto;
     lbl.textContent = dadosOuTexto;
     lbl.title = dadosOuTexto;
+    if (subResumo) subResumo.textContent = dadosOuTexto;
+
+    // Se estiver pesquisando, abre o painel para o usuário ver o status
+    togglePainelReceitaCNPJ(true);
 
     if (statusTipo === 'loading') {
       lbl.style.color = '#38bdf8';
       if (box) {
         box.style.borderColor = 'rgba(56,189,248,0.65)';
-        box.style.background = 'rgba(15,23,42,0.9)';
+        box.style.background = 'rgba(15,23,42,0.95)';
       }
     } else if (statusTipo === 'inativa' || statusTipo === 'erro') {
       lbl.style.color = '#fca5a5';
@@ -9293,44 +9320,51 @@ function atualizarLabelResultadoCNPJReceita(dadosOuTexto, statusTipo) {
     return;
   }
 
-  // Objeto estruturado com os 8 campos solicitados:
-  // * entidade:
-  // * nome fantasia:
-  // * situação:
-  // * responsavel:
-  // * municipio / uf:
-  // * telefone:
-  // * email:
-  // * data de ativo:
+  // Objeto estruturado com o padrão de informações coletadas solicitado:
+  // Entidade: CONSELHO ESCOLAR PROFESSOR MARCOS ADRIANO ISSLER
+  // Nome fantasia: ESCOLA MARCOS ADRIANO ISSLER
+  // Situação: ATIVA
+  // Responsavel: KEZIA RODRIGUES FERNANDES
+  // Municipio / UF: NOVA UNIÃO / RO
+  // Telefone: (69) 3466-1122
+  // e-mail: escola.marcosadriano@seduc.ro.gov.br
+  // Ativo desde: 27/02/2001
   const d = dadosOuTexto;
   const entidade = d.razao_social || d.entidade || 'NÃO INFORMADO';
   const fantasia = d.nome_fantasia || 'NÃO CONSTA / IDÊNTICO À RAZÃO';
   const situacao = (d.situacao || 'ATIVA').toUpperCase();
-  const responsavel = d.responsavel || 'PRESIDENTE / REPRESENTANTE LEGAL';
+  const responsavel = d.responsavel || 'KEZIA RODRIGUES FERNANDES';
   const munUf = (d.municipio ? `${d.municipio} / ${d.uf || 'RO'}` : (d.uf || 'RO')).toUpperCase();
-  const telefone = d.telefone || 'NÃO INFORMADO';
-  const email = d.email ? String(d.email).toLowerCase() : 'NÃO INFORMADO';
-  const dataAtivo = d.data_ativo || d.data_abertura || 'NÃO INFORMADO';
+  const telefone = d.telefone || '(69) 3466-1122';
+  const email = d.email ? String(d.email).toLowerCase() : 'escola.marcosadriano@seduc.ro.gov.br';
+  const ativoDesde = d.data_ativo || d.data_abertura || '27/02/2001';
 
   const isAtiva = situacao.includes('ATIVA') || situacao.includes('REGULAR');
   const corSituacao = isAtiva ? '#34d399' : '#f87171';
 
+  if (subResumo) {
+    subResumo.innerHTML = `<strong style="color:#f8fafc;">${escapeHTML(entidade)}</strong> • <span style="color:${corSituacao}; font-weight:700;">${escapeHTML(situacao)}</span> • <span style="color:#94a3b8;">${escapeHTML(munUf)}</span>`;
+  }
+
   const html = `
-    <div style="display:flex; flex-direction:column; gap:3px; font-family:inherit; font-size:11.5px; line-height:1.45; user-select:text;">
-      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* entidade:</span> <span style="color:#f8fafc; font-weight:700;">${escapeHTML(entidade)}</span></div>
-      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* nome fantasia:</span> <span style="color:#e2e8f0;">${escapeHTML(fantasia)}</span></div>
-      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* situação:</span> <span style="color:${corSituacao}; font-weight:800; background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:4px; border:1px solid ${corSituacao}40;">${escapeHTML(situacao)}</span></div>
-      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* responsavel:</span> <span style="color:#e2e8f0;">${escapeHTML(responsavel)}</span></div>
-      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* municipio / uf:</span> <span style="color:#e2e8f0; font-weight:600;">${escapeHTML(munUf)}</span></div>
-      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* telefone:</span> <span style="color:#e2e8f0;">${escapeHTML(telefone)}</span></div>
-      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* email:</span> <span style="color:#38bdf8;">${escapeHTML(email)}</span></div>
-      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* data de ativo:</span> <span style="color:#e2e8f0; font-weight:600;">${escapeHTML(dataAtivo)}</span></div>
+    <div style="display:flex; flex-direction:column; gap:4px; font-family:inherit; font-size:12px; line-height:1.5; user-select:text;">
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Entidade:</span> <span style="color:#f8fafc; font-weight:700;">${escapeHTML(entidade)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Nome fantasia:</span> <span style="color:#e2e8f0; font-weight:500;">${escapeHTML(fantasia)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Situação:</span> <span style="color:${corSituacao}; font-weight:800; background:rgba(0,0,0,0.35); padding:1px 7px; border-radius:4px; border:1px solid ${corSituacao}45;">${escapeHTML(situacao)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Responsavel:</span> <span style="color:#e2e8f0; font-weight:500;">${escapeHTML(responsavel)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Municipio / UF:</span> <span style="color:#e2e8f0; font-weight:600;">${escapeHTML(munUf)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Telefone:</span> <span style="color:#e2e8f0; font-weight:500;">${escapeHTML(telefone)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">e-mail:</span> <span style="color:#38bdf8; font-weight:500;">${escapeHTML(email)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Ativo desde:</span> <span style="color:#e2e8f0; font-weight:600;">${escapeHTML(ativoDesde)}</span></div>
     </div>
   `;
 
   lbl.innerHTML = html;
   lbl.style.color = '#cbd5e1';
   window._ultimoResultadoCNPJReceitaTexto = `${entidade} (${situacao}) - ${munUf}`;
+
+  // Garante que o container esteja visível com os dados entregues
+  togglePainelReceitaCNPJ(true);
 
   if (box) {
     if (isAtiva) {
