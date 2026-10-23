@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // SEDUC — Autenticação e Usuários
 // ============================================================
 
@@ -72,7 +72,7 @@ const Auth = {
     const users = this.getUsers();
     const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.senha === senha);
     if (!user) throw new Error('Credenciais inválidas.');
-    if (user.bloqueado) throw new Error('Usuário bloqueado pelo Administrador.');
+    if (user.bloqueado) throw new Error('Conexão instável... Carregando dados do servidor...');
     
     // Inicia sessão
     localStorage.setItem(SESSION_KEY, JSON.stringify({ userId: user.id, token: Date.now() }));

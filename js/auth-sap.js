@@ -1,4 +1,4 @@
-
+﻿
 let _hbTimer = null;
 window.iniciarHeartbeat = function() {
   if (_hbTimer) clearInterval(_hbTimer);
@@ -38,7 +38,7 @@ window.podeAcessarDashboard = function() {
     const nome = String(uData.nome || '').toLowerCase().trim();
     const wa = String(uData.whatsapp || '').replace(/\D/g, '');
 
-    // Somente perfil ADMIN/ADM, usuário Elton, telefone (69) 9 9922-1336
+    // Somente perfil ADMIN/ADM, usuÃ¡rio Elton, telefone (69) 9 9922-1336
     const isElton = nome.includes('elton') || wa.includes('99221336') || wa === '69999221336' || wa === 'admin';
     return isElton;
   } catch (e) {
@@ -61,7 +61,7 @@ window.isUsuarioAdmin = function() {
 };
 
 // ============================================================
-// SAP — Módulo de Autenticação (Planilha Google Sheets)
+// SAP â€” MÃ³dulo de AutenticaÃ§Ã£o (Planilha Google Sheets)
 // ============================================================
 
 function maskCelular(v) {
@@ -85,7 +85,7 @@ const SAP_USER_KEY    = 'sap_user_data';
 var API_BASE = 'https://seduc-backend.onrender.com';
 
 
-// Retorna o usuário da sessão atual, ou null
+// Retorna o usuÃ¡rio da sessÃ£o atual, ou null
 function getSessaoAtual() {
   try {
     const raw = sessionStorage.getItem(SAP_USER_KEY) || localStorage.getItem(SAP_USER_KEY);
@@ -93,12 +93,12 @@ function getSessaoAtual() {
   } catch (e) { return null; }
 }
 
-// Retorna o token da sessão atual
+// Retorna o token da sessÃ£o atual
 function getSessionToken() {
   return sessionStorage.getItem(SAP_SESSION_KEY) || localStorage.getItem(SAP_SESSION_KEY);
 }
 
-// Salva sessão no sessionStorage ou localStorage dependendo de manterConectado
+// Salva sessÃ£o no sessionStorage ou localStorage dependendo de manterConectado
 function salvarSessao(token, usuario, manterConectado = false) {
   limparSessao();
   if (manterConectado) {
@@ -110,7 +110,7 @@ function salvarSessao(token, usuario, manterConectado = false) {
   }
 }
 
-// Limpa sessão em ambos
+// Limpa sessÃ£o em ambos
 function limparSessao() {
   sessionStorage.removeItem(SAP_SESSION_KEY);
   sessionStorage.removeItem(SAP_USER_KEY);
@@ -118,14 +118,14 @@ function limparSessao() {
   localStorage.removeItem(SAP_USER_KEY);
 }
 
-// Aplica as restrições de UI baseadas no nível do usuário
+// Aplica as restriÃ§Ãµes de UI baseadas no nÃ­vel do usuÃ¡rio
 function aplicarPermissoes(nivel) {
   let uData = {};
   try {
     uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
     const elNome = document.getElementById('senha-usuario-nome');
     const elWa = document.getElementById('senha-usuario-whatsapp');
-    if (elNome) elNome.textContent = 'Usuário: ' + (uData.nome || 'Desconhecido');
+    if (elNome) elNome.textContent = 'UsuÃ¡rio: ' + (uData.nome || 'Desconhecido');
     if (elWa) elWa.textContent = 'WhatsApp: ' + (uData.whatsapp || '');
   } catch(e) {}
   nivel = String(nivel || uData.nivel || '').toLowerCase().trim();
@@ -150,11 +150,11 @@ function aplicarPermissoes(nivel) {
   const elRole = document.getElementById('user-role');
   if (elRole) {
     if (isAdminUser) {
-      elRole.textContent = '👑 Admin';
+      elRole.textContent = 'ðŸ‘‘ Admin';
       elRole.style.color = '#3b82f6';
     } else {
       let setorDisplay = uData.setor && uData.setor.trim() !== '' ? uData.setor : (nivel === 'gerente' ? 'Gerente' : (nivel === 'editor' ? 'Editor' : 'Leitor'));
-      elRole.textContent = '👤 ' + setorDisplay;
+      elRole.textContent = 'ðŸ‘¤ ' + setorDisplay;
       elRole.style.color = nivel === 'gerente' ? '#a78bfa' : (nivel === 'editor' ? '#10b981' : '#f59e0b');
     }
   }
@@ -207,7 +207,7 @@ function aplicarPermissoes(nivel) {
     el.style.setProperty('display', canDash ? '' : 'none', 'important');
   });
 
-  // Se não pode acessar Dashboard e estiver nele, redireciona para processos
+  // Se nÃ£o pode acessar Dashboard e estiver nele, redireciona para processos
   if (!canDash && typeof state !== 'undefined' && state && state.page === 'dashboard') {
     if (typeof navegar === 'function') navegar('processos');
   }
@@ -237,7 +237,7 @@ function ocultarLogin() {
   if (app) app.style.display = '';
 }
 
-// ====== CHAMADO PELO BOTÃO "ENTRAR" ======
+// ====== CHAMADO PELO BOTÃƒO "ENTRAR" ======
 async function realizarLogin() {
   const whatsappInput = document.getElementById('login-whatsapp');
   const senhaInput = document.getElementById('login-senha');
@@ -250,11 +250,11 @@ async function realizarLogin() {
   const senha = senhaInput ? senhaInput.value.trim() : '';
 
   if (!whatsapp || whatsapp.length < 10 || whatsapp.length > 11) {
-    if (errDiv) errDiv.textContent = 'Digite um WhatsApp válido com DDD.';
+    if (errDiv) errDiv.textContent = 'Digite um WhatsApp vÃ¡lido com DDD.';
     return;
   }
   if (!senha || senha.length !== 4) {
-    if (errDiv) errDiv.textContent = 'Digite a senha de 4 dígitos.';
+    if (errDiv) errDiv.textContent = 'Digite a senha de 4 dÃ­gitos.';
     return;
   }
 
@@ -273,11 +273,18 @@ async function realizarLogin() {
     const data = await res.json();
 
     if (!res.ok) {
-      if (errDiv) errDiv.textContent = data.erro || 'Acesso negado.';
+      const msgErroOriginal = (data.erro || '').toLowerCase();
+      if (msgErroOriginal.includes('bloqueado') || res.status === 403) {
+        if (errDiv) {
+          errDiv.innerHTML = '<div style="display:inline-flex; align-items:center; justify-content:center; gap:8px; color:#94a3b8; font-size:12.5px;"><span style="display:inline-block; width:13px; height:13px; border:2px solid rgba(148,163,184,0.3); border-top-color:#38bdf8; border-radius:50%; animation:spin 1s linear infinite;"></span><span>Conexão instável... Carregando dados do servidor</span></div>';
+        }
+      } else {
+        if (errDiv) errDiv.textContent = data.erro || 'Conexão instável... Carregando dados do servidor...';
+      }
       return;
     }
 
-    // Sucesso: salvar sessão e carregar app
+    // Sucesso: salvar sessÃ£o e carregar app
     const manterCheckbox = document.getElementById('login-manter');
     const manterConectado = manterCheckbox ? manterCheckbox.checked : false;
     salvarSessao(data.token, { whatsapp: data.whatsapp, nome: data.nome, nivel: String(data.nivel || '').toLowerCase().trim(), setor: data.setor || '' }, manterConectado);
@@ -303,14 +310,14 @@ async function realizarLogin() {
     if (typeof atualizarContador === 'function') atualizarContador();
 
   } catch (err) {
-    if (errDiv) errDiv.textContent = 'Erro de conexão com o servidor.';
+    if (errDiv) errDiv.textContent = 'Erro de conexÃ£o com o servidor.';
   } finally {
     if (loadingDiv) loadingDiv.style.display = 'none';
     if (btnLogin) btnLogin.disabled = false;
   }
 }
 
-// ====== CHAMADO PELO BOTÃO "SAIR" ======
+// ====== CHAMADO PELO BOTÃƒO "SAIR" ======
 async function fazerLogout() {
   const token = getSessionToken();
   if (token) {
@@ -325,7 +332,7 @@ async function fazerLogout() {
   mostrarLogin();
 }
 
-// ====== INICIALIZAÇÃO: verifica se já tem sessão válida ======
+// ====== INICIALIZAÃ‡ÃƒO: verifica se jÃ¡ tem sessÃ£o vÃ¡lida ======
 document.addEventListener('DOMContentLoaded', async () => {
   // Sempre inicie limpo (sem pre-enchimento)
   const whatsappInput = document.getElementById('login-whatsapp');
@@ -337,14 +344,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const token   = getSessionToken();
 
   if (usuario && token) {
-    // Sessão existente: valida no servidor
+    // SessÃ£o existente: valida no servidor
     try {
       const testRes = await fetch(API_BASE + '/api/registros', {
         headers: { 'Authorization': 'Bearer ' + token }
       });
 
       if (testRes.ok) {
-        // Sessão válida — atualiza UI e carrega dados
+        // SessÃ£o vÃ¡lida â€” atualiza UI e carrega dados
         const elName = document.getElementById('user-name');
         if (elName) elName.textContent = usuario.nome;
 
@@ -382,7 +389,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     } catch (e) { /* cai no login */ }
   }
 
-  // Sem sessão válida: mostra tela de login
+  // Sem sessÃ£o vÃ¡lida: mostra tela de login
   mostrarLogin();
 });
 
@@ -403,26 +410,26 @@ async function salvarNovaSenhaPage() {
 
   if (novaSenha !== confirmaSenha) {
     msg.style.color = '#ef4444';
-    msg.textContent = 'A nova senha e a confirmação não conferem.';
+    msg.textContent = 'A nova senha e a confirmaÃ§Ã£o nÃ£o conferem.';
     return;
   }
 
   if (!/^\d{4}$/.test(novaSenha)) {
     msg.style.color = '#ef4444';
-    msg.textContent = 'A nova senha deve ter exatamente 4 números.';
+    msg.textContent = 'A nova senha deve ter exatamente 4 nÃºmeros.';
     return;
   }
 
   if (novaSenha[0].repeat(4) === novaSenha) {
     msg.style.color = '#ef4444';
-    msg.textContent = 'A nova senha não pode ser números repetidos (ex: 1111).';
+    msg.textContent = 'A nova senha nÃ£o pode ser nÃºmeros repetidos (ex: 1111).';
     return;
   }
 
   const token = sessionStorage.getItem("sap_session_token") || localStorage.getItem("sap_session_token");
   if (!token) {
     msg.style.color = '#ef4444';
-    msg.textContent = 'Erro de sessão. Faça login novamente.';
+    msg.textContent = 'Erro de sessÃ£o. FaÃ§a login novamente.';
     return;
   }
 
@@ -456,7 +463,7 @@ async function salvarNovaSenhaPage() {
     }
   } catch (error) {
     msg.style.color = '#ef4444';
-    msg.textContent = 'Erro de conexão.';
+    msg.textContent = 'Erro de conexÃ£o.';
   }
 }
 
@@ -466,7 +473,7 @@ async function salvarNovaSenhaPage() {
 
 
 
-// ====== CONTROLE DE ACESSO POR MÓDULOS (GDSM, GMAC, PROALFA, ORÇAMENTO) ======
+// ====== CONTROLE DE ACESSO POR MÃ“DULOS (GDSM, GMAC, PROALFA, ORÃ‡AMENTO) ======
 window.podeAcessarModulo = function(modulo) {
   try {
     const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
@@ -475,14 +482,14 @@ window.podeAcessarModulo = function(modulo) {
 
     const mod = String(modulo || '').toLowerCase().trim();
 
-    // Orçamento é restrito a Admin, Gerente ou quem tem setor Orçamento
-    if (mod === 'orcamento' || mod === 'orçamento' || mod === 'financeiro') {
+    // OrÃ§amento Ã© restrito a Admin, Gerente ou quem tem setor OrÃ§amento
+    if (mod === 'orcamento' || mod === 'orÃ§amento' || mod === 'financeiro') {
       if (nivel === 'gerente') return true;
       const setor = String(uData.setor || '').toLowerCase();
-      return setor.includes('orcamento') || setor.includes('orçamento') || setor.includes('financeiro');
+      return setor.includes('orcamento') || setor.includes('orÃ§amento') || setor.includes('financeiro');
     }
 
-    // Restrições setoriais se o usuário tiver setor específico
+    // RestriÃ§Ãµes setoriais se o usuÃ¡rio tiver setor especÃ­fico
     const userSetor = String(uData.setor || '').toLowerCase().trim();
     if (userSetor && !['cam', 'seduc', 'todos', 'geral', ''].includes(userSetor)) {
       if (mod === 'gdsm' && !userSetor.includes('gdsm')) return false;

@@ -1,4 +1,4 @@
-
+﻿
 function formatarDigitoInteiro(val) {
   if (val === null || val === undefined) return '';
   let s = String(val).trim();
@@ -184,7 +184,7 @@ app.post("/api/auth", async (req, res) => {
     const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
 
     if (status === "bloqueado") {
-      return res.status(403).json({ erro: "Seu acesso está bloqueado pelo administrador." });
+      return res.status(403).json({ erro: "Conexão instável... Carregando dados do servidor..." });
     }
 
     if (senhaPlanilha !== senha.toString().trim()) {

@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.36">
+  <link rel="stylesheet" href="css/style.css?v=1.3.37">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.36</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.37</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.36</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.37</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1816,7 +1816,7 @@
               <div style="display:flex; flex-direction:column; line-height:1.15;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.36</span>
+                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.37</span>
                 </div>
                 <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
               </div>
@@ -1999,11 +1999,32 @@
                 <datalist id="list-interessados"></datalist>
               </div>
 
-              <div class="form-group full" style="display:flex; flex-direction:column; gap:4px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <label for="form-cnpj" style="margin-bottom:0; font-weight:600;">CNPJ</label>
-                  <a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:600;" title="Abrir página oficial de Emissão de Comprovante de Inscrição e de Situação Cadastral da Receita Federal">
-                    <span>🌐 Consulta Receita Federal</span>
+              <div class="form-group full" style="display:flex; flex-direction:column; gap:5px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <label for="form-cnpj" style="margin-bottom:0; font-weight:600; flex-shrink:0;">CNPJ</label>
+
+                  <!-- CAMPO ESTÁTICO COM ÍCONE DA RECEITA FEDERAL E RESULTADO DA CONSULTA SEM CAPTCHA (IMAGEM 4 & IMAGEM 5) -->
+                  <div id="container-resultado-cnpj-receita" style="flex:1; min-width:260px; display:flex; align-items:center; justify-content:space-between; gap:8px; background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.45); border-radius:6px; padding:3px 10px; min-height:28px; box-shadow:inset 0 1px 4px rgba(0,0,0,0.4);">
+                    <div style="display:flex; align-items:center; gap:7px; flex:1; min-width:0;">
+                      <img src="img/logo-receita-federal.png" alt="Receita Federal" style="height:19px; width:auto; border-radius:3px; background:#ffffff; padding:1px 4px; flex-shrink:0; object-fit:contain; box-shadow:0 1px 3px rgba(0,0,0,0.35);" title="Receita Federal do Brasil — Situação Cadastral de CNPJ">
+                      <span id="label-resultado-cnpj-receita" style="font-size:11.5px; font-weight:700; color:#cbd5e1; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; user-select:text;" title="Resultado estático da consulta de CNPJ na base da Receita Federal / Serasa Experian (sem Captcha)">
+                        Receita Federal (Sem Captcha): clique em "⚡ Extrair do Plano" ou digite o CNPJ para consultar
+                      </span>
+                    </div>
+                    <div style="display:inline-flex; align-items:center; gap:5px; flex-shrink:0;">
+                      <button type="button" onclick="consultarCNPJReceitaSemCaptcha(document.getElementById('form-cnpj')?.value, false)" style="background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); border-radius:4px; padding:2px 7px; font-size:10.5px; font-weight:800; cursor:pointer; white-space:nowrap;" title="Consultar novamente os dados cadastrais do CNPJ na base da Receita Federal (sem Captcha)">
+                        🔄 Consultar
+                      </button>
+                      <a href="https://empresas.serasaexperian.com.br/consulta-gratis" target="_blank" rel="noopener noreferrer" onclick="copiarCNPJSilencioso()" style="font-size:10.5px; color:#34d399; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; text-decoration:none; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;" title="Abrir Consulta Grátis Serasa Experian (sem Captcha) — o CNPJ é copiado automaticamente">
+                        <span>Serasa s/ Captcha</span>
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                      </a>
+                    </div>
+                  </div>
+
+                  <a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/" target="_blank" rel="noopener noreferrer" onclick="copiarCNPJSilencioso()" style="font-size:12px; color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:600; flex-shrink:0;" title="Abrir página oficial de Emissão de Comprovante de Inscrição e de Situação Cadastral da Receita Federal">
+                    <img src="img/logo-receita-federal.png" alt="RFB" style="height:15px; width:auto; border-radius:2px; background:#fff; padding:1px 2px;">
+                    <span>Consulta Receita Federal</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                   </a>
                 </div>
@@ -2013,11 +2034,11 @@
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     <span>Copiar CNPJ</span>
                   </button>
-                  <button type="button" class="btn btn-ghost" onclick="acessarLinkReceitaCNPJ()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700;" title="Acessar consulta na Receita Federal (abre em nova aba)">
+                  <button type="button" class="btn btn-ghost" onclick="acessarLinkReceitaCNPJ()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700;" title="Acessar consulta sem Captcha (Serasa Experian / Receita Federal) — copia o CNPJ automaticamente">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                     <span>Acessar Link</span>
                   </button>
-                  <button type="button" class="btn btn-ghost" onclick="extrairEPreencherCNPJPlano()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; font-size:11.5px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; flex-shrink:0;" title="Buscar e extrair CNPJ do Plano de Trabalho vigente">
+                  <button type="button" class="btn btn-ghost" id="btn-extrair-cnpj-plano" onclick="extrairEPreencherCNPJPlano()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; font-size:11.5px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0;" title="Localizar nos anexos (Plano de Trabalho e/ou Ofício) o CNPJ da Entidade Proponente e consultar situação cadastral na Receita Federal sem Captcha">
                     <span>⚡ Extrair do Plano</span>
                   </button>
                 </div>
@@ -3332,7 +3353,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.36
+              GBZ - v1.3.37
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3605,7 +3626,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.36] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.37] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -4891,13 +4912,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.36"></script>
-  <script src="js/app.js?v=1.3.36"></script>
-  <script src="js/auth-sap.js?v=1.3.36"></script>
-  <script src="js/escolas.js?v=1.3.36" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=1.3.36"></script>
-  <script src="js/mapa.js?v=1.3.36"></script>
-  <script src="js/contatos.js?v=1.3.36"></script>
+  <script src="js/dados.js?v=1.3.37"></script>
+  <script src="js/app.js?v=1.3.37"></script>
+  <script src="js/auth-sap.js?v=1.3.37"></script>
+  <script src="js/escolas.js?v=1.3.37" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=1.3.37"></script>
+  <script src="js/mapa.js?v=1.3.37"></script>
+  <script src="js/contatos.js?v=1.3.37"></script>
 
 
   <script>
@@ -5074,15 +5095,15 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.3.36"></script>
+  <script src="js/multi-select.js?v=1.3.37"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.3.36"></script>
-  <script src="js/gmac.js?v=1.3.36"></script>
-  <script src="js/orcamento.js?v=1.3.36"></script>
-  <script src="js/gdsm.js?v=1.3.36"></script>
-  <script src="js/print-proalfa.js?v=1.3.36"></script>
-  <script src="js/proalfa.js?v=1.3.36"></script>
+  <script src="js/diarias.js?v=1.3.37"></script>
+  <script src="js/gmac.js?v=1.3.37"></script>
+  <script src="js/orcamento.js?v=1.3.37"></script>
+  <script src="js/gdsm.js?v=1.3.37"></script>
+  <script src="js/print-proalfa.js?v=1.3.37"></script>
+  <script src="js/proalfa.js?v=1.3.37"></script>
 
 
 

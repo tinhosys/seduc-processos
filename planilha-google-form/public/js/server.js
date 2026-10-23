@@ -1,4 +1,4 @@
-import express from "express";
+﻿import express from "express";
 import dotenv from "dotenv";
 import { google } from "googleapis";
 import crypto from "crypto";
@@ -86,7 +86,7 @@ app.post("/api/auth", async (req, res) => {
     const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
 
     if (status === "bloqueado") {
-      return res.status(403).json({ erro: "Seu acesso está bloqueado pelo administrador." });
+      return res.status(403).json({ erro: "Conexão instável... Carregando dados do servidor..." });
     }
 
     if (nivel !== "editor" && nivel !== "leitor" && nivel !== "adm") {

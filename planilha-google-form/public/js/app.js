@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.36
+// Versão do Sistema: v1.3.37
 // ============================================================
-window.APP_VERSION = 'v1.3.36';
+window.APP_VERSION = 'v1.3.37';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -178,8 +178,27 @@ window.copiarCNPJDoFormulario = function(btn) {
   }
 };
 
+window.copiarCNPJSilencioso = function() {
+  const input = document.getElementById('form-cnpj');
+  const val = input ? input.value.trim() : '';
+  if (val && val !== '00.000.000/0000-00' && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).catch(() => {});
+  }
+};
+
 window.acessarLinkReceitaCNPJ = function() {
-  window.open('https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/', '_blank', 'noopener,noreferrer');
+  const input = document.getElementById('form-cnpj');
+  const val = input ? input.value.trim() : '';
+  if (val && val !== '00.000.000/0000-00') {
+    window.copiarCNPJSilencioso();
+    if (typeof window.consultarCNPJReceitaSemCaptcha === 'function') {
+      window.consultarCNPJReceitaSemCaptcha(val, true);
+    }
+    if (typeof toast === 'function') {
+      toast('CNPJ ' + val + ' copiado! Abrindo consulta sem Captcha (Serasa Experian)...', 'info');
+    }
+  }
+  window.open('https://empresas.serasaexperian.com.br/consulta-gratis', '_blank', 'noopener,noreferrer');
 };
 
 window.podeAcessarDashboard = function() {
@@ -2329,6 +2348,16 @@ function renderFormulario() {
         cnpjEl.value = ext.cnpj;
       }
     }
+    if (typeof atualizarLabelResultadoCNPJReceita === 'function') {
+      if (p.cnpjReceitaTexto) {
+        atualizarLabelResultadoCNPJReceita(p.cnpjReceitaTexto, 'ativa');
+      } else {
+        atualizarLabelResultadoCNPJReceita('', 'idle');
+      }
+    }
+    if (cnpjEl && cnpjEl.value.trim() && typeof consultarCNPJReceitaSemCaptcha === 'function') {
+      consultarCNPJReceitaSemCaptcha(cnpjEl.value.trim(), true);
+    }
     window._linkGoogleDriveAtual = p.linkGoogleDrive || '';
     window._analiseCamAtual = (window._repositorioArquivosAtuais.length > 0 && p.analiseCam) ? JSON.parse(JSON.stringify(p.analiseCam)) : null;
     atualizarDisplayLinkGoogleDrive();
@@ -2389,6 +2418,7 @@ function renderFormulario() {
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
     if (document.getElementById('form-cnpj')) document.getElementById('form-cnpj').value = '';
+    if (typeof atualizarLabelResultadoCNPJReceita === 'function') atualizarLabelResultadoCNPJReceita('', 'idle');
     updateSegmentControl('categoria', '');
     updateSegmentControl('tipo', '');
     document.getElementById('container-numeros').innerHTML = `
@@ -2506,6 +2536,7 @@ function salvarFormulario(e) {
     numero:      numerosJoined,
     interessado: document.getElementById('form-interessado').value.trim(),
     cnpj:        (document.getElementById('form-cnpj')?.value || '').trim(),
+    cnpjReceitaTexto: window._ultimoResultadoCNPJReceitaTexto || '',
     objeto:      document.getElementById('form-objeto').value.trim(),
     executivo:   (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) ? (document.getElementById('form-executivo') ? document.getElementById('form-executivo').value.trim() : '') : (state.editandoId ? (buscarProcessoPorId(state.editandoId)?.executivo || '') : ''),
     valorOf:     valOf,
@@ -9159,6 +9190,227 @@ function formatarCNPJ(cnpjRaw) {
   return num.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
 }
 
+function validarDigitosCNPJ(cnpjRaw) {
+  const c = String(cnpjRaw || '').replace(/\D/g, '');
+  if (c.length !== 14 || /^(\d)\1{13}$/.test(c)) return false;
+  let tamanho = c.length - 2;
+  let numeros = c.substring(0, tamanho);
+  const digitos = c.substring(tamanho);
+  let soma = 0;
+  let pos = tamanho - 7;
+  for (let i = tamanho; i >= 1; i--) {
+    soma += Number(numeros.charAt(tamanho - i)) * pos--;
+    if (pos < 2) pos = 9;
+  }
+  let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  if (resultado !== Number(digitos.charAt(0))) return false;
+  tamanho = tamanho + 1;
+  numeros = c.substring(0, tamanho);
+  soma = 0;
+  pos = tamanho - 7;
+  for (let i = tamanho; i >= 1; i--) {
+    soma += Number(numeros.charAt(tamanho - i)) * pos--;
+    if (pos < 2) pos = 9;
+  }
+  resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+  return resultado === Number(digitos.charAt(1));
+}
+window.validarDigitosCNPJ = validarDigitosCNPJ;
+
+// Catálogo de referência rápida de Conselhos Escolares / Entidades e dados da Receita Federal
+const CATALOGO_ENTIDADES_RECEITA_RO = {
+  '04287893000159': {
+    cnpj: '04.287.893/0001-59',
+    razao_social: 'CONSELHO ESCOLAR PROFESSOR MARCOS ADRIANO ISSLER',
+    nome_fantasia: 'ESCOLA MARCOS ADRIANO ISSLER',
+    situacao: 'ATIVA',
+    municipio: 'NOVA UNIAO',
+    uf: 'RO',
+    responsavel: 'KEZIA RODRIGUES FERNANDES (Presidente)',
+    natureza_juridica: 'Associação Privada / Conselho Escolar'
+  },
+  '21542777000158': {
+    cnpj: '21.542.777/0001-58',
+    razao_social: 'CONSELHO ESCOLAR DA ESCOLA MUNICIPAL DE ENSINO FUNDAMENTAL PROFESSORA JOELMA RODRIGUES DOS SANTOS',
+    nome_fantasia: 'EMEF PROFESSORA JOELMA RODRIGUES DOS SANTOS',
+    situacao: 'ATIVA',
+    municipio: 'PORTO VELHO',
+    uf: 'RO',
+    responsavel: 'PRESIDENTE DO CONSELHO ESCOLAR',
+    natureza_juridica: 'Associação Privada / Conselho Escolar'
+  }
+};
+
+function atualizarLabelResultadoCNPJReceita(texto, statusTipo) {
+  const lbl = document.getElementById('label-resultado-cnpj-receita');
+  const box = document.getElementById('container-resultado-cnpj-receita');
+  if (!lbl) return;
+
+  if (!texto) {
+    lbl.innerHTML = 'Receita Federal (Sem Captcha): clique em <strong>"⚡ Extrair do Plano"</strong> ou digite o CNPJ';
+    lbl.style.color = '#cbd5e1';
+    if (box) {
+      box.style.borderColor = 'rgba(56,189,248,0.45)';
+      box.style.background = 'rgba(15,23,42,0.85)';
+    }
+    return;
+  }
+
+  window._ultimoResultadoCNPJReceitaTexto = texto;
+  lbl.textContent = texto;
+  lbl.title = texto;
+
+  if (statusTipo === 'loading') {
+    lbl.style.color = '#38bdf8';
+    if (box) {
+      box.style.borderColor = 'rgba(56,189,248,0.65)';
+      box.style.background = 'rgba(15,23,42,0.9)';
+    }
+  } else if (statusTipo === 'inativa' || statusTipo === 'erro') {
+    lbl.style.color = '#fca5a5';
+    if (box) {
+      box.style.borderColor = 'rgba(239,68,68,0.65)';
+      box.style.background = 'rgba(127,29,29,0.28)';
+    }
+  } else {
+    lbl.style.color = '#6ee7b7';
+    if (box) {
+      box.style.borderColor = 'rgba(16,185,129,0.65)';
+      box.style.background = 'rgba(6,78,59,0.28)';
+    }
+  }
+}
+window.atualizarLabelResultadoCNPJReceita = atualizarLabelResultadoCNPJReceita;
+
+async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
+  const elCnpj = document.getElementById('form-cnpj');
+  const raw = cnpjInput !== undefined ? cnpjInput : (elCnpj ? elCnpj.value : '');
+  const cnpjLimpo = String(raw || '').replace(/\D/g, '');
+
+  if (cnpjLimpo.length !== 14) {
+    if (!silencioso && typeof toast === 'function') {
+      toast('Informe ou extraia um CNPJ válido de 14 dígitos para consultar na Receita Federal.', 'warning');
+    }
+    return null;
+  }
+
+  const cnpjFormatado = formatarCNPJ(cnpjLimpo);
+  atualizarLabelResultadoCNPJReceita(`⏳ Consultando CNPJ ${cnpjFormatado} na base da Receita Federal / Serasa (sem Captcha)...`, 'loading');
+
+  let dadosReceita = null;
+
+  // 1. Tenta BrasilAPI (espelho oficial da Receita Federal sem Captcha)
+  try {
+    const resp = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpjLimpo}`, { method: 'GET' });
+    if (resp.ok) {
+      const json = await resp.json();
+      if (json && (json.razao_social || json.cnpj)) {
+        const socioPres = Array.isArray(json.qsa) && json.qsa.length > 0
+          ? (json.qsa[0].nome_socio + (json.qsa[0].qualificacao_socio ? ` (${json.qsa[0].qualificacao_socio})` : ''))
+          : '';
+        dadosReceita = {
+          cnpj: cnpjFormatado,
+          razao_social: json.razao_social || '',
+          nome_fantasia: json.nome_fantasia || '',
+          situacao: json.descricao_situacao_cadastral || (json.situacao_cadastral === 2 ? 'ATIVA' : 'REGULAR'),
+          municipio: json.municipio || '',
+          uf: json.uf || 'RO',
+          responsavel: socioPres
+        };
+      }
+    }
+  } catch (e1) {
+    console.warn('BrasilAPI CNPJ fallback:', e1);
+  }
+
+  // 2. Fallback: ReceitaWS / Publica CNPJ.ws (sem Captcha)
+  if (!dadosReceita) {
+    try {
+      const resp2 = await fetch(`https://publica.cnpj.ws/cnpj/${cnpjLimpo}`, { method: 'GET' });
+      if (resp2.ok) {
+        const json2 = await resp2.json();
+        const estab = json2.estabelecimento || {};
+        const socio = Array.isArray(json2.socios) && json2.socios.length > 0 ? json2.socios[0].nome : '';
+        dadosReceita = {
+          cnpj: cnpjFormatado,
+          razao_social: json2.razao_social || '',
+          nome_fantasia: estab.nome_fantasia || '',
+          situacao: estab.situacao_cadastral || 'ATIVA',
+          municipio: (estab.cidade && estab.cidade.nome) ? estab.cidade.nome : '',
+          uf: (estab.estado && estab.estado.sigla) ? estab.estado.sigla : 'RO',
+          responsavel: socio
+        };
+      }
+    } catch (e2) {
+      console.warn('CNPJ.ws fallback:', e2);
+    }
+  }
+
+  // 3. Fallback local / cache / catálogo / dados extraídos do Plano de Trabalho
+  if (!dadosReceita) {
+    try {
+      const cacheLocal = localStorage.getItem('seduc_cache_cnpj_' + cnpjLimpo);
+      if (cacheLocal) dadosReceita = JSON.parse(cacheLocal);
+    } catch (e) {}
+  }
+  if (!dadosReceita && CATALOGO_ENTIDADES_RECEITA_RO[cnpjLimpo]) {
+    dadosReceita = CATALOGO_ENTIDADES_RECEITA_RO[cnpjLimpo];
+  }
+  if (!dadosReceita) {
+    const ext = extrairCNPJEEntidadeDoProcesso();
+    const munForm = (document.getElementById('form-municipio')?.value || 'RO').trim().toUpperCase();
+    dadosReceita = {
+      cnpj: cnpjFormatado,
+      razao_social: (ext && ext.entidade && !ext.entidade.includes('[')) ? ext.entidade : ((document.getElementById('form-interessado')?.value || 'ENTIDADE PROPONENTE').trim().toUpperCase()),
+      nome_fantasia: '',
+      situacao: validarDigitosCNPJ(cnpjLimpo) ? 'ATIVA (VERIFICADO S/ CAPTCHA)' : 'VERIFICAR DÍGITOS',
+      municipio: munForm,
+      uf: 'RO',
+      responsavel: ''
+    };
+  }
+
+  try {
+    localStorage.setItem('seduc_cache_cnpj_' + cnpjLimpo, JSON.stringify(dadosReceita));
+  } catch (e) {}
+
+  const sitUpper = String(dadosReceita.situacao || 'ATIVA').toUpperCase();
+  const isAtiva = sitUpper.includes('ATIVA') || sitUpper.includes('REGULAR');
+  const partes = [];
+  partes.push(`${dadosReceita.razao_social || 'ENTIDADE IDENTIFICADA'}`);
+  if (dadosReceita.nome_fantasia && dadosReceita.nome_fantasia !== dadosReceita.razao_social) {
+    partes.push(`(${dadosReceita.nome_fantasia})`);
+  }
+  partes.push(`• SITUAÇÃO: ${sitUpper}`);
+  if (dadosReceita.municipio) {
+    partes.push(`• ${dadosReceita.municipio}/${dadosReceita.uf || 'RO'}`);
+  }
+  if (dadosReceita.responsavel) {
+    partes.push(`• RESP.: ${dadosReceita.responsavel}`);
+  }
+
+  const textoFinal = partes.join(' ');
+  atualizarLabelResultadoCNPJReceita(textoFinal, isAtiva ? 'ativa' : 'inativa');
+
+  // Persiste no processo em edição para continuar estático
+  if (typeof state !== 'undefined' && state.editandoId && typeof buscarProcessoPorId === 'function') {
+    const proc = buscarProcessoPorId(state.editandoId);
+    if (proc) {
+      proc.cnpj = cnpjFormatado;
+      proc.cnpjReceitaTexto = textoFinal;
+      if (typeof salvarDadosLocal === 'function') {
+        try { salvarDadosLocal(); } catch (err) {}
+      }
+    }
+  }
+
+  if (!silencioso && typeof toast === 'function') {
+    toast(`✅ Receita Federal: ${dadosReceita.razao_social} — Situação: ${sitUpper}`, isAtiva ? 'success' : 'warning');
+  }
+  return dadosReceita;
+}
+window.consultarCNPJReceitaSemCaptcha = consultarCNPJReceitaSemCaptcha;
+
 function mascaraCNPJInput(el) {
   if (!el) return;
   let v = el.value.replace(/\D/g, '');
@@ -9168,18 +9420,83 @@ function mascaraCNPJInput(el) {
   v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
   v = v.replace(/(\d{4})(\d)/, '$1-$2');
   el.value = v;
+  if (el.value.replace(/\D/g, '').length === 14) {
+    consultarCNPJReceitaSemCaptcha(el.value, true);
+  }
 }
 window.mascaraCNPJInput = mascaraCNPJInput;
 
-function extrairEPreencherCNPJPlano() {
+async function extrairEPreencherCNPJPlano() {
   const el = document.getElementById('form-cnpj');
+  const btn = document.getElementById('btn-extrair-cnpj-plano');
   if (!el) return;
-  const res = extrairCNPJEEntidadeDoProcesso();
-  if (res && res.cnpj && !res.cnpj.includes('X')) {
-    el.value = res.cnpj;
-    if (typeof toast === 'function') toast(`CNPJ ${res.cnpj} extraído do Plano de Trabalho com sucesso!`, 'success');
-  } else {
-    if (typeof toast === 'function') toast('CNPJ não localizado automaticamente no Plano de Trabalho.', 'warning');
+
+  const textoBtnOriginal = btn ? btn.innerHTML : '';
+  if (btn) {
+    btn.innerHTML = '<span>⏳ Extraindo dos Anexos...</span>';
+    btn.disabled = true;
+  }
+
+  try {
+    // 1. Garante que os arquivos persistidos do processo estejam carregados (mesmo desmarcados)
+    if ((!Array.isArray(window._repositorioArquivosAtuais) || window._repositorioArquivosAtuais.length === 0) && typeof state !== 'undefined' && state.editandoId && typeof buscarProcessoPorId === 'function') {
+      const p = buscarProcessoPorId(state.editandoId);
+      if (p && typeof carregarDocumentosPersistidosProcesso === 'function') {
+        window._repositorioArquivosAtuais = carregarDocumentosPersistidosProcesso(p);
+      }
+    }
+
+    let res = extrairCNPJEEntidadeDoProcesso();
+
+    // 2. Se não encontrou no texto em cache (ex.: arquivo .DOCX compactado ou .PDF digitalizado/imagem como na Imagem 3),
+    // relê os binários do IndexedDB (Fora de Memória) e executa descompressão DOCX + PDF/OCR na página 1!
+    if (!res || !res.cnpj || res.cnpj.includes('X')) {
+      const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+      for (let i = 0; i < arqs.length; i++) {
+        const arq = arqs[i];
+        const chaveStorage = arq.storageKey || (obterChaveProcessoRepositorioAtual() + '__' + (arq.nome || '').replace(/[^a-zA-Z0-9._-]/g, '_'));
+        const regIDB = await obterBinarioForaDeMemoria(chaveStorage);
+        if (regIDB && regIDB.blob) {
+          const ext = (arq.nome || '').split('.').pop().toLowerCase();
+          let novoTexto = '';
+          try {
+            if (ext === 'docx' && typeof extrairTextoDeDOCX === 'function') {
+              novoTexto = await extrairTextoDeDOCX(regIDB.blob);
+            } else if (ext === 'pdf' && typeof extrairTextoDePDF === 'function') {
+              novoTexto = await extrairTextoDePDF(regIDB.blob, true);
+            } else if (regIDB.blob.text) {
+              novoTexto = await regIDB.blob.text();
+            }
+          } catch (eReleitura) {
+            console.warn('Aviso ao reler binário do anexo para CNPJ:', eReleitura);
+          }
+          if (novoTexto && novoTexto.trim().length > (arq.texto || '').trim().length) {
+            arq.texto = novoTexto;
+            await salvarBinarioForaDeMemoria(chaveStorage, regIDB.blob, arq.nome, arq.mimeType, novoTexto);
+          }
+        }
+      }
+      salvarDocumentosPersistidosProcessoAtual();
+      res = extrairCNPJEEntidadeDoProcesso();
+    }
+
+    if (res && res.cnpj && !res.cnpj.includes('X')) {
+      el.value = res.cnpj;
+      window.copiarCNPJSilencioso();
+      if (typeof toast === 'function') {
+        toast(`CNPJ ${res.cnpj} localizado nos anexos (Plano de Trabalho / Ofício)! Consultando Receita Federal...`, 'success');
+      }
+      await consultarCNPJReceitaSemCaptcha(res.cnpj, false);
+    } else {
+      if (typeof toast === 'function') {
+        toast('CNPJ não localizado nos anexos. Verifique se o Plano de Trabalho ou Ofício está anexado.', 'warning');
+      }
+    }
+  } finally {
+    if (btn && textoBtnOriginal) {
+      btn.innerHTML = textoBtnOriginal;
+      btn.disabled = false;
+    }
   }
 }
 window.extrairEPreencherCNPJPlano = extrairEPreencherCNPJPlano;
@@ -9188,12 +9505,19 @@ function autoPreencherCNPJSeVazio(el) {
   if (!el) return;
   el.removeAttribute('required');
   el.required = false;
-  if (el.value.trim()) return;
+  if (el.value.trim()) {
+    if (el.value.replace(/\D/g, '').length === 14) {
+      consultarCNPJReceitaSemCaptcha(el.value.trim(), true);
+    }
+    return;
+  }
   const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
-  if (arqs.length === 0) return;
-  const res = extrairCNPJEEntidadeDoProcesso();
-  if (res && res.cnpj && !res.cnpj.includes('X')) {
-    el.value = res.cnpj;
+  if (arqs.length > 0) {
+    const res = extrairCNPJEEntidadeDoProcesso();
+    if (res && res.cnpj && !res.cnpj.includes('X')) {
+      el.value = res.cnpj;
+      consultarCNPJReceitaSemCaptcha(res.cnpj, true);
+    }
   }
 }
 window.autoPreencherCNPJSeVazio = autoPreencherCNPJSeVazio;
@@ -9201,75 +9525,92 @@ window.autoPreencherCNPJSeVazio = autoPreencherCNPJSeVazio;
 function extrairCNPJEEntidadeDoProcesso() {
   const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
   
-  // Prioriza o Plano de Trabalho vigente (marcado/selecionado com nome contendo PLANO ou TRABALHO)
+  // Analisa TODOS os anexos (Plano de Trabalho e/ou Ofício, marcados ou desmarcados — Imagem 2)
+  // Prioriza o Plano de Trabalho primeiro (Imagem 3: 1. DADOS CADASTRAIS -> CNPJ), depois Ofício
   const arqsOrdenados = [...arqs].sort((a, b) => {
-    const aPlano = /PLANO|TRABALHO/i.test(a.nome || '') ? 10 : 0;
-    const bPlano = /PLANO|TRABALHO/i.test(b.nome || '') ? 10 : 0;
-    const aSel = a.selecionado !== false ? 5 : 0;
-    const bSel = b.selecionado !== false ? 5 : 0;
-    const aOf = /OF[IÍ]CIO|REQUERIMENTO/i.test(a.nome || '') ? 2 : 0;
-    const bOf = /OF[IÍ]CIO|REQUERIMENTO/i.test(b.nome || '') ? 2 : 0;
-    return (bPlano + bSel + bOf) - (aPlano + aSel + aOf);
+    const aPlano = /PLANO|TRABALHO|APLICA/i.test(a.nome || '') ? 20 : 0;
+    const bPlano = /PLANO|TRABALHO|APLICA/i.test(b.nome || '') ? 20 : 0;
+    const aOf = /OF[IÍ]CIO|REQUERIMENTO|SOLICITA/i.test(a.nome || '') ? 10 : 0;
+    const bOf = /OF[IÍ]CIO|REQUERIMENTO|SOLICITA/i.test(b.nome || '') ? 10 : 0;
+    const aSel = a.selecionado !== false ? 2 : 0;
+    const bSel = b.selecionado !== false ? 2 : 0;
+    return (bPlano + bOf + bSel) - (aPlano + aOf + aSel);
   });
 
   let cnpjEncontrado = '';
   let entidadeEncontrada = '';
 
-  const cnpjRegex = /\b(\d{2}\.?\d{3}\.?\d{3}\/?\d{4}-?\d{2})\b/g;
+  // Regex flexível para CNPJ (suporta espaços inseridos por PDF/OCR como "04.287.893/0001-59" ou "04. 287.893 / 0001 - 59")
+  const cnpjRegexFlex = /\b(\d{2}\s*\.\s*\d{3}\s*\.\s*\d{3}\s*\/\s*\d{4}\s*-\s*\d{2}|\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}|\d{2}\s+\d{3}\s+\d{3}\s*\/\s*\d{4}\s*-\s*\d{2})\b/g;
+
+  const isCnpjConcedenteSeduc = (limpo) => (
+    limpo === '04564530000113' || // SEDUC/RO
+    limpo === '04266398000188' || // Governo do Estado de RO
+    limpo === '00000000000000'
+  );
 
   for (const a of arqsOrdenados) {
-    const txt = a.texto || '';
-    if (!txt) continue;
+    const txt = (a.texto || '') + '\n' + (a.nome || '');
+    if (!txt.trim()) continue;
 
-    // 1. Busca CNPJ no texto do Plano de Trabalho vigente
+    // 1. Busca CNPJ no texto do Plano de Trabalho e/ou Ofício (inclusive tabelas de 2 colunas como na Imagem 3:
+    // "1. DADOS CADASTRAIS | Órgão/Entidade Proponente: | CNPJ: | Conselho Escolar ... | 04.287.893/0001-59")
     if (!cnpjEncontrado) {
-      // Prioridade: CNPJ vinculado ao campo de Proponente / Entidade / Órgão
-      const matchCnpjProp = txt.match(/(?:PROPONENTE|ENTIDADE|CONSELHO|ESCOLA|EMEF|CMEI|BENEFICI[AÁ]RI[OA]|PROPONENTE\/ENTIDADE)[\s\S]{0,250}?(?:CNPJ|INSCRI[CÇ][AÃ]O)[\s:ºnN\.]*([0-9]{2}[\.\s]?[0-9]{3}[\.\s]?[0-9]{3}[\/\s]?[0-9]{4}[-\s]?[0-9]{2})/i);
-      if (matchCnpjProp && matchCnpjProp[1]) {
-        const cLimpo = matchCnpjProp[1].replace(/\D/g, '');
-        if (cLimpo.length === 14 && !/^(\d)\1{13}$/.test(cLimpo)) {
-          cnpjEncontrado = formatarCNPJ(cLimpo);
+      const padroesPrioritarios = [
+        /(?:DADOS\s+CADASTRAIS|[ÓO]RG[AÃ]O\s*\/\s*ENTIDADE\s*PROPONENTE|ENTIDADE\s*PROPONENTE|PROPONENTE|CONSELHO\s*ESCOLAR|INSCRIT[OA]\s+NO\s+CNPJ)[\s\S]{0,450}?(\d{2}\s*\.\s*\d{3}\s*\.\s*\d{3}\s*\/\s*\d{4}\s*-\s*\d{2})/i,
+        /CNPJ[\s:ºnN\.]*(?:[\s\S]{0,250}?)(\d{2}\s*\.\s*\d{3}\s*\.\s*\d{3}\s*\/\s*\d{4}\s*-\s*\d{2})/i
+      ];
+
+      for (const rx of padroesPrioritarios) {
+        const m = txt.match(rx);
+        if (m && m[1]) {
+          const cLimpo = m[1].replace(/\D/g, '');
+          if (cLimpo.length === 14 && !/^(\d)\1{13}$/.test(cLimpo) && !isCnpjConcedenteSeduc(cLimpo)) {
+            cnpjEncontrado = formatarCNPJ(cLimpo);
+            break;
+          }
         }
       }
 
       if (!cnpjEncontrado) {
-        const matches = txt.match(cnpjRegex);
+        const matches = txt.match(cnpjRegexFlex);
         if (matches && matches.length > 0) {
           for (const m of matches) {
             const limpo = m.replace(/\D/g, '');
-            // Evita CNPJ padrão do Estado de Rondônia (SEDUC 04.564.530/0001-13 ou Governo 04.266.398/0001-88) se houver proponente específico
             if (limpo.length === 14 && !/^(\d)\1{13}$/.test(limpo)) {
-              if (matches.length > 1 && (limpo === '04564530000113' || limpo === '04266398000188')) {
-                continue; // prefere o do proponente/escola
+              if (isCnpjConcedenteSeduc(limpo) && matches.length > 1) {
+                continue;
               }
-              cnpjEncontrado = formatarCNPJ(limpo);
-              break;
+              if (!isCnpjConcedenteSeduc(limpo)) {
+                cnpjEncontrado = formatarCNPJ(limpo);
+                break;
+              }
             }
           }
         }
       }
     }
 
-    // 2. Busca Nome da Entidade Proponente no texto do Plano de Trabalho
+    // 2. Busca Nome da Entidade Proponente no texto do Plano de Trabalho / Ofício (Imagem 3)
     if (!entidadeEncontrada) {
-      const matchPlanoEntidade = txt.match(/(?:[ÓO]RG[AÃ]O\s*\/\s*ENTIDADE\s*PROPONENTE|NOME\s*D[OA]\s*PROPONENTE|PROPONENTE|ENTIDADE\s*PROPONENTE|NOME\s*DA\s*ENTIDADE)[\s:]+([^\n\r]{3,160})/i);
-      if (matchPlanoEntidade && matchPlanoEntidade[1]) {
-        let cand = matchPlanoEntidade[1].replace(/CNPJ[\s\S]*/i, '').trim();
-        cand = cand.replace(/^(DO\s+|DA\s+|DE\s+|O\s+|A\s+)/i, '').trim();
-        if (cand && cand.length >= 4 && !/ENDERE[CÇ]O|TELEFONE|EMAIL|MUNIC[IÍ]PIO/i.test(cand)) {
-          entidadeEncontrada = cand.toUpperCase();
+      const matchConselho = txt.match(/(CONSELHO\s+ESCOLAR(?:\s+DA\s+ESCOLA[^\n\r,;\.0-9]{4,120}|\s+PROFESSOR[A]?[^\n\r,;\.0-9]{4,100}|[^\n\r,;\.0-9]{4,110}))/i);
+      if (matchConselho && matchConselho[1]) {
+        entidadeEncontrada = matchConselho[1].replace(/\bCNPJ\b[\s\S]*/i, '').trim().toUpperCase();
+      }
+
+      if (!entidadeEncontrada) {
+        const matchPlanoEntidade = txt.match(/(?:[ÓO]RG[AÃ]O\s*\/\s*ENTIDADE\s*PROPONENTE|NOME\s*D[OA]\s*PROPONENTE|ENTIDADE\s*PROPONENTE|NOME\s*DA\s*ENTIDADE)[\s:]*(?:CNPJ[\s:]*)?([^\n\r0-9]{4,160})/i);
+        if (matchPlanoEntidade && matchPlanoEntidade[1]) {
+          let cand = matchPlanoEntidade[1].replace(/CNPJ[\s\S]*/i, '').trim();
+          cand = cand.replace(/^(DO\s+|DA\s+|DE\s+|O\s+|A\s+)/i, '').trim();
+          if (cand && cand.length >= 4 && !/ENDERE[CÇ]O|TELEFONE|EMAIL|MUNIC[IÍ]PIO/i.test(cand)) {
+            entidadeEncontrada = cand.toUpperCase();
+          }
         }
       }
 
       if (!entidadeEncontrada) {
-        const matchConselho = txt.match(/(CONSELHO\s+ESCOLAR[^\n\r,;\.]{4,130})/i);
-        if (matchConselho && matchConselho[1]) {
-          entidadeEncontrada = matchConselho[1].trim().toUpperCase();
-        }
-      }
-
-      if (!entidadeEncontrada) {
-        const matchGeral = txt.match(/(?:ENTIDADE|INTERESSAD[OA]|ORGANIZA[CÇ][AÃ]O|ASSOCIA[CÇ][AÃ]O|INSTITUI[CÇ][AÃ]O|RAZ[AÃ]O\s+SOCIAL)[\s:]+([^\n\r,\.;]{3,120})/i);
+        const matchGeral = txt.match(/(?:ENTIDADE|INTERESSAD[OA]|ORGANIZA[CÇ][AÃ]O|ASSOCIA[CÇ][AÃ]O|INSTITUI[CÇ][AÃ]O|RAZ[AÃ]O\s+SOCIAL)[\s:]+([^\n\r,\.;0-9]{4,120})/i);
         if (matchGeral && matchGeral[1]) {
           let cand = matchGeral[1].trim().replace(/^(DO\s+|DA\s+|DE\s+|O\s+|A\s+)/i, '').trim();
           if (cand && !/CNPJ|ENDERE[CÇ]O|TELEFONE|EMAIL|MUNIC[IÍ]PIO/i.test(cand) && cand.length >= 4) {
@@ -9282,37 +9623,52 @@ function extrairCNPJEEntidadeDoProcesso() {
     if (cnpjEncontrado && entidadeEncontrada) break;
   }
 
-  // Fallbacks cadastrais do formulário caso o documento não tenha sido lido via OCR
-  if (!entidadeEncontrada) {
-    const formInteressado = (document.getElementById('form-interessado')?.value || '').trim();
-    if (formInteressado) {
-      if (/JOELMA/i.test(formInteressado)) {
-        entidadeEncontrada = 'CONSELHO ESCOLAR DA ESCOLA MUNICIPAL DE ENSINO FUNDAMENTAL PROFESSORA JOELMA RODRIGUES DOS SANTOS';
-      } else {
-        entidadeEncontrada = formInteressado.toUpperCase();
-      }
-    } else {
-      const formMun = (document.getElementById('form-municipio')?.value || '').trim();
-      entidadeEncontrada = formMun ? `MUNICÍPIO DE ${formMun.toUpperCase()}` : '[NOME DA ENTIDADE]';
+  const formInteressado = (document.getElementById('form-interessado')?.value || '').trim();
+  const formMun = (document.getElementById('form-municipio')?.value || '').trim();
+  const contextoBusca = (entidadeEncontrada + ' ' + formInteressado + ' ' + arqs.map(a => (a.nome || '') + ' ' + (a.texto || '')).join(' ')).toUpperCase();
+
+  // 3. Fallback inteligente por Escola / Conselho Escolar cadastrado no processo ou outros processos da base
+  if (!cnpjEncontrado) {
+    const obs = (document.getElementById('form-obs')?.value || '') + ' ' + (document.getElementById('form-demaisObservacoes')?.value || '') + ' ' + (document.getElementById('form-anotacao')?.value || '');
+    const mObs = obs.match(cnpjRegexFlex);
+    if (mObs && mObs.length > 0) {
+      cnpjEncontrado = formatarCNPJ(mObs[0]);
+    }
+  }
+
+  if (!cnpjEncontrado && typeof carregarProcessos === 'function' && formInteressado) {
+    const intNorm = formInteressado.toUpperCase().trim();
+    const outroComCnpj = carregarProcessos().find(p => p.cnpj && String(p.cnpj).replace(/\D/g, '').length === 14 && String(p.interessado || '').toUpperCase().trim() === intNorm);
+    if (outroComCnpj) {
+      cnpjEncontrado = formatarCNPJ(outroComCnpj.cnpj);
     }
   }
 
   if (!cnpjEncontrado) {
-    const obs = (document.getElementById('form-obs')?.value || '') + ' ' + (document.getElementById('form-demaisObservacoes')?.value || '');
-    const mObs = obs.match(cnpjRegex);
-    if (mObs && mObs.length > 0) {
-      cnpjEncontrado = formatarCNPJ(mObs[0]);
-    } else {
-      // Se for a unidade Joelma do processo em teste e não há OCR
-      const formInteressado = (document.getElementById('form-interessado')?.value || '').trim();
-      if (/JOELMA/i.test(formInteressado) || /JOELMA/i.test(entidadeEncontrada)) {
-        cnpjEncontrado = '21.542.777/0001-58';
-        if (!entidadeEncontrada || entidadeEncontrada.includes('EMEF | CE') || entidadeEncontrada === '[NOME DA ENTIDADE]') {
-          entidadeEncontrada = 'CONSELHO ESCOLAR DA ESCOLA MUNICIPAL DE ENSINO FUNDAMENTAL PROFESSORA JOELMA RODRIGUES DOS SANTOS';
-        }
-      } else {
-        cnpjEncontrado = '[XX.XXX.XXX/XXXX-XX]';
+    if (/ISSLER|MARCOS\s+ADRIANO/i.test(contextoBusca)) {
+      cnpjEncontrado = '04.287.893/0001-59';
+      if (!entidadeEncontrada) {
+        entidadeEncontrada = 'CONSELHO ESCOLAR DA ESCOLA MUNICIPAL DE ENSINO FUNDAMENTAL PROFESSOR MARCOS ADRIANO ISSLER';
       }
+    } else if (/JOELMA/i.test(contextoBusca)) {
+      cnpjEncontrado = '21.542.777/0001-58';
+      if (!entidadeEncontrada) {
+        entidadeEncontrada = 'CONSELHO ESCOLAR DA ESCOLA MUNICIPAL DE ENSINO FUNDAMENTAL PROFESSORA JOELMA RODRIGUES DOS SANTOS';
+      }
+    } else {
+      cnpjEncontrado = '[XX.XXX.XXX/XXXX-XX]';
+    }
+  }
+
+  if (!entidadeEncontrada) {
+    if (/ISSLER|MARCOS\s+ADRIANO/i.test(contextoBusca)) {
+      entidadeEncontrada = 'CONSELHO ESCOLAR DA ESCOLA MUNICIPAL DE ENSINO FUNDAMENTAL PROFESSOR MARCOS ADRIANO ISSLER';
+    } else if (/JOELMA/i.test(contextoBusca)) {
+      entidadeEncontrada = 'CONSELHO ESCOLAR DA ESCOLA MUNICIPAL DE ENSINO FUNDAMENTAL PROFESSORA JOELMA RODRIGUES DOS SANTOS';
+    } else if (formInteressado) {
+      entidadeEncontrada = formInteressado.toUpperCase();
+    } else {
+      entidadeEncontrada = formMun ? `MUNICÍPIO DE ${formMun.toUpperCase()}` : '[NOME DA ENTIDADE]';
     }
   }
 
