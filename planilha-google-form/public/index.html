@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.29">
+  <link rel="stylesheet" href="css/style.css?v=1.3.35">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -724,7 +724,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.32</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.35</div>
 
   </div>
 </div>
@@ -987,7 +987,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.32</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.35</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1802,10 +1802,20 @@
       <!-- ============= PAGE: NOVO PROCESSO ============= -->
       <section class="page" id="page-novo">
 
-        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 16px; width: 100%;">
-          <div>
-            <h2 id="form-title">Novo Processo</h2>
-            <p>Preencha os dados do processo</p>
+        <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px; width: 100%;">
+          <div style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
+            <h2 id="form-title" style="margin:0; font-size:18px; line-height:1.15;">Novo Processo</h2>
+            <!-- SELO DE IA ACOMODADO À ESQUERDA NA MESMA LINHA DO CABEÇALHO (IMAGEM 2) -->
+            <div id="badge-topo-ia-destaque" style="display:inline-flex; align-items:center; gap:8px; padding:4px 12px; background:linear-gradient(135deg, rgba(99,102,241,0.28), rgba(168,85,247,0.28)); border:1.5px solid rgba(168,85,247,0.65); border-radius:10px; box-shadow:0 0 16px rgba(168,85,247,0.35);">
+              <img src="img/icone-ai-chip.png" alt="AI Chip" style="width:26px; height:26px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(168,85,247,0.9)); flex-shrink:0;">
+              <div style="display:flex; flex-direction:column; line-height:1.15;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
+                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.35</span>
+                </div>
+                <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
+              </div>
+            </div>
           </div>
 
           <!-- Seletores de Categoria e Tipo -->
@@ -1850,18 +1860,6 @@
                 <button id="btn-guia-repositorio" type="button" onclick="alternarGuiaFormulario('repositorio')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" title="Repositório de Documentos, Análise do Plano de Trabalho e Google Drive">📁 Repositório & Análise CAM</button>
               </div>
 
-              <!-- DESTAQUE ÍCONE E BADGE IA NO TOPO DO FORMULÁRIO (IMAGEM 5) -->
-              <div id="badge-topo-ia-destaque" style="display:flex; align-items:center; gap:12px; margin: 0 auto; padding:6px 20px; background:linear-gradient(135deg, rgba(99,102,241,0.28), rgba(168,85,247,0.28)); border:1.5px solid rgba(168,85,247,0.65); border-radius:12px; box-shadow:0 0 20px rgba(168,85,247,0.35);">
-                <img src="img/icone-ai-chip.png" alt="AI Chip" style="width:34px; height:34px; object-fit:contain; filter:drop-shadow(0 0 8px rgba(168,85,247,0.9));">
-                <div style="display:flex; flex-direction:column; line-height:1.2;">
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="font-size:13px; font-weight:900; color:#f3e8ff; letter-spacing:0.8px; text-shadow:0 0 8px rgba(168,85,247,0.6);">ANÁLISE INTELIGENTE</span>
-                    <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 6px; border-radius:4px; font-size:10px; font-weight:900; letter-spacing:0.5px; box-shadow:0 0 8px rgba(56,189,248,0.5);">v1.3.32</span>
-
-                  </div>
-                  <span style="font-size:11px; color:#c084fc; font-weight:700;">Motor Neural CAM • Conexão Integral</span>
-                </div>
-              </div>
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
                 <button type="button" id="btn-prestacao-contas" onclick="abrirModalPrestacaoContas()" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:1px solid #818cf8; box-shadow:0 3px 10px rgba(99,102,241,0.35); height: 42px; padding: 0 20px; font-size: 13.5px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;" title="Gerar despacho para verificação de regularidade e prestação de contas da entidade">📋 Prestação de Contas</button>
                 <button type="button" id="btn-gerar-manifestacao" onclick="gerarManifestacaoJPG()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:none; align-items:center; justify-content:center; gap:6px;">📄 Gerar Manifestação</button>
@@ -1998,14 +1996,14 @@
 
               <div class="form-group full" style="display:flex; flex-direction:column; gap:4px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <label for="form-cnpj" style="margin-bottom:0; font-weight:600;">CNPJ *</label>
+                  <label for="form-cnpj" style="margin-bottom:0; font-weight:600;">CNPJ</label>
                   <a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/" target="_blank" rel="noopener noreferrer" style="font-size:12px; color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-weight:600;" title="Abrir página oficial de Emissão de Comprovante de Inscrição e de Situação Cadastral da Receita Federal">
                     <span>🌐 Consulta Receita Federal</span>
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                   </a>
                 </div>
                 <div style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap;">
-                  <input type="text" id="form-cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" required style="flex:1; font-family:monospace; font-weight:600; font-size:13.5px;" oninput="mascaraCNPJInput(this)" onblur="autoPreencherCNPJSeVazio(this)">
+                  <input type="text" id="form-cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="flex:1; font-family:monospace; font-weight:600; font-size:13.5px;" oninput="mascaraCNPJInput(this)" onblur="autoPreencherCNPJSeVazio(this)">
                   <button type="button" class="btn btn-ghost" onclick="copiarCNPJDoFormulario(this)" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700;" title="Copiar CNPJ">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     <span>Copiar CNPJ</span>
@@ -3329,7 +3327,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.32
+              GBZ - v1.3.35
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3602,7 +3600,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.32] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.35] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -4888,13 +4886,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.34"></script>
-  <script src="js/app.js?v=1.3.34"></script>
-  <script src="js/auth-sap.js?v=1.3.34"></script>
-  <script src="js/escolas.js?v=1.3.34" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=1.3.34"></script>
-  <script src="js/mapa.js?v=1.3.34"></script>
-  <script src="js/contatos.js?v=1.3.34"></script>
+  <script src="js/dados.js?v=1.3.35"></script>
+  <script src="js/app.js?v=1.3.35"></script>
+  <script src="js/auth-sap.js?v=1.3.35"></script>
+  <script src="js/escolas.js?v=1.3.35" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=1.3.35"></script>
+  <script src="js/mapa.js?v=1.3.35"></script>
+  <script src="js/contatos.js?v=1.3.35"></script>
 
 
   <script>
@@ -5071,15 +5069,15 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/multi-select.js?v=1.3.30"></script>
+  <script src="js/multi-select.js?v=1.3.35"></script>
   <script>
   </script>
-  <script src="js/diarias.js?v=1.3.30"></script>
-  <script src="js/gmac.js?v=1.3.30"></script>
-  <script src="js/orcamento.js?v=1.3.30"></script>
-  <script src="js/gdsm.js?v=1.3.30"></script>
-  <script src="js/print-proalfa.js?v=1.3.30"></script>
-  <script src="js/proalfa.js?v=1.3.30"></script>
+  <script src="js/diarias.js?v=1.3.35"></script>
+  <script src="js/gmac.js?v=1.3.35"></script>
+  <script src="js/orcamento.js?v=1.3.35"></script>
+  <script src="js/gdsm.js?v=1.3.35"></script>
+  <script src="js/print-proalfa.js?v=1.3.35"></script>
+  <script src="js/proalfa.js?v=1.3.35"></script>
 
 
 

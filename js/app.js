@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.32
+// Versão do Sistema: v1.3.35
 // ============================================================
-window.APP_VERSION = 'v1.3.32';
+window.APP_VERSION = 'v1.3.35';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -2270,13 +2270,9 @@ function renderFormulario() {
     document.getElementById('form-interessado').value = p.interessado || '';
     const cnpjEl = document.getElementById('form-cnpj');
     if (cnpjEl) {
+      cnpjEl.removeAttribute('required');
+      cnpjEl.required = false;
       cnpjEl.value = p.cnpj || '';
-      if (!cnpjEl.value.trim() && typeof extrairCNPJEEntidadeDoProcesso === 'function') {
-        const ext = extrairCNPJEEntidadeDoProcesso();
-        if (ext && ext.cnpj && !ext.cnpj.includes('X')) {
-          cnpjEl.value = ext.cnpj;
-        }
-      }
     }
     document.getElementById('form-objeto').value      = p.objeto      || '';
     document.getElementById('form-valorOf').value     = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
@@ -2327,6 +2323,12 @@ function renderFormulario() {
     window._repositorioArquivosAtuais.forEach(arq => {
       if (typeof arq.selecionado === 'undefined') arq.selecionado = true;
     });
+    if (cnpjEl && !cnpjEl.value.trim() && window._repositorioArquivosAtuais.length > 0 && typeof extrairCNPJEEntidadeDoProcesso === 'function') {
+      const ext = extrairCNPJEEntidadeDoProcesso();
+      if (ext && ext.cnpj && !ext.cnpj.includes('X')) {
+        cnpjEl.value = ext.cnpj;
+      }
+    }
     window._linkGoogleDriveAtual = p.linkGoogleDrive || '';
     window._analiseCamAtual = (window._repositorioArquivosAtuais.length > 0 && p.analiseCam) ? JSON.parse(JSON.stringify(p.analiseCam)) : null;
     atualizarDisplayLinkGoogleDrive();
@@ -9183,7 +9185,12 @@ function extrairEPreencherCNPJPlano() {
 window.extrairEPreencherCNPJPlano = extrairEPreencherCNPJPlano;
 
 function autoPreencherCNPJSeVazio(el) {
-  if (!el || el.value.trim()) return;
+  if (!el) return;
+  el.removeAttribute('required');
+  el.required = false;
+  if (el.value.trim()) return;
+  const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
+  if (arqs.length === 0) return;
   const res = extrairCNPJEEntidadeDoProcesso();
   if (res && res.cnpj && !res.cnpj.includes('X')) {
     el.value = res.cnpj;
