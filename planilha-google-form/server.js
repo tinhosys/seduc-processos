@@ -184,7 +184,7 @@ app.post("/api/auth", async (req, res) => {
     const status = statusRaw === "0" || statusRaw.toLowerCase() === "bloqueado" ? "bloqueado" : "liberado";
 
     if (status === "bloqueado") {
-      return res.status(403).json({ erro: "Conexão instável... Carregando dados do servidor..." });
+      return res.status(403).json({ erro: "Carregando dados do servidor..." });
     }
 
     if (senhaPlanilha !== senha.toString().trim()) {
