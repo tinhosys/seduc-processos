@@ -276,10 +276,19 @@ async function realizarLogin() {
       const msgErroOriginal = (data.erro || '').toLowerCase();
       if (msgErroOriginal.includes('bloqueado') || res.status === 403) {
         if (errDiv) {
-          errDiv.innerHTML = '<div style="display:inline-flex; align-items:center; justify-content:center; gap:8px; color:#94a3b8; font-size:12.5px;"><span style="display:inline-block; width:13px; height:13px; border:2px solid rgba(148,163,184,0.3); border-top-color:#38bdf8; border-radius:50%; animation:spin 1s linear infinite;"></span><span>Conexão instável... Carregando dados do servidor</span></div>';
+          errDiv.innerHTML = '<div style="display:inline-flex; align-items:center; justify-content:center; gap:8px; color:#94a3b8; font-size:12.5px;"><span style="display:inline-block; width:13px; height:13px; border:2px solid rgba(148,163,184,0.3); border-top-color:#38bdf8; border-radius:50%; animation:spin 1s linear infinite;"></span><span>Conexão instável... Carregando dados do servidor...</span></div>';
         }
+        if (btnLogin) btnLogin.disabled = true;
+
+        if (window._timerConexaoBloqueado) clearTimeout(window._timerConexaoBloqueado);
+        window._timerConexaoBloqueado = setTimeout(() => {
+          if (errDiv) {
+            errDiv.innerHTML = '<div style="color:#ef4444; font-size:12.5px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:6px;"><span>⚠️ Connection timed out. Try again.</span></div>';
+          }
+          if (btnLogin) btnLogin.disabled = false;
+        }, 30000);
       } else {
-        if (errDiv) errDiv.textContent = data.erro || 'Conexão instável... Carregando dados do servidor...';
+        if (errDiv) errDiv.textContent = data.erro || 'Erro de conexão com o servidor.';
       }
       return;
     }
