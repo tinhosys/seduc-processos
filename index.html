@@ -2004,9 +2004,17 @@
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                   </a>
                 </div>
-                <div style="display:flex; gap:6px; align-items:center;">
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap;">
                   <input type="text" id="form-cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" required style="flex:1; font-family:monospace; font-weight:600; font-size:13.5px;" oninput="mascaraCNPJInput(this)" onblur="autoPreencherCNPJSeVazio(this)">
-                  <button type="button" class="btn btn-ghost" onclick="extrairEPreencherCNPJPlano()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; font-size:11.5px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;" title="Buscar e extrair CNPJ do Plano de Trabalho vigente">
+                  <button type="button" class="btn btn-ghost" onclick="copiarCNPJDoFormulario(this)" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700;" title="Copiar CNPJ">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <span>Copiar CNPJ</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="acessarLinkReceitaCNPJ()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700;" title="Acessar consulta na Receita Federal (abre em nova aba)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                    <span>Acessar Link</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="extrairEPreencherCNPJPlano()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; font-size:11.5px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; flex-shrink:0;" title="Buscar e extrair CNPJ do Plano de Trabalho vigente">
                     <span>⚡ Extrair do Plano</span>
                   </button>
                 </div>
@@ -4880,13 +4888,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.33"></script>
-  <script src="js/app.js?v=1.3.33"></script>
-  <script src="js/auth-sap.js?v=1.3.33"></script>
-  <script src="js/escolas.js?v=1.3.33" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=1.3.33"></script>
-  <script src="js/mapa.js?v=1.3.33"></script>
-  <script src="js/contatos.js?v=1.3.33"></script>
+  <script src="js/dados.js?v=1.3.34"></script>
+  <script src="js/app.js?v=1.3.34"></script>
+  <script src="js/auth-sap.js?v=1.3.34"></script>
+  <script src="js/escolas.js?v=1.3.34" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=1.3.34"></script>
+  <script src="js/mapa.js?v=1.3.34"></script>
+  <script src="js/contatos.js?v=1.3.34"></script>
 
 
   <script>

@@ -141,8 +141,47 @@ window.copiarSeiLinha = function(btn) {
   }
 };
 
+// Função global para copiar CNPJ do formulário com feedback visual imediato
+window.copiarCNPJDoFormulario = function(btn) {
+  const input = document.getElementById('form-cnpj');
+  if (!input || !input.value.trim() || input.value.trim() === '00.000.000/0000-00') {
+    if (typeof showNotification === 'function') showNotification('Nenhum CNPJ preenchido para copiar', 'warning');
+    else if (typeof toast === 'function') toast('Nenhum CNPJ preenchido para copiar', 'warning');
+    return;
+  }
+  const val = input.value.trim();
+  const salvarOriginal = btn.innerHTML;
 
-// ====== REGRA RESTRITA: DASHBOARD EXCLUSIVO ADMIN ELTON (69) 9 9922-1336 ======
+  const feedbackSucesso = () => {
+    btn.innerHTML = '<span style="font-size:12px;font-weight:bold;color:#10b981;">✓ Copiado</span>';
+    btn.style.borderColor = '#10b981';
+    btn.style.color = '#10b981';
+    if (typeof showNotification === 'function') showNotification('CNPJ copiado: ' + val, 'success');
+    else if (typeof toast === 'function') toast('CNPJ copiado: ' + val, 'success');
+    setTimeout(() => {
+      btn.innerHTML = salvarOriginal;
+      btn.style.borderColor = 'var(--border)';
+      btn.style.color = '#38bdf8';
+    }, 1500);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(feedbackSucesso).catch(() => {
+      input.select();
+      document.execCommand('copy');
+      feedbackSucesso();
+    });
+  } else {
+    input.select();
+    document.execCommand('copy');
+    feedbackSucesso();
+  }
+};
+
+window.acessarLinkReceitaCNPJ = function() {
+  window.open('https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/', '_blank', 'noopener,noreferrer');
+};
+
 window.podeAcessarDashboard = function() {
   try {
     const uData = JSON.parse(sessionStorage.getItem("sap_user_data") || localStorage.getItem("sap_user_data") || "{}");
