@@ -9247,7 +9247,21 @@ const CATALOGO_ENTIDADES_RECEITA_RO = {
   }
 };
 
-function togglePainelReceitaCNPJ(forcarAberto) {
+function sanitizarTextoHTML(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+if (typeof window.escapeHTML !== 'function') {
+  window.escapeHTML = sanitizarTextoHTML;
+}
+if (typeof window.escapeHtml !== 'function') {
+  window.escapeHtml = sanitizarTextoHTML;
+}
   const corpo = document.getElementById('corpo-detalhes-receita-cnpj');
   const seta = document.getElementById('svg-seta-detalhes-receita');
   const btn = document.getElementById('btn-toggle-detalhes-receita');
@@ -9303,7 +9317,7 @@ function atualizarLabelResultadoCNPJReceita(dadosOuTexto, statusTipo) {
       lbl.innerHTML = `
         <div style="display:inline-flex; align-items:center; gap:8px; color:#38bdf8; font-weight:600;">
           <span style="display:inline-block; width:14px; height:14px; border:2px solid rgba(56,189,248,0.25); border-top-color:#38bdf8; border-radius:50%; animation:spinReceita 0.8s linear infinite;"></span>
-          <span>${escapeHTML(txtLimpo)}</span>
+          <span>${sanitizarTextoHTML(txtLimpo)}</span>
         </div>
         <style>@keyframes spinReceita { to { transform: rotate(360deg); } }</style>
       `;
@@ -9334,41 +9348,43 @@ function atualizarLabelResultadoCNPJReceita(dadosOuTexto, statusTipo) {
   }
 
   // Objeto estruturado com o padrão de informações coletadas solicitado:
-  // Entidade: CONSELHO ESCOLAR PROFESSOR MARCOS ADRIANO ISSLER
-  // Nome fantasia: ESCOLA MARCOS ADRIANO ISSLER
-  // Situação: ATIVA
-  // Responsavel: KEZIA RODRIGUES FERNANDES
-  // Municipio / UF: NOVA UNIÃO / RO
-  // Telefone: (69) 3466-1122
-  // e-mail: escola.marcosadriano@seduc.ro.gov.br
-  // Ativo desde: 27/02/2001
+  // Entidade: XX
+  // Nome fantasia: XX
+  // Situação: XX
+  // Responsavel: XX
+  // Municipio / UF: XX / XX
+  // Telefone: (XX) XXXXXXX
+  // e-mail: xxxxxx
+  // Ativo desde: dd/mm/aaaa
   const d = dadosOuTexto;
-  const entidade = d.razao_social || d.entidade || 'NÃO INFORMADO';
-  const fantasia = d.nome_fantasia || 'NÃO CONSTA / IDÊNTICO À RAZÃO';
-  const situacao = (d.situacao || 'ATIVA').toUpperCase();
-  const responsavel = d.responsavel || 'KEZIA RODRIGUES FERNANDES';
-  const munUf = (d.municipio ? `${d.municipio} / ${d.uf || 'RO'}` : (d.uf || 'RO')).toUpperCase();
-  const telefone = d.telefone || '(69) 3466-1122';
-  const email = d.email ? String(d.email).toLowerCase() : 'escola.marcosadriano@seduc.ro.gov.br';
-  const ativoDesde = d.data_ativo || d.data_abertura || '27/02/2001';
+  const entidade = (d.razao_social || d.entidade || '').trim() || 'NÃO INFORMADO';
+  const fantasia = (d.nome_fantasia || '').trim() || (entidade !== 'NÃO INFORMADO' ? entidade : 'NÃO CONSTA');
+  const situacao = String(d.situacao || 'ATIVA').toUpperCase().trim();
+  const responsavel = (d.responsavel || '').trim() || 'REPRESENTANTE LEGAL / SÓCIO-ADMINISTRADOR';
+  const mun = (d.municipio || '').trim().toUpperCase();
+  const uf = (d.uf || 'RO').trim().toUpperCase();
+  const munUf = mun ? `${mun} / ${uf}` : uf;
+  const telefone = (d.telefone || '').trim() || 'NÃO INFORMADO';
+  const email = (d.email || '').trim() ? String(d.email).toLowerCase().trim() : 'NÃO INFORMADO';
+  const ativoDesde = (d.data_ativo || d.data_abertura || '').trim() || 'NÃO INFORMADO';
 
   const isAtiva = situacao.includes('ATIVA') || situacao.includes('REGULAR');
   const corSituacao = isAtiva ? '#34d399' : '#f87171';
 
   if (subResumo) {
-    subResumo.innerHTML = `<strong style="color:#f8fafc;">${escapeHTML(entidade)}</strong> • <span style="color:${corSituacao}; font-weight:700;">${escapeHTML(situacao)}</span> • <span style="color:#94a3b8;">${escapeHTML(munUf)}</span>`;
+    subResumo.innerHTML = `<strong style="color:#f8fafc;">${sanitizarTextoHTML(entidade)}</strong> • <span style="color:${corSituacao}; font-weight:700;">${sanitizarTextoHTML(situacao)}</span> • <span style="color:#94a3b8;">${sanitizarTextoHTML(munUf)}</span>`;
   }
 
   const html = `
     <div style="display:flex; flex-direction:column; gap:4px; font-family:inherit; font-size:12px; line-height:1.5; user-select:text;">
-      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Entidade:</span> <span style="color:#f8fafc; font-weight:700;">${escapeHTML(entidade)}</span></div>
-      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Nome fantasia:</span> <span style="color:#e2e8f0; font-weight:500;">${escapeHTML(fantasia)}</span></div>
-      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Situação:</span> <span style="color:${corSituacao}; font-weight:800; background:rgba(0,0,0,0.35); padding:1px 7px; border-radius:4px; border:1px solid ${corSituacao}45;">${escapeHTML(situacao)}</span></div>
-      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Responsavel:</span> <span style="color:#e2e8f0; font-weight:500;">${escapeHTML(responsavel)}</span></div>
-      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Municipio / UF:</span> <span style="color:#e2e8f0; font-weight:600;">${escapeHTML(munUf)}</span></div>
-      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Telefone:</span> <span style="color:#e2e8f0; font-weight:500;">${escapeHTML(telefone)}</span></div>
-      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">e-mail:</span> <span style="color:#38bdf8; font-weight:500;">${escapeHTML(email)}</span></div>
-      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Ativo desde:</span> <span style="color:#e2e8f0; font-weight:600;">${escapeHTML(ativoDesde)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Entidade:</span> <span style="color:#f8fafc; font-weight:700;">${sanitizarTextoHTML(entidade)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Nome fantasia:</span> <span style="color:#e2e8f0; font-weight:500;">${sanitizarTextoHTML(fantasia)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Situação:</span> <span style="color:${corSituacao}; font-weight:800; background:rgba(0,0,0,0.35); padding:1px 7px; border-radius:4px; border:1px solid ${corSituacao}45;">${sanitizarTextoHTML(situacao)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Responsavel:</span> <span style="color:#e2e8f0; font-weight:500;">${sanitizarTextoHTML(responsavel)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Municipio / UF:</span> <span style="color:#e2e8f0; font-weight:600;">${sanitizarTextoHTML(munUf)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Telefone:</span> <span style="color:#e2e8f0; font-weight:500;">${sanitizarTextoHTML(telefone)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">e-mail:</span> <span style="color:#38bdf8; font-weight:500;">${sanitizarTextoHTML(email)}</span></div>
+      <div style="display:flex; gap:8px; align-items:baseline;"><span style="color:#94a3b8; font-weight:600; min-width:115px; white-space:nowrap;">Ativo desde:</span> <span style="color:#e2e8f0; font-weight:600;">${sanitizarTextoHTML(ativoDesde)}</span></div>
     </div>
   `;
 
@@ -9436,18 +9452,47 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
     console.warn('BrasilAPI CNPJ fallback:', e1);
   }
 
-  // 2. Fallback: ReceitaWS / Publica CNPJ.ws (sem Captcha)
+  // 2. Fallback: ReceitaWS (sem Captcha)
   if (!dadosReceita) {
     try {
-      const resp2 = await fetch(`https://publica.cnpj.ws/cnpj/${cnpjLimpo}`, { method: 'GET' });
+      const resp2 = await fetch(`https://receitaws.com.br/v1/cnpj/${cnpjLimpo}`, { method: 'GET' });
       if (resp2.ok) {
         const json2 = await resp2.json();
-        const estab = json2.estabelecimento || {};
-        const socio = Array.isArray(json2.socios) && json2.socios.length > 0 ? (json2.socios[0].nome + (json2.socios[0].qualificacao ? ` (${json2.socios[0].qualificacao.descricao})` : '')) : '';
+        if (json2 && json2.status === 'OK') {
+          const socioRWS = Array.isArray(json2.qsa) && json2.qsa.length > 0
+            ? (json2.qsa[0].nome + (json2.qsa[0].qual ? ` (${json2.qsa[0].qual})` : ''))
+            : '';
+          dadosReceita = {
+            cnpj: cnpjFormatado,
+            razao_social: json2.nome || '',
+            nome_fantasia: json2.fantasia || '',
+            situacao: json2.situacao || 'ATIVA',
+            municipio: json2.municipio || '',
+            uf: json2.uf || 'RO',
+            responsavel: socioRWS,
+            telefone: json2.telefone || '',
+            email: json2.email || '',
+            data_ativo: json2.abertura || formatarDataBR(json2.data_situacao)
+          };
+        }
+      }
+    } catch (eRWS) {
+      console.warn('ReceitaWS fallback:', eRWS);
+    }
+  }
+
+  // 3. Fallback: Publica CNPJ.ws (sem Captcha)
+  if (!dadosReceita) {
+    try {
+      const resp3 = await fetch(`https://publica.cnpj.ws/cnpj/${cnpjLimpo}`, { method: 'GET' });
+      if (resp3.ok) {
+        const json3 = await resp3.json();
+        const estab = json3.estabelecimento || {};
+        const socio = Array.isArray(json3.socios) && json3.socios.length > 0 ? (json3.socios[0].nome + (json3.socios[0].qualificacao ? ` (${json3.socios[0].qualificacao.descricao})` : '')) : '';
         const tel = estab.telefone1 ? `(${estab.ddd1 || '69'}) ${estab.telefone1}` : '';
         dadosReceita = {
           cnpj: cnpjFormatado,
-          razao_social: json2.razao_social || '',
+          razao_social: json3.razao_social || '',
           nome_fantasia: estab.nome_fantasia || '',
           situacao: estab.situacao_cadastral || 'ATIVA',
           municipio: (estab.cidade && estab.cidade.nome) ? estab.cidade.nome : '',
@@ -9458,8 +9503,8 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
           data_ativo: formatarDataBR(estab.data_inicio_atividade || estab.data_situacao_cadastral)
         };
       }
-    } catch (e2) {
-      console.warn('CNPJ.ws fallback:', e2);
+    } catch (e3) {
+      console.warn('CNPJ.ws fallback:', e3);
     }
   }
 
