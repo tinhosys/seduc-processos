@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.35
+// Versão do Sistema: v1.3.36
 // ============================================================
-window.APP_VERSION = 'v1.3.35';
+window.APP_VERSION = 'v1.3.36';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
