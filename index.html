@@ -2004,21 +2004,18 @@
                   <label for="form-cnpj" style="margin-bottom:0; font-weight:600; flex-shrink:0;">CNPJ</label>
 
                   <!-- CAMPO ESTÁTICO COM ÍCONE DA RECEITA FEDERAL E RESULTADO DA CONSULTA SEM CAPTCHA (IMAGEM 4 & IMAGEM 5) -->
-                  <div id="container-resultado-cnpj-receita" style="flex:1; min-width:260px; display:flex; align-items:center; justify-content:space-between; gap:8px; background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.45); border-radius:6px; padding:3px 10px; min-height:28px; box-shadow:inset 0 1px 4px rgba(0,0,0,0.4);">
-                    <div style="display:flex; align-items:center; gap:7px; flex:1; min-width:0;">
-                      <img src="img/logo-receita-federal.png" alt="Receita Federal" style="height:19px; width:auto; border-radius:3px; background:#ffffff; padding:1px 4px; flex-shrink:0; object-fit:contain; box-shadow:0 1px 3px rgba(0,0,0,0.35);" title="Receita Federal do Brasil — Situação Cadastral de CNPJ">
-                      <span id="label-resultado-cnpj-receita" style="font-size:11.5px; font-weight:700; color:#cbd5e1; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; user-select:text;" title="Resultado estático da consulta de CNPJ na base da Receita Federal / Serasa Experian (sem Captcha)">
-                        Receita Federal (Sem Captcha): clique em "⚡ Extrair do Plano" ou digite o CNPJ para consultar
-                      </span>
-                    </div>
-                    <div style="display:inline-flex; align-items:center; gap:5px; flex-shrink:0;">
-                      <button type="button" onclick="consultarCNPJReceitaSemCaptcha(document.getElementById('form-cnpj')?.value, false)" style="background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); border-radius:4px; padding:2px 7px; font-size:10.5px; font-weight:800; cursor:pointer; white-space:nowrap;" title="Consultar novamente os dados cadastrais do CNPJ na base da Receita Federal (sem Captcha)">
+                  <div id="container-resultado-cnpj-receita" style="flex:1; min-width:280px; display:flex; flex-direction:column; gap:6px; background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.45); border-radius:6px; padding:6px 10px; box-shadow:inset 0 1px 4px rgba(0,0,0,0.4);">
+                    <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                      <div style="display:flex; align-items:center; gap:7px;">
+                        <img src="img/logo-receita-federal.png" alt="Receita Federal" style="height:19px; width:auto; border-radius:3px; background:#ffffff; padding:1px 4px; flex-shrink:0; object-fit:contain; box-shadow:0 1px 3px rgba(0,0,0,0.35);" title="Receita Federal do Brasil — Situação Cadastral de CNPJ">
+                        <span style="font-size:11.5px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.3px;">Dados da Receita Federal (Sem Captcha)</span>
+                      </div>
+                      <button type="button" onclick="consultarCNPJReceitaSemCaptcha(document.getElementById('form-cnpj')?.value, false)" style="background:rgba(56,189,248,0.16); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); border-radius:4px; padding:2px 8px; font-size:10.5px; font-weight:800; cursor:pointer; white-space:nowrap;" title="Consultar novamente os dados cadastrais do CNPJ na base da Receita Federal (sem Captcha)">
                         🔄 Consultar
                       </button>
-                      <a href="https://empresas.serasaexperian.com.br/consulta-gratis" target="_blank" rel="noopener noreferrer" onclick="copiarCNPJSilencioso()" style="font-size:10.5px; color:#34d399; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; text-decoration:none; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;" title="Abrir Consulta Grátis Serasa Experian (sem Captcha) — o CNPJ é copiado automaticamente">
-                        <span>Serasa s/ Captcha</span>
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                      </a>
+                    </div>
+                    <div id="label-resultado-cnpj-receita" style="font-size:11.5px; color:#cbd5e1; line-height:1.45; user-select:text;">
+                      <div style="color:#94a3b8; font-style:italic;">Clique em <strong>"⚡ Extrair do Plano"</strong> ou digite o CNPJ para relacionar os dados da entidade</div>
                     </div>
                   </div>
 
@@ -2033,10 +2030,6 @@
                   <button type="button" class="btn btn-ghost" onclick="copiarCNPJDoFormulario(this)" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700;" title="Copiar CNPJ">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                     <span>Copiar CNPJ</span>
-                  </button>
-                  <button type="button" class="btn btn-ghost" onclick="acessarLinkReceitaCNPJ()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700;" title="Acessar consulta sem Captcha (Serasa Experian / Receita Federal) — copia o CNPJ automaticamente">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                    <span>Acessar Link</span>
                   </button>
                   <button type="button" class="btn btn-ghost" id="btn-extrair-cnpj-plano" onclick="extrairEPreencherCNPJPlano()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; font-size:11.5px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0;" title="Localizar nos anexos (Plano de Trabalho e/ou Ofício) o CNPJ da Entidade Proponente e consultar situação cadastral na Receita Federal sem Captcha">
                     <span>⚡ Extrair do Plano</span>

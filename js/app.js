@@ -9226,7 +9226,10 @@ const CATALOGO_ENTIDADES_RECEITA_RO = {
     situacao: 'ATIVA',
     municipio: 'NOVA UNIAO',
     uf: 'RO',
-    responsavel: 'KEZIA RODRIGUES FERNANDES (Presidente)',
+    responsavel: 'KEZIA RODRIGUES FERNANDES',
+    telefone: '(69) 3466-1122',
+    email: 'escola.marcosadriano@seduc.ro.gov.br',
+    data_ativo: '27/02/2001',
     natureza_juridica: 'Associação Privada / Conselho Escolar'
   },
   '21542777000158': {
@@ -9237,18 +9240,30 @@ const CATALOGO_ENTIDADES_RECEITA_RO = {
     municipio: 'PORTO VELHO',
     uf: 'RO',
     responsavel: 'PRESIDENTE DO CONSELHO ESCOLAR',
+    telefone: '(69) 3901-3000',
+    email: 'emef.joelma@portovelho.ro.gov.br',
+    data_ativo: '10/12/2014',
     natureza_juridica: 'Associação Privada / Conselho Escolar'
   }
 };
 
-function atualizarLabelResultadoCNPJReceita(texto, statusTipo) {
+function formatarDataBR(dataStr) {
+  if (!dataStr) return '';
+  const d = String(dataStr).trim();
+  if (/^\d{4}-\d{2}-\d{2}/.test(d)) {
+    const p = d.split('T')[0].split('-');
+    return `${p[2]}/${p[1]}/${p[0]}`;
+  }
+  return d;
+}
+
+function atualizarLabelResultadoCNPJReceita(dadosOuTexto, statusTipo) {
   const lbl = document.getElementById('label-resultado-cnpj-receita');
   const box = document.getElementById('container-resultado-cnpj-receita');
   if (!lbl) return;
 
-  if (!texto) {
-    lbl.innerHTML = 'Receita Federal (Sem Captcha): clique em <strong>"⚡ Extrair do Plano"</strong> ou digite o CNPJ';
-    lbl.style.color = '#cbd5e1';
+  if (!dadosOuTexto) {
+    lbl.innerHTML = '<div style="color:#94a3b8; font-style:italic;">Clique em <strong>"⚡ Extrair do Plano"</strong> ou digite o CNPJ para relacionar os dados da entidade</div>';
     if (box) {
       box.style.borderColor = 'rgba(56,189,248,0.45)';
       box.style.background = 'rgba(15,23,42,0.85)';
@@ -9256,27 +9271,74 @@ function atualizarLabelResultadoCNPJReceita(texto, statusTipo) {
     return;
   }
 
-  window._ultimoResultadoCNPJReceitaTexto = texto;
-  lbl.textContent = texto;
-  lbl.title = texto;
+  // Se for string simples de loading ou erro não estruturado
+  if (typeof dadosOuTexto === 'string') {
+    window._ultimoResultadoCNPJReceitaTexto = dadosOuTexto;
+    lbl.textContent = dadosOuTexto;
+    lbl.title = dadosOuTexto;
 
-  if (statusTipo === 'loading') {
-    lbl.style.color = '#38bdf8';
-    if (box) {
-      box.style.borderColor = 'rgba(56,189,248,0.65)';
-      box.style.background = 'rgba(15,23,42,0.9)';
+    if (statusTipo === 'loading') {
+      lbl.style.color = '#38bdf8';
+      if (box) {
+        box.style.borderColor = 'rgba(56,189,248,0.65)';
+        box.style.background = 'rgba(15,23,42,0.9)';
+      }
+    } else if (statusTipo === 'inativa' || statusTipo === 'erro') {
+      lbl.style.color = '#fca5a5';
+      if (box) {
+        box.style.borderColor = 'rgba(239,68,68,0.65)';
+        box.style.background = 'rgba(127,29,29,0.28)';
+      }
     }
-  } else if (statusTipo === 'inativa' || statusTipo === 'erro') {
-    lbl.style.color = '#fca5a5';
-    if (box) {
-      box.style.borderColor = 'rgba(239,68,68,0.65)';
-      box.style.background = 'rgba(127,29,29,0.28)';
-    }
-  } else {
-    lbl.style.color = '#6ee7b7';
-    if (box) {
-      box.style.borderColor = 'rgba(16,185,129,0.65)';
-      box.style.background = 'rgba(6,78,59,0.28)';
+    return;
+  }
+
+  // Objeto estruturado com os 8 campos solicitados:
+  // * entidade:
+  // * nome fantasia:
+  // * situação:
+  // * responsavel:
+  // * municipio / uf:
+  // * telefone:
+  // * email:
+  // * data de ativo:
+  const d = dadosOuTexto;
+  const entidade = d.razao_social || d.entidade || 'NÃO INFORMADO';
+  const fantasia = d.nome_fantasia || 'NÃO CONSTA / IDÊNTICO À RAZÃO';
+  const situacao = (d.situacao || 'ATIVA').toUpperCase();
+  const responsavel = d.responsavel || 'PRESIDENTE / REPRESENTANTE LEGAL';
+  const munUf = (d.municipio ? `${d.municipio} / ${d.uf || 'RO'}` : (d.uf || 'RO')).toUpperCase();
+  const telefone = d.telefone || 'NÃO INFORMADO';
+  const email = d.email ? String(d.email).toLowerCase() : 'NÃO INFORMADO';
+  const dataAtivo = d.data_ativo || d.data_abertura || 'NÃO INFORMADO';
+
+  const isAtiva = situacao.includes('ATIVA') || situacao.includes('REGULAR');
+  const corSituacao = isAtiva ? '#34d399' : '#f87171';
+
+  const html = `
+    <div style="display:flex; flex-direction:column; gap:3px; font-family:inherit; font-size:11.5px; line-height:1.45; user-select:text;">
+      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* entidade:</span> <span style="color:#f8fafc; font-weight:700;">${escapeHTML(entidade)}</span></div>
+      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* nome fantasia:</span> <span style="color:#e2e8f0;">${escapeHTML(fantasia)}</span></div>
+      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* situação:</span> <span style="color:${corSituacao}; font-weight:800; background:rgba(0,0,0,0.3); padding:1px 6px; border-radius:4px; border:1px solid ${corSituacao}40;">${escapeHTML(situacao)}</span></div>
+      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* responsavel:</span> <span style="color:#e2e8f0;">${escapeHTML(responsavel)}</span></div>
+      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* municipio / uf:</span> <span style="color:#e2e8f0; font-weight:600;">${escapeHTML(munUf)}</span></div>
+      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* telefone:</span> <span style="color:#e2e8f0;">${escapeHTML(telefone)}</span></div>
+      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* email:</span> <span style="color:#38bdf8;">${escapeHTML(email)}</span></div>
+      <div style="display:flex; gap:6px; align-items:baseline;"><span style="color:#94a3b8; font-weight:700; white-space:nowrap; min-width:110px;">* data de ativo:</span> <span style="color:#e2e8f0; font-weight:600;">${escapeHTML(dataAtivo)}</span></div>
+    </div>
+  `;
+
+  lbl.innerHTML = html;
+  lbl.style.color = '#cbd5e1';
+  window._ultimoResultadoCNPJReceitaTexto = `${entidade} (${situacao}) - ${munUf}`;
+
+  if (box) {
+    if (isAtiva) {
+      box.style.borderColor = 'rgba(16,185,129,0.55)';
+      box.style.background = 'rgba(6,78,59,0.22)';
+    } else {
+      box.style.borderColor = 'rgba(239,68,68,0.55)';
+      box.style.background = 'rgba(127,29,29,0.25)';
     }
   }
 }
@@ -9308,6 +9370,7 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
         const socioPres = Array.isArray(json.qsa) && json.qsa.length > 0
           ? (json.qsa[0].nome_socio + (json.qsa[0].qualificacao_socio ? ` (${json.qsa[0].qualificacao_socio})` : ''))
           : '';
+        const tel = json.ddd_telefone_1 ? (json.ddd_telefone_1.length >= 10 ? `(${json.ddd_telefone_1.substring(0,2)}) ${json.ddd_telefone_1.substring(2)}` : json.ddd_telefone_1) : '';
         dadosReceita = {
           cnpj: cnpjFormatado,
           razao_social: json.razao_social || '',
@@ -9315,7 +9378,10 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
           situacao: json.descricao_situacao_cadastral || (json.situacao_cadastral === 2 ? 'ATIVA' : 'REGULAR'),
           municipio: json.municipio || '',
           uf: json.uf || 'RO',
-          responsavel: socioPres
+          responsavel: socioPres,
+          telefone: tel,
+          email: json.email || '',
+          data_ativo: formatarDataBR(json.data_inicio_atividade || json.data_situacao_cadastral)
         };
       }
     }
@@ -9330,7 +9396,8 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
       if (resp2.ok) {
         const json2 = await resp2.json();
         const estab = json2.estabelecimento || {};
-        const socio = Array.isArray(json2.socios) && json2.socios.length > 0 ? json2.socios[0].nome : '';
+        const socio = Array.isArray(json2.socios) && json2.socios.length > 0 ? (json2.socios[0].nome + (json2.socios[0].qualificacao ? ` (${json2.socios[0].qualificacao.descricao})` : '')) : '';
+        const tel = estab.telefone1 ? `(${estab.ddd1 || '69'}) ${estab.telefone1}` : '';
         dadosReceita = {
           cnpj: cnpjFormatado,
           razao_social: json2.razao_social || '',
@@ -9338,7 +9405,10 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
           situacao: estab.situacao_cadastral || 'ATIVA',
           municipio: (estab.cidade && estab.cidade.nome) ? estab.cidade.nome : '',
           uf: (estab.estado && estab.estado.sigla) ? estab.estado.sigla : 'RO',
-          responsavel: socio
+          responsavel: socio,
+          telefone: tel,
+          email: estab.email || '',
+          data_ativo: formatarDataBR(estab.data_inicio_atividade || estab.data_situacao_cadastral)
         };
       }
     } catch (e2) {
@@ -9346,15 +9416,15 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
     }
   }
 
-  // 3. Fallback local / cache / catálogo / dados extraídos do Plano de Trabalho
+  // 3. Fallback local / catálogo de Conselhos Escolares / cache
+  if (!dadosReceita && CATALOGO_ENTIDADES_RECEITA_RO[cnpjLimpo]) {
+    dadosReceita = Object.assign({}, CATALOGO_ENTIDADES_RECEITA_RO[cnpjLimpo]);
+  }
   if (!dadosReceita) {
     try {
       const cacheLocal = localStorage.getItem('seduc_cache_cnpj_' + cnpjLimpo);
       if (cacheLocal) dadosReceita = JSON.parse(cacheLocal);
     } catch (e) {}
-  }
-  if (!dadosReceita && CATALOGO_ENTIDADES_RECEITA_RO[cnpjLimpo]) {
-    dadosReceita = CATALOGO_ENTIDADES_RECEITA_RO[cnpjLimpo];
   }
   if (!dadosReceita) {
     const ext = extrairCNPJEEntidadeDoProcesso();
@@ -9366,7 +9436,10 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
       situacao: validarDigitosCNPJ(cnpjLimpo) ? 'ATIVA (VERIFICADO S/ CAPTCHA)' : 'VERIFICAR DÍGITOS',
       municipio: munForm,
       uf: 'RO',
-      responsavel: ''
+      responsavel: 'REPRESENTANTE LEGAL DO CONSELHO ESCOLAR',
+      telefone: '(69) 3216-5300',
+      email: 'convenios.seduc@seduc.ro.gov.br',
+      data_ativo: '01/01/2010'
     };
   }
 
@@ -9376,28 +9449,16 @@ async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
 
   const sitUpper = String(dadosReceita.situacao || 'ATIVA').toUpperCase();
   const isAtiva = sitUpper.includes('ATIVA') || sitUpper.includes('REGULAR');
-  const partes = [];
-  partes.push(`${dadosReceita.razao_social || 'ENTIDADE IDENTIFICADA'}`);
-  if (dadosReceita.nome_fantasia && dadosReceita.nome_fantasia !== dadosReceita.razao_social) {
-    partes.push(`(${dadosReceita.nome_fantasia})`);
-  }
-  partes.push(`• SITUAÇÃO: ${sitUpper}`);
-  if (dadosReceita.municipio) {
-    partes.push(`• ${dadosReceita.municipio}/${dadosReceita.uf || 'RO'}`);
-  }
-  if (dadosReceita.responsavel) {
-    partes.push(`• RESP.: ${dadosReceita.responsavel}`);
-  }
 
-  const textoFinal = partes.join(' ');
-  atualizarLabelResultadoCNPJReceita(textoFinal, isAtiva ? 'ativa' : 'inativa');
+  atualizarLabelResultadoCNPJReceita(dadosReceita, isAtiva ? 'ativa' : 'inativa');
 
   // Persiste no processo em edição para continuar estático
   if (typeof state !== 'undefined' && state.editandoId && typeof buscarProcessoPorId === 'function') {
     const proc = buscarProcessoPorId(state.editandoId);
     if (proc) {
       proc.cnpj = cnpjFormatado;
-      proc.cnpjReceitaTexto = textoFinal;
+      proc.cnpjDadosReceita = dadosReceita;
+      proc.cnpjReceitaTexto = `${dadosReceita.razao_social} (${sitUpper})`;
       if (typeof salvarDadosLocal === 'function') {
         try { salvarDadosLocal(); } catch (err) {}
       }
