@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.37
+// Versão do Sistema: v1.3.38
 // ============================================================
-window.APP_VERSION = 'v1.3.37';
+window.APP_VERSION = 'v1.3.38';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -9262,6 +9262,8 @@ if (typeof window.escapeHTML !== 'function') {
 if (typeof window.escapeHtml !== 'function') {
   window.escapeHtml = sanitizarTextoHTML;
 }
+
+function togglePainelReceitaCNPJ(forcarAberto) {
   const corpo = document.getElementById('corpo-detalhes-receita-cnpj');
   const seta = document.getElementById('svg-seta-detalhes-receita');
   const btn = document.getElementById('btn-toggle-detalhes-receita');
