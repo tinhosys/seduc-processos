@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -1607,8 +1607,12 @@
             </div>
           </div>
 
-          <!-- LINHA 2 DE BOTÕES: COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
+          <!-- LINHA 2 DE BOTÕES: NOVO PROCESSO (DESTAQUE), COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
           <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px; width:100%;">
+            <button id="btn-novo-processo-topo" type="button" class="btn" onclick="novoProcesso()" style="padding:0 14px; height:38px; min-height:38px; max-height:38px; min-width:145px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid #f59e0b; border-radius:8px; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#ffffff; cursor:pointer; font-weight:800; letter-spacing:0.5px; transition:all 0.2s; box-shadow:0 3px 12px rgba(245,158,11,0.4); box-sizing:border-box;" onmouseover="this.style.background='linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'; this.style.transform='none';" title="Cadastrar Novo Processo">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span class="btn-text">+ Novo Processo</span>
+            </button>
             <button id="btn-compartilhar-topo" class="btn" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
               <span class="btn-text">Compartilhar</span>

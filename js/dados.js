@@ -299,15 +299,23 @@ async function adicionarProcesso(dados) {
   const payload = mapToSheet(dados);
   
   // Update locally for instant feedback
-  const novo = { ...dados, id: 'temp-' + Date.now(), createdAt: new Date().toISOString() };
+  const novo = { ...dados, _tabName: 'todos', id: 'temp-' + Date.now(), createdAt: new Date().toISOString() };
   window.processosCache.push(novo);
   
   try {
-    await fetch(API_BASE + '/api/registros', {
+    const res = await fetch(API_BASE + '/api/registros', {
       method: 'POST',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ ...dados, DIGITO: dados.digito || dados.DIGITO || '', 'DÍGITO': dados.digito || dados.DIGITO || '' })
+      body: JSON.stringify({ 
+        ...dados, 
+        tabName: 'todos',
+        DIGITO: dados.digito || dados.DIGITO || '', 
+        'DÍGITO': dados.digito || dados.DIGITO || '' 
+      })
     });
+    if (res.ok && typeof window.renderProcessos === 'function') {
+      window.renderProcessos();
+    }
   } catch(err) {
     console.error(err);
   }

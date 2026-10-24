@@ -1,4 +1,4 @@
-﻿
+
 function formatarDigitoInteiro(val) {
   if (val === null || val === undefined) return '';
   let s = String(val).trim();
@@ -770,11 +770,17 @@ app.put("/api/registros/:id/apontamento", authMiddleware, async (req, res) => {
 
 app.post("/api/registros", editorOnly, async (req, res) => {
   try {
-    let tabName = req.body.prefixo;
+    // Alvo direto: aba 'todos' (ou req.body.tabName / req.body.prefixo como fallback)
+    let tabName = req.body.tabName || 'todos';
     
-    if (!tabName) {
-      const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
-      tabName = response.data.sheets[0].properties.title;
+    // Verifica se a aba 'todos' existe na planilha, senao usa prefixo ou primeira aba
+    const metaResponse = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
+    const sheetExists = metaResponse.data.sheets.some(s => s.properties.title.toLowerCase() === tabName.toLowerCase());
+    if (!sheetExists) {
+      tabName = req.body.prefixo || metaResponse.data.sheets[0].properties.title;
+    } else {
+      const match = metaResponse.data.sheets.find(s => s.properties.title.toLowerCase() === tabName.toLowerCase());
+      if (match) tabName = match.properties.title;
     }
 
     const headerRes = await sheets.spreadsheets.values.get({
