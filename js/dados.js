@@ -161,7 +161,7 @@ const mapToApp = (row) => {
     id: `${row._tabName}__${row._rowNumber}`,
     _rowNumber: row._rowNumber,
     _tabName: row._tabName,
-    prefixo: row._tabName || row['Prefixo'] || row['Prefixo (codigo de prioridade)'] || '',
+    prefixo: (row['PREFIXO'] || row['Prefixo'] || row['Prefixo (codigo de prioridade)'] || (row._tabName && !row._tabName.toLowerCase().includes('todo') ? row._tabName : '') || '').trim(),
     digito: formatarDigitoInteiro(row['DIGITO'] || row['DÍGITO'] || row.digito || row.Digito || ''),
     DIGITO: formatarDigitoInteiro(row['DIGITO'] || row['DÍGITO'] || row.digito || row.Digito || ''),
     municipio: mun,

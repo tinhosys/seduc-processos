@@ -375,8 +375,11 @@ async function getAllRows() {
   const response = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
   const allSheets = response.data.sheets;
 
-  // Excluir aba de controle de acessos e a aba de escolas dos dados de processos
-  const processSheets = allSheets.filter(s => s.properties.title !== 'Acessos' && s.properties.title.toLowerCase() !== 'escolas' && s.properties.title.toLowerCase() !== 'escola');
+  // Se a aba 'todos' estiver presente, os dados sao centralizados nela; senao busca as demais abas
+  const hasTodosSheet = allSheets.some(s => s.properties.title.toLowerCase() === 'todos');
+  const processSheets = hasTodosSheet 
+    ? allSheets.filter(s => s.properties.title.toLowerCase() === 'todos')
+    : allSheets.filter(s => s.properties.title !== 'Acessos' && s.properties.title.toLowerCase() !== 'escolas' && s.properties.title.toLowerCase() !== 'escola');
 
   // IMPORTANTE: nomes de abas com caracteres especiais (/, espaço, etc.)
   // precisam ser envolvidos em aspas simples no range da API
