@@ -1,9 +1,9 @@
 ﻿
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.42
+// Versão do Sistema: v1.3.43
 // ============================================================
-window.APP_VERSION = 'v1.3.42';
+window.APP_VERSION = 'v1.3.43';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -3026,7 +3026,7 @@ async function salvarNovoProcessoPopup(e) {
   }
 
   const valOf = typeof parseCurrency === 'function' ? parseCurrency(document.getElementById('popup-novo-valorOf')?.value || '') : 0;
-  const valPlan = typeof parseCurrency === 'function' ? parseCurrency(document.getElementById('popup-novo-valorPlan')?.value || '') : 0;
+  const valPlan = 0;
 
   const dataInput = document.getElementById('popup-novo-data')?.value || '';
   let dataFmt = '';
@@ -14069,5 +14069,6 @@ function aplicarAuditoriaAntiGravityNaManifestacao() {
   toast('✍️ Achados da Auditoria AntiGravity v2.0 e Minuta injetados nas Seções 4 e 5 da Manifestação!', 'success');
 }
 window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNaManifestacao;
+
 
 
