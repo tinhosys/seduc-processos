@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.41</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.42</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.41</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.42</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1577,6 +1577,12 @@
               <span style="font-size:11.5px; font-weight:800; color:#38bdf8; letter-spacing:0.5px; font-family:'Inter', sans-serif; white-space:nowrap; text-transform:uppercase;">Processando...</span>
             </div>
 
+            <!-- BOTAO NOVO PROCESSO GRANDE E DESTACADO (IMAGEM 1) -->
+            <button id="btn-novo-processo-topo" type="button" class="btn" onclick="abrirModalNovoProcesso()" style="flex:1 1 260px; max-width:440px; height:42px; min-height:42px; max-height:42px; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1.5px solid #10b981; border-radius:10px; background:linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%); color:#34d399; cursor:pointer; font-weight:800; letter-spacing:0.8px; transition:all 0.25s; box-sizing:border-box; box-shadow:0 0 16px rgba(16,185,129,0.3); text-transform:uppercase;" onmouseover="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.5) 0%, rgba(5,150,105,0.6) 100%)'; this.style.boxShadow='0 0 22px rgba(16,185,129,0.55)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%)'; this.style.boxShadow='0 0 16px rgba(16,185,129,0.3)'; this.style.color='#34d399';" title="Cadastrar Novo Processo">
+              <span style="font-size:18px; font-weight:900; line-height:1; display:inline-block; margin-right:2px;">+</span>
+              <span class="btn-text">Novo Processo</span>
+            </button>
+
             <!-- Direita Linha 1: Relatórios Principais -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
               <button type="button" class="btn action-report" onclick="if(typeof window.imprimirAnaliseSintetica==='function'){window.imprimirAnaliseSintetica();}else if(typeof imprimirAnaliseSintetica==='function'){imprimirAnaliseSintetica();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(20,184,166,0.6); border-radius:8px; background:rgba(20,184,166,0.25); color:#2dd4bf; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(20,184,166,0.4)'" onmouseout="this.style.background='rgba(20,184,166,0.25)'" title="Relatório Sintético (Pago e Status por Prefixo)">
@@ -1602,12 +1608,8 @@
             </div>
           </div>
 
-          <!-- LINHA 2 DE BOTÕES: NOVO PROCESSO (PADRÃO), COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
+          <!-- LINHA 2 DE BOTÕES: COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
           <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px; width:100%;">
-            <button id="btn-novo-processo-topo" type="button" class="btn action-report" onclick="novoProcesso()" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%); color:#fbbf24; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%)'" title="Cadastrar Novo Processo">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              <span class="btn-text">Novo Processo</span>
-            </button>
             <button id="btn-compartilhar-topo" class="btn" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
               <span class="btn-text">Compartilhar</span>
@@ -1800,10 +1802,193 @@
           <div class="pagination-controls" id="pg-controls"></div>
         </div>
 
-        
       </section>
 
-      <!-- ============= PAGE: NOVO PROCESSO ============= -->
+      <!-- ============= MODAL POPUP: NOVO PROCESSO (POR CIMA DA RELAÇÃO DE PROCESSOS - IMAGEM 2) ============= -->
+      <div id="modal-popup-novo-processo" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); z-index:99998; justify-content:center; align-items:center; padding:16px; box-sizing:border-box;">
+        <div style="background:#0f172a; border:1px solid rgba(16,185,129,0.5); border-radius:14px; max-width:960px; width:100%; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 16px 45px rgba(0,0,0,0.9); overflow:hidden; position:relative;">
+          
+          <!-- CABEÇALHO DO POPUP COM TÍTULO, SELO DE IA E COMBOS CATEGORIA & TIPO -->
+          <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; background:linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(15,23,42,0.95) 100%);">
+            
+            <div style="display:flex; align-items:center; gap:12px;">
+              <h3 style="margin:0; color:#34d399; font-size:17px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                <span style="font-size:18px;">➕</span>
+                <span>Novo Processo</span>
+              </h3>
+              <!-- Selo IA Discreto com Versão -->
+              <div style="display:inline-flex; align-items:center; gap:6px; padding:3px 10px; background:rgba(99,102,241,0.2); border:1px solid rgba(168,85,247,0.5); border-radius:8px;">
+                <img src="img/icone-ai-chip.png" alt="AI" style="width:18px; height:18px; object-fit:contain;">
+                <span style="font-size:10px; font-weight:800; color:#c084fc; letter-spacing:0.5px;">ANÁLISE INTELIGENTE</span>
+                <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px;">v1.3.42</span>
+              </div>
+            </div>
+
+            <!-- COMBOS NA PARTE DE CIMA: CATEGORIA E TIPO (IMAGEM 2) -->
+            <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+              
+              <!-- Combo Categoria -->
+              <div style="display:flex; align-items:center; gap:6px;">
+                <label for="popup-novo-categoria" style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; margin:0;">Categoria:</label>
+                <select id="popup-novo-categoria" style="background:#1e293b; border:1px solid rgba(255,255,255,0.18); border-radius:6px; color:#f8fafc; font-size:12px; font-weight:600; padding:6px 10px; outline:none; cursor:pointer; height:34px;">
+                  <option value="">Selecione...</option>
+                  <option value="F">F - Fomento</option>
+                  <option value="C">C - Convênio</option>
+                  <option value="T">T - Termo de Cooperação</option>
+                </select>
+              </div>
+
+              <!-- Combo Tipo -->
+              <div style="display:flex; align-items:center; gap:6px;">
+                <label for="popup-novo-tipo" style="font-size:11px; font-weight:700; color:#94a3b8; text-transform:uppercase; margin:0;">Tipo:</label>
+                <select id="popup-novo-tipo" style="background:#1e293b; border:1px solid rgba(255,255,255,0.18); border-radius:6px; color:#f8fafc; font-size:12px; font-weight:600; padding:6px 10px; outline:none; cursor:pointer; height:34px;">
+                  <option value="">Selecione...</option>
+                  <option value="OB">OB - Obras</option>
+                  <option value="MP">MP - Mat. Permanente</option>
+                  <option value="MC">MC - Mat. Consumo</option>
+                  <option value="SI">SI - Sistema</option>
+                  <option value="TR">TR - Treinamento</option>
+                  <option value="OUT">OUT - Outros</option>
+                </select>
+              </div>
+
+              <!-- Botão Fechar Modal -->
+              <button type="button" onclick="fecharModalNovoProcesso()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#94a3b8; border-radius:6px; width:34px; height:34px; font-size:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(239,68,68,0.3)';" onmouseout="this.style.color='#94a3b8'; this.style.background='rgba(255,255,255,0.08)';" title="Fechar janela">✕</button>
+
+            </div>
+
+          </div>
+
+          <!-- CORPO DO FORMULÁRIO COM OS CAMPOS CONFORME IMAGEM 2 -->
+          <div style="padding:20px; flex:1; overflow-y:auto; box-sizing:border-box;">
+            <form id="form-popup-novo-processo" onsubmit="salvarNovoProcessoPopup(event)">
+              
+              <!-- LINHA 1: PREFIXO, ANO, MUNICÍPIO, GRUPO (DÍGITO) -->
+              <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+                
+                <!-- PREFIXO (AMARELO) -->
+                <div style="flex:1.2 1 160px; min-width:140px;">
+                  <label for="popup-novo-prefixo" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Prefixo</label>
+                  <input type="text" id="popup-novo-prefixo" placeholder="Digite ou selecione..." list="list-prefixos" autocomplete="off" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                </div>
+
+                <!-- ANO (AMARELO) -->
+                <div style="flex:0 0 100px; width:100px;">
+                  <label for="popup-novo-ano" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Ano</label>
+                  <input type="text" id="popup-novo-ano" placeholder="AAAA" maxlength="4" list="list-anos" autocomplete="off" style="width:100%; height:40px; text-align:center; font-weight:700; padding:8px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                </div>
+
+                <!-- MUNICÍPIO (AMARELO - OBRIGATÓRIO) -->
+                <div style="flex:2.2 1 240px; min-width:200px;">
+                  <label for="popup-novo-municipio" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">MUNICÍPIO *</label>
+                  <input type="text" id="popup-novo-municipio" placeholder="Ex: Porto Velho" required list="list-municipios" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                </div>
+
+                <!-- GRUPO (DÍGITO) -->
+                <div style="flex:1.2 1 180px; min-width:150px;">
+                  <label for="popup-novo-digito" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px; text-align:center;">Grupo (Dígito)</label>
+                  <input type="text" id="popup-novo-digito" placeholder="Ex: Grupo / Dígito" autocomplete="off" style="width:100%; height:40px; text-align:center; font-weight:700; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                </div>
+
+              </div>
+
+              <!-- LINHA 2: Nº DO PROCESSO (AÇÃO PELO BOTÃO '+', SOMENTE '+') -->
+              <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+                <div style="flex:1 1 300px;">
+                  <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Nº do Processo</label>
+                  <div id="popup-novo-container-numeros" style="display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; gap:6px; align-items:center;">
+                      <!-- ATENÇÃO, AÇÃO PELO BOTAO (+Nova Processo), SOMENTE '+' -->
+                      <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumeroPopup()" style="padding:0 12px; height:40px; border:1px solid rgba(16,185,129,0.5); border-radius:6px; font-weight:800; font-size:18px; color:#34d399; background:rgba(16,185,129,0.1); cursor:pointer; flex-shrink:0;" title="Adicionar outro processo">+</button>
+                      <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- AGRUPAMENTO -->
+                <div style="flex:1 1 200px;">
+                  <label for="popup-novo-agrupamento" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Agrupamento</label>
+                  <input type="text" id="popup-novo-agrupamento" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                </div>
+              </div>
+
+              <!-- LINHA 3: INTERESSADO / ESCOLA (AMARELO - OBRIGATÓRIO) -->
+              <div style="margin-bottom:14px;">
+                <label for="popup-novo-interessado" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Interessado / Escola *</label>
+                <input type="text" id="popup-novo-interessado" placeholder="Nome da escola ou entidade" required list="list-interessados" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+
+              <!-- LINHA 4: OBJETO (AMARELO) -->
+              <div style="margin-bottom:14px;">
+                <label for="popup-novo-objeto" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Objeto</label>
+                <input type="text" id="popup-novo-objeto" placeholder="Descrição do objeto" list="list-objetos" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+
+              <!-- LINHA 5: VALORES (AMARELO) -->
+              <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+                <div style="flex:1 1 200px;">
+                  <label for="popup-novo-valorOf" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Valor Oficial (R$)</label>
+                  <input type="text" id="popup-novo-valorOf" placeholder="0,00" class="input-currency" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                </div>
+                <div style="flex:1 1 200px;">
+                  <label for="popup-novo-valorPlan" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Valor Planilha (R$)</label>
+                  <input type="text" id="popup-novo-valorPlan" placeholder="0,00" class="input-currency" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                </div>
+              </div>
+
+              <!-- LINHA 6: CAMPOS INATIVOS (STATUS, LOCALIZAÇÃO, DATA [HOJE]) CONFORME MARCADO DE VERMELHO -->
+              <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.25); border-radius:8px; padding:12px;">
+                
+                <!-- STATUS (INATIVO / READONLY, PADRÃO COM DADOS DA TELA) -->
+                <div style="flex:1 1 180px;">
+                  <label for="popup-novo-status" style="display:block; font-size:11px; font-weight:700; color:#f87171; margin-bottom:4px; text-transform:uppercase;">
+                    🔒 Status (Inativo)
+                  </label>
+                  <input type="text" id="popup-novo-status" readonly style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(239,68,68,0.3); border-radius:6px; color:#cbd5e1; font-size:13px; cursor:not-allowed; box-sizing:border-box;">
+                </div>
+
+                <!-- LOCALIZAÇÃO (INATIVO / READONLY, PADRÃO COM DADOS DA TELA) -->
+                <div style="flex:1 1 180px;">
+                  <label for="popup-novo-localizacao" style="display:block; font-size:11px; font-weight:700; color:#f87171; margin-bottom:4px; text-transform:uppercase;">
+                    🔒 Localização (Inativo)
+                  </label>
+                  <input type="text" id="popup-novo-localizacao" readonly style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(239,68,68,0.3); border-radius:6px; color:#cbd5e1; font-size:13px; cursor:not-allowed; box-sizing:border-box;">
+                </div>
+
+                <!-- DATA [HOJE] (INATIVO / READONLY, FIXADO COM A DATA DE HOJE) -->
+                <div style="flex:1 1 150px;">
+                  <label for="popup-novo-data" style="display:block; font-size:11px; font-weight:700; color:#f87171; margin-bottom:4px; text-transform:uppercase;">
+                    🔒 Data [Hoje] (Inativo)
+                  </label>
+                  <input type="date" id="popup-novo-data" readonly style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(239,68,68,0.3); border-radius:6px; color:#cbd5e1; font-size:13px; cursor:not-allowed; box-sizing:border-box;">
+                </div>
+
+              </div>
+
+              <!-- LINHA 7: DETALHAMENTO -->
+              <div style="margin-bottom:18px;">
+                <label for="popup-novo-obs" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Detalhamento</label>
+                <textarea id="popup-novo-obs" placeholder="Detalhamento opcional sobre o novo processo..." style="width:100%; min-height:60px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; resize:vertical; box-sizing:border-box; font-family:inherit;"></textarea>
+              </div>
+
+              <!-- BARRA INFERIOR DE BOTÕES: CANCELAR E GRAVA COM REFRESH INSTANTÂNEO -->
+              <div style="display:flex; justify-content:flex-end; align-items:center; gap:12px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+                <button type="button" onclick="fecharModalNovoProcesso()" class="btn btn-ghost" style="height:40px; padding:0 20px; font-size:13px; font-weight:600; border-radius:8px; cursor:pointer;">
+                  Cancelar
+                </button>
+                <button type="submit" id="btn-gravar-popup-novo" class="btn btn-success" style="height:40px; padding:0 28px; font-size:13.5px; font-weight:800; border-radius:8px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; box-shadow:0 4px 14px rgba(16,185,129,0.4); cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                  <span>💾</span>
+                  <span>Gravar e Salvar</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============= PAGE: NOVO PROCESSO (FORMULÁRIO DE EDIÇÃO) ============= -->
       <section class="page" id="page-novo">
 
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px; width: 100%;">
@@ -1815,7 +2000,7 @@
               <div style="display:flex; flex-direction:column; line-height:1.15;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.41</span>
+                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.42</span>
                 </div>
                 <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
               </div>
@@ -3357,7 +3542,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.41
+              GBZ - v1.3.42
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3630,7 +3815,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.41] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.42] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6344,3 +6529,4 @@ function mudarAbaDiarias(aba, el) {
   <script src="js/newsticker.js"></script>
 </body>
 </html>
+

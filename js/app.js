@@ -1,9 +1,9 @@
 ﻿
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.41
+// Versão do Sistema: v1.3.42
 // ============================================================
-window.APP_VERSION = 'v1.3.41';
+window.APP_VERSION = 'v1.3.42';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -2932,9 +2932,179 @@ function editarProcesso(id) {
   navegar('novo');
 }
 
+// ---- POPUP: NOVO PROCESSO (POR CIMA DA RELAÇÃO DE PROCESSOS - IMAGEM 1 E 2) ----
+function abrirModalNovoProcesso() {
+  const modal = document.getElementById('modal-popup-novo-processo');
+  if (!modal) {
+    novoProcesso();
+    return;
+  }
+
+  // Limpa formulário do popup
+  const form = document.getElementById('form-popup-novo-processo');
+  if (form) form.reset();
+
+  // Resetar números adicionais
+  const containerNum = document.getElementById('popup-novo-container-numeros');
+  if (containerNum) {
+    containerNum.innerHTML = `
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumeroPopup()" style="padding:0 12px; height:40px; border:1px solid rgba(16,185,129,0.5); border-radius:6px; font-weight:800; font-size:18px; color:#34d399; background:rgba(16,185,129,0.1); cursor:pointer; flex-shrink:0;" title="Adicionar outro processo">+</button>
+        <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;">
+      </div>
+    `;
+  }
+
+  // Preencher campos INATIVOS com dados padrão da tela (Status, Localização, Data de Hoje)
+  const statusEl = document.getElementById('popup-novo-status');
+  if (statusEl) {
+    statusEl.value = 'REG. DEMANDA';
+  }
+
+  const locEl = document.getElementById('popup-novo-localizacao');
+  if (locEl) {
+    locEl.value = 'CAM | GDSM | GMAC';
+  }
+
+  const dataEl = document.getElementById('popup-novo-data');
+  if (dataEl) {
+    const hoje = new Date().toISOString().split('T')[0];
+    dataEl.value = hoje;
+  }
+
+  // Ano padrão: ano corrente se vazio
+  const anoEl = document.getElementById('popup-novo-ano');
+  if (anoEl && !anoEl.value) {
+    anoEl.value = new Date().getFullYear();
+  }
+
+  // Exibir popup modal com display flex
+  modal.style.display = 'flex';
+}
+window.abrirModalNovoProcesso = abrirModalNovoProcesso;
+
+function fecharModalNovoProcesso() {
+  const modal = document.getElementById('modal-popup-novo-processo');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalNovoProcesso = fecharModalNovoProcesso;
+
+function adicionarCampoNumeroPopup(val = '') {
+  const container = document.getElementById('popup-novo-container-numeros');
+  if (!container) return;
+  const div = document.createElement('div');
+  div.style.display = 'flex';
+  div.style.gap = '6px';
+  div.style.alignItems = 'center';
+  div.innerHTML = `
+    <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0 12px; height:40px; border-radius:6px; font-weight:800; font-size:16px; flex-shrink:0; background:#dc2626; color:#fff; border:none; cursor:pointer;" title="Remover processo">-</button>
+    <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" value="${val}">
+  `;
+  container.appendChild(div);
+}
+window.adicionarCampoNumeroPopup = adicionarCampoNumeroPopup;
+
+async function salvarNovoProcessoPopup(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const inputsNum = Array.from(document.querySelectorAll('input[name="popup_numero[]"]'));
+  const numerosJoined = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ');
+
+  const municipio = (document.getElementById('popup-novo-municipio')?.value || '').trim();
+  const interessado = (document.getElementById('popup-novo-interessado')?.value || '').trim();
+
+  if (!municipio) {
+    toast('Por favor, informe o Município.', 'error');
+    document.getElementById('popup-novo-municipio')?.focus();
+    return;
+  }
+
+  if (!interessado && !numerosJoined) {
+    toast('Informe ao menos o Interessado / Escola ou o Nº do Processo.', 'error');
+    document.getElementById('popup-novo-interessado')?.focus();
+    return;
+  }
+
+  const valOf = typeof parseCurrency === 'function' ? parseCurrency(document.getElementById('popup-novo-valorOf')?.value || '') : 0;
+  const valPlan = typeof parseCurrency === 'function' ? parseCurrency(document.getElementById('popup-novo-valorPlan')?.value || '') : 0;
+
+  const dataInput = document.getElementById('popup-novo-data')?.value || '';
+  let dataFmt = '';
+  if (dataInput && dataInput.includes('-')) {
+    dataFmt = dataInput.split('-').reverse().join('/');
+  } else {
+    dataFmt = dataInput;
+  }
+
+  const user = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
+  const now = new Date();
+  const dataHoraStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  const dados = {
+    prefixo:     (document.getElementById('popup-novo-prefixo')?.value || '').trim().toUpperCase(),
+    municipio:   municipio,
+    numero:      numerosJoined,
+    interessado: interessado,
+    objeto:      (document.getElementById('popup-novo-objeto')?.value || '').trim(),
+    valorOf:     valOf,
+    valorPlan:   valPlan,
+    diferenca:   valOf - valPlan,
+    status:      document.getElementById('popup-novo-status')?.value || 'REG. DEMANDA',
+    localizacao: document.getElementById('popup-novo-localizacao')?.value || 'CAM | GDSM | GMAC',
+    data:        dataFmt,
+    obs:         (document.getElementById('popup-novo-obs')?.value || '').trim(),
+    ano:         (document.getElementById('popup-novo-ano')?.value || '').trim(),
+    agrupamento: (document.getElementById('popup-novo-agrupamento')?.value || '').trim(),
+    digito:      typeof window.limparDigitoValor === 'function' ? window.limparDigitoValor(document.getElementById('popup-novo-digito')?.value || '') : (document.getElementById('popup-novo-digito')?.value || '').trim(),
+    DIGITO:      typeof window.limparDigitoValor === 'function' ? window.limparDigitoValor(document.getElementById('popup-novo-digito')?.value || '') : (document.getElementById('popup-novo-digito')?.value || '').trim(),
+    categoria:   document.getElementById('popup-novo-categoria')?.value || '',
+    tipo:        document.getElementById('popup-novo-tipo')?.value || '',
+    marca:       '',
+    CAM:         '',
+    GAB:         '',
+    CC:          '',
+    executivo:   '',
+    anotacao:    '',
+    ultimaEdicao:   user ? (user.nome || user.whatsapp) : 'Sistema',
+    dataHoraEdicao: dataHoraStr,
+    contatos:    [],
+    repositorioArquivos: [],
+    linkGoogleDrive: '',
+    analiseCam: null
+  };
+
+  // Feedback instantâneo no botão
+  const btnGravar = document.getElementById('btn-gravar-popup-novo');
+  if (btnGravar) {
+    btnGravar.disabled = true;
+    btnGravar.innerHTML = '<span>⏳</span><span>Salvando...</span>';
+  }
+
+  try {
+    if (typeof adicionarProcesso === 'function') {
+      await adicionarProcesso(dados);
+    }
+    toast('Processo cadastrado com sucesso!', 'success');
+    fecharModalNovoProcesso();
+    
+    // REFRESH INSTANTÂNEO na tela de listagem de processos
+    if (typeof renderProcessos === 'function') {
+      renderProcessos();
+    }
+  } catch (err) {
+    console.error('Erro ao salvar novo processo pelo popup:', err);
+    toast('Erro ao cadastrar processo.', 'error');
+  } finally {
+    if (btnGravar) {
+      btnGravar.disabled = false;
+      btnGravar.innerHTML = '<span>💾</span><span>Gravar e Salvar</span>';
+    }
+  }
+}
+window.salvarNovoProcessoPopup = salvarNovoProcessoPopup;
+
 function novoProcesso() {
-  state.editandoId = null;
-  navegar('novo');
+  abrirModalNovoProcesso();
 }
 
 function confirmarExcluir(id) {
@@ -13899,4 +14069,5 @@ function aplicarAuditoriaAntiGravityNaManifestacao() {
   toast('✍️ Achados da Auditoria AntiGravity v2.0 e Minuta injetados nas Seções 4 e 5 da Manifestação!', 'success');
 }
 window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNaManifestacao;
+
 
