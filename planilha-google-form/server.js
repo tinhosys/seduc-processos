@@ -616,15 +616,16 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
       return res.status(400).json({ erro: "Número de linha inválido." });
     }
 
+    const safeTitle = tabName.replace(/'/g, "''");
     const headerRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A${rowNumber}:ZZ${rowNumber}` // fetch existing row!
+      range: `'${safeTitle}'!A${rowNumber}:ZZ${rowNumber}` // fetch existing row!
     });
     const existingRow = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
 
     const headerDefRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A1:ZZ1`
+      range: `'${safeTitle}'!A1:ZZ1`
     });
     const headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
 
@@ -635,7 +636,7 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
     const updatedRow = mapDataToRow(req.body, headers, existingRow, req.sessao);
 
     const lastColumn = columnToLetter(headers.length);
-    const range = `${tabName}!A${rowNumber}:${lastColumn}${rowNumber}`;
+    const range = `'${safeTitle}'!A${rowNumber}:${lastColumn}${rowNumber}`;
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
@@ -643,6 +644,7 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
       valueInputOption: "USER_ENTERED",
       requestBody: { values: [updatedRow] }
     });
+    console.log(`[UPDATE] Linha ${rowNumber} da aba '${tabName}' atualizada. Range: ${range}`);
 
     res.json({ sucesso: true, mensagem: "Atualizado com sucesso." });
   } catch (error) {
@@ -790,9 +792,10 @@ app.post("/api/registros", editorOnly, async (req, res) => {
       if (match) tabName = match.properties.title;
     }
 
+    const safeTitle = tabName.replace(/'/g, "''");
     const headerRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A1:ZZ1`
+      range: `'${safeTitle}'!A1:ZZ1`
     });
     
     const headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
@@ -801,14 +804,15 @@ app.post("/api/registros", editorOnly, async (req, res) => {
     }
 
     const newRow = mapDataToRow(req.body, headers, [], req.sessao);
-
+    const lastColLetter = columnToLetter(headers.length);
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${tabName}!A:Z`,
+      range: `'${safeTitle}'!A:${lastColLetter}`,
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
     });
+    console.log(`[INSERT] Novo registro adicionado na aba '${tabName}'. Range: '${safeTitle}'!A:${lastColLetter}`);
 
     res.json({ sucesso: true, mensagem: "Novo registro inserido com sucesso." });
   } catch (error) {
@@ -1398,7 +1402,7 @@ async function garantirColunasAdicionais() {
       });
       let headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
       if (headers.length > 0) {
-        const colunasParaGarantir = ["Marca", "CATEGORIA", "TIPO", "CAM", "GAB", "CC", "EXECUTIVO"];
+        const colunasParaGarantir = ["PREFIXO", "Marca", "CATEGORIA", "TIPO", "CAM", "GAB", "CC", "EXECUTIVO", "CNPJ"];
         const toAdd = [];
         for (const col of colunasParaGarantir) {
           const hasCol = headers.some(h => (h || "").toLowerCase().trim() === col.toLowerCase());

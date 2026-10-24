@@ -328,6 +328,8 @@ async function adicionarProcesso(dados) {
       body: JSON.stringify({ 
         ...dados, 
         tabName: 'todos',
+        cnpj: dados.cnpj || '',
+        CNPJ: dados.cnpj || '',
         DIGITO: dados.digito || dados.DIGITO || '', 
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })
@@ -353,7 +355,13 @@ async function atualizarProcesso(id, dados) {
     await fetch(API_BASE + `/api/registros/${id}`, {
       method: 'PUT',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({ ...dados, DIGITO: dados.digito || dados.DIGITO || '', 'DÍGITO': dados.digito || dados.DIGITO || '' })
+      body: JSON.stringify({ 
+        ...dados, 
+        cnpj: dados.cnpj || '',
+        CNPJ: dados.cnpj || '',
+        DIGITO: dados.digito || dados.DIGITO || '', 
+        'DÍGITO': dados.digito || dados.DIGITO || '' 
+      })
     });
   } catch(err) {
     console.error(err);
