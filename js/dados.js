@@ -178,9 +178,27 @@ const mapToApp = (row) => {
     obs: row['OBSERVACAO'] || row['Observação'] || row['Obs.:'] || row['Obs'] || row.obs || '',
     data: row['DATA'] || row['Data'] || row.data || '',
     anotacao: row['ANOTACAO'] || row['Anotação'] || row.anotacao || '',
+    categoria: (() => {
+      const raw = String(row['CATEGORIA'] || row['categoria'] || '').trim().toUpperCase();
+      if (!raw) return '';
+      if (raw === 'F' || raw.startsWith('FOM')) return 'F';
+      if (raw === 'C' || raw.startsWith('CONV')) return 'C';
+      if (raw === 'T' || raw.startsWith('TERM')) return 'T';
+      if (raw === 'O' || raw.startsWith('OUT')) return 'T';
+      return raw;
+    })(),
+    tipo: (() => {
+      const raw = String(row['TIPO'] || row['tipo'] || '').trim().toUpperCase();
+      if (!raw) return '';
+      if (raw === 'OB' || raw.startsWith('OBR')) return 'OB';
+      if (raw === 'MP' || raw.includes('PERM')) return 'MP';
+      if (raw === 'MC' || raw.includes('CONS')) return 'MC';
+      if (raw === 'SI' || raw.startsWith('SIST')) return 'SI';
+      if (raw === 'TR' || raw.startsWith('TREIN')) return 'TR';
+      if (raw === 'OUT' || raw.startsWith('OUT')) return 'OUT';
+      return raw;
+    })(),
     marca: String(row['MARCA'] || row['Marca'] || row.marca || row['Marcado'] || '').trim(),
-    categoria: row['CATEGORIA'] || row['categoria'] || '',
-    tipo: row['TIPO'] || row['tipo'] || '',
     CAM: (row['CAM'] === '1' || row['CAM'] === 1 || row['CAM'] === true || String(row['CAM']).toLowerCase() === 'sim') ? '1' : '0',
     GAB: (row['GAB-SEDUC'] === '1' || row['GAB-SEDUC'] === 1 || row['GAB'] === '1' || row['GAB'] === 1 || String(row['GAB-SEDUC']).toLowerCase() === 'sim') ? '1' : '0',
     CC: (row['CASA CIVIL'] === '1' || row['CASA CIVIL'] === 1 || row['CC'] === '1' || row['CC'] === 1 || String(row['CASA CIVIL']).toLowerCase() === 'sim') ? '1' : '0',
@@ -211,6 +229,7 @@ const mapToSheet = (dados) => {
     return Number(val).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
   return {
+    'PREFIXO': dados.prefixo || '',
     'DIGITO': formatarDigitoInteiro(dados.digito || dados.DIGITO || ''),
     'MUNICIPIO': dados.municipio || '',
     'PROCESSOS': dados.numero || '',

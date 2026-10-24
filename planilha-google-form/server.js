@@ -333,18 +333,27 @@ function columnToLetter(column) {
 }
 
 const defaultHeaders = [
+  "PREFIXO",
   "DIGITO",
   "MUNICIPIO",
+  "ANO",
   "PROCESSOS",
   "INTERESSADO",
+  "CATEGORIA",
+  "TIPO",
   "OBJETO",
   "VALOR OF",
   "VLR PLANILHA",
-  "VLR DIFERENCA",
   "STATUS",
   "LOCALIZACAO",
-  "OBSERVACAO",
   "DATA",
+  "CNPJ",
+  "CAM",
+  "GAB-SEDUC",
+  "CASA CIVIL",
+  "AGRUPAMENTO",
+  "VLR DIFERENCA",
+  "OBSERVACAO",
   "ANOTACAO",
   "CONTATO",
   "APONTAMENTO",
@@ -352,13 +361,6 @@ const defaultHeaders = [
   "ULTIMA EDICAO LOGIN",
   "DATA/HORA EDICAO",
   "MARCA",
-  "CATEGORIA",
-  "TIPO",
-  "CAM",
-  "GAB-SEDUC",
-  "CASA CIVIL",
-  "ANO",
-  "AGRUPAMENTO",
   "TIPO AUDITORIO",
   "QUADRA",
   "PATIO",
@@ -557,6 +559,8 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
       val = data.detalhamentoItens || data['DETALHAMENTO ITENS'] || '';
     } else if (hLow.includes('demais')) {
       val = data.demaisObservacoes || data['DEMAIS OBSERVACOES'] || '';
+    } else if (hLow.includes('cnpj')) {
+      val = data.cnpj !== undefined ? data.cnpj : (data.CNPJ !== undefined ? data.CNPJ : '');
     } else if (hLow.includes('executivo')) {
       val = data.executivo !== undefined ? data.executivo : (data.EXECUTIVO !== undefined ? data.EXECUTIVO : '');
     }
