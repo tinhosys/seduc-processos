@@ -1,9 +1,9 @@
 ﻿
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.43
+// Versão do Sistema: v1.3.44
 // ============================================================
-window.APP_VERSION = 'v1.3.43';
+window.APP_VERSION = 'v1.3.44';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -2978,6 +2978,15 @@ function abrirModalNovoProcesso() {
     anoEl.value = new Date().getFullYear();
   }
 
+  // Reset do campo CNPJ e container Receita Federal do popup
+  const cnpjPopupEl = document.getElementById('popup-novo-cnpj');
+  if (cnpjPopupEl) cnpjPopupEl.value = '';
+  const containerReceitaPopup = document.getElementById('popup-novo-container-receita');
+  if (containerReceitaPopup) containerReceitaPopup.style.display = 'none';
+  const labelReceitaPopup = document.getElementById('popup-novo-label-receita');
+  if (labelReceitaPopup) labelReceitaPopup.innerHTML = '';
+  window._popupUltimoResultadoCNPJReceitaTexto = '';
+
   // Exibir popup modal com display flex
   modal.style.display = 'flex';
 }
@@ -3045,6 +3054,8 @@ async function salvarNovoProcessoPopup(e) {
     municipio:   municipio,
     numero:      numerosJoined,
     interessado: interessado,
+    cnpj:        (document.getElementById('popup-novo-cnpj')?.value || '').trim(),
+    cnpjReceitaTexto: window._popupUltimoResultadoCNPJReceitaTexto || '',
     objeto:      (document.getElementById('popup-novo-objeto')?.value || '').trim(),
     valorOf:     valOf,
     valorPlan:   valPlan,
@@ -3102,6 +3113,273 @@ async function salvarNovoProcessoPopup(e) {
   }
 }
 window.salvarNovoProcessoPopup = salvarNovoProcessoPopup;
+
+// ---- FUNÇÕES ESPECÍFICAS PARA CNPJ NO POPUP NOVO PROCESSO (NÃO REQUERIDO) ----
+function mascaraCNPJInputPopup(el) {
+  if (!el) return;
+  let v = el.value.replace(/\D/g, '');
+  if (v.length > 14) v = v.substring(0, 14);
+  v = v.replace(/^(\d{2})(\d)/, '$1.$2');
+  v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+  v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
+  v = v.replace(/(\d{4})(\d)/, '$1-$2');
+  el.value = v;
+  if (el.value.replace(/\D/g, '').length === 14) {
+    consultarCNPJPopup(el.value, true);
+  }
+}
+window.mascaraCNPJInputPopup = mascaraCNPJInputPopup;
+
+function autoPreencherCNPJPopup(el) {
+  if (!el) return;
+  el.removeAttribute('required');
+  el.required = false;
+  if (el.value.trim() && el.value.replace(/\D/g, '').length === 14) {
+    consultarCNPJPopup(el.value.trim(), true);
+  }
+}
+window.autoPreencherCNPJPopup = autoPreencherCNPJPopup;
+
+function copiarCNPJPopup(btn) {
+  const input = document.getElementById('popup-novo-cnpj');
+  if (!input || !input.value.trim() || input.value.trim() === '00.000.000/0000-00') {
+    if (typeof toast === 'function') toast('Nenhum CNPJ preenchido para copiar', 'warning');
+    return;
+  }
+  const val = input.value.trim();
+  const salvarOriginal = btn.innerHTML;
+
+  const feedbackSucesso = () => {
+    btn.innerHTML = '<span style="font-size:12px;font-weight:bold;color:#10b981;">✓ Copiado</span>';
+    btn.style.borderColor = '#10b981';
+    btn.style.color = '#10b981';
+    if (typeof toast === 'function') toast('CNPJ copiado: ' + val, 'success');
+    setTimeout(() => {
+      btn.innerHTML = salvarOriginal;
+      btn.style.borderColor = 'rgba(255,255,255,0.18)';
+      btn.style.color = '#38bdf8';
+    }, 1500);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(feedbackSucesso).catch(() => {
+      input.select();
+      document.execCommand('copy');
+      feedbackSucesso();
+    });
+  } else {
+    input.select();
+    document.execCommand('copy');
+    feedbackSucesso();
+  }
+}
+window.copiarCNPJPopup = copiarCNPJPopup;
+
+function copiarCNPJSilenciosoPopup() {
+  const input = document.getElementById('popup-novo-cnpj');
+  const val = input ? input.value.trim() : '';
+  if (val && val !== '00.000.000/0000-00' && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).catch(() => {});
+  }
+}
+window.copiarCNPJSilenciosoPopup = copiarCNPJSilenciosoPopup;
+
+function togglePainelReceitaPopup(forcarAberto) {
+  const corpo = document.getElementById('popup-novo-corpo-receita');
+  const seta = document.getElementById('popup-novo-seta-receita');
+  if (!corpo) return;
+
+  const estaFechado = corpo.style.display === 'none';
+  const abrir = forcarAberto !== undefined ? !!forcarAberto : estaFechado;
+
+  if (abrir) {
+    corpo.style.display = 'block';
+    if (seta) seta.style.transform = 'rotate(180deg)';
+  } else {
+    corpo.style.display = 'none';
+    if (seta) seta.style.transform = 'rotate(0deg)';
+  }
+}
+window.togglePainelReceitaPopup = togglePainelReceitaPopup;
+
+function atualizarLabelReceitaPopup(dadosOuTexto, statusTipo) {
+  const lbl = document.getElementById('popup-novo-label-receita');
+  const box = document.getElementById('popup-novo-container-receita');
+  const subResumo = document.getElementById('popup-novo-subtitulo-receita');
+  if (!lbl) return;
+
+  if (!dadosOuTexto) {
+    lbl.innerHTML = '';
+    if (box) box.style.display = 'none';
+    return;
+  }
+
+  if (typeof dadosOuTexto === 'string') {
+    window._popupUltimoResultadoCNPJReceitaTexto = dadosOuTexto;
+    if (statusTipo === 'loading') {
+      lbl.innerHTML = `
+        <div style="display:inline-flex; align-items:center; gap:8px; color:#38bdf8; font-weight:600;">
+          <span style="display:inline-block; width:14px; height:14px; border:2px solid rgba(56,189,248,0.25); border-top-color:#38bdf8; border-radius:50%; animation:spinReceita 0.8s linear infinite;"></span>
+          <span>${dadosOuTexto}</span>
+        </div>
+      `;
+      if (subResumo) subResumo.textContent = 'Consultando base da Receita Federal...';
+      if (box) {
+        box.style.display = 'flex';
+        box.style.borderColor = 'rgba(56,189,248,0.65)';
+        box.style.background = 'rgba(15,23,42,0.92)';
+      }
+    } else {
+      lbl.innerHTML = `<span style="color:#f87171;">${dadosOuTexto}</span>`;
+      if (subResumo) subResumo.textContent = 'Aviso / Não localizado';
+      if (box) {
+        box.style.display = 'flex';
+        box.style.borderColor = 'rgba(239,68,68,0.45)';
+        box.style.background = 'rgba(127,29,29,0.2)';
+      }
+    }
+    return;
+  }
+
+  const d = dadosOuTexto;
+  const entidade = d.razao_social || d.nome_fantasia || 'NÃO INFORMADA';
+  const fantasia = (d.nome_fantasia && d.nome_fantasia !== d.razao_social) ? d.nome_fantasia : '';
+  const situacao = (d.situacao || 'ATIVA').toUpperCase();
+  const isAtiva = situacao.includes('ATIVA') || situacao.includes('REGULAR');
+  const corSituacao = isAtiva ? '#10b981' : '#ef4444';
+  const bgSituacao = isAtiva ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)';
+  const munUf = [d.municipio, d.uf].filter(Boolean).join(' - ') || 'RO';
+
+  let html = `
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <span style="font-weight:800; color:#fff; font-size:12.5px;">${entidade}</span>
+        <span style="background:${bgSituacao}; color:${corSituacao}; border:1px solid ${corSituacao}; padding:2px 8px; border-radius:4px; font-weight:800; font-size:10.5px;">${situacao}</span>
+      </div>
+      ${fantasia ? `<div style="font-size:11.5px; color:#94a3b8;"><strong style="color:#cbd5e1;">Nome Fantasia:</strong> ${fantasia}</div>` : ''}
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:6px; font-size:11.5px; margin-top:2px;">
+        <div><strong style="color:#94a3b8;">Município/UF:</strong> <span style="color:#fff;">${munUf}</span></div>
+        <div><strong style="color:#94a3b8;">Natureza:</strong> <span style="color:#cbd5e1;">${d.natureza_juridica || 'Entidade Pública / Escolar'}</span></div>
+        ${d.responsavel ? `<div><strong style="color:#94a3b8;">Representante:</strong> <span style="color:#38bdf8;">${d.responsavel}</span></div>` : ''}
+        ${d.telefone ? `<div><strong style="color:#94a3b8;">Telefone:</strong> <span style="color:#cbd5e1;">${d.telefone}</span></div>` : ''}
+      </div>
+    </div>
+  `;
+
+  lbl.innerHTML = html;
+  window._popupUltimoResultadoCNPJReceitaTexto = `${entidade} (${situacao}) - ${munUf}`;
+  if (subResumo) subResumo.textContent = `${entidade} • ${situacao}`;
+  if (box) {
+    box.style.display = 'flex';
+    if (isAtiva) {
+      box.style.borderColor = 'rgba(16,185,129,0.55)';
+      box.style.background = 'rgba(6,78,59,0.22)';
+    } else {
+      box.style.borderColor = 'rgba(239,68,68,0.55)';
+      box.style.background = 'rgba(127,29,29,0.25)';
+    }
+  }
+  togglePainelReceitaPopup(true);
+}
+window.atualizarLabelReceitaPopup = atualizarLabelReceitaPopup;
+
+async function consultarCNPJPopup(cnpjInput, silencioso) {
+  const el = document.getElementById('popup-novo-cnpj');
+  const raw = cnpjInput !== undefined ? cnpjInput : (el ? el.value : '');
+  const cnpjLimpo = String(raw || '').replace(/\D/g, '');
+
+  if (cnpjLimpo.length !== 14) {
+    if (!silencioso && typeof toast === 'function') {
+      toast('Informe um CNPJ válido de 14 dígitos para consultar.', 'warning');
+    }
+    return null;
+  }
+
+  const cnpjFmt = typeof formatarCNPJ === 'function' ? formatarCNPJ(cnpjLimpo) : cnpjLimpo;
+  atualizarLabelReceitaPopup(`Consultando CNPJ ${cnpjFmt} na base da Receita Federal...`, 'loading');
+
+  let dados = null;
+  try {
+    const resp = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpjLimpo}`, { method: 'GET' });
+    if (resp.ok) {
+      const json = await resp.json();
+      if (json && (json.razao_social || json.cnpj)) {
+        const socio = Array.isArray(json.qsa) && json.qsa.length > 0 ? (json.qsa[0].nome_socio + (json.qsa[0].qualificacao_socio ? ` (${json.qsa[0].qualificacao_socio})` : '')) : '';
+        const tel = json.ddd_telefone_1 ? (json.ddd_telefone_1.length >= 10 ? `(${json.ddd_telefone_1.substring(0,2)}) ${json.ddd_telefone_1.substring(2)}` : json.ddd_telefone_1) : '';
+        dados = {
+          cnpj: cnpjFmt,
+          razao_social: json.razao_social || '',
+          nome_fantasia: json.nome_fantasia || '',
+          situacao: json.descricao_situacao_cadastral || (json.situacao_cadastral === 2 ? 'ATIVA' : 'REGULAR'),
+          municipio: json.municipio || '',
+          uf: json.uf || 'RO',
+          responsavel: socio,
+          telefone: tel,
+          natureza_juridica: json.natureza_juridica || ''
+        };
+      }
+    }
+  } catch (e) {
+    console.warn('Erro ao consultar BrasilAPI no popup:', e);
+  }
+
+  if (!dados) {
+    try {
+      const resp2 = await fetch(`https://open.cnpja.com/office/${cnpjLimpo}`, { method: 'GET' });
+      if (resp2.ok) {
+        const json2 = await resp2.json();
+        if (json2 && (json2.company || json2.alias || json2.taxId)) {
+          dados = {
+            cnpj: cnpjFmt,
+            razao_social: json2.company?.name || json2.alias || '',
+            nome_fantasia: json2.alias || '',
+            situacao: json2.status?.text || 'ATIVA',
+            municipio: json2.address?.city || '',
+            uf: json2.address?.state || 'RO',
+            responsavel: '',
+            telefone: json2.phones?.[0]?.number || '',
+            natureza_juridica: json2.company?.nature?.text || ''
+          };
+        }
+      }
+    } catch (e2) {
+      console.warn('Erro ao consultar CNPJa no popup:', e2);
+    }
+  }
+
+  if (dados) {
+    atualizarLabelReceitaPopup(dados, 'success');
+    if (!silencioso && typeof toast === 'function') {
+      toast(`CNPJ consultado: ${dados.razao_social} (${dados.situacao})`, 'success');
+    }
+    // Se o campo interessado estiver vazio no popup, sugere o nome
+    const inputInteressado = document.getElementById('popup-novo-interessado');
+    if (inputInteressado && !inputInteressado.value.trim() && (dados.razao_social || dados.nome_fantasia)) {
+      inputInteressado.value = dados.nome_fantasia || dados.razao_social;
+    }
+    // Se o município estiver vazio no popup, sugere
+    const inputMun = document.getElementById('popup-novo-municipio');
+    if (inputMun && !inputMun.value.trim() && dados.municipio) {
+      inputMun.value = dados.municipio;
+    }
+  } else {
+    atualizarLabelReceitaPopup(`Não foi possível obter dados para o CNPJ ${cnpjFmt}. Verifique no link da Receita Federal.`, 'error');
+  }
+  return dados;
+}
+window.consultarCNPJPopup = consultarCNPJPopup;
+
+function consultarCNPJPopupManualmente() {
+  const el = document.getElementById('popup-novo-cnpj');
+  const val = el ? el.value.trim() : '';
+  if (!val || val === '00.000.000/0000-00') {
+    if (typeof toast === 'function') toast('Digite um CNPJ no campo para consultar.', 'warning');
+    if (el) el.focus();
+    return;
+  }
+  consultarCNPJPopup(val, false);
+}
+window.consultarCNPJPopupManualmente = consultarCNPJPopupManualmente;
 
 function novoProcesso() {
   abrirModalNovoProcesso();
@@ -14069,6 +14347,7 @@ function aplicarAuditoriaAntiGravityNaManifestacao() {
   toast('✍️ Achados da Auditoria AntiGravity v2.0 e Minuta injetados nas Seções 4 e 5 da Manifestação!', 'success');
 }
 window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNaManifestacao;
+
 
 
 
