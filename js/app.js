@@ -1,9 +1,9 @@
 ﻿
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.45
+// Versão do Sistema: v1.3.46
 // ============================================================
-window.APP_VERSION = 'v1.3.45';
+window.APP_VERSION = 'v1.3.46';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -2987,6 +2987,10 @@ function abrirModalNovoProcesso() {
   if (labelReceitaPopup) labelReceitaPopup.innerHTML = '';
   window._popupUltimoResultadoCNPJReceitaTexto = '';
 
+  // Reset do banner de duplicidade / alerta de demanda
+  const alertaBanner = document.getElementById('popup-novo-alerta-duplicidade');
+  if (alertaBanner) alertaBanner.style.display = 'none';
+
   // Exibir popup modal com display flex
   modal.style.display = 'flex';
 }
@@ -2998,6 +3002,200 @@ function fecharModalNovoProcesso() {
 }
 window.fecharModalNovoProcesso = fecharModalNovoProcesso;
 
+function abrirProcessoPorIdPopup(id) {
+  fecharModalNovoProcesso();
+  if (typeof editarProcesso === 'function') {
+    editarProcesso(id);
+  }
+}
+window.abrirProcessoPorIdPopup = abrirProcessoPorIdPopup;
+
+// Normalizador de texto para comparação segura
+function _normTextoPopup(txt) {
+  return String(txt || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toUpperCase();
+}
+
+// Verificação de Chave Primária (Nº do Processo) - Se já houver cadastrado, alerta e mostra (sem bloquear)
+function verificarProcessoExistentePopup(inputEl) {
+  const alertaBox = document.getElementById('popup-novo-alerta-duplicidade');
+  const alertaTitulo = document.getElementById('popup-novo-alerta-titulo');
+  const alertaMsg = document.getElementById('popup-novo-alerta-msg');
+  const alertaLink = document.getElementById('popup-novo-alerta-link');
+
+  const valRaw = (inputEl ? inputEl.value : '') || '';
+  const digits = valRaw.replace(/\D/g, '');
+
+  if (digits.length < 5) {
+    // Se não houver dígitos suficientes, apenas verifica se há demanda registrada
+    verificarDemandaRegistradaPopup();
+    return;
+  }
+
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  const encontrado = procs.find(p => {
+    if (!p.numero) return false;
+    const nums = String(p.numero).split(/[,;\/]/);
+    return nums.some(n => {
+      const d = n.replace(/\D/g, '');
+      return d && (d === digits || (digits.length >= 10 && d.includes(digits)));
+    });
+  });
+
+  if (encontrado) {
+    if (alertaBox) alertaBox.style.display = 'block';
+    if (alertaTitulo) alertaTitulo.textContent = 'Processo já Registrado (Chave Primária)';
+    const valFmt = typeof formatCurrency === 'function' ? formatCurrency(encontrado.valorOf || 0) : (encontrado.valorOf || '0,00');
+    if (alertaMsg) {
+      alertaMsg.innerHTML = `<strong>Atenção:</strong> O número do processo <strong>${valRaw}</strong> já se encontra cadastrado no sistema:<br>` +
+        `• <strong>PREFIXO:</strong> ${encontrado.prefixo || '-'}<br>` +
+        `• <strong>INTERESSADO:</strong> ${encontrado.interessado || '-'}<br>` +
+        `• <strong>VALOR:</strong> ${valFmt}`;
+    }
+    if (alertaLink) {
+      alertaLink.innerHTML = `
+        <button type="button" onclick="abrirProcessoPorIdPopup('${encontrado.id}')" style="background:#f59e0b; color:#0f172a; border:none; padding:6px 14px; border-radius:6px; font-weight:800; font-size:11.5px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+          <span>🔗</span>
+          <span>Ver Processo Cadastrado (#${encontrado.id})</span>
+        </button>
+      `;
+    }
+    return;
+  }
+
+  // Se o número estiver livre, verifica se os campos marcados formam demanda já registrada
+  verificarDemandaRegistradaPopup();
+}
+window.verificarProcessoExistentePopup = verificarProcessoExistentePopup;
+
+// Verificação de Demanda Já Registrada (Prefixo, Município, Categoria, Tipo, Interessado / Escola) - Qualquer ano
+function verificarDemandaRegistradaPopup() {
+  const alertaBox = document.getElementById('popup-novo-alerta-duplicidade');
+  const alertaTitulo = document.getElementById('popup-novo-alerta-titulo');
+  const alertaMsg = document.getElementById('popup-novo-alerta-msg');
+  const alertaLink = document.getElementById('popup-novo-alerta-link');
+
+  const prefixo = _normTextoPopup(document.getElementById('popup-novo-prefixo')?.value);
+  const mun = _normTextoPopup(document.getElementById('popup-novo-municipio')?.value);
+  const cat = _normTextoPopup(document.getElementById('popup-novo-categoria')?.value);
+  const tipo = _normTextoPopup(document.getElementById('popup-novo-tipo')?.value);
+  const interessado = _normTextoPopup(document.getElementById('popup-novo-interessado')?.value);
+
+  // Exige ao menos prefixo, município e interessado preenchidos para testar
+  if (!prefixo || !mun || !interessado) {
+    if (alertaTitulo && alertaTitulo.textContent.includes('Demanda')) {
+      if (alertaBox) alertaBox.style.display = 'none';
+    }
+    return;
+  }
+
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  const match = procs.find(p => {
+    const pPref = _normTextoPopup(p.prefixo);
+    const pMun = _normTextoPopup(p.municipio);
+    const pInt = _normTextoPopup(p.interessado);
+    const pCat = _normTextoPopup(p.categoria);
+    const pTipo = _normTextoPopup(p.tipo);
+
+    const matchPref = pPref === prefixo;
+    const matchMun = pMun === mun || pMun.includes(mun) || mun.includes(pMun);
+    const matchInt = pInt === interessado || pInt.includes(interessado) || interessado.includes(pInt);
+
+    let matchCatTipo = true;
+    if (cat && pCat) matchCatTipo = matchCatTipo && (pCat === cat);
+    if (tipo && pTipo) matchCatTipo = matchCatTipo && (pTipo === tipo);
+
+    return matchPref && matchMun && matchInt && matchCatTipo;
+  });
+
+  if (match) {
+    if (alertaBox) alertaBox.style.display = 'block';
+    if (alertaTitulo) alertaTitulo.textContent = 'Demanda já registrada, verifique:';
+    const valFmt = typeof formatCurrency === 'function' ? formatCurrency(match.valorOf || 0) : (match.valorOf || '0,00');
+    if (alertaMsg) {
+      alertaMsg.innerHTML = `<strong>PREFIXO:</strong> ${match.prefixo || '-'}<br>` +
+        `<strong>PROCESSO:</strong> ${match.numero || '-'}<br>` +
+        `<strong>VALOR:</strong> ${valFmt}`;
+    }
+    if (alertaLink) {
+      alertaLink.innerHTML = `
+        <button type="button" onclick="abrirProcessoPorIdPopup('${match.id}')" style="background:#f59e0b; color:#0f172a; border:none; padding:6px 14px; border-radius:6px; font-weight:800; font-size:11.5px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+          <span>🔗</span>
+          <span>Ir para o Registro Cadastrado (#${match.id})</span>
+        </button>
+      `;
+    }
+  } else {
+    // Se não for chave primária ativa, esconde
+    if (alertaTitulo && alertaTitulo.textContent.includes('Demanda')) {
+      if (alertaBox) alertaBox.style.display = 'none';
+    }
+  }
+}
+window.verificarDemandaRegistradaPopup = verificarDemandaRegistradaPopup;
+
+// Sugestão e Auto-preenchimento de Dados da Escola (CNPJ, Entidade, Responsável, Telefone)
+function sugerirDadosEscolaPopup() {
+  const inputInt = document.getElementById('popup-novo-interessado');
+  const inputMun = document.getElementById('popup-novo-municipio');
+  const inputCnpj = document.getElementById('popup-novo-cnpj');
+
+  const nomeDigitado = (inputInt ? inputInt.value : '').trim();
+  if (!nomeDigitado || nomeDigitado.length < 3) return;
+
+  const nomeNorm = _normTextoPopup(nomeDigitado);
+  const munNorm = _normTextoPopup(inputMun ? inputMun.value : '');
+
+  // 1. Procurar em processos já cadastrados com cadastro completo
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  const procComDados = procs.find(p => {
+    if (!p.interessado) return false;
+    const pInt = _normTextoPopup(p.interessado);
+    const pMun = _normTextoPopup(p.municipio);
+    const mesmoNome = (pInt === nomeNorm || pInt.includes(nomeNorm) || nomeNorm.includes(pInt));
+    if (!mesmoNome) return false;
+    if (munNorm && pMun && pMun !== munNorm && !pMun.includes(munNorm) && !munNorm.includes(pMun)) return false;
+    return (p.cnpj && String(p.cnpj).replace(/\D/g, '').length === 14);
+  });
+
+  if (procComDados) {
+    if (inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00')) {
+      inputCnpj.value = procComDados.cnpj;
+      if (typeof consultarCNPJPopup === 'function') {
+        consultarCNPJPopup(procComDados.cnpj, true);
+      }
+    }
+    return;
+  }
+
+  // 2. Procurar em _escolasCache
+  const escolas = window._escolasCache || (typeof _escolasCache !== 'undefined' ? _escolasCache : []) || [];
+  if (Array.isArray(escolas) && escolas.length > 0) {
+    const esc = escolas.find(e => {
+      if (!e.nome) return false;
+      const eNome = _normTextoPopup(e.nome);
+      const eMun = _normTextoPopup(e.municipio);
+      const bateNome = (eNome === nomeNorm || eNome.includes(nomeNorm) || nomeNorm.includes(eNome));
+      if (!bateNome) return false;
+      if (munNorm && eMun && eMun !== munNorm && !eMun.includes(munNorm) && !munNorm.includes(eMun)) return false;
+      return true;
+    });
+
+    if (esc) {
+      if (esc.cnpj && inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00')) {
+        inputCnpj.value = esc.cnpj;
+        if (typeof consultarCNPJPopup === 'function') {
+          consultarCNPJPopup(esc.cnpj, true);
+        }
+      }
+    }
+  }
+}
+window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
+
 function adicionarCampoNumeroPopup(val = '') {
   const container = document.getElementById('popup-novo-container-numeros');
   if (!container) return;
@@ -3007,7 +3205,7 @@ function adicionarCampoNumeroPopup(val = '') {
   div.style.alignItems = 'center';
   div.innerHTML = `
     <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0 12px; height:40px; border-radius:6px; font-weight:800; font-size:16px; flex-shrink:0; background:#dc2626; color:#fff; border:none; cursor:pointer;" title="Remover processo">-</button>
-    <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" value="${val}">
+    <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" value="${val}" oninput="verificarProcessoExistentePopup(this)" onblur="verificarProcessoExistentePopup(this)">
   `;
   container.appendChild(div);
 }
@@ -3016,25 +3214,60 @@ window.adicionarCampoNumeroPopup = adicionarCampoNumeroPopup;
 async function salvarNovoProcessoPopup(e) {
   if (e && e.preventDefault) e.preventDefault();
 
-  const inputsNum = Array.from(document.querySelectorAll('input[name="popup_numero[]"]'));
-  const numerosJoined = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ');
-
+  const prefixo = (document.getElementById('popup-novo-prefixo')?.value || '').trim();
+  const ano = (document.getElementById('popup-novo-ano')?.value || '').trim();
   const municipio = (document.getElementById('popup-novo-municipio')?.value || '').trim();
+  const categoria = (document.getElementById('popup-novo-categoria')?.value || '').trim();
+  const tipo = (document.getElementById('popup-novo-tipo')?.value || '').trim();
   const interessado = (document.getElementById('popup-novo-interessado')?.value || '').trim();
+  const objeto = (document.getElementById('popup-novo-objeto')?.value || '').trim();
+  const valorOfRaw = (document.getElementById('popup-novo-valorOf')?.value || '').trim();
 
+  // Validação dos Campos Obrigatórios marcados com estrela amarela (*)
+  if (!prefixo) {
+    toast('Por favor, informe o Prefixo *.', 'error');
+    document.getElementById('popup-novo-prefixo')?.focus();
+    return;
+  }
+  if (!ano) {
+    toast('Por favor, informe o Ano *.', 'error');
+    document.getElementById('popup-novo-ano')?.focus();
+    return;
+  }
   if (!municipio) {
-    toast('Por favor, informe o Município.', 'error');
+    toast('Por favor, informe o Município *.', 'error');
     document.getElementById('popup-novo-municipio')?.focus();
     return;
   }
-
-  if (!interessado && !numerosJoined) {
-    toast('Informe ao menos o Interessado / Escola ou o Nº do Processo.', 'error');
+  if (!categoria) {
+    toast('Por favor, selecione a Categoria *.', 'error');
+    document.getElementById('popup-novo-categoria')?.focus();
+    return;
+  }
+  if (!tipo) {
+    toast('Por favor, selecione o Tipo *.', 'error');
+    document.getElementById('popup-novo-tipo')?.focus();
+    return;
+  }
+  if (!interessado) {
+    toast('Por favor, informe o Interessado / Escola *.', 'error');
     document.getElementById('popup-novo-interessado')?.focus();
     return;
   }
+  if (!objeto) {
+    toast('Por favor, descreva o Objeto *.', 'error');
+    document.getElementById('popup-novo-objeto')?.focus();
+    return;
+  }
+  if (!valorOfRaw) {
+    toast('Por favor, informe o Valor Oficial (R$) *.', 'error');
+    document.getElementById('popup-novo-valorOf')?.focus();
+    return;
+  }
 
-  const valOf = typeof parseCurrency === 'function' ? parseCurrency(document.getElementById('popup-novo-valorOf')?.value || '') : 0;
+  const inputsNum = Array.from(document.querySelectorAll('input[name="popup_numero[]"]'));
+  const numerosJoined = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ');
+  const valOf = typeof parseCurrency === 'function' ? parseCurrency(valorOfRaw) : 0;
   const valPlan = 0;
 
   const dataInput = document.getElementById('popup-novo-data')?.value || '';
@@ -14347,6 +14580,7 @@ function aplicarAuditoriaAntiGravityNaManifestacao() {
   toast('✍️ Achados da Auditoria AntiGravity v2.0 e Minuta injetados nas Seções 4 e 5 da Manifestação!', 'success');
 }
 window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNaManifestacao;
+
 
 
 

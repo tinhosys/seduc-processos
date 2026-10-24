@@ -1,4 +1,4 @@
-﻿
+
 let _hbTimer = null;
 window.iniciarHeartbeat = function() {
   if (_hbTimer) clearInterval(_hbTimer);
@@ -150,11 +150,11 @@ function aplicarPermissoes(nivel) {
   const elRole = document.getElementById('user-role');
   if (elRole) {
     if (isAdminUser) {
-      elRole.textContent = 'ðŸ‘‘ Admin';
-      elRole.style.color = '#3b82f6';
+      elRole.innerHTML = '<span style="display:inline-flex; align-items:center; gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><polygon points="2 4 5 20 19 20 22 4 15 10 12 2 9 10 2 4"></polygon></svg> <span>Admin</span></span>';
+      elRole.style.color = '#38bdf8';
     } else {
       let setorDisplay = uData.setor && uData.setor.trim() !== '' ? uData.setor : (nivel === 'gerente' ? 'Gerente' : (nivel === 'editor' ? 'Editor' : 'Leitor'));
-      elRole.textContent = 'ðŸ‘¤ ' + setorDisplay;
+      elRole.innerHTML = '<span style="display:inline-flex; align-items:center; gap:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> <span>' + sanitizarTextoHTML(setorDisplay) + '</span></span>';
       elRole.style.color = nivel === 'gerente' ? '#a78bfa' : (nivel === 'editor' ? '#10b981' : '#f59e0b');
     }
   }
