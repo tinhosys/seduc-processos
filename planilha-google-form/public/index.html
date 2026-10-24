@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.40</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.41</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.40</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.41</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1555,11 +1555,6 @@
               <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:38px; min-width:38px; height:38px; min-height:38px; max-height:38px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
               </button>
-              <!-- Botão Planilha no lugar do Modo mobile (conforme Imagem 3) -->
-              <button type="button" class="btn action-report" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha Oficial">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                <span class="btn-text">Planilha</span>
-              </button>
             </div>
 
             <!-- Indicador Visual Animado de Processamento do Compartilhar (GIF / Engrenagens / Setas em Círculo) -->
@@ -1607,11 +1602,11 @@
             </div>
           </div>
 
-          <!-- LINHA 2 DE BOTÕES: NOVO PROCESSO (DESTAQUE), COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
+          <!-- LINHA 2 DE BOTÕES: NOVO PROCESSO (PADRÃO), COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
           <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px; width:100%;">
-            <button id="btn-novo-processo-topo" type="button" class="btn" onclick="novoProcesso()" style="padding:0 14px; height:38px; min-height:38px; max-height:38px; min-width:145px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1px solid #f59e0b; border-radius:8px; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color:#ffffff; cursor:pointer; font-weight:800; letter-spacing:0.5px; transition:all 0.2s; box-shadow:0 3px 12px rgba(245,158,11,0.4); box-sizing:border-box;" onmouseover="this.style.background='linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'; this.style.transform='none';" title="Cadastrar Novo Processo">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              <span class="btn-text">+ Novo Processo</span>
+            <button id="btn-novo-processo-topo" type="button" class="btn action-report" onclick="novoProcesso()" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%); color:#fbbf24; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%)'" title="Cadastrar Novo Processo">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span class="btn-text">Novo Processo</span>
             </button>
             <button id="btn-compartilhar-topo" class="btn" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
@@ -1820,7 +1815,7 @@
               <div style="display:flex; flex-direction:column; line-height:1.15;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.40</span>
+                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.41</span>
                 </div>
                 <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
               </div>
@@ -3362,7 +3357,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.40
+              GBZ - v1.3.41
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3635,7 +3630,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.40] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.41] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
