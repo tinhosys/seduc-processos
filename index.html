@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.47</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.48</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.47</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.48</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1958,14 +1958,24 @@
               <div style="margin-bottom:14px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
                   <label for="popup-novo-interessado" style="font-size:11.5px; font-weight:700; color:#cbd5e1; margin:0;">Interessado / Escola *</label>
-                  <span id="popup-novo-badge-entidades-count" style="font-size:11px; color:#34d399; font-weight:600; display:none;"></span>
+                  <span id="popup-novo-badge-entidades-count" style="font-size:11px; color:#34d399; font-weight:700; display:none;"></span>
                 </div>
-                <div style="position:relative;">
-                  <input type="text" id="popup-novo-interessado" placeholder="Selecione ou digite o nome da escola ou entidade" required list="popup-list-interessados" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;" oninput="onSelecionarOuDigitarInteressadoPopup(); verificarDemandaRegistradaPopup();" onchange="onSelecionarOuDigitarInteressadoPopup(); verificarDemandaRegistradaPopup();">
-                  <datalist id="popup-list-interessados"></datalist>
+                
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                  <!-- SELECT DE SELEÇÃO RÁPIDA POR GRUPOS (FOMENTO / NÃO FOMENTO) -->
+                  <select id="popup-novo-select-entidades" style="width:100%; height:40px; background:#1e293b; border:1px solid rgba(56,189,248,0.4); border-radius:6px; color:#f8fafc; font-size:13px; font-weight:600; padding:6px 12px; outline:none; cursor:pointer; box-sizing:border-box; display:none;" onchange="onSelecionarSelectEntidadePopup(this)">
+                    <option value="">-- Selecione uma entidade do município ou digite abaixo --</option>
+                  </select>
+
+                  <!-- INPUT COM AUTOCOMPLETE DATALIST PARA DIGITAÇÃO OU AJUSTE FINO -->
+                  <div style="position:relative;">
+                    <input type="text" id="popup-novo-interessado" placeholder="Escolha no combo acima ou digite o nome da escola / entidade" required list="popup-list-interessados" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;" oninput="onSelecionarOuDigitarInteressadoPopup(); verificarDemandaRegistradaPopup();" onchange="onSelecionarOuDigitarInteressadoPopup(); verificarDemandaRegistradaPopup();">
+                    <datalist id="popup-list-interessados"></datalist>
+                  </div>
                 </div>
+
                 <div id="popup-novo-aviso-fomento" style="display:none; font-size:11px; color:#fbbf24; margin-top:4px; line-height:1.4;">
-                  ℹ️ <em>Categoria F (Fomento): exibindo conselhos escolares / escolas municipais de Rondônia aptas a receber fomento.</em>
+                  ℹ️ <em>Entidades filtradas para o município selecionado, agrupadas por Fomento e Não Fomento.</em>
                 </div>
               </div>
 
@@ -2045,7 +2055,7 @@
               <div style="display:flex; flex-direction:column; line-height:1.15;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.47</span>
+                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.48</span>
                 </div>
                 <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
               </div>
@@ -3582,7 +3592,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.47
+              GBZ - v1.3.48
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3855,7 +3865,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.47] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.48] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6574,6 +6584,7 @@ function mudarAbaDiarias(aba, el) {
   <script src="js/newsticker.js"></script>
 </body>
 </html>
+
 
 
 

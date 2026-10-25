@@ -1,9 +1,9 @@
 ﻿
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.47
+// Versão do Sistema: v1.3.48
 // ============================================================
-window.APP_VERSION = 'v1.3.47';
+window.APP_VERSION = 'v1.3.48';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -3201,10 +3201,11 @@ function sugerirDadosEscolaPopup() {
 }
 window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
 
-// Atualiza o combo de Interessado / Escola no popup filtrando pelo município escolhido e categoria
+// Atualiza o combo de Interessado / Escola no popup filtrando ESTRITAMENTE pelo município escolhido e separando em grupos: Fomento e Não Fomento
 function atualizarEntidadesMunicipioPopup() {
   const munInput = document.getElementById('popup-novo-municipio');
   const catInput = document.getElementById('popup-novo-categoria');
+  const sel = document.getElementById('popup-novo-select-entidades');
   const dl = document.getElementById('popup-list-interessados');
   const badgeCount = document.getElementById('popup-novo-badge-entidades-count');
   const avisoFomento = document.getElementById('popup-novo-aviso-fomento');
@@ -3212,10 +3213,18 @@ function atualizarEntidadesMunicipioPopup() {
 
   const mun = (munInput ? munInput.value : '').trim();
   const cat = (catInput ? catInput.value : '').trim().toUpperCase();
-  const isFomento = (cat === 'F');
 
-  if (avisoFomento) {
-    avisoFomento.style.display = isFomento ? 'block' : 'none';
+  // Se nenhum município for digitado ou selecionado ainda, esconde o select e limpa o datalist
+  if (!mun) {
+    if (sel) {
+      sel.style.display = 'none';
+      sel.innerHTML = '<option value="">-- Escolha um município acima primeiro --</option>';
+    }
+    dl.innerHTML = '';
+    if (badgeCount) badgeCount.style.display = 'none';
+    if (avisoFomento) avisoFomento.style.display = 'none';
+    window._popupEntidadesCacheMap = new Map();
+    return;
   }
 
   const munNorm = _normTextoPopup(mun);
@@ -3227,137 +3236,203 @@ function atualizarEntidadesMunicipioPopup() {
   // Coleta dados das prefeituras / contatos municipais
   const contatos = (typeof contatosData !== 'undefined' && Array.isArray(contatosData)) ? contatosData : [];
 
-  let mapaEntidades = new Map();
+  let mapaFomento = new Map();
+  let mapaNaoFomento = new Map();
+  let mapaGeral = new Map();
 
-  // Se Categoria for F (Fomento):
-  // As escolas municipais / conselhos escolares são os que podem receber Fomento. Também EFAs e APAEs.
-  if (isFomento) {
-    // 1. Filtrar escolas do município
-    escolas.forEach(e => {
-      const eMun = _normTextoPopup(e.municipio);
-      if (munNorm && eMun && eMun !== munNorm && !eMun.includes(munNorm) && !munNorm.includes(eMun)) return;
-      
-      const comp = String(e.competencia || e.rede || '').toUpperCase();
-      const nomeUpper = String(e.nome || '').toUpperCase();
-      
-      // Prioriza Escolas Municipais (Conselhos Escolares), APAEs e EFAs
-      const isMunEscola = comp.includes('MUN') || nomeUpper.includes('CONSELHO') || nomeUpper.includes('EMEF') || nomeUpper.includes('EMEIEF') || nomeUpper.includes('ESCOLA');
-      const isEfaApae = nomeUpper.includes('APAE') || nomeUpper.includes('EFA') || nomeUpper.includes('FAMILIA AGRICOLA') || nomeUpper.includes('AGRÍCOLA');
+  // 1. FILTRAR ESCOLAS E CONSELHOS DO MUNICÍPIO ESCOLHIDO (Pertencem a FOMENTO)
+  escolas.forEach(e => {
+    if (!e.municipio || !e.nome) return;
+    const eMun = _normTextoPopup(e.municipio);
+    const bateMun = (eMun === munNorm || eMun.includes(munNorm) || munNorm.includes(eMun));
+    if (!bateMun) return;
 
-      if (isMunEscola || isEfaApae) {
-        let label = e.nome.trim();
-        if (!label.toUpperCase().includes('CONSELHO') && !label.toUpperCase().includes('APAE') && !label.toUpperCase().includes('EFA')) {
-          label = 'Conselho Escolar - ' + label;
-        }
-        if (!mapaEntidades.has(label)) {
-          mapaEntidades.set(label, {
-            nome: label,
-            cnpj: e.cnpj || '',
-            origem: 'Escola / Conselho Municipal',
-            diretor: e.diretor || '',
-            telefone: e.telefone || e.contatoDiretor || ''
-          });
-        }
-      }
-    });
+    const nomeOriginal = e.nome.trim();
+    const nomeUpper = nomeOriginal.toUpperCase();
+    const isApae = nomeUpper.includes('APAE');
+    const isEfa = nomeUpper.includes('EFA') || nomeUpper.includes('FAMILIA AGRICOLA') || nomeUpper.includes('AGRÍCOLA');
 
-    // 2. Adicionar APAEs e EFAs históricas de processos já registrados no município
-    procs.forEach(p => {
-      const pMun = _normTextoPopup(p.municipio);
-      if (munNorm && pMun && pMun !== munNorm && !pMun.includes(munNorm) && !munNorm.includes(pMun)) return;
-      if (!p.interessado) return;
-      const nomeP = p.interessado.trim();
-      const nUpper = nomeP.toUpperCase();
-      if (nUpper.includes('CONSELHO') || nUpper.includes('APAE') || nUpper.includes('EFA') || nUpper.includes('AGRICOLA') || nUpper.includes('AGRÍCOLA')) {
-        if (!mapaEntidades.has(nomeP)) {
-          mapaEntidades.set(nomeP, {
-            nome: nomeP,
-            cnpj: p.cnpj || '',
-            origem: 'Processo Registrado'
-          });
-        }
-      }
-    });
-
-  } else {
-    // Se Categoria <> F (ex: C - Convênio, T - Termo de Cooperação):
-    // Aberto para outras entidades, prioritariamente a Prefeitura Municipal da cidade
-    if (mun) {
-      const nomePref = 'Prefeitura Municipal de ' + mun;
-      // Busca dados do prefeito/secretario se existirem em contatos
-      const cMun = contatos.find(c => _normTextoPopup(c.municipio) === munNorm);
-      mapaEntidades.set(nomePref, {
-        nome: nomePref,
-        cnpj: '',
-        origem: 'Prefeitura Municipal',
-        prefeito: cMun ? cMun.nomePrefeito : '',
-        telefone: cMun ? (cMun.celularPrefeito || cMun.celularSecretario) : ''
-      });
-      mapaEntidades.set('Secretaria Municipal de Educação de ' + mun, {
-        nome: 'Secretaria Municipal de Educação de ' + mun,
-        cnpj: '',
-        origem: 'Secretaria de Educação',
-        secretario: cMun ? cMun.nomeSecretario : '',
-        telefone: cMun ? cMun.celularSecretario : ''
-      });
+    let nomeFormatado = nomeOriginal;
+    if (!isApae && !isEfa && !nomeUpper.includes('CONSELHO')) {
+      nomeFormatado = 'Conselho Escolar - ' + nomeOriginal;
     }
 
-    // Também acrescenta todas as entidades já cadastradas em processos do município
-    procs.forEach(p => {
-      const pMun = _normTextoPopup(p.municipio);
-      if (munNorm && pMun && pMun !== munNorm && !pMun.includes(munNorm) && !munNorm.includes(pMun)) return;
-      if (!p.interessado) return;
-      const nomeP = p.interessado.trim();
-      if (!mapaEntidades.has(nomeP)) {
-        mapaEntidades.set(nomeP, {
-          nome: nomeP,
-          cnpj: p.cnpj || '',
-          origem: 'Processo Registrado'
-        });
-      }
-    });
+    const item = {
+      nome: nomeFormatado,
+      cnpj: e.cnpj || '',
+      grupo: 'Fomento',
+      tipoLabel: isApae ? 'APAE' : (isEfa ? 'EFA' : 'Conselho Escolar Municipal'),
+      diretor: e.diretor || '',
+      telefone: e.telefone || e.contatoDiretor || ''
+    };
 
-    // Se houver escolas do município
-    escolas.forEach(e => {
-      const eMun = _normTextoPopup(e.municipio);
-      if (munNorm && eMun && eMun !== munNorm && !eMun.includes(munNorm) && !munNorm.includes(eMun)) return;
-      const nomeE = e.nome.trim();
-      if (!mapaEntidades.has(nomeE)) {
-        mapaEntidades.set(nomeE, {
-          nome: nomeE,
-          cnpj: e.cnpj || '',
-          origem: 'Escola'
-        });
-      }
-    });
+    mapaFomento.set(nomeFormatado, item);
+    mapaGeral.set(nomeFormatado, item);
+  });
+
+  // 2. FILTRAR PROCESSOS JÁ CADASTRADOS DO MUNICÍPIO (Classificar em Fomento ou Não Fomento)
+  procs.forEach(p => {
+    if (!p.municipio || !p.interessado) return;
+    const pMun = _normTextoPopup(p.municipio);
+    const bateMun = (pMun === munNorm || pMun.includes(munNorm) || munNorm.includes(pMun));
+    if (!bateMun) return;
+
+    const nomeP = p.interessado.trim();
+    const nUpper = nomeP.toUpperCase();
+    const catProc = String(p.categoria || '').toUpperCase();
+
+    const isConselho = nUpper.includes('CONSELHO') || nUpper.includes('ESCOLA') || nUpper.includes('EMEF') || nUpper.includes('EMEIEF');
+    const isApae = nUpper.includes('APAE');
+    const isEfa = nUpper.includes('EFA') || nUpper.includes('AGRICOLA') || nUpper.includes('AGRÍCOLA');
+    const isPrefeitura = nUpper.includes('PREFEITURA') || nUpper.includes('SECRETARIA') || nUpper.includes('SEMED') || nUpper.includes('MUNICÍPIO') || nUpper.includes('MUNICIPIO');
+
+    const item = {
+      nome: nomeP,
+      cnpj: p.cnpj || '',
+      origem: 'Processo Cadastrado'
+    };
+
+    if (catProc === 'F' || isConselho || isApae || isEfa) {
+      item.grupo = 'Fomento';
+      item.tipoLabel = isApae ? 'APAE' : (isEfa ? 'EFA' : (isConselho ? 'Conselho Escolar' : 'Entidade Fomento'));
+      if (!mapaFomento.has(nomeP)) mapaFomento.set(nomeP, item);
+    } else {
+      item.grupo = 'Não Fomento';
+      item.tipoLabel = isPrefeitura ? 'Prefeitura / Órgão Municipal' : 'Entidade Conveniada';
+      if (!mapaNaoFomento.has(nomeP)) mapaNaoFomento.set(nomeP, item);
+    }
+    if (!mapaGeral.has(nomeP)) mapaGeral.set(nomeP, item);
+  });
+
+  // 3. PREFEITURA E SECRETARIA DE EDUCAÇÃO DO MUNICÍPIO (Pertencem a NÃO FOMENTO - Convênios/Cooperação)
+  const cMun = contatos.find(c => _normTextoPopup(c.municipio) === munNorm);
+  const nomePrefeitura = 'Prefeitura Municipal de ' + mun;
+  const nomeSemed = 'Secretaria Municipal de Educação de ' + mun;
+
+  if (!mapaNaoFomento.has(nomePrefeitura)) {
+    const itemPref = {
+      nome: nomePrefeitura,
+      cnpj: '',
+      grupo: 'Não Fomento',
+      tipoLabel: 'Prefeitura Municipal',
+      prefeito: cMun ? cMun.nomePrefeito : '',
+      telefone: cMun ? (cMun.celularPrefeito || cMun.celularSecretario) : ''
+    };
+    mapaNaoFomento.set(nomePrefeitura, itemPref);
+    mapaGeral.set(nomePrefeitura, itemPref);
   }
 
-  // Preenche o datalist
-  const listaArray = Array.from(mapaEntidades.values());
-  dl.innerHTML = listaArray.map(item => {
-    return `<option value="${item.nome}">${item.origem ? ' (' + item.origem + ')' : ''}</option>`;
-  }).join('');
+  if (!mapaNaoFomento.has(nomeSemed)) {
+    const itemSemed = {
+      nome: nomeSemed,
+      cnpj: '',
+      grupo: 'Não Fomento',
+      tipoLabel: 'Secretaria de Educação',
+      secretario: cMun ? cMun.nomeSecretario : '',
+      telefone: cMun ? cMun.celularSecretario : ''
+    };
+    mapaNaoFomento.set(nomeSemed, itemSemed);
+    mapaGeral.set(nomeSemed, itemSemed);
+  }
 
-  // Salva no escopo global para acesso rápido ao selecionar
-  window._popupEntidadesCacheMap = mapaEntidades;
+  // Prepara arrays ordenados
+  const listaFomento = Array.from(mapaFomento.values()).sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  const listaNaoFomento = Array.from(mapaNaoFomento.values()).sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  const totalEntidades = listaFomento.length + listaNaoFomento.length;
+
+  // Monta HTML com optgroups no select
+  if (sel) {
+    let htmlSelect = `<option value="">-- Selecione uma entidade de ${mun} ou digite abaixo (${totalEntidades}) --</option>`;
+    
+    if (listaFomento.length > 0) {
+      htmlSelect += `<optgroup label="🌱 GRUPO: FOMENTO (Conselhos Escolares, APAEs, EFAs - ${listaFomento.length})">`;
+      listaFomento.forEach(ent => {
+        htmlSelect += `<option value="${ent.nome}">[Fomento] ${ent.nome} (${ent.tipoLabel})</option>`;
+      });
+      htmlSelect += `</optgroup>`;
+    }
+
+    if (listaNaoFomento.length > 0) {
+      htmlSelect += `<optgroup label="🏛️ GRUPO: NÃO FOMENTO (Prefeitura, Secretarias, Convênios - ${listaNaoFomento.length})">`;
+      listaNaoFomento.forEach(ent => {
+        htmlSelect += `<option value="${ent.nome}">[Convênio] ${ent.nome} (${ent.tipoLabel})</option>`;
+      });
+      htmlSelect += `</optgroup>`;
+    }
+
+    sel.innerHTML = htmlSelect;
+    sel.style.display = 'block';
+  }
+
+  // Preenche o datalist com todas as opções para autocomplete na digitação
+  let htmlDatalist = '';
+  listaFomento.forEach(ent => {
+    htmlDatalist += `<option value="${ent.nome}">[Fomento - ${ent.tipoLabel}]</option>`;
+  });
+  listaNaoFomento.forEach(ent => {
+    htmlDatalist += `<option value="${ent.nome}">[Não Fomento - ${ent.tipoLabel}]</option>`;
+  });
+  dl.innerHTML = htmlDatalist;
+
+  // Guarda o mapa geral para busca instantânea de CNPJ
+  window._popupEntidadesCacheMap = mapaGeral;
 
   if (badgeCount) {
-    if (listaArray.length > 0) {
-      badgeCount.textContent = `(${listaArray.length} opções disponíveis)`;
-      badgeCount.style.display = 'inline-block';
-    } else {
-      badgeCount.style.display = 'none';
-    }
+    badgeCount.textContent = `(${totalEntidades} entidades em ${mun})`;
+    badgeCount.style.display = 'inline-block';
+  }
+
+  if (avisoFomento) {
+    avisoFomento.innerHTML = `ℹ️ <em>${mun}: <strong>${listaFomento.length}</strong> entidades no Grupo Fomento (Conselhos, APAEs, EFAs) e <strong>${listaNaoFomento.length}</strong> no Grupo Não Fomento (Prefeitura/SEMED).</em>`;
+    avisoFomento.style.display = 'block';
   }
 }
 window.atualizarEntidadesMunicipioPopup = atualizarEntidadesMunicipioPopup;
 
-// Disparado quando o usuário escolhe ou digita no campo Interessado / Escola do popup
+// Disparado quando o usuário escolhe uma entidade no combo de grupos
+function onSelecionarSelectEntidadePopup(selEl) {
+  if (!selEl) return;
+  const val = selEl.value;
+  if (!val) return;
+
+  const inputInt = document.getElementById('popup-novo-interessado');
+  if (inputInt) {
+    inputInt.value = val;
+  }
+
+  // Preenche o CNPJ correspondente se existir
+  const mapa = window._popupEntidadesCacheMap;
+  if (mapa && mapa.has(val)) {
+    const ent = mapa.get(val);
+    const inputCnpj = document.getElementById('popup-novo-cnpj');
+    if (ent.cnpj && inputCnpj) {
+      inputCnpj.value = ent.cnpj;
+      if (typeof consultarCNPJPopup === 'function') {
+        consultarCNPJPopup(ent.cnpj, true);
+      }
+    }
+  }
+
+  if (typeof verificarDemandaRegistradaPopup === 'function') {
+    verificarDemandaRegistradaPopup();
+  }
+}
+window.onSelecionarSelectEntidadePopup = onSelecionarSelectEntidadePopup;
+
+// Disparado quando o usuário escolhe ou digita no campo de texto Interessado / Escola do popup
 function onSelecionarOuDigitarInteressadoPopup() {
   const inputInt = document.getElementById('popup-novo-interessado');
   const inputCnpj = document.getElementById('popup-novo-cnpj');
   const val = (inputInt ? inputInt.value : '').trim();
   if (!val) return;
+
+  // Sincroniza o select se houver match exato
+  const sel = document.getElementById('popup-novo-select-entidades');
+  if (sel) {
+    const optMatch = Array.from(sel.options).find(o => o.value === val);
+    if (optMatch) sel.value = val;
+    else sel.value = '';
+  }
 
   // 1. Verifica no mapa de entidades gerado para o município
   const mapa = window._popupEntidadesCacheMap;
@@ -14761,6 +14836,7 @@ function aplicarAuditoriaAntiGravityNaManifestacao() {
   toast('✍️ Achados da Auditoria AntiGravity v2.0 e Minuta injetados nas Seções 4 e 5 da Manifestação!', 'success');
 }
 window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNaManifestacao;
+
 
 
 
