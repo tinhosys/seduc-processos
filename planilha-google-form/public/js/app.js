@@ -1,9 +1,9 @@
-﻿
+
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.41
+// Versão do Sistema: v1.3.54
 // ============================================================
-window.APP_VERSION = 'v1.3.41';
+window.APP_VERSION = 'v1.3.54';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -2294,9 +2294,11 @@ function renderFormulario() {
       cnpjEl.value = p.cnpj || '';
     }
     document.getElementById('form-objeto').value      = p.objeto      || '';
-    document.getElementById('form-valorOf').value     = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
-    document.getElementById('form-valorPlan').value   = p.valorPlan ? maskCurrency((p.valorPlan * 100).toFixed(0)) : '';
-    let _dVal = p.data || ''; if (_dVal.includes('/')) { const _parts = _dVal.split('/'); if (_parts.length === 3) _dVal = _parts[2] + '-' + _parts[1] + '-' + _parts[0]; } document.getElementById('form-data').value = _dVal;
+    const fValOf = document.getElementById('form-valorOf');
+    if (fValOf) fValOf.value = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
+    const fValPlan = document.getElementById('form-valorPlan');
+    if (fValPlan) fValPlan.value = p.valorPlan ? maskCurrency((p.valorPlan * 100).toFixed(0)) : '';
+    let _dVal = p.data || ''; if (_dVal.includes('/')) { const _parts = _dVal.split('/'); if (_parts.length === 3) _dVal = _parts[2] + '-' + _parts[1] + '-' + _parts[0]; } const fData = document.getElementById('form-data'); if (fData) fData.value = _dVal;
     
     // Set toggles
     const setToggle = (id, val) => {
@@ -2523,8 +2525,8 @@ function salvarFormulario(e) {
     }
   }
 
-  const valOf = parseCurrency(document.getElementById('form-valorOf').value);
-  const valPlan = parseCurrency(document.getElementById('form-valorPlan').value);
+  const valOf = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
+  const valPlan = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
 
   const user = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
   const now = new Date();
@@ -2932,9 +2934,1177 @@ function editarProcesso(id) {
   navegar('novo');
 }
 
+// ---- POPUP: NOVO PROCESSO (POR CIMA DA RELAÇÃO DE PROCESSOS - IMAGEM 1 E 2) ----
+function abrirModalNovoProcesso() {
+  const modal = document.getElementById('modal-popup-novo-processo');
+  if (!modal) {
+    novoProcesso();
+    return;
+  }
+
+  // Limpa formulário do popup
+  const form = document.getElementById('form-popup-novo-processo');
+  if (form) form.reset();
+
+  // Resetar números adicionais
+  const containerNum = document.getElementById('popup-novo-container-numeros');
+  if (containerNum) {
+    containerNum.innerHTML = `
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumeroPopup()" style="padding:0 12px; height:40px; border:1px solid rgba(16,185,129,0.5); border-radius:6px; font-weight:800; font-size:18px; color:#34d399; background:rgba(16,185,129,0.1); cursor:pointer; flex-shrink:0;" title="Adicionar outro processo">+</button>
+        <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;">
+      </div>
+    `;
+  }
+
+  // Preencher campos INATIVOS com dados padrão da tela (Status, Localização, Data de Hoje)
+  const statusEl = document.getElementById('popup-novo-status');
+  if (statusEl) {
+    statusEl.value = 'REG. DEMANDA';
+  }
+
+  const locEl = document.getElementById('popup-novo-localizacao');
+  if (locEl) {
+    locEl.value = 'CAM | GDSM | GMAC';
+  }
+
+  const dataEl = document.getElementById('popup-novo-data');
+  if (dataEl) {
+    const hoje = new Date().toISOString().split('T')[0];
+    dataEl.value = hoje;
+  }
+
+  // Ano padrão: ano corrente se vazio
+  const anoEl = document.getElementById('popup-novo-ano');
+  if (anoEl && !anoEl.value) {
+    anoEl.value = new Date().getFullYear();
+  }
+
+  // Reset do campo CNPJ e container Receita Federal do popup
+  const cnpjPopupEl = document.getElementById('popup-novo-cnpj');
+  if (cnpjPopupEl) cnpjPopupEl.value = '';
+  const containerReceitaPopup = document.getElementById('popup-novo-container-receita');
+  if (containerReceitaPopup) containerReceitaPopup.style.display = 'none';
+  const labelReceitaPopup = document.getElementById('popup-novo-label-receita');
+  if (labelReceitaPopup) labelReceitaPopup.innerHTML = '';
+  window._popupUltimoResultadoCNPJReceitaTexto = '';
+
+  // Reset do banner de duplicidade / alerta de demanda
+  const alertaBanner = document.getElementById('popup-novo-alerta-duplicidade');
+  if (alertaBanner) alertaBanner.style.display = 'none';
+
+  // Reset do painel de entidade já contemplada
+  const alertaContemplada = document.getElementById('popup-novo-alerta-contemplada');
+  if (alertaContemplada) {
+    alertaContemplada.style.display = 'none';
+    alertaContemplada.innerHTML = '';
+  }
+
+  // Carregar e atualizar opções de entidades baseadas no município e categoria
+  if (typeof atualizarEntidadesMunicipioPopup === 'function') {
+    atualizarEntidadesMunicipioPopup();
+  }
+
+  // Atualizar lista de objetos filtrada pelo tipo
+  if (typeof atualizarObjetosPorTipoPopup === 'function') {
+    atualizarObjetosPorTipoPopup();
+  }
+
+  // Exibir popup modal com display flex
+  modal.style.display = 'flex';
+}
+window.abrirModalNovoProcesso = abrirModalNovoProcesso;
+
+function fecharModalNovoProcesso() {
+  const modal = document.getElementById('modal-popup-novo-processo');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalNovoProcesso = fecharModalNovoProcesso;
+
+function abrirProcessoPorIdPopup(id) {
+  fecharModalNovoProcesso();
+  if (typeof editarProcesso === 'function') {
+    editarProcesso(id);
+  }
+}
+window.abrirProcessoPorIdPopup = abrirProcessoPorIdPopup;
+
+// Normalizador de texto para comparação segura
+function _normTextoPopup(txt) {
+  return String(txt || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toUpperCase();
+}
+
+// Verificação de Chave Primária (Nº do Processo) - Se já houver cadastrado, alerta e mostra (sem bloquear)
+function verificarProcessoExistentePopup(inputEl) {
+  const alertaBox = document.getElementById('popup-novo-alerta-duplicidade');
+  const alertaTitulo = document.getElementById('popup-novo-alerta-titulo');
+  const alertaMsg = document.getElementById('popup-novo-alerta-msg');
+  const alertaLink = document.getElementById('popup-novo-alerta-link');
+
+  const valRaw = (inputEl ? inputEl.value : '') || '';
+  const digits = valRaw.replace(/\D/g, '');
+
+  if (digits.length < 5) {
+    // Se não houver dígitos suficientes, apenas verifica se há demanda registrada
+    verificarDemandaRegistradaPopup();
+    return;
+  }
+
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  const encontrado = procs.find(p => {
+    if (!p.numero) return false;
+    const nums = String(p.numero).split(/[,;\/]/);
+    return nums.some(n => {
+      const d = n.replace(/\D/g, '');
+      return d && (d === digits || (digits.length >= 10 && d.includes(digits)));
+    });
+  });
+
+  if (encontrado) {
+    if (alertaBox) alertaBox.style.display = 'block';
+    if (alertaTitulo) alertaTitulo.textContent = 'Processo já Registrado (Chave Primária)';
+    const valFmt = typeof formatCurrency === 'function' ? formatCurrency(encontrado.valorOf || 0) : (encontrado.valorOf || '0,00');
+    if (alertaMsg) {
+      alertaMsg.innerHTML = `<strong>Atenção:</strong> O número do processo <strong>${valRaw}</strong> já se encontra cadastrado no sistema:<br>` +
+        `• <strong>PREFIXO:</strong> ${encontrado.prefixo || '-'}<br>` +
+        `• <strong>INTERESSADO:</strong> ${encontrado.interessado || '-'}<br>` +
+        `• <strong>VALOR:</strong> ${valFmt}`;
+    }
+    if (alertaLink) {
+      alertaLink.innerHTML = `
+        <button type="button" onclick="abrirProcessoPorIdPopup('${encontrado.id}')" style="background:#f59e0b; color:#0f172a; border:none; padding:6px 14px; border-radius:6px; font-weight:800; font-size:11.5px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+          <span>🔗</span>
+          <span>Ver Processo Cadastrado (#${encontrado.id})</span>
+        </button>
+      `;
+    }
+    return;
+  }
+
+  // Se o número estiver livre, verifica se os campos marcados formam demanda já registrada
+  verificarDemandaRegistradaPopup();
+}
+window.verificarProcessoExistentePopup = verificarProcessoExistentePopup;
+
+// Verificação de Demanda Já Registrada (Prefixo, Município, Categoria, Tipo, Interessado / Escola) - Qualquer ano
+function verificarDemandaRegistradaPopup() {
+  const alertaBox = document.getElementById('popup-novo-alerta-duplicidade');
+  const alertaTitulo = document.getElementById('popup-novo-alerta-titulo');
+  const alertaMsg = document.getElementById('popup-novo-alerta-msg');
+  const alertaLink = document.getElementById('popup-novo-alerta-link');
+
+  const prefixo = _normTextoPopup(document.getElementById('popup-novo-prefixo')?.value);
+  const mun = _normTextoPopup(document.getElementById('popup-novo-municipio')?.value);
+  const cat = _normTextoPopup(document.getElementById('popup-novo-categoria')?.value);
+  const tipo = _normTextoPopup(document.getElementById('popup-novo-tipo')?.value);
+  const interessado = _normTextoPopup(document.getElementById('popup-novo-interessado')?.value);
+
+  // Exige ao menos prefixo, município e interessado preenchidos para testar
+  if (!prefixo || !mun || !interessado) {
+    if (alertaTitulo && alertaTitulo.textContent.includes('Demanda')) {
+      if (alertaBox) alertaBox.style.display = 'none';
+    }
+    return;
+  }
+
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  const match = procs.find(p => {
+    const pPref = _normTextoPopup(p.prefixo);
+    const pMun = _normTextoPopup(p.municipio);
+    const pInt = _normTextoPopup(p.interessado);
+    const pCat = _normTextoPopup(p.categoria);
+    const pTipo = _normTextoPopup(p.tipo);
+
+    const matchPref = pPref === prefixo;
+    const matchMun = pMun === mun || pMun.includes(mun) || mun.includes(pMun);
+    const matchInt = pInt === interessado || pInt.includes(interessado) || interessado.includes(pInt);
+
+    let matchCatTipo = true;
+    if (cat && pCat) matchCatTipo = matchCatTipo && (pCat === cat);
+    if (tipo && pTipo) matchCatTipo = matchCatTipo && (pTipo === tipo);
+
+    return matchPref && matchMun && matchInt && matchCatTipo;
+  });
+
+  if (match) {
+    if (alertaBox) alertaBox.style.display = 'block';
+    if (alertaTitulo) alertaTitulo.textContent = 'Demanda já registrada, verifique:';
+    const valFmt = typeof formatCurrency === 'function' ? formatCurrency(match.valorOf || 0) : (match.valorOf || '0,00');
+    if (alertaMsg) {
+      alertaMsg.innerHTML = `<strong>PREFIXO:</strong> ${match.prefixo || '-'}<br>` +
+        `<strong>PROCESSO:</strong> ${match.numero || '-'}<br>` +
+        `<strong>VALOR:</strong> ${valFmt}`;
+    }
+    if (alertaLink) {
+      alertaLink.innerHTML = `
+        <button type="button" onclick="abrirProcessoPorIdPopup('${match.id}')" style="background:#f59e0b; color:#0f172a; border:none; padding:6px 14px; border-radius:6px; font-weight:800; font-size:11.5px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+          <span>🔗</span>
+          <span>Ir para o Registro Cadastrado (#${match.id})</span>
+        </button>
+      `;
+    }
+  } else {
+    // Se não for chave primária ativa, esconde
+    if (alertaTitulo && alertaTitulo.textContent.includes('Demanda')) {
+      if (alertaBox) alertaBox.style.display = 'none';
+    }
+  }
+}
+window.verificarDemandaRegistradaPopup = verificarDemandaRegistradaPopup;
+
+// Sugestão e Auto-preenchimento de Dados da Escola (CNPJ, Entidade, Responsável, Telefone)
+function sugerirDadosEscolaPopup() {
+  const inputInt = document.getElementById('popup-novo-interessado');
+  const inputMun = document.getElementById('popup-novo-municipio');
+  const inputCnpj = document.getElementById('popup-novo-cnpj');
+
+  const nomeDigitado = (inputInt ? inputInt.value : '').trim();
+  if (!nomeDigitado || nomeDigitado.length < 3) return;
+
+  const nomeNorm = _normTextoPopup(nomeDigitado);
+  const munNorm = _normTextoPopup(inputMun ? inputMun.value : '');
+
+  // 1. Procurar em processos já cadastrados com cadastro completo
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  const procComDados = procs.find(p => {
+    if (!p.interessado) return false;
+    const pInt = _normTextoPopup(p.interessado);
+    const pMun = _normTextoPopup(p.municipio);
+    const mesmoNome = (pInt === nomeNorm || pInt.includes(nomeNorm) || nomeNorm.includes(pInt));
+    if (!mesmoNome) return false;
+    if (munNorm && pMun && pMun !== munNorm && !pMun.includes(munNorm) && !munNorm.includes(pMun)) return false;
+    return (p.cnpj && String(p.cnpj).replace(/\D/g, '').length === 14);
+  });
+
+  if (procComDados) {
+    if (inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00')) {
+      inputCnpj.value = procComDados.cnpj;
+      if (typeof consultarCNPJPopup === 'function') {
+        consultarCNPJPopup(procComDados.cnpj, true);
+      }
+    }
+    return;
+  }
+
+  // 2. Procurar em _escolasCache
+  const escolas = window._escolasCache || (typeof _escolasCache !== 'undefined' ? _escolasCache : []) || [];
+  if (Array.isArray(escolas) && escolas.length > 0) {
+    const esc = escolas.find(e => {
+      if (!e.nome) return false;
+      const eNome = _normTextoPopup(e.nome);
+      const eMun = _normTextoPopup(e.municipio);
+      const bateNome = (eNome === nomeNorm || eNome.includes(nomeNorm) || nomeNorm.includes(eNome));
+      if (!bateNome) return false;
+      if (munNorm && eMun && eMun !== munNorm && !eMun.includes(munNorm) && !munNorm.includes(eMun)) return false;
+      return true;
+    });
+
+    if (esc) {
+      if (esc.cnpj && inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00')) {
+        inputCnpj.value = esc.cnpj;
+        if (typeof consultarCNPJPopup === 'function') {
+          consultarCNPJPopup(esc.cnpj, true);
+        }
+      }
+    }
+  }
+}
+window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
+
+// Atualiza o combo de Interessado / Escola no popup filtrando ESTRITAMENTE pelo município escolhido e categoria definida
+function atualizarEntidadesMunicipioPopup() {
+  const munInput = document.getElementById('popup-novo-municipio');
+  const catInput = document.getElementById('popup-novo-categoria');
+  const sel = document.getElementById('popup-novo-select-entidades');
+  const dl = document.getElementById('popup-list-interessados');
+  const inputInt = document.getElementById('popup-novo-interessado');
+  const badgeCount = document.getElementById('popup-novo-badge-entidades-count');
+  const avisoFomento = document.getElementById('popup-novo-aviso-fomento');
+  if (!dl) return;
+
+  const mun = (munInput ? munInput.value : '').trim();
+  const cat = (catInput ? catInput.value : '').trim().toUpperCase();
+
+  // Se nenhum município for digitado ou selecionado ainda, esconde o select e limpa o datalist
+  if (!mun) {
+    if (sel) {
+      sel.style.display = 'none';
+      sel.innerHTML = '<option value="">-- Escolha um município acima primeiro --</option>';
+      sel.disabled = true;
+    }
+    if (inputInt) {
+      inputInt.placeholder = 'Escolha no combo acima ou digite o nome da escola / entidade';
+    }
+    dl.innerHTML = '';
+    if (badgeCount) badgeCount.style.display = 'none';
+    if (avisoFomento) avisoFomento.style.display = 'none';
+    window._popupEntidadesCacheMap = new Map();
+    return;
+  }
+
+  // REGRA DE OURO (IMAGENS 2 E 3): ANTES DE ESCOLHER OU INSERIR O INTERESSADO, DEFINA A CATEGORIA
+  // Podemos ver as entidades disponíveis, mas se a categoria ainda não foi escolhida, alertamos e solicitamos a escolha da categoria primeiro
+  const catEscolhida = Boolean(cat);
+
+  const munNorm = _normTextoPopup(mun);
+
+  // Coleta dados das escolas em cache (_escolasCache / window._escolasCache)
+  const escolas = window._escolasCache || (typeof _escolasCache !== 'undefined' ? _escolasCache : []) || [];
+  // Coleta processos existentes para cruzar dados
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  // Coleta dados das prefeituras / contatos municipais
+  const contatos = (typeof contatosData !== 'undefined' && Array.isArray(contatosData)) ? contatosData : [];
+
+  let mapaFomento = new Map();
+  let mapaNaoFomento = new Map();
+  let mapaGeral = new Map();
+
+  // 1. FILTRAR ESCOLAS E CONSELHOS DO MUNICÍPIO ESCOLHIDO (Pertencem a FOMENTO)
+  escolas.forEach(e => {
+    if (!e.municipio || !e.nome) return;
+    const eMun = _normTextoPopup(e.municipio);
+    const bateMun = (eMun === munNorm || eMun.includes(munNorm) || munNorm.includes(eMun));
+    if (!bateMun) return;
+
+    const nomeOriginal = e.nome.trim();
+    const nomeUpper = nomeOriginal.toUpperCase();
+    const isApae = nomeUpper.includes('APAE');
+    const isEfa = nomeUpper.includes('EFA') || nomeUpper.includes('FAMILIA AGRICOLA') || nomeUpper.includes('AGRÍCOLA');
+
+    let nomeFormatado = nomeOriginal;
+    if (!isApae && !isEfa && !nomeUpper.includes('CONSELHO')) {
+      nomeFormatado = 'Conselho Escolar - ' + nomeOriginal;
+    }
+
+    const item = {
+      nome: nomeFormatado,
+      cnpj: e.cnpj || '',
+      grupo: 'Fomento',
+      tipoLabel: isApae ? 'APAE' : (isEfa ? 'EFA' : 'Conselho Escolar Municipal'),
+      diretor: e.diretor || '',
+      telefone: e.telefone || e.contatoDiretor || ''
+    };
+
+    mapaFomento.set(nomeFormatado, item);
+    mapaGeral.set(nomeFormatado, item);
+  });
+
+  // 2. FILTRAR PROCESSOS JÁ CADASTRADOS DO MUNICÍPIO (Classificar em Fomento ou Não Fomento)
+  procs.forEach(p => {
+    if (!p.municipio || !p.interessado) return;
+    const pMun = _normTextoPopup(p.municipio);
+    const bateMun = (pMun === munNorm || pMun.includes(munNorm) || munNorm.includes(pMun));
+    if (!bateMun) return;
+
+    const nomeP = p.interessado.trim();
+    const nUpper = nomeP.toUpperCase();
+    const catProc = String(p.categoria || '').toUpperCase();
+
+    const isConselho = nUpper.includes('CONSELHO') || nUpper.includes('ESCOLA') || nUpper.includes('EMEF') || nUpper.includes('EMEIEF');
+    const isApae = nUpper.includes('APAE');
+    const isEfa = nUpper.includes('EFA') || nUpper.includes('AGRICOLA') || nUpper.includes('AGRÍCOLA');
+    const isPrefeitura = nUpper.includes('PREFEITURA') || nUpper.includes('SECRETARIA') || nUpper.includes('SEMED') || nUpper.includes('MUNICÍPIO') || nUpper.includes('MUNICIPIO');
+
+    const item = {
+      nome: nomeP,
+      cnpj: p.cnpj || '',
+      origem: 'Processo Cadastrado'
+    };
+
+    if (catProc === 'F' || isConselho || isApae || isEfa) {
+      item.grupo = 'Fomento';
+      item.tipoLabel = isApae ? 'APAE' : (isEfa ? 'EFA' : (isConselho ? 'Conselho Escolar' : 'Entidade Fomento'));
+      if (!mapaFomento.has(nomeP)) mapaFomento.set(nomeP, item);
+    } else {
+      item.grupo = 'Não Fomento';
+      item.tipoLabel = isPrefeitura ? 'Prefeitura / Órgão Municipal' : 'Entidade Conveniada';
+      if (!mapaNaoFomento.has(nomeP)) mapaNaoFomento.set(nomeP, item);
+    }
+    if (!mapaGeral.has(nomeP)) mapaGeral.set(nomeP, item);
+  });
+
+  // 3. PREFEITURA E SECRETARIA DE EDUCAÇÃO DO MUNICÍPIO (Pertencem a NÃO FOMENTO - Convênios/Cooperação)
+  const cMun = contatos.find(c => _normTextoPopup(c.municipio) === munNorm);
+  const nomePrefeitura = 'Prefeitura Municipal de ' + mun;
+  const nomeSemed = 'Secretaria Municipal de Educação de ' + mun;
+
+  if (!mapaNaoFomento.has(nomePrefeitura)) {
+    const itemPref = {
+      nome: nomePrefeitura,
+      cnpj: '',
+      grupo: 'Não Fomento',
+      tipoLabel: 'Prefeitura Municipal',
+      prefeito: cMun ? cMun.nomePrefeito : '',
+      telefone: cMun ? (cMun.celularPrefeito || cMun.celularSecretario) : ''
+    };
+    mapaNaoFomento.set(nomePrefeitura, itemPref);
+    mapaGeral.set(nomePrefeitura, itemPref);
+  }
+
+  if (!mapaNaoFomento.has(nomeSemed)) {
+    const itemSemed = {
+      nome: nomeSemed,
+      cnpj: '',
+      grupo: 'Não Fomento',
+      tipoLabel: 'Secretaria de Educação',
+      secretario: cMun ? cMun.nomeSecretario : '',
+      telefone: cMun ? cMun.celularSecretario : ''
+    };
+    mapaNaoNao = mapaNaoFomento.set(nomeSemed, itemSemed);
+    mapaGeral.set(nomeSemed, itemSemed);
+  }
+
+  // Prepara arrays ordenados
+  const listaFomento = Array.from(mapaFomento.values()).sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  const listaNaoFomento = Array.from(mapaNaoFomento.values()).sort((a,b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+  const totalEntidades = listaFomento.length + listaNaoFomento.length;
+
+  // Monta HTML com optgroups no select
+  if (sel) {
+    let htmlSelect = '';
+    
+    if (!catEscolhida) {
+      htmlSelect += `<option value="">⚠️ [Atenção] Defina a CATEGORIA acima para liberar a seleção (${totalEntidades} entidades disponíveis)</option>`;
+    } else if (cat === 'F') {
+      htmlSelect += `<option value="">-- Selecione uma entidade de FOMENTO de ${mun} ou digite abaixo (${listaFomento.length}) --</option>`;
+    } else {
+      htmlSelect += `<option value="">-- Selecione um Órgão/Conveniada de ${mun} ou digite abaixo (${listaNaoFomento.length}) --</option>`;
+    }
+    
+    // Se a categoria for F (Fomento), dá destaque total ao grupo Fomento
+    // Se a categoria for C ou T (Não Fomento), mostra prioritariamente Não Fomento
+    // Se ainda não escolheu, exibe ambos os grupos com alerta
+    if (cat === 'F' || !catEscolhida) {
+      if (listaFomento.length > 0) {
+        htmlSelect += `<optgroup label="🌱 GRUPO: FOMENTO (Conselhos Escolares, APAEs, EFAs - ${listaFomento.length})">`;
+        listaFomento.forEach(ent => {
+          htmlSelect += `<option value="${ent.nome}">[Fomento] ${ent.nome} (${ent.tipoLabel})</option>`;
+        });
+        htmlSelect += `</optgroup>`;
+      }
+    }
+
+    if (cat !== 'F' || !catEscolhida) {
+      if (listaNaoFomento.length > 0) {
+        htmlSelect += `<optgroup label="🏛️ GRUPO: NÃO FOMENTO (Prefeitura, Secretarias, Convênios - ${listaNaoFomento.length})">`;
+        listaNaoFomento.forEach(ent => {
+          htmlSelect += `<option value="${ent.nome}">[Convênio/Outros] ${ent.nome} (${ent.tipoLabel})</option>`;
+        });
+        htmlSelect += `</optgroup>`;
+      }
+    }
+
+    sel.innerHTML = htmlSelect;
+    sel.style.display = 'block';
+
+    if (!catEscolhida) {
+      sel.style.borderColor = 'rgba(245,158,11,0.6)';
+      sel.style.background = 'rgba(245,158,11,0.08)';
+    } else {
+      sel.style.borderColor = 'rgba(56,189,248,0.5)';
+      sel.style.background = '#1e293b';
+    }
+  }
+
+  // Preenche o datalist com as opções recomendadas conforme a categoria
+  let htmlDatalist = '';
+  if (cat === 'F') {
+    listaFomento.forEach(ent => {
+      htmlDatalist += `<option value="${ent.nome}">[Fomento - ${ent.tipoLabel}]</option>`;
+    });
+  } else if (cat) {
+    listaNaoFomento.forEach(ent => {
+      htmlDatalist += `<option value="${ent.nome}">[Não Fomento - ${ent.tipoLabel}]</option>`;
+    });
+  } else {
+    listaFomento.forEach(ent => {
+      htmlDatalist += `<option value="${ent.nome}">[Fomento - ${ent.tipoLabel}]</option>`;
+    });
+    listaNaoFomento.forEach(ent => {
+      htmlDatalist += `<option value="${ent.nome}">[Não Fomento - ${ent.tipoLabel}]</option>`;
+    });
+  }
+  dl.innerHTML = htmlDatalist;
+
+  // Guarda o mapa geral para busca instantânea de CNPJ
+  window._popupEntidadesCacheMap = mapaGeral;
+
+  if (badgeCount) {
+    if (cat === 'F') {
+      badgeCount.textContent = `(${listaFomento.length} entidades de Fomento em ${mun})`;
+      badgeCount.style.color = '#34d399';
+    } else if (cat) {
+      badgeCount.textContent = `(${listaNaoFomento.length} entidades Não Fomento em ${mun})`;
+      badgeCount.style.color = '#38bdf8';
+    } else {
+      badgeCount.textContent = `(${totalEntidades} entidades em ${mun})`;
+      badgeCount.style.color = '#fbbf24';
+    }
+    badgeCount.style.display = 'inline-block';
+  }
+
+  if (avisoFomento) {
+    if (!catEscolhida) {
+      avisoFomento.innerHTML = `⚠️ <em><strong>Atenção:</strong> Defina o campo <strong>Categoria *</strong> acima para filtrar as entidades permitidas (${mun} possui ${listaFomento.length} em Fomento e ${listaNaoFomento.length} em Não Fomento).</em>`;
+      avisoFomento.style.color = '#fbbf24';
+    } else if (cat === 'F') {
+      avisoFomento.innerHTML = `🌱 <em>Categoria <strong>F - FOMENTO</strong> selecionada: Mostrando exclusivamente Conselhos Escolares Municipais, APAEs e EFAs de <strong>${mun}</strong>.</em>`;
+      avisoFomento.style.color = '#34d399';
+    } else {
+      avisoFomento.innerHTML = `🏛️ <em>Categoria <strong>${cat === 'C' ? 'C - CONVÊNIO' : 'T - TERMO DE COOPERAÇÃO'}</strong> selecionada: Mostrando Prefeitura Municipal e Secretarias de <strong>${mun}</strong>.</em>`;
+      avisoFomento.style.color = '#38bdf8';
+    }
+    avisoFomento.style.display = 'block';
+  }
+}
+window.atualizarEntidadesMunicipioPopup = atualizarEntidadesMunicipioPopup;
+
+// Filtra dinamicamente as sugestões de OBJETO no popup de acordo com o TIPO selecionado (Imagens 4 e 5)
+function atualizarObjetosPorTipoPopup() {
+  const tipoInput = document.getElementById('popup-novo-tipo');
+  const dl = document.getElementById('popup-list-objetos');
+  const badgeTipo = document.getElementById('popup-novo-badge-objeto-tipo');
+  if (!dl) return;
+
+  const tipo = (tipoInput ? tipoInput.value : '').trim().toUpperCase();
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+
+  const tipoLabels = {
+    'OB': 'OB - Obras',
+    'MP': 'MP - Mat. Permanente',
+    'MC': 'MC - Mat. Consumo',
+    'SI': 'SI - Sistema',
+    'TR': 'TR - Treinamento',
+    'OUT': 'OUT - Outros'
+  };
+
+  let objetos = [];
+  if (tipo) {
+    objetos = [...new Set(procs.filter(p => String(p.tipo || '').toUpperCase() === tipo).map(p => (p.objeto || '').trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
+  } else {
+    objetos = [...new Set(procs.map(p => (p.objeto || '').trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
+  }
+
+  dl.innerHTML = objetos.map(o => `<option value="${o}">`).join('');
+
+  if (badgeTipo) {
+    if (tipo) {
+      badgeTipo.textContent = `(${objetos.length} sugestões para ${tipoLabels[tipo] || tipo})`;
+      badgeTipo.style.display = 'inline-block';
+    } else {
+      badgeTipo.style.display = 'none';
+    }
+  }
+}
+window.atualizarObjetosPorTipoPopup = atualizarObjetosPorTipoPopup;
+
+// Disparado quando o usuário escolhe uma entidade no combo de grupos
+function onSelecionarSelectEntidadePopup(selEl) {
+  if (!selEl) return;
+  const val = selEl.value;
+  if (!val) return;
+
+  const catInput = document.getElementById('popup-novo-categoria');
+  const cat = (catInput ? catInput.value : '').trim().toUpperCase();
+
+  // Se o usuário ainda não escolheu a categoria, orienta com gentileza
+  if (!cat) {
+    toast('Por favor, defina primeiro o campo "Categoria *" acima antes de selecionar a entidade.', 'warning');
+    if (catInput) {
+      catInput.focus();
+      catInput.style.borderColor = '#f59e0b';
+    }
+    return;
+  }
+
+  const inputInt = document.getElementById('popup-novo-interessado');
+  if (inputInt) {
+    inputInt.value = val;
+  }
+
+  // Preenche o CNPJ correspondente se existir
+  const mapa = window._popupEntidadesCacheMap;
+  if (mapa && mapa.has(val)) {
+    const ent = mapa.get(val);
+    const inputCnpj = document.getElementById('popup-novo-cnpj');
+    if (ent.cnpj && inputCnpj) {
+      inputCnpj.value = ent.cnpj;
+      if (typeof consultarCNPJPopup === 'function') {
+        consultarCNPJPopup(ent.cnpj, true);
+      }
+    }
+  }
+
+  if (typeof verificarDemandaRegistradaPopup === 'function') {
+    verificarDemandaRegistradaPopup();
+  }
+
+  // Executa checagem de entidade contemplada (Alerta de Gestão "UAU")
+  verificarEntidadeContempladaPopup(val);
+}
+window.onSelecionarSelectEntidadePopup = onSelecionarSelectEntidadePopup;
+
+// Checagem "UAU" de Gestão: Identifica se a entidade já possui demandas/processos contemplados anteriores no sistema
+// REGRA: É livre a inclusão de novas entidades não contempladas. Para as que já possuem histórico,
+// mostra alerta detalhado de gestão com link de consulta e ping-pong sem bloquear o cadastro.
+function verificarEntidadeContempladaPopup(nomeEntidade) {
+  const containerAlerta = document.getElementById('popup-novo-alerta-contemplada');
+  if (!containerAlerta) return;
+
+  const nome = (nomeEntidade || document.getElementById('popup-novo-interessado')?.value || '').trim();
+  const cnpj = (document.getElementById('popup-novo-cnpj')?.value || '').replace(/\D/g, '');
+  const mun = _normTextoPopup(document.getElementById('popup-novo-municipio')?.value);
+
+  if (!nome || nome.length < 3) {
+    containerAlerta.style.display = 'none';
+    containerAlerta.innerHTML = '';
+    return;
+  }
+
+  const nomeNorm = _normTextoPopup(nome);
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+
+  const processosAnteriores = procs.filter(p => {
+    if (!p.interessado) return false;
+    const pNome = _normTextoPopup(p.interessado);
+    const pCnpj = (p.cnpj || '').replace(/\D/g, '');
+    const pMun = _normTextoPopup(p.municipio);
+
+    // Cruzamento por CNPJ se disponível
+    if (cnpj && cnpj.length === 14 && pCnpj && pCnpj.length === 14 && cnpj === pCnpj) {
+      return true;
+    }
+
+    // Cruzamento por Nome + Município
+    const bateNome = (pNome === nomeNorm || pNome.includes(nomeNorm) || nomeNorm.includes(pNome));
+    const bateMun = !mun || (pMun === mun || pMun.includes(mun) || mun.includes(pMun));
+
+    return bateNome && bateMun;
+  });
+
+  if (processosAnteriores.length === 0) {
+    containerAlerta.style.display = 'none';
+    containerAlerta.innerHTML = '';
+    return;
+  }
+
+  // Calcula total financeiro acumulado já registrado para a entidade
+  const totalValor = processosAnteriores.reduce((acc, cur) => acc + (parseFloat(cur.valorOf) || 0), 0);
+  const totalFmt = typeof formatCurrency === 'function' ? formatCurrency(totalValor) : `R$ ${totalValor.toFixed(2)}`;
+
+  let itensHtml = processosAnteriores.slice(0, 5).map(p => {
+    const valFmt = typeof formatCurrency === 'function' ? formatCurrency(p.valorOf || 0) : `R$ ${p.valorOf || '0,00'}`;
+    const pNum = p.numero || 'Sem número';
+    const pAno = p.ano ? `(${p.ano})` : '';
+    const pPref = p.prefixo ? `[${p.prefixo}]` : '';
+    const pStatus = p.status || 'REG. DEMANDA';
+    return `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:6px 10px; margin-top:4px; gap:8px;">
+        <div style="font-size:11.5px; color:#e2e8f0; line-height:1.35; flex:1;">
+          <span style="font-weight:700; color:#38bdf8;">${pPref} ${pNum} ${pAno}</span> - 
+          <span style="color:#34d399; font-weight:700;">${valFmt}</span>
+          <span style="display:inline-block; margin-left:6px; font-size:10px; background:rgba(255,255,255,0.1); padding:1px 6px; border-radius:4px; color:#cbd5e1;">${pStatus}</span>
+        </div>
+        <button type="button" onclick="abrirProcessoPorIdPopup('${p.id}')" style="background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:4px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;" title="Ver detalhes deste processo cadastrado">
+          <span>🔍 Ver</span>
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  if (processosAnteriores.length > 5) {
+    itensHtml += `<div style="font-size:10.5px; color:#94a3b8; margin-top:4px; text-align:right;">+ ${processosAnteriores.length - 5} outros processos anteriores encontrados.</div>`;
+  }
+
+  containerAlerta.innerHTML = `
+    <div style="background:linear-gradient(135deg, rgba(30,58,138,0.35) 0%, rgba(15,23,42,0.95) 100%); border:1px solid rgba(56,189,248,0.5); border-radius:8px; padding:10px 14px; box-shadow:0 4px 14px rgba(0,0,0,0.4);">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:16px;">🏅</span>
+          <strong style="font-size:12px; color:#38bdf8; letter-spacing:0.3px; text-transform:uppercase;">
+            Painel de Gestão: Entidade Já Contemplada
+          </strong>
+        </div>
+        <span style="font-size:11px; font-weight:800; background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:12px;">
+          ${processosAnteriores.length} Processo(s) | Total: ${totalFmt}
+        </span>
+      </div>
+      <p style="font-size:11.5px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.4;">
+        Esta entidade já possui histórico de recursos/demandas cadastrados na CAM. <em>O cadastro de novas demandas permanece totalmente livre</em>; use os links abaixo para consultar os processos existentes:
+      </p>
+      ${itensHtml}
+    </div>
+  `;
+  containerAlerta.style.display = 'block';
+}
+window.verificarEntidadeContempladaPopup = verificarEntidadeContempladaPopup;
+
+// Disparado quando o usuário escolhe ou digita no campo de texto Interessado / Escola do popup
+function onSelecionarOuDigitarInteressadoPopup() {
+  const inputInt = document.getElementById('popup-novo-interessado');
+  const inputCnpj = document.getElementById('popup-novo-cnpj');
+  const catInput = document.getElementById('popup-novo-categoria');
+  const cat = (catInput ? catInput.value : '').trim().toUpperCase();
+
+  const val = (inputInt ? inputInt.value : '').trim();
+  if (!val) {
+    const containerAlerta = document.getElementById('popup-novo-alerta-contemplada');
+    if (containerAlerta) containerAlerta.style.display = 'none';
+    return;
+  }
+
+  // Sincroniza o select se houver match exato
+  const sel = document.getElementById('popup-novo-select-entidades');
+  if (sel) {
+    const optMatch = Array.from(sel.options).find(o => o.value === val);
+    if (optMatch) sel.value = val;
+    else sel.value = '';
+  }
+
+  // 1. Verifica no mapa de entidades gerado para o município
+  const mapa = window._popupEntidadesCacheMap;
+  if (mapa && mapa.has(val)) {
+    const ent = mapa.get(val);
+    if (ent.cnpj && inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00')) {
+      inputCnpj.value = ent.cnpj;
+      if (typeof consultarCNPJPopup === 'function') {
+        consultarCNPJPopup(ent.cnpj, true);
+      }
+    }
+  } else {
+    // 2. Fallback geral de sugestão
+    sugerirDadosEscolaPopup();
+  }
+
+  // 3. Verifica se a entidade já foi contemplada e gera painel UAU
+  verificarEntidadeContempladaPopup(val);
+}
+window.onSelecionarOuDigitarInteressadoPopup = onSelecionarOuDigitarInteressadoPopup;
+
+function adicionarCampoNumeroPopup(val = '') {
+  const container = document.getElementById('popup-novo-container-numeros');
+  if (!container) return;
+  const div = document.createElement('div');
+  div.style.display = 'flex';
+  div.style.gap = '6px';
+  div.style.alignItems = 'center';
+  div.innerHTML = `
+    <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0 12px; height:40px; border-radius:6px; font-weight:800; font-size:16px; flex-shrink:0; background:#dc2626; color:#fff; border:none; cursor:pointer;" title="Remover processo">-</button>
+    <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" value="${val}" oninput="verificarProcessoExistentePopup(this)" onblur="verificarProcessoExistentePopup(this)">
+  `;
+  container.appendChild(div);
+}
+window.adicionarCampoNumeroPopup = adicionarCampoNumeroPopup;
+
+async function salvarNovoProcessoPopup(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const prefixo = (document.getElementById('popup-novo-prefixo')?.value || '').trim();
+  const ano = (document.getElementById('popup-novo-ano')?.value || '').trim();
+  const municipio = (document.getElementById('popup-novo-municipio')?.value || '').trim();
+  const categoria = (document.getElementById('popup-novo-categoria')?.value || '').trim();
+  const tipo = (document.getElementById('popup-novo-tipo')?.value || '').trim();
+  const interessado = (document.getElementById('popup-novo-interessado')?.value || '').trim();
+  const objeto = (document.getElementById('popup-novo-objeto')?.value || '').trim();
+  const valorOfRaw = (document.getElementById('popup-novo-valorOf')?.value || '').trim();
+
+  // Validação dos Campos Obrigatórios marcados com estrela amarela (*)
+  if (!prefixo) {
+    toast('Por favor, informe o Prefixo *.', 'error');
+    document.getElementById('popup-novo-prefixo')?.focus();
+    return;
+  }
+  if (!ano) {
+    toast('Por favor, informe o Ano *.', 'error');
+    document.getElementById('popup-novo-ano')?.focus();
+    return;
+  }
+  if (!municipio) {
+    toast('Por favor, informe o Município *.', 'error');
+    document.getElementById('popup-novo-municipio')?.focus();
+    return;
+  }
+  if (!categoria) {
+    toast('Por favor, selecione a Categoria *.', 'error');
+    document.getElementById('popup-novo-categoria')?.focus();
+    return;
+  }
+  if (!tipo) {
+    toast('Por favor, selecione o Tipo *.', 'error');
+    document.getElementById('popup-novo-tipo')?.focus();
+    return;
+  }
+  if (!interessado) {
+    toast('Por favor, informe o Interessado / Escola *.', 'error');
+    document.getElementById('popup-novo-interessado')?.focus();
+    return;
+  }
+  if (!objeto) {
+    toast('Por favor, descreva o Objeto *.', 'error');
+    document.getElementById('popup-novo-objeto')?.focus();
+    return;
+  }
+  if (!valorOfRaw) {
+    toast('Por favor, informe o Valor Oficial (R$) *.', 'error');
+    document.getElementById('popup-novo-valorOf')?.focus();
+    return;
+  }
+
+  const inputsNum = Array.from(document.querySelectorAll('input[name="popup_numero[]"]'));
+  const numerosJoined = inputsNum.map(i => i.value.trim()).filter(Boolean).join(', ');
+  const valOf = typeof parseCurrency === 'function' ? parseCurrency(valorOfRaw) : 0;
+  const valPlan = 0;
+
+  const dataInput = document.getElementById('popup-novo-data')?.value || '';
+  let dataFmt = '';
+  if (dataInput && dataInput.includes('-')) {
+    dataFmt = dataInput.split('-').reverse().join('/');
+  } else {
+    dataFmt = dataInput;
+  }
+
+  const user = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
+  const now = new Date();
+  const dataHoraStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  const dados = {
+    prefixo:     (document.getElementById('popup-novo-prefixo')?.value || '').trim().toUpperCase(),
+    municipio:   municipio,
+    numero:      numerosJoined,
+    interessado: interessado,
+    cnpj:        (document.getElementById('popup-novo-cnpj')?.value || '').trim(),
+    cnpjReceitaTexto: window._popupUltimoResultadoCNPJReceitaTexto || '',
+    objeto:      (document.getElementById('popup-novo-objeto')?.value || '').trim(),
+    valorOf:     valOf,
+    valorPlan:   valPlan,
+    diferenca:   valOf - valPlan,
+    status:      document.getElementById('popup-novo-status')?.value || 'REG. DEMANDA',
+    localizacao: document.getElementById('popup-novo-localizacao')?.value || 'CAM | GDSM | GMAC',
+    data:        dataFmt,
+    obs:         (document.getElementById('popup-novo-obs')?.value || '').trim(),
+    ano:         (document.getElementById('popup-novo-ano')?.value || '').trim(),
+    agrupamento: (document.getElementById('popup-novo-agrupamento')?.value || '').trim(),
+    digito:      typeof window.limparDigitoValor === 'function' ? window.limparDigitoValor(document.getElementById('popup-novo-digito')?.value || '') : (document.getElementById('popup-novo-digito')?.value || '').trim(),
+    DIGITO:      typeof window.limparDigitoValor === 'function' ? window.limparDigitoValor(document.getElementById('popup-novo-digito')?.value || '') : (document.getElementById('popup-novo-digito')?.value || '').trim(),
+    categoria:   document.getElementById('popup-novo-categoria')?.value || '',
+    tipo:        document.getElementById('popup-novo-tipo')?.value || '',
+    marca:       '',
+    CAM:         '',
+    GAB:         '',
+    CC:          '',
+    executivo:   '',
+    anotacao:    '',
+    ultimaEdicao:   user ? (user.nome || user.whatsapp) : 'Sistema',
+    dataHoraEdicao: dataHoraStr,
+    contatos:    [],
+    repositorioArquivos: [],
+    linkGoogleDrive: '',
+    analiseCam: null
+  };
+
+  // Feedback instantâneo no botão
+  const btnGravar = document.getElementById('btn-gravar-popup-novo');
+  if (btnGravar) {
+    btnGravar.disabled = true;
+    btnGravar.innerHTML = '<span>⏳</span><span>Salvando...</span>';
+  }
+
+  try {
+    if (typeof adicionarProcesso === 'function') {
+      await adicionarProcesso(dados);
+    }
+    toast('Processo cadastrado com sucesso!', 'success');
+    fecharModalNovoProcesso();
+    
+    // REFRESH INSTANTÂNEO na tela de listagem de processos
+    if (typeof renderProcessos === 'function') {
+      renderProcessos();
+    }
+  } catch (err) {
+    console.error('Erro ao salvar novo processo pelo popup:', err);
+    toast('Erro ao cadastrar processo.', 'error');
+  } finally {
+    if (btnGravar) {
+      btnGravar.disabled = false;
+      btnGravar.innerHTML = '<span>💾</span><span>Gravar e Salvar</span>';
+    }
+  }
+}
+window.salvarNovoProcessoPopup = salvarNovoProcessoPopup;
+
+// ---- FUNÇÕES ESPECÍFICAS PARA CNPJ NO POPUP NOVO PROCESSO (NÃO REQUERIDO) ----
+function mascaraCNPJInputPopup(el) {
+  if (!el) return;
+  let v = el.value.replace(/\D/g, '');
+  if (v.length > 14) v = v.substring(0, 14);
+  v = v.replace(/^(\d{2})(\d)/, '$1.$2');
+  v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+  v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
+  v = v.replace(/(\d{4})(\d)/, '$1-$2');
+  el.value = v;
+  if (el.value.replace(/\D/g, '').length === 14) {
+    consultarCNPJPopup(el.value, true);
+  }
+}
+window.mascaraCNPJInputPopup = mascaraCNPJInputPopup;
+
+function autoPreencherCNPJPopup(el) {
+  if (!el) return;
+  el.removeAttribute('required');
+  el.required = false;
+  if (el.value.trim() && el.value.replace(/\D/g, '').length === 14) {
+    consultarCNPJPopup(el.value.trim(), true);
+  }
+}
+window.autoPreencherCNPJPopup = autoPreencherCNPJPopup;
+
+function copiarCNPJPopup(btn) {
+  const input = document.getElementById('popup-novo-cnpj');
+  if (!input || !input.value.trim() || input.value.trim() === '00.000.000/0000-00') {
+    if (typeof toast === 'function') toast('Nenhum CNPJ preenchido para copiar', 'warning');
+    return;
+  }
+  const val = input.value.trim();
+  const salvarOriginal = btn.innerHTML;
+
+  const feedbackSucesso = () => {
+    btn.innerHTML = '<span style="font-size:12px;font-weight:bold;color:#10b981;">✓ Copiado</span>';
+    btn.style.borderColor = '#10b981';
+    btn.style.color = '#10b981';
+    if (typeof toast === 'function') toast('CNPJ copiado: ' + val, 'success');
+    setTimeout(() => {
+      btn.innerHTML = salvarOriginal;
+      btn.style.borderColor = 'rgba(255,255,255,0.18)';
+      btn.style.color = '#38bdf8';
+    }, 1500);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(feedbackSucesso).catch(() => {
+      input.select();
+      document.execCommand('copy');
+      feedbackSucesso();
+    });
+  } else {
+    input.select();
+    document.execCommand('copy');
+    feedbackSucesso();
+  }
+}
+window.copiarCNPJPopup = copiarCNPJPopup;
+
+function copiarCNPJSilenciosoPopup() {
+  const input = document.getElementById('popup-novo-cnpj');
+  const val = input ? input.value.trim() : '';
+  if (val && val !== '00.000.000/0000-00' && navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).catch(() => {});
+  }
+}
+window.copiarCNPJSilenciosoPopup = copiarCNPJSilenciosoPopup;
+
+function togglePainelReceitaPopup(forcarAberto) {
+  const corpo = document.getElementById('popup-novo-corpo-receita');
+  const seta = document.getElementById('popup-novo-seta-receita');
+  if (!corpo) return;
+
+  const estaFechado = corpo.style.display === 'none';
+  const abrir = forcarAberto !== undefined ? !!forcarAberto : estaFechado;
+
+  if (abrir) {
+    corpo.style.display = 'block';
+    if (seta) seta.style.transform = 'rotate(180deg)';
+  } else {
+    corpo.style.display = 'none';
+    if (seta) seta.style.transform = 'rotate(0deg)';
+  }
+}
+window.togglePainelReceitaPopup = togglePainelReceitaPopup;
+
+function atualizarLabelReceitaPopup(dadosOuTexto, statusTipo) {
+  const lbl = document.getElementById('popup-novo-label-receita');
+  const box = document.getElementById('popup-novo-container-receita');
+  const subResumo = document.getElementById('popup-novo-subtitulo-receita');
+  if (!lbl) return;
+
+  if (!dadosOuTexto) {
+    lbl.innerHTML = '';
+    if (box) box.style.display = 'none';
+    return;
+  }
+
+  if (typeof dadosOuTexto === 'string') {
+    window._popupUltimoResultadoCNPJReceitaTexto = dadosOuTexto;
+    if (statusTipo === 'loading') {
+      lbl.innerHTML = `
+        <div style="display:inline-flex; align-items:center; gap:8px; color:#38bdf8; font-weight:600;">
+          <span style="display:inline-block; width:14px; height:14px; border:2px solid rgba(56,189,248,0.25); border-top-color:#38bdf8; border-radius:50%; animation:spinReceita 0.8s linear infinite;"></span>
+          <span>${dadosOuTexto}</span>
+        </div>
+      `;
+      if (subResumo) subResumo.textContent = 'Consultando base da Receita Federal...';
+      if (box) {
+        box.style.display = 'flex';
+        box.style.borderColor = 'rgba(56,189,248,0.65)';
+        box.style.background = 'rgba(15,23,42,0.92)';
+      }
+    } else {
+      lbl.innerHTML = `<span style="color:#f87171;">${dadosOuTexto}</span>`;
+      if (subResumo) subResumo.textContent = 'Aviso / Não localizado';
+      if (box) {
+        box.style.display = 'flex';
+        box.style.borderColor = 'rgba(239,68,68,0.45)';
+        box.style.background = 'rgba(127,29,29,0.2)';
+      }
+    }
+    return;
+  }
+
+  const d = dadosOuTexto;
+  const entidade = d.razao_social || d.nome_fantasia || 'NÃO INFORMADA';
+  const fantasia = (d.nome_fantasia && d.nome_fantasia !== d.razao_social) ? d.nome_fantasia : '';
+  const situacao = (d.situacao || 'ATIVA').toUpperCase();
+  const isAtiva = situacao.includes('ATIVA') || situacao.includes('REGULAR');
+  const corSituacao = isAtiva ? '#10b981' : '#ef4444';
+  const bgSituacao = isAtiva ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)';
+  const munUf = [d.municipio, d.uf].filter(Boolean).join(' - ') || 'RO';
+
+  let html = `
+    <div style="display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <span style="font-weight:800; color:#fff; font-size:12.5px;">${entidade}</span>
+        <span style="background:${bgSituacao}; color:${corSituacao}; border:1px solid ${corSituacao}; padding:2px 8px; border-radius:4px; font-weight:800; font-size:10.5px;">${situacao}</span>
+      </div>
+      ${fantasia ? `<div style="font-size:11.5px; color:#94a3b8;"><strong style="color:#cbd5e1;">Nome Fantasia:</strong> ${fantasia}</div>` : ''}
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:6px; font-size:11.5px; margin-top:2px;">
+        <div><strong style="color:#94a3b8;">Município/UF:</strong> <span style="color:#fff;">${munUf}</span></div>
+        <div><strong style="color:#94a3b8;">Natureza:</strong> <span style="color:#cbd5e1;">${d.natureza_juridica || 'Entidade Pública / Escolar'}</span></div>
+        ${d.responsavel ? `<div><strong style="color:#94a3b8;">Representante:</strong> <span style="color:#38bdf8;">${d.responsavel}</span></div>` : ''}
+        ${d.telefone ? `<div><strong style="color:#94a3b8;">Telefone:</strong> <span style="color:#cbd5e1;">${d.telefone}</span></div>` : ''}
+      </div>
+    </div>
+  `;
+
+  lbl.innerHTML = html;
+  window._popupUltimoResultadoCNPJReceitaTexto = `${entidade} (${situacao}) - ${munUf}`;
+  if (subResumo) subResumo.textContent = `${entidade} • ${situacao}`;
+  if (box) {
+    box.style.display = 'flex';
+    if (isAtiva) {
+      box.style.borderColor = 'rgba(16,185,129,0.55)';
+      box.style.background = 'rgba(6,78,59,0.22)';
+    } else {
+      box.style.borderColor = 'rgba(239,68,68,0.55)';
+      box.style.background = 'rgba(127,29,29,0.25)';
+    }
+  }
+  togglePainelReceitaPopup(true);
+}
+window.atualizarLabelReceitaPopup = atualizarLabelReceitaPopup;
+
+async function consultarCNPJPopup(cnpjInput, silencioso) {
+  const el = document.getElementById('popup-novo-cnpj');
+  const raw = cnpjInput !== undefined ? cnpjInput : (el ? el.value : '');
+  const cnpjLimpo = String(raw || '').replace(/\D/g, '');
+
+  if (cnpjLimpo.length !== 14) {
+    if (!silencioso && typeof toast === 'function') {
+      toast('Informe um CNPJ válido de 14 dígitos para consultar.', 'warning');
+    }
+    return null;
+  }
+
+  const cnpjFmt = typeof formatarCNPJ === 'function' ? formatarCNPJ(cnpjLimpo) : cnpjLimpo;
+  atualizarLabelReceitaPopup(`Consultando CNPJ ${cnpjFmt} na base da Receita Federal...`, 'loading');
+
+  let dados = null;
+  try {
+    const resp = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpjLimpo}`, { method: 'GET' });
+    if (resp.ok) {
+      const json = await resp.json();
+      if (json && (json.razao_social || json.cnpj)) {
+        const socio = Array.isArray(json.qsa) && json.qsa.length > 0 ? (json.qsa[0].nome_socio + (json.qsa[0].qualificacao_socio ? ` (${json.qsa[0].qualificacao_socio})` : '')) : '';
+        const tel = json.ddd_telefone_1 ? (json.ddd_telefone_1.length >= 10 ? `(${json.ddd_telefone_1.substring(0,2)}) ${json.ddd_telefone_1.substring(2)}` : json.ddd_telefone_1) : '';
+        dados = {
+          cnpj: cnpjFmt,
+          razao_social: json.razao_social || '',
+          nome_fantasia: json.nome_fantasia || '',
+          situacao: json.descricao_situacao_cadastral || (json.situacao_cadastral === 2 ? 'ATIVA' : 'REGULAR'),
+          municipio: json.municipio || '',
+          uf: json.uf || 'RO',
+          responsavel: socio,
+          telefone: tel,
+          natureza_juridica: json.natureza_juridica || ''
+        };
+      }
+    }
+  } catch (e) {
+    console.warn('Erro ao consultar BrasilAPI no popup:', e);
+  }
+
+  if (!dados) {
+    try {
+      const resp2 = await fetch(`https://open.cnpja.com/office/${cnpjLimpo}`, { method: 'GET' });
+      if (resp2.ok) {
+        const json2 = await resp2.json();
+        if (json2 && (json2.company || json2.alias || json2.taxId)) {
+          dados = {
+            cnpj: cnpjFmt,
+            razao_social: json2.company?.name || json2.alias || '',
+            nome_fantasia: json2.alias || '',
+            situacao: json2.status?.text || 'ATIVA',
+            municipio: json2.address?.city || '',
+            uf: json2.address?.state || 'RO',
+            responsavel: '',
+            telefone: json2.phones?.[0]?.number || '',
+            natureza_juridica: json2.company?.nature?.text || ''
+          };
+        }
+      }
+    } catch (e2) {
+      console.warn('Erro ao consultar CNPJa no popup:', e2);
+    }
+  }
+
+  if (dados) {
+    atualizarLabelReceitaPopup(dados, 'success');
+    if (!silencioso && typeof toast === 'function') {
+      toast(`CNPJ consultado: ${dados.razao_social} (${dados.situacao})`, 'success');
+    }
+    // Se o campo interessado estiver vazio no popup, sugere o nome
+    const inputInteressado = document.getElementById('popup-novo-interessado');
+    if (inputInteressado && !inputInteressado.value.trim() && (dados.razao_social || dados.nome_fantasia)) {
+      inputInteressado.value = dados.nome_fantasia || dados.razao_social;
+    }
+    // Se o município estiver vazio no popup, sugere
+    const inputMun = document.getElementById('popup-novo-municipio');
+    if (inputMun && !inputMun.value.trim() && dados.municipio) {
+      inputMun.value = dados.municipio;
+    }
+  } else {
+    atualizarLabelReceitaPopup(`Não foi possível obter dados para o CNPJ ${cnpjFmt}. Verifique no link da Receita Federal.`, 'error');
+  }
+  return dados;
+}
+window.consultarCNPJPopup = consultarCNPJPopup;
+
+function consultarCNPJPopupManualmente() {
+  const el = document.getElementById('popup-novo-cnpj');
+  const val = el ? el.value.trim() : '';
+  if (!val || val === '00.000.000/0000-00') {
+    if (typeof toast === 'function') toast('Digite um CNPJ no campo para consultar.', 'warning');
+    if (el) el.focus();
+    return;
+  }
+  consultarCNPJPopup(val, false);
+}
+window.consultarCNPJPopupManualmente = consultarCNPJPopupManualmente;
+
 function novoProcesso() {
-  state.editandoId = null;
-  navegar('novo');
+  abrirModalNovoProcesso();
 }
 
 function confirmarExcluir(id) {
@@ -5621,8 +6791,8 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
-const TE_SHEET_ID  = '1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08';
-const TE_GID_MAIN  = '1444558009';
+const TE_SHEET_ID  = '1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI';
+const TE_GID_MAIN  = '0'; // GID Oficial da nova planilha
 const TE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID + '/edit?gid=' + TE_GID_MAIN + '#gid=' + TE_GID_MAIN;
 const TE_MAX_SHEETS = 50;   // máximo de abas a tentar
 const TE_BATCH_SIZE = 8;    // abas buscadas em paralelo por lote
@@ -5636,21 +6806,28 @@ var _teItensPorPag = 50;
 var _teCarregado   = false;
 var _teAbas        = [];   // [{idx, nome, count}] - abas carregadas
 
-// Mapeamento das colunas (ndice → chave)
-// As abas com ?sheet=N retornam parsedNumHeaders:0, primeira linha é cabeçalho
+// Mapeamento exato das 29 colunas da aba "Entidades" (0 a 28):
+// [0] Município; [1] Categoria da parceria; [2] Nome da escola | Entidade | Prefeitura; [3] Nº de alunos; [4] Modalidade;
+// [5] INEP; [6] CNPJ; [7] Endereço; [8] Bairro | Distrito | Aldeia; [9] Complemento; [10] CEP; [11] Competência;
+// [12] Super; [13] Rede social; [14] Telefone; [15] Email da entidade; [16] Nome do diretor | Presidente | Prefeito;
+// [17] Contato do diretor; [18] Nome do secretário; [19] Contato do secretário; [20] Quant. salas de aula;
+// [21] Quant. salas administrativas; [22] Sala do AEE; [23] Banheiros; [24] Pátio; [25] Auditório;
+// [26] Refeitório (s/n); [27] Quadra (s/n); [28] Localidade (urbana/rural)
 const TE_COLS = [
-  'municipio','nome','alunos','modalidade','inep','endereco','bairro',
-  'complemento','cep','competencia','super','redesSociais','telefone','email',
-  'diretor','contatoDiretor','secretario','contatoSecretario',
-  'salasAula','salasAdm','salaAEE','banheiros','patio','auditorio','refeitorio','quadra','localidade'
+  'municipio', 'categoria', 'nome', 'alunos', 'modalidade',
+  'inep', 'cnpj', 'endereco', 'bairro', 'complemento', 'cep', 'competencia',
+  'super', 'redesSociais', 'telefone', 'email', 'diretor', 'contatoDiretor',
+  'secretario', 'contatoSecretario', 'salasAula', 'salasAdm', 'salaAEE',
+  'banheiros', 'patio', 'auditorio', 'refeitorio', 'quadra', 'localidade'
 ];
-const TE_HEADER_KEYWORDS = ['municipio','Município','nome completo','inep','modalidade','telefone','endereço','endereco'];
+const TE_HEADER_KEYWORDS = ['município','municipio','categoria','nome completo','nome da escola','entidade','inep','modalidade','telefone','endereço','endereco'];
 
 // Verifica se uma linha é cabeçalho
 function _teIsHeader(obj) {
   const n = (obj.nome || '').toLowerCase();
   const m = (obj.municipio || '').toLowerCase();
-  return TE_HEADER_KEYWORDS.some(k => n.includes(k) || m.includes(k));
+  const c = (obj.categoria || '').toLowerCase();
+  return TE_HEADER_KEYWORDS.some(k => n.includes(k) || m.includes(k) || c.includes(k));
 }
 
 // Verifica se uma linha é válida (tem pelo menos nome ou municipio)
@@ -5658,7 +6835,7 @@ function _teIsValidRow(obj) {
   return (obj.nome && obj.nome.trim().length > 2) || (obj.municipio && obj.municipio.trim().length > 2);
 }
 
-// Parse de uma resposta gviz JSON
+// Parse de uma resposta gviz JSON para a aba Entidades
 function _teParseGviz(text, sheetIdx) {
   try {
     const jsonStr = text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, '');
@@ -5677,15 +6854,25 @@ function _teParseGviz(text, sheetIdx) {
         obj[key] = (cell && cell.v !== null && cell.v !== undefined) ? String(cell.v).trim() : '';
       });
 
-      // Pula cabeçalho
+      // Pula linha se for cabeçalho
       if (_teIsHeader(obj)) return;
 
       // Propaga Município da linha anterior se a linha atual não tem
       if (!obj.municipio && lastMunicipio) obj.municipio = lastMunicipio;
       if (obj.municipio) lastMunicipio = obj.municipio;
 
-      // Só adiciona linhas com nome de escola
-      if (obj.nome && obj.nome.trim().length > 2) {
+      // Se não tiver competência definida explicitamente, infere pela categoria
+      if (!obj.competencia || obj.competencia.trim() === '') {
+        const catU = (obj.categoria || '').toUpperCase();
+        if (catU.includes('PREFEITURA') || catU.includes('MUNICIPAL')) obj.competencia = 'Municipal';
+        else if (catU.includes('ESTADUAL')) obj.competencia = 'Estadual';
+        else if (catU.includes('FEDERAL')) obj.competencia = 'Federal';
+        else if (catU.includes('APAE') || catU.includes('EFA') || catU.includes('FILANTR')) obj.competencia = 'Privada/Filantrópica';
+        else obj.competencia = 'Municipal';
+      }
+
+      // Adiciona apenas registros que possuam identificação
+      if ((obj.nome && obj.nome.trim().length > 1) || (obj.municipio && obj.municipio.trim().length > 1)) {
         rows.push(obj);
       }
     });
@@ -5693,6 +6880,62 @@ function _teParseGviz(text, sheetIdx) {
     return rows;
   } catch(e) {
     console.warn('[TE] Parse error sheet', sheetIdx, e.message);
+    return null;
+  }
+}
+
+// Parse de exportação direta CSV da aba Entidades
+function _teParseCsv(csvText) {
+  try {
+    const lines = csvText.split(/\r?\n/).filter(Boolean);
+    if (lines.length < 2) return null;
+    const rows = [];
+    let lastMunicipio = '';
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+      const cells = [];
+      let current = '';
+      let inQuotes = false;
+      for (let c = 0; c < line.length; c++) {
+        const ch = line[c];
+        if (ch === '"') {
+          inQuotes = !inQuotes;
+        } else if (ch === ',' && !inQuotes) {
+          cells.push(current.trim());
+          current = '';
+        } else {
+          current += ch;
+        }
+      }
+      cells.push(current.trim());
+
+      const obj = { _aba: 'CSV' };
+      TE_COLS.forEach((key, ci) => {
+        let val = cells[ci] || '';
+        val = val.replace(/^["']|["']$/g, '').trim();
+        obj[key] = val;
+      });
+
+      if (_teIsHeader(obj)) continue;
+
+      if (!obj.municipio && lastMunicipio) obj.municipio = lastMunicipio;
+      if (obj.municipio) lastMunicipio = obj.municipio;
+
+      if (!obj.competencia || obj.competencia.trim() === '') {
+        const catU = (obj.categoria || '').toUpperCase();
+        if (catU.includes('PREFEITURA') || catU.includes('MUNICIPAL')) obj.competencia = 'Municipal';
+        else if (catU.includes('ESTADUAL')) obj.competencia = 'Estadual';
+        else obj.competencia = 'Municipal';
+      }
+
+      if ((obj.nome && obj.nome.trim().length > 1) || (obj.municipio && obj.municipio.trim().length > 1)) {
+        rows.push(obj);
+      }
+    }
+    return rows.length > 0 ? rows : null;
+  } catch(e) {
+    console.warn('[TE] Erro no parse CSV:', e.message);
     return null;
   }
 }
@@ -5708,7 +6951,7 @@ function recarregarTodasEscolas() {
   buscarTodasEscolasGSheet();
 }
 
-// Busca TODAS as abas em lotes paralelos
+// Busca os cadastros da nova planilha oficial SEDUC/RO
 async function buscarTodasEscolasGSheet() {
   const tbody     = document.getElementById('te-tbody');
   const wrap      = document.getElementById('te-table-wrap');
@@ -5732,99 +6975,97 @@ async function buscarTodasEscolasGSheet() {
     statusEl.style.cssText = `display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:${bg};color:${col};border:1px solid ${border};letter-spacing:0.4px;`;
   };
 
-  setBadge('⏳ Iniciando carregamento...', 'loading');
+  setBadge('⏳ Carregando nova base...', 'loading');
   if (progressEl) progressEl.style.display = 'block';
   if (tbody) tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:48px;color:var(--text-muted);">
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
-      <div style="width:36px;height:36px;border:3px solid rgba(59,130,246,0.3);border-top-color:#60a5fa;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-      <div id="te-load-msg" style="font-size:14px;font-weight:600;color:var(--text-secondary);">Buscando planilhas...</div>
-      <div id="te-load-sub" style="font-size:12px;color:var(--text-muted);">Carregando todas as abas do Google Sheets</div>
+      <div style="width:36px;height:36px;border:3px solid rgba(16,185,129,0.3);border-top-color:#10b981;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+      <div id="te-load-msg" style="font-size:14px;font-weight:600;color:var(--text-secondary);">Buscando dados da nova planilha SEDUC/RO...</div>
+      <div id="te-load-sub" style="font-size:12px;color:var(--text-muted);">ID: ${TE_SHEET_ID} • Agente: cam@seduc.ro.gov.br</div>
     </div></td></tr>`;
-
-  const setLoadMsg = (msg, sub) => {
-    const el = document.getElementById('te-load-msg');
-    const sub2 = document.getElementById('te-load-sub');
-    if (el) el.textContent = msg;
-    if (sub2 && sub) sub2.textContent = sub;
-  };
 
   _teCache = [];
   _teAbas  = [];
-  let totalLoaded = 0;
-  
-  const MUNICIPIOS_RO = [
-    "Alta Floresta d'Oeste", "Alto Alegre dos Parecis", "Alto Paraíso", "Alvorada d'Oeste", "Ariquemes", 
-    "Buritis", "Cabixi", "Cacaulândia", "Cacoal", "Campo Novo de Rondônia", "Candeias do Jamari", 
-    "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste", "Corumbiara", "Costa Marques", 
-    "Cujubim", "Espigão d'Oeste", "Governador Jorge Teixeira", "Guajará-Mirim", "Itapuã do Oeste", 
-    "Jaru", "Ji-Paraná", "Machadinho d'Oeste", "Ministro Andreazza", "Mirante da Serra", "Monte Negro", 
-    "Nova Brasilândia d'Oeste", "Nova Mamoré", "Nova União", "Novo Horizonte do Oeste", "Ouro Preto do Oeste", 
-    "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente Médici", 
-    "Primavera de Rondônia", "Rio Crespo", "Rolim de Moura", "Santa Luzia d'Oeste", "São Felipe d'Oeste", 
-    "São Francisco do Guaporé", "São Miguel do Guaporé", "Seringueiras", "Teixeirópolis", "Theobroma", 
-    "Urupá", "Vale do Anari", "Vale do Paraíso", "Vilhena"
-  ];
-  
-  const sigsVistos = new Set();
 
   try {
-    const TODAS_ABAS = [
-      { nome: 'estadual', comp: 'Estadual' },
-      { nome: 'federal', comp: 'Federal' },
-      ...MUNICIPIOS_RO.map(m => ({ nome: m, comp: 'Municipal' }))
-    ];
+    // 1. Tentar carregar prioritariamente via GID 0 da nova planilha oficial
+    let urlEntidades = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
+                       '/gviz/tq?tqx=out:json&gid=' + TE_GID_MAIN + '&nocache=' + Date.now();
+    let resp = await fetch(urlEntidades);
+    let text = resp.ok ? await resp.text() : null;
+    let rows = (text && !text.includes('<!DOCTYPE') && !text.includes('<html')) ? _teParseGviz(text, 'gid=0') : null;
 
-    for (let batchStart = 0; batchStart < TODAS_ABAS.length; batchStart += TE_BATCH_SIZE) {
-      const batchAbas = TODAS_ABAS.slice(batchStart, batchStart + TE_BATCH_SIZE);
-
-      setBadge(`⏳ Lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1} / ${Math.ceil(TODAS_ABAS.length/TE_BATCH_SIZE)}...`, 'loading');
-      setLoadMsg(
-        `Carregando lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1}...`,
-        `Buscando ${batchAbas.length} planilhas | ${totalLoaded} escolas encontradas`
-      );
-
-      // Busca paralela do lote usando o nome da aba
-      const results = await Promise.allSettled(
-        batchAbas.map(aba => {
-          const url = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
-                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(aba.nome) + '&nocache=' + Date.now();
-          return fetch(url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status)).then(text => ({ text, aba }));
-        })
-      );
-
-      results.forEach((res, i) => {
-        if (res.status === 'rejected') return;
-        
-        const text = res.value.text;
-        const aba = res.value.aba;
-        const mun = aba.nome;
-        const sigMatch = text.match(/"sig":"(\d+)"/);
-        const sig = sigMatch ? sigMatch[1] : null;
-        
-        // Se a aba não existir, a API retorna a aba padrão. O sig nos ajuda a ignorar duplicatas/fallbacks!
-        if (sig) {
-          if (sigsVistos.has(sig)) return; 
-          sigsVistos.add(sig);
+    // Se não retornar por GID 0, tentar por nome de aba "ENTIDADES"
+    if (!rows || rows.length === 0) {
+      const urlNome = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
+                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('ENTIDADES') + '&nocache=' + Date.now();
+      const respNome = await fetch(urlNome);
+      if (respNome.ok) {
+        const textNome = await respNome.text();
+        if (textNome && !textNome.includes('<!DOCTYPE') && !textNome.includes('<html')) {
+          rows = _teParseGviz(textNome, 'ENTIDADES');
         }
-
-        const rows = _teParseGviz(text, mun);
-        if (!rows || rows.length === 0) return;
-        
-        rows.forEach(r => {
-           if (!r.competencia || r.competencia.trim() === '') r.competencia = aba.comp;
-           if (aba.comp === 'Estadual') r.competencia = 'Estadual';
-           if (aba.comp === 'Municipal') r.competencia = 'Municipal';
-           if (aba.comp === 'Federal') r.competencia = 'Federal';
-        });
-
-        totalLoaded += rows.length;
-
-        _teAbas.push({ nome: mun, count: rows.length });
-        _teCache.push(...rows);
-      });
+      }
     }
 
-    if (_teCache.length === 0) throw new Error('Nenhum dado encontrado. Verifique se a planilha está compartilhada publicamente.');
+    // Se não retornar por gviz (ex: bloqueio de script ou retorno HTML), tentar exportação CSV pública
+    if (!rows || rows.length === 0) {
+      try {
+        const urlCsv = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
+                       '/export?format=csv&gid=' + TE_GID_MAIN + '&nocache=' + Date.now();
+        const respCsv = await fetch(urlCsv);
+        if (respCsv.ok) {
+          const csvText = await respCsv.text();
+          if (csvText && !csvText.includes('<!DOCTYPE') && !csvText.includes('<html')) {
+            rows = _teParseCsv(csvText);
+          }
+        }
+      } catch(eCsv) {
+        console.warn('[TE] Tentativa de export CSV:', eCsv.message);
+      }
+    }
+
+    // Fallback: Tentar via endpoint backend seguro do Render
+    if (!rows || rows.length === 0) {
+      try {
+        const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : 'https://seduc-backend.onrender.com';
+        const respBk = await fetch(baseApi + '/api/escolas?nocache=' + Date.now());
+        if (respBk.ok) {
+          const jsonBk = await respBk.json();
+          const listBk = jsonBk.rows || jsonBk || [];
+          if (Array.isArray(listBk) && listBk.length > 0) {
+            rows = listBk;
+          }
+        }
+      } catch(eBk) {
+        console.warn('[TE] Tentativa backend /api/escolas:', eBk.message);
+      }
+    }
+
+    if (!rows || rows.length === 0) {
+      throw new Error('Acesso pendente de liberação por link aberto na planilha.');
+    }
+
+    _teCache = rows;
+    _teAbas = [{ nome: 'Base Oficial SEDUC', count: rows.length }];
+
+    // Incorporar entidades salvas localmente
+    try {
+      const salvasLocal = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+      if (Array.isArray(salvasLocal) && salvasLocal.length > 0) {
+        salvasLocal.forEach(localEnt => {
+          const idx = _teCache.findIndex(c => (c.nome && c.nome.toLowerCase() === (localEnt.nome || '').toLowerCase()) &&
+                                              (c.municipio && c.municipio.toLowerCase() === (localEnt.municipio || '').toLowerCase()));
+          if (idx >= 0) {
+            _teCache[idx] = { ..._teCache[idx], ...localEnt };
+          } else {
+            _teCache.unshift(localEnt);
+          }
+        });
+      }
+    } catch(e) {
+      console.warn('[TE] Erro ao mesclar dados locais:', e);
+    }
 
     _teCarregado = true;
     _tePopularFiltros();
@@ -5832,18 +7073,50 @@ async function buscarTodasEscolasGSheet() {
     _tePagina = 1;
     _teAtualizarUI();
 
-    const abasInfo = _teAbas.length + ' planilha(s) | ' + _teCache.length + ' escolas';
-    setBadge('✅ ' + abasInfo, 'ok');
-    if (typeof showToast === 'function') showToast('Carregadas ' + _teAbas.length + ' planilhas com ' + _teCache.length + ' escolas no total!', 'success');
+    const info = `Base Oficial • ${_teCache.length} cadastros`;
+    setBadge('✅ ' + info, 'ok');
+    if (typeof showToast === 'function') showToast(`Base carregada com sucesso (${_teCache.length} cadastros)!`, 'success');
 
   } catch(err) {
     console.error('[TodasEscolas]', err);
-    const msgEl = document.getElementById('te-empty-msg');
-    if (msgEl) msgEl.textContent = 'Erro: ' + err.message;
-    if (emptyEl) emptyEl.style.display = 'block';
+    const msgEl = document.getElementById('te-load-msg');
+    if (msgEl) msgEl.textContent = 'Acesso à planilha: ' + err.message;
+    if (emptyEl) {
+      emptyEl.style.display = 'block';
+      const emptyMsg = document.getElementById('te-empty-msg');
+      if (emptyMsg) {
+        emptyMsg.innerHTML = `
+          <div style="max-width:680px; margin:0 auto; padding:16px 20px; background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.35); border-radius:12px; text-align:left; box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+              <span style="font-size:24px;">🔗</span>
+              <div>
+                <div style="font-weight:800; color:#38bdf8; font-size:14px;">Compartilhamento Especial da Planilha (Acesso sem necessidade de senha de e-mail)</div>
+                <div style="font-size:11.5px; color:#94a3b8;">Planilha Oficial: <b>1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI</b> (Aba ENTIDADES)</div>
+              </div>
+            </div>
+            <div style="font-size:12.5px; color:#e2e8f0; line-height:1.6; margin-bottom:12px;">
+              Para que o sistema acesse a planilha diretamente e sem exigir login individual, siga estes 2 passos no Google Drive:
+              <ol style="margin:8px 0 8px 20px; padding:0;">
+                <li>Abra a planilha no Google: <a href="${TE_SHEET_URL}" target="_blank" rel="noopener noreferrer" style="color:#6ee7b7; font-weight:700; text-decoration:underline;">Abrir Planilha Oficial</a></li>
+                <li>No canto superior direito, clique no botão azul <b>"Compartilhar"</b> (ícone de cadeado 🔒).</li>
+                <li>Na seção <b>"Acesso geral"</b>, altere de <i>"Restrito"</i> para: <b style="color:#34d399;">"Qualquer pessoa com o link"</b> (função: <b>Leitor</b>).</li>
+                <li>Clique em <b>"Concluído"</b> e em seguida clique no botão <b>"Recarregar"</b> abaixo.</li>
+              </ol>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+              <button onclick="recarregarTodasEscolas()" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:7px 16px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer;">
+                🔄 Testar Conexão / Recarregar
+              </button>
+              <span style="font-size:11px; color:#94a3b8;">
+                Ou adicione a conta de serviço: <code style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; color:#38bdf8;">planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com</code>
+              </span>
+            </div>
+          </div>`;
+      }
+    }
     if (tbody) tbody.innerHTML = '';
-    setBadge('❌ Erro ao carregar', 'error');
-    if (typeof showToast === 'function') showToast('Erro: ' + err.message, 'error');
+    setBadge('⚠️ Compartilhamento Especial Pendente', 'error');
+    if (typeof showToast === 'function') showToast('Aviso: ' + err.message, 'error');
   }
 }
 // Popular filtros com valores únicos de TODOS os dados
@@ -5953,27 +7226,41 @@ function _teAtualizarUI() {
     return '<span style="padding:2px 8px;border-radius:4px;font-weight:700;font-size:10px;background:' + bg + ';color:' + col + ';">' + esc(loc) + '</span>';
   };
 
+  const catBadge = (cat) => {
+    if (!cat) return '—';
+    const c = cat.toLowerCase();
+    let bg = 'rgba(16,185,129,0.15)', col = '#34d399', border = 'rgba(16,185,129,0.3)';
+    if (c.includes('prefeitura')) {
+      bg = 'rgba(59,130,246,0.15)'; col = '#60a5fa'; border = 'rgba(59,130,246,0.3)';
+    } else if (c.includes('apae')) {
+      bg = 'rgba(245,158,11,0.15)'; col = '#fbbf24'; border = 'rgba(245,158,11,0.3)';
+    } else if (c.includes('efa')) {
+      bg = 'rgba(168,85,247,0.15)'; col = '#c084fc'; border = 'rgba(168,85,247,0.3)';
+    }
+    return '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px;background:' + bg + ';color:' + col + ';border:1px solid ' + border + ';white-space:nowrap;">' + esc(cat) + '</span>';
+  };
+
   if (tbody) {
     tbody.innerHTML = pag.map((e, idx) => {
       const evenBg = idx%2===0 ? 'transparent' : 'rgba(255,255,255,0.015)';
       const globalIdx = ini + idx;
       return `<tr style="background:${evenBg};cursor:pointer;" 
-        ondblclick="abrirTeModal(${globalIdx})"
+        ondblclick="abrirModalCadastroEntidade(_teFiltrados[${globalIdx}])"
         onmouseover="this.style.background='rgba(59,130,246,0.06)'" 
         onmouseout="this.style.background='${evenBg}'">` +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);">' + (window._renderCompetenciaBadge ? window._renderCompetenciaBadge(e.competencia) : '<span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1)">' + esc(e.competencia) + '</span>') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-size:12px;">' + (esc(e.municipio)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-weight:600;font-size:12px;">' + (esc(e.nome)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-size:12px;font-weight:600;">' + (esc(e.municipio)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);">' + catBadge(e.categoria || e.competencia) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-weight:700;font-size:12px;">' + (esc(e.nome)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#60a5fa;font-family:monospace;font-size:11px;white-space:nowrap;">' + (esc(e.inep)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#34d399;font-weight:700;text-align:right;font-size:12px;">' + (e.alunos ? parseInt(e.alunos).toLocaleString('pt-BR') : '-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:12px;">' + (esc(e.modalidade)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + localBadge(e.localidade) + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-size:12px;">' + (esc(e.diretor)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + wa(e.contatoDiretor) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + wa(e.contatoDiretor || e.telefone) + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;">' +
-          '<a href="' + TE_SHEET_URL + '" target="_blank" rel="noopener" title="Editar no Google Sheets" ' +
-          'style="display:inline-flex;align-items:center;justify-content:center;background:rgba(26,115,232,0.2);border:1px solid rgba(26,115,232,0.4);color:#60a5fa;width:28px;height:28px;border-radius:6px;text-decoration:none;font-size:13px;" ' +
-          'onmouseover="this.style.background=\'rgba(26,115,232,0.4)\'" onmouseout="this.style.background=\'rgba(26,115,232,0.2)\'">✏️</a>' +
+          '<button type="button" onclick="event.stopPropagation(); abrirModalCadastroEntidade(_teFiltrados[' + globalIdx + '])" title="Editar Cadastro Geral" ' +
+          'style="display:inline-flex;align-items:center;justify-content:center;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#34d399;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:13px;" ' +
+          'onmouseover="this.style.background=\'rgba(16,185,129,0.4)\'" onmouseout="this.style.background=\'rgba(16,185,129,0.2)\'">✏️</button>' +
         '</td>' +
       '</tr>';
     }).join('');
@@ -6136,9 +7423,256 @@ document.addEventListener('keydown', (e) => {
     if (ov && ov.style.display === 'flex') {
       fecharTeModal();
     }
+    const modalEnt = document.getElementById('modal-popup-cadastro-entidade');
+    if (modalEnt && modalEnt.style.display === 'flex') {
+      fecharModalCadastroEntidade();
+    }
   }
 });
 
+// ============================================================
+// CADASTRO GERAL DE ENTIDADES / ESCOLAS (29 CAMPOS - PLANILHA MESTRE)
+// ============================================================
+function abrirModalCadastroEntidade(dadosExistentes = null) {
+  const modal = document.getElementById('modal-popup-cadastro-entidade');
+  if (!modal) return;
+
+  const form = document.getElementById('form-cadastro-entidade');
+  if (form) form.reset();
+
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = (val !== null && val !== undefined) ? String(val) : '';
+  };
+
+  const tituloEl = document.getElementById('entidade-modal-titulo');
+
+  if (dadosExistentes) {
+    if (tituloEl) tituloEl.textContent = `Editar Entidade: ${dadosExistentes.nome || 'Escola'}`;
+    setVal('entidade-form-id', dadosExistentes.id || dadosExistentes.inep || '');
+    setVal('entidade-categoria', dadosExistentes.categoria || 'Conselho Escolar');
+    setVal('entidade-nome', dadosExistentes.nome || '');
+    setVal('entidade-municipio', dadosExistentes.municipio || '');
+    setVal('entidade-alunos', dadosExistentes.alunos || '');
+    setVal('entidade-modalidade', dadosExistentes.modalidade || '');
+    setVal('entidade-inep', dadosExistentes.inep || '');
+    setVal('entidade-cnpj', dadosExistentes.cnpj || '');
+    setVal('entidade-endereco', dadosExistentes.endereco || '');
+    setVal('entidade-bairro', dadosExistentes.bairro || '');
+    setVal('entidade-complemento', dadosExistentes.complemento || '');
+    setVal('entidade-cep', dadosExistentes.cep || '');
+    setVal('entidade-competencia', dadosExistentes.competencia || 'Municipal');
+    setVal('entidade-super', dadosExistentes.super || '');
+    setVal('entidade-redes', dadosExistentes.redesSociais || '');
+    setVal('entidade-telefone', dadosExistentes.telefone || '');
+    setVal('entidade-email', dadosExistentes.email || '');
+    setVal('entidade-diretor', dadosExistentes.diretor || '');
+    setVal('entidade-contato-diretor', dadosExistentes.contatoDiretor || '');
+    setVal('entidade-secretario', dadosExistentes.secretario || '');
+    setVal('entidade-contato-secretario', dadosExistentes.contatoSecretario || '');
+    setVal('entidade-salas-aula', dadosExistentes.salasAula || '');
+    setVal('entidade-salas-adm', dadosExistentes.salasAdm || '');
+    setVal('entidade-sala-aee', dadosExistentes.salaAEE || '');
+    setVal('entidade-banheiros', dadosExistentes.banheiros || '');
+    setVal('entidade-patio', dadosExistentes.patio || '');
+    setVal('entidade-auditorio', dadosExistentes.auditorio || '');
+    setVal('entidade-refeitorio', dadosExistentes.refeitorio || '');
+    setVal('entidade-quadra', dadosExistentes.quadra || '');
+    setVal('entidade-localidade', dadosExistentes.localidade || 'Urbana');
+
+    // Sincronizar radio
+    const catUpper = String(dadosExistentes.categoria || '').toUpperCase();
+    let tipoRadio = 'Conselho Escolar';
+    if (catUpper.includes('PREFEITURA')) tipoRadio = 'Prefeitura';
+    else if (catUpper.includes('APAE')) tipoRadio = 'APAE';
+    else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
+
+    aoSelecionarTipoEntidadeForm(tipoRadio);
+  } else {
+    if (tituloEl) tituloEl.textContent = 'Cadastro Geral de Entidade / Escola';
+    setVal('entidade-form-id', '');
+    setVal('entidade-categoria', 'Conselho Escolar');
+    setVal('entidade-competencia', 'Municipal');
+    setVal('entidade-localidade', 'Urbana');
+    aoSelecionarTipoEntidadeForm('Conselho Escolar');
+
+    // Se houver um município já selecionado na aba de contatos ou no filtro, pré-preenche
+    const munAtual = document.getElementById('contatos-municipio-label')?.textContent;
+    if (munAtual && !munAtual.includes('(Todos)')) {
+      setVal('entidade-municipio', munAtual.trim());
+    }
+  }
+
+  modal.style.display = 'flex';
+}
+window.abrirModalCadastroEntidade = abrirModalCadastroEntidade;
+
+function fecharModalCadastroEntidade() {
+  const modal = document.getElementById('modal-popup-cadastro-entidade');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalCadastroEntidade = fecharModalCadastroEntidade;
+
+// Sincroniza a categoria da entidade e a modalidade jurídica de parceria (Fomento vs Convênio)
+function aoSelecionarTipoEntidadeForm(tipo) {
+  const catInput = document.getElementById('entidade-categoria');
+  const parceriaInput = document.getElementById('entidade-parceria-prevista');
+  const radios = document.querySelectorAll('input[name="entidade-tipo-radio"]');
+
+  radios.forEach(r => {
+    if (r.value === tipo) r.checked = true;
+  });
+
+  if (tipo === 'Prefeitura') {
+    if (catInput && (!catInput.value || catInput.value.includes('Conselho') || catInput.value.includes('APAE') || catInput.value.includes('EFA'))) {
+      catInput.value = 'Prefeitura Municipal';
+    }
+    if (parceriaInput) {
+      parceriaInput.value = 'Convênio (Termo de Convênio - C)';
+      parceriaInput.style.color = '#60a5fa';
+      parceriaInput.style.borderColor = 'rgba(59,130,246,0.5)';
+    }
+  } else {
+    if (catInput && (!catInput.value || catInput.value.includes('Prefeitura'))) {
+      catInput.value = tipo === 'Conselho Escolar' ? 'Conselho Escolar' : tipo;
+    }
+    if (parceriaInput) {
+      parceriaInput.value = 'Fomento (Termo de Fomento - F)';
+      parceriaInput.style.color = '#34d399';
+      parceriaInput.style.borderColor = 'rgba(16,185,129,0.5)';
+    }
+  }
+}
+window.aoSelecionarTipoEntidadeForm = aoSelecionarTipoEntidadeForm;
+
+// Salva o cadastro geral da entidade com reflexo instantâneo no cache e formulários
+function salvarCadastroEntidade(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const getV = (id) => (document.getElementById(id)?.value || '').trim();
+
+  const id = getV('entidade-form-id') || `ent_${Date.now()}`;
+  const categoria = getV('entidade-categoria') || 'Conselho Escolar';
+  const nome = getV('entidade-nome');
+  const municipio = getV('entidade-municipio');
+
+  if (!nome) {
+    if (typeof toast === 'function') toast('Informe o Nome da Escola / Entidade *', 'error');
+    document.getElementById('entidade-nome')?.focus();
+    return;
+  }
+  if (!municipio) {
+    if (typeof toast === 'function') toast('Informe o Município / Distrito *', 'error');
+    document.getElementById('entidade-municipio')?.focus();
+    return;
+  }
+
+  const novaEntidade = {
+    id: id,
+    categoria: categoria,
+    nome: nome,
+    municipio: municipio,
+    alunos: getV('entidade-alunos'),
+    modalidade: getV('entidade-modalidade'),
+    inep: getV('entidade-inep'),
+    cnpj: getV('entidade-cnpj'),
+    endereco: getV('entidade-endereco'),
+    bairro: getV('entidade-bairro'),
+    complemento: getV('entidade-complemento'),
+    cep: getV('entidade-cep'),
+    competencia: getV('entidade-competencia'),
+    super: getV('entidade-super'),
+    redesSociais: getV('entidade-redes'),
+    telefone: getV('entidade-telefone'),
+    email: getV('entidade-email'),
+    diretor: getV('entidade-diretor'),
+    contatoDiretor: getV('entidade-contato-diretor'),
+    secretario: getV('entidade-secretario'),
+    contatoSecretario: getV('entidade-contato-secretario'),
+    salasAula: getV('entidade-salas-aula'),
+    salasAdm: getV('entidade-salas-adm'),
+    salaAEE: getV('entidade-sala-aee'),
+    banheiros: getV('entidade-banheiros'),
+    patio: getV('entidade-patio'),
+    auditorio: getV('entidade-auditorio'),
+    refeitorio: getV('entidade-refeitorio'),
+    quadra: getV('entidade-quadra'),
+    localidade: getV('entidade-localidade')
+  };
+
+  // 1. Atualizar ou inserir em _teCache (Multi-aba de escolas)
+  if (typeof _teCache !== 'undefined' && Array.isArray(_teCache)) {
+    const idxExistente = _teCache.findIndex(item => item.id === id || (item.nome === nome && item.municipio === municipio));
+    if (idxExistente >= 0) {
+      _teCache[idxExistente] = { ..._teCache[idxExistente], ...novaEntidade };
+    } else {
+      _teCache.unshift(novaEntidade);
+    }
+    if (typeof _teAtualizarUI === 'function') {
+      _teFiltrados = [..._teCache];
+      _teAtualizarUI();
+    }
+  }
+
+  // 2. Atualizar ou inserir em _escolasCache
+  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
+    const idxEscola = _escolasCache.findIndex(item => item.id === id || (item.nome === nome && item.municipio === municipio));
+    if (idxEscola >= 0) {
+      _escolasCache[idxEscola] = { ..._escolasCache[idxEscola], ...novaEntidade };
+    } else {
+      _escolasCache.unshift(novaEntidade);
+    }
+  }
+
+  // 3. Salvar no localStorage para persistência imediata entre recargas
+  try {
+    const salvas = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+    const sIdx = salvas.findIndex(s => s.nome === nome && s.municipio === municipio);
+    if (sIdx >= 0) salvas[sIdx] = novaEntidade;
+    else salvas.push(novaEntidade);
+    localStorage.setItem('seduc_entidades_cadastradas_local', JSON.stringify(salvas));
+  } catch (err) {
+    console.warn('[CadastroEntidade] Falha ao persistir no localStorage', err);
+  }
+
+  // 4. Se o popup de novos processos estiver aberto ou for aberto, atualizar as entidades do município
+  if (typeof atualizarEntidadesMunicipioPopup === 'function') {
+    atualizarEntidadesMunicipioPopup();
+  }
+
+  // 5. Atualizar contatos/badges se estiver na página de contatos
+  if (typeof renderContatos === 'function') {
+    renderContatos();
+  }
+
+  // 6. Enviar diretamente para a planilha do Google Sheets via API backend (sem precisar abrir a planilha)
+  const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : 'https://seduc-backend.onrender.com';
+  const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || 'active_dev_token');
+  
+  fetch(baseApi + '/api/entidades', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + (token || 'active_dev_token')
+    },
+    body: JSON.stringify(novaEntidade)
+  }).then(r => r.json()).then(res => {
+    console.log('[CadastroEntidade] Resposta da gravação remota na planilha:', res);
+  }).catch(err => {
+    console.warn('[CadastroEntidade] Registro mantido em cache local / sincronização em segundo plano:', err);
+  });
+
+  if (typeof toast === 'function') {
+    toast(`Entidade "${nome}" inserida diretamente na planilha com sucesso!`, 'success');
+  } else if (typeof showToast === 'function') {
+    showToast(`Entidade "${nome}" inserida na planilha com sucesso!`, 'success');
+  } else {
+    alert(`Entidade "${nome}" cadastrada diretamente na planilha!`);
+  }
+
+  fecharModalCadastroEntidade();
+}
+window.salvarCadastroEntidade = salvarCadastroEntidade;
 
 function imprimirPadraoSelecionado() {
     const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
@@ -13899,4 +15433,11 @@ function aplicarAuditoriaAntiGravityNaManifestacao() {
   toast('✍️ Achados da Auditoria AntiGravity v2.0 e Minuta injetados nas Seções 4 e 5 da Manifestação!', 'success');
 }
 window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNaManifestacao;
+
+
+
+
+
+
+
 

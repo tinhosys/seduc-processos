@@ -1359,7 +1359,7 @@ const defaultEntidadesHeaders = [
   "Refeitório (s/n)", "Quadra (s/n)", "Localidade (urbana/rural)"
 ];
 
-const DEFAULT_AGENT_EMAIL = "cam@seduc.ro.gov.br";
+const DEFAULT_AGENT_EMAIL = "planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com";
 
 app.post("/api/entidades", async (req, res) => {
   try {

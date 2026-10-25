@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.53
+// Versão do Sistema: v1.3.54
 // ============================================================
-window.APP_VERSION = 'v1.3.53';
+window.APP_VERSION = 'v1.3.54';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -6884,6 +6884,62 @@ function _teParseGviz(text, sheetIdx) {
   }
 }
 
+// Parse de exportação direta CSV da aba Entidades
+function _teParseCsv(csvText) {
+  try {
+    const lines = csvText.split(/\r?\n/).filter(Boolean);
+    if (lines.length < 2) return null;
+    const rows = [];
+    let lastMunicipio = '';
+
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+      const cells = [];
+      let current = '';
+      let inQuotes = false;
+      for (let c = 0; c < line.length; c++) {
+        const ch = line[c];
+        if (ch === '"') {
+          inQuotes = !inQuotes;
+        } else if (ch === ',' && !inQuotes) {
+          cells.push(current.trim());
+          current = '';
+        } else {
+          current += ch;
+        }
+      }
+      cells.push(current.trim());
+
+      const obj = { _aba: 'CSV' };
+      TE_COLS.forEach((key, ci) => {
+        let val = cells[ci] || '';
+        val = val.replace(/^["']|["']$/g, '').trim();
+        obj[key] = val;
+      });
+
+      if (_teIsHeader(obj)) continue;
+
+      if (!obj.municipio && lastMunicipio) obj.municipio = lastMunicipio;
+      if (obj.municipio) lastMunicipio = obj.municipio;
+
+      if (!obj.competencia || obj.competencia.trim() === '') {
+        const catU = (obj.categoria || '').toUpperCase();
+        if (catU.includes('PREFEITURA') || catU.includes('MUNICIPAL')) obj.competencia = 'Municipal';
+        else if (catU.includes('ESTADUAL')) obj.competencia = 'Estadual';
+        else obj.competencia = 'Municipal';
+      }
+
+      if ((obj.nome && obj.nome.trim().length > 1) || (obj.municipio && obj.municipio.trim().length > 1)) {
+        rows.push(obj);
+      }
+    }
+    return rows.length > 0 ? rows : null;
+  } catch(e) {
+    console.warn('[TE] Erro no parse CSV:', e.message);
+    return null;
+  }
+}
+
 // Entry point
 function iniciarPaginaTodasEscolas() {
   if (_teCarregado && _teCache.length > 0) { _teAtualizarUI(); return; }
@@ -6932,36 +6988,62 @@ async function buscarTodasEscolasGSheet() {
   _teAbas  = [];
 
   try {
-    // 1. Tentar carregar prioritariamente via GID 0 da nova planilha
+    // 1. Tentar carregar prioritariamente via GID 0 da nova planilha oficial
     let urlEntidades = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
                        '/gviz/tq?tqx=out:json&gid=' + TE_GID_MAIN + '&nocache=' + Date.now();
     let resp = await fetch(urlEntidades);
     let text = resp.ok ? await resp.text() : null;
-    let rows = text ? _teParseGviz(text, 'gid=0') : null;
+    let rows = (text && !text.includes('<!DOCTYPE') && !text.includes('<html')) ? _teParseGviz(text, 'gid=0') : null;
 
-    // Se não retornar por GID 0, tentar por nome de aba "Entidades"
+    // Se não retornar por GID 0, tentar por nome de aba "ENTIDADES"
     if (!rows || rows.length === 0) {
       const urlNome = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
-                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('Entidades') + '&nocache=' + Date.now();
+                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('ENTIDADES') + '&nocache=' + Date.now();
       const respNome = await fetch(urlNome);
       if (respNome.ok) {
         const textNome = await respNome.text();
-        rows = _teParseGviz(textNome, 'Entidades');
+        if (textNome && !textNome.includes('<!DOCTYPE') && !textNome.includes('<html')) {
+          rows = _teParseGviz(textNome, 'ENTIDADES');
+        }
       }
     }
 
-    // Se ainda não carregou, tentar carregar pela planilha anterior como fallback
+    // Se não retornar por gviz (ex: bloqueio de script ou retorno HTML), tentar exportação CSV pública
     if (!rows || rows.length === 0) {
-      const urlOld = 'https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/gviz/tq?tqx=out:json&gid=1143007069&nocache=' + Date.now();
-      const respOld = await fetch(urlOld);
-      if (respOld.ok) {
-        const textOld = await respOld.text();
-        rows = _teParseGviz(textOld, 'Entidades-Backup');
+      try {
+        const urlCsv = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
+                       '/export?format=csv&gid=' + TE_GID_MAIN + '&nocache=' + Date.now();
+        const respCsv = await fetch(urlCsv);
+        if (respCsv.ok) {
+          const csvText = await respCsv.text();
+          if (csvText && !csvText.includes('<!DOCTYPE') && !csvText.includes('<html')) {
+            rows = _teParseCsv(csvText);
+          }
+        }
+      } catch(eCsv) {
+        console.warn('[TE] Tentativa de export CSV:', eCsv.message);
+      }
+    }
+
+    // Fallback: Tentar via endpoint backend seguro do Render
+    if (!rows || rows.length === 0) {
+      try {
+        const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : 'https://seduc-backend.onrender.com';
+        const respBk = await fetch(baseApi + '/api/escolas?nocache=' + Date.now());
+        if (respBk.ok) {
+          const jsonBk = await respBk.json();
+          const listBk = jsonBk.rows || jsonBk || [];
+          if (Array.isArray(listBk) && listBk.length > 0) {
+            rows = listBk;
+          }
+        }
+      } catch(eBk) {
+        console.warn('[TE] Tentativa backend /api/escolas:', eBk.message);
       }
     }
 
     if (!rows || rows.length === 0) {
-      throw new Error('Permissão pendente na planilha. Compartilhe com o agente: cam@seduc.ro.gov.br');
+      throw new Error('Acesso pendente de liberação por link aberto na planilha.');
     }
 
     _teCache = rows;
@@ -7003,15 +7085,37 @@ async function buscarTodasEscolasGSheet() {
       emptyEl.style.display = 'block';
       const emptyMsg = document.getElementById('te-empty-msg');
       if (emptyMsg) {
-        emptyMsg.innerHTML = `Acesso à nova planilha <b>1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI</b> pendente de permissão.<br>
-          <span style="display:inline-block;margin-top:6px;padding:6px 12px;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);border-radius:6px;color:#38bdf8;font-size:12px;">
-            📧 Agente de Acesso Padrão: <b>cam@seduc.ro.gov.br</b>
-          </span><br>
-          <small style="color:#94a3b8;margin-top:6px;display:inline-block;">Para acesso direto e independente, adicione o e-mail do agente acima como Leitor ou Editor na planilha do Google.</small>`;
+        emptyMsg.innerHTML = `
+          <div style="max-width:680px; margin:0 auto; padding:16px 20px; background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.35); border-radius:12px; text-align:left; box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+              <span style="font-size:24px;">🔗</span>
+              <div>
+                <div style="font-weight:800; color:#38bdf8; font-size:14px;">Compartilhamento Especial da Planilha (Acesso sem necessidade de senha de e-mail)</div>
+                <div style="font-size:11.5px; color:#94a3b8;">Planilha Oficial: <b>1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI</b> (Aba ENTIDADES)</div>
+              </div>
+            </div>
+            <div style="font-size:12.5px; color:#e2e8f0; line-height:1.6; margin-bottom:12px;">
+              Para que o sistema acesse a planilha diretamente e sem exigir login individual, siga estes 2 passos no Google Drive:
+              <ol style="margin:8px 0 8px 20px; padding:0;">
+                <li>Abra a planilha no Google: <a href="${TE_SHEET_URL}" target="_blank" rel="noopener noreferrer" style="color:#6ee7b7; font-weight:700; text-decoration:underline;">Abrir Planilha Oficial</a></li>
+                <li>No canto superior direito, clique no botão azul <b>"Compartilhar"</b> (ícone de cadeado 🔒).</li>
+                <li>Na seção <b>"Acesso geral"</b>, altere de <i>"Restrito"</i> para: <b style="color:#34d399;">"Qualquer pessoa com o link"</b> (função: <b>Leitor</b>).</li>
+                <li>Clique em <b>"Concluído"</b> e em seguida clique no botão <b>"Recarregar"</b> abaixo.</li>
+              </ol>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+              <button onclick="recarregarTodasEscolas()" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:7px 16px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer;">
+                🔄 Testar Conexão / Recarregar
+              </button>
+              <span style="font-size:11px; color:#94a3b8;">
+                Ou adicione a conta de serviço: <code style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; color:#38bdf8;">planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com</code>
+              </span>
+            </div>
+          </div>`;
       }
     }
     if (tbody) tbody.innerHTML = '';
-    setBadge('⚠️ Permissão Pendente', 'error');
+    setBadge('⚠️ Compartilhamento Especial Pendente', 'error');
     if (typeof showToast === 'function') showToast('Aviso: ' + err.message, 'error');
   }
 }

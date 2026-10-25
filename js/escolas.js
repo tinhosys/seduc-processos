@@ -275,15 +275,80 @@ function _parseGvizText(text) {
 
 function _parseRow(row) {
   if (!row.c || row.c.length === 0) return null;
-  const val = (idx) => (row.c[idx] && row.c[idx].v !== null) ? String(row.c[idx].v).trim() : '';
-  if (val(0).toUpperCase() === 'MUNICÍPIO/DISTRITO' || val(0).toUpperCase() === 'MUNICÍPIO') return null;
-  if (!val(1)) return null; 
-  
-  let comp = val(9).trim();
-  let superV = val(10).trim();
-  
+  const val = (idx) => (row.c[idx] && row.c[idx].v !== null && row.c[idx].v !== undefined) ? String(row.c[idx].v).trim() : '';
+
+  const v0 = val(0).toUpperCase();
+  const v1 = val(1).toUpperCase();
+  const v2 = val(2).toUpperCase();
+
+  // Pula linhas de cabeçalho
+  if (v0.includes('MUNICÍPIO') || v0.includes('MUNICIPIO') || v1.includes('CATEGORIA') || v2.includes('NOME DA ESCOLA') || v2.includes('ENTIDADE')) {
+    return null;
+  }
+
+  let municipio = '', categoria = '', nome = '', alunos = 0, modalidadeStr = '', codigoInep = '',
+      endereco = '', bairro = '', complemento = '', cep = '', comp = '', superV = '',
+      telefone = '', email = '', diretor = '', contatoDiretor = '', secretario = '', contatoSecretario = '',
+      salas = 0, localidade = '', redesSociais = '';
+
+  // Layout Novo (29 colunas - Imagem 4 da planilha oficial):
+  // Col A(0): Município; Col B(1): Categoria; Col C(2): Nome da Escola; Col D(3): Alunos; Col E(4): Modalidade;
+  // Col F(5): INEP; Col G(6): Localização/CNPJ; Col H(7): Endereço; Col I(8): Bairro; Col J(9): Complemento;
+  // Col K(10): CEP; Col L(11): Competência; Col M(12): Super...
+  if (val(2) && !/^\d+$/.test(val(2))) {
+    municipio         = val(0);
+    categoria         = val(1);
+    nome              = val(2);
+    alunos            = parseInt(val(3)) || 0;
+    modalidadeStr     = val(4);
+    codigoInep        = val(5);
+    endereco          = val(7);
+    bairro            = val(8);
+    complemento       = val(9);
+    cep               = val(10);
+    comp              = val(11);
+    superV            = val(12);
+    redesSociais      = val(13);
+    telefone          = val(14);
+    email             = val(15);
+    diretor           = val(16);
+    contatoDiretor    = val(17);
+    secretario        = val(18);
+    contatoSecretario = val(19);
+    salas             = parseInt(val(20)) || 0;
+    localidade        = val(28);
+  } else if (val(1)) {
+    // Layout legado (Nome na coluna 1)
+    municipio         = val(0);
+    categoria         = '';
+    nome              = val(1);
+    alunos            = parseInt(val(2)) || 0;
+    modalidadeStr     = val(3);
+    codigoInep        = val(4);
+    endereco          = val(5);
+    bairro            = val(6);
+    complemento       = val(7);
+    cep               = val(8);
+    comp              = val(9);
+    superV            = val(10);
+    redesSociais      = val(11);
+    telefone          = val(12);
+    email             = val(13);
+    diretor           = val(14);
+    contatoDiretor    = val(15);
+    secretario        = val(16);
+    contatoSecretario = val(17);
+    salas             = parseInt(val(18)) || 0;
+    localidade        = val(26);
+  } else {
+    return null;
+  }
+
+  if (!nome || nome.length < 2) return null;
+
   if (!comp) {
-    if (superV.toUpperCase().startsWith('SUPER')) comp = 'Estadual';
+    if (superV && superV.toUpperCase().startsWith('SUPER')) comp = 'Estadual';
+    else if (categoria && (categoria.toUpperCase().includes('PREFEITURA') || categoria.toUpperCase().includes('MUNICIPAL'))) comp = 'Municipal';
     else comp = 'Municipal';
   } else {
     if (comp.toUpperCase() === 'ESTADUAL') comp = 'Estadual';
@@ -292,27 +357,28 @@ function _parseRow(row) {
 
   return {
     id: Math.random().toString(36).substr(2,9),
+    categoria: categoria,
     competencia: comp,
-    municipio: val(0),
-    nome: val(1),
-    alunosModalidade: parseInt(val(2)) || 0,
-    modalidadeStr: val(3),
-    codigoInep: val(4),
-    endereco: val(5),
-    bairro: val(6),
-    complemento: val(7),
-    cep: val(8),
+    municipio: municipio,
+    nome: nome,
+    alunosModalidade: alunos,
+    modalidadeStr: modalidadeStr,
+    codigoInep: codigoInep,
+    endereco: endereco,
+    bairro: bairro,
+    complemento: complemento,
+    cep: cep,
     super: superV,
     codigoSuper: superV,
-    redesSociais: val(11),
-    telefone: val(12),
-    email: val(13),
-    diretor: val(14),
-    contatoDiretor: val(15),
-    secretario: val(16),
-    contatoSecretario: val(17),
-    salas: parseInt(val(18)) || 0,
-    localidade: val(26),
+    redesSociais: redesSociais,
+    telefone: telefone,
+    email: email,
+    diretor: diretor,
+    contatoDiretor: contatoDiretor,
+    secretario: secretario,
+    contatoSecretario: contatoSecretario,
+    salas: salas,
+    localidade: localidade,
     plusCode: (() => {
       const p = [val(19), val(20), val(21), val(22), val(23), val(24), val(25), val(27), val(28), val(29), val(30), val(31), val(32)].find(v => v && v.includes('+') && v.length >= 6);
       if(!p) return '';
@@ -320,8 +386,8 @@ function _parseRow(row) {
       return m ? m[1].toUpperCase() : '';
     })(),
     modalidades: [],
-    alunos: 0,
-    totalMatricula: 0
+    alunos: alunos,
+    totalMatricula: alunos
   };
 }
 

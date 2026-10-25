@@ -275,15 +275,80 @@ function _parseGvizText(text) {
 
 function _parseRow(row) {
   if (!row.c || row.c.length === 0) return null;
-  const val = (idx) => (row.c[idx] && row.c[idx].v !== null) ? String(row.c[idx].v).trim() : '';
-  if (val(0).toUpperCase() === 'MUNICÍPIO/DISTRITO' || val(0).toUpperCase() === 'MUNICÍPIO') return null;
-  if (!val(1)) return null; 
-  
-  let comp = val(9).trim();
-  let superV = val(10).trim();
-  
+  const val = (idx) => (row.c[idx] && row.c[idx].v !== null && row.c[idx].v !== undefined) ? String(row.c[idx].v).trim() : '';
+
+  const v0 = val(0).toUpperCase();
+  const v1 = val(1).toUpperCase();
+  const v2 = val(2).toUpperCase();
+
+  // Pula linhas de cabeçalho
+  if (v0.includes('MUNICÍPIO') || v0.includes('MUNICIPIO') || v1.includes('CATEGORIA') || v2.includes('NOME DA ESCOLA') || v2.includes('ENTIDADE')) {
+    return null;
+  }
+
+  let municipio = '', categoria = '', nome = '', alunos = 0, modalidadeStr = '', codigoInep = '',
+      endereco = '', bairro = '', complemento = '', cep = '', comp = '', superV = '',
+      telefone = '', email = '', diretor = '', contatoDiretor = '', secretario = '', contatoSecretario = '',
+      salas = 0, localidade = '', redesSociais = '';
+
+  // Layout Novo (29 colunas - Imagem 4 da planilha oficial):
+  // Col A(0): Município; Col B(1): Categoria; Col C(2): Nome da Escola; Col D(3): Alunos; Col E(4): Modalidade;
+  // Col F(5): INEP; Col G(6): Localização/CNPJ; Col H(7): Endereço; Col I(8): Bairro; Col J(9): Complemento;
+  // Col K(10): CEP; Col L(11): Competência; Col M(12): Super...
+  if (val(2) && !/^\d+$/.test(val(2))) {
+    municipio         = val(0);
+    categoria         = val(1);
+    nome              = val(2);
+    alunos            = parseInt(val(3)) || 0;
+    modalidadeStr     = val(4);
+    codigoInep        = val(5);
+    endereco          = val(7);
+    bairro            = val(8);
+    complemento       = val(9);
+    cep               = val(10);
+    comp              = val(11);
+    superV            = val(12);
+    redesSociais      = val(13);
+    telefone          = val(14);
+    email             = val(15);
+    diretor           = val(16);
+    contatoDiretor    = val(17);
+    secretario        = val(18);
+    contatoSecretario = val(19);
+    salas             = parseInt(val(20)) || 0;
+    localidade        = val(28);
+  } else if (val(1)) {
+    // Layout legado (Nome na coluna 1)
+    municipio         = val(0);
+    categoria         = '';
+    nome              = val(1);
+    alunos            = parseInt(val(2)) || 0;
+    modalidadeStr     = val(3);
+    codigoInep        = val(4);
+    endereco          = val(5);
+    bairro            = val(6);
+    complemento       = val(7);
+    cep               = val(8);
+    comp              = val(9);
+    superV            = val(10);
+    redesSociais      = val(11);
+    telefone          = val(12);
+    email             = val(13);
+    diretor           = val(14);
+    contatoDiretor    = val(15);
+    secretario        = val(16);
+    contatoSecretario = val(17);
+    salas             = parseInt(val(18)) || 0;
+    localidade        = val(26);
+  } else {
+    return null;
+  }
+
+  if (!nome || nome.length < 2) return null;
+
   if (!comp) {
-    if (superV.toUpperCase().startsWith('SUPER')) comp = 'Estadual';
+    if (superV && superV.toUpperCase().startsWith('SUPER')) comp = 'Estadual';
+    else if (categoria && (categoria.toUpperCase().includes('PREFEITURA') || categoria.toUpperCase().includes('MUNICIPAL'))) comp = 'Municipal';
     else comp = 'Municipal';
   } else {
     if (comp.toUpperCase() === 'ESTADUAL') comp = 'Estadual';
@@ -292,27 +357,28 @@ function _parseRow(row) {
 
   return {
     id: Math.random().toString(36).substr(2,9),
+    categoria: categoria,
     competencia: comp,
-    municipio: val(0),
-    nome: val(1),
-    alunosModalidade: parseInt(val(2)) || 0,
-    modalidadeStr: val(3),
-    codigoInep: val(4),
-    endereco: val(5),
-    bairro: val(6),
-    complemento: val(7),
-    cep: val(8),
+    municipio: municipio,
+    nome: nome,
+    alunosModalidade: alunos,
+    modalidadeStr: modalidadeStr,
+    codigoInep: codigoInep,
+    endereco: endereco,
+    bairro: bairro,
+    complemento: complemento,
+    cep: cep,
     super: superV,
     codigoSuper: superV,
-    redesSociais: val(11),
-    telefone: val(12),
-    email: val(13),
-    diretor: val(14),
-    contatoDiretor: val(15),
-    secretario: val(16),
-    contatoSecretario: val(17),
-    salas: parseInt(val(18)) || 0,
-    localidade: val(26),
+    redesSociais: redesSociais,
+    telefone: telefone,
+    email: email,
+    diretor: diretor,
+    contatoDiretor: contatoDiretor,
+    secretario: secretario,
+    contatoSecretario: contatoSecretario,
+    salas: salas,
+    localidade: localidade,
     plusCode: (() => {
       const p = [val(19), val(20), val(21), val(22), val(23), val(24), val(25), val(27), val(28), val(29), val(30), val(31), val(32)].find(v => v && v.includes('+') && v.length >= 6);
       if(!p) return '';
@@ -320,8 +386,8 @@ function _parseRow(row) {
       return m ? m[1].toUpperCase() : '';
     })(),
     modalidades: [],
-    alunos: 0,
-    totalMatricula: 0
+    alunos: alunos,
+    totalMatricula: alunos
   };
 }
 
@@ -337,9 +403,11 @@ async function carregarEscolasAPI(silencioso) {
   const toastMsg = (msg, type) => { if(typeof toast === 'function') toast(msg, type); else console.log(msg); };
 
   // ------------------------------------
-  // Definição de todas as abas a buscar
+  // Definição da Planilha e Agente de Acesso SEDUC/RO
   // ------------------------------------
-  const SHEET_ID = '1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08';
+  const SHEET_ID = '1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI';
+  const AGENTE_ACESSO_EMAIL = 'cam@seduc.ro.gov.br';
+  window.AGENTE_ACESSO_EMAIL = AGENTE_ACESSO_EMAIL;
   
   // Aba estadual -> competencia forçada = 'Estadual'
     const ABAS = [
@@ -410,7 +478,6 @@ async function carregarEscolasAPI(silencioso) {
       return rows.map(r => {
         const parsed = _parseRow(r);
         if (!parsed) return null;
-        // Sobrescreve a competência com a da aba, nunca deixa ambiguidade
         parsed.competencia = competencia;
         return parsed;
       }).filter(Boolean);
@@ -422,52 +489,119 @@ async function carregarEscolasAPI(silencioso) {
 
   try {
     let escolaMap = new Map();
-    const BATCH = 10; // até 10 requisições simultâneas por vez
 
-    const totalAbas = ABAS.length;
-    let processadas = 0;
-
-    for (let i = 0; i < totalAbas; i += BATCH) {
-      const lote = ABAS.slice(i, i + BATCH);
-      if (badgeEl) badgeEl.textContent = `⏳ Carregando abas ${i + 1}–${Math.min(i + BATCH, totalAbas)} de ${totalAbas}...`;
-
-      const resultados = await Promise.all(lote.map(_fetchAba));
-
-      resultados.flat().forEach(parsed => {
-        const key = (parsed.codigoInep && parsed.codigoInep.length > 3)
-          ? parsed.codigoInep.trim()
-          : (parsed.nome.trim().toUpperCase() + '|' + (parsed.municipio || '').trim().toUpperCase());
-
-        if (!escolaMap.has(key)) {
-          escolaMap.set(key, { ...parsed, modalidades: [], alunos: 0, totalMatricula: 0 });
+    // 1. Tentar primeiro carregar diretamente da primeira aba (gid=0) da nova planilha
+    let carregouGid0 = false;
+    try {
+      if (badgeEl) badgeEl.textContent = '⏳ Conectando à nova planilha (gid=0)...';
+      const urlGid0 = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0&nocache=${Date.now()}`;
+      const resGid0 = await fetch(urlGid0);
+      if (resGid0.ok) {
+        const textGid0 = await resGid0.text();
+        const rowsGid0 = _parseGvizText(textGid0);
+        if (rowsGid0 && rowsGid0.length > 0) {
+          rowsGid0.forEach(r => {
+            const parsed = _parseRow(r);
+            if (!parsed) return;
+            const key = (parsed.codigoInep && parsed.codigoInep.length > 3)
+              ? parsed.codigoInep.trim()
+              : (parsed.nome.trim().toUpperCase() + '|' + (parsed.municipio || '').trim().toUpperCase());
+            if (!escolaMap.has(key)) {
+              escolaMap.set(key, { ...parsed, modalidades: [], alunos: parsed.alunosModalidade || 0, totalMatricula: parsed.alunosModalidade || 0 });
+            }
+          });
+          if (escolaMap.size > 0) carregouGid0 = true;
         }
+      }
+    } catch(e) {
+      console.warn('Tentativa gid=0 direta retornou:', e.message);
+    }
 
-        const school = escolaMap.get(key);
+    // 2. Se não foi por gid=0 direto, tentar carregar via abas municipais
+    if (!carregouGid0) {
+      const BATCH = 10;
+      const totalAbas = ABAS.length;
+      let processadas = 0;
 
-        // Atualiza campos de contato / endereço se a linha tiver mais dados
-        if (!school.endereco && parsed.endereco) school.endereco = parsed.endereco;
-        if (!school.email    && parsed.email)    school.email    = parsed.email;
-        if (!school.telefone && parsed.telefone) school.telefone = parsed.telefone;
-        if (!school.diretor  && parsed.diretor)  school.diretor  = parsed.diretor;
-        if (!school.super    && parsed.super)    school.super    = parsed.super;
-        if (!school.localidade && parsed.localidade) school.localidade = parsed.localidade;
+      for (let i = 0; i < totalAbas; i += BATCH) {
+        const lote = ABAS.slice(i, i + BATCH);
+        if (badgeEl) badgeEl.textContent = `⏳ Carregando abas ${i + 1}–${Math.min(i + BATCH, totalAbas)} de ${totalAbas}...`;
 
-        // Agrega modalidades
-        if (parsed.modalidadeStr && parsed.modalidadeStr !== '-') {
-          const modStr = parsed.modalidadeStr.trim();
-          const existing = school.modalidades.find(m => m.modalidade === modStr);
-          if (existing) {
-            existing.alunos += parsed.alunosModalidade;
-          } else {
-            school.modalidades.push({ modalidade: modStr, alunos: parsed.alunosModalidade });
+        const resultados = await Promise.all(lote.map(_fetchAba));
+
+        resultados.flat().forEach(parsed => {
+          const key = (parsed.codigoInep && parsed.codigoInep.length > 3)
+            ? parsed.codigoInep.trim()
+            : (parsed.nome.trim().toUpperCase() + '|' + (parsed.municipio || '').trim().toUpperCase());
+
+          if (!escolaMap.has(key)) {
+            escolaMap.set(key, { ...parsed, modalidades: [], alunos: 0, totalMatricula: 0 });
+          }
+
+          const school = escolaMap.get(key);
+          if (!school.endereco && parsed.endereco) school.endereco = parsed.endereco;
+          if (!school.email    && parsed.email)    school.email    = parsed.email;
+          if (!school.telefone && parsed.telefone) school.telefone = parsed.telefone;
+          if (!school.diretor  && parsed.diretor)  school.diretor  = parsed.diretor;
+          if (!school.super    && parsed.super)    school.super    = parsed.super;
+          if (!school.localidade && parsed.localidade) school.localidade = parsed.localidade;
+
+          if (parsed.modalidadeStr && parsed.modalidadeStr !== '-') {
+            const modStr = parsed.modalidadeStr.trim();
+            const existing = school.modalidades.find(m => m.modalidade === modStr);
+            if (existing) {
+              existing.alunos += parsed.alunosModalidade;
+            } else {
+              school.modalidades.push({ modalidade: modStr, alunos: parsed.alunosModalidade });
+            }
+          }
+
+          school.totalMatricula += parsed.alunosModalidade;
+          school.alunos         += parsed.alunosModalidade;
+        });
+
+        processadas += lote.length;
+      }
+    }
+
+    // 3. Fallback: Se não retornou linhas (ex: 401 ou bloqueado), tentar buscar via backend /api/escolas
+    if (escolaMap.size === 0) {
+      try {
+        if (badgeEl) badgeEl.textContent = '⏳ Buscando via Agente SEDUC/RO...';
+        const base = 'https://seduc-backend.onrender.com';
+        const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token') || 'active_dev_token');
+        const resBk = await fetch(`${base}/api/escolas`, {
+          headers: { 'Authorization': 'Bearer ' + (token || 'active_dev_token') }
+        });
+        if (resBk.ok) {
+          const jsonBk = await resBk.json();
+          const rowsBk = jsonBk.rows || jsonBk || [];
+          if (Array.isArray(rowsBk) && rowsBk.length > 0) {
+            rowsBk.forEach(e => {
+              const key = e.codigoInep || e.id || (e.nome + '|' + e.municipio);
+              escolaMap.set(key, {
+                id: e.id || key,
+                competencia: e.competencia || 'Estadual',
+                municipio: e.municipio || '',
+                nome: e.nome || '',
+                codigoInep: e.codigoInep || '',
+                localizacao: e.localizacao || '',
+                super: e.super || '',
+                codigoSuper: e.codigoSuper || e.super || '',
+                diretor: e.diretor || '',
+                telefone: e.telefone || '',
+                email: e.email || '',
+                salas: Number(e.salas) || 0,
+                totalMatricula: Number(e.totalMatricula) || 0,
+                alunos: Number(e.totalMatricula) || 0,
+                modalidades: []
+              });
+            });
           }
         }
-
-        school.totalMatricula += parsed.alunosModalidade;
-        school.alunos         += parsed.alunosModalidade;
-      });
-
-      processadas += lote.length;
+      } catch(eBk) {
+        console.warn('Erro ao consultar /api/escolas no fallback:', eBk);
+      }
     }
 
     let mergedSchools = Array.from(escolaMap.values());
@@ -477,15 +611,29 @@ async function carregarEscolasAPI(silencioso) {
     window._escolasCache = mergedSchools;
     if (typeof window.atualizarMetricasSistemaInfo === 'function') window.atualizarMetricasSistemaInfo();
 
-
     const qtdEst = mergedSchools.filter(e => e.competencia === 'Estadual').length;
     const qtdMun = mergedSchools.filter(e => e.competencia === 'Municipal').length;
-    if (!silencioso) toastMsg(`✅ ${mergedSchools.length} escolas carregadas (${qtdEst} estaduais, ${qtdMun} municipais)`, 'success');
+    if (!silencioso && mergedSchools.length > 0) {
+      toastMsg(`✅ ${mergedSchools.length} escolas carregadas da nova base (${qtdEst} estaduais, ${qtdMun} municipais)`, 'success');
+    }
 
     if (typeof _escolasPopularFiltros === 'function') _escolasPopularFiltros();
     if (typeof filtrarEscolas === 'function') filtrarEscolas(true);
     if (typeof _escolasAtualizarUI === 'function') _escolasAtualizarUI();
     if (typeof carregarMapaEscolasAPI === 'function') carregarMapaEscolasAPI();
+
+    if (mergedSchools.length === 0) {
+      if (badgeEl) badgeEl.textContent = '⚠️ Permissão Pendente';
+      const emptyMsg = document.getElementById('escolas-empty-msg');
+      if (emptyMsg) {
+        emptyMsg.innerHTML = `A nova planilha requer autorização de acesso.<br>
+          <span style="display:inline-block;margin-top:6px;padding:6px 12px;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);border-radius:6px;color:#38bdf8;font-size:12px;">
+            📧 Agente de Acesso Padrão: <b>cam@seduc.ro.gov.br</b>
+          </span><br>
+          <small style="color:#94a3b8;margin-top:6px;display:inline-block;">Compartilhe a planilha <b>1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI</b> com o e-mail acima ou defina como "Qualquer pessoa com o link: Leitor".</small>`;
+      }
+      if (typeof _escolasEsconderTabela === 'function') _escolasEsconderTabela();
+    }
 
   } catch (err) {
     console.error('Erro ao carregar escolas das planilhas:', err);
