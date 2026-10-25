@@ -1334,6 +1334,84 @@ app.post("/api/contatos", editorOnly, async (req, res) => {
   }
 });
 
+// ====== ENDPOINT: CADASTRO GERAL DE ENTIDADES (29 CAMPOS - ABA ENTIDADES) ======
+const defaultEntidadesHeaders = [
+  "Município", "Categoria da parceria", "Nome da escola | Entidade | Prefeitura", "Nº de alunos", "Modalidade",
+  "INEP", "CNPJ", "Endereço", "Bairro | Distrito | Aldeia", "Complemento", "CEP", "Competência",
+  "Super", "Rede social", "Telefone", "Email da entidade", "Nome do diretor | Presidente | Prefeito",
+  "Contato do diretor", "Nome do secretário", "Contato do secretário", "Quant. salas de aula",
+  "Quant. salas administrativas", "Sala do AEE", "Banheiros", "Pátio", "Auditório",
+  "Refeitório (s/n)", "Quadra (s/n)", "Localidade (urbana/rural)"
+];
+
+app.post("/api/entidades", async (req, res) => {
+  try {
+    const data = req.body || {};
+    const ENTIDADES_SHEET_ID = "1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08";
+    
+    // Obter ou criar cabeçalho da aba Entidades
+    let headers = defaultEntidadesHeaders;
+    try {
+      const headerDefRes = await sheets.spreadsheets.values.get({
+        spreadsheetId: ENTIDADES_SHEET_ID,
+        range: "'Entidades'!A1:AC1"
+      });
+      if (headerDefRes.data.values && headerDefRes.data.values[0] && headerDefRes.data.values[0].length > 0) {
+        headers = headerDefRes.data.values[0];
+      }
+    } catch(e) {
+      console.warn("Aba Entidades pode não ter cabeçalho ainda ou requer apêndice:", e.message);
+    }
+
+    // Mapear dados para as 29 colunas na ordem exata da planilha
+    const newRow = [
+      data.municipio || "",
+      data.categoria || "",
+      data.nome || "",
+      data.alunos || "",
+      data.modalidade || "",
+      data.inep || "",
+      data.cnpj || "",
+      data.endereco || "",
+      data.bairro || "",
+      data.complemento || "",
+      data.cep || "",
+      data.competencia || "",
+      data.super || "",
+      data.redesSociais || "",
+      data.telefone || "",
+      data.email || "",
+      data.diretor || "",
+      data.contatoDiretor || "",
+      data.secretario || "",
+      data.contatoSecretario || "",
+      data.salasAula || "",
+      data.salasAdm || "",
+      data.salaAEE || "",
+      data.banheiros || "",
+      data.patio || "",
+      data.auditorio || "",
+      data.refeitorio || "",
+      data.quadra || "",
+      data.localidade || ""
+    ];
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: ENTIDADES_SHEET_ID,
+      range: "'Entidades'!A:AC",
+      valueInputOption: "USER_ENTERED",
+      insertDataOption: "INSERT_ROWS",
+      requestBody: { values: [newRow] }
+    });
+
+    console.log(`✅ Entidade cadastrada na planilha oficial: ${data.nome} (${data.municipio})`);
+    res.json({ sucesso: true, mensagem: `Entidade "${data.nome}" inserida diretamente na planilha com sucesso!` });
+  } catch(error) {
+    console.error("Erro ao cadastrar entidade na planilha:", error);
+    res.status(500).json({ erro: "Erro ao cadastrar na planilha: " + error.message });
+  }
+});
+
 app.put("/api/contatos/:id", editorOnly, async (req, res) => {
   try {
     const rawId = req.params.id;
