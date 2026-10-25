@@ -282,26 +282,26 @@ function _parseRow(row) {
   const v2 = val(2).toUpperCase();
 
   // Pula linhas de cabeçalho
-  if (v0.includes('MUNICÍPIO') || v0.includes('MUNICIPIO') || v1.includes('CATEGORIA') || v2.includes('NOME DA ESCOLA') || v2.includes('ENTIDADE')) {
+  if (v0.includes('MUNICÍPIO') || v0.includes('MUNICIPIO') || v1.includes('CATEGORIA') || v2.includes('NOME DA ESCOLA') || v2.includes('ENTIDADE') || v2.includes('PREFEITURA')) {
     return null;
   }
 
   let municipio = '', categoria = '', nome = '', alunos = 0, modalidadeStr = '', codigoInep = '',
-      endereco = '', bairro = '', complemento = '', cep = '', comp = '', superV = '',
-      telefone = '', email = '', diretor = '', contatoDiretor = '', secretario = '', contatoSecretario = '',
-      salas = 0, localidade = '', redesSociais = '';
+      cnpj = '', endereco = '', bairro = '', complemento = '', cep = '', comp = '', superV = '',
+      redesSociais = '', telefone = '', email = '', diretor = '', contatoDiretor = '',
+      secretario = '', contatoSecretario = '', salas = 0, salasAdm = 0, salaAEE = '',
+      banheiros = '', patio = '', auditorio = '', refeitorio = '', quadra = '', localidade = '';
 
-  // Layout Novo (29 colunas - Imagem 4 da planilha oficial):
-  // Col A(0): Município; Col B(1): Categoria; Col C(2): Nome da Escola; Col D(3): Alunos; Col E(4): Modalidade;
-  // Col F(5): INEP; Col G(6): Localização/CNPJ; Col H(7): Endereço; Col I(8): Bairro; Col J(9): Complemento;
-  // Col K(10): CEP; Col L(11): Competência; Col M(12): Super...
+  // Layout Oficial 29 colunas (Imagem 3 da planilha oficial 1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI):
+  // Col 0: Município | Col 1: Categoria | Col 2: Nome | Col 3: Nº Alunos | Col 4: Modalidade | Col 5: INEP | Col 6: CNPJ...
   if (val(2) && !/^\d+$/.test(val(2))) {
     municipio         = val(0);
     categoria         = val(1);
     nome              = val(2);
-    alunos            = parseInt(val(3)) || 0;
+    alunos            = parseInt(val(3).replace(/[^\d]/g, '')) || 0;
     modalidadeStr     = val(4);
     codigoInep        = val(5);
+    cnpj              = val(6);
     endereco          = val(7);
     bairro            = val(8);
     complemento       = val(9);
@@ -315,16 +315,24 @@ function _parseRow(row) {
     contatoDiretor    = val(17);
     secretario        = val(18);
     contatoSecretario = val(19);
-    salas             = parseInt(val(20)) || 0;
+    salas             = parseInt(val(20).replace(/[^\d]/g, '')) || 0;
+    salasAdm          = parseInt(val(21).replace(/[^\d]/g, '')) || 0;
+    salaAEE           = val(22);
+    banheiros         = val(23);
+    patio             = val(24);
+    auditorio         = val(25);
+    refeitorio        = val(26);
+    quadra            = val(27);
     localidade        = val(28);
-  } else if (val(1)) {
+  } else if (val(1) && !/^\d+$/.test(val(1))) {
     // Layout legado (Nome na coluna 1)
     municipio         = val(0);
     categoria         = '';
     nome              = val(1);
-    alunos            = parseInt(val(2)) || 0;
+    alunos            = parseInt(val(2).replace(/[^\d]/g, '')) || 0;
     modalidadeStr     = val(3);
     codigoInep        = val(4);
+    cnpj              = '';
     endereco          = val(5);
     bairro            = val(6);
     complemento       = val(7);
@@ -338,7 +346,7 @@ function _parseRow(row) {
     contatoDiretor    = val(15);
     secretario        = val(16);
     contatoSecretario = val(17);
-    salas             = parseInt(val(18)) || 0;
+    salas             = parseInt(val(18).replace(/[^\d]/g, '')) || 0;
     localidade        = val(26);
   } else {
     return null;
@@ -351,19 +359,28 @@ function _parseRow(row) {
     else if (categoria && (categoria.toUpperCase().includes('PREFEITURA') || categoria.toUpperCase().includes('MUNICIPAL'))) comp = 'Municipal';
     else comp = 'Municipal';
   } else {
-    if (comp.toUpperCase() === 'ESTADUAL') comp = 'Estadual';
-    else if (comp.toUpperCase() === 'MUNICIPAL') comp = 'Municipal';
+    const cU = comp.toUpperCase();
+    if (cU.includes('ESTADUAL')) comp = 'Estadual';
+    else if (cU.includes('MUNICIPAL')) comp = 'Municipal';
+    else if (cU.includes('FEDERAL')) comp = 'Federal';
   }
 
+  const id = codigoInep || ('escola_' + Math.random().toString(36).substr(2, 9));
+
   return {
-    id: Math.random().toString(36).substr(2,9),
+    id: id,
     categoria: categoria,
     competencia: comp,
     municipio: municipio,
     nome: nome,
     alunosModalidade: alunos,
+    alunos: alunos,
+    totalMatricula: alunos,
     modalidadeStr: modalidadeStr,
+    modalidade: modalidadeStr,
     codigoInep: codigoInep,
+    inep: codigoInep,
+    cnpj: cnpj,
     endereco: endereco,
     bairro: bairro,
     complemento: complemento,
@@ -378,16 +395,17 @@ function _parseRow(row) {
     secretario: secretario,
     contatoSecretario: contatoSecretario,
     salas: salas,
-    localidade: localidade,
-    plusCode: (() => {
-      const p = [val(19), val(20), val(21), val(22), val(23), val(24), val(25), val(27), val(28), val(29), val(30), val(31), val(32)].find(v => v && v.includes('+') && v.length >= 6);
-      if(!p) return '';
-      const m = p.match(/([2-9C-F]{2,8}\+[2-9C-F]{2,3})/i);
-      return m ? m[1].toUpperCase() : '';
-    })(),
-    modalidades: [],
-    alunos: alunos,
-    totalMatricula: alunos
+    salasAula: salas,
+    salasAdm: salasAdm,
+    salaAEE: salaAEE,
+    banheiros: banheiros,
+    patio: patio,
+    auditorio: auditorio,
+    refeitorio: refeitorio,
+    quadra: quadra,
+    localidade: localidade || 'Urbana',
+    localizacao: localidade || 'Urbana',
+    modalidades: modalidadeStr ? [{ modalidade: modalidadeStr, alunos: alunos }] : []
   };
 }
 
@@ -396,181 +414,115 @@ async function carregarEscolasAPI(silencioso) {
   const tableWrap = document.getElementById('escolas-table-wrap');
   const badgeEl   = document.getElementById('escolas-badge');
 
-  if (badgeEl) badgeEl.textContent = '⏳ Carregando...';
+  if (badgeEl) badgeEl.textContent = '⏳ Conectando...';
   if (emptyEl) emptyEl.style.display = 'none';
   if (tableWrap) tableWrap.style.display = 'none';
   
   const toastMsg = (msg, type) => { if(typeof toast === 'function') toast(msg, type); else console.log(msg); };
 
-  // ------------------------------------
-  // Definição da Planilha e Agente de Acesso SEDUC/RO
-  // ------------------------------------
   const SHEET_ID = '1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI';
-  const AGENTE_ACESSO_EMAIL = 'cam@seduc.ro.gov.br';
+  const AGENTE_ACESSO_EMAIL = 'planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com';
   window.AGENTE_ACESSO_EMAIL = AGENTE_ACESSO_EMAIL;
   
-  // Aba estadual -> competencia forçada = 'Estadual'
-    const ABAS = [
-      { sheet: 'estadual', competencia: 'Estadual' },
-      { sheet: 'Porto Velho', competencia: 'Municipal' },
-      { sheet: 'Ariquemes', competencia: 'Municipal' },
-      { sheet: 'Alto Alegre dos Parecis', competencia: 'Municipal' },
-      { sheet: 'Alta Floresta do Oeste', competencia: 'Municipal' },
-      { sheet: 'Alto Paraíso', competencia: 'Municipal' },
-      { sheet: 'Alvorada do Oeste', competencia: 'Municipal' },
-      { sheet: 'Buritis', competencia: 'Municipal' },
-      { sheet: 'Cabixi', competencia: 'Municipal' },
-      { sheet: 'Cacaulândia', competencia: 'Municipal' },
-      { sheet: 'Cacoal', competencia: 'Municipal' },
-      { sheet: 'Campo Novo de Rondônia', competencia: 'Municipal' },
-      { sheet: 'Candeias do Jamari', competencia: 'Municipal' },
-      { sheet: 'Cerejeiras', competencia: 'Municipal' },
-      { sheet: 'Castanheiras', competencia: 'Municipal' },
-      { sheet: 'Chupinguaia', competencia: 'Municipal' },
-      { sheet: 'Colorado do Oeste', competencia: 'Municipal' },
-      { sheet: 'Corumbiara', competencia: 'Municipal' },
-      { sheet: 'Costa Marques', competencia: 'Municipal' },
-      { sheet: 'Cujubim', competencia: 'Municipal' },
-      { sheet: 'Espigão do Oeste', competencia: 'Municipal' },
-      { sheet: 'Gov. Jorge Teixeira', competencia: 'Municipal' },
-      { sheet: 'Guajará Mirim', competencia: 'Municipal' },
-      { sheet: 'Itapuã do Oeste', competencia: 'Municipal' },
-      { sheet: 'Jarú', competencia: 'Municipal' },
-      { sheet: 'Ministro Andreazza', competencia: 'Municipal' },
-      { sheet: 'Ji Paraná', competencia: 'Municipal' },
-      { sheet: 'Machadinho do Oeste', competencia: 'Municipal' },
-      { sheet: 'Mirante da Serra', competencia: 'Municipal' },
-      { sheet: 'Monte Negro', competencia: 'Municipal' },
-      { sheet: 'Nova Mamoré', competencia: 'Municipal' },
-      { sheet: 'Nova Brasilândia do Oeste', competencia: 'Municipal' },
-      { sheet: 'Nova União', competencia: 'Municipal' },
-      { sheet: 'Novo Horizonte do Oeste', competencia: 'Municipal' },
-      { sheet: 'Ouro Preto do Oeste', competencia: 'Municipal' },
-      { sheet: 'Parecis', competencia: 'Municipal' },
-      { sheet: 'Pimenta Bueno', competencia: 'Municipal' },
-      { sheet: 'Pimenteiras do Oeste', competencia: 'Municipal' },
-      { sheet: 'Primavera de Rondônia', competencia: 'Municipal' },
-      { sheet: 'Presidente Médici', competencia: 'Municipal' },
-      { sheet: 'Rio  Crespo', competencia: 'Municipal' },
-      { sheet: 'Rolim de Moura', competencia: 'Municipal' },
-      { sheet: 'Santa Luzia do Oeste', competencia: 'Municipal' },
-      { sheet: 'São Felipe do Oeste', competencia: 'Municipal' },
-      { sheet: 'São Francisco do Guaporé', competencia: 'Municipal' },
-      { sheet: 'São Miguel do Guaporé', competencia: 'Municipal' },
-      { sheet: 'Seringueiras ', competencia: 'Municipal' },
-      { sheet: 'Teixeirópolis', competencia: 'Municipal' },
-      { sheet: 'Vale do Anari', competencia: 'Municipal' },
-      { sheet: 'Theobroma', competencia: 'Municipal' },
-      { sheet: 'Urupá', competencia: 'Municipal' },
-      { sheet: 'Vale do Paraíso', competencia: 'Municipal' },
-      { sheet: 'Vilhena ', competencia: 'Municipal' },
-    ];
-
-  // Função que busca e parseia UMA aba
-  async function _fetchAba({ sheet, competencia }) {
-    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheet)}&nocache=${Date.now()}`;
-    try {
-      const res = await fetch(url);
-      if (!res.ok) return [];
-      const text = await res.text();
-      const rows = _parseGvizText(text);
-      if (!rows) return [];
-      return rows.map(r => {
-        const parsed = _parseRow(r);
-        if (!parsed) return null;
-        parsed.competencia = competencia;
-        return parsed;
-      }).filter(Boolean);
-    } catch(e) {
-      console.warn('Erro ao buscar aba:', sheet, e);
-      return [];
-    }
-  }
-
   try {
-    let escolaMap = new Map();
+    const escolaMap = new Map();
 
-    // 1. Tentar primeiro carregar diretamente da primeira aba (gid=0) da nova planilha
-    let carregouGid0 = false;
+    const adicionarAoMapa = (item) => {
+      if (!item) return;
+      const nome = String(item.nome || '').trim();
+      if (!nome || nome.length < 2) return;
+      const key = (item.codigoInep && String(item.codigoInep).trim().length > 3)
+        ? String(item.codigoInep).trim()
+        : (nome.toUpperCase() + '|' + String(item.municipio || '').trim().toUpperCase());
+
+      if (!escolaMap.has(key)) {
+        escolaMap.set(key, { ...item });
+      } else {
+        const exist = escolaMap.get(key);
+        escolaMap.set(key, { ...exist, ...item });
+      }
+    };
+
+    // 1. Tentar carregar prioritariamente via GID 0 da nova planilha oficial
     try {
-      if (badgeEl) badgeEl.textContent = '⏳ Conectando à nova planilha (gid=0)...';
+      if (badgeEl) badgeEl.textContent = '⏳ Lendo Planilha Oficial (gid=0)...';
       const urlGid0 = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=0&nocache=${Date.now()}`;
       const resGid0 = await fetch(urlGid0);
       if (resGid0.ok) {
         const textGid0 = await resGid0.text();
-        const rowsGid0 = _parseGvizText(textGid0);
-        if (rowsGid0 && rowsGid0.length > 0) {
-          rowsGid0.forEach(r => {
-            const parsed = _parseRow(r);
-            if (!parsed) return;
-            const key = (parsed.codigoInep && parsed.codigoInep.length > 3)
-              ? parsed.codigoInep.trim()
-              : (parsed.nome.trim().toUpperCase() + '|' + (parsed.municipio || '').trim().toUpperCase());
-            if (!escolaMap.has(key)) {
-              escolaMap.set(key, { ...parsed, modalidades: [], alunos: parsed.alunosModalidade || 0, totalMatricula: parsed.alunosModalidade || 0 });
-            }
-          });
-          if (escolaMap.size > 0) carregouGid0 = true;
+        if (textGid0 && !textGid0.includes('<!DOCTYPE') && !textGid0.includes('<html')) {
+          const rowsGid0 = _parseGvizText(textGid0);
+          if (rowsGid0 && rowsGid0.length > 0) {
+            rowsGid0.forEach(r => {
+              const parsed = _parseRow(r);
+              if (parsed) adicionarAoMapa(parsed);
+            });
+          }
         }
       }
     } catch(e) {
-      console.warn('Tentativa gid=0 direta retornou:', e.message);
+      console.warn('[Escolas] GVIZ gid=0:', e.message);
     }
 
-    // 2. Se não foi por gid=0 direto, tentar carregar via abas municipais
-    if (!carregouGid0) {
-      const BATCH = 10;
-      const totalAbas = ABAS.length;
-      let processadas = 0;
-
-      for (let i = 0; i < totalAbas; i += BATCH) {
-        const lote = ABAS.slice(i, i + BATCH);
-        if (badgeEl) badgeEl.textContent = `⏳ Carregando abas ${i + 1}–${Math.min(i + BATCH, totalAbas)} de ${totalAbas}...`;
-
-        const resultados = await Promise.all(lote.map(_fetchAba));
-
-        resultados.flat().forEach(parsed => {
-          const key = (parsed.codigoInep && parsed.codigoInep.length > 3)
-            ? parsed.codigoInep.trim()
-            : (parsed.nome.trim().toUpperCase() + '|' + (parsed.municipio || '').trim().toUpperCase());
-
-          if (!escolaMap.has(key)) {
-            escolaMap.set(key, { ...parsed, modalidades: [], alunos: 0, totalMatricula: 0 });
-          }
-
-          const school = escolaMap.get(key);
-          if (!school.endereco && parsed.endereco) school.endereco = parsed.endereco;
-          if (!school.email    && parsed.email)    school.email    = parsed.email;
-          if (!school.telefone && parsed.telefone) school.telefone = parsed.telefone;
-          if (!school.diretor  && parsed.diretor)  school.diretor  = parsed.diretor;
-          if (!school.super    && parsed.super)    school.super    = parsed.super;
-          if (!school.localidade && parsed.localidade) school.localidade = parsed.localidade;
-
-          if (parsed.modalidadeStr && parsed.modalidadeStr !== '-') {
-            const modStr = parsed.modalidadeStr.trim();
-            const existing = school.modalidades.find(m => m.modalidade === modStr);
-            if (existing) {
-              existing.alunos += parsed.alunosModalidade;
-            } else {
-              school.modalidades.push({ modalidade: modStr, alunos: parsed.alunosModalidade });
+    // 2. Se vazio, tentar por nome de aba "ENTIDADES"
+    if (escolaMap.size === 0) {
+      try {
+        if (badgeEl) badgeEl.textContent = '⏳ Lendo Aba ENTIDADES...';
+        const urlNome = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent('ENTIDADES')}&nocache=${Date.now()}`;
+        const resNome = await fetch(urlNome);
+        if (resNome.ok) {
+          const textNome = await resNome.text();
+          if (textNome && !textNome.includes('<!DOCTYPE') && !textNome.includes('<html')) {
+            const rowsNome = _parseGvizText(textNome);
+            if (rowsNome && rowsNome.length > 0) {
+              rowsNome.forEach(r => {
+                const parsed = _parseRow(r);
+                if (parsed) adicionarAoMapa(parsed);
+              });
             }
           }
-
-          school.totalMatricula += parsed.alunosModalidade;
-          school.alunos         += parsed.alunosModalidade;
-        });
-
-        processadas += lote.length;
+        }
+      } catch(eNome) {
+        console.warn('[Escolas] GVIZ ENTIDADES:', eNome.message);
       }
     }
 
-    // 3. Fallback: Se não retornou linhas (ex: 401 ou bloqueado), tentar buscar via backend /api/escolas
+    // 3. Se vazio, tentar exportação CSV direta (sem autenticação)
     if (escolaMap.size === 0) {
       try {
-        if (badgeEl) badgeEl.textContent = '⏳ Buscando via Agente SEDUC/RO...';
-        const base = 'https://seduc-backend.onrender.com';
-        const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || localStorage.getItem('sap_session_token') || 'active_dev_token');
-        const resBk = await fetch(`${base}/api/escolas`, {
+        if (badgeEl) badgeEl.textContent = '⏳ Buscando via export CSV...';
+        const urlCsv = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0&nocache=${Date.now()}`;
+        const resCsv = await fetch(urlCsv);
+        if (resCsv.ok) {
+          const csvText = await resCsv.text();
+          if (csvText && !csvText.includes('<!DOCTYPE') && !csvText.includes('<html')) {
+            if (typeof _teParseCsv === 'function') {
+              const rowsCsv = _teParseCsv(csvText);
+              if (Array.isArray(rowsCsv)) {
+                rowsCsv.forEach(item => {
+                  adicionarAoMapa({
+                    ...item,
+                    codigoInep: item.inep || item.codigoInep || '',
+                    totalMatricula: parseInt(item.alunos) || 0,
+                    salas: parseInt(item.salasAula) || 0
+                  });
+                });
+              }
+            }
+          }
+        }
+      } catch(eCsv) {
+        console.warn('[Escolas] Export CSV:', eCsv.message);
+      }
+    }
+
+    // 4. Se vazio, tentar backend seguro /api/escolas
+    if (escolaMap.size === 0) {
+      try {
+        if (badgeEl) badgeEl.textContent = '⏳ Conectando via Agente SEDUC...';
+        const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : 'https://seduc-backend.onrender.com';
+        const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || 'active_dev_token');
+        const resBk = await fetch(`${baseApi}/api/escolas?nocache=${Date.now()}`, {
           headers: { 'Authorization': 'Bearer ' + (token || 'active_dev_token') }
         });
         if (resBk.ok) {
@@ -578,30 +530,47 @@ async function carregarEscolasAPI(silencioso) {
           const rowsBk = jsonBk.rows || jsonBk || [];
           if (Array.isArray(rowsBk) && rowsBk.length > 0) {
             rowsBk.forEach(e => {
-              const key = e.codigoInep || e.id || (e.nome + '|' + e.municipio);
-              escolaMap.set(key, {
-                id: e.id || key,
-                competencia: e.competencia || 'Estadual',
-                municipio: e.municipio || '',
-                nome: e.nome || '',
-                codigoInep: e.codigoInep || '',
-                localizacao: e.localizacao || '',
-                super: e.super || '',
-                codigoSuper: e.codigoSuper || e.super || '',
-                diretor: e.diretor || '',
-                telefone: e.telefone || '',
-                email: e.email || '',
-                salas: Number(e.salas) || 0,
-                totalMatricula: Number(e.totalMatricula) || 0,
-                alunos: Number(e.totalMatricula) || 0,
-                modalidades: []
+              adicionarAoMapa({
+                ...e,
+                codigoInep: e.codigoInep || e.inep || '',
+                totalMatricula: Number(e.totalMatricula || e.alunos) || 0,
+                salas: Number(e.salas || e.salasAula) || 0
               });
             });
           }
         }
       } catch(eBk) {
-        console.warn('Erro ao consultar /api/escolas no fallback:', eBk);
+        console.warn('[Escolas] Backend /api/escolas:', eBk.message);
       }
+    }
+
+    // 5. Se vazio e _teCache já tiver dados em memória, reutilizar
+    if (escolaMap.size === 0 && window._teCache && Array.isArray(window._teCache) && window._teCache.length > 0) {
+      window._teCache.forEach(item => {
+        adicionarAoMapa({
+          ...item,
+          codigoInep: item.inep || item.codigoInep || '',
+          totalMatricula: parseInt(item.alunos) || 0,
+          salas: parseInt(item.salasAula) || 0
+        });
+      });
+    }
+
+    // 6. Incorporar entidades salvas localmente
+    try {
+      const salvasLocal = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+      if (Array.isArray(salvasLocal) && salvasLocal.length > 0) {
+        salvasLocal.forEach(item => {
+          adicionarAoMapa({
+            ...item,
+            codigoInep: item.inep || item.codigoInep || '',
+            totalMatricula: parseInt(item.alunos) || 0,
+            salas: parseInt(item.salasAula) || 0
+          });
+        });
+      }
+    } catch(eLocal) {
+      console.warn('[Escolas] Erro ao mesclar dados locais:', eLocal);
     }
 
     let mergedSchools = Array.from(escolaMap.values());
@@ -614,7 +583,7 @@ async function carregarEscolasAPI(silencioso) {
     const qtdEst = mergedSchools.filter(e => e.competencia === 'Estadual').length;
     const qtdMun = mergedSchools.filter(e => e.competencia === 'Municipal').length;
     if (!silencioso && mergedSchools.length > 0) {
-      toastMsg(`✅ ${mergedSchools.length} escolas carregadas da nova base (${qtdEst} estaduais, ${qtdMun} municipais)`, 'success');
+      toastMsg(`✅ ${mergedSchools.length} escolas/entidades carregadas da nova base (${qtdEst} estaduais, ${qtdMun} municipais)`, 'success');
     }
 
     if (typeof _escolasPopularFiltros === 'function') _escolasPopularFiltros();
@@ -626,11 +595,33 @@ async function carregarEscolasAPI(silencioso) {
       if (badgeEl) badgeEl.textContent = '⚠️ Permissão Pendente';
       const emptyMsg = document.getElementById('escolas-empty-msg');
       if (emptyMsg) {
-        emptyMsg.innerHTML = `A nova planilha requer autorização de acesso.<br>
-          <span style="display:inline-block;margin-top:6px;padding:6px 12px;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);border-radius:6px;color:#38bdf8;font-size:12px;">
-            📧 Agente de Acesso Padrão: <b>cam@seduc.ro.gov.br</b>
-          </span><br>
-          <small style="color:#94a3b8;margin-top:6px;display:inline-block;">Compartilhe a planilha <b>1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI</b> com o e-mail acima ou defina como "Qualquer pessoa com o link: Leitor".</small>`;
+        emptyMsg.innerHTML = `
+          <div style="max-width:680px; margin:0 auto; padding:16px 20px; background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.35); border-radius:12px; text-align:left; box-shadow:0 8px 32px rgba(0,0,0,0.4);">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+              <span style="font-size:24px;">🔗</span>
+              <div>
+                <div style="font-weight:800; color:#38bdf8; font-size:14px;">Compartilhamento Especial da Planilha (Acesso sem necessidade de senha de e-mail)</div>
+                <div style="font-size:11.5px; color:#94a3b8;">Planilha Oficial: <b>1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI</b> (Aba ENTIDADES)</div>
+              </div>
+            </div>
+            <div style="font-size:12.5px; color:#e2e8f0; line-height:1.6; margin-bottom:12px;">
+              Para que o sistema acesse a planilha diretamente e sem exigir login individual, siga estes 2 passos no Google Drive:
+              <ol style="margin:8px 0 8px 20px; padding:0;">
+                <li>Abra a planilha no Google: <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0" target="_blank" rel="noopener noreferrer" style="color:#6ee7b7; font-weight:700; text-decoration:underline;">Abrir Planilha Oficial</a></li>
+                <li>No canto superior direito, clique no botão azul <b>"Compartilhar"</b> (ícone de cadeado 🔒).</li>
+                <li>Na seção <b>"Acesso geral"</b>, altere de <i>"Restrito"</i> para: <b style="color:#34d399;">"Qualquer pessoa com o link"</b> (função: <b>Leitor</b>).</li>
+                <li>Clique em <b>"Concluído"</b> e em seguida clique no botão <b>"Recarregar"</b> abaixo.</li>
+              </ol>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.08); padding-top:10px;">
+              <button onclick="carregarEscolasAPI(false)" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:7px 16px; border-radius:6px; font-weight:800; font-size:12px; cursor:pointer;">
+                🔄 Testar Conexão / Recarregar
+              </button>
+              <span style="font-size:11px; color:#94a3b8;">
+                Ou adicione a conta de serviço: <code style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; color:#38bdf8;">planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com</code>
+              </span>
+            </div>
+          </div>`;
       }
       if (typeof _escolasEsconderTabela === 'function') _escolasEsconderTabela();
     }
@@ -932,7 +923,7 @@ function _escolasRenderTabela() {
     const inep = e.codigoInep || '-';
 
     const idKey = e.codigoInep ? e.codigoInep : (e.id || gi);
-    return '<tr style="cursor:pointer;" onclick="abrirModalEscola(\'' + idKey + '\')" ondblclick="abrirFormEscolaByInepOrId(\'' + idKey + '\')" title="Clique para ver detalhes | Duplo clique para editar"' +
+    return '<tr style="cursor:pointer;" onclick="abrirModalEscola(\'' + idKey + '\')" ondblclick="abrirModalCadastroEntidadePorId(\'' + idKey + '\')" title="Clique para ver detalhes | Duplo clique para editar Cadastro Geral"' +
       ' onmouseover="this.style.background=\'rgba(139,92,246,0.07)\'"' +
       ' onmouseout="this.style.background=\'\'">' +
       '<td>' + _renderCompetenciaBadge(e.competencia) + '</td>' +
@@ -947,12 +938,46 @@ function _escolasRenderTabela() {
       '<td style="font-size:12px">' + tel + '</td>' +
       '<td style="text-align:center;" onclick="event.stopPropagation()">' +
         '<div style="display:flex;gap:6px;justify-content:center;">' +
-          '<button onclick="abrirFormEscolaByInepOrId(\'' + idKey + '\')" title="Editar Dados da Escola" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;border-radius:6px;color:#ffffff;width:32px;height:32px;padding:0;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(139,92,246,0.3);transition:transform 0.1s,opacity 0.2s;"><span style="font-family:sans-serif;font-size:15px;line-height:1;">✏️</span></button>' +
+          '<button type="button" onclick="event.stopPropagation(); abrirModalCadastroEntidadePorId(\'' + idKey + '\')" title="Editar Cadastro Geral da Entidade (29 Campos)" style="background:linear-gradient(135deg,#10b981,#059669);border:1px solid rgba(52,211,153,0.6);border-radius:6px;color:#ffffff;width:32px;height:32px;padding:0;cursor:pointer;font-size:14px;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(16,185,129,0.35);transition:transform 0.1s,opacity 0.2s;"><span style="font-family:sans-serif;font-size:15px;line-height:1;">✏️</span></button>' +
         '</div>' +
       '</td>' +
       '</tr>';
   }).join('');
 }
+
+// Abre o formulário geral de cadastro de entidade preenchido com os dados da entidade selecionada
+function abrirModalCadastroEntidadePorId(idKey) {
+  const pool = Array.isArray(_escolasCache) && _escolasCache.length > 0 ? _escolasCache : (window._teCache || []);
+  const target = String(idKey || '').trim().toLowerCase();
+  let escola = pool.find(e => 
+    String(e.id || '').trim().toLowerCase() === target ||
+    String(e.codigoInep || e.inep || '').trim().toLowerCase() === target ||
+    String(e.nome || '').trim().toLowerCase() === target
+  );
+  if (!escola && typeof _teCadastros !== 'undefined' && Array.isArray(_teCadastros)) {
+    escola = _teCadastros.find(e =>
+      String(e.id || '').trim().toLowerCase() === target ||
+      String(e.inep || e.codigoInep || '').trim().toLowerCase() === target ||
+      String(e.nome || '').trim().toLowerCase() === target
+    );
+  }
+  if (!escola) {
+    try {
+      const locais = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+      escola = locais.find(e =>
+        String(e.id || '').trim().toLowerCase() === target ||
+        String(e.inep || e.codigoInep || '').trim().toLowerCase() === target ||
+        String(e.nome || '').trim().toLowerCase() === target
+      );
+    } catch(e) {}
+  }
+  if (typeof abrirModalCadastroEntidade === 'function') {
+    abrirModalCadastroEntidade(escola || null);
+  } else if (typeof toast === 'function') {
+    toast('Modal de cadastro não disponível no momento', 'warning');
+  }
+}
+window.abrirModalCadastroEntidadePorId = abrirModalCadastroEntidadePorId;
 
 // ---- PAGINAÇÃO ----
 function _escolasRenderPaginacao() {
@@ -995,8 +1020,27 @@ function _escolasRenderPaginacao() {
   ctrlEl.innerHTML = btns;
 }
 
-function abrirModalEscola(idx) {
-  const escola = _escolasFiltradas[idx];
+function abrirModalEscola(identifier) {
+  let escola = null;
+  if (typeof identifier === 'number') {
+    escola = _escolasFiltradas[identifier];
+  } else if (typeof identifier === 'object' && identifier !== null) {
+    escola = identifier;
+  } else {
+    const target = String(identifier || '').trim().toLowerCase();
+    escola = _escolasFiltradas.find(e => 
+      String(e.id || '').trim().toLowerCase() === target ||
+      String(e.codigoInep || e.inep || '').trim().toLowerCase() === target ||
+      String(e.nome || '').trim().toLowerCase() === target
+    );
+    if (!escola) {
+      escola = _escolasCache.find(e => 
+        String(e.id || '').trim().toLowerCase() === target ||
+        String(e.codigoInep || e.inep || '').trim().toLowerCase() === target ||
+        String(e.nome || '').trim().toLowerCase() === target
+      );
+    }
+  }
   if (!escola) return;
   _preencherFormEscola(escola);
 }

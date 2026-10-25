@@ -1069,62 +1069,114 @@ function mapRowToEscolaObj(headers, row) {
     const n = v ? Number(String(v).replace(/[^\d]/g, '')) : 0;
     return isNaN(n) ? 0 : n;
   };
+
+  const categoria       = get(['categoria da parceria', 'categoria']);
+  const nome            = get(['nome da escola | entidade | prefeitura', 'nome escola | entidade | prefeitura', 'nome da escola', 'nome escola', 'escola', 'entidade', 'prefeitura']);
+  const alunos          = getNum(['nº de alunos', 'n de alunos', 'alunos', 'total matrícula', 'total matricula', 'matricula']);
+  const modalidade      = get(['modalidade', 'modalidade de atendimento']);
+  const inep            = get(['inep', 'codigo inep', 'código inep']);
+  const cnpj            = get(['cnpj']);
+  const endereco        = get(['endereço', 'endereco', 'endereço - nº', 'logradouro', 'nº']);
+  const bairro          = get(['bairro | distrito | aldeia', 'bairro', 'distrito', 'aldeia']);
+  const complemento     = get(['complemento', 'complement']);
+  const cep             = get(['cep']);
+  const competencia     = get(['competência', 'competencia']);
+  const superV          = get(['super', 'superintendencia', 'superintendência', 'nome super', 'nome da super', 'cre']);
+  const redesSociais    = get(['rede social', 'redes sociais', 'instagram', 'facebook', 'instagran', 'redes']);
+  const telefone        = get(['telefone', 'nº de telefone', 'fone']);
+  const email           = get(['email da entidade', 'email', 'e-mail']);
+  const diretor         = get(['nome do diretor | presidente | prefeito', 'diretor', 'gestor', 'nome diretor', 'nome do diretor', 'prefeito', 'presidente']);
+  const contatoDiretor  = get(['contato do diretor', 'contato diretor', 'telefone diretor', 'celular diretor', 'contato']);
+  const secretario      = get(['nome do secretário', 'nome do secretario', 'secretario', 'secretário', 'nome secretario', 'nome do secretário']);
+  const contatoSecretario = get(['contato do secretário', 'contato do secretario', 'contato secretario', 'telefone secretario', 'celular secretario', 'whats secretario']);
+  const salas           = getNum(['quant. salas de aula', 'salas de aula ultilizadas na escola', 'salas de aula', 'sala']);
+  const salasAdm        = getNum(['quant. salas administrativas', 'salas administrativas', 'salas adm']);
+  const salaAEE         = get(['sala do aee', 'sala de recursos aee', 'sala aee', 'aee']);
+  const banheiros       = get(['banheiros']);
+  const patio           = get(['pátio', 'patio']);
+  const auditorio       = get(['auditório', 'auditorio']);
+  const refeitorio      = get(['refeitório (s/n)', 'refeitório', 'refeitorio']);
+  const quadra          = get(['quadra (s/n)', 'quadra poliesportiva', 'quadra']);
+  const localidade      = get(['localidade (urbana/rural)', 'localidade', 'localização', 'localizacao', 'localiza']);
+
   return {
-    codigoSuper: get(['codigo super', 'cod super', 'cd super']),
-    super: get(['super', 'superintendencia', 'superintendência', 'nome super', 'nome da super', 'cre']),
+    codigoSuper: get(['codigo super', 'cod super', 'cd super']) || superV,
+    super: superV,
+    categoria: categoria,
+    competencia: competencia,
     municipio: get(['municipio', 'município']),
-    codigoInep: get(['inep', 'codigo inep', 'código inep']),
-    nome: get(['nome da escola', 'escola']),
-    localizacao: get(['localização', 'localizacao', 'localiza']),
-    endereco: get(['endereço - nº', 'endereço', 'endereco', 'logradouro', 'nº']),
-    complemento: get(['complemento', 'complement']),
-    bairro: get(['bairro']),
-    cep: get(['cep']),
-    telefone: get(['nº de telefone', 'telefone', 'fone']),
-    totalMatricula: getNum(['total matrícula', 'total matricula', 'matricula']),
-    salas: getNum(['salas de aula ultilizadas na escola', 'salas de aula', 'sala']),
-    diretor: get(['diretor', 'gestor', 'nome diretor', 'nome do diretor']),
-    contatoDiretor: get(['contato diretor', 'telefone diretor', 'celular diretor', 'contato']),
-    secretario: get(['secretario', 'secretário', 'nome secretario', 'nome do secretário']),
-    contatoSecretario: get(['contato secretario', 'telefone secretario', 'celular secretario', 'whats secretario']),
-    email: get(['email', 'e-mail']),
-    redesSociais: get(['redes sociais', 'instagram', 'facebook', 'instagran', 'redes'])
+    codigoInep: inep,
+    inep: inep,
+    cnpj: cnpj,
+    nome: nome,
+    localizacao: localidade || 'Urbana',
+    localidade: localidade || 'Urbana',
+    endereco: endereco,
+    complemento: complemento,
+    bairro: bairro,
+    cep: cep,
+    telefone: telefone,
+    totalMatricula: alunos,
+    alunos: alunos,
+    modalidade: modalidade,
+    modalidadeStr: modalidade,
+    salas: salas,
+    salasAula: salas,
+    salasAdm: salasAdm,
+    salaAEE: salaAEE,
+    banheiros: banheiros,
+    patio: patio,
+    auditorio: auditorio,
+    refeitorio: refeitorio,
+    quadra: quadra,
+    diretor: diretor,
+    contatoDiretor: contatoDiretor,
+    secretario: secretario,
+    contatoSecretario: contatoSecretario,
+    email: email,
+    redesSociais: redesSociais
   };
 }
 
 app.get("/api/escolas", async (req, res) => {
   try {
-    const targetSheetId = process.env.ESCOLAS_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
+    const targetSheetId = process.env.ESCOLAS_SHEET_ID || process.env.ENTIDADES_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     let rows = [];
 
-    // Tentar ler da nova planilha de escolas
+    // Tentar ler da nova planilha de escolas (Aba ENTIDADES ou range A1:AC das 29 colunas)
     try {
       const respNova = await sheets.spreadsheets.values.get({
         spreadsheetId: targetSheetId,
-        range: "A1:Z"
+        range: "'ENTIDADES'!A1:AC"
       });
       rows = respNova.data.values || [];
-    } catch(errNova) {
-      console.warn("Tentativa de leitura da nova planilha retornou:", errNova.message);
-      // Fallback para SPREADSHEET_ID principal aba escolas
-      const response = await sheets.spreadsheets.values.get({
-        spreadsheetId: SPREADSHEET_ID,
-        range: "escolas!A1:Z"
-      });
-      rows = response.data.values || [];
+    } catch(errAba) {
+      try {
+        const respNova = await sheets.spreadsheets.values.get({
+          spreadsheetId: targetSheetId,
+          range: "A1:AC"
+        });
+        rows = respNova.data.values || [];
+      } catch(errGeral) {
+        console.warn("Aviso ao ler planilha oficial:", errGeral.message);
+      }
     }
 
-    if (rows.length < 2) return res.json({ rows: [] });
+    if (rows.length < 2) {
+      return res.json({ rows: [], total: 0, aviso: "Planilha oficial vazia ou permissão pendente (Qualquer pessoa com o link: Leitor)." });
+    }
     
     const headers = rows[0];
     const dataRows = rows.slice(1).map((r, idx) => {
+      const mapped = mapRowToEscolaObj(headers, r);
       return {
-        id: (idx + 2) + "__escolas",
-        _tabName: "escolas",
-        ...mapRowToEscolaObj(headers, r)
+        id: mapped.codigoInep || (idx + 2) + "__entidades",
+        _tabName: "ENTIDADES",
+        ...mapped
       };
-    });
-    res.json({ rows: dataRows });
+    }).filter(e => (e.nome && e.nome.length > 1) || (e.municipio && e.municipio.length > 1));
+
+    res.json({ rows: dataRows, total: dataRows.length });
   } catch (error) {
     console.error(error);
     res.status(500).json({ erro: "Erro ao buscar escolas: " + error.message });

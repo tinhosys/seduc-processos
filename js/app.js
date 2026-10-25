@@ -7449,28 +7449,28 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
 
   if (dadosExistentes) {
     if (tituloEl) tituloEl.textContent = `Editar Entidade: ${dadosExistentes.nome || 'Escola'}`;
-    setVal('entidade-form-id', dadosExistentes.id || dadosExistentes.inep || '');
+    setVal('entidade-form-id', dadosExistentes.id || dadosExistentes.inep || dadosExistentes.codigoInep || '');
     setVal('entidade-categoria', dadosExistentes.categoria || 'Conselho Escolar');
     setVal('entidade-nome', dadosExistentes.nome || '');
     setVal('entidade-municipio', dadosExistentes.municipio || '');
-    setVal('entidade-alunos', dadosExistentes.alunos || '');
-    setVal('entidade-modalidade', dadosExistentes.modalidade || '');
-    setVal('entidade-inep', dadosExistentes.inep || '');
+    setVal('entidade-alunos', dadosExistentes.alunos || dadosExistentes.totalMatricula || dadosExistentes.alunosModalidade || '');
+    setVal('entidade-modalidade', dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '');
+    setVal('entidade-inep', dadosExistentes.inep || dadosExistentes.codigoInep || '');
     setVal('entidade-cnpj', dadosExistentes.cnpj || '');
     setVal('entidade-endereco', dadosExistentes.endereco || '');
     setVal('entidade-bairro', dadosExistentes.bairro || '');
     setVal('entidade-complemento', dadosExistentes.complemento || '');
     setVal('entidade-cep', dadosExistentes.cep || '');
     setVal('entidade-competencia', dadosExistentes.competencia || 'Municipal');
-    setVal('entidade-super', dadosExistentes.super || '');
-    setVal('entidade-redes', dadosExistentes.redesSociais || '');
+    setVal('entidade-super', dadosExistentes.super || dadosExistentes.codigoSuper || '');
+    setVal('entidade-redes', dadosExistentes.redesSociais || dadosExistentes.redes || '');
     setVal('entidade-telefone', dadosExistentes.telefone || '');
     setVal('entidade-email', dadosExistentes.email || '');
     setVal('entidade-diretor', dadosExistentes.diretor || '');
     setVal('entidade-contato-diretor', dadosExistentes.contatoDiretor || '');
     setVal('entidade-secretario', dadosExistentes.secretario || '');
     setVal('entidade-contato-secretario', dadosExistentes.contatoSecretario || '');
-    setVal('entidade-salas-aula', dadosExistentes.salasAula || '');
+    setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
     setVal('entidade-salas-adm', dadosExistentes.salasAdm || '');
     setVal('entidade-sala-aee', dadosExistentes.salaAEE || '');
     setVal('entidade-banheiros', dadosExistentes.banheiros || '');
@@ -7478,7 +7478,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-auditorio', dadosExistentes.auditorio || '');
     setVal('entidade-refeitorio', dadosExistentes.refeitorio || '');
     setVal('entidade-quadra', dadosExistentes.quadra || '');
-    setVal('entidade-localidade', dadosExistentes.localidade || 'Urbana');
+    setVal('entidade-localidade', dadosExistentes.localidade || dadosExistentes.localizacao || 'Urbana');
 
     // Sincronizar radio
     const catUpper = String(dadosExistentes.categoria || '').toUpperCase();

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.41</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.53</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.41</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.53</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1577,6 +1577,12 @@
               <span style="font-size:11.5px; font-weight:800; color:#38bdf8; letter-spacing:0.5px; font-family:'Inter', sans-serif; white-space:nowrap; text-transform:uppercase;">Processando...</span>
             </div>
 
+            <!-- BOTAO NOVO PROCESSO GRANDE E DESTACADO (IMAGEM 1) -->
+            <button id="btn-novo-processo-topo" type="button" class="btn" onclick="abrirModalNovoProcesso()" style="flex:1 1 260px; max-width:440px; height:42px; min-height:42px; max-height:42px; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1.5px solid #10b981; border-radius:10px; background:linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%); color:#34d399; cursor:pointer; font-weight:800; letter-spacing:0.8px; transition:all 0.25s; box-sizing:border-box; box-shadow:0 0 16px rgba(16,185,129,0.3); text-transform:uppercase;" onmouseover="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.5) 0%, rgba(5,150,105,0.6) 100%)'; this.style.boxShadow='0 0 22px rgba(16,185,129,0.55)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%)'; this.style.boxShadow='0 0 16px rgba(16,185,129,0.3)'; this.style.color='#34d399';" title="Cadastrar Novo Processo">
+              <span style="font-size:18px; font-weight:900; line-height:1; display:inline-block; margin-right:2px;">+</span>
+              <span class="btn-text">Novo Processo</span>
+            </button>
+
             <!-- Direita Linha 1: Relatórios Principais -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
               <button type="button" class="btn action-report" onclick="if(typeof window.imprimirAnaliseSintetica==='function'){window.imprimirAnaliseSintetica();}else if(typeof imprimirAnaliseSintetica==='function'){imprimirAnaliseSintetica();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(20,184,166,0.6); border-radius:8px; background:rgba(20,184,166,0.25); color:#2dd4bf; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(20,184,166,0.4)'" onmouseout="this.style.background='rgba(20,184,166,0.25)'" title="Relatório Sintético (Pago e Status por Prefixo)">
@@ -1602,11 +1608,11 @@
             </div>
           </div>
 
-          <!-- LINHA 2 DE BOTÕES: NOVO PROCESSO (PADRÃO), COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
+          <!-- LINHA 2 DE BOTÕES: PLANILHA (ADMIN), COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
           <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px; width:100%;">
-            <button id="btn-novo-processo-topo" type="button" class="btn action-report" onclick="novoProcesso()" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%); color:#fbbf24; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%)'" title="Cadastrar Novo Processo">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-              <span class="btn-text">Novo Processo</span>
+            <button type="button" id="btn-planilha-topo" class="btn action-report action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha Principal Google Sheets (Exclusivo Admin)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span class="btn-text">Planilha</span>
             </button>
             <button id="btn-compartilhar-topo" class="btn" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
@@ -1800,10 +1806,263 @@
           <div class="pagination-controls" id="pg-controls"></div>
         </div>
 
-        
       </section>
 
-      <!-- ============= PAGE: NOVO PROCESSO ============= -->
+      <!-- ============= MODAL POPUP: NOVO PROCESSO (POR CIMA DA RELAÇÃO DE PROCESSOS - IMAGEM 2) ============= -->
+      <div id="modal-popup-novo-processo" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(6px); z-index:99998; justify-content:center; align-items:center; padding:16px; box-sizing:border-box;">
+        <div style="background:#0f172a; border:1px solid rgba(16,185,129,0.5); border-radius:14px; max-width:960px; width:100%; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 16px 45px rgba(0,0,0,0.9); overflow:hidden; position:relative;">
+          
+          <!-- CABEÇALHO DO POPUP COM TÍTULO E BOTÃO FECHAR (SEM SELO DE IA) -->
+          <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(16,185,129,0.1) 0%, rgba(15,23,42,0.95) 100%);">
+            
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:20px; font-weight:900; color:#34d399; line-height:1;">+</span>
+              <h3 style="margin:0; color:#34d399; font-size:17px; font-weight:800; letter-spacing:0.5px;">
+                Novo Registro
+              </h3>
+            </div>
+
+            <!-- Botão Fechar Modal -->
+            <button type="button" onclick="fecharModalNovoProcesso()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#94a3b8; border-radius:6px; width:34px; height:34px; font-size:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(239,68,68,0.3)';" onmouseout="this.style.color='#94a3b8'; this.style.background='rgba(255,255,255,0.08)';" title="Fechar janela">✕</button>
+
+          </div>
+
+          <!-- CORPO DO FORMULÁRIO COM OS CAMPOS REORGANIZADOS CONFORME SOLICITADO -->
+          <div style="padding:20px; flex:1; overflow-y:auto; box-sizing:border-box;">
+            
+            <!-- BANNER DE ALERTA DINÂMICO DE PROCESSO DUPLICADO OU DEMANDA JÁ REGISTRADA (PING-PONG) -->
+            <div id="popup-novo-alerta-duplicidade" style="display:none; margin-bottom:16px; padding:12px 16px; border-radius:8px; border:1px solid rgba(245,158,11,0.6); background:linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(15,23,42,0.95) 100%); box-shadow:0 0 16px rgba(245,158,11,0.25);">
+              <div style="display:flex; align-items:flex-start; gap:10px;">
+                <span style="font-size:20px; line-height:1; flex-shrink:0;">⚠️</span>
+                <div style="flex:1;">
+                  <div id="popup-novo-alerta-titulo" style="font-size:12.5px; font-weight:800; color:#fbbf24; margin-bottom:4px;">Aviso de Duplicidade</div>
+                  <div id="popup-novo-alerta-msg" style="font-size:12px; color:#e2e8f0; line-height:1.5; white-space:pre-wrap;"></div>
+                  <div id="popup-novo-alerta-link" style="margin-top:8px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <form id="form-popup-novo-processo" onsubmit="salvarNovoProcessoPopup(event)">
+              
+              <!-- LINHA 1: PREFIXO *, ANO *, MUNICÍPIO * -->
+              <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px;">
+                
+                <!-- PREFIXO * -->
+                <div style="flex:1.2 1 180px; min-width:150px;">
+                  <label for="popup-novo-prefixo" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Prefixo *</label>
+                  <input type="text" id="popup-novo-prefixo" placeholder="Digite ou selecione..." list="list-prefixos" autocomplete="off" required style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;" oninput="verificarDemandaRegistradaPopup()">
+                </div>
+
+                <!-- ANO * -->
+                <div style="flex:0 0 110px; width:110px;">
+                  <label for="popup-novo-ano" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Ano *</label>
+                  <input type="text" id="popup-novo-ano" placeholder="AAAA" maxlength="4" list="list-anos" autocomplete="off" required style="width:100%; height:40px; text-align:center; font-weight:700; padding:8px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                </div>
+
+                <!-- MUNICÍPIO * (OBRIGATÓRIO) -->
+                <div style="flex:2.5 1 280px; min-width:220px;">
+                  <label for="popup-novo-municipio" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">MUNICÍPIO *</label>
+                  <input type="text" id="popup-novo-municipio" placeholder="Ex: Porto Velho" required list="list-municipios" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;" oninput="atualizarEntidadesMunicipioPopup(); verificarDemandaRegistradaPopup(); sugerirDadosEscolaPopup();" onchange="atualizarEntidadesMunicipioPopup(); verificarDemandaRegistradaPopup(); sugerirDadosEscolaPopup();">
+                </div>
+
+              </div>
+
+              <!-- LINHA 2: Nº DO PROCESSO (+), CATEGORIA * E TIPO * -->
+              <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:14px; align-items:flex-end;">
+                
+                <!-- Nº DO PROCESSO (CHAVE PRIMÁRIA - NÃO REQUERIDO, SE JÁ HOUVER CADASTRADO ALERTA E MOSTRA) -->
+                <div style="flex:2 1 320px; min-width:260px;">
+                  <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">
+                    Nº do Processo <span style="font-size:10.5px; font-weight:500; color:#94a3b8;">(Chave Primária - Opcional)</span>
+                  </label>
+                  <div id="popup-novo-container-numeros" style="display:flex; flex-direction:column; gap:6px;">
+                    <div style="display:flex; gap:6px; align-items:center;">
+                      <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumeroPopup()" style="padding:0 12px; height:40px; border:1px solid rgba(16,185,129,0.5); border-radius:6px; font-weight:800; font-size:18px; color:#34d399; background:rgba(16,185,129,0.1); cursor:pointer; flex-shrink:0;" title="Adicionar outro processo">+</button>
+                      <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" oninput="verificarProcessoExistentePopup(this)" onblur="verificarProcessoExistentePopup(this)">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- CATEGORIA DA ENTIDADE (CONECTADO: PREFEITURA -> CONVÊNIO; CONSELHO/APAE/EFA -> FOMENTO) -->
+                <div style="flex:1.4 1 200px; min-width:170px;">
+                  <label for="popup-novo-tipo-entidade" style="display:block; font-size:11.5px; font-weight:700; color:#34d399; margin-bottom:5px;">Entidade / Parceria</label>
+                  <select id="popup-novo-tipo-entidade" style="width:100%; height:40px; background:#1e293b; border:1px solid rgba(52,211,153,0.5); border-radius:6px; color:#6ee7b7; font-size:12px; font-weight:700; padding:6px 10px; outline:none; cursor:pointer; box-sizing:border-box;" onchange="aoMudarTipoEntidadeNovoProcesso(this.value)">
+                    <option value="">Selecione a Entidade...</option>
+                    <option value="Conselho">Conselho Escolar (Fomento)</option>
+                    <option value="APAE">APAE (Fomento)</option>
+                    <option value="EFA">EFA (Fomento)</option>
+                    <option value="Prefeitura">Prefeitura (Convênio)</option>
+                  </select>
+                </div>
+
+                <!-- CATEGORIA * -->
+                <div style="flex:1.1 1 160px; min-width:140px;">
+                  <label for="popup-novo-categoria" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Categoria *</label>
+                  <select id="popup-novo-categoria" required style="width:100%; height:40px; background:#1e293b; border:1px solid rgba(255,255,255,0.18); border-radius:6px; color:#f8fafc; font-size:12.5px; font-weight:600; padding:6px 10px; outline:none; cursor:pointer; box-sizing:border-box;" onchange="aoMudarCategoriaManualProcesso(); atualizarEntidadesMunicipioPopup(); verificarDemandaRegistradaPopup();">
+                    <option value="">Selecione...</option>
+                    <option value="F">F - Fomento</option>
+                    <option value="C">C - Convênio</option>
+                    <option value="T">T - Termo de Cooperação</option>
+                  </select>
+                </div>
+
+                <!-- TIPO * -->
+                <div style="flex:1.1 1 160px; min-width:140px;">
+                  <label for="popup-novo-tipo" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Tipo *</label>
+                  <select id="popup-novo-tipo" required style="width:100%; height:40px; background:#1e293b; border:1px solid rgba(255,255,255,0.18); border-radius:6px; color:#f8fafc; font-size:12.5px; font-weight:600; padding:6px 10px; outline:none; cursor:pointer; box-sizing:border-box;" onchange="atualizarObjetosPorTipoPopup(); verificarDemandaRegistradaPopup();">
+                    <option value="">Selecione...</option>
+                    <option value="OB">OB - Obras</option>
+                    <option value="MP">MP - Mat. Permanente</option>
+                    <option value="MC">MC - Mat. Consumo</option>
+                    <option value="SI">SI - Sistema</option>
+                    <option value="TR">TR - Treinamento</option>
+                    <option value="OUT">OUT - Outros</option>
+                  </select>
+                </div>
+
+              </div>
+
+              <!-- CNPJ NO CADASTRO INICIAL (NÃO REQUERIDO) - ORDEM: CNPJ PRIMEIRO (IMAGEM 1) -->
+              <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                  <label for="popup-novo-cnpj" style="margin-bottom:0; font-size:11.5px; font-weight:700; color:#cbd5e1; flex-shrink:0;">CNPJ (Opcional)</label>
+                  
+                  <!-- LINK DE ACESSO OFICIAL À RECEITA FEDERAL -->
+                  <a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/" target="_blank" rel="noopener noreferrer" onclick="copiarCNPJSilenciosoPopup()" style="font-size:11px; color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; flex-shrink:0;" title="Abrir página oficial de Emissão de Comprovante de Inscrição da Receita Federal">
+                    <img src="img/logo-receita-federal.png" alt="RFB" style="height:14px; width:auto; border-radius:2px; background:#fff; padding:1px 3px;">
+                    <span>Consulta Receita Federal</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </a>
+                </div>
+
+                <div style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap;">
+                  <input type="text" id="popup-novo-cnpj" name="popup_cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="flex:1; height:40px; font-family:monospace; font-weight:600; font-size:13px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" oninput="mascaraCNPJInputPopup(this)" onblur="autoPreencherCNPJPopup(this)">
+                  <button type="button" class="btn btn-ghost" onclick="copiarCNPJPopup(this)" style="padding:0 10px; height:40px; border:1px solid rgba(255,255,255,0.18); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:11.5px; font-weight:700;" title="Copiar CNPJ">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <span>Copiar CNPJ</span>
+                  </button>
+                  <button type="button" class="btn btn-ghost" onclick="consultarCNPJPopupManualmente()" style="padding:0 10px; height:40px; border:1px solid rgba(56,189,248,0.4); border-radius:6px; cursor:pointer; color:#38bdf8; font-size:11.5px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0;" title="Consultar situação cadastral na base da Receita Federal sem Captcha">
+                    <span>⚡ Consultar</span>
+                  </button>
+                </div>
+
+                <!-- CONTAINER DINÂMICO DA RECEITA FEDERAL DO POPUP (EXPANSÍVEL) -->
+                <div id="popup-novo-container-receita" style="width:100%; display:none; flex-direction:column; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.45); border-radius:8px; padding:10px 14px; box-shadow:0 2px 10px rgba(0,0,0,0.35); box-sizing:border-box;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;" onclick="togglePainelReceitaPopup()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                      <img src="img/logo-receita-federal.png" alt="Receita Federal" style="height:24px; width:auto; border-radius:4px; background:#ffffff; padding:2px 4px; flex-shrink:0; object-fit:contain;">
+                      <div style="display:flex; flex-direction:column;">
+                        <span style="font-size:12px; font-weight:800; color:#38bdf8; letter-spacing:0.3px; text-transform:uppercase;">DADOS DA RECEITA FEDERAL</span>
+                        <span id="popup-novo-subtitulo-receita" style="font-size:11px; color:#94a3b8; font-weight:500;">Clique para expandir / recolher detalhes</span>
+                      </div>
+                    </div>
+                    <button type="button" onclick="event.stopPropagation(); togglePainelReceitaPopup();" style="background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.45); border-radius:6px; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;">
+                      <svg id="popup-novo-seta-receita" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                  </div>
+                  <div id="popup-novo-corpo-receita" style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(148,163,184,0.18); display:block;">
+                    <div id="popup-novo-label-receita" style="font-size:12px; color:#cbd5e1; line-height:1.55; user-select:text;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- LINHA 4: INTERESSADO / ESCOLA * (OBRIGATÓRIO) - ORDEM: APÓS CNPJ (IMAGEM 1) -->
+              <div style="margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                  <label for="popup-novo-interessado" style="font-size:11.5px; font-weight:700; color:#cbd5e1; margin:0;">Interessado / Escola *</label>
+                  <span id="popup-novo-badge-entidades-count" style="font-size:11px; color:#34d399; font-weight:700; display:none;"></span>
+                </div>
+                
+                <div style="display:flex; flex-direction:column; gap:6px;">
+                  <!-- SELECT DE SELEÇÃO RÁPIDA POR GRUPOS (FOMENTO / NÃO FOMENTO) -->
+                  <select id="popup-novo-select-entidades" style="width:100%; height:40px; background:#1e293b; border:1px solid rgba(56,189,248,0.4); border-radius:6px; color:#f8fafc; font-size:13px; font-weight:600; padding:6px 12px; outline:none; cursor:pointer; box-sizing:border-box; display:none;" onchange="onSelecionarSelectEntidadePopup(this)">
+                    <option value="">-- Selecione uma entidade do município ou digite abaixo --</option>
+                  </select>
+
+                  <!-- INPUT COM AUTOCOMPLETE DATALIST PARA DIGITAÇÃO OU AJUSTE FINO -->
+                  <div style="position:relative;">
+                    <input type="text" id="popup-novo-interessado" placeholder="Escolha no combo acima ou digite o nome da escola / entidade" required list="popup-list-interessados" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;" oninput="onSelecionarOuDigitarInteressadoPopup(); verificarDemandaRegistradaPopup();" onchange="onSelecionarOuDigitarInteressadoPopup(); verificarDemandaRegistradaPopup();">
+                    <datalist id="popup-list-interessados"></datalist>
+                  </div>
+                </div>
+
+                <div id="popup-novo-aviso-fomento" style="display:none; font-size:11px; color:#fbbf24; margin-top:4px; line-height:1.4;">
+                  ℹ️ <em>Entidades filtradas para o município selecionado, agrupadas por Fomento e Não Fomento.</em>
+                </div>
+
+                <!-- CONTAINER DE ALERTA DE GESTÃO: ENTIDADE JÁ CONTEMPLADA (NÃO BLOQUEIA O CADASTRO) -->
+                <div id="popup-novo-alerta-contemplada" style="display:none; margin-top:8px;"></div>
+              </div>
+
+              <!-- LINHA 4: OBJETO * (FILTRADO AUTOMATICAMENTE PELO TIPO ESCOLHIDO) -->
+              <div style="margin-bottom:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                  <label for="popup-novo-objeto" style="font-size:11.5px; font-weight:700; color:#cbd5e1; margin:0;">Objeto *</label>
+                  <span id="popup-novo-badge-objeto-tipo" style="font-size:10.5px; color:#38bdf8; font-weight:600; display:none;"></span>
+                </div>
+                <input type="text" id="popup-novo-objeto" placeholder="Descrição do objeto (sugestões filtradas pelo Tipo)" list="popup-list-objetos" required style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <datalist id="popup-list-objetos"></datalist>
+              </div>
+
+              <!-- LINHA 5: VALOR OFICIAL (R$) * -->
+              <div style="margin-bottom:14px;">
+                <label for="popup-novo-valorOf" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Valor Oficial (R$) *</label>
+                <input type="text" id="popup-novo-valorOf" placeholder="0,00" class="input-currency" required style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+
+              <!-- LINHA 6: CAMPOS PREVIAMENTE PREENCHIDOS (STATUS, LOCALIZAÇÃO, DATA [HOJE]) -->
+              <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px; background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.25); border-radius:8px; padding:12px;">
+                
+                <!-- STATUS -->
+                <div style="flex:1 1 180px;">
+                  <label for="popup-novo-status" style="display:block; font-size:11px; font-weight:700; color:#f87171; margin-bottom:4px; text-transform:uppercase;">
+                    🔒 Status
+                  </label>
+                  <input type="text" id="popup-novo-status" readonly style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(239,68,68,0.3); border-radius:6px; color:#cbd5e1; font-size:13px; cursor:not-allowed; box-sizing:border-box;">
+                </div>
+
+                <!-- LOCALIZAÇÃO -->
+                <div style="flex:1 1 180px;">
+                  <label for="popup-novo-localizacao" style="display:block; font-size:11px; font-weight:700; color:#f87171; margin-bottom:4px; text-transform:uppercase;">
+                    🔒 Localização
+                  </label>
+                  <input type="text" id="popup-novo-localizacao" readonly style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(239,68,68,0.3); border-radius:6px; color:#cbd5e1; font-size:13px; cursor:not-allowed; box-sizing:border-box;">
+                </div>
+
+                <!-- DATA [HOJE] -->
+                <div style="flex:1 1 150px;">
+                  <label for="popup-novo-data" style="display:block; font-size:11px; font-weight:700; color:#f87171; margin-bottom:4px; text-transform:uppercase;">
+                    🔒 Data [Hoje]
+                  </label>
+                  <input type="date" id="popup-novo-data" readonly style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(239,68,68,0.3); border-radius:6px; color:#cbd5e1; font-size:13px; cursor:not-allowed; box-sizing:border-box;">
+                </div>
+
+              </div>
+
+              <!-- LINHA 7: DETALHAMENTO -->
+              <div style="margin-bottom:18px;">
+                <label for="popup-novo-obs" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Detalhamento</label>
+                <textarea id="popup-novo-obs" placeholder="Detalhamento opcional sobre o novo processo..." style="width:100%; min-height:60px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; resize:vertical; box-sizing:border-box; font-family:inherit;"></textarea>
+              </div>
+
+              <!-- BARRA INFERIOR DE BOTÕES: CANCELAR E GRAVA COM REFRESH INSTANTÂNEO -->
+              <div style="display:flex; justify-content:flex-end; align-items:center; gap:12px; border-top:1px solid rgba(255,255,255,0.1); padding-top:14px;">
+                <button type="button" onclick="fecharModalNovoProcesso()" class="btn btn-ghost" style="height:40px; padding:0 20px; font-size:13px; font-weight:600; border-radius:8px; cursor:pointer;">
+                  Cancelar
+                </button>
+                <button type="submit" id="btn-gravar-popup-novo" class="btn btn-success" style="height:40px; padding:0 28px; font-size:13.5px; font-weight:800; border-radius:8px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; box-shadow:0 4px 14px rgba(16,185,129,0.4); cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                  <span>💾</span>
+                  <span>Gravar e Salvar</span>
+                </button>
+              </div>
+
+            </form>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============= PAGE: NOVO PROCESSO (FORMULÁRIO DE EDIÇÃO) ============= -->
       <section class="page" id="page-novo">
 
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px; width: 100%;">
@@ -1815,7 +2074,7 @@
               <div style="display:flex; flex-direction:column; line-height:1.15;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.41</span>
+                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.53</span>
                 </div>
                 <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
               </div>
@@ -2057,11 +2316,6 @@
               <div class="form-group">
                 <label for="form-valorOf">Valor Oficial (R$)</label>
                 <input type="text" id="form-valorOf" placeholder="0,00" class="input-currency">
-              </div>
-
-              <div class="form-group">
-                <label for="form-valorPlan">Valor Planilha (R$)</label>
-                <input type="text" id="form-valorPlan" placeholder="0,00" class="input-currency">
               </div>
 
               <div class="form-group">
@@ -3357,7 +3611,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.41
+              GBZ - v1.3.53
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3547,13 +3801,13 @@
               </div>
             </a>
 
-            <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
+            <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0" target="_blank" rel="noopener" style="text-decoration:none;" class="sheet-link-card">
               <div style="background:rgba(15,23,42,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:14px; transition:all 0.2s ease;">
                 <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
                   <span style="font-size:13px; font-weight:700; color:#f8fafc;">🏫 Planilha de Escolas de RO</span>
                   <span style="font-size:11px; color:#fb923c;">Abrir ↗</span>
                 </div>
-                <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Rede Estadual, Federal e 52 Municípios de Rondônia.</div>
+                <div style="font-size:11px; color:#94a3b8; line-height:1.4;">Rede Estadual, Federal e 52 Municípios de Rondônia (Agente: cam@seduc.ro.gov.br).</div>
               </div>
             </a>
 
@@ -3630,7 +3884,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.41] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.53] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -3748,12 +4002,20 @@
             <span id="escolas-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
           </div>
           <div style="display:flex;align-items:stretch;gap:10px;height:38px;">
+            <button type="button" class="btn btn-success action-editor action-adm" onclick="abrirModalCadastroEntidade()"
+              title="Cadastrar Nova Entidade / Escola (29 Campos) diretamente na Planilha"
+              style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid rgba(52,211,153,0.7); padding:0 16px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(16,185,129,0.4); height:38px; white-space:nowrap; transition:all 0.2s;"
+              onmouseover="this.style.boxShadow='0 0 22px rgba(16,185,129,0.7)';"
+              onmouseout="this.style.boxShadow='0 0 16px rgba(16,185,129,0.4)';">
+              <span style="font-size:15px; line-height:1;">➕</span>
+              <span>Cadastrar Entidade / Escola</span>
+            </button>
             <button onclick="if(typeof carregarEscolasAPI==='function') carregarEscolasAPI(false)" title="Recarregar dados"
               style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
               Recarregar
             </button>
-            <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit"
+            <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
               target="_blank" rel="noopener" class="action-editor action-adm"
               style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(16,185,129,0.35);">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -4382,14 +4644,21 @@
         <span id="te-badge-status" style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);letter-spacing:0.4px;">⏳ Aguardando carregamento</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
+        <button type="button" class="btn btn-success action-editor action-adm" onclick="abrirModalCadastroEntidade()"
+          title="Cadastrar Nova Entidade / Escola (29 Campos)"
+          style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid rgba(52,211,153,0.7); padding:9px 18px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(16,185,129,0.4); height:38px; white-space:nowrap; transition:all 0.2s;"
+          onmouseover="this.style.boxShadow='0 0 22px rgba(16,185,129,0.7)';"
+          onmouseout="this.style.boxShadow='0 0 16px rgba(16,185,129,0.4)';">
+          <span>+ Cadastrar Entidade / Escola</span>
+        </button>
         <button onclick="recarregarTodasEscolas()" title="Recarregar dados da planilha"
           style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
           Recarregar
         </button>
-        <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit"
+        <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
           target="_blank" rel="noopener" class="action-editor action-adm"
-          style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(16,185,129,0.35);">
+          style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-secondary);padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           Acessar Planilha
         </a>
@@ -4451,15 +4720,15 @@
       <table style="table-layout:fixed; width:100%; min-width:1100px; border-collapse:separate; border-spacing:0; font-size:13px;">
         <thead>
           <tr style="background:var(--bg-secondary);">
-            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Competência</th>
-            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">MUNICÍPIO</th>
-            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:240px;">Nome da Escola</th>
-            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">INEP</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:150px;">MUNICÍPIO</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:150px;">Categoria da Parceria</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:240px;">Nome da Escola | Entidade | Prefeitura</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:95px;">INEP</th>
             <th style="padding:10px 10px;text-align:right;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:80px;">Alunos</th>
             <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Modalidade</th>
             <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:100px;">Localidade</th>
-            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">Diretor(a)</th>
-            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Contato Dir.</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:160px;">Diretor | Pres. | Pref.</th>
+            <th style="padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:120px;">Contato</th>
             <th style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);color:var(--text-muted);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;width:60px;">Editar</th>
           </tr>
         </thead>
@@ -4496,22 +4765,24 @@
     <div class="section-header" style="flex-wrap:wrap;gap:16px; justify-content: space-between;">
       
       <!-- Left side: Municipio Combo -->
-      <div style="display:flex; align-items:stretch; position:relative; min-width:240px; z-index:90;">
-        <button type="button" onclick="document.getElementById('contatos-municipio-dropdown').style.display = document.getElementById('contatos-municipio-dropdown').style.display==='none'?'block':'none'"
-          style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:6px; padding:9px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer; font-weight:600; text-align:left;">
-          <span id="contatos-municipio-label">MUNICÍPIO (Todos)</span>
-          <span style="font-size:10px;opacity:0.6;">▼</span>
-        </button>
-        <div id="contatos-municipio-dropdown" style="display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:260px; background:#1a1f35; border:1px solid rgba(255,255,255,0.15); border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.5); padding:8px 0; max-height:300px; overflow-y:auto; z-index:9999;">
-          <div style="padding:6px 12px 10px 12px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; flex-direction:column; gap:8px;">
-            <input type="text" placeholder="Buscar município..." oninput="contatosFiltrarComboMunicipio(this.value)"
-              style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:6px 8px; color:#f0f4ff; font-size:12px; outline:none; box-sizing:border-box;">
-            <div style="display:flex; gap:6px;">
-              <button onclick="contatosToggleTodosMunicipios(true)" style="flex:1; background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:4px 0; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer;">Todos</button>
-              <button onclick="contatosToggleTodosMunicipios(false)" style="flex:1; background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); padding:4px 0; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer;">Nenhum</button>
+      <div style="display:flex; align-items:stretch; gap:10px; position:relative; z-index:90; flex-wrap:wrap;">
+        <div style="position:relative; min-width:240px;">
+          <button type="button" onclick="document.getElementById('contatos-municipio-dropdown').style.display = document.getElementById('contatos-municipio-dropdown').style.display==='none'?'block':'none'"
+            style="width:100%; display:flex; align-items:center; justify-content:space-between; gap:6px; padding:9px 12px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:8px; color:var(--text-primary); font-size:13px; cursor:pointer; font-weight:600; text-align:left; height:38px;">
+            <span id="contatos-municipio-label">MUNICÍPIO (Todos)</span>
+            <span style="font-size:10px;opacity:0.6;">▼</span>
+          </button>
+          <div id="contatos-municipio-dropdown" style="display:none; position:absolute; top:calc(100% + 4px); left:0; min-width:260px; background:#1a1f35; border:1px solid rgba(255,255,255,0.15); border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.5); padding:8px 0; max-height:300px; overflow-y:auto; z-index:9999;">
+            <div style="padding:6px 12px 10px 12px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; flex-direction:column; gap:8px;">
+              <input type="text" placeholder="Buscar município..." oninput="contatosFiltrarComboMunicipio(this.value)"
+                style="width:100%; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:6px 8px; color:#f0f4ff; font-size:12px; outline:none; box-sizing:border-box;">
+              <div style="display:flex; gap:6px;">
+                <button onclick="contatosToggleTodosMunicipios(true)" style="flex:1; background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:4px 0; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer;">Todos</button>
+                <button onclick="contatosToggleTodosMunicipios(false)" style="flex:1; background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3); padding:4px 0; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer;">Nenhum</button>
+              </div>
             </div>
+            <div id="contatos-municipio-list" style="padding:4px 0;"></div>
           </div>
-          <div id="contatos-municipio-list" style="padding:4px 0;"></div>
         </div>
       </div>
 
@@ -4523,15 +4794,19 @@
           <span id="contatos-badge-alunos" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);font-family:monospace;letter-spacing:0.5px;">🎓 0 Alunos</span>
         </div>
         <div style="display:flex;align-items:stretch;gap:10px;height:38px;">
+          <button type="button" class="action-editor action-adm btn btn-success" onclick="abrirModalContato()" style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;height:100%;gap:6px;box-shadow:0 4px 14px rgba(16,185,129,0.35);" title="Cadastrar nova Prefeitura / Município">
+            <span>➕</span>
+            <span>Novo Município</span>
+          </button>
           <button onclick="imprimirContatos()" style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.5);color:#60a5fa;padding:9px 16px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:100%;transition:background 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.3)'" onmouseout="this.style.background='rgba(59,130,246,0.15)'">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
             Impressão
           </button>
           <a href="https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/edit?gid=1855271818#gid=1855271818"
             target="_blank" rel="noopener" class="action-editor action-adm"
-            style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;height:100%;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(16,185,129,0.35);">
+            style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:#cbd5e1;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;height:100%;gap:6px;text-decoration:none;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Acessar Planilha
+            Planilha Base
           </a>
         </div>
       </div>
@@ -4554,15 +4829,16 @@
         <thead>
           <tr>
             <th style="width:15%;">Município</th>
-            <th style="width:23%;">Prefeito(a)</th>
-            <th style="width:23%;">Secretário(a)</th>
-            <th style="width:23%;">E-mail</th>
-            <th style="width:8%;text-align:center;">Escolas</th>
-            <th style="width:8%;text-align:center;">Alunos</th>
+            <th style="width:22%;">Prefeito(a)</th>
+            <th style="width:22%;">Secretário(a)</th>
+            <th style="width:20%;">E-mail</th>
+            <th style="width:7%;text-align:center;">Escolas</th>
+            <th style="width:7%;text-align:center;">Alunos</th>
+            <th style="width:7%;text-align:center;" class="action-editor action-adm">Ações</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td colspan="6" style="text-align:center;padding:48px;color:var(--text-muted);">Carregando...</td></tr>
+          <tr><td colspan="7" style="text-align:center;padding:48px;color:var(--text-muted);">Carregando...</td></tr>
         </tbody>
       </table>
     </div>
@@ -4697,6 +4973,325 @@
           <div class="modal-footer" style="margin-top:20px; display:flex; justify-content:flex-end; gap:12px;">
             <button type="button" class="btn btn-outline" onclick="fecharModalContato()" style="background:transparent; border:1px solid var(--text-muted); color:var(--text-primary); padding:8px 16px; border-radius:8px; cursor:pointer;">Cancelar</button>
             <button type="submit" class="btn" id="btn-salvar-contato" style="background:var(--blue); border:none; color:white; padding:8px 16px; border-radius:8px; cursor:pointer;">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= MODAL POPUP: CADASTRO GERAL DE ENTIDADE / ESCOLA (29 CAMPOS - PLANILHA MESTRE) ============= -->
+  <div id="modal-popup-cadastro-entidade" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); backdrop-filter:blur(8px); z-index:99998; justify-content:center; align-items:center; padding:16px; box-sizing:border-box;">
+    <div style="background:#0f172a; border:1px solid rgba(16,185,129,0.55); border-radius:14px; max-width:980px; width:100%; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.95); overflow:hidden; position:relative;">
+      
+      <!-- Cabeçalho do Popup (Estilo Padrão Imagem 5) -->
+      <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(15,23,42,0.98) 100%);">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:22px; line-height:1;">🏫</span>
+          <div>
+            <h3 id="entidade-modal-titulo" style="margin:0; color:#34d399; font-size:17px; font-weight:800; letter-spacing:0.5px;">
+              Cadastro Geral de Entidade / Escola
+            </h3>
+            <span style="font-size:11.5px; color:#94a3b8; font-weight:500;">
+              Base dos 52 Municípios de Rondônia (Conselhos Escolares, APAEs, EFAs e Prefeituras)
+            </span>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px;">
+          <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
+            target="_blank" rel="noopener noreferrer"
+            style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:#6ee7b7; padding:6px 12px; border-radius:6px; font-size:11.5px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Planilha Oficial (Aba Entidades)
+          </a>
+          <button type="button" onclick="fecharModalCadastroEntidade()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#94a3b8; border-radius:6px; width:34px; height:34px; font-size:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(239,68,68,0.3)';" onmouseout="this.style.color='#94a3b8'; this.style.background='rgba(255,255,255,0.08)';" title="Fechar janela">✕</button>
+        </div>
+      </div>
+
+      <!-- Corpo do Formulário com todas as 29 Colunas -->
+      <div style="padding:20px; flex:1; overflow-y:auto; box-sizing:border-box;">
+        <form id="form-cadastro-entidade" onsubmit="salvarCadastroEntidade(event)">
+          <input type="hidden" id="entidade-form-id">
+          <input type="hidden" id="entidade-form-origem">
+
+          <!-- BANNER INFORMATIVO DE CATEGORIA: CONVÊNIO VS FOMENTO (LEI Nº 5.735/2024 & LEI 4.979/2021) -->
+          <div style="margin-bottom:16px; padding:12px 16px; border-radius:8px; border:1px solid rgba(56,189,248,0.4); background:linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(15,23,42,0.95) 100%);">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+              <div style="font-size:12px; color:#e2e8f0; line-height:1.4;">
+                <strong style="color:#38bdf8;">Regra Jurídico-Institucional CAM/SEDUC:</strong> 
+                <strong>Prefeituras</strong> executam via <span style="background:rgba(59,130,246,0.3); color:#93c5fd; padding:1px 6px; border-radius:4px; font-weight:700;">Convênio</span>. 
+                <strong>Conselhos Escolares</strong>, <strong>APAEs</strong> e <strong>EFAs</strong> executam via <span style="background:rgba(16,185,129,0.3); color:#6ee7b7; padding:1px 6px; border-radius:4px; font-weight:700;">Fomento</span>.
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 1: CLASSIFICAÇÃO DA ENTIDADE & PARCERIA (4 ALTERNATIVAS EXPLICITAS) -->
+          <div style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <span style="background:rgba(16,185,129,0.2); color:#34d399; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">1</span>
+              <span style="font-size:12.5px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.5px;">CATEGORIA DA ENTIDADE & VINCULAÇÃO JURÍDICA</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:12px;">
+              <label style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; cursor:pointer;">
+                <input type="radio" name="entidade-tipo-radio" value="Prefeitura" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#3b82f6;">
+                <div>
+                  <div style="font-size:12.5px; font-weight:700; color:#fff;">Prefeitura Municipal</div>
+                  <div style="font-size:11px; color:#60a5fa;">Executa Convênio (C)</div>
+                </div>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; cursor:pointer;">
+                <input type="radio" name="entidade-tipo-radio" value="Conselho Escolar" checked onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#10b981;">
+                <div>
+                  <div style="font-size:12.5px; font-weight:700; color:#fff;">Conselho Escolar</div>
+                  <div style="font-size:11px; color:#34d399;">Executa Fomento (F)</div>
+                </div>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; cursor:pointer;">
+                <input type="radio" name="entidade-tipo-radio" value="APAE" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#10b981;">
+                <div>
+                  <div style="font-size:12.5px; font-weight:700; color:#fff;">APAE</div>
+                  <div style="font-size:11px; color:#34d399;">Executa Fomento (F)</div>
+                </div>
+              </label>
+
+              <label style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; cursor:pointer;">
+                <input type="radio" name="entidade-tipo-radio" value="EFA" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#10b981;">
+                <div>
+                  <div style="font-size:12.5px; font-weight:700; color:#fff;">EFA (Família Agrícola)</div>
+                  <div style="font-size:11px; color:#34d399;">Executa Fomento (F)</div>
+                </div>
+              </label>
+            </div>
+
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <div style="flex:1 1 200px;">
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Categoria (Coluna B da Planilha) *</label>
+                <input type="text" id="entidade-categoria" required placeholder="Ex: Conselho Escolar / Municipal" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div style="flex:1 1 200px;">
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Tipo de Parceria Obrigatória</label>
+                <input type="text" id="entidade-parceria-prevista" readonly style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(16,185,129,0.3); border-radius:6px; color:#34d399; font-weight:700; font-size:13px; box-sizing:border-box;" value="Fomento (Termo de Fomento - F)">
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 2: DADOS DE IDENTIFICAÇÃO DA UNIDADE / ENTIDADE -->
+          <div style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <span style="background:rgba(59,130,246,0.2); color:#60a5fa; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">2</span>
+              <span style="font-size:12.5px; font-weight:800; color:#60a5fa; text-transform:uppercase; letter-spacing:0.5px;">IDENTIFICAÇÃO DA ESCOLA / ENTIDADE</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:12px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Nome Completo da Escola / Entidade *</label>
+                <input type="text" id="entidade-nome" required placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar..." style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Município / Distrito *</label>
+                <input type="text" id="entidade-municipio" required list="list-municipios" placeholder="Ex: Alvorada do Oeste" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:12px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">CNPJ</label>
+                <input type="text" id="entidade-cnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="mascaraCNPJInputPopup(this)" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Código INEP</label>
+                <input type="text" id="entidade-inep" placeholder="8 dígitos" maxlength="12" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Nº de Alunos</label>
+                <input type="number" id="entidade-alunos" min="0" placeholder="0" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Modalidade</label>
+                <input type="text" id="entidade-modalidade" placeholder="Ex: Ensino Fundamental" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Competência</label>
+                <select id="entidade-competencia" style="width:100%; height:38px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; padding:6px 10px; box-sizing:border-box;">
+                  <option value="Municipal">Municipal</option>
+                  <option value="Estadual">Estadual</option>
+                  <option value="Privada/Filantrópica">Privada/Filantrópica</option>
+                  <option value="Federal">Federal</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Super / Regional</label>
+                <input type="text" id="entidade-super" placeholder="Ex: CRE / Regional" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Localidade</label>
+                <select id="entidade-localidade" style="width:100%; height:38px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; padding:6px 10px; box-sizing:border-box;">
+                  <option value="Urbana">Urbana</option>
+                  <option value="Rural">Rural</option>
+                  <option value="Indígena">Indígena</option>
+                  <option value="Quilombola">Quilombola</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 3: GESTÃO & CONTATOS -->
+          <div style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <span style="background:rgba(245,158,11,0.2); color:#fbbf24; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">3</span>
+              <span style="font-size:12.5px; font-weight:800; color:#fbbf24; text-transform:uppercase; letter-spacing:0.5px;">GESTÃO & CONTATOS INSTITUCIONAIS</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:12px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Nome do diretor | Presidente | Prefeito</label>
+                <input type="text" id="entidade-diretor" placeholder="Nome completo" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Contato do diretor</label>
+                <input type="text" id="entidade-contato-diretor" placeholder="(69) 90000-0000" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Telefone da Escola / Entidade</label>
+                <input type="text" id="entidade-telefone" placeholder="(69) 3000-0000" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Email da entidade</label>
+                <input type="email" id="entidade-email" placeholder="entidade@educacao.ro.gov.br" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Nome do secretário</label>
+                <input type="text" id="entidade-secretario" placeholder="Nome do secretário" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Contato do secretário</label>
+                <input type="text" id="entidade-contato-secretario" placeholder="(69) 90000-0000" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div style="grid-column:span 2;">
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Rede social (Facebook / Instagram)</label>
+                <input type="text" id="entidade-redes" placeholder="@escola ou link das redes" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 4: ENDEREÇO & LOCALIZAÇÃO FÍSICA -->
+          <div style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <span style="background:rgba(168,85,247,0.2); color:#c084fc; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">4</span>
+              <span style="font-size:12.5px; font-weight:800; color:#c084fc; text-transform:uppercase; letter-spacing:0.5px;">ENDEREÇO & LOGRADOURO</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:12px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Endereço (Rua / Av / Linha)</label>
+                <input type="text" id="entidade-endereco" placeholder="Ex: Av. Principal, nº 123 ou Linha 14..." style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Bairro / Distrito / Aldeia</label>
+                <input type="text" id="entidade-bairro" placeholder="Ex: Centro / Zona Rural" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Complemento</label>
+                <input type="text" id="entidade-complemento" placeholder="Ex: Próximo à praça central" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">CEP</label>
+                <input type="text" id="entidade-cep" placeholder="76.000-000" maxlength="10" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 5: INFRAESTRUTURA FÍSICA -->
+          <div style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:14px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+              <span style="background:rgba(236,72,153,0.2); color:#f472b6; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">5</span>
+              <span style="font-size:12.5px; font-weight:800; color:#f472b6; text-transform:uppercase; letter-spacing:0.5px;">INFRAESTRUTURA & ESPAÇOS PEDAGÓGICOS</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:12px;">
+              <div>
+                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">QUANT. SALA DE AULA</label>
+                <input type="number" id="entidade-salas-aula" min="0" placeholder="0" style="width:100%; height:36px; padding:6px; text-align:center; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#60a5fa; font-weight:700; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">QUANT. SALA ADM</label>
+                <input type="number" id="entidade-salas-adm" min="0" placeholder="0" style="width:100%; height:36px; padding:6px; text-align:center; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#60a5fa; font-weight:700; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">BANHEIROS</label>
+                <input type="text" id="entidade-banheiros" placeholder="Qtd / Desc" style="width:100%; height:36px; padding:6px; text-align:center; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">SALA DO AEE (S/N)</label>
+                <select id="entidade-sala-aee" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px;">
+              <div>
+                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">PÁTIO (S/N)</label>
+                <select id="entidade-patio" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">AUDITÓRIO (S/N)</label>
+                <select id="entidade-auditorio" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">REFEITÓRIO (S/N)</label>
+                <select id="entidade-refeitorio" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">QUADRA (S/N)</label>
+                <select id="entidade-quadra" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTÕES DE SUBMISSÃO E CANCELAMENTO -->
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">
+            <div style="font-size:11px; color:#94a3b8;">
+              ⚡ Os dados cadastrados são sincronizados instantaneamente para os cadastros e combos de processos.
+            </div>
+            <div style="display:flex; gap:10px;">
+              <button type="button" onclick="fecharModalCadastroEntidade()" class="btn btn-ghost" style="height:40px; padding:0 20px; font-size:13px; font-weight:600; border-radius:8px; cursor:pointer;">
+                Cancelar
+              </button>
+              <button type="submit" id="btn-salvar-cadastro-entidade" class="btn btn-success" style="height:40px; padding:0 24px; font-size:13px; font-weight:800; border-radius:8px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; box-shadow:0 4px 15px rgba(16,185,129,0.4); cursor:pointer;">
+                💾 Salvar Entidade / Escola
+              </button>
+            </div>
           </div>
         </form>
       </div>
@@ -4916,13 +5511,13 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.38"></script>
-  <script src="js/app.js?v=1.3.38"></script>
-  <script src="js/auth-sap.js?v=1.3.38"></script>
-  <script src="js/escolas.js?v=1.3.38" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=1.3.38"></script>
-  <script src="js/mapa.js?v=1.3.38"></script>
-  <script src="js/contatos.js?v=1.3.38"></script>
+  <script src="js/dados.js?v=1.3.55"></script>
+  <script src="js/app.js?v=1.3.55"></script>
+  <script src="js/auth-sap.js?v=1.3.55"></script>
+  <script src="js/escolas.js?v=1.3.55" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=1.3.55"></script>
+  <script src="js/mapa.js?v=1.3.55"></script>
+  <script src="js/contatos.js?v=1.3.55"></script>
 
 
   <script>
@@ -6344,3 +6939,10 @@ function mudarAbaDiarias(aba, el) {
   <script src="js/newsticker.js"></script>
 </body>
 </html>
+
+
+
+
+
+
+
