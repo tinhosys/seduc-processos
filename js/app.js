@@ -1,9 +1,9 @@
-﻿
+
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.48
+// Versão do Sistema: v1.3.49
 // ============================================================
-window.APP_VERSION = 'v1.3.48';
+window.APP_VERSION = 'v1.3.49';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -2294,9 +2294,11 @@ function renderFormulario() {
       cnpjEl.value = p.cnpj || '';
     }
     document.getElementById('form-objeto').value      = p.objeto      || '';
-    document.getElementById('form-valorOf').value     = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
-    document.getElementById('form-valorPlan').value   = p.valorPlan ? maskCurrency((p.valorPlan * 100).toFixed(0)) : '';
-    let _dVal = p.data || ''; if (_dVal.includes('/')) { const _parts = _dVal.split('/'); if (_parts.length === 3) _dVal = _parts[2] + '-' + _parts[1] + '-' + _parts[0]; } document.getElementById('form-data').value = _dVal;
+    const fValOf = document.getElementById('form-valorOf');
+    if (fValOf) fValOf.value = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
+    const fValPlan = document.getElementById('form-valorPlan');
+    if (fValPlan) fValPlan.value = p.valorPlan ? maskCurrency((p.valorPlan * 100).toFixed(0)) : '';
+    let _dVal = p.data || ''; if (_dVal.includes('/')) { const _parts = _dVal.split('/'); if (_parts.length === 3) _dVal = _parts[2] + '-' + _parts[1] + '-' + _parts[0]; } const fData = document.getElementById('form-data'); if (fData) fData.value = _dVal;
     
     // Set toggles
     const setToggle = (id, val) => {
@@ -2523,8 +2525,8 @@ function salvarFormulario(e) {
     }
   }
 
-  const valOf = parseCurrency(document.getElementById('form-valorOf').value);
-  const valPlan = parseCurrency(document.getElementById('form-valorPlan').value);
+  const valOf = parseCurrency(document.getElementById('form-valorOf')?.value || '0');
+  const valPlan = parseCurrency(document.getElementById('form-valorPlan')?.value || '0');
 
   const user = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
   const now = new Date();
@@ -2991,9 +2993,21 @@ function abrirModalNovoProcesso() {
   const alertaBanner = document.getElementById('popup-novo-alerta-duplicidade');
   if (alertaBanner) alertaBanner.style.display = 'none';
 
+  // Reset do painel de entidade já contemplada
+  const alertaContemplada = document.getElementById('popup-novo-alerta-contemplada');
+  if (alertaContemplada) {
+    alertaContemplada.style.display = 'none';
+    alertaContemplada.innerHTML = '';
+  }
+
   // Carregar e atualizar opções de entidades baseadas no município e categoria
   if (typeof atualizarEntidadesMunicipioPopup === 'function') {
     atualizarEntidadesMunicipioPopup();
+  }
+
+  // Atualizar lista de objetos filtrada pelo tipo
+  if (typeof atualizarObjetosPorTipoPopup === 'function') {
+    atualizarObjetosPorTipoPopup();
   }
 
   // Exibir popup modal com display flex
@@ -3201,12 +3215,13 @@ function sugerirDadosEscolaPopup() {
 }
 window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
 
-// Atualiza o combo de Interessado / Escola no popup filtrando ESTRITAMENTE pelo município escolhido e separando em grupos: Fomento e Não Fomento
+// Atualiza o combo de Interessado / Escola no popup filtrando ESTRITAMENTE pelo município escolhido e categoria definida
 function atualizarEntidadesMunicipioPopup() {
   const munInput = document.getElementById('popup-novo-municipio');
   const catInput = document.getElementById('popup-novo-categoria');
   const sel = document.getElementById('popup-novo-select-entidades');
   const dl = document.getElementById('popup-list-interessados');
+  const inputInt = document.getElementById('popup-novo-interessado');
   const badgeCount = document.getElementById('popup-novo-badge-entidades-count');
   const avisoFomento = document.getElementById('popup-novo-aviso-fomento');
   if (!dl) return;
@@ -3219,6 +3234,10 @@ function atualizarEntidadesMunicipioPopup() {
     if (sel) {
       sel.style.display = 'none';
       sel.innerHTML = '<option value="">-- Escolha um município acima primeiro --</option>';
+      sel.disabled = true;
+    }
+    if (inputInt) {
+      inputInt.placeholder = 'Escolha no combo acima ou digite o nome da escola / entidade';
     }
     dl.innerHTML = '';
     if (badgeCount) badgeCount.style.display = 'none';
@@ -3226,6 +3245,10 @@ function atualizarEntidadesMunicipioPopup() {
     window._popupEntidadesCacheMap = new Map();
     return;
   }
+
+  // REGRA DE OURO (IMAGENS 2 E 3): ANTES DE ESCOLHER OU INSERIR O INTERESSADO, DEFINA A CATEGORIA
+  // Podemos ver as entidades disponíveis, mas se a categoria ainda não foi escolhida, alertamos e solicitamos a escolha da categoria primeiro
+  const catEscolhida = Boolean(cat);
 
   const munNorm = _normTextoPopup(mun);
 
@@ -3331,7 +3354,7 @@ function atualizarEntidadesMunicipioPopup() {
       secretario: cMun ? cMun.nomeSecretario : '',
       telefone: cMun ? cMun.celularSecretario : ''
     };
-    mapaNaoFomento.set(nomeSemed, itemSemed);
+    mapaNaoNao = mapaNaoFomento.set(nomeSemed, itemSemed);
     mapaGeral.set(nomeSemed, itemSemed);
   }
 
@@ -3342,58 +3365,161 @@ function atualizarEntidadesMunicipioPopup() {
 
   // Monta HTML com optgroups no select
   if (sel) {
-    let htmlSelect = `<option value="">-- Selecione uma entidade de ${mun} ou digite abaixo (${totalEntidades}) --</option>`;
+    let htmlSelect = '';
     
-    if (listaFomento.length > 0) {
-      htmlSelect += `<optgroup label="🌱 GRUPO: FOMENTO (Conselhos Escolares, APAEs, EFAs - ${listaFomento.length})">`;
-      listaFomento.forEach(ent => {
-        htmlSelect += `<option value="${ent.nome}">[Fomento] ${ent.nome} (${ent.tipoLabel})</option>`;
-      });
-      htmlSelect += `</optgroup>`;
+    if (!catEscolhida) {
+      htmlSelect += `<option value="">⚠️ [Atenção] Defina a CATEGORIA acima para liberar a seleção (${totalEntidades} entidades disponíveis)</option>`;
+    } else if (cat === 'F') {
+      htmlSelect += `<option value="">-- Selecione uma entidade de FOMENTO de ${mun} ou digite abaixo (${listaFomento.length}) --</option>`;
+    } else {
+      htmlSelect += `<option value="">-- Selecione um Órgão/Conveniada de ${mun} ou digite abaixo (${listaNaoFomento.length}) --</option>`;
+    }
+    
+    // Se a categoria for F (Fomento), dá destaque total ao grupo Fomento
+    // Se a categoria for C ou T (Não Fomento), mostra prioritariamente Não Fomento
+    // Se ainda não escolheu, exibe ambos os grupos com alerta
+    if (cat === 'F' || !catEscolhida) {
+      if (listaFomento.length > 0) {
+        htmlSelect += `<optgroup label="🌱 GRUPO: FOMENTO (Conselhos Escolares, APAEs, EFAs - ${listaFomento.length})">`;
+        listaFomento.forEach(ent => {
+          htmlSelect += `<option value="${ent.nome}">[Fomento] ${ent.nome} (${ent.tipoLabel})</option>`;
+        });
+        htmlSelect += `</optgroup>`;
+      }
     }
 
-    if (listaNaoFomento.length > 0) {
-      htmlSelect += `<optgroup label="🏛️ GRUPO: NÃO FOMENTO (Prefeitura, Secretarias, Convênios - ${listaNaoFomento.length})">`;
-      listaNaoFomento.forEach(ent => {
-        htmlSelect += `<option value="${ent.nome}">[Convênio] ${ent.nome} (${ent.tipoLabel})</option>`;
-      });
-      htmlSelect += `</optgroup>`;
+    if (cat !== 'F' || !catEscolhida) {
+      if (listaNaoFomento.length > 0) {
+        htmlSelect += `<optgroup label="🏛️ GRUPO: NÃO FOMENTO (Prefeitura, Secretarias, Convênios - ${listaNaoFomento.length})">`;
+        listaNaoFomento.forEach(ent => {
+          htmlSelect += `<option value="${ent.nome}">[Convênio/Outros] ${ent.nome} (${ent.tipoLabel})</option>`;
+        });
+        htmlSelect += `</optgroup>`;
+      }
     }
 
     sel.innerHTML = htmlSelect;
     sel.style.display = 'block';
+
+    if (!catEscolhida) {
+      sel.style.borderColor = 'rgba(245,158,11,0.6)';
+      sel.style.background = 'rgba(245,158,11,0.08)';
+    } else {
+      sel.style.borderColor = 'rgba(56,189,248,0.5)';
+      sel.style.background = '#1e293b';
+    }
   }
 
-  // Preenche o datalist com todas as opções para autocomplete na digitação
+  // Preenche o datalist com as opções recomendadas conforme a categoria
   let htmlDatalist = '';
-  listaFomento.forEach(ent => {
-    htmlDatalist += `<option value="${ent.nome}">[Fomento - ${ent.tipoLabel}]</option>`;
-  });
-  listaNaoFomento.forEach(ent => {
-    htmlDatalist += `<option value="${ent.nome}">[Não Fomento - ${ent.tipoLabel}]</option>`;
-  });
+  if (cat === 'F') {
+    listaFomento.forEach(ent => {
+      htmlDatalist += `<option value="${ent.nome}">[Fomento - ${ent.tipoLabel}]</option>`;
+    });
+  } else if (cat) {
+    listaNaoFomento.forEach(ent => {
+      htmlDatalist += `<option value="${ent.nome}">[Não Fomento - ${ent.tipoLabel}]</option>`;
+    });
+  } else {
+    listaFomento.forEach(ent => {
+      htmlDatalist += `<option value="${ent.nome}">[Fomento - ${ent.tipoLabel}]</option>`;
+    });
+    listaNaoFomento.forEach(ent => {
+      htmlDatalist += `<option value="${ent.nome}">[Não Fomento - ${ent.tipoLabel}]</option>`;
+    });
+  }
   dl.innerHTML = htmlDatalist;
 
   // Guarda o mapa geral para busca instantânea de CNPJ
   window._popupEntidadesCacheMap = mapaGeral;
 
   if (badgeCount) {
-    badgeCount.textContent = `(${totalEntidades} entidades em ${mun})`;
+    if (cat === 'F') {
+      badgeCount.textContent = `(${listaFomento.length} entidades de Fomento em ${mun})`;
+      badgeCount.style.color = '#34d399';
+    } else if (cat) {
+      badgeCount.textContent = `(${listaNaoFomento.length} entidades Não Fomento em ${mun})`;
+      badgeCount.style.color = '#38bdf8';
+    } else {
+      badgeCount.textContent = `(${totalEntidades} entidades em ${mun})`;
+      badgeCount.style.color = '#fbbf24';
+    }
     badgeCount.style.display = 'inline-block';
   }
 
   if (avisoFomento) {
-    avisoFomento.innerHTML = `ℹ️ <em>${mun}: <strong>${listaFomento.length}</strong> entidades no Grupo Fomento (Conselhos, APAEs, EFAs) e <strong>${listaNaoFomento.length}</strong> no Grupo Não Fomento (Prefeitura/SEMED).</em>`;
+    if (!catEscolhida) {
+      avisoFomento.innerHTML = `⚠️ <em><strong>Atenção:</strong> Defina o campo <strong>Categoria *</strong> acima para filtrar as entidades permitidas (${mun} possui ${listaFomento.length} em Fomento e ${listaNaoFomento.length} em Não Fomento).</em>`;
+      avisoFomento.style.color = '#fbbf24';
+    } else if (cat === 'F') {
+      avisoFomento.innerHTML = `🌱 <em>Categoria <strong>F - FOMENTO</strong> selecionada: Mostrando exclusivamente Conselhos Escolares Municipais, APAEs e EFAs de <strong>${mun}</strong>.</em>`;
+      avisoFomento.style.color = '#34d399';
+    } else {
+      avisoFomento.innerHTML = `🏛️ <em>Categoria <strong>${cat === 'C' ? 'C - CONVÊNIO' : 'T - TERMO DE COOPERAÇÃO'}</strong> selecionada: Mostrando Prefeitura Municipal e Secretarias de <strong>${mun}</strong>.</em>`;
+      avisoFomento.style.color = '#38bdf8';
+    }
     avisoFomento.style.display = 'block';
   }
 }
 window.atualizarEntidadesMunicipioPopup = atualizarEntidadesMunicipioPopup;
+
+// Filtra dinamicamente as sugestões de OBJETO no popup de acordo com o TIPO selecionado (Imagens 4 e 5)
+function atualizarObjetosPorTipoPopup() {
+  const tipoInput = document.getElementById('popup-novo-tipo');
+  const dl = document.getElementById('popup-list-objetos');
+  const badgeTipo = document.getElementById('popup-novo-badge-objeto-tipo');
+  if (!dl) return;
+
+  const tipo = (tipoInput ? tipoInput.value : '').trim().toUpperCase();
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+
+  const tipoLabels = {
+    'OB': 'OB - Obras',
+    'MP': 'MP - Mat. Permanente',
+    'MC': 'MC - Mat. Consumo',
+    'SI': 'SI - Sistema',
+    'TR': 'TR - Treinamento',
+    'OUT': 'OUT - Outros'
+  };
+
+  let objetos = [];
+  if (tipo) {
+    objetos = [...new Set(procs.filter(p => String(p.tipo || '').toUpperCase() === tipo).map(p => (p.objeto || '').trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
+  } else {
+    objetos = [...new Set(procs.map(p => (p.objeto || '').trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b, 'pt-BR'));
+  }
+
+  dl.innerHTML = objetos.map(o => `<option value="${o}">`).join('');
+
+  if (badgeTipo) {
+    if (tipo) {
+      badgeTipo.textContent = `(${objetos.length} sugestões para ${tipoLabels[tipo] || tipo})`;
+      badgeTipo.style.display = 'inline-block';
+    } else {
+      badgeTipo.style.display = 'none';
+    }
+  }
+}
+window.atualizarObjetosPorTipoPopup = atualizarObjetosPorTipoPopup;
 
 // Disparado quando o usuário escolhe uma entidade no combo de grupos
 function onSelecionarSelectEntidadePopup(selEl) {
   if (!selEl) return;
   const val = selEl.value;
   if (!val) return;
+
+  const catInput = document.getElementById('popup-novo-categoria');
+  const cat = (catInput ? catInput.value : '').trim().toUpperCase();
+
+  // Se o usuário ainda não escolheu a categoria, orienta com gentileza
+  if (!cat) {
+    toast('Por favor, defina primeiro o campo "Categoria *" acima antes de selecionar a entidade.', 'warning');
+    if (catInput) {
+      catInput.focus();
+      catInput.style.borderColor = '#f59e0b';
+    }
+    return;
+  }
 
   const inputInt = document.getElementById('popup-novo-interessado');
   if (inputInt) {
@@ -3416,15 +3542,120 @@ function onSelecionarSelectEntidadePopup(selEl) {
   if (typeof verificarDemandaRegistradaPopup === 'function') {
     verificarDemandaRegistradaPopup();
   }
+
+  // Executa checagem de entidade contemplada (Alerta de Gestão "UAU")
+  verificarEntidadeContempladaPopup(val);
 }
 window.onSelecionarSelectEntidadePopup = onSelecionarSelectEntidadePopup;
+
+// Checagem "UAU" de Gestão: Identifica se a entidade já possui demandas/processos contemplados anteriores no sistema
+// REGRA: É livre a inclusão de novas entidades não contempladas. Para as que já possuem histórico,
+// mostra alerta detalhado de gestão com link de consulta e ping-pong sem bloquear o cadastro.
+function verificarEntidadeContempladaPopup(nomeEntidade) {
+  const containerAlerta = document.getElementById('popup-novo-alerta-contemplada');
+  if (!containerAlerta) return;
+
+  const nome = (nomeEntidade || document.getElementById('popup-novo-interessado')?.value || '').trim();
+  const cnpj = (document.getElementById('popup-novo-cnpj')?.value || '').replace(/\D/g, '');
+  const mun = _normTextoPopup(document.getElementById('popup-novo-municipio')?.value);
+
+  if (!nome || nome.length < 3) {
+    containerAlerta.style.display = 'none';
+    containerAlerta.innerHTML = '';
+    return;
+  }
+
+  const nomeNorm = _normTextoPopup(nome);
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+
+  const processosAnteriores = procs.filter(p => {
+    if (!p.interessado) return false;
+    const pNome = _normTextoPopup(p.interessado);
+    const pCnpj = (p.cnpj || '').replace(/\D/g, '');
+    const pMun = _normTextoPopup(p.municipio);
+
+    // Cruzamento por CNPJ se disponível
+    if (cnpj && cnpj.length === 14 && pCnpj && pCnpj.length === 14 && cnpj === pCnpj) {
+      return true;
+    }
+
+    // Cruzamento por Nome + Município
+    const bateNome = (pNome === nomeNorm || pNome.includes(nomeNorm) || nomeNorm.includes(pNome));
+    const bateMun = !mun || (pMun === mun || pMun.includes(mun) || mun.includes(pMun));
+
+    return bateNome && bateMun;
+  });
+
+  if (processosAnteriores.length === 0) {
+    containerAlerta.style.display = 'none';
+    containerAlerta.innerHTML = '';
+    return;
+  }
+
+  // Calcula total financeiro acumulado já registrado para a entidade
+  const totalValor = processosAnteriores.reduce((acc, cur) => acc + (parseFloat(cur.valorOf) || 0), 0);
+  const totalFmt = typeof formatCurrency === 'function' ? formatCurrency(totalValor) : `R$ ${totalValor.toFixed(2)}`;
+
+  let itensHtml = processosAnteriores.slice(0, 5).map(p => {
+    const valFmt = typeof formatCurrency === 'function' ? formatCurrency(p.valorOf || 0) : `R$ ${p.valorOf || '0,00'}`;
+    const pNum = p.numero || 'Sem número';
+    const pAno = p.ano ? `(${p.ano})` : '';
+    const pPref = p.prefixo ? `[${p.prefixo}]` : '';
+    const pStatus = p.status || 'REG. DEMANDA';
+    return `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:6px 10px; margin-top:4px; gap:8px;">
+        <div style="font-size:11.5px; color:#e2e8f0; line-height:1.35; flex:1;">
+          <span style="font-weight:700; color:#38bdf8;">${pPref} ${pNum} ${pAno}</span> - 
+          <span style="color:#34d399; font-weight:700;">${valFmt}</span>
+          <span style="display:inline-block; margin-left:6px; font-size:10px; background:rgba(255,255,255,0.1); padding:1px 6px; border-radius:4px; color:#cbd5e1;">${pStatus}</span>
+        </div>
+        <button type="button" onclick="abrirProcessoPorIdPopup('${p.id}')" style="background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:4px 10px; border-radius:4px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;" title="Ver detalhes deste processo cadastrado">
+          <span>🔍 Ver</span>
+        </button>
+      </div>
+    `;
+  }).join('');
+
+  if (processosAnteriores.length > 5) {
+    itensHtml += `<div style="font-size:10.5px; color:#94a3b8; margin-top:4px; text-align:right;">+ ${processosAnteriores.length - 5} outros processos anteriores encontrados.</div>`;
+  }
+
+  containerAlerta.innerHTML = `
+    <div style="background:linear-gradient(135deg, rgba(30,58,138,0.35) 0%, rgba(15,23,42,0.95) 100%); border:1px solid rgba(56,189,248,0.5); border-radius:8px; padding:10px 14px; box-shadow:0 4px 14px rgba(0,0,0,0.4);">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:16px;">🏅</span>
+          <strong style="font-size:12px; color:#38bdf8; letter-spacing:0.3px; text-transform:uppercase;">
+            Painel de Gestão: Entidade Já Contemplada
+          </strong>
+        </div>
+        <span style="font-size:11px; font-weight:800; background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:12px;">
+          ${processosAnteriores.length} Processo(s) | Total: ${totalFmt}
+        </span>
+      </div>
+      <p style="font-size:11.5px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.4;">
+        Esta entidade já possui histórico de recursos/demandas cadastrados na CAM. <em>O cadastro de novas demandas permanece totalmente livre</em>; use os links abaixo para consultar os processos existentes:
+      </p>
+      ${itensHtml}
+    </div>
+  `;
+  containerAlerta.style.display = 'block';
+}
+window.verificarEntidadeContempladaPopup = verificarEntidadeContempladaPopup;
 
 // Disparado quando o usuário escolhe ou digita no campo de texto Interessado / Escola do popup
 function onSelecionarOuDigitarInteressadoPopup() {
   const inputInt = document.getElementById('popup-novo-interessado');
   const inputCnpj = document.getElementById('popup-novo-cnpj');
+  const catInput = document.getElementById('popup-novo-categoria');
+  const cat = (catInput ? catInput.value : '').trim().toUpperCase();
+
   const val = (inputInt ? inputInt.value : '').trim();
-  if (!val) return;
+  if (!val) {
+    const containerAlerta = document.getElementById('popup-novo-alerta-contemplada');
+    if (containerAlerta) containerAlerta.style.display = 'none';
+    return;
+  }
 
   // Sincroniza o select se houver match exato
   const sel = document.getElementById('popup-novo-select-entidades');
@@ -3443,12 +3674,14 @@ function onSelecionarOuDigitarInteressadoPopup() {
       if (typeof consultarCNPJPopup === 'function') {
         consultarCNPJPopup(ent.cnpj, true);
       }
-      return;
     }
+  } else {
+    // 2. Fallback geral de sugestão
+    sugerirDadosEscolaPopup();
   }
 
-  // 2. Fallback geral de sugestão
-  sugerirDadosEscolaPopup();
+  // 3. Verifica se a entidade já foi contemplada e gera painel UAU
+  verificarEntidadeContempladaPopup(val);
 }
 window.onSelecionarOuDigitarInteressadoPopup = onSelecionarOuDigitarInteressadoPopup;
 
