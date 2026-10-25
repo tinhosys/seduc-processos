@@ -1,4 +1,4 @@
-﻿let contatosData = [];
+let contatosData = [];
 let contatosDataFiltrados = [];
 
 function initContatos() {
@@ -61,6 +61,9 @@ async function carregarContatos(force = false) {
       };
     }).filter(x => x !== null);
     
+    // Aplica alterações e cadastros manuais salvos localmente
+    _aplicarContatosLocais();
+
     // Sort A-Z by municipio
     contatosData.sort((a, b) => (a.municipio || "").localeCompare(b.municipio || ""));
     
@@ -197,7 +200,12 @@ function renderContatos() {
     
     return `
       <tr>
-        <td style="font-weight:600;">${c.municipio || '-'}</td>
+        <td style="font-weight:600;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+            <span>${c.municipio || '-'}</span>
+            ${c._custom ? '<span style="font-size:9.5px; background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #34d399; padding:1px 4px; border-radius:3px; font-weight:700;">EDITADO</span>' : ''}
+          </div>
+        </td>
         <td style="vertical-align:top;">
           <div style="display:flex;flex-direction:column;gap:4px;">
             <span style="font-weight:700;color:var(--text-primary);">${c.nomePrefeito || '-'}</span>
@@ -217,6 +225,11 @@ function renderContatos() {
         <td style="vertical-align:top;">${c.email || '-'}</td>
         <td style="text-align:center;font-weight:bold;color:#3b82f6;vertical-align:top;font-size:16px;">${ag.escolas}</td>
         <td style="text-align:center;font-weight:bold;color:#10b981;vertical-align:top;font-size:16px;">${ag.alunos.toLocaleString('pt-BR')}</td>
+        <td style="text-align:center;vertical-align:middle;" class="action-editor action-adm">
+          <button type="button" class="btn btn-ghost" onclick="abrirModalContato('${encodeURIComponent(c.id)}')" style="padding:4px 8px; border-radius:6px; font-size:12px; color:#38bdf8; border:1px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.08); cursor:pointer;" title="Editar dados da Prefeitura">
+            ✏️ Editar
+          </button>
+        </td>
       </tr>
     `;
   }).join('');
@@ -239,11 +252,14 @@ function abrirModalContato(id) {
   const modal = document.getElementById('modal-contato-overlay');
   if (!modal) return;
   
-  if (!id) {
+  const decodedId = id ? decodeURIComponent(id) : '';
+  
+  if (!decodedId) {
     // Novo contato
-    document.getElementById('modal-contato-titulo').innerHTML = '<span>➕</span> Novo Contato';
+    document.getElementById('modal-contato-titulo').innerHTML = '<span>➕</span> Novo Município / Prefeitura';
     document.getElementById('contato-id').value = '';
     document.getElementById('contato-municipio').value = '';
+    document.getElementById('contato-municipio').readOnly = false;
     document.getElementById('contato-prefeito').value = '';
     document.getElementById('contato-cel-prefeito').value = '';
     document.getElementById('contato-secretario').value = '';
@@ -255,11 +271,12 @@ function abrirModalContato(id) {
     document.getElementById('btn-excluir-contato-container').style.display = 'none';
   } else {
     // Editar contato existente
-    const c = contatosData.find(x => x.id === id);
+    const c = contatosData.find(x => x.id === decodedId || x.municipio === decodedId);
     if (c) {
-      document.getElementById('modal-contato-titulo').innerHTML = '<span>✏️</span> Editar Contato';
+      document.getElementById('modal-contato-titulo').innerHTML = '<span>✏️</span> Editar Prefeitura: ' + (c.municipio || '');
       document.getElementById('contato-id').value = c.id;
       document.getElementById('contato-municipio').value = c.municipio || '';
+      document.getElementById('contato-municipio').readOnly = true;
       document.getElementById('contato-prefeito').value = c.nomePrefeito || '';
       document.getElementById('contato-cel-prefeito').value = c.celularPrefeito || '';
       document.getElementById('contato-secretario').value = c.nomeSecretario || '';
@@ -277,15 +294,87 @@ function abrirModalContato(id) {
   modal.style.display = 'flex';
 }
 
-async function salvarContato() {
-  alert('Funcionalidade de salvar (ainda) não implementada para leitura direta.');
+function _salvarContatosLocais() {
+  try {
+    const customOnly = contatosData.filter(c => c._custom);
+    localStorage.setItem('seduc_contatos_custom_v1', JSON.stringify(customOnly));
+  } catch(e) {
+    console.warn('Erro ao persistir contatos no localStorage:', e);
+  }
+}
+
+function _aplicarContatosLocais() {
+  try {
+    const raw = localStorage.getItem('seduc_contatos_custom_v1');
+    if (!raw) return;
+    const customs = JSON.parse(raw);
+    if (!Array.isArray(customs)) return;
+    customs.forEach(c => {
+      const idx = contatosData.findIndex(x => x.id === c.id || x.municipio.toUpperCase() === c.municipio.toUpperCase());
+      if (idx >= 0) {
+        contatosData[idx] = { ...contatosData[idx], ...c, _custom: true };
+      } else {
+        contatosData.push({ ...c, _custom: true });
+      }
+    });
+  } catch(e) {}
+}
+
+async function salvarContato(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  
+  const id = document.getElementById('contato-id').value;
+  const mun = (document.getElementById('contato-municipio').value || '').trim();
+  const pref = (document.getElementById('contato-prefeito').value || '').trim();
+  const celPref = (document.getElementById('contato-cel-prefeito').value || '').trim();
+  const sec = (document.getElementById('contato-secretario').value || '').trim();
+  const celSec = (document.getElementById('contato-cel-secretario').value || '').trim();
+  const email = (document.getElementById('contato-email').value || '').trim();
+  const obs = (document.getElementById('contato-obs').value || '').trim();
+  
+  if (!mun) {
+    alert('Por favor, informe o Município.');
+    return;
+  }
+  
+  const registro = {
+    id: id || mun,
+    municipio: mun,
+    nomePrefeito: pref,
+    celularPrefeito: celPref,
+    nomeSecretario: sec,
+    celularSecretario: celSec,
+    email: email,
+    observacoes: obs,
+    _custom: true
+  };
+  
+  const idx = contatosData.findIndex(x => x.id === registro.id || x.municipio.toUpperCase() === mun.toUpperCase());
+  if (idx >= 0) {
+    contatosData[idx] = { ...contatosData[idx], ...registro };
+  } else {
+    contatosData.push(registro);
+  }
+  
+  _salvarContatosLocais();
+  contatosData.sort((a, b) => (a.municipio || "").localeCompare(b.municipio || ""));
+  contatosPopulateMunicipioCombo();
+  filtrarContatos();
   fecharModalContato();
+  if (typeof toast === 'function') toast(`Prefeitura de ${mun} salva com sucesso!`, 'success');
 }
 
 async function excluirContato() {
-  if(!confirm("Tem certeza que deseja excluir este contato definitivamente?")) return;
-  alert('Funcionalidade de exclusão (ainda) não implementada para leitura direta.');
+  const id = document.getElementById('contato-id').value;
+  const mun = document.getElementById('contato-municipio').value;
+  if (!confirm(`Tem certeza que deseja excluir o registro de ${mun}?`)) return;
+  
+  contatosData = contatosData.filter(x => x.id !== id && x.municipio !== mun);
+  _salvarContatosLocais();
+  contatosPopulateMunicipioCombo();
+  filtrarContatos();
   fecharModalContato();
+  if (typeof toast === 'function') toast(`Prefeitura de ${mun} removida.`, 'warning');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
