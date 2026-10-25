@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.50
+// Versão do Sistema: v1.3.51
 // ============================================================
-window.APP_VERSION = 'v1.3.50';
+window.APP_VERSION = 'v1.3.51';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -6792,7 +6792,7 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 // ============================================================
 
 const TE_SHEET_ID  = '1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08';
-const TE_GID_MAIN  = '1444558009';
+const TE_GID_MAIN  = '1143007069'; // GID Oficial da aba "Entidades"
 const TE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID + '/edit?gid=' + TE_GID_MAIN + '#gid=' + TE_GID_MAIN;
 const TE_MAX_SHEETS = 50;   // máximo de abas a tentar
 const TE_BATCH_SIZE = 8;    // abas buscadas em paralelo por lote
@@ -6806,21 +6806,28 @@ var _teItensPorPag = 50;
 var _teCarregado   = false;
 var _teAbas        = [];   // [{idx, nome, count}] - abas carregadas
 
-// Mapeamento das colunas (ndice → chave)
-// As abas com ?sheet=N retornam parsedNumHeaders:0, primeira linha é cabeçalho
+// Mapeamento exato das 29 colunas da aba "Entidades" (0 a 28):
+// [0] Município; [1] Categoria da parceria; [2] Nome da escola | Entidade | Prefeitura; [3] Nº de alunos; [4] Modalidade;
+// [5] INEP; [6] CNPJ; [7] Endereço; [8] Bairro | Distrito | Aldeia; [9] Complemento; [10] CEP; [11] Competência;
+// [12] Super; [13] Rede social; [14] Telefone; [15] Email da entidade; [16] Nome do diretor | Presidente | Prefeito;
+// [17] Contato do diretor; [18] Nome do secretário; [19] Contato do secretário; [20] Quant. salas de aula;
+// [21] Quant. salas administrativas; [22] Sala do AEE; [23] Banheiros; [24] Pátio; [25] Auditório;
+// [26] Refeitório (s/n); [27] Quadra (s/n); [28] Localidade (urbana/rural)
 const TE_COLS = [
-  'municipio','nome','alunos','modalidade','inep','endereco','bairro',
-  'complemento','cep','competencia','super','redesSociais','telefone','email',
-  'diretor','contatoDiretor','secretario','contatoSecretario',
-  'salasAula','salasAdm','salaAEE','banheiros','patio','auditorio','refeitorio','quadra','localidade'
+  'municipio', 'categoria', 'nome', 'alunos', 'modalidade',
+  'inep', 'cnpj', 'endereco', 'bairro', 'complemento', 'cep', 'competencia',
+  'super', 'redesSociais', 'telefone', 'email', 'diretor', 'contatoDiretor',
+  'secretario', 'contatoSecretario', 'salasAula', 'salasAdm', 'salaAEE',
+  'banheiros', 'patio', 'auditorio', 'refeitorio', 'quadra', 'localidade'
 ];
-const TE_HEADER_KEYWORDS = ['municipio','Município','nome completo','inep','modalidade','telefone','endereço','endereco'];
+const TE_HEADER_KEYWORDS = ['município','municipio','categoria','nome completo','nome da escola','entidade','inep','modalidade','telefone','endereço','endereco'];
 
 // Verifica se uma linha é cabeçalho
 function _teIsHeader(obj) {
   const n = (obj.nome || '').toLowerCase();
   const m = (obj.municipio || '').toLowerCase();
-  return TE_HEADER_KEYWORDS.some(k => n.includes(k) || m.includes(k));
+  const c = (obj.categoria || '').toLowerCase();
+  return TE_HEADER_KEYWORDS.some(k => n.includes(k) || m.includes(k) || c.includes(k));
 }
 
 // Verifica se uma linha é válida (tem pelo menos nome ou municipio)
@@ -6828,7 +6835,7 @@ function _teIsValidRow(obj) {
   return (obj.nome && obj.nome.trim().length > 2) || (obj.municipio && obj.municipio.trim().length > 2);
 }
 
-// Parse de uma resposta gviz JSON
+// Parse de uma resposta gviz JSON para a aba Entidades
 function _teParseGviz(text, sheetIdx) {
   try {
     const jsonStr = text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, '');
@@ -6847,15 +6854,25 @@ function _teParseGviz(text, sheetIdx) {
         obj[key] = (cell && cell.v !== null && cell.v !== undefined) ? String(cell.v).trim() : '';
       });
 
-      // Pula cabeçalho
+      // Pula linha se for cabeçalho
       if (_teIsHeader(obj)) return;
 
       // Propaga Município da linha anterior se a linha atual não tem
       if (!obj.municipio && lastMunicipio) obj.municipio = lastMunicipio;
       if (obj.municipio) lastMunicipio = obj.municipio;
 
-      // Só adiciona linhas com nome de escola
-      if (obj.nome && obj.nome.trim().length > 2) {
+      // Se não tiver competência definida explicitamente, infere pela categoria
+      if (!obj.competencia || obj.competencia.trim() === '') {
+        const catU = (obj.categoria || '').toUpperCase();
+        if (catU.includes('PREFEITURA') || catU.includes('MUNICIPAL')) obj.competencia = 'Municipal';
+        else if (catU.includes('ESTADUAL')) obj.competencia = 'Estadual';
+        else if (catU.includes('FEDERAL')) obj.competencia = 'Federal';
+        else if (catU.includes('APAE') || catU.includes('EFA') || catU.includes('FILANTR')) obj.competencia = 'Privada/Filantrópica';
+        else obj.competencia = 'Municipal';
+      }
+
+      // Adiciona apenas registros que possuam identificação
+      if ((obj.nome && obj.nome.trim().length > 1) || (obj.municipio && obj.municipio.trim().length > 1)) {
         rows.push(obj);
       }
     });
@@ -6878,7 +6895,7 @@ function recarregarTodasEscolas() {
   buscarTodasEscolasGSheet();
 }
 
-// Busca TODAS as abas em lotes paralelos
+// Busca os cadastros EXCLUSIVAMENTE da aba "Entidades" (GID 1143007069)
 async function buscarTodasEscolasGSheet() {
   const tbody     = document.getElementById('te-tbody');
   const wrap      = document.getElementById('te-table-wrap');
@@ -6902,99 +6919,61 @@ async function buscarTodasEscolasGSheet() {
     statusEl.style.cssText = `display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:${bg};color:${col};border:1px solid ${border};letter-spacing:0.4px;`;
   };
 
-  setBadge('⏳ Iniciando carregamento...', 'loading');
+  setBadge('⏳ Carregando aba Entidades...', 'loading');
   if (progressEl) progressEl.style.display = 'block';
   if (tbody) tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:48px;color:var(--text-muted);">
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
-      <div style="width:36px;height:36px;border:3px solid rgba(59,130,246,0.3);border-top-color:#60a5fa;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-      <div id="te-load-msg" style="font-size:14px;font-weight:600;color:var(--text-secondary);">Buscando planilhas...</div>
-      <div id="te-load-sub" style="font-size:12px;color:var(--text-muted);">Carregando todas as abas do Google Sheets</div>
+      <div style="width:36px;height:36px;border:3px solid rgba(16,185,129,0.3);border-top-color:#10b981;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+      <div id="te-load-msg" style="font-size:14px;font-weight:600;color:var(--text-secondary);">Buscando aba "Entidades" do Google Sheets...</div>
+      <div id="te-load-sub" style="font-size:12px;color:var(--text-muted);">GID: 1143007069 • 29 Campos de Cadastro Geral</div>
     </div></td></tr>`;
-
-  const setLoadMsg = (msg, sub) => {
-    const el = document.getElementById('te-load-msg');
-    const sub2 = document.getElementById('te-load-sub');
-    if (el) el.textContent = msg;
-    if (sub2 && sub) sub2.textContent = sub;
-  };
 
   _teCache = [];
   _teAbas  = [];
-  let totalLoaded = 0;
-  
-  const MUNICIPIOS_RO = [
-    "Alta Floresta d'Oeste", "Alto Alegre dos Parecis", "Alto Paraíso", "Alvorada d'Oeste", "Ariquemes", 
-    "Buritis", "Cabixi", "Cacaulândia", "Cacoal", "Campo Novo de Rondônia", "Candeias do Jamari", 
-    "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste", "Corumbiara", "Costa Marques", 
-    "Cujubim", "Espigão d'Oeste", "Governador Jorge Teixeira", "Guajará-Mirim", "Itapuã do Oeste", 
-    "Jaru", "Ji-Paraná", "Machadinho d'Oeste", "Ministro Andreazza", "Mirante da Serra", "Monte Negro", 
-    "Nova Brasilândia d'Oeste", "Nova Mamoré", "Nova União", "Novo Horizonte do Oeste", "Ouro Preto do Oeste", 
-    "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente Médici", 
-    "Primavera de Rondônia", "Rio Crespo", "Rolim de Moura", "Santa Luzia d'Oeste", "São Felipe d'Oeste", 
-    "São Francisco do Guaporé", "São Miguel do Guaporé", "Seringueiras", "Teixeirópolis", "Theobroma", 
-    "Urupá", "Vale do Anari", "Vale do Paraíso", "Vilhena"
-  ];
-  
-  const sigsVistos = new Set();
 
   try {
-    const TODAS_ABAS = [
-      { nome: 'estadual', comp: 'Estadual' },
-      { nome: 'federal', comp: 'Federal' },
-      ...MUNICIPIOS_RO.map(m => ({ nome: m, comp: 'Municipal' }))
-    ];
+    // 1. Tentar carregar prioritariamente via GID 1143007069 (Aba Entidades)
+    let urlEntidades = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
+                       '/gviz/tq?tqx=out:json&gid=' + TE_GID_MAIN + '&nocache=' + Date.now();
+    let resp = await fetch(urlEntidades);
+    let text = resp.ok ? await resp.text() : null;
+    let rows = text ? _teParseGviz(text, 'Entidades') : null;
 
-    for (let batchStart = 0; batchStart < TODAS_ABAS.length; batchStart += TE_BATCH_SIZE) {
-      const batchAbas = TODAS_ABAS.slice(batchStart, batchStart + TE_BATCH_SIZE);
-
-      setBadge(`⏳ Lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1} / ${Math.ceil(TODAS_ABAS.length/TE_BATCH_SIZE)}...`, 'loading');
-      setLoadMsg(
-        `Carregando lote ${Math.floor(batchStart/TE_BATCH_SIZE)+1}...`,
-        `Buscando ${batchAbas.length} planilhas | ${totalLoaded} escolas encontradas`
-      );
-
-      // Busca paralela do lote usando o nome da aba
-      const results = await Promise.allSettled(
-        batchAbas.map(aba => {
-          const url = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
-                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(aba.nome) + '&nocache=' + Date.now();
-          return fetch(url).then(r => r.ok ? r.text() : Promise.reject('HTTP ' + r.status)).then(text => ({ text, aba }));
-        })
-      );
-
-      results.forEach((res, i) => {
-        if (res.status === 'rejected') return;
-        
-        const text = res.value.text;
-        const aba = res.value.aba;
-        const mun = aba.nome;
-        const sigMatch = text.match(/"sig":"(\d+)"/);
-        const sig = sigMatch ? sigMatch[1] : null;
-        
-        // Se a aba não existir, a API retorna a aba padrão. O sig nos ajuda a ignorar duplicatas/fallbacks!
-        if (sig) {
-          if (sigsVistos.has(sig)) return; 
-          sigsVistos.add(sig);
-        }
-
-        const rows = _teParseGviz(text, mun);
-        if (!rows || rows.length === 0) return;
-        
-        rows.forEach(r => {
-           if (!r.competencia || r.competencia.trim() === '') r.competencia = aba.comp;
-           if (aba.comp === 'Estadual') r.competencia = 'Estadual';
-           if (aba.comp === 'Municipal') r.competencia = 'Municipal';
-           if (aba.comp === 'Federal') r.competencia = 'Federal';
-        });
-
-        totalLoaded += rows.length;
-
-        _teAbas.push({ nome: mun, count: rows.length });
-        _teCache.push(...rows);
-      });
+    // Se não retornar por GID, tentar por nome de aba "Entidades" ou "entidades"
+    if (!rows || rows.length === 0) {
+      const urlNome = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
+                      '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('Entidades') + '&nocache=' + Date.now();
+      const respNome = await fetch(urlNome);
+      if (respNome.ok) {
+        const textNome = await respNome.text();
+        rows = _teParseGviz(textNome, 'Entidades');
+      }
     }
 
-    if (_teCache.length === 0) throw new Error('Nenhum dado encontrado. Verifique se a planilha está compartilhada publicamente.');
+    if (!rows || rows.length === 0) {
+      throw new Error('Nenhum cadastro encontrado na aba "Entidades". Verifique as permissões da planilha.');
+    }
+
+    _teCache = rows;
+    _teAbas = [{ nome: 'Entidades (GID 1143007069)', count: rows.length }];
+
+    // Incorporar entidades salvas localmente
+    try {
+      const salvasLocal = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+      if (Array.isArray(salvasLocal) && salvasLocal.length > 0) {
+        salvasLocal.forEach(localEnt => {
+          const idx = _teCache.findIndex(c => (c.nome && c.nome.toLowerCase() === (localEnt.nome || '').toLowerCase()) &&
+                                              (c.municipio && c.municipio.toLowerCase() === (localEnt.municipio || '').toLowerCase()));
+          if (idx >= 0) {
+            _teCache[idx] = { ..._teCache[idx], ...localEnt };
+          } else {
+            _teCache.unshift(localEnt);
+          }
+        });
+      }
+    } catch(e) {
+      console.warn('[TE] Erro ao mesclar dados locais:', e);
+    }
 
     _teCarregado = true;
     _tePopularFiltros();
@@ -7002,15 +6981,19 @@ async function buscarTodasEscolasGSheet() {
     _tePagina = 1;
     _teAtualizarUI();
 
-    const abasInfo = _teAbas.length + ' planilha(s) | ' + _teCache.length + ' escolas';
-    setBadge('✅ ' + abasInfo, 'ok');
-    if (typeof showToast === 'function') showToast('Carregadas ' + _teAbas.length + ' planilhas com ' + _teCache.length + ' escolas no total!', 'success');
+    const info = `Aba Entidades • ${_teCache.length} cadastros`;
+    setBadge('✅ ' + info, 'ok');
+    if (typeof showToast === 'function') showToast(`Aba "Entidades" carregada com sucesso (${_teCache.length} cadastros)!`, 'success');
 
   } catch(err) {
     console.error('[TodasEscolas]', err);
-    const msgEl = document.getElementById('te-empty-msg');
-    if (msgEl) msgEl.textContent = 'Erro: ' + err.message;
-    if (emptyEl) emptyEl.style.display = 'block';
+    const msgEl = document.getElementById('te-load-msg');
+    if (msgEl) msgEl.textContent = 'Erro ao carregar: ' + err.message;
+    if (emptyEl) {
+      emptyEl.style.display = 'block';
+      const emptyMsg = document.getElementById('te-empty-msg');
+      if (emptyMsg) emptyMsg.textContent = 'Erro ao carregar aba Entidades: ' + err.message;
+    }
     if (tbody) tbody.innerHTML = '';
     setBadge('❌ Erro ao carregar', 'error');
     if (typeof showToast === 'function') showToast('Erro: ' + err.message, 'error');
@@ -7123,27 +7106,41 @@ function _teAtualizarUI() {
     return '<span style="padding:2px 8px;border-radius:4px;font-weight:700;font-size:10px;background:' + bg + ';color:' + col + ';">' + esc(loc) + '</span>';
   };
 
+  const catBadge = (cat) => {
+    if (!cat) return '—';
+    const c = cat.toLowerCase();
+    let bg = 'rgba(16,185,129,0.15)', col = '#34d399', border = 'rgba(16,185,129,0.3)';
+    if (c.includes('prefeitura')) {
+      bg = 'rgba(59,130,246,0.15)'; col = '#60a5fa'; border = 'rgba(59,130,246,0.3)';
+    } else if (c.includes('apae')) {
+      bg = 'rgba(245,158,11,0.15)'; col = '#fbbf24'; border = 'rgba(245,158,11,0.3)';
+    } else if (c.includes('efa')) {
+      bg = 'rgba(168,85,247,0.15)'; col = '#c084fc'; border = 'rgba(168,85,247,0.3)';
+    }
+    return '<span style="display:inline-block;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px;background:' + bg + ';color:' + col + ';border:1px solid ' + border + ';white-space:nowrap;">' + esc(cat) + '</span>';
+  };
+
   if (tbody) {
     tbody.innerHTML = pag.map((e, idx) => {
       const evenBg = idx%2===0 ? 'transparent' : 'rgba(255,255,255,0.015)';
       const globalIdx = ini + idx;
       return `<tr style="background:${evenBg};cursor:pointer;" 
-        ondblclick="abrirTeModal(${globalIdx})"
+        ondblclick="abrirModalCadastroEntidade(_teFiltrados[${globalIdx}])"
         onmouseover="this.style.background='rgba(59,130,246,0.06)'" 
         onmouseout="this.style.background='${evenBg}'">` +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);">' + (window._renderCompetenciaBadge ? window._renderCompetenciaBadge(e.competencia) : '<span style="padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700;background:rgba(255,255,255,0.06);color:var(--text-secondary);border:1px solid rgba(255,255,255,0.1)">' + esc(e.competencia) + '</span>') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-size:12px;">' + (esc(e.municipio)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-weight:600;font-size:12px;">' + (esc(e.nome)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);white-space:nowrap;font-size:12px;font-weight:600;">' + (esc(e.municipio)||'-') + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);">' + catBadge(e.categoria || e.competencia) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-weight:700;font-size:12px;">' + (esc(e.nome)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#60a5fa;font-family:monospace;font-size:11px;white-space:nowrap;">' + (esc(e.inep)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#34d399;font-weight:700;text-align:right;font-size:12px;">' + (e.alunos ? parseInt(e.alunos).toLocaleString('pt-BR') : '-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text-secondary);font-size:12px;">' + (esc(e.modalidade)||'-') + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + localBadge(e.localidade) + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);color:#f0f4ff;font-size:12px;">' + (esc(e.diretor)||'-') + '</td>' +
-        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + wa(e.contatoDiretor) + '</td>' +
+        '<td style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:11px;">' + wa(e.contatoDiretor || e.telefone) + '</td>' +
         '<td style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center;">' +
-          '<a href="' + TE_SHEET_URL + '" target="_blank" rel="noopener" title="Editar no Google Sheets" ' +
-          'style="display:inline-flex;align-items:center;justify-content:center;background:rgba(26,115,232,0.2);border:1px solid rgba(26,115,232,0.4);color:#60a5fa;width:28px;height:28px;border-radius:6px;text-decoration:none;font-size:13px;" ' +
-          'onmouseover="this.style.background=\'rgba(26,115,232,0.4)\'" onmouseout="this.style.background=\'rgba(26,115,232,0.2)\'">✏️</a>' +
+          '<button type="button" onclick="event.stopPropagation(); abrirModalCadastroEntidade(_teFiltrados[' + globalIdx + '])" title="Editar Cadastro Geral" ' +
+          'style="display:inline-flex;align-items:center;justify-content:center;background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#34d399;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:13px;" ' +
+          'onmouseover="this.style.background=\'rgba(16,185,129,0.4)\'" onmouseout="this.style.background=\'rgba(16,185,129,0.2)\'">✏️</button>' +
         '</td>' +
       '</tr>';
     }).join('');
