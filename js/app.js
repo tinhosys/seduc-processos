@@ -7539,8 +7539,6 @@ function salvarCadastroEntidade(e) {
   fecharModalCadastroEntidade();
 }
 window.salvarCadastroEntidade = salvarCadastroEntidade;
-});
-
 
 function imprimirPadraoSelecionado() {
     const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
