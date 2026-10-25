@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.52
+// Versão do Sistema: v1.3.53
 // ============================================================
-window.APP_VERSION = 'v1.3.52';
+window.APP_VERSION = 'v1.3.53';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -6791,8 +6791,8 @@ window.imprimirManifestoTCE           = imprimirManifestoTCE;
 // Busca TODAS as planilhas por ndice numérico (paralelo)
 // ============================================================
 
-const TE_SHEET_ID  = '1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08';
-const TE_GID_MAIN  = '1143007069'; // GID Oficial da aba "Entidades"
+const TE_SHEET_ID  = '1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI';
+const TE_GID_MAIN  = '0'; // GID Oficial da nova planilha
 const TE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID + '/edit?gid=' + TE_GID_MAIN + '#gid=' + TE_GID_MAIN;
 const TE_MAX_SHEETS = 50;   // máximo de abas a tentar
 const TE_BATCH_SIZE = 8;    // abas buscadas em paralelo por lote
@@ -6895,7 +6895,7 @@ function recarregarTodasEscolas() {
   buscarTodasEscolasGSheet();
 }
 
-// Busca os cadastros EXCLUSIVAMENTE da aba "Entidades" (GID 1143007069)
+// Busca os cadastros da nova planilha oficial SEDUC/RO
 async function buscarTodasEscolasGSheet() {
   const tbody     = document.getElementById('te-tbody');
   const wrap      = document.getElementById('te-table-wrap');
@@ -6919,27 +6919,27 @@ async function buscarTodasEscolasGSheet() {
     statusEl.style.cssText = `display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:${bg};color:${col};border:1px solid ${border};letter-spacing:0.4px;`;
   };
 
-  setBadge('⏳ Carregando aba Entidades...', 'loading');
+  setBadge('⏳ Carregando nova base...', 'loading');
   if (progressEl) progressEl.style.display = 'block';
   if (tbody) tbody.innerHTML = `<tr><td colspan="20" style="text-align:center;padding:48px;color:var(--text-muted);">
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
       <div style="width:36px;height:36px;border:3px solid rgba(16,185,129,0.3);border-top-color:#10b981;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
-      <div id="te-load-msg" style="font-size:14px;font-weight:600;color:var(--text-secondary);">Buscando aba "Entidades" do Google Sheets...</div>
-      <div id="te-load-sub" style="font-size:12px;color:var(--text-muted);">GID: 1143007069 • 29 Campos de Cadastro Geral</div>
+      <div id="te-load-msg" style="font-size:14px;font-weight:600;color:var(--text-secondary);">Buscando dados da nova planilha SEDUC/RO...</div>
+      <div id="te-load-sub" style="font-size:12px;color:var(--text-muted);">ID: ${TE_SHEET_ID} • Agente: cam@seduc.ro.gov.br</div>
     </div></td></tr>`;
 
   _teCache = [];
   _teAbas  = [];
 
   try {
-    // 1. Tentar carregar prioritariamente via GID 1143007069 (Aba Entidades)
+    // 1. Tentar carregar prioritariamente via GID 0 da nova planilha
     let urlEntidades = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
                        '/gviz/tq?tqx=out:json&gid=' + TE_GID_MAIN + '&nocache=' + Date.now();
     let resp = await fetch(urlEntidades);
     let text = resp.ok ? await resp.text() : null;
-    let rows = text ? _teParseGviz(text, 'Entidades') : null;
+    let rows = text ? _teParseGviz(text, 'gid=0') : null;
 
-    // Se não retornar por GID, tentar por nome de aba "Entidades" ou "entidades"
+    // Se não retornar por GID 0, tentar por nome de aba "Entidades"
     if (!rows || rows.length === 0) {
       const urlNome = 'https://docs.google.com/spreadsheets/d/' + TE_SHEET_ID +
                       '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent('Entidades') + '&nocache=' + Date.now();
@@ -6950,12 +6950,22 @@ async function buscarTodasEscolasGSheet() {
       }
     }
 
+    // Se ainda não carregou, tentar carregar pela planilha anterior como fallback
     if (!rows || rows.length === 0) {
-      throw new Error('Nenhum cadastro encontrado na aba "Entidades". Verifique as permissões da planilha.');
+      const urlOld = 'https://docs.google.com/spreadsheets/d/1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08/gviz/tq?tqx=out:json&gid=1143007069&nocache=' + Date.now();
+      const respOld = await fetch(urlOld);
+      if (respOld.ok) {
+        const textOld = await respOld.text();
+        rows = _teParseGviz(textOld, 'Entidades-Backup');
+      }
+    }
+
+    if (!rows || rows.length === 0) {
+      throw new Error('Permissão pendente na planilha. Compartilhe com o agente: cam@seduc.ro.gov.br');
     }
 
     _teCache = rows;
-    _teAbas = [{ nome: 'Entidades (GID 1143007069)', count: rows.length }];
+    _teAbas = [{ nome: 'Base Oficial SEDUC', count: rows.length }];
 
     // Incorporar entidades salvas localmente
     try {
@@ -6981,22 +6991,28 @@ async function buscarTodasEscolasGSheet() {
     _tePagina = 1;
     _teAtualizarUI();
 
-    const info = `Aba Entidades • ${_teCache.length} cadastros`;
+    const info = `Base Oficial • ${_teCache.length} cadastros`;
     setBadge('✅ ' + info, 'ok');
-    if (typeof showToast === 'function') showToast(`Aba "Entidades" carregada com sucesso (${_teCache.length} cadastros)!`, 'success');
+    if (typeof showToast === 'function') showToast(`Base carregada com sucesso (${_teCache.length} cadastros)!`, 'success');
 
   } catch(err) {
     console.error('[TodasEscolas]', err);
     const msgEl = document.getElementById('te-load-msg');
-    if (msgEl) msgEl.textContent = 'Erro ao carregar: ' + err.message;
+    if (msgEl) msgEl.textContent = 'Acesso à planilha: ' + err.message;
     if (emptyEl) {
       emptyEl.style.display = 'block';
       const emptyMsg = document.getElementById('te-empty-msg');
-      if (emptyMsg) emptyMsg.textContent = 'Erro ao carregar aba Entidades: ' + err.message;
+      if (emptyMsg) {
+        emptyMsg.innerHTML = `Acesso à nova planilha <b>1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI</b> pendente de permissão.<br>
+          <span style="display:inline-block;margin-top:6px;padding:6px 12px;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.4);border-radius:6px;color:#38bdf8;font-size:12px;">
+            📧 Agente de Acesso Padrão: <b>cam@seduc.ro.gov.br</b>
+          </span><br>
+          <small style="color:#94a3b8;margin-top:6px;display:inline-block;">Para acesso direto e independente, adicione o e-mail do agente acima como Leitor ou Editor na planilha do Google.</small>`;
+      }
     }
     if (tbody) tbody.innerHTML = '';
-    setBadge('❌ Erro ao carregar', 'error');
-    if (typeof showToast === 'function') showToast('Erro: ' + err.message, 'error');
+    setBadge('⚠️ Permissão Pendente', 'error');
+    if (typeof showToast === 'function') showToast('Aviso: ' + err.message, 'error');
   }
 }
 // Popular filtros com valores únicos de TODOS os dados

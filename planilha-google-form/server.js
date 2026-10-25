@@ -1094,11 +1094,26 @@ function mapRowToEscolaObj(headers, row) {
 
 app.get("/api/escolas", async (req, res) => {
   try {
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: "escolas!A1:Z"
-    });
-    const rows = response.data.values || [];
+    const targetSheetId = process.env.ESCOLAS_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
+    let rows = [];
+
+    // Tentar ler da nova planilha de escolas
+    try {
+      const respNova = await sheets.spreadsheets.values.get({
+        spreadsheetId: targetSheetId,
+        range: "A1:Z"
+      });
+      rows = respNova.data.values || [];
+    } catch(errNova) {
+      console.warn("Tentativa de leitura da nova planilha retornou:", errNova.message);
+      // Fallback para SPREADSHEET_ID principal aba escolas
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: "escolas!A1:Z"
+      });
+      rows = response.data.values || [];
+    }
+
     if (rows.length < 2) return res.json({ rows: [] });
     
     const headers = rows[0];
@@ -1112,7 +1127,7 @@ app.get("/api/escolas", async (req, res) => {
     res.json({ rows: dataRows });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ erro: "Erro ao buscar escolas." });
+    res.status(500).json({ erro: "Erro ao buscar escolas: " + error.message });
   }
 });
 
@@ -1344,10 +1359,12 @@ const defaultEntidadesHeaders = [
   "Refeitório (s/n)", "Quadra (s/n)", "Localidade (urbana/rural)"
 ];
 
+const DEFAULT_AGENT_EMAIL = "cam@seduc.ro.gov.br";
+
 app.post("/api/entidades", async (req, res) => {
   try {
     const data = req.body || {};
-    const ENTIDADES_SHEET_ID = "1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08";
+    const ENTIDADES_SHEET_ID = process.env.ENTIDADES_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     
     // Obter ou criar cabeçalho da aba Entidades
     let headers = defaultEntidadesHeaders;
