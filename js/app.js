@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.49
+// Versão do Sistema: v1.3.50
 // ============================================================
-window.APP_VERSION = 'v1.3.49';
+window.APP_VERSION = 'v1.3.50';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -7306,7 +7306,239 @@ document.addEventListener('keydown', (e) => {
     if (ov && ov.style.display === 'flex') {
       fecharTeModal();
     }
+    const modalEnt = document.getElementById('modal-popup-cadastro-entidade');
+    if (modalEnt && modalEnt.style.display === 'flex') {
+      fecharModalCadastroEntidade();
+    }
   }
+});
+
+// ============================================================
+// CADASTRO GERAL DE ENTIDADES / ESCOLAS (29 CAMPOS - PLANILHA MESTRE)
+// ============================================================
+function abrirModalCadastroEntidade(dadosExistentes = null) {
+  const modal = document.getElementById('modal-popup-cadastro-entidade');
+  if (!modal) return;
+
+  const form = document.getElementById('form-cadastro-entidade');
+  if (form) form.reset();
+
+  const setVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = (val !== null && val !== undefined) ? String(val) : '';
+  };
+
+  const tituloEl = document.getElementById('entidade-modal-titulo');
+
+  if (dadosExistentes) {
+    if (tituloEl) tituloEl.textContent = `Editar Entidade: ${dadosExistentes.nome || 'Escola'}`;
+    setVal('entidade-form-id', dadosExistentes.id || dadosExistentes.inep || '');
+    setVal('entidade-categoria', dadosExistentes.categoria || 'Conselho Escolar');
+    setVal('entidade-nome', dadosExistentes.nome || '');
+    setVal('entidade-municipio', dadosExistentes.municipio || '');
+    setVal('entidade-alunos', dadosExistentes.alunos || '');
+    setVal('entidade-modalidade', dadosExistentes.modalidade || '');
+    setVal('entidade-inep', dadosExistentes.inep || '');
+    setVal('entidade-cnpj', dadosExistentes.cnpj || '');
+    setVal('entidade-endereco', dadosExistentes.endereco || '');
+    setVal('entidade-bairro', dadosExistentes.bairro || '');
+    setVal('entidade-complemento', dadosExistentes.complemento || '');
+    setVal('entidade-cep', dadosExistentes.cep || '');
+    setVal('entidade-competencia', dadosExistentes.competencia || 'Municipal');
+    setVal('entidade-super', dadosExistentes.super || '');
+    setVal('entidade-redes', dadosExistentes.redesSociais || '');
+    setVal('entidade-telefone', dadosExistentes.telefone || '');
+    setVal('entidade-email', dadosExistentes.email || '');
+    setVal('entidade-diretor', dadosExistentes.diretor || '');
+    setVal('entidade-contato-diretor', dadosExistentes.contatoDiretor || '');
+    setVal('entidade-secretario', dadosExistentes.secretario || '');
+    setVal('entidade-contato-secretario', dadosExistentes.contatoSecretario || '');
+    setVal('entidade-salas-aula', dadosExistentes.salasAula || '');
+    setVal('entidade-salas-adm', dadosExistentes.salasAdm || '');
+    setVal('entidade-sala-aee', dadosExistentes.salaAEE || '');
+    setVal('entidade-banheiros', dadosExistentes.banheiros || '');
+    setVal('entidade-patio', dadosExistentes.patio || '');
+    setVal('entidade-auditorio', dadosExistentes.auditorio || '');
+    setVal('entidade-refeitorio', dadosExistentes.refeitorio || '');
+    setVal('entidade-quadra', dadosExistentes.quadra || '');
+    setVal('entidade-localidade', dadosExistentes.localidade || 'Urbana');
+
+    // Sincronizar radio
+    const catUpper = String(dadosExistentes.categoria || '').toUpperCase();
+    let tipoRadio = 'Conselho Escolar';
+    if (catUpper.includes('PREFEITURA')) tipoRadio = 'Prefeitura';
+    else if (catUpper.includes('APAE')) tipoRadio = 'APAE';
+    else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
+
+    aoSelecionarTipoEntidadeForm(tipoRadio);
+  } else {
+    if (tituloEl) tituloEl.textContent = 'Cadastro Geral de Entidade / Escola';
+    setVal('entidade-form-id', '');
+    setVal('entidade-categoria', 'Conselho Escolar');
+    setVal('entidade-competencia', 'Municipal');
+    setVal('entidade-localidade', 'Urbana');
+    aoSelecionarTipoEntidadeForm('Conselho Escolar');
+
+    // Se houver um município já selecionado na aba de contatos ou no filtro, pré-preenche
+    const munAtual = document.getElementById('contatos-municipio-label')?.textContent;
+    if (munAtual && !munAtual.includes('(Todos)')) {
+      setVal('entidade-municipio', munAtual.trim());
+    }
+  }
+
+  modal.style.display = 'flex';
+}
+window.abrirModalCadastroEntidade = abrirModalCadastroEntidade;
+
+function fecharModalCadastroEntidade() {
+  const modal = document.getElementById('modal-popup-cadastro-entidade');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalCadastroEntidade = fecharModalCadastroEntidade;
+
+// Sincroniza a categoria da entidade e a modalidade jurídica de parceria (Fomento vs Convênio)
+function aoSelecionarTipoEntidadeForm(tipo) {
+  const catInput = document.getElementById('entidade-categoria');
+  const parceriaInput = document.getElementById('entidade-parceria-prevista');
+  const radios = document.querySelectorAll('input[name="entidade-tipo-radio"]');
+
+  radios.forEach(r => {
+    if (r.value === tipo) r.checked = true;
+  });
+
+  if (tipo === 'Prefeitura') {
+    if (catInput && (!catInput.value || catInput.value.includes('Conselho') || catInput.value.includes('APAE') || catInput.value.includes('EFA'))) {
+      catInput.value = 'Prefeitura Municipal';
+    }
+    if (parceriaInput) {
+      parceriaInput.value = 'Convênio (Termo de Convênio - C)';
+      parceriaInput.style.color = '#60a5fa';
+      parceriaInput.style.borderColor = 'rgba(59,130,246,0.5)';
+    }
+  } else {
+    if (catInput && (!catInput.value || catInput.value.includes('Prefeitura'))) {
+      catInput.value = tipo === 'Conselho Escolar' ? 'Conselho Escolar' : tipo;
+    }
+    if (parceriaInput) {
+      parceriaInput.value = 'Fomento (Termo de Fomento - F)';
+      parceriaInput.style.color = '#34d399';
+      parceriaInput.style.borderColor = 'rgba(16,185,129,0.5)';
+    }
+  }
+}
+window.aoSelecionarTipoEntidadeForm = aoSelecionarTipoEntidadeForm;
+
+// Salva o cadastro geral da entidade com reflexo instantâneo no cache e formulários
+function salvarCadastroEntidade(e) {
+  if (e && e.preventDefault) e.preventDefault();
+
+  const getV = (id) => (document.getElementById(id)?.value || '').trim();
+
+  const id = getV('entidade-form-id') || `ent_${Date.now()}`;
+  const categoria = getV('entidade-categoria') || 'Conselho Escolar';
+  const nome = getV('entidade-nome');
+  const municipio = getV('entidade-municipio');
+
+  if (!nome) {
+    if (typeof toast === 'function') toast('Informe o Nome da Escola / Entidade *', 'error');
+    document.getElementById('entidade-nome')?.focus();
+    return;
+  }
+  if (!municipio) {
+    if (typeof toast === 'function') toast('Informe o Município / Distrito *', 'error');
+    document.getElementById('entidade-municipio')?.focus();
+    return;
+  }
+
+  const novaEntidade = {
+    id: id,
+    categoria: categoria,
+    nome: nome,
+    municipio: municipio,
+    alunos: getV('entidade-alunos'),
+    modalidade: getV('entidade-modalidade'),
+    inep: getV('entidade-inep'),
+    cnpj: getV('entidade-cnpj'),
+    endereco: getV('entidade-endereco'),
+    bairro: getV('entidade-bairro'),
+    complemento: getV('entidade-complemento'),
+    cep: getV('entidade-cep'),
+    competencia: getV('entidade-competencia'),
+    super: getV('entidade-super'),
+    redesSociais: getV('entidade-redes'),
+    telefone: getV('entidade-telefone'),
+    email: getV('entidade-email'),
+    diretor: getV('entidade-diretor'),
+    contatoDiretor: getV('entidade-contato-diretor'),
+    secretario: getV('entidade-secretario'),
+    contatoSecretario: getV('entidade-contato-secretario'),
+    salasAula: getV('entidade-salas-aula'),
+    salasAdm: getV('entidade-salas-adm'),
+    salaAEE: getV('entidade-sala-aee'),
+    banheiros: getV('entidade-banheiros'),
+    patio: getV('entidade-patio'),
+    auditorio: getV('entidade-auditorio'),
+    refeitorio: getV('entidade-refeitorio'),
+    quadra: getV('entidade-quadra'),
+    localidade: getV('entidade-localidade')
+  };
+
+  // 1. Atualizar ou inserir em _teCache (Multi-aba de escolas)
+  if (typeof _teCache !== 'undefined' && Array.isArray(_teCache)) {
+    const idxExistente = _teCache.findIndex(item => item.id === id || (item.nome === nome && item.municipio === municipio));
+    if (idxExistente >= 0) {
+      _teCache[idxExistente] = { ..._teCache[idxExistente], ...novaEntidade };
+    } else {
+      _teCache.unshift(novaEntidade);
+    }
+    if (typeof _teAtualizarUI === 'function') {
+      _teFiltrados = [..._teCache];
+      _teAtualizarUI();
+    }
+  }
+
+  // 2. Atualizar ou inserir em _escolasCache
+  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
+    const idxEscola = _escolasCache.findIndex(item => item.id === id || (item.nome === nome && item.municipio === municipio));
+    if (idxEscola >= 0) {
+      _escolasCache[idxEscola] = { ..._escolasCache[idxEscola], ...novaEntidade };
+    } else {
+      _escolasCache.unshift(novaEntidade);
+    }
+  }
+
+  // 3. Salvar no localStorage para persistência imediata entre recargas
+  try {
+    const salvas = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+    const sIdx = salvas.findIndex(s => s.nome === nome && s.municipio === municipio);
+    if (sIdx >= 0) salvas[sIdx] = novaEntidade;
+    else salvas.push(novaEntidade);
+    localStorage.setItem('seduc_entidades_cadastradas_local', JSON.stringify(salvas));
+  } catch (err) {
+    console.warn('[CadastroEntidade] Falha ao persistir no localStorage', err);
+  }
+
+  // 4. Se o popup de novos processos estiver aberto ou for aberto, atualizar as entidades do município
+  if (typeof atualizarEntidadesMunicipioPopup === 'function') {
+    atualizarEntidadesMunicipioPopup();
+  }
+
+  // 5. Atualizar contatos/badges se estiver na página de contatos
+  if (typeof renderContatos === 'function') {
+    renderContatos();
+  }
+
+  if (typeof toast === 'function') {
+    toast(`Entidade "${nome}" salva e cadastrada com sucesso!`, 'success');
+  } else if (typeof showToast === 'function') {
+    showToast(`Entidade "${nome}" cadastrada com sucesso!`, 'success');
+  } else {
+    alert(`Entidade "${nome}" salva com sucesso!`);
+  }
+
+  fecharModalCadastroEntidade();
+}
+window.salvarCadastroEntidade = salvarCadastroEntidade;
 });
 
 
