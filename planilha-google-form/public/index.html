@@ -4111,13 +4111,38 @@
             </div>
 
           </div>
-          <!-- Linha 3: limpar -->
-          <div style="display:flex; width:100%; margin-top:5px;">
+          <!-- Linha 3: limpar e caminho da planilha (textbox branca) -->
+          <div style="display:flex; width:100%; margin-top:5px; gap:12px; align-items:stretch; flex-wrap:wrap;">
             <button onclick="limparFiltrosEscolas()" 
                     onmouseover="this.style.background='#d97706'" 
                     onmouseout="this.style.background='#f59e0b'"
-                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:300px; padding:10px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s;">
+                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:260px; min-height:42px; padding:8px 16px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s; flex-shrink:0;">
               <span style="font-size:16px;">&times;</span>Limpar parâmetros</button>
+
+            <!-- TEXTBOX BRANCA: CAMINHO DA PLANILHA FONTE -->
+            <div style="flex:1; min-width:320px; display:flex; align-items:center; background:#ffffff; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 0 14px rgba(56,189,248,0.35); padding:3px 8px 3px 12px; gap:8px;">
+              <span style="font-size:13px; font-weight:900; color:#0f172a; white-space:nowrap; display:flex; align-items:center; gap:6px;">
+                <span style="color:#0284c7;">📁</span> <span>CAMINHO DA PLANILHA:</span>
+              </span>
+              <input type="text" id="escolas-caminho-planilha-input" readonly
+                value="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
+                title="Caminho oficial da planilha Google Sheets em carregamento"
+                onclick="this.select()"
+                style="flex:1; height:34px; background:#ffffff; color:#0f172a; border:none; font-family:'Consolas','Courier New',monospace; font-size:12.5px; font-weight:700; outline:none; text-overflow:ellipsis; cursor:text;">
+              <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
+                target="_blank" rel="noopener noreferrer"
+                title="Abrir Planilha Fonte Oficial no Google Drive"
+                style="background:#0284c7; color:#ffffff; font-size:11.5px; font-weight:800; padding:6px 12px; border-radius:6px; text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; transition:background 0.2s;"
+                onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">
+                <span>Abrir</span> ↗
+              </a>
+              <button type="button" onclick="navigator.clipboard.writeText('https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0'); if(typeof toast==='function'){toast('Caminho da planilha copiado!','success');}else{alert('Caminho copiado!');}"
+                title="Copiar URL da Planilha"
+                style="background:#f1f5f9; border:1px solid #cbd5e1; color:#0f172a; font-size:11.5px; font-weight:700; padding:6px 10px; border-radius:6px; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"
+                onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+                📋 Copiar
+              </button>
+            </div>
           </div>
         </div>
 
@@ -5023,6 +5048,24 @@
                 <strong>Conselhos Escolares</strong>, <strong>APAEs</strong> e <strong>EFAs</strong> executam via <span style="background:rgba(16,185,129,0.3); color:#6ee7b7; padding:1px 6px; border-radius:4px; font-weight:700;">Fomento</span>.
               </div>
             </div>
+          </div>
+
+          <!-- CAMINHO DA PLANILHA FONTE (TEXTBOX BRANCA) -->
+          <div style="margin-bottom:16px; display:flex; align-items:center; background:#ffffff; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 0 12px rgba(56,189,248,0.25); padding:4px 10px 4px 12px; gap:8px;">
+            <span style="font-size:12px; font-weight:900; color:#0f172a; white-space:nowrap; display:flex; align-items:center; gap:5px;">
+              <span style="color:#0284c7;">📁</span> <span>CAMINHO DA PLANILHA:</span>
+            </span>
+            <input type="text" readonly
+              value="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
+              onclick="this.select()"
+              title="Planilha oficial vinculada ao formulário"
+              style="flex:1; height:32px; background:#ffffff; color:#0f172a; border:none; font-family:'Consolas','Courier New',monospace; font-size:12px; font-weight:700; outline:none; text-overflow:ellipsis; cursor:text;">
+            <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
+              target="_blank" rel="noopener noreferrer"
+              title="Abrir Planilha Fonte Oficial no Google Drive"
+              style="background:#0284c7; color:#ffffff; font-size:11px; font-weight:800; padding:6px 12px; border-radius:6px; text-decoration:none; white-space:nowrap;">
+              Abrir ↗
+            </a>
           </div>
 
           <!-- SEÇÃO 1: CLASSIFICAÇÃO DA ENTIDADE & PARCERIA (4 ALTERNATIVAS EXPLICITAS) -->
