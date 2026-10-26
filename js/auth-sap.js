@@ -343,6 +343,30 @@ async function fazerLogout() {
 
 // ====== INICIALIZAÃ‡ÃƒO: verifica se jÃ¡ tem sessÃ£o vÃ¡lida ======
 document.addEventListener('DOMContentLoaded', async () => {
+  // ====== VERIFICAÇÃO DE ACESSO VIA LINK PRÉ-DEFINIDO (SEM SENHA / PÁGINA ÚNICA) ======
+  const urlParams = new URLSearchParams(window.location.search);
+  const isCadastroExterno = urlParams.get('cadastro_entidade') === '1' || urlParams.get('cadastro') === '1';
+
+  if (isCadastroExterno) {
+    ocultarLogin();
+    const loginOv = document.getElementById('login-overlay');
+    if (loginOv) loginOv.style.display = 'none';
+
+    sessionStorage.setItem('sap_session_token', 'link_externo_sem_senha');
+    sessionStorage.setItem('sap_usuario', JSON.stringify({
+      nome: 'Convidado (Cadastro)',
+      whatsapp: 'externo',
+      nivel: 'guest'
+    }));
+
+    setTimeout(() => {
+      if (typeof window.iniciarModoCadastroExterno === 'function') {
+        window.iniciarModoCadastroExterno(urlParams);
+      }
+    }, 150);
+    return;
+  }
+
   // Sempre inicie limpo (sem pre-enchimento)
   const whatsappInput = document.getElementById('login-whatsapp');
   const senhaInput = document.getElementById('login-senha');

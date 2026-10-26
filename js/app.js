@@ -8017,6 +8017,28 @@ function salvarCadastroEntidade(e) {
     }
   });
 
+  if (window._modoCadastroExternoAtivo) {
+    const modalContent = document.querySelector('#modal-popup-cadastro-entidade > div');
+    if (modalContent) {
+      modalContent.innerHTML = `
+        <div style="padding:40px 24px; text-align:center;">
+          <div style="font-size:52px; margin-bottom:16px;">🎉</div>
+          <h2 style="color:#34d399; font-size:24px; font-weight:800; margin:0 0 12px 0;">CADASTRO CONCLUÍDO COM SUCESSO!</h2>
+          <p style="color:#f1f5f9; font-size:15px; line-height:1.6; margin:0 0 20px 0;">
+            A entidade <strong>${nome}</strong> (${municipio}) foi cadastrada com sucesso e vinculada ao sistema da <strong>SEDUC/RO</strong>.
+          </p>
+          <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:16px; margin:0 auto 26px auto; max-width:440px; color:#a7f3d0; font-size:12.5px; line-height:1.5;">
+            Os dados foram registrados e enviados para a base oficial de dados do Estado de Rondônia.
+          </div>
+          <button type="button" onclick="window.location.reload()" style="background:#10b981; color:#0f172a; font-weight:800; font-size:13px; padding:12px 28px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.4);">
+            ➕ Cadastrar Nova Entidade
+          </button>
+        </div>
+      `;
+      return;
+    }
+  }
+
   fecharModalCadastroEntidade();
 }
 window.salvarCadastroEntidade = salvarCadastroEntidade;
@@ -8117,6 +8139,212 @@ function exportarCadastrosLocaisCSV() {
   URL.revokeObjectURL(url);
 }
 window.exportarCadastrosLocaisCSV = exportarCadastrosLocaisCSV;
+
+// ============================================================
+// GERADOR DE LINK PRÉ-DEFINIDO & CADASTRO EXTERNO SEM SENHA
+// (IMAGEM 2, IMAGEM 3 & IMAGEM 1)
+// ============================================================
+function abrirModalGeradorLink() {
+  popularMunicipiosGeradorLink();
+  const modal = document.getElementById('modal-gerador-link-cadastro');
+  if (modal) modal.style.display = 'flex';
+}
+window.abrirModalGeradorLink = abrirModalGeradorLink;
+
+function fecharModalGeradorLink() {
+  const modal = document.getElementById('modal-gerador-link-cadastro');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalGeradorLink = fecharModalGeradorLink;
+
+function popularMunicipiosGeradorLink() {
+  const sel = document.getElementById('link-gen-municipio');
+  if (!sel) return;
+  if (sel.children.length <= 1) {
+    sel.innerHTML = LISTA_52_MUNICIPIOS_RO.map(m => `<option value="${m}">${m}</option>`).join('');
+  }
+}
+window.popularMunicipiosGeradorLink = popularMunicipiosGeradorLink;
+
+function gerarLinkCadastroComParametros() {
+  const mun = (document.getElementById('link-gen-municipio')?.value || '').trim();
+  const cat = (document.getElementById('link-gen-categoria')?.value || '').trim();
+  const comp = (document.getElementById('link-gen-competencia')?.value || '').trim();
+  const sup = (document.getElementById('link-gen-super')?.value || '').trim();
+
+  const base = window.location.origin + window.location.pathname;
+  const url = `${base}?cadastro_entidade=1&mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}`;
+
+  const inputOut = document.getElementById('link-gen-resultado');
+  if (inputOut) inputOut.value = url;
+  if (typeof toast === 'function') toast('Link pré-definido gerado com sucesso!', 'success');
+  return url;
+}
+window.gerarLinkCadastroComParametros = gerarLinkCadastroComParametros;
+
+function copiarLinkCadastroGerado() {
+  const inputOut = document.getElementById('link-gen-resultado');
+  if (!inputOut || !inputOut.value) {
+    gerarLinkCadastroComParametros();
+  }
+  const val = document.getElementById('link-gen-resultado')?.value;
+  if (val) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(val).then(() => {
+        if (typeof toast === 'function') toast('Link copiado para a área de transferência!', 'success');
+        else alert('Link copiado com sucesso!');
+      }).catch(() => {
+        if (inputOut) {
+          inputOut.select();
+          document.execCommand('copy');
+          if (typeof toast === 'function') toast('Link copiado!', 'success');
+          else alert('Link copiado com sucesso!');
+        }
+      });
+    } else if (inputOut) {
+      inputOut.select();
+      document.execCommand('copy');
+      if (typeof toast === 'function') toast('Link copiado!', 'success');
+      else alert('Link copiado!');
+    }
+  }
+}
+window.copiarLinkCadastroGerado = copiarLinkCadastroGerado;
+
+function testarLinkCadastroGerado() {
+  let val = document.getElementById('link-gen-resultado')?.value;
+  if (!val) {
+    val = gerarLinkCadastroComParametros();
+  }
+  if (val) {
+    window.open(val, '_blank');
+  }
+}
+window.testarLinkCadastroGerado = testarLinkCadastroGerado;
+
+function iniciarModoCadastroExterno(urlParams) {
+  const mun = urlParams.get('mun') || '';
+  const cat = urlParams.get('cat') || 'Conselho Escolar';
+  const comp = urlParams.get('comp') || 'Municipal';
+  const sup = urlParams.get('sup') || '';
+
+  window._modoCadastroExternoAtivo = true;
+
+  // Ocultar login caso esteja visível
+  if (typeof ocultarLogin === 'function') ocultarLogin();
+  const loginOverlay = document.getElementById('login-overlay');
+  if (loginOverlay) loginOverlay.style.display = 'none';
+
+  // Configura estilo limpo para modo página única
+  const header = document.querySelector('header');
+  if (header) header.style.display = 'none';
+  const sidebar = document.querySelector('.sidebar') || document.getElementById('sidebar');
+  if (sidebar) sidebar.style.display = 'none';
+  const nav = document.querySelector('nav');
+  if (nav) nav.style.display = 'none';
+
+  // Prepara o modal de cadastro de entidade
+  const modal = document.getElementById('modal-popup-cadastro-entidade');
+  if (!modal) return;
+
+  modal.style.display = 'flex';
+  modal.style.position = 'fixed';
+  modal.style.inset = '0';
+  modal.style.zIndex = '999999';
+  modal.style.background = '#090d16';
+  modal.style.overflowY = 'auto';
+
+  // Exibe banner de parâmetros fixados
+  const banner = document.getElementById('banner-parametros-fixados');
+  const txtBanner = document.getElementById('txt-detalhe-parametros-fixados');
+  if (banner) banner.style.display = 'block';
+  if (txtBanner) {
+    txtBanner.innerHTML = `
+      <div style="margin-bottom:4px; font-weight:800; color:#fbbf24;">Parâmetros vinculados e fixados pela SEDUC/RO:</div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;">
+        <span style="background:rgba(234,88,12,0.3); border:1px solid #ea580c; color:#fed7aa; padding:2px 8px; border-radius:4px; font-weight:700;">📍 Município: ${mun || 'Geral'}</span>
+        <span style="background:rgba(59,130,246,0.3); border:1px solid #3b82f6; color:#bfdbfe; padding:2px 8px; border-radius:4px; font-weight:700;">🏛️ Categoria: ${cat}</span>
+        <span style="background:rgba(16,185,129,0.3); border:1px solid #10b981; color:#a7f3d0; padding:2px 8px; border-radius:4px; font-weight:700;">⚖️ Competência: ${comp}</span>
+        <span style="background:rgba(168,85,247,0.3); border:1px solid #a855f7; color:#e9d5ff; padding:2px 8px; border-radius:4px; font-weight:700;">🏢 Regional: ${sup || 'Geral'}</span>
+      </div>
+      <div style="margin-top:6px; color:#cbd5e1; font-size:11.5px;">Estes dados foram fixados pela administração pública e não podem ser alterados. Preencha e acrescente os demais dados da unidade escolar para concluir o cadastro.</div>
+    `;
+  }
+
+  // Preenche os campos
+  const setV = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  };
+  setV('entidade-municipio', mun);
+  setV('entidade-municipio-ancorado', mun);
+  setV('entidade-categoria', cat);
+  setV('entidade-competencia', comp);
+  setV('entidade-super', sup);
+
+  // Sincroniza rádio de categoria
+  let tipoRadio = 'Conselho Escolar';
+  const catUpper = cat.toUpperCase();
+  if (catUpper.includes('PREFEITURA')) tipoRadio = 'Prefeitura';
+  else if (catUpper.includes('APAE')) tipoRadio = 'APAE';
+  else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
+  aoSelecionarTipoEntidadeForm(tipoRadio);
+
+  // Bloqueia campos com visual de parâmetro fixado
+  const bloquearCampo = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.readOnly = true;
+      el.style.backgroundColor = 'rgba(15,23,42,0.9)';
+      el.style.borderColor = '#f59e0b';
+      el.style.color = '#fef08a';
+      el.style.fontWeight = '800';
+      el.style.cursor = 'not-allowed';
+      el.title = 'Parâmetro fixado pela administração (não pode ser alterado)';
+    }
+  };
+
+  bloquearCampo('entidade-municipio');
+  bloquearCampo('entidade-municipio-ancorado');
+  bloquearCampo('entidade-categoria');
+  bloquearCampo('entidade-super');
+
+  const compSelect = document.getElementById('entidade-competencia');
+  if (compSelect) {
+    compSelect.disabled = true;
+    compSelect.style.backgroundColor = 'rgba(15,23,42,0.9)';
+    compSelect.style.borderColor = '#f59e0b';
+    compSelect.style.color = '#fef08a';
+    compSelect.style.fontWeight = '800';
+    compSelect.style.cursor = 'not-allowed';
+  }
+
+  document.querySelectorAll('input[name="entidade-tipo-radio"]').forEach(r => {
+    r.disabled = true;
+    if (r.parentElement) {
+      r.parentElement.style.opacity = '0.7';
+      r.parentElement.style.cursor = 'not-allowed';
+    }
+  });
+
+  // Oculta botão de fechar para modo página única
+  const btnFechar = modal.querySelector('button[title="Fechar"]');
+  if (btnFechar) btnFechar.style.display = 'none';
+
+  // Renderiza tabela com escolas do município vinculado
+  if (typeof renderizarTabelaEscolasMunicipioModal === 'function') {
+    renderizarTabelaEscolasMunicipioModal(mun);
+  }
+
+  // Abre na Aba 2 (Identificação) e foca no nome da escola/entidade para digitação imediata
+  if (typeof ativarGrupoFormEntidade === 'function') {
+    ativarGrupoFormEntidade(2);
+  }
+  setTimeout(() => {
+    document.getElementById('entidade-nome')?.focus();
+  }, 350);
+}
+window.iniciarModoCadastroExterno = iniciarModoCadastroExterno;
 
 function imprimirPadraoSelecionado() {
     const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);

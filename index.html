@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.57</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.58</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.57</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.58</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -2074,7 +2074,7 @@
               <div style="display:flex; flex-direction:column; line-height:1.15;">
                 <div style="display:flex; align-items:center; gap:6px;">
                   <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.57</span>
+                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.58</span>
                 </div>
                 <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
               </div>
@@ -3611,7 +3611,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.57
+              GBZ - v1.3.58
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3884,7 +3884,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.57] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.58] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -4002,6 +4002,15 @@
             <span id="escolas-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
           </div>
           <div style="display:flex;align-items:stretch;gap:10px;height:38px;">
+            <!-- BOTÃO GERAR LINK DE CADASTRO (MARCAÇÃO VERDE IMAGEM 2) -->
+            <button type="button" class="btn action-editor action-adm" onclick="abrirModalGeradorLink()" id="btn-gerar-link-cadastro"
+              title="Gerar link de acesso para cadastro sem senha com parâmetros pré-definidos (Imagem 3)"
+              style="background:linear-gradient(135deg,#059669,#047857); color:#fff; border:1px solid rgba(52,211,153,0.7); padding:0 16px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(5,150,105,0.45); height:38px; white-space:nowrap; transition:all 0.2s;"
+              onmouseover="this.style.boxShadow='0 0 22px rgba(52,211,153,0.75)';"
+              onmouseout="this.style.boxShadow='0 0 16px rgba(5,150,105,0.45)';">
+              <span style="font-size:15px; line-height:1;">🔗</span>
+              <span>Gerar Link de Cadastro</span>
+            </button>
             <button type="button" class="btn btn-success action-editor action-adm" onclick="abrirModalCadastroEntidade()"
               title="Cadastrar Nova Entidade / Escola (29 Campos) diretamente na Planilha"
               style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid rgba(52,211,153,0.7); padding:0 16px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(16,185,129,0.4); height:38px; white-space:nowrap; transition:all 0.2s;"
@@ -4679,6 +4688,14 @@
         <span id="te-badge-status" style="display:inline-flex;align-items:center;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;background:rgba(251,191,36,0.12);color:#fbbf24;border:1px solid rgba(251,191,36,0.3);letter-spacing:0.4px;">⏳ Aguardando carregamento</span>
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
+        <button type="button" class="btn action-editor action-adm" onclick="abrirModalGeradorLink()"
+          title="Gerar link de acesso para cadastro sem senha com parâmetros pré-definidos (Imagem 3)"
+          style="background:linear-gradient(135deg,#059669,#047857); color:#fff; border:1px solid rgba(52,211,153,0.7); padding:9px 18px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(5,150,105,0.45); height:38px; white-space:nowrap; transition:all 0.2s;"
+          onmouseover="this.style.boxShadow='0 0 22px rgba(52,211,153,0.75)';"
+          onmouseout="this.style.boxShadow='0 0 16px rgba(5,150,105,0.45)';">
+          <span style="font-size:15px; line-height:1;">🔗</span>
+          <span>Gerar Link de Cadastro</span>
+        </button>
         <button type="button" class="btn btn-success action-editor action-adm" onclick="abrirModalCadastroEntidade()"
           title="Cadastrar Nova Entidade / Escola (29 Campos)"
           style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid rgba(52,211,153,0.7); padding:9px 18px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(16,185,129,0.4); height:38px; white-space:nowrap; transition:all 0.2s;"
@@ -5124,6 +5141,21 @@
           <input type="hidden" id="entidade-form-id">
           <input type="hidden" id="entidade-form-origem">
 
+          <!-- BANNER DE PARÂMETROS PRÉ-DEFINIDOS FIXADOS (QUANDO ACESSADO VIA LINK EXTERNO SEM SENHA) -->
+          <div id="banner-parametros-fixados" style="display:none; margin-bottom:16px; padding:14px 18px; border-radius:10px; border:2px solid #f59e0b; background:linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(15,23,42,0.98) 100%); box-shadow:0 0 16px rgba(245,158,11,0.3);">
+            <div style="display:flex; align-items:flex-start; gap:12px;">
+              <span style="font-size:24px; line-height:1;">🔒</span>
+              <div style="flex:1;">
+                <div style="font-size:13.5px; font-weight:900; color:#fbbf24; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
+                  Parâmetros Institucionais Pré-definidos & Bloqueados
+                </div>
+                <div id="txt-detalhe-parametros-fixados" style="font-size:12px; color:#f1f5f9; line-height:1.5;">
+                  Este formulário foi configurado com parâmetros oficiais vinculados. Os campos de Município, Categoria, Competência e Regional estão fixados e não podem ser alterados — preencha e acrescente os dados da entidade para concluir o cadastro.
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- BANNER INFORMATIVO DE CATEGORIA: CONVÊNIO VS FOMENTO (LEI Nº 5.735/2024 & LEI 4.979/2021) -->
           <div style="margin-bottom:16px; padding:12px 16px; border-radius:8px; border:1px solid rgba(56,189,248,0.4); background:linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(15,23,42,0.95) 100%);">
             <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
@@ -5536,6 +5568,131 @@
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============= MODAL POPUP: GERADOR DE LINK COM PARÂMETROS PRÉ-DEFINIDOS (IMAGEM 3) ============= -->
+  <div id="modal-gerador-link-cadastro" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99999; justify-content:center; align-items:center; padding:16px; box-sizing:border-box;">
+    <div style="background:#0f172a; border:2px solid #ea580c; border-radius:14px; max-width:540px; width:100%; box-shadow:0 25px 60px rgba(0,0,0,0.95); overflow:hidden; position:relative; display:flex; flex-direction:column;">
+      
+      <!-- Cabeçalho do Gerador de Link -->
+      <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(234,88,12,0.2) 0%, rgba(15,23,42,0.98) 100%);">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span style="font-size:22px; line-height:1;">🔗</span>
+          <div>
+            <h3 style="margin:0; color:#fb923c; font-size:16px; font-weight:800; letter-spacing:0.5px;">
+              Gerador de Link Pré-definido
+            </h3>
+            <span style="font-size:11px; color:#94a3b8; font-weight:500;">
+              Acesso direto para cadastro sem senha com parâmetros fixados pela SEDUC/RO
+            </span>
+          </div>
+        </div>
+        <button type="button" onclick="fecharModalGeradorLink()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#94a3b8; border-radius:6px; width:32px; height:32px; font-size:15px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(239,68,68,0.3)';" onmouseout="this.style.color='#94a3b8'; this.style.background='rgba(255,255,255,0.08)';" title="Fechar">✕</button>
+      </div>
+
+      <!-- Corpo do Gerador de Link (Campos idênticos à Imagem 3) -->
+      <div style="padding:20px; display:flex; flex-direction:column; gap:14px;">
+        
+        <!-- Campo 1: Município -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Municipio</label>
+          <select id="link-gen-municipio"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
+            <!-- Preenchido via JS com os 52 Municípios -->
+          </select>
+        </div>
+
+        <!-- Campo 2: Categoria da Entidade e Vinculação Jurídica -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Categoria da Entidade e Vinculação Jurídica</label>
+          <select id="link-gen-categoria"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
+            <option value="Conselho Escolar">Conselho Escolar (Executa Fomento - F)</option>
+            <option value="Prefeitura Municipal">Prefeitura Municipal (Executa Convênio - C)</option>
+            <option value="APAE">APAE (Executa Fomento - F)</option>
+            <option value="EFA">EFA - Família Agrícola (Executa Fomento - F)</option>
+          </select>
+        </div>
+
+        <!-- Campo 3: Competencia -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Competencia</label>
+          <select id="link-gen-competencia"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
+            <option value="Municipal">Municipal</option>
+            <option value="Estadual">Estadual</option>
+            <option value="Privada/Filantrópica">Privada/Filantrópica</option>
+            <option value="Federal">Federal</option>
+          </select>
+        </div>
+
+        <!-- Campo 4: Super -->
+        <div>
+          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Super</label>
+          <select id="link-gen-super"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
+            <option value="CRE - Porto Velho">CRE - Porto Velho</option>
+            <option value="CRE - Ji-Paraná">CRE - Ji-Paraná</option>
+            <option value="CRE - Ariquemes">CRE - Ariquemes</option>
+            <option value="CRE - Cacoal">CRE - Cacoal</option>
+            <option value="CRE - Vilhena">CRE - Vilhena</option>
+            <option value="CRE - Jaru">CRE - Jaru</option>
+            <option value="CRE - Rolim de Moura">CRE - Rolim de Moura</option>
+            <option value="CRE - Guajará-Mirim">CRE - Guajará-Mirim</option>
+            <option value="CRE - Ouro Preto do Oeste">CRE - Ouro Preto do Oeste</option>
+            <option value="CRE - Pimenta Bueno">CRE - Pimenta Bueno</option>
+            <option value="CRE - Buritis">CRE - Buritis</option>
+            <option value="CRE - Machadinho D'Oeste">CRE - Machadinho D'Oeste</option>
+            <option value="CRE - Espigão D'Oeste">CRE - Espigão D'Oeste</option>
+            <option value="CRE - Alta Floresta D'Oeste">CRE - Alta Floresta D'Oeste</option>
+            <option value="CRE - Cerejeiras">CRE - Cerejeiras</option>
+            <option value="CRE - São Francisco do Guaporé">CRE - São Francisco do Guaporé</option>
+          </select>
+        </div>
+
+        <!-- Botão Verde: gerar link -->
+        <div style="display:flex; justify-content:flex-end; margin-top:4px;">
+          <button type="button" onclick="gerarLinkCadastroComParametros()"
+            style="background:#059669; color:#ffffff; font-weight:900; font-size:15px; padding:10px 28px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(5,150,105,0.45); transition:transform 0.15s;"
+            onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+            gerar link
+          </button>
+        </div>
+
+        <div style="font-size:12px; color:#cbd5e1; font-weight:600;">
+          Gerar link de acesso para cadastro sem senha
+        </div>
+
+        <!-- Campo de Texto para Compartilhar -->
+        <div>
+          <input type="text" id="link-gen-resultado" readonly
+            placeholder="Clique em 'gerar link' para criar o endereço de acesso..."
+            onclick="this.select()"
+            style="width:100%; height:44px; padding:8px 12px; background:#ffffff; color:#0f172a; border:2px solid #38bdf8; border-radius:8px; font-weight:800; font-size:12px; font-family:monospace; box-sizing:border-box;">
+        </div>
+
+        <!-- Compartilhar e Botão Copiar -->
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+          <span style="font-size:13.5px; font-weight:800; color:#e2e8f0;">compartilhar link gerado</span>
+          <div style="display:flex; gap:8px;">
+            <button type="button" onclick="copiarLinkCadastroGerado()"
+              style="background:#dc2626; color:#ffffff; border:none; padding:10px 26px; border-radius:8px; font-weight:900; font-size:15px; cursor:pointer; box-shadow:0 4px 12px rgba(220,38,38,0.4); transition:transform 0.15s;"
+              onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+              Copiar
+            </button>
+            <button type="button" onclick="testarLinkCadastroGerado()"
+              style="background:#2563eb; color:#ffffff; border:none; padding:10px 18px; border-radius:8px; font-weight:800; font-size:12.5px; cursor:pointer; box-shadow:0 4px 12px rgba(37,99,235,0.4);">
+              Abrir / Testar ↗
+            </button>
+          </div>
+        </div>
+
+        <!-- Texto Explicativo Institucional (Imagens 3 e 4) -->
+        <div style="margin-top:6px; padding:12px 14px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); border-radius:8px; font-size:10.5px; font-weight:700; color:#94a3b8; line-height:1.45; text-transform:uppercase;">
+          FORMULÁRIO GERA LINK COM OS PARÂMETROS JÁ PRÉ-DEFINIDOS. ESTE LINK SÓ JÁ ABRE O FORMULÁRIO DE CADASTRO DE ENTIDADE SEM SENHA, ENTRA DIRETO, NUMA PAGE ÚNICA, ABRE O FORM DE CADASTRO DE ENTIDADE COM OS PARÂMETROS DEFINIDOS JÁ PREENCHIDO E NÃO PODE MUDAR, SOMENTE ACRESCENTAR, JÁ FICA CADASTRADO.
         </div>
       </div>
     </div>
