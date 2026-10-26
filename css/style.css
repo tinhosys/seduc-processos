@@ -32,6 +32,122 @@
 }
 
 /* ============================================
+   TEMA CLARO LIMPO E SUAVE (PADRÃO IMAGEM 2)
+   ============================================ */
+body.tema-claro {
+  --bg-primary:    #f8fafc;
+  --bg-secondary:  #ffffff;
+  --bg-card:       #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --border:        #e2e8f0;
+  --border-focus:  #0284c7;
+
+  --blue:     #0284c7;
+  --blue-dk:  #0369a1;
+  --green:    #059669;
+  --yellow:   #d97706;
+  --red:      #dc2626;
+  --purple:   #7c3aed;
+  --cyan:     #0891b2;
+  --orange:   #ea580c;
+
+  --text-primary:   #1e293b;
+  --text-secondary: #475569;
+  --text-muted:     #64748b;
+  --shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+body.tema-claro {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+}
+
+body.tema-claro .sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid #e2e8f0 !important;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.03) !important;
+}
+
+body.tema-claro .topbar {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #1e293b !important;
+}
+
+body.tema-claro .card,
+body.tema-claro .stat-card,
+body.tema-claro .card-box {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+  color: #1e293b !important;
+}
+
+body.tema-claro .filters-bar {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+}
+
+body.tema-claro .filters-bar input,
+body.tema-claro .filters-bar select,
+body.tema-claro .form-control,
+body.tema-claro input[type="text"],
+body.tema-claro input[type="search"],
+body.tema-claro input[type="date"],
+body.tema-claro select {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1e293b !important;
+}
+
+body.tema-claro .table-wrap {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03) !important;
+}
+
+body.tema-claro table thead,
+body.tema-claro table th {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+  border-color: #0369a1 !important;
+  font-weight: 700 !important;
+}
+
+body.tema-claro table td {
+  background: #ffffff !important;
+  color: #334155 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+body.tema-claro table tbody tr:nth-child(even) td {
+  background: #f8fafc !important;
+}
+
+body.tema-claro table tbody tr:hover td {
+  background: #e0f2fe !important;
+}
+
+body.tema-claro .modal-content,
+body.tema-claro .modal-box {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #1e293b !important;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+}
+
+body.tema-claro .nav-item {
+  color: #475569 !important;
+}
+
+body.tema-claro .nav-item:hover,
+body.tema-claro .nav-item.active {
+  background: #e0f2fe !important;
+  color: #0284c7 !important;
+}
+
+/* ============================================
    RESET & BASE
    ============================================ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

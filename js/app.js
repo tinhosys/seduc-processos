@@ -4209,6 +4209,9 @@ async function processarLinkGoogleSheets() {
 
 // ---- INICIALIZAÇÃO ----
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof aplicarTemaSalvo === 'function') {
+    aplicarTemaSalvo();
+  }
   // Navegação
   document.querySelectorAll('[data-page]').forEach(el => {
     el.addEventListener('click', () => {
@@ -8146,6 +8149,7 @@ window.exportarCadastrosLocaisCSV = exportarCadastrosLocaisCSV;
 // ============================================================
 function abrirModalGeradorLink() {
   popularMunicipiosGeradorLink();
+  atualizarSuperGeradorLink();
   const modal = document.getElementById('modal-gerador-link-cadastro');
   if (modal) modal.style.display = 'flex';
 }
@@ -8157,12 +8161,63 @@ function fecharModalGeradorLink() {
 }
 window.fecharModalGeradorLink = fecharModalGeradorLink;
 
+function toggleTemaClaroSuave() {
+  const isLight = document.body.classList.toggle('tema-claro');
+  localStorage.setItem('seduc_tema_suave_imagem2', isLight ? '1' : '0');
+  const btnText = document.getElementById('btn-toggle-tema-text');
+  const btnIcon = document.getElementById('btn-toggle-tema-icon');
+  if (btnText) btnText.textContent = isLight ? 'Tema Escuro' : 'Tema Suave';
+  if (btnIcon) btnIcon.textContent = isLight ? '🌙' : '☀️';
+  if (typeof toast === 'function') {
+    toast(isLight ? 'Tema Suave (Padrão Imagem 2) ativado' : 'Tema Escuro ativado', 'info');
+  }
+}
+window.toggleTemaClaroSuave = toggleTemaClaroSuave;
+
+function aplicarTemaSalvo() {
+  const salvo = localStorage.getItem('seduc_tema_suave_imagem2');
+  if (salvo === '1') {
+    document.body.classList.add('tema-claro');
+    const btnText = document.getElementById('btn-toggle-tema-text');
+    const btnIcon = document.getElementById('btn-toggle-tema-icon');
+    if (btnText) btnText.textContent = 'Tema Escuro';
+    if (btnIcon) btnIcon.textContent = '🌙';
+  }
+}
+window.aplicarTemaSalvo = aplicarTemaSalvo;
+
+function atualizarSuperGeradorLink() {
+  const selMun = document.getElementById('link-gen-municipio');
+  const selSup = document.getElementById('link-gen-super');
+  if (!selMun || !selSup) return;
+  const mun = (selMun.value || '').trim();
+  const superCalc = getSuperPorMunicipio(mun);
+  
+  // Normalizar para casar com as opções 'CRE - Nome'
+  let targetVal = '';
+  const cleanSup = superCalc.replace(/^SUPER\s+/i, '').trim().toUpperCase();
+  for (let i = 0; i < selSup.options.length; i++) {
+    const optVal = selSup.options[i].value.replace(/^CRE\s*-\s*/i, '').trim().toUpperCase();
+    if (optVal === cleanSup || optVal.includes(cleanSup) || cleanSup.includes(optVal)) {
+      targetVal = selSup.options[i].value;
+      break;
+    }
+  }
+  if (targetVal) {
+    selSup.value = targetVal;
+  }
+  // Sincroniza e gera o link automaticamente para o município selecionado
+  gerarLinkCadastroComParametros();
+}
+window.atualizarSuperGeradorLink = atualizarSuperGeradorLink;
+
 function popularMunicipiosGeradorLink() {
   const sel = document.getElementById('link-gen-municipio');
   if (!sel) return;
   if (sel.children.length <= 1) {
     sel.innerHTML = LISTA_52_MUNICIPIOS_RO.map(m => `<option value="${m}">${m}</option>`).join('');
   }
+  atualizarSuperGeradorLink();
 }
 window.popularMunicipiosGeradorLink = popularMunicipiosGeradorLink;
 
