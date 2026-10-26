@@ -864,6 +864,18 @@ function _escolasAtualizarUI() {
     _escolasAtualizarBadges();
     _escolasRenderTabela();
     _escolasRenderPaginacao();
+
+    try {
+      const salvasLocal = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+      const btnSyncTxt = document.getElementById('btn-sync-escolas-txt');
+      if (btnSyncTxt) {
+        if (salvasLocal.length > 0) {
+          btnSyncTxt.textContent = `Sincronizar ${salvasLocal.length} com Google Sheets`;
+        } else {
+          btnSyncTxt.textContent = `Sincronizar com Planilha Google`;
+        }
+      }
+    } catch(e) {}
   } else {
     const badgeEscolas = document.getElementById('escolas-badge');
     const badgeAlunos  = document.getElementById('escolas-alunos-badge');

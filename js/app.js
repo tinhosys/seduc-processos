@@ -7649,6 +7649,10 @@ function salvarCadastroEntidade(e) {
   const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : 'https://seduc-backend.onrender.com';
   const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || 'active_dev_token');
   
+  if (typeof toast === 'function') {
+    toast(`Salvando "${nome}"...`, 'info', 1800);
+  }
+
   fetch(baseApi + '/api/entidades', {
     method: 'POST',
     headers: {
@@ -7656,23 +7660,132 @@ function salvarCadastroEntidade(e) {
       'Authorization': 'Bearer ' + (token || 'active_dev_token')
     },
     body: JSON.stringify(novaEntidade)
-  }).then(r => r.json()).then(res => {
-    console.log('[CadastroEntidade] Resposta da gravação remota na planilha:', res);
+  }).then(async r => {
+    let res = {};
+    try { res = await r.json(); } catch(e) {}
+    if (r.ok && res.sucesso) {
+      if (typeof toast === 'function') {
+        toast(`✅ Entidade "${nome}" gravada com sucesso na planilha oficial do Google Sheets!`, 'success');
+      } else {
+        alert(`Entidade "${nome}" gravada na planilha oficial!`);
+      }
+    } else {
+      console.warn('[CadastroEntidade] Falha na gravação remota:', res);
+      const motivo = (res && res.erro) ? res.erro : 'Permissão 403 no Google Sheets';
+      const msgAviso = `⚠️ Salvo no navegador local! A planilha Google recusou a gravação remota (${motivo}).\nPara gravar diretamente na planilha, adicione o e-mail: planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com como EDITOR na planilha.`;
+      if (typeof toast === 'function') {
+        toast(`⚠️ Salvo no navegador! Planilha Google recusou gravação (${motivo}). Adicione a conta de serviço como Editor.`, 'warning', 10000);
+      } else {
+        alert(msgAviso);
+      }
+    }
   }).catch(err => {
     console.warn('[CadastroEntidade] Registro mantido em cache local / sincronização em segundo plano:', err);
+    if (typeof toast === 'function') {
+      toast(`⚠️ Salvo no navegador local (offline). Erro ao conectar ao servidor.`, 'warning');
+    }
   });
-
-  if (typeof toast === 'function') {
-    toast(`Entidade "${nome}" inserida diretamente na planilha com sucesso!`, 'success');
-  } else if (typeof showToast === 'function') {
-    showToast(`Entidade "${nome}" inserida na planilha com sucesso!`, 'success');
-  } else {
-    alert(`Entidade "${nome}" cadastrada diretamente na planilha!`);
-  }
 
   fecharModalCadastroEntidade();
 }
 window.salvarCadastroEntidade = salvarCadastroEntidade;
+
+// Sincroniza todos os cadastros mantidos localmente no navegador com a planilha oficial do Google Sheets
+async function sincronizarCadastrosLocaisComPlanilha() {
+  const salvas = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+  if (!salvas || salvas.length === 0) {
+    if (typeof toast === 'function') toast('Nenhum cadastro local pendente para sincronizar.', 'info');
+    else alert('Nenhum cadastro local pendente para sincronizar.');
+    return;
+  }
+  
+  if (typeof toast === 'function') toast(`⏳ Sincronizando ${salvas.length} cadastros locais com a planilha Google Sheets...`, 'info', 3000);
+  const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : 'https://seduc-backend.onrender.com';
+  const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || 'active_dev_token');
+
+  let sucessos = 0;
+  let erros = 0;
+  let ultimoErro = '';
+
+  for (const ent of salvas) {
+    try {
+      const res = await fetch(baseApi + '/api/entidades', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (token || 'active_dev_token') },
+        body: JSON.stringify(ent)
+      });
+      const data = await res.json();
+      if (res.ok && data.sucesso) {
+        sucessos++;
+      } else {
+        erros++;
+        ultimoErro = data.erro || 'Erro 403 / Permissão negada';
+      }
+    } catch(e) {
+      erros++;
+      ultimoErro = e.message;
+    }
+  }
+
+  if (sucessos > 0 && erros === 0) {
+    if (typeof toast === 'function') {
+      toast(`✅ Sucesso! Todos os ${sucessos} cadastros foram inseridos na planilha Google Sheets com sucesso!`, 'success', 6000);
+    } else {
+      alert(`Todos os ${sucessos} cadastros foram inseridos na planilha!`);
+    }
+  } else if (sucessos > 0) {
+    if (typeof toast === 'function') {
+      toast(`⚠️ ${sucessos} cadastros gravados, mas ${erros} falharam (${ultimoErro}).`, 'warning', 8000);
+    } else {
+      alert(`${sucessos} gravados, ${erros} falharam.`);
+    }
+  } else {
+    const txtErro = `A planilha do Google recusou a gravação (${ultimoErro}).\n\nMOTIVO:\nA planilha está configurada como 'Restrita' no Google Drive.\n\nCOMO LIBERAR:\n1. Abra a planilha oficial no Google Drive;\n2. Clique no botão azul 'Compartilhar';\n3. Adicione este e-mail com permissão de EDITOR:\n\nplanilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com\n\nDepois clique novamente em 'Sincronizar com Planilha Google'.`;
+    if (typeof toast === 'function') {
+      toast(`❌ Gravação recusada pelo Google Sheets (${ultimoErro}). Adicione a conta de serviço como Editor na planilha!`, 'error', 10000);
+    }
+    alert(txtErro);
+  }
+}
+window.sincronizarCadastrosLocaisComPlanilha = sincronizarCadastrosLocaisComPlanilha;
+
+// Exporta os cadastros locais em CSV
+function exportarCadastrosLocaisCSV() {
+  const salvas = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+  if (!salvas || salvas.length === 0) {
+    alert('Nenhum cadastro local para exportar.');
+    return;
+  }
+  const headers = [
+    'Município', 'Categoria da parceria', 'Nome da escola | Entidade | Prefeitura', 'Nº de alunos', 'Modalidade',
+    'INEP', 'CNPJ', 'Endereço', 'Bairro | Distrito | Aldeia', 'Complemento', 'CEP', 'Competência',
+    'Super', 'Rede social', 'Telefone', 'Email da entidade', 'Nome do diretor | Presidente | Prefeito',
+    'Contato do diretor', 'Nome do secretário', 'Contato do secretário', 'Quant. salas de aula',
+    'Quant. salas administrativas', 'Sala do AEE', 'Banheiros', 'Pátio', 'Auditório',
+    'Refeitório (s/n)', 'Quadra (s/n)', 'Localidade (urbana/rural)'
+  ];
+  const csvRows = [headers.join(';')];
+  salvas.forEach(s => {
+    const row = [
+      s.municipio||'', s.categoria||'', s.nome||'', s.alunos||'', s.modalidade||'',
+      s.inep||'', s.cnpj||'', s.endereco||'', s.bairro||'', s.complemento||'', s.cep||'', s.competencia||'',
+      s.super||'', s.redesSociais||'', s.telefone||'', s.email||'', s.diretor||'', s.contatoDiretor||'',
+      s.secretario||'', s.contatoSecretario||'', s.salasAula||'', s.salasAdm||'', s.salaAEE||'',
+      s.banheiros||'', s.patio||'', s.auditorio||'', s.refeitorio||'', s.quadra||'', s.localidade||''
+    ].map(v => '"' + String(v).replace(/"/g, '""') + '"');
+    csvRows.push(row.join(';'));
+  });
+  const blob = new Blob(['\ufeff' + csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `cadastros_escolas_locais_${Date.now()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+window.exportarCadastrosLocaisCSV = exportarCadastrosLocaisCSV;
 
 function imprimirPadraoSelecionado() {
     const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);

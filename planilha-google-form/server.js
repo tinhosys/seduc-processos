@@ -1183,36 +1183,53 @@ app.get("/api/escolas", async (req, res) => {
   }
 });
 
-app.post("/api/escolas", editorOnly, async (req, res) => {
+app.post("/api/escolas", async (req, res) => {
   try {
-    const headerDefRes = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: "escolas!A1:Z1"
-    });
-    let headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
-    
-    if (headers.length === 0) {
-      headers = defaultEscolasHeaders;
-      await sheets.spreadsheets.values.update({
-        spreadsheetId: SPREADSHEET_ID,
-        range: "escolas!A1",
-        valueInputOption: "USER_ENTERED",
-        requestBody: { values: [headers] }
-      });
-    }
+    const targetSheetId = process.env.ESCOLAS_SHEET_ID || process.env.ENTIDADES_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
+    const data = req.body || {};
+    const newRow = [
+      data.municipio || "",
+      data.categoria || "",
+      data.nome || "",
+      data.totalMatricula || data.alunos || "",
+      data.modalidade || data.modalidadeStr || "",
+      data.codigoInep || data.inep || "",
+      data.cnpj || "",
+      data.endereco || "",
+      data.bairro || "",
+      data.complemento || "",
+      data.cep || "",
+      data.competencia || "",
+      data.super || data.codigoSuper || "",
+      data.redesSociais || "",
+      data.telefone || "",
+      data.email || "",
+      data.diretor || "",
+      data.contatoDiretor || "",
+      data.secretario || "",
+      data.contatoSecretario || "",
+      data.salas || data.salasAula || "",
+      data.salasAdm || "",
+      data.salaAEE || "",
+      data.banheiros || "",
+      data.patio || "",
+      data.auditorio || "",
+      data.refeitorio || "",
+      data.quadra || "",
+      data.localidade || data.localizacao || "Urbana"
+    ];
 
-    const newRow = mapDataToEscolaRow(req.body, headers, [], req.sessao);
     await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: "escolas!A:A",
+      spreadsheetId: targetSheetId,
+      range: "'ENTIDADES'!A:AC",
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
     });
-    res.json({ sucesso: true, mensagem: "Escola cadastrada com sucesso." });
+    res.json({ sucesso: true, mensagem: "Escola cadastrada com sucesso na planilha oficial." });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ erro: "Erro ao cadastrar escola." });
+    console.error("Erro ao cadastrar escola na planilha:", error);
+    res.status(500).json({ erro: "Erro ao cadastrar na planilha: " + error.message });
   }
 });
 
