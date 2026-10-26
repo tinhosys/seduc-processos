@@ -7433,6 +7433,314 @@ document.addEventListener('keydown', (e) => {
 // ============================================================
 // CADASTRO GERAL DE ENTIDADES / ESCOLAS (29 CAMPOS - PLANILHA MESTRE)
 // ============================================================
+// 52 MUNICÍPIOS OFICIAIS DE RONDÔNIA (SEDUC/RO)
+const LISTA_52_MUNICIPIOS_RO = [
+  "Alta Floresta D'Oeste", "Alto Alegre dos Parecis", "Alto Paraíso", "Alvorada D'Oeste",
+  "Ariquemes", "Buritis", "Cabixi", "Cacaulândia", "Cacoal", "Campo Novo de Rondônia",
+  "Candeias do Jamari", "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste",
+  "Corumbiara", "Costa Marques", "Cujubim", "Espigão D'Oeste", "Governador Jorge Teixeira",
+  "Guajará-Mirim", "Itapuã do Oeste", "Jaru", "Ji-Paraná", "Machadinho D'Oeste",
+  "Ministro Andreazza", "Mirante da Serra", "Monte Negro", "Nova Brasilândia D'Oeste",
+  "Nova Mamoré", "Nova União", "Novo Horizonte do Oeste", "Ouro Preto do Oeste",
+  "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente Médici",
+  "Primavera de Rondônia", "Rio Crespo", "Rolim de Moura", "Santa Luzia D'Oeste",
+  "São Felipe D'Oeste", "São Francisco do Guaporé", "São Miguel do Guaporé",
+  "Seringueiras", "Teixeirópolis", "Theobroma", "Urupá", "Vale do Anari",
+  "Vale do Paraíso", "Vilhena"
+];
+
+function _normMun(str) {
+  if (!str) return '';
+  return String(str).toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+}
+
+// Popula os datalists com os 52 municípios ancorados e quaisquer outros novos inseridos
+function popularMunicipiosAncorados() {
+  const mSet = new Set(LISTA_52_MUNICIPIOS_RO);
+
+  const pools = [
+    typeof _teCache !== 'undefined' ? _teCache : [],
+    typeof _escolasCache !== 'undefined' ? _escolasCache : []
+  ];
+  try {
+    const loc = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+    pools.push(loc);
+  } catch(e) {}
+
+  pools.forEach(arr => {
+    if (Array.isArray(arr)) {
+      arr.forEach(item => {
+        if (item && item.municipio && String(item.municipio).trim().length > 1) {
+          mSet.add(String(item.municipio).trim());
+        }
+      });
+    }
+  });
+
+  const mList = Array.from(mSet).sort((a,b) => a.localeCompare(b, 'pt-BR'));
+
+  ['list-municipios-ancorados', 'list-municipios'].forEach(dlId => {
+    const dl = document.getElementById(dlId);
+    if (dl) {
+      dl.innerHTML = mList.map(m => `<option value="${m}">${m}</option>`).join('');
+    }
+  });
+}
+window.popularMunicipiosAncorados = popularMunicipiosAncorados;
+
+// Controle de Navegação das Abas 1 a 5 (Imagens 1 e 2)
+var _grupoEntidadeAtivo = 1;
+
+function ativarGrupoFormEntidade(num) {
+  _grupoEntidadeAtivo = num;
+  const botoes = [1, 2, 3, 4, 5];
+
+  botoes.forEach(i => {
+    const btn = document.getElementById(`tab-grupo-btn-${i}`);
+    const sec = document.getElementById(`sec-grupo-entidade-${i}`);
+    const isAtivo = (num === 'todos' || num === i);
+
+    if (sec) {
+      sec.style.display = isAtivo ? 'block' : 'none';
+    }
+
+    if (btn) {
+      if (num === i) {
+        btn.classList.add('active');
+        btn.style.boxShadow = '0 0 14px rgba(56,189,248,0.55)';
+        btn.style.filter = 'brightness(1.15)';
+      } else {
+        btn.classList.remove('active');
+        btn.style.boxShadow = 'none';
+        btn.style.filter = 'none';
+      }
+    }
+  });
+
+  const btnTodos = document.getElementById('tab-grupo-btn-todos');
+  if (btnTodos) {
+    if (num === 'todos') {
+      btnTodos.style.background = 'rgba(56,189,248,0.25)';
+      btnTodos.style.borderColor = '#38bdf8';
+      btnTodos.style.color = '#38bdf8';
+    } else {
+      btnTodos.style.background = 'rgba(255,255,255,0.04)';
+      btnTodos.style.borderColor = 'rgba(255,255,255,0.12)';
+      btnTodos.style.color = '#94a3b8';
+    }
+  }
+
+  // Se ativou um grupo específico, rola suavemente para o topo do formulário
+  if (num !== 'todos') {
+    const container = document.getElementById('container-corpo-modal-entidade');
+    if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+window.ativarGrupoFormEntidade = ativarGrupoFormEntidade;
+
+// Sincronização em tempo real do Município Ancorado (Imagem 5)
+function aoAlterarMunicipioAncorado(val) {
+  const fMun = document.getElementById('entidade-municipio');
+  if (fMun) fMun.value = val;
+  renderizarTabelaEscolasMunicipioModal(val);
+}
+window.aoAlterarMunicipioAncorado = aoAlterarMunicipioAncorado;
+
+function aoAlterarMunicipioForm(val) {
+  const anc = document.getElementById('entidade-municipio-ancorado');
+  if (anc) anc.value = val;
+  renderizarTabelaEscolasMunicipioModal(val);
+}
+window.aoAlterarMunicipioForm = aoAlterarMunicipioForm;
+
+function filtrarEscolasTabelaMunicipioModal(busca) {
+  const mun = document.getElementById('entidade-municipio-ancorado')?.value || document.getElementById('entidade-municipio')?.value || '';
+  renderizarTabelaEscolasMunicipioModal(mun, busca);
+}
+window.filtrarEscolasTabelaMunicipioModal = filtrarEscolasTabelaMunicipioModal;
+
+// Renderiza a Tabela de Escolas Vinculada ao Município (Área Roxa - Imagem 3 & 4)
+function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto = '') {
+  const tbody = document.getElementById('tbody-escolas-municipio-modal');
+  const tituloMun = document.getElementById('titulo-municipio-tabela-vinculada');
+  const badgeContador = document.getElementById('badge-contador-tabela-municipio');
+  const badgeHeader = document.getElementById('entidade-municipio-badge-count');
+
+  const munLimpo = String(municipioFiltro || '').trim();
+  const nMun = _normMun(munLimpo);
+
+  if (tituloMun) {
+    tituloMun.textContent = munLimpo ? munLimpo.toUpperCase() : '(Todos os Municípios)';
+  }
+
+  // Agrega todas as escolas conhecidas evitando duplicatas
+  const mapaUnico = new Map();
+
+  const pools = [
+    typeof _teCache !== 'undefined' ? _teCache : [],
+    typeof _escolasCache !== 'undefined' ? _escolasCache : []
+  ];
+  try {
+    const loc = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+    pools.push(loc);
+  } catch(e) {}
+
+  pools.forEach(arr => {
+    if (Array.isArray(arr)) {
+      arr.forEach(e => {
+        if (!e) return;
+        const nome = String(e.nome || '').trim();
+        const mun = String(e.municipio || '').trim();
+        const inep = String(e.inep || e.codigoInep || '').trim();
+        if (!nome && !inep) return;
+        const key = (inep && inep !== '-') ? inep : `${nome.toLowerCase()}_${mun.toLowerCase()}`;
+        if (!mapaUnico.has(key)) {
+          mapaUnico.set(key, { ...e, nome, municipio: mun, inep });
+        }
+      });
+    }
+  });
+
+  let lista = Array.from(mapaUnico.values());
+
+  // Filtra por Município se especificado
+  if (nMun) {
+    lista = lista.filter(e => _normMun(e.municipio) === nMun || _normMun(e.municipio).includes(nMun) || nMun.includes(_normMun(e.municipio)));
+  }
+
+  // Filtro de busca textual se houver
+  const bLimpo = String(buscaTexto || '').trim().toLowerCase();
+  if (bLimpo) {
+    lista = lista.filter(e => 
+      (e.nome || '').toLowerCase().includes(bLimpo) ||
+      (e.inep || '').toLowerCase().includes(bLimpo) ||
+      (e.diretor || '').toLowerCase().includes(bLimpo) ||
+      (e.super || '').toLowerCase().includes(bLimpo)
+    );
+  }
+
+  // Ordena por nome
+  lista.sort((a,b) => (a.nome || '').localeCompare(b.nome || '', 'pt-BR'));
+
+  // Atualiza badges de contagem
+  const total = lista.length;
+  const textoTotal = `${total} unidade${total === 1 ? '' : 's'}`;
+  if (badgeContador) badgeContador.textContent = textoTotal;
+  if (badgeHeader) badgeHeader.textContent = `🏫 ${textoTotal} vinculada${total === 1 ? '' : 's'}`;
+
+  if (!tbody) return;
+
+  if (lista.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="8" style="padding:24px 16px; text-align:center; color:#94a3b8; font-size:12.5px;">
+          <div style="font-size:22px; margin-bottom:6px;">🏫</div>
+          ${munLimpo 
+            ? `Nenhuma escola encontrada para o município <strong>${munLimpo}</strong>.<br><span style="font-size:11.5px; color:#64748b;">Preencha o formulário acima e clique em "Salvar Entidade / Escola" para cadastrar a primeira!</span>`
+            : 'Selecione ou digite um município no cabeçalho ancorado para listar as escolas vinculadas.'}
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = lista.map((e) => {
+    const comp = e.competencia || 'Municipal';
+    const compBadge = comp === 'Estadual'
+      ? '<span style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:800;">Estadual</span>'
+      : '<span style="background:rgba(59,130,246,0.2); color:#60a5fa; border:1px solid rgba(59,130,246,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:800;">Municipal</span>';
+
+    const loc = e.localidade || e.localizacao || 'Urbana';
+    const locBadge = loc.toLowerCase().includes('rural')
+      ? '<span style="background:rgba(245,158,11,0.2); color:#fbbf24; border:1px solid rgba(245,158,11,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:700;">Rural</span>'
+      : '<span style="background:rgba(6,182,212,0.2); color:#22d3ee; border:1px solid rgba(6,182,212,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:700;">Urbana</span>';
+
+    const alunos = Number(e.alunos || e.totalMatricula || 0);
+    const alunosStr = alunos > 0 ? alunos.toLocaleString('pt-BR') : '-';
+    const tel = e.telefone || e.contatoDiretor || '-';
+    const superReg = e.super || '-';
+    const idRef = e.inep || e.id || e.nome;
+
+    return `
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s;" onmouseover="this.style.background='rgba(139,92,246,0.08)'" onmouseout="this.style.background='transparent'">
+        <td style="padding:8px 12px; white-space:nowrap;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            ${compBadge}
+            <span style="color:#cbd5e1; font-weight:600; font-size:11.5px;">${e.municipio || '-'}</span>
+          </div>
+        </td>
+        <td style="padding:8px 12px; font-weight:700; color:#ffffff; font-size:12px; max-width:240px;">
+          ${e.nome || '-'}
+        </td>
+        <td style="padding:8px 12px; font-family:monospace; color:#93c5fd; font-size:11.5px; white-space:nowrap;">
+          ${e.inep || '-'}
+        </td>
+        <td style="padding:8px 12px; white-space:nowrap;">
+          ${locBadge}
+        </td>
+        <td style="padding:8px 12px; color:#cbd5e1; font-size:11.5px; white-space:nowrap;">
+          ${superReg}
+        </td>
+        <td style="padding:8px 12px; text-align:right; font-weight:800; color:#34d399; font-size:12px; white-space:nowrap;">
+          ${alunosStr}
+        </td>
+        <td style="padding:8px 12px; color:#94a3b8; font-size:11px; white-space:nowrap;">
+          ${tel}
+        </td>
+        <td style="padding:8px 12px; text-align:center; white-space:nowrap;">
+          <button type="button" onclick="carregarEscolaNoFormModal('${encodeURIComponent(idRef)}')"
+            title="Carregar ${e.nome} no formulário para edição"
+            style="background:linear-gradient(135deg,#10b981,#059669); border:1px solid rgba(52,211,153,0.6); color:#fff; width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(16,185,129,0.35); transition:transform 0.15s;"
+            onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            ✏️
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+window.renderizarTabelaEscolasMunicipioModal = renderizarTabelaEscolasMunicipioModal;
+
+// Carrega os dados de uma escola diretamente para edição no formulário
+function carregarEscolaNoFormModal(idRefEncoded) {
+  const target = decodeURIComponent(idRefEncoded).trim().toLowerCase();
+
+  const pools = [
+    typeof _teCache !== 'undefined' ? _teCache : [],
+    typeof _escolasCache !== 'undefined' ? _escolasCache : []
+  ];
+  try {
+    const loc = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+    pools.push(loc);
+  } catch(e) {}
+
+  let escola = null;
+  for (const arr of pools) {
+    if (Array.isArray(arr)) {
+      escola = arr.find(e => 
+        String(e.inep || e.codigoInep || '').trim().toLowerCase() === target ||
+        String(e.id || '').trim().toLowerCase() === target ||
+        String(e.nome || '').trim().toLowerCase() === target
+      );
+      if (escola) break;
+    }
+  }
+
+  if (!escola) {
+    if (typeof toast === 'function') toast('Escola não encontrada para edição', 'warning');
+    return;
+  }
+
+  abrirModalCadastroEntidade(escola);
+  ativarGrupoFormEntidade(2); // abre no grupo 2 (Identificação) para conferência direta
+  const container = document.getElementById('container-corpo-modal-entidade');
+  if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
+  if (typeof toast === 'function') toast(`Carregados dados de: ${escola.nome}`, 'info', 2000);
+}
+window.carregarEscolaNoFormModal = carregarEscolaNoFormModal;
+
 function abrirModalCadastroEntidade(dadosExistentes = null) {
   const modal = document.getElementById('modal-popup-cadastro-entidade');
   if (!modal) return;
@@ -7440,12 +7748,15 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
   const form = document.getElementById('form-cadastro-entidade');
   if (form) form.reset();
 
+  popularMunicipiosAncorados();
+
   const setVal = (id, val) => {
     const el = document.getElementById(id);
     if (el) el.value = (val !== null && val !== undefined) ? String(val) : '';
   };
 
   const tituloEl = document.getElementById('entidade-modal-titulo');
+  let munAtivo = '';
 
   if (dadosExistentes) {
     if (tituloEl) tituloEl.textContent = `Editar Entidade: ${dadosExistentes.nome || 'Escola'}`;
@@ -7453,6 +7764,9 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-categoria', dadosExistentes.categoria || 'Conselho Escolar');
     setVal('entidade-nome', dadosExistentes.nome || '');
     setVal('entidade-municipio', dadosExistentes.municipio || '');
+    setVal('entidade-municipio-ancorado', dadosExistentes.municipio || '');
+    munAtivo = dadosExistentes.municipio || '';
+
     setVal('entidade-alunos', dadosExistentes.alunos || dadosExistentes.totalMatricula || dadosExistentes.alunosModalidade || '');
     setVal('entidade-modalidade', dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '');
     setVal('entidade-inep', dadosExistentes.inep || dadosExistentes.codigoInep || '');
@@ -7488,6 +7802,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
 
     aoSelecionarTipoEntidadeForm(tipoRadio);
+    ativarGrupoFormEntidade(1);
   } else {
     if (tituloEl) tituloEl.textContent = 'Cadastro Geral de Entidade / Escola';
     setVal('entidade-form-id', '');
@@ -7499,9 +7814,17 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     // Se houver um município já selecionado na aba de contatos ou no filtro, pré-preenche
     const munAtual = document.getElementById('contatos-municipio-label')?.textContent;
     if (munAtual && !munAtual.includes('(Todos)')) {
-      setVal('entidade-municipio', munAtual.trim());
+      munAtivo = munAtual.trim();
+      setVal('entidade-municipio', munAtivo);
+      setVal('entidade-municipio-ancorado', munAtivo);
+    } else {
+      setVal('entidade-municipio', '');
+      setVal('entidade-municipio-ancorado', '');
     }
+    ativarGrupoFormEntidade(1);
   }
+
+  renderizarTabelaEscolasMunicipioModal(munAtivo);
 
   modal.style.display = 'flex';
 }
@@ -7643,6 +7966,14 @@ function salvarCadastroEntidade(e) {
   // 5. Atualizar contatos/badges se estiver na página de contatos
   if (typeof renderContatos === 'function') {
     renderContatos();
+  }
+
+  // 5.5 Atualiza em tempo real a tabela de escolas vinculada ao município no modal e o datalist ancorado (Imagens 3, 4 e 5)
+  if (typeof renderizarTabelaEscolasMunicipioModal === 'function') {
+    renderizarTabelaEscolasMunicipioModal(municipio);
+  }
+  if (typeof popularMunicipiosAncorados === 'function') {
+    popularMunicipiosAncorados();
   }
 
   // 6. Enviar diretamente para a planilha do Google Sheets via API backend (sem precisar abrir a planilha)
