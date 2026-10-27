@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.66
+// Versão do Sistema: v1.3.55
 // ============================================================
-window.APP_VERSION = 'v1.3.66';
+window.APP_VERSION = 'v1.3.55';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -340,18 +340,18 @@ function alternarGuiaFormulario(guia) {
 
   const resetBtn = (btn) => {
     if (!btn) return;
-    btn.style.background = '#ffffff';
-    btn.style.color = '#475569';
-    btn.style.border = '1px solid #cbd5e1';
+    btn.style.background = 'none';
+    btn.style.color = 'var(--text-secondary)';
+    btn.style.border = '1px solid transparent';
     btn.style.boxShadow = 'none';
   };
 
   const highlightBtn = (btn) => {
     if (!btn) return;
-    btn.style.background = '#164e63';
+    btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
     btn.style.color = '#ffffff';
-    btn.style.border = '1px solid #164e63';
-    btn.style.boxShadow = 'none';
+    btn.style.border = '1px solid #34d399';
+    btn.style.boxShadow = '0 3px 12px rgba(16,185,129,0.3)';
   };
 
   if (guia === 'objetivo') {
@@ -535,8 +535,7 @@ function navegar(pagina) {
     'gdsm-novoregime': '🚀 GDSM — Novo Regime',
     'sistema-info': '🖥️ Informações do Sistema & Diagnóstico'
   };
-  const elTopbarTitle = document.getElementById('topbar-title');
-  if (elTopbarTitle) elTopbarTitle.textContent = titles[pagina] || pagina;
+  document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
 
   // Atualizar conteúdo
   if (pagina === 'dashboard') renderDashboard();
@@ -636,20 +635,16 @@ function renderDashboard() {
   const valorPago   = processos.filter(p => normalizar(p.status) === 'pago').reduce((a,p) => a + (p.valorOf || 0), 0);
   const valorAPagar = valorTotal - valorPago;
 
-  const setElText = (id, val) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = val;
-  };
-
-  setElText('stat-total', total.toLocaleString('pt-BR'));
-  setElText('stat-valor-pago', formatCurrency(valorPago));
-  setElText('stat-valor-total-global', formatCurrency(valorTotal));
-  setElText('stat-valor-a-pagar', formatCurrency(valorAPagar));
-  setElText('stat-autorizado', autorizados.toLocaleString('pt-BR'));
-  setElText('stat-cancelado', cancelados.toLocaleString('pt-BR'));
-  setElText('stat-pago', pagos.toLocaleString('pt-BR'));
-  setElText('stat-pendente', pendentes.toLocaleString('pt-BR'));
-  setElText('stat-prioridade', prioridade.toLocaleString('pt-BR'));
+  document.getElementById('stat-total').textContent      = total.toLocaleString('pt-BR');
+  document.getElementById('stat-valor-pago').textContent = formatCurrency(valorPago);
+  document.getElementById('stat-valor-total-global').textContent = formatCurrency(valorTotal);
+  document.getElementById('stat-valor-a-pagar').textContent = formatCurrency(valorAPagar);
+  document.getElementById('stat-autorizado').textContent = autorizados.toLocaleString('pt-BR');
+  const elStatCancelado = document.getElementById('stat-cancelado');
+  if (elStatCancelado) elStatCancelado.textContent = cancelados.toLocaleString('pt-BR');
+  document.getElementById('stat-pago').textContent       = pagos.toLocaleString('pt-BR');
+  document.getElementById('stat-pendente').textContent   = pendentes.toLocaleString('pt-BR');
+  document.getElementById('stat-prioridade').textContent = prioridade.toLocaleString('pt-BR');
 
   // --- Alertas de Datas ---
   let processosSemData = 0;
@@ -722,11 +717,9 @@ function renderDashboard() {
     '#06b6d4','#f97316','#6366f1','#ec4899','#14b8a6'
   ];
 
-  const elChartStatus = document.getElementById('chart-status');
-  if (elChartStatus) {
-    const ctxStatus = elChartStatus.getContext('2d');
-    if (chartStatus) chartStatus.destroy();
-    chartStatus = new Chart(ctxStatus, {
+  const ctxStatus = document.getElementById('chart-status').getContext('2d');
+  if (chartStatus) chartStatus.destroy();
+  chartStatus = new Chart(ctxStatus, {
     type: 'doughnut',
     data: {
       labels: statusLabels,
@@ -783,8 +776,8 @@ function renderDashboard() {
           }
         }
       }
-    });
-  }
+    }
+  });
 
   // Gráfico: Categoria
   const catCounts = {};
@@ -813,71 +806,68 @@ function renderDashboard() {
   };
   const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
 
-  const elChartCat = document.getElementById('chart-categoria');
-  if (elChartCat) {
-    const ctxCategoria = elChartCat.getContext('2d');
-    if (chartCategoria) chartCategoria.destroy();
-    chartCategoria = new Chart(ctxCategoria, {
-      type: 'doughnut',
-      data: {
-        labels: catLabels,
-        datasets: [{ data: catValues, backgroundColor: colorsCat, borderWidth: 0, hoverOffset: 4 }]
-      },
-      options: {
-        cutout: '65%',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            onClick: function(e, legendItem, legend) {
-              const index = legendItem.index;
-              const ci = legend.chart;
-              ci.toggleDataVisibility(index);
-              ci.update();
-            },
-            labels: {
-              color: '#f8fafc',
-              font: { size: 10 },
-              padding: 10,
-              generateLabels: (chart) => {
-                const data = chart.data;
-                if (data.labels.length && data.datasets.length) {
-                  return data.labels.map((label, i) => {
-                    const meta = chart.getDatasetMeta(0);
-                    const style = meta.controller.getStyle(i);
-                    const value = data.datasets[0].data[i];
-                    const percent = ((value / totalCat) * 100).toFixed(1) + '%';
-                    const isHidden = !chart.getDataVisibility(i);
-                    return {
-                      text: `${label.toUpperCase()} (${percent})`,
-                      fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
-                      strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
-                      lineWidth: style.borderWidth,
-                      fontColor: isHidden ? '#475569' : '#f7f7f7',
-                      textDecoration: 'none',
-                      hidden: false,
-                      index: i
-                    };
-                  });
-                }
-                return [];
-              }
-            }
+  const ctxCategoria = document.getElementById('chart-categoria').getContext('2d');
+  if (chartCategoria) chartCategoria.destroy();
+  chartCategoria = new Chart(ctxCategoria, {
+    type: 'doughnut',
+    data: {
+      labels: catLabels,
+      datasets: [{ data: catValues, backgroundColor: colorsCat, borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: {
+      cutout: '65%',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          onClick: function(e, legendItem, legend) {
+            const index = legendItem.index;
+            const ci = legend.chart;
+            ci.toggleDataVisibility(index);
+            ci.update();
           },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const val = context.parsed;
-                const pct = ((val / totalCat) * 100).toFixed(1) + '%';
-                return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
+          labels: {
+            color: '#f8fafc',
+            font: { size: 10 },
+            padding: 10,
+            generateLabels: (chart) => {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const meta = chart.getDatasetMeta(0);
+                  const style = meta.controller.getStyle(i);
+                  const value = data.datasets[0].data[i];
+                  const percent = ((value / totalCat) * 100).toFixed(1) + '%';
+                  const isHidden = !chart.getDataVisibility(i);
+                  return {
+                    text: `${label.toUpperCase()} (${percent})`,
+                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
+                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                    lineWidth: style.borderWidth,
+                    fontColor: isHidden ? '#475569' : '#f7f7f7',
+                    textDecoration: 'none',
+                    hidden: false,
+                    index: i
+                  };
+                });
               }
+              return [];
+            }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const val = context.parsed;
+              const pct = ((val / totalCat) * 100).toFixed(1) + '%';
+              return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
             }
           }
         }
       }
-    });
-  }
+    }
+  });
 
   // Gráfico: Tipo
   const tipoCounts = {};
@@ -910,71 +900,68 @@ function renderDashboard() {
   };
   const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
 
-  const elChartTipo = document.getElementById('chart-tipo');
-  if (elChartTipo) {
-    const ctxTipo = elChartTipo.getContext('2d');
-    if (chartTipo) chartTipo.destroy();
-    chartTipo = new Chart(ctxTipo, {
-      type: 'doughnut',
-      data: {
-        labels: tipoLabels,
-        datasets: [{ data: tipoValues, backgroundColor: colorsTipo, borderWidth: 0, hoverOffset: 4 }]
-      },
-      options: {
-        cutout: '65%',
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            position: 'bottom',
-            onClick: function(e, legendItem, legend) {
-              const index = legendItem.index;
-              const ci = legend.chart;
-              ci.toggleDataVisibility(index);
-              ci.update();
-            },
-            labels: {
-              color: '#f8fafc',
-              font: { size: 10 },
-              padding: 10,
-              generateLabels: (chart) => {
-                const data = chart.data;
-                if (data.labels.length && data.datasets.length) {
-                  return data.labels.map((label, i) => {
-                    const meta = chart.getDatasetMeta(0);
-                    const style = meta.controller.getStyle(i);
-                    const value = data.datasets[0].data[i];
-                    const percent = ((value / totalTipo) * 100).toFixed(1) + '%';
-                    const isHidden = !chart.getDataVisibility(i);
-                    return {
-                      text: `${label.toUpperCase()} (${percent})`,
-                      fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
-                      strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
-                      lineWidth: style.borderWidth,
-                      fontColor: isHidden ? '#475569' : '#f7f7f7',
-                      textDecoration: 'none',
-                      hidden: false,
-                      index: i
-                    };
-                  });
-                }
-                return [];
-              }
-            }
+  const ctxTipo = document.getElementById('chart-tipo').getContext('2d');
+  if (chartTipo) chartTipo.destroy();
+  chartTipo = new Chart(ctxTipo, {
+    type: 'doughnut',
+    data: {
+      labels: tipoLabels,
+      datasets: [{ data: tipoValues, backgroundColor: colorsTipo, borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: {
+      cutout: '65%',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          onClick: function(e, legendItem, legend) {
+            const index = legendItem.index;
+            const ci = legend.chart;
+            ci.toggleDataVisibility(index);
+            ci.update();
           },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                const val = context.parsed;
-                const pct = ((val / totalTipo) * 100).toFixed(1) + '%';
-                return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
+          labels: {
+            color: '#f8fafc',
+            font: { size: 10 },
+            padding: 10,
+            generateLabels: (chart) => {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const meta = chart.getDatasetMeta(0);
+                  const style = meta.controller.getStyle(i);
+                  const value = data.datasets[0].data[i];
+                  const percent = ((value / totalTipo) * 100).toFixed(1) + '%';
+                  const isHidden = !chart.getDataVisibility(i);
+                  return {
+                    text: `${label.toUpperCase()} (${percent})`,
+                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
+                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                    lineWidth: style.borderWidth,
+                    fontColor: isHidden ? '#475569' : '#f7f7f7',
+                    textDecoration: 'none',
+                    hidden: false,
+                    index: i
+                  };
+                });
               }
+              return [];
+            }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const val = context.parsed;
+              const pct = ((val / totalTipo) * 100).toFixed(1) + '%';
+              return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
             }
           }
         }
       }
-    });
-  }
+    }
+  });
 
   // Gráfico: Todos Municípios por valor
   const munValor = {};
@@ -1798,12 +1785,9 @@ function renderProcessos() {
     </tr>`;
 
   // Info paginação
-  const elPgInfo = document.getElementById('pg-info');
-  if (elPgInfo) {
-    elPgInfo.textContent = total === 0
-      ? 'Nenhum resultado'
-      : `Exibindo ${inicio + 1}–${Math.min(inicio + state.itensPorPagina, total)} de ${total} processos`;
-  }
+  document.getElementById('pg-info').textContent = total === 0
+    ? 'Nenhum resultado'
+    : `Exibindo ${inicio + 1}–${Math.min(inicio + state.itensPorPagina, total)} de ${total} processos`;
 
   // Controles paginação
   renderPaginacao(totalPags);
@@ -2467,8 +2451,7 @@ function renderFormulario() {
     }
   }
 
-  const elFormTitle = document.getElementById('form-title');
-  if (elFormTitle) elFormTitle.textContent = processo ? 'Editar Processo' : 'Novo Processo';
+  document.getElementById('form-title').textContent = processo ? 'Editar Processo' : 'Novo Processo';
 
   // Lógica de Apontamento e Histórico
   const currentSessao = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
@@ -4578,8 +4561,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Página inicial
-  const canDashInit = (typeof window.podeAcessarDashboard === 'function') ? window.podeAcessarDashboard() : false;
-  navegar(canDashInit ? 'dashboard' : 'processos');
+  navegar('dashboard');
 });
 
 // ---- EXPORTAÇÃO ----
@@ -7335,8 +7317,7 @@ window.abrirTeModal = function(globalIdx) {
   if (!e) return;
   
   document.getElementById('te-form-cache-idx').value = globalIdx;
-  const elTeTitulo = document.getElementById('te-modal-titulo');
-  if (elTeTitulo) elTeTitulo.textContent = `Editar: ${e.nome || 'Escola'}`;
+  document.getElementById('te-modal-titulo').textContent = `Editar: ${e.nome || 'Escola'}`;
   
   // Identificação
   document.getElementById('te-form-nome').value = e.nome || '';
@@ -7531,16 +7512,10 @@ function ativarGrupoFormEntidade(num) {
     if (btn) {
       if (num === i) {
         btn.classList.add('active');
-        btn.style.background = 'rgba(255,255,255,0.1)';
-        btn.style.borderColor = 'rgba(255,255,255,0.25)';
-        btn.style.color = '#ffffff';
-        btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
-        btn.style.filter = 'none';
+        btn.style.boxShadow = '0 0 14px rgba(56,189,248,0.55)';
+        btn.style.filter = 'brightness(1.15)';
       } else {
         btn.classList.remove('active');
-        btn.style.background = 'transparent';
-        btn.style.borderColor = 'transparent';
-        btn.style.color = '#94a3b8';
         btn.style.boxShadow = 'none';
         btn.style.filter = 'none';
       }
@@ -7550,12 +7525,12 @@ function ativarGrupoFormEntidade(num) {
   const btnTodos = document.getElementById('tab-grupo-btn-todos');
   if (btnTodos) {
     if (num === 'todos') {
-      btnTodos.style.background = 'rgba(255,255,255,0.12)';
-      btnTodos.style.borderColor = 'rgba(255,255,255,0.3)';
-      btnTodos.style.color = '#ffffff';
+      btnTodos.style.background = 'rgba(56,189,248,0.25)';
+      btnTodos.style.borderColor = '#38bdf8';
+      btnTodos.style.color = '#38bdf8';
     } else {
       btnTodos.style.background = 'rgba(255,255,255,0.04)';
-      btnTodos.style.borderColor = 'rgba(255,255,255,0.1)';
+      btnTodos.style.borderColor = 'rgba(255,255,255,0.12)';
       btnTodos.style.color = '#94a3b8';
     }
   }
@@ -7589,8 +7564,8 @@ function filtrarEscolasTabelaMunicipioModal(busca) {
 }
 window.filtrarEscolasTabelaMunicipioModal = filtrarEscolasTabelaMunicipioModal;
 
-// Renderiza a Tabela de Escolas Vinculada ao Município (Padrão Harmonizado com CRUD Completo)
-function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto = '', forcarTodas = false) {
+// Renderiza a Tabela de Escolas Vinculada ao Município (Área Roxa - Imagem 3 & 4)
+function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto = '') {
   const tbody = document.getElementById('tbody-escolas-municipio-modal');
   const tituloMun = document.getElementById('titulo-municipio-tabela-vinculada');
   const badgeContador = document.getElementById('badge-contador-tabela-municipio');
@@ -7598,6 +7573,10 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
 
   const munLimpo = String(municipioFiltro || '').trim();
   const nMun = _normMun(munLimpo);
+
+  if (tituloMun) {
+    tituloMun.textContent = munLimpo ? munLimpo.toUpperCase() : '(Todos os Municípios)';
+  }
 
   // Agrega todas as escolas conhecidas evitando duplicatas
   const mapaUnico = new Map();
@@ -7627,31 +7606,11 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
     }
   });
 
-  let todasEscolas = Array.from(mapaUnico.values());
+  let lista = Array.from(mapaUnico.values());
 
-  // Se forçarTodas ou não houver filtro de município, mostra todas
-  let lista = todasEscolas;
-  let exibindoTodas = false;
-
-  if (nMun && !forcarTodas) {
-    const filtradas = todasEscolas.filter(e => _normMun(e.municipio) === nMun || _normMun(e.municipio).includes(nMun) || nMun.includes(_normMun(e.municipio)));
-    if (filtradas.length > 0) {
-      lista = filtradas;
-    } else {
-      // Se o município filtrado não possui escolas, exibe as escolas gerais e sinaliza
-      lista = todasEscolas;
-      exibindoTodas = true;
-    }
-  } else if (!nMun) {
-    exibindoTodas = true;
-  }
-
-  if (tituloMun) {
-    if (exibindoTodas) {
-      tituloMun.textContent = munLimpo ? `(Mostrando Todas - Nenhuma vinculada a ${munLimpo})` : '(Todas as Escolas)';
-    } else {
-      tituloMun.textContent = munLimpo.toUpperCase();
-    }
+  // Filtra por Município se especificado
+  if (nMun) {
+    lista = lista.filter(e => _normMun(e.municipio) === nMun || _normMun(e.municipio).includes(nMun) || nMun.includes(_normMun(e.municipio)));
   }
 
   // Filtro de busca textual se houver
@@ -7660,30 +7619,30 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
     lista = lista.filter(e => 
       (e.nome || '').toLowerCase().includes(bLimpo) ||
       (e.inep || '').toLowerCase().includes(bLimpo) ||
-      (e.municipio || '').toLowerCase().includes(bLimpo) ||
       (e.diretor || '').toLowerCase().includes(bLimpo) ||
       (e.super || '').toLowerCase().includes(bLimpo)
     );
   }
 
-  // Ordena por município e depois por nome
-  lista.sort((a,b) => (a.municipio || '').localeCompare(b.municipio || '', 'pt-BR') || (a.nome || '').localeCompare(b.nome || '', 'pt-BR'));
+  // Ordena por nome
+  lista.sort((a,b) => (a.nome || '').localeCompare(b.nome || '', 'pt-BR'));
 
   // Atualiza badges de contagem
   const total = lista.length;
   const textoTotal = `${total} unidade${total === 1 ? '' : 's'}`;
   if (badgeContador) badgeContador.textContent = textoTotal;
-  if (badgeHeader) badgeHeader.textContent = `🏫 ${textoTotal} ${exibindoTodas ? 'no total' : 'vinculadas'}`;
+  if (badgeHeader) badgeHeader.textContent = `🏫 ${textoTotal} vinculada${total === 1 ? '' : 's'}`;
 
   if (!tbody) return;
 
   if (lista.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="8" style="padding:28px 16px; text-align:center; color:#94a3b8; font-size:12.5px;">
-          <div style="font-size:24px; margin-bottom:6px;">🏫</div>
-          Nenhuma escola encontrada.${bLimpo ? ' Tente outro termo de busca.' : ''}<br>
-          <span style="font-size:11.5px; color:#64748b;">Preencha o formulário acima e clique em "Salvar Entidade / Escola" para adicionar!</span>
+        <td colspan="8" style="padding:24px 16px; text-align:center; color:#94a3b8; font-size:12.5px;">
+          <div style="font-size:22px; margin-bottom:6px;">🏫</div>
+          ${munLimpo 
+            ? `Nenhuma escola encontrada para o município <strong>${munLimpo}</strong>.<br><span style="font-size:11.5px; color:#64748b;">Preencha o formulário acima e clique em "Salvar Entidade / Escola" para cadastrar a primeira!</span>`
+            : 'Selecione ou digite um município no cabeçalho ancorado para listar as escolas vinculadas.'}
         </td>
       </tr>
     `;
@@ -7693,13 +7652,13 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
   tbody.innerHTML = lista.map((e) => {
     const comp = e.competencia || 'Municipal';
     const compBadge = comp === 'Estadual'
-      ? '<span style="background:rgba(255,255,255,0.08); color:#f8fafc; border:1px solid rgba(255,255,255,0.18); padding:2px 8px; border-radius:4px; font-size:10.5px; font-weight:700;">Estadual</span>'
-      : '<span style="background:rgba(255,255,255,0.05); color:#cbd5e1; border:1px solid rgba(255,255,255,0.12); padding:2px 8px; border-radius:4px; font-size:10.5px; font-weight:700;">Municipal</span>';
+      ? '<span style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:800;">Estadual</span>'
+      : '<span style="background:rgba(59,130,246,0.2); color:#60a5fa; border:1px solid rgba(59,130,246,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:800;">Municipal</span>';
 
     const loc = e.localidade || e.localizacao || 'Urbana';
     const locBadge = loc.toLowerCase().includes('rural')
-      ? '<span style="background:rgba(255,255,255,0.05); color:#e2e8f0; border:1px solid rgba(255,255,255,0.1); padding:2px 8px; border-radius:4px; font-size:10.5px;">Rural</span>'
-      : '<span style="background:rgba(255,255,255,0.05); color:#e2e8f0; border:1px solid rgba(255,255,255,0.1); padding:2px 8px; border-radius:4px; font-size:10.5px;">Urbana</span>';
+      ? '<span style="background:rgba(245,158,11,0.2); color:#fbbf24; border:1px solid rgba(245,158,11,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:700;">Rural</span>'
+      : '<span style="background:rgba(6,182,212,0.2); color:#22d3ee; border:1px solid rgba(6,182,212,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:700;">Urbana</span>';
 
     const alunos = Number(e.alunos || e.totalMatricula || 0);
     const alunosStr = alunos > 0 ? alunos.toLocaleString('pt-BR') : '-';
@@ -7708,121 +7667,44 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
     const idRef = e.inep || e.id || e.nome;
 
     return `
-      <tr style="border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
-        <td style="padding:10px 14px; white-space:nowrap;">
-          <div style="display:flex; align-items:center; gap:8px;">
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s;" onmouseover="this.style.background='rgba(139,92,246,0.08)'" onmouseout="this.style.background='transparent'">
+        <td style="padding:8px 12px; white-space:nowrap;">
+          <div style="display:flex; align-items:center; gap:6px;">
             ${compBadge}
-            <span style="color:#e2e8f0; font-weight:600; font-size:12px;">${e.municipio || '-'}</span>
+            <span style="color:#cbd5e1; font-weight:600; font-size:11.5px;">${e.municipio || '-'}</span>
           </div>
         </td>
-        <td style="padding:10px 14px; font-weight:700; color:#f8fafc; font-size:12.5px; max-width:280px;">
+        <td style="padding:8px 12px; font-weight:700; color:#ffffff; font-size:12px; max-width:240px;">
           ${e.nome || '-'}
         </td>
-        <td style="padding:10px 14px; font-family:monospace; color:#38bdf8; font-size:12px; white-space:nowrap;">
+        <td style="padding:8px 12px; font-family:monospace; color:#93c5fd; font-size:11.5px; white-space:nowrap;">
           ${e.inep || '-'}
         </td>
-        <td style="padding:10px 14px; white-space:nowrap;">
+        <td style="padding:8px 12px; white-space:nowrap;">
           ${locBadge}
         </td>
-        <td style="padding:10px 14px; color:#cbd5e1; font-size:12px; white-space:nowrap;">
+        <td style="padding:8px 12px; color:#cbd5e1; font-size:11.5px; white-space:nowrap;">
           ${superReg}
         </td>
-        <td style="padding:10px 14px; text-align:right; font-weight:700; color:#f8fafc; font-size:12px; white-space:nowrap;">
+        <td style="padding:8px 12px; text-align:right; font-weight:800; color:#34d399; font-size:12px; white-space:nowrap;">
           ${alunosStr}
         </td>
-        <td style="padding:10px 14px; color:#94a3b8; font-size:11.5px; white-space:nowrap;">
+        <td style="padding:8px 12px; color:#94a3b8; font-size:11px; white-space:nowrap;">
           ${tel}
         </td>
-        <td style="padding:10px 14px; text-align:center; white-space:nowrap;">
-          <div style="display:inline-flex; align-items:center; gap:6px;">
-            <!-- EDITAR (CRUD) -->
-            <button type="button" onclick="carregarEscolaNoFormModal('${encodeURIComponent(idRef)}')"
-              title="Editar ${e.nome} no formulário"
-              style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#f8fafc; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:11.5px; font-weight:700; display:inline-flex; align-items:center; gap:4px; transition:all 0.15s;"
-              onmouseover="this.style.background='rgba(56,189,248,0.2)'; this.style.borderColor='#38bdf8';" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='rgba(255,255,255,0.2)';">
-              ✏️ <span>Editar</span>
-            </button>
-            <!-- DUPLICAR / BASEAR NOVO -->
-            <button type="button" onclick="duplicarEscolaNoFormModal('${encodeURIComponent(idRef)}')"
-              title="Usar ${e.nome} como modelo para nova escola"
-              style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14); color:#cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11.5px; display:inline-flex; align-items:center; gap:4px; transition:all 0.15s;"
-              onmouseover="this.style.background='rgba(255,255,255,0.12)';" onmouseout="this.style.background='rgba(255,255,255,0.05)';">
-              📋 <span>Duplicar</span>
-            </button>
-            <!-- EXCLUIR LOCAL -->
-            <button type="button" onclick="excluirEscolaLocalModal('${encodeURIComponent(idRef)}')"
-              title="Excluir cadastro desta escola"
-              style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#fca5a5; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; transition:all 0.15s;"
-              onmouseover="this.style.background='rgba(239,68,68,0.25)';" onmouseout="this.style.background='rgba(239,68,68,0.1)';">
-              🗑️
-            </button>
-          </div>
+        <td style="padding:8px 12px; text-align:center; white-space:nowrap;">
+          <button type="button" onclick="carregarEscolaNoFormModal('${encodeURIComponent(idRef)}')"
+            title="Carregar ${e.nome} no formulário para edição"
+            style="background:linear-gradient(135deg,#10b981,#059669); border:1px solid rgba(52,211,153,0.6); color:#fff; width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(16,185,129,0.35); transition:transform 0.15s;"
+            onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+            ✏️
+          </button>
         </td>
       </tr>
     `;
   }).join('');
 }
 window.renderizarTabelaEscolasMunicipioModal = renderizarTabelaEscolasMunicipioModal;
-
-// Mostra todas as escolas do Estado na tabela do modal
-function carregarTodasEscolasTabelaModal() {
-  const fMun = document.getElementById('entidade-municipio-ancorado');
-  if (fMun) fMun.value = '';
-  renderizarTabelaEscolasMunicipioModal('', '', true);
-}
-window.carregarTodasEscolasTabelaModal = carregarTodasEscolasTabelaModal;
-
-// Duplicar / usar escola existente como modelo para novo cadastro
-function duplicarEscolaNoFormModal(idRefEncoded) {
-  carregarEscolaNoFormModal(idRefEncoded);
-  const idEl = document.getElementById('entidade-form-id');
-  if (idEl) idEl.value = ''; // limpa id para salvar como novo
-  const nomeEl = document.getElementById('entidade-nome');
-  if (nomeEl) {
-    nomeEl.value = `${nomeEl.value} (Cópia)`;
-    nomeEl.focus();
-  }
-  const inepEl = document.getElementById('entidade-inep');
-  if (inepEl) inepEl.value = '';
-  if (typeof toast === 'function') toast('Dados carregados como modelo para nova escola', 'info');
-}
-window.duplicarEscolaNoFormModal = duplicarEscolaNoFormModal;
-
-// Excluir escola do cadastro local
-function excluirEscolaLocalModal(idRefEncoded) {
-  const target = decodeURIComponent(idRefEncoded).trim().toLowerCase();
-  if (!confirm('Deseja realmente remover o registro desta escola?')) return;
-
-  try {
-    let loc = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
-    loc = loc.filter(e => 
-      String(e.inep || e.codigoInep || '').trim().toLowerCase() !== target &&
-      String(e.id || '').trim().toLowerCase() !== target &&
-      String(e.nome || '').trim().toLowerCase() !== target
-    );
-    localStorage.setItem('seduc_entidades_cadastradas_local', JSON.stringify(loc));
-  } catch(e) {}
-
-  if (typeof _teCache !== 'undefined' && Array.isArray(_teCache)) {
-    _teCache = _teCache.filter(e => 
-      String(e.inep || e.codigoInep || '').trim().toLowerCase() !== target &&
-      String(e.id || '').trim().toLowerCase() !== target &&
-      String(e.nome || '').trim().toLowerCase() !== target
-    );
-  }
-  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
-    _escolasCache = _escolasCache.filter(e => 
-      String(e.inep || e.codigoInep || '').trim().toLowerCase() !== target &&
-      String(e.id || '').trim().toLowerCase() !== target &&
-      String(e.nome || '').trim().toLowerCase() !== target
-    );
-  }
-
-  const munAtual = document.getElementById('entidade-municipio-ancorado')?.value || '';
-  renderizarTabelaEscolasMunicipioModal(munAtual);
-  if (typeof toast === 'function') toast('Registro removido com sucesso!', 'success');
-}
-window.excluirEscolaLocalModal = excluirEscolaLocalModal;
 
 // Carrega os dados de uma escola diretamente para edição no formulário
 function carregarEscolaNoFormModal(idRefEncoded) {
@@ -8268,13 +8150,6 @@ window.exportarCadastrosLocaisCSV = exportarCadastrosLocaisCSV;
 function abrirModalGeradorLink() {
   popularMunicipiosGeradorLink();
   atualizarSuperGeradorLink();
-  const selSup = document.getElementById('link-gen-super');
-  if (selSup) {
-    selSup.disabled = false;
-    selSup.removeAttribute('readonly');
-    selSup.style.pointerEvents = 'auto';
-    selSup.style.cursor = 'pointer';
-  }
   const modal = document.getElementById('modal-gerador-link-cadastro');
   if (modal) modal.style.display = 'flex';
 }
@@ -8286,102 +8161,30 @@ function fecharModalGeradorLink() {
 }
 window.fecharModalGeradorLink = fecharModalGeradorLink;
 
-function setAppTheme(themeValue) {
-  const themeButtons = document.querySelectorAll('.theme-btn');
-  themeButtons.forEach(btn => btn.classList.remove('active'));
-  const activeBtn = document.querySelector(`[data-theme-value="${themeValue}"]`);
-  if (activeBtn) activeBtn.classList.add('active');
-
-  if (themeValue === 'system') {
-    document.documentElement.removeAttribute('data-theme');
-    localStorage.setItem('pref_theme', 'system');
-    localStorage.removeItem('seduc_tema_suave_imagem2');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    if (prefersDark) {
-      document.body.classList.remove('tema-claro');
-      document.body.classList.add('tema-escuro');
-    } else {
-      document.body.classList.add('tema-claro');
-      document.body.classList.remove('tema-escuro');
-    }
-  } else if (themeValue === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    document.body.classList.remove('tema-claro');
-    document.body.classList.add('tema-escuro');
-    localStorage.setItem('pref_theme', 'dark');
-    localStorage.setItem('seduc_tema_suave_imagem2', '0');
-  } else {
-    // light / suave
-    document.documentElement.setAttribute('data-theme', 'light');
-    document.body.classList.add('tema-claro');
-    document.body.classList.remove('tema-escuro');
-    localStorage.setItem('pref_theme', 'light');
-    localStorage.setItem('seduc_tema_suave_imagem2', '1');
-  }
-
-  // Compatibilidade com botão simples legado (se ainda existir)
-  const isLight = document.body.classList.contains('tema-claro');
+function toggleTemaClaroSuave() {
+  const isLight = document.body.classList.toggle('tema-claro');
+  localStorage.setItem('seduc_tema_suave_imagem2', isLight ? '1' : '0');
   const btnText = document.getElementById('btn-toggle-tema-text');
   const btnIcon = document.getElementById('btn-toggle-tema-icon');
   if (btnText) btnText.textContent = isLight ? 'Tema Escuro' : 'Tema Suave';
   if (btnIcon) btnIcon.textContent = isLight ? '🌙' : '☀️';
-}
-window.setAppTheme = setAppTheme;
-window.setTheme = setAppTheme;
-
-function toggleTemaClaroSuave() {
-  const current = localStorage.getItem('pref_theme') || (document.body.classList.contains('tema-claro') ? 'light' : 'dark');
-  setAppTheme(current === 'light' ? 'dark' : 'light');
+  if (typeof toast === 'function') {
+    toast(isLight ? 'Tema Suave (Padrão Imagem 2) ativado' : 'Tema Escuro ativado', 'info');
+  }
 }
 window.toggleTemaClaroSuave = toggleTemaClaroSuave;
 
 function aplicarTemaSalvo() {
-  const pref = localStorage.getItem('pref_theme');
-  const legado = localStorage.getItem('seduc_tema_suave_imagem2');
-  let chosen = 'system';
-  if (pref) {
-    chosen = pref;
-  } else if (legado === '1') {
-    chosen = 'light';
-  } else if (legado === '0') {
-    chosen = 'dark';
+  const salvo = localStorage.getItem('seduc_tema_suave_imagem2');
+  if (salvo === '1') {
+    document.body.classList.add('tema-claro');
+    const btnText = document.getElementById('btn-toggle-tema-text');
+    const btnIcon = document.getElementById('btn-toggle-tema-icon');
+    if (btnText) btnText.textContent = 'Tema Escuro';
+    if (btnIcon) btnIcon.textContent = '🌙';
   }
-  setAppTheme(chosen);
 }
 window.aplicarTemaSalvo = aplicarTemaSalvo;
-if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', aplicarTemaSalvo);
-  } else {
-    aplicarTemaSalvo();
-  }
-}
-
-// Ouvinte para mudanças na preferência de cor do SO quando em modo system/auto
-if (typeof window !== 'undefined' && window.matchMedia) {
-  try {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-      const current = localStorage.getItem('pref_theme') || 'system';
-      if (current === 'system') {
-        setAppTheme('system');
-      }
-    });
-  } catch(e) {}
-}
-
-/* LÓGICA DE ABAS (TABS) GENÉRICA */
-function openTab(evt, tabId) {
-  document.querySelectorAll('.tab-content').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  const target = document.getElementById(tabId);
-  if (target) target.classList.add('active');
-  if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
-}
-window.openTab = openTab;
 
 function atualizarSuperGeradorLink() {
   const selMun = document.getElementById('link-gen-municipio');
@@ -8403,12 +8206,6 @@ function atualizarSuperGeradorLink() {
   if (targetVal) {
     selSup.value = targetVal;
   }
-  // Garantir explicitamente que esteja ativado (enable: true)
-  selSup.disabled = false;
-  selSup.removeAttribute('readonly');
-  selSup.style.pointerEvents = 'auto';
-  selSup.style.cursor = 'pointer';
-
   // Sincroniza e gera o link automaticamente para o município selecionado
   gerarLinkCadastroComParametros();
 }
@@ -8603,22 +8400,6 @@ function iniciarModoCadastroExterno(urlParams) {
   }, 350);
 }
 window.iniciarModoCadastroExterno = iniciarModoCadastroExterno;
-
-// Auto-ativação ao carregar página quando acessada via link gerado pré-definido
-document.addEventListener('DOMContentLoaded', () => {
-  try {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('cadastro_entidade') === '1' || (params.has('mun') && params.has('cat'))) {
-      setTimeout(() => {
-        if (typeof iniciarModoCadastroExterno === 'function') {
-          iniciarModoCadastroExterno(params);
-        }
-      }, 300);
-    }
-  } catch (e) {
-    console.warn('Erro ao verificar parâmetros de cadastro externo:', e);
-  }
-});
 
 function imprimirPadraoSelecionado() {
     const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
@@ -13244,64 +13025,54 @@ function recalcularMetricasERenderizarAnaliseCAM() {
   }
   if (boxRelatorio) {
     const docsNomes = (analise.nomesDocumentos || []).join(', ') || 'Dados do Processo SEI';
-    // Cabeçalho de seção padronizado (chip numerado + título) — layout harmonizado (Imagem 3)
-    const tituloSecaoCAM = (num, texto, cor) => `
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-        <span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:${cor}22; border:1px solid ${cor}88; color:${cor}; font-size:11px; font-weight:900; flex-shrink:0;">${num}</span>
-        <span style="font-size:12px; font-weight:800; color:${cor}; text-transform:uppercase; letter-spacing:0.4px;">${texto}</span>
-        <span style="flex:1; height:1px; background:linear-gradient(90deg, ${cor}55, transparent);"></span>
-      </div>`;
-
-    const itensPendentesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status !== 'Conforme').map(({ m, idx }) => {
-      const corP = m.status === 'Inconsistente' ? '#f87171' : '#fbbf24';
-      return `
-      <div style="margin-bottom:8px; padding:12px 14px; background:rgba(245,158,11,0.06); border:1px solid ${corP}40; border-left:3px solid ${corP}; border-radius:8px; display:flex; flex-direction:column; gap:6px;">
+    const itensPendentesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status !== 'Conforme').map(({ m, idx }) => `
+      <div style="margin-bottom:8px; padding:10px 12px; background:rgba(245,158,11,0.08); border-left:3px solid ${m.status === 'Inconsistente' ? '#ef4444' : '#f59e0b'}; border-radius:6px;">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-          <div style="font-weight:800; color:${corP}; font-size:12px;">
-            ${m.status === 'Inconsistente' ? '✕' : '⏳'} Estágio ${idx + 1}: ${m.nome} <span style="color:#e2e8f0; font-weight:600;">— ${m.desc}</span>
+          <div style="font-weight:800; color:${m.status === 'Inconsistente' ? '#f87171' : '#fbbf24'}; font-size:12px;">
+            ${m.status === 'Inconsistente' ? '✕' : '⏳'} Estágio ${idx + 1}: ${m.nome} — ${m.desc}
           </div>
-          <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(245,158,11,0.16); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:3px 10px; font-size:10.5px; font-weight:800; border-radius:6px; cursor:pointer;" title="Gerar arquivo .TXT deste apontamento para resposta e edição">
-            📄 TXT
+          <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(245,158,11,0.18); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:2px 8px; font-size:10px; font-weight:800; border-radius:4px; cursor:pointer;" title="Gerar arquivo .TXT deste apontamento para resposta e edição">
+            📄 Gerar TXT deste Apontamento
           </button>
         </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:8px;">
-          <div style="font-size:11.5px; color:#cbd5e1; background:rgba(0,0,0,0.2); padding:8px 10px; border-radius:6px; line-height:1.45;"><strong style="color:#38bdf8;">Diagnóstico:</strong> ${m.coerencia}</div>
-          <div style="font-size:11.5px; color:#d1fae5; background:rgba(16,185,129,0.07); padding:8px 10px; border-radius:6px; line-height:1.45;"><strong style="color:#34d399;">Solução:</strong> ${m.solucao}</div>
-        </div>
-        <input type="text" value="${(m.respostaEditada || '').replace(/"/g, '&quot;')}" oninput="atualizarRespostaApontamentoCAM(${idx}, this.value)" placeholder="✏️ Resposta / providência adotada (incluída no arquivo .TXT)..." style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.12); border-radius:6px; padding:6px 10px; color:#f8fafc; font-size:11px;">
-      </div>`;
-    }).join('');
-
-    const itensConformesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status === 'Conforme').map(({ m, idx }) => `
-      <div style="padding:10px 12px; background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.22); border-top:3px solid #10b981; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between; gap:8px; min-height:92px;">
-        <div style="font-size:11.5px; color:#cbd5e1; line-height:1.4;">
-          <div style="color:#34d399; font-weight:800; margin-bottom:3px;">✓ ${idx + 1}. ${m.nome}</div>
-          ${m.desc}
-        </div>
-        <div style="display:flex; justify-content:flex-end;">
-          <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(16,185,129,0.14); color:#34d399; border:1px solid rgba(16,185,129,0.35); padding:3px 10px; font-size:10.5px; font-weight:800; border-radius:6px; cursor:pointer;" title="Gerar arquivo .TXT deste estágio conforme">
-            📄 TXT
-          </button>
+        <div style="font-size:11.5px; color:#cbd5e1; margin-top:3px;"><strong>Coerência/Diagnóstico:</strong> ${m.coerencia}</div>
+        <div style="font-size:11.5px; color:#34d399; margin-top:2px;"><strong>Solução Recomendada:</strong> ${m.solucao}</div>
+        <div style="margin-top:6px; display:flex; align-items:center; gap:6px;">
+          <span style="font-size:10.5px; color:#94a3b8; font-weight:700; white-space:nowrap;">✏️ Resposta / Edição:</span>
+          <input type="text" value="${(m.respostaEditada || '').replace(/"/g, '&quot;')}" oninput="atualizarRespostaApontamentoCAM(${idx}, this.value)" placeholder="Digite aqui a resposta ou providência adotada (será incluída automaticamente no arquivo .TXT)..." style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.14); border-radius:5px; padding:4px 8px; color:#f8fafc; font-size:11px;">
         </div>
       </div>
     `).join('');
 
-    boxRelatorio.innerHTML = `
-      <div style="margin-bottom:14px;">
-        ${tituloSecaoCAM(1, `Conjunto Documental e Conexão (${(analise.nomesDocumentos || []).length} doc(s))`, '#38bdf8')}
-        <div style="padding:10px 12px; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.18); border-radius:8px;">
-          <div style="font-size:12px; color:#e2e8f0;"><strong style="color:#38bdf8;">Documentos Verificados:</strong> ${docsNomes}</div>
-          <div style="font-size:12px; color:#cbd5e1; margin-top:6px; line-height:1.5;">${analise.sinteseConexaoLegalidade || ''}</div>
+    const itensConformesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status === 'Conforme').map(({ m, idx }) => `
+      <div style="padding:6px 10px; background:rgba(16,185,129,0.07); border-left:3px solid #10b981; border-radius:5px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+        <div style="font-size:11.5px; color:#d1fae5;">
+          <strong style="color:#34d399;">✓ Estágio ${idx + 1}: ${m.nome}</strong> — ${m.desc}
         </div>
+        <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.35); padding:2px 7px; font-size:10px; font-weight:800; border-radius:4px; cursor:pointer;" title="Gerar arquivo .TXT deste estágio conforme">
+          📄 TXT
+        </button>
       </div>
-      <div style="margin-bottom:14px;">
-        ${tituloSecaoCAM(2, 'Pendências e Soluções de Saneamento', qtdPendentes > 0 ? '#fbbf24' : '#34d399')}
-        ${itensPendentesHtml || '<div style="padding:10px 12px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-left:3px solid #10b981; border-radius:8px; color:#34d399; font-weight:700; font-size:12px;">✓ Nenhuma pendência impeditiva no conjunto de documentos analisados. Proposta apta à emissão de Manifestação Técnica Favorável.</div>'}
+    `).join('');
+
+    boxRelatorio.innerHTML = `
+      <div style="margin-bottom:10px; padding:10px 12px; background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.2); border-radius:8px;">
+        <div style="font-weight:800; color:#38bdf8; margin-bottom:4px;">1. Conjunto Documental e Conexão entre os Documentos Analisados (${(analise.nomesDocumentos || []).length} doc(s)):</div>
+        <div style="font-size:12px; color:#e2e8f0;"><strong>Documentos Verificados (☑️):</strong> ${docsNomes}</div>
+        <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">${analise.sinteseConexaoLegalidade || ''}</div>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div style="font-weight:800; color:${qtdPendentes > 0 ? '#fbbf24' : '#34d399'}; margin-bottom:6px;">
+          2. Quadro de Pendências Identificadas e Soluções de Saneamento (Com Campo p/ Resposta e Exportação .TXT):
+        </div>
+        ${itensPendentesHtml || '<div style="padding:8px 12px; background:rgba(16,185,129,0.1); border-left:3px solid #10b981; border-radius:4px; color:#34d399; font-weight:700;">✓ Nenhuma pendência impeditiva no conjunto de documentos analisados. Proposta apta à emissão de Manifestação Técnica Favorável.</div>'}
       </div>
       ${itensConformesHtml ? `
       <div>
-        ${tituloSecaoCAM(3, `Etapas em Conformidade (${matriz.length - qtdPendentes} de ${matriz.length})`, '#34d399')}
-        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:8px;">
+        <div style="font-weight:800; color:#34d399; margin-bottom:6px; font-size:12px;">
+          3. Etapas Verificadas em Conformidade (${matriz.length - qtdPendentes} de ${matriz.length}):
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:6px;">
           ${itensConformesHtml}
         </div>
       </div>
