@@ -8249,6 +8249,13 @@ window.exportarCadastrosLocaisCSV = exportarCadastrosLocaisCSV;
 function abrirModalGeradorLink() {
   popularMunicipiosGeradorLink();
   atualizarSuperGeradorLink();
+  const selSup = document.getElementById('link-gen-super');
+  if (selSup) {
+    selSup.disabled = false;
+    selSup.removeAttribute('readonly');
+    selSup.style.pointerEvents = 'auto';
+    selSup.style.cursor = 'pointer';
+  }
   const modal = document.getElementById('modal-gerador-link-cadastro');
   if (modal) modal.style.display = 'flex';
 }
@@ -8305,6 +8312,12 @@ function atualizarSuperGeradorLink() {
   if (targetVal) {
     selSup.value = targetVal;
   }
+  // Garantir explicitamente que esteja ativado (enable: true)
+  selSup.disabled = false;
+  selSup.removeAttribute('readonly');
+  selSup.style.pointerEvents = 'auto';
+  selSup.style.cursor = 'pointer';
+
   // Sincroniza e gera o link automaticamente para o município selecionado
   gerarLinkCadastroComParametros();
 }
@@ -8499,6 +8512,22 @@ function iniciarModoCadastroExterno(urlParams) {
   }, 350);
 }
 window.iniciarModoCadastroExterno = iniciarModoCadastroExterno;
+
+// Auto-ativação ao carregar página quando acessada via link gerado pré-definido
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('cadastro_entidade') === '1' || (params.has('mun') && params.has('cat'))) {
+      setTimeout(() => {
+        if (typeof iniciarModoCadastroExterno === 'function') {
+          iniciarModoCadastroExterno(params);
+        }
+      }, 300);
+    }
+  } catch (e) {
+    console.warn('Erro ao verificar parâmetros de cadastro externo:', e);
+  }
+});
 
 function imprimirPadraoSelecionado() {
     const idsSelecionados = Array.from(document.querySelectorAll('.check-processo:checked')).map(cb => cb.value);
