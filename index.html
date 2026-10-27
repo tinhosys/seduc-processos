@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.65">
+  <link rel="stylesheet" href="css/style.css?v=1.3.66">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 22px; letter-spacing: 0.5px;'>GBZ - v1.3.65</div>
+    <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 22px; letter-spacing: 0.5px;'>GBZ - v1.3.66</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:700; color:#1e293b; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; letter-spacing: 0.5px;'>GBZ - v1.3.65</div>
+        <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; letter-spacing: 0.5px;'>GBZ - v1.3.66</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1018,11 +1018,12 @@
             <span id="btn-toggle-mobile-text" class="btn-toggle-mobile-text">Modo Mobile</span>
           </button>
 
-          <!-- Botão Alternar Tema Claro / Escuro -->
-          <button type="button" id="btn-toggle-tema" class="btn btn-secondary" onclick="toggleTemaClaroSuave()" style="padding:0 12px; height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;" title="Alternar entre tema suave/limpo e tema escuro">
-            <span id="btn-toggle-tema-icon">☀️</span>
-            <span id="btn-toggle-tema-text">Tema Suave</span>
-          </button>
+          <!-- Alternador de Tema Dinâmico (Claro / Sistema / Escuro) -->
+          <div class="theme-switcher" id="theme-switcher" title="Alternar tema visual">
+            <button type="button" class="theme-btn" data-theme-value="light" onclick="setAppTheme('light')" title="Tema Claro Suave">☀️ Claro</button>
+            <button type="button" class="theme-btn active" data-theme-value="system" onclick="setAppTheme('system')" title="Seguir Tema do Sistema">💻 Auto</button>
+            <button type="button" class="theme-btn" data-theme-value="dark" onclick="setAppTheme('dark')" title="Tema Escuro">🌙 Escuro</button>
+          </div>
 
           <button class="btn btn-secondary" data-page="processos" onclick="navegar('processos')" style="height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">📋 Processos</button>
           <button class="btn btn-secondary" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha" style="height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">🔄 Recarregar</button>
@@ -1678,21 +1679,21 @@
             <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÃO ALINHADOS COM OBJETO -->
             <div class="filtro-digito-container action-adm" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; gap:6px; flex:0 0 auto; width:auto; height:38px;">
               <div style="position:relative; width:180px; flex-shrink:0;">
-                <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 8px; height:38px; box-sizing:border-box;">
+                <div class="digito-input-box" style="display:flex; align-items:center; background:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; padding:0 8px; height:38px; box-sizing:border-box;">
                   <input type="text" id="filtro-digito" placeholder="GRUPO (DÍGITO)" autocomplete="off"
-                    style="width:100%; background:transparent; border:none; color:#c7d2fe; font-size:12px; font-weight:600; outline:none; padding:0;">
+                    style="width:100%; background:transparent; border:none; color:var(--input-text); font-size:12px; font-weight:600; outline:none; padding:0;">
                   <button type="button" id="btn-digito-dropdown-toggle" title="Ver grupos/dígitos disponíveis na planilha"
-                    style="background:none; border:none; color:#818cf8; cursor:pointer; padding:2px; font-size:11px; display:flex; align-items:center; justify-content:center; transition:transform 0.2s;">
+                    style="background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:2px; font-size:11px; display:flex; align-items:center; justify-content:center; transition:transform 0.2s;">
                     &#9662;
                   </button>
                 </div>
                 <!-- Dropdown de Multi-Seleção de Dígitos -->
-                <div id="dropdown-digitos-opcoes" class="custom-multiselect-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; min-width:180px; z-index:9999; margin-top:4px; max-height:none; overflow:hidden; background:#1e293b; border:1px solid #334155; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.5); padding:4px;">
-                  <div class="custom-multiselect-header" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; border-bottom:1px solid #334155;">
-                    <span style="font-weight:700; font-size:10px; text-transform:uppercase; color:#94a3b8; display:flex; align-items:center; gap:4px;">
-                      <span style="font-size:10px; color:#38bdf8;">📌</span> DISPONÍVEIS NA PLANILHA
+                <div id="dropdown-digitos-opcoes" class="custom-multiselect-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; min-width:180px; z-index:9999; margin-top:4px; max-height:none; overflow:hidden; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; box-shadow:var(--shadow); padding:4px;">
+                  <div class="custom-multiselect-header" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; border-bottom:1px solid var(--border);">
+                    <span style="font-weight:700; font-size:10px; text-transform:uppercase; color:var(--text-secondary); display:flex; align-items:center; gap:4px;">
+                      <span style="font-size:10px; color:var(--petroleo-light);">📌</span> DISPONÍVEIS NA PLANILHA
                     </span>
-                    <span id="btn-digito-limpar-checks" style="color:#38bdf8; cursor:pointer; font-size:11px; font-weight:500;">Limpar</span>
+                    <span id="btn-digito-limpar-checks" style="color:var(--petroleo-primary); cursor:pointer; font-size:11px; font-weight:500;">Limpar</span>
                   </div>
                   <div id="lista-digitos-checkboxes" class="custom-multiselect-items-container" style="display:flex; flex-direction:column; padding:4px 0; max-height:190px; overflow-y:auto; overflow-x:hidden;">
                     <!-- Preenchido dinamicamente via JS -->
@@ -1701,13 +1702,13 @@
               </div>
 
               <!-- Botões de Condição / Parâmetro: =, <> na mesma linha -->
-              <div class="btn-group-param-digito" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:2px; gap:2px; height:38px; box-sizing:border-box; flex-shrink:0 !important;">
+              <div class="btn-group-param-digito" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; background:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; padding:2px; gap:2px; height:38px; box-sizing:border-box; flex-shrink:0 !important;">
                 <button type="button" id="btn-param-digito-eq" class="btn-param-digito" data-cond="=" title="Igual ao valor digitado (=)"
-                  style="padding:4px 9px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#94a3b8;">
+                  style="padding:4px 9px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:var(--text-secondary);">
                   =
                 </button>
                 <button type="button" id="btn-param-digito-neq" class="btn-param-digito" data-cond="<>" title="Diferente do valor digitado (<>), inclusive nulos/vazios"
-                  style="padding:4px 8px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#94a3b8;">
+                  style="padding:4px 8px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:var(--text-secondary);">
                   &lt;&gt;
                 </button>
               </div>
@@ -1731,7 +1732,7 @@
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
-            <select id="filtro-ano" multiple style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
+            <select id="filtro-ano" multiple>
               <option value="">ANO</option>
             </select>
           </div>
@@ -1744,15 +1745,15 @@
             <select id="filtro-tipo" multiple>
               <option value="">TIPO</option>
             </select>
-            <select id="filtro-agrupamento" multiple style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
+            <select id="filtro-agrupamento" multiple>
               <option value="">AGRUPAMENTO</option>
             </select>
-            <select id="filtro-alerta" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
+            <select id="filtro-alerta">
               <option value="">&#9888; ALERTA</option>
               <option value="sim">&#128308; Com Alerta</option>
               <option value="nao">&#128994; Sem Alerta</option>
             </select>
-            <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
+            <select id="filtro-marca">
               <option value="">&#128204; MARCAÇÃO</option>
               <option value="sim">&#11088; Apenas Marcados</option>
               <option value="nao">&#9898; Não Marcados</option>
@@ -2902,7 +2903,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:800; color:#164e63; letter-spacing:0.5px; white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:#164e63; color:#ffffff; border:1px solid #164e63; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:700; letter-spacing:0.4px; white-space:nowrap;">v1.3.65</span>
+                        <span style="background:#164e63; color:#ffffff; border:1px solid #164e63; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:700; letter-spacing:0.4px; white-space:nowrap;">v1.3.66</span>
                       </div>
                       <span style="font-size:10px; color:#475569; font-weight:600; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3584,7 +3585,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:#ecfeff; color:#164e63; border:1px solid #a5f3fc; font-weight:800; padding:6px 14px; font-size:12px; border-radius:6px; letter-spacing:0.5px;">
-              GBZ - v1.3.65
+              GBZ - v1.3.66
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#ffffff; color:#334155; border:1px solid #cbd5e1; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3857,7 +3858,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.65] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.66] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5857,7 +5858,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.3.55"></script>
-  <script src="js/app.js?v=1.3.65"></script>
+  <script src="js/app.js?v=1.3.66"></script>
   <script src="js/auth-sap.js?v=1.3.55"></script>
   <script src="js/escolas.js?v=1.3.55" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>

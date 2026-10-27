@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.64
+// Versão do Sistema: v1.3.66
 // ============================================================
-window.APP_VERSION = 'v1.3.64';
+window.APP_VERSION = 'v1.3.66';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -8285,34 +8285,102 @@ function fecharModalGeradorLink() {
 }
 window.fecharModalGeradorLink = fecharModalGeradorLink;
 
-function toggleTemaClaroSuave() {
-  const isLight = document.body.classList.toggle('tema-claro');
-  localStorage.setItem('seduc_tema_suave_imagem2', isLight ? '1' : '0');
+function setAppTheme(themeValue) {
+  const themeButtons = document.querySelectorAll('.theme-btn');
+  themeButtons.forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.querySelector(`[data-theme-value="${themeValue}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  if (themeValue === 'system') {
+    document.documentElement.removeAttribute('data-theme');
+    localStorage.setItem('pref_theme', 'system');
+    localStorage.removeItem('seduc_tema_suave_imagem2');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (prefersDark) {
+      document.body.classList.remove('tema-claro');
+      document.body.classList.add('tema-escuro');
+    } else {
+      document.body.classList.add('tema-claro');
+      document.body.classList.remove('tema-escuro');
+    }
+  } else if (themeValue === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    document.body.classList.remove('tema-claro');
+    document.body.classList.add('tema-escuro');
+    localStorage.setItem('pref_theme', 'dark');
+    localStorage.setItem('seduc_tema_suave_imagem2', '0');
+  } else {
+    // light / suave
+    document.documentElement.setAttribute('data-theme', 'light');
+    document.body.classList.add('tema-claro');
+    document.body.classList.remove('tema-escuro');
+    localStorage.setItem('pref_theme', 'light');
+    localStorage.setItem('seduc_tema_suave_imagem2', '1');
+  }
+
+  // Compatibilidade com botão simples legado (se ainda existir)
+  const isLight = document.body.classList.contains('tema-claro');
   const btnText = document.getElementById('btn-toggle-tema-text');
   const btnIcon = document.getElementById('btn-toggle-tema-icon');
   if (btnText) btnText.textContent = isLight ? 'Tema Escuro' : 'Tema Suave';
   if (btnIcon) btnIcon.textContent = isLight ? '🌙' : '☀️';
-  if (typeof toast === 'function') {
-    toast(isLight ? 'Tema Suave (Padrão Imagem 2) ativado' : 'Tema Escuro ativado', 'info');
-  }
+}
+window.setAppTheme = setAppTheme;
+window.setTheme = setAppTheme;
+
+function toggleTemaClaroSuave() {
+  const current = localStorage.getItem('pref_theme') || (document.body.classList.contains('tema-claro') ? 'light' : 'dark');
+  setAppTheme(current === 'light' ? 'dark' : 'light');
 }
 window.toggleTemaClaroSuave = toggleTemaClaroSuave;
 
 function aplicarTemaSalvo() {
-  const salvo = localStorage.getItem('seduc_tema_suave_imagem2');
-  const btnText = document.getElementById('btn-toggle-tema-text');
-  const btnIcon = document.getElementById('btn-toggle-tema-icon');
-  if (salvo === '1') {
-    document.body.classList.add('tema-claro');
-    if (btnText) btnText.textContent = 'Tema Escuro';
-    if (btnIcon) btnIcon.textContent = '🌙';
-  } else {
-    document.body.classList.remove('tema-claro');
-    if (btnText) btnText.textContent = 'Tema Suave';
-    if (btnIcon) btnIcon.textContent = '☀️';
+  const pref = localStorage.getItem('pref_theme');
+  const legado = localStorage.getItem('seduc_tema_suave_imagem2');
+  let chosen = 'system';
+  if (pref) {
+    chosen = pref;
+  } else if (legado === '1') {
+    chosen = 'light';
+  } else if (legado === '0') {
+    chosen = 'dark';
   }
+  setAppTheme(chosen);
 }
 window.aplicarTemaSalvo = aplicarTemaSalvo;
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', aplicarTemaSalvo);
+  } else {
+    aplicarTemaSalvo();
+  }
+}
+
+// Ouvinte para mudanças na preferência de cor do SO quando em modo system/auto
+if (typeof window !== 'undefined' && window.matchMedia) {
+  try {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      const current = localStorage.getItem('pref_theme') || 'system';
+      if (current === 'system') {
+        setAppTheme('system');
+      }
+    });
+  } catch(e) {}
+}
+
+/* LÓGICA DE ABAS (TABS) GENÉRICA */
+function openTab(evt, tabId) {
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add('active');
+  if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+}
+window.openTab = openTab;
 
 function atualizarSuperGeradorLink() {
   const selMun = document.getElementById('link-gen-municipio');

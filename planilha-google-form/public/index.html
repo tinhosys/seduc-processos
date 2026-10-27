@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.38">
+  <link rel="stylesheet" href="css/style.css?v=1.3.66">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.58</div>
+    <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 22px; letter-spacing: 0.5px;'>GBZ - v1.3.66</div>
 
   </div>
 </div>
@@ -738,19 +738,19 @@
     <aside class="sidebar" id="app-sidebar">
 
       <div style="position: absolute; top: 20px; right: -12px; z-index: 100;">
-        <button onclick="toggleDesktopSidebar()" style="background: #1e293b; border: 1px solid #334155; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94a3b8; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+        <button onclick="toggleDesktopSidebar()" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #475569; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
           <svg id="sidebar-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </button>
       </div>
 
-      <div class="sidebar-logo" style="margin: 14px 12px 18px; padding: 12px 12px 14px; text-align: center; background: linear-gradient(145deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(56, 189, 248, 0.22); border-top: 1px solid rgba(255, 255, 255, 0.18); border-bottom: 1px solid rgba(0, 0, 0, 0.5); border-radius: 14px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);">
-        <div class="sidebar-logo-img-wrap" style="background: #ffffff; border-radius: 10px; padding: 8px 10px; margin-bottom: 10px; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25); display: flex; align-items: center; justify-content: center;">
+      <div class="sidebar-logo" style="margin: 14px 12px 18px; padding: 12px 12px 14px; text-align: center; background: #ffffff; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow-sm);">
+        <div class="sidebar-logo-img-wrap" style="background: #ffffff; border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center;">
           <img src="img/logo-ro-seduc.png" alt="Governo de Rondônia - SEDUC" style="width: 100%; max-width: 158px; height: auto; max-height: 92px; object-fit: contain; display: block;">
         </div>
-        <div class="sidebar-logo-sigla" style="font-size: 20px; font-weight: 900; color: #f8fafc; letter-spacing: 2.2px; line-height: 1.1; font-family: 'Inter', sans-serif; text-shadow: 0 1px 4px rgba(0,0,0,0.4);">
+        <div class="sidebar-logo-sigla" style="font-size: 20px; font-weight: 900; color: #164e63; letter-spacing: 2px; line-height: 1.1; font-family: 'Inter', sans-serif;">
           CAM
         </div>
-        <div class="sidebar-logo-sub" style="font-size: 9.5px; font-weight: 700; color: #cbd5e1; line-height: 1.35; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px;">
+        <div class="sidebar-logo-sub" style="font-size: 9.5px; font-weight: 700; color: #64748b; line-height: 1.35; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.4px;">
           COORDENADORIA DE ARTICULAÇÃO<br>COM OS MUNICÍPIOS
         </div>
       </div>
@@ -982,17 +982,17 @@
 
 
 <div class="sidebar-footer">
-        <!-- BOTAO DE SUPORTE WHATSAPP (IMAGEM 2, 3 E 4) -->
-        <a href="https://wa.me/5569999221336" target="_blank" rel="noopener noreferrer" style="padding:10px 12px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; display:flex; align-items:center; gap:10px; text-decoration:none; margin:10px 12px; transition:all 0.2s;" onmouseenter="this.style.borderColor='rgba(16,185,129,0.5)'" onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'" title="Suporte direto via WhatsApp">
-          <div style="width:32px; height:32px; border-radius:50%; background:#25D366; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 2px 8px rgba(37,211,102,0.35);">
+        <!-- BOTAO DE SUPORTE WHATSAPP -->
+        <a href="https://wa.me/5569999221336" target="_blank" rel="noopener noreferrer" style="padding:10px 12px; background:#f8fafc; border:1px solid var(--border); border-radius:10px; display:flex; align-items:center; gap:10px; text-decoration:none; margin:10px 12px; transition:var(--transition);" onmouseenter="this.style.borderColor='#cbd5e1'; this.style.background='#f1f5f9'" onmouseleave="this.style.borderColor='var(--border)'; this.style.background='#f8fafc'" title="Suporte direto via WhatsApp">
+          <div style="width:32px; height:32px; border-radius:50%; background:#059669; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
             <svg style="width:18px; height:18px; fill:#fff;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
           </div>
           <div style="text-align:left; min-width:0;">
-            <div style="font-size:10px; font-weight:600; color:#94a3b8; line-height:1.2;">Suporte pelo WhatsApp:</div>
-            <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
+            <div style="font-size:10px; font-weight:600; color:#64748b; line-height:1.2;">Suporte pelo WhatsApp:</div>
+            <div style="font-size:12px; font-weight:700; color:#1e293b; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.58</div>
+        <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; letter-spacing: 0.5px;'>GBZ - v1.3.66</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1001,32 +1001,43 @@
     <!-- ===================== CONTEÚDO ===================== -->
     <main class="main-content">
 
-      <!-- TOPBAR -->
+      <!-- TOPBAR HARMONIZADO -->
       <header class="topbar">
         <div style="display:flex;align-items:center;gap:12px;">
-          <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
-          <div id="topbar-title" style="display: none;"></div>
+          <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:var(--text-primary); cursor:pointer; padding: 4px 8px;">☰</button>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:12px; font-weight:800; color:var(--petroleo-primary); background:var(--petroleo-subtle); border:1px solid var(--petroleo-border); padding:3px 8px; border-radius:6px; letter-spacing:0.5px;">SEDUC • CAM</span>
+            <span style="color:var(--text-muted); font-size:12px;">›</span>
+            <span style="font-size:13px; font-weight:600; color:var(--text-primary);" id="topbar-title-text">Gestão de Processos</span>
+          </div>
         </div>
-        <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
-          <!-- Botão Modo mobile Global no Topo da Aplicação (Visível em todos os forms) -->
-          <button type="button" id="btn-toggle-mobile" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:0 12px; height:38px; min-height:38px; max-height:38px; min-width:175px; width:175px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%)'" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up em todas as tabelas)">
+        <div class="topbar-actions" style="display:flex;align-items:center;gap:10px;margin-left:auto;">
+          <!-- Botão Modo mobile Global no Topo da Aplicação -->
+          <button type="button" id="btn-toggle-mobile" class="btn btn-secondary btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:0 12px; height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px; color:var(--petroleo-primary);" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up em todas as tabelas)">
             <span id="btn-toggle-mobile-icon">📱</span>
-            <span id="btn-toggle-mobile-text" class="btn-toggle-mobile-text">Modo mobile</span>
+            <span id="btn-toggle-mobile-text" class="btn-toggle-mobile-text">Modo Mobile</span>
           </button>
 
-          <button class="btn btn-ghost btn-sm" data-page="processos" onclick="navegar('processos')" style="height:38px; min-height:38px; max-height:38px; min-width:175px; width:175px; display:inline-flex; align-items:center; justify-content:center; gap:6px; box-sizing:border-box;">📋 Processos</button>
-          <button class="btn btn-ghost btn-sm" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha" style="height:38px; min-height:38px; max-height:38px; min-width:175px; width:175px; display:inline-flex; align-items:center; justify-content:center; gap:6px; box-sizing:border-box;">🔄 Recarregar</button>
+          <!-- Alternador de Tema Dinâmico (Claro / Sistema / Escuro) -->
+          <div class="theme-switcher" id="theme-switcher" title="Alternar tema visual">
+            <button type="button" class="theme-btn" data-theme-value="light" onclick="setAppTheme('light')" title="Tema Claro Suave">☀️ Claro</button>
+            <button type="button" class="theme-btn active" data-theme-value="system" onclick="setAppTheme('system')" title="Seguir Tema do Sistema">💻 Auto</button>
+            <button type="button" class="theme-btn" data-theme-value="dark" onclick="setAppTheme('dark')" title="Tema Escuro">🌙 Escuro</button>
+          </div>
+
+          <button class="btn btn-secondary" data-page="processos" onclick="navegar('processos')" style="height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">📋 Processos</button>
+          <button class="btn btn-secondary" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha" style="height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">🔄 Recarregar</button>
 
           <div class="user-profile"
-            style="display:flex;align-items:center;gap:8px;margin-left:16px;padding-left:16px;border-left:1px solid var(--border)">
+            style="display:flex;align-items:center;gap:10px;margin-left:8px;padding-left:14px;border-left:1px solid var(--border)">
             <div style="text-align:right">
-              <div id="user-name" style="font-size:13px;font-weight:600;color:var(--text-primary)">-</div>
+              <div id="user-name" style="font-size:13px;font-weight:700;color:var(--text-primary)">-</div>
               <div id="user-role" style="font-size:11px;color:var(--text-muted)">Carregando...</div>
             </div>
             <button data-page="senha" onclick="navegar('senha')" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; padding:4px;" title="Trocar Senha">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </button>
-            <button class="btn btn-danger btn-sm" onclick="fazerLogout()" title="Sair" style="height:38px; min-height:38px; max-height:38px; min-width:100px; width:100px; display:inline-flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; box-sizing:border-box;">Sair</button>
+            <button class="btn btn-danger" onclick="fazerLogout()" title="Sair do Sistema" style="height:36px; padding:0 14px; font-size:12px; font-weight:700;">Sair</button>
           </div>
         </div>
       </header>
@@ -1538,100 +1549,84 @@
                 <div class="section-header" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px; width:100%; flex-shrink:0;">
           <!-- LINHA 1 DE BOTÕES E BADGES (SUPERIOR) -->
           <div class="action-buttons-grid" style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px; width:100%;">
-          <!-- LINHA 1 DE BOTÕES: REGISTROS/FILTROS + PLANILHA À ESQUERDA | RELATÓRIOS À DIREITA -->
+          <!-- LINHA 1 DE BOTÕES: REGISTROS/FILTROS + NOVO PROCESSO À ESQUERDA | RELATÓRIOS À DIREITA -->
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; width:100%;">
-            <!-- Esquerda: Informações e Acesso à Planilha (Planilha no lugar de Modo mobile - Imagem 3) -->
+            <!-- Esquerda: Informações e Acesso à Planilha -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-              <span id="valor-filtrado" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); white-space:nowrap; font-family:monospace; letter-spacing:0.5px; height:38px; min-height:38px; max-height:38px; min-width:170px; width:170px; box-sizing:border-box;">
+              <span id="valor-filtrado" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:6px; font-size:13px; font-weight:700; background:#ecfeff; color:#164e63; border:1px solid #a5f3fc; white-space:nowrap; font-family:monospace; height:36px; box-sizing:border-box;">
                 <span>R$</span> <span>Carregando...</span>
               </span>
-              <span id="qtd-registros-filtrados" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:38px; min-height:38px; max-height:38px; min-width:170px; width:170px; box-sizing:border-box;">
+              <span id="qtd-registros-filtrados" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:6px; font-size:13px; font-weight:700; background:#ffffff; color:#1e293b; border:1px solid #cbd5e1; white-space:nowrap; font-family:monospace; height:36px; box-sizing:border-box;">
                 0 Processos
               </span>
               <button id="balao-aviso-cancelados" type="button" onclick="if(typeof window.filtrarPorCancelados==='function'){window.filtrarPorCancelados();}else if(typeof filtrarPorCancelados==='function'){filtrarPorCancelados();}" title="Clique para mostrar processos cancelados na lista" class="balao-aviso-cancelados" style="display:none;">
                 <span class="balao-icon">⚠️</span>
                 <span id="balao-qtd-cancelados" class="balao-num">0</span>
               </button>
-              <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:38px; min-width:38px; height:38px; min-height:38px; max-height:38px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
+              <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#ffffff; border:1px solid #cbd5e1; color:#475569; border-radius:6px; width:36px; min-width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#475569'">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
               </button>
             </div>
 
-            <!-- Indicador Visual Animado de Processamento do Compartilhar (GIF / Engrenagens / Setas em Círculo) -->
-            <div id="indicador-compartilhar-processando" style="display:none; align-items:center; justify-content:center; gap:8px; padding:0 14px; height:38px; min-height:38px; max-height:38px; border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.2) 0%, rgba(15,23,42,0.85) 100%); border:1px solid rgba(56,189,248,0.6); box-shadow:0 0 14px rgba(56,189,248,0.35); box-sizing:border-box; pointer-events:none; transition:opacity 0.2s;" title="Gerando imagem e dados do relatório para compartilhamento...">
-              <!-- Setas circulares girando + Engrenagem interna -->
-              <svg class="anim-pulsar-brilho" width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;">
-                <!-- Setas circulares em rotação horária -->
-                <g class="anim-girar-horario">
-                  <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M3 3v5h5" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" stroke="#0284c7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M21 21v-5h-5" stroke="#0284c7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </g>
-                <!-- Engrenagem central girando em sentido anti-horário -->
-                <g class="anim-girar-antihorario">
-                  <circle cx="12" cy="12" r="2.2" stroke="#34d399" stroke-width="2"/>
-                  <path d="M12 7.5v1.5M12 15v1.5M7.5 12h1.5M15 12h1.5" stroke="#34d399" stroke-width="1.8" stroke-linecap="round"/>
-                </g>
-              </svg>
-              <span style="font-size:11.5px; font-weight:800; color:#38bdf8; letter-spacing:0.5px; font-family:'Inter', sans-serif; white-space:nowrap; text-transform:uppercase;">Processando...</span>
+            <!-- Indicador Visual de Compartilhamento -->
+            <div id="indicador-compartilhar-processando" style="display:none; align-items:center; justify-content:center; gap:8px; padding:0 14px; height:36px; border-radius:6px; background:#ecfeff; border:1px solid #164e63; box-sizing:border-box;">
+              <span style="font-size:11.5px; font-weight:700; color:#164e63; letter-spacing:0.5px; font-family:'Inter', sans-serif; white-space:nowrap; text-transform:uppercase;">Processando...</span>
             </div>
 
-            <!-- BOTAO NOVO PROCESSO GRANDE E DESTACADO (IMAGEM 1) -->
-            <button id="btn-novo-processo-topo" type="button" class="btn" onclick="abrirModalNovoProcesso()" style="flex:1 1 260px; max-width:440px; height:42px; min-height:42px; max-height:42px; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1.5px solid #10b981; border-radius:10px; background:linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%); color:#34d399; cursor:pointer; font-weight:800; letter-spacing:0.8px; transition:all 0.25s; box-sizing:border-box; box-shadow:0 0 16px rgba(16,185,129,0.3); text-transform:uppercase;" onmouseover="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.5) 0%, rgba(5,150,105,0.6) 100%)'; this.style.boxShadow='0 0 22px rgba(16,185,129,0.55)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%)'; this.style.boxShadow='0 0 16px rgba(16,185,129,0.3)'; this.style.color='#34d399';" title="Cadastrar Novo Processo">
-              <span style="font-size:18px; font-weight:900; line-height:1; display:inline-block; margin-right:2px;">+</span>
+            <!-- BOTAO NOVO PROCESSO (PETRÓLEO SÓBRIO) -->
+            <button id="btn-novo-processo-topo" type="button" class="btn btn-primary" onclick="abrirModalNovoProcesso()" style="flex:1 1 200px; max-width:340px; height:36px; font-size:12.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border-radius:6px; background:#164e63; color:#ffffff; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.15s; box-sizing:border-box; border:1px solid #164e63;" onmouseover="this.style.background='#083344'" onmouseout="this.style.background='#164e63'" title="Cadastrar Novo Processo">
+              <span style="font-size:16px; font-weight:800; line-height:1; display:inline-block; margin-right:2px;">+</span>
               <span class="btn-text">Novo Processo</span>
             </button>
 
-            <!-- Direita Linha 1: Relatórios Principais -->
+            <!-- Direita Linha 1: Relatórios Principais Harmonizados -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirAnaliseSintetica==='function'){window.imprimirAnaliseSintetica();}else if(typeof imprimirAnaliseSintetica==='function'){imprimirAnaliseSintetica();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(20,184,166,0.6); border-radius:8px; background:rgba(20,184,166,0.25); color:#2dd4bf; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(20,184,166,0.4)'" onmouseout="this.style.background='rgba(20,184,166,0.25)'" title="Relatório Sintético (Pago e Status por Prefixo)">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
+              <button type="button" class="btn btn-secondary" onclick="if(typeof window.imprimirAnaliseSintetica==='function'){window.imprimirAnaliseSintetica();}else if(typeof imprimirAnaliseSintetica==='function'){imprimirAnaliseSintetica();}" style="padding:0 10px; height:36px; min-width:120px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Relatório Sintético (Pago e Status por Prefixo)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
                 <span class="btn-text">Sintético</span>
               </button>
-              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(99,102,241,0.5); border-radius:8px; background:rgba(99,102,241,0.25); color:#a5b4fc; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(99,102,241,0.4)'" onmouseout="this.style.background='rgba(99,102,241,0.25)'" title="Análise Gerencial">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              <button class="btn btn-secondary" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:0 10px; height:36px; min-width:120px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Análise Gerencial">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                 <span class="btn-text">Análise</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(59,130,246,0.5); border-radius:8px; background:rgba(59,130,246,0.25); color:#93c5fd; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(59,130,246,0.4)'" onmouseout="this.style.background='rgba(59,130,246,0.25)'" title="Relatório Detalhado">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <button type="button" class="btn btn-secondary" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:0 10px; height:36px; min-width:120px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Relatório Detalhado">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                 <span class="btn-text">Detalhado</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Lista Atual">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <button type="button" class="btn btn-secondary" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:0 10px; height:36px; min-width:120px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Imprimir Lista Atual">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 <span class="btn-text">Padrão</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Selecionados">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <button type="button" class="btn btn-secondary" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:0 10px; height:36px; min-width:120px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Imprimir Selecionados">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 <span class="btn-text">Selecionado</span>
               </button>
             </div>
           </div>
 
-          <!-- LINHA 2 DE BOTÕES: PLANILHA (ADMIN), COMPARTILHAR, ADM 1, ADM 2, EXCEL ALINHADOS À DIREITA -->
+          <!-- LINHA 2 DE BOTÕES: PLANILHA (ADMIN), COMPARTILHAR, ADM 1, ADM 2, EXCEL -->
           <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px; width:100%;">
-            <button type="button" id="btn-planilha-topo" class="btn action-report action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha Principal Google Sheets (Exclusivo Admin)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <button type="button" id="btn-planilha-topo" class="btn btn-secondary action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=0#gid=0', '_blank')" style="padding:0 10px; height:36px; min-width:115px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Acessar Planilha Principal Google Sheets (Exclusivo Admin)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               <span class="btn-text">Planilha</span>
             </button>
-            <button id="btn-compartilhar-topo" class="btn" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+            <button id="btn-compartilhar-topo" class="btn btn-secondary" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:36px; min-width:115px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
               <span class="btn-text">Compartilhar</span>
             </button>
-            <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%); color:#fbbf24; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%)'" title="Relatório Padrão sem Origem (Exclusivo Admin)" onclick="if(typeof window.imprimirPadraoAdm==='function'){window.imprimirPadraoAdm();}else if(typeof imprimirPadraoAdm==='function'){imprimirPadraoAdm();}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <button type="button" class="btn btn-secondary action-adm" id="btn-relatorio-padrao-adm" style="padding:0 10px; height:36px; min-width:115px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Relatório Padrão sem Origem (Exclusivo Admin)" onclick="if(typeof window.imprimirPadraoAdm==='function'){window.imprimirPadraoAdm();}else if(typeof imprimirPadraoAdm==='function'){imprimirPadraoAdm();}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
               <span class="btn-text">Adm 1</span>
             </button>
-            <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm-2" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(13,148,136,0.6); border-radius:8px; background:linear-gradient(135deg, rgba(13,148,136,0.3) 0%, rgba(15,118,110,0.3) 100%); color:#2dd4bf; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(13,148,136,0.45)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(13,148,136,0.3) 0%, rgba(15,118,110,0.3) 100%)'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+            <button type="button" class="btn btn-secondary action-adm" id="btn-relatorio-padrao-adm-2" style="padding:0 10px; height:36px; min-width:115px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
               <span class="btn-text">Adm 2</span>
             </button>
-            <button type="button" class="btn action-report" onclick="exportarExcel()" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(22,163,74,0.5); border-radius:8px; background:rgba(22,163,74,0.25); color:#4ade80; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(22,163,74,0.4)'" onmouseout="this.style.background='rgba(22,163,74,0.25)'" title="Exportar para Excel">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
+            <button type="button" class="btn btn-secondary" onclick="exportarExcel()" style="padding:0 10px; height:36px; min-width:115px; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid #cbd5e1; border-radius:6px; background:#ffffff; color:#1e293b; cursor:pointer; font-weight:600; box-sizing:border-box;" onmouseover="this.style.background='#f1f5f9';this.style.color='#164e63'" onmouseout="this.style.background='#ffffff';this.style.color='#1e293b'" title="Exportar para Excel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
               <span class="btn-text">Excel</span>
             </button>
           </div>
-        </div>
       </div>
 
         <div class="filters-bar" style="margin-bottom:6px; flex-shrink:0;">
@@ -1684,21 +1679,21 @@
             <!-- DÍGITO COM PARÂMETROS (=, <>, TODOS) E MULTI-SELEÇÃO ALINHADOS COM OBJETO -->
             <div class="filtro-digito-container action-adm" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; gap:6px; flex:0 0 auto; width:auto; height:38px;">
               <div style="position:relative; width:180px; flex-shrink:0;">
-                <div class="digito-input-box" style="display:flex; align-items:center; background:rgba(15,23,42,0.6); border:1px solid rgba(99,102,241,0.5); border-radius:8px; padding:0 8px; height:38px; box-sizing:border-box;">
+                <div class="digito-input-box" style="display:flex; align-items:center; background:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; padding:0 8px; height:38px; box-sizing:border-box;">
                   <input type="text" id="filtro-digito" placeholder="GRUPO (DÍGITO)" autocomplete="off"
-                    style="width:100%; background:transparent; border:none; color:#c7d2fe; font-size:12px; font-weight:600; outline:none; padding:0;">
+                    style="width:100%; background:transparent; border:none; color:var(--input-text); font-size:12px; font-weight:600; outline:none; padding:0;">
                   <button type="button" id="btn-digito-dropdown-toggle" title="Ver grupos/dígitos disponíveis na planilha"
-                    style="background:none; border:none; color:#818cf8; cursor:pointer; padding:2px; font-size:11px; display:flex; align-items:center; justify-content:center; transition:transform 0.2s;">
+                    style="background:none; border:none; color:var(--text-secondary); cursor:pointer; padding:2px; font-size:11px; display:flex; align-items:center; justify-content:center; transition:transform 0.2s;">
                     &#9662;
                   </button>
                 </div>
                 <!-- Dropdown de Multi-Seleção de Dígitos -->
-                <div id="dropdown-digitos-opcoes" class="custom-multiselect-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; min-width:180px; z-index:9999; margin-top:4px; max-height:none; overflow:hidden; background:#1e293b; border:1px solid #334155; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.5); padding:4px;">
-                  <div class="custom-multiselect-header" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; border-bottom:1px solid #334155;">
-                    <span style="font-weight:700; font-size:10px; text-transform:uppercase; color:#94a3b8; display:flex; align-items:center; gap:4px;">
-                      <span style="font-size:10px; color:#38bdf8;">📌</span> DISPONÍVEIS NA PLANILHA
+                <div id="dropdown-digitos-opcoes" class="custom-multiselect-dropdown" style="display:none; position:absolute; top:100%; left:0; width:100%; min-width:180px; z-index:9999; margin-top:4px; max-height:none; overflow:hidden; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; box-shadow:var(--shadow); padding:4px;">
+                  <div class="custom-multiselect-header" style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; border-bottom:1px solid var(--border);">
+                    <span style="font-weight:700; font-size:10px; text-transform:uppercase; color:var(--text-secondary); display:flex; align-items:center; gap:4px;">
+                      <span style="font-size:10px; color:var(--petroleo-light);">📌</span> DISPONÍVEIS NA PLANILHA
                     </span>
-                    <span id="btn-digito-limpar-checks" style="color:#38bdf8; cursor:pointer; font-size:11px; font-weight:500;">Limpar</span>
+                    <span id="btn-digito-limpar-checks" style="color:var(--petroleo-primary); cursor:pointer; font-size:11px; font-weight:500;">Limpar</span>
                   </div>
                   <div id="lista-digitos-checkboxes" class="custom-multiselect-items-container" style="display:flex; flex-direction:column; padding:4px 0; max-height:190px; overflow-y:auto; overflow-x:hidden;">
                     <!-- Preenchido dinamicamente via JS -->
@@ -1707,13 +1702,13 @@
               </div>
 
               <!-- Botões de Condição / Parâmetro: =, <> na mesma linha -->
-              <div class="btn-group-param-digito" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:2px; gap:2px; height:38px; box-sizing:border-box; flex-shrink:0 !important;">
+              <div class="btn-group-param-digito" style="display:inline-flex !important; flex-direction:row !important; flex-wrap:nowrap !important; align-items:center !important; background:var(--input-bg); border:1px solid var(--input-border); border-radius:8px; padding:2px; gap:2px; height:38px; box-sizing:border-box; flex-shrink:0 !important;">
                 <button type="button" id="btn-param-digito-eq" class="btn-param-digito" data-cond="=" title="Igual ao valor digitado (=)"
-                  style="padding:4px 9px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#94a3b8;">
+                  style="padding:4px 9px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:var(--text-secondary);">
                   =
                 </button>
                 <button type="button" id="btn-param-digito-neq" class="btn-param-digito" data-cond="<>" title="Diferente do valor digitado (<>), inclusive nulos/vazios"
-                  style="padding:4px 8px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:#94a3b8;">
+                  style="padding:4px 8px; font-size:13px; font-weight:800; border-radius:6px; border:none; cursor:pointer; transition:all 0.2s; background:transparent; color:var(--text-secondary);">
                   &lt;&gt;
                 </button>
               </div>
@@ -1737,7 +1732,7 @@
             <select id="filtro-status" multiple>
               <option value="">STATUS</option>
             </select>
-            <select id="filtro-ano" multiple style="border-color: rgba(249,115,22,0.5); color: #fb923c;">
+            <select id="filtro-ano" multiple>
               <option value="">ANO</option>
             </select>
           </div>
@@ -1750,15 +1745,15 @@
             <select id="filtro-tipo" multiple>
               <option value="">TIPO</option>
             </select>
-            <select id="filtro-agrupamento" multiple style="border-color: rgba(168,85,247,0.5); color: #c084fc;">
+            <select id="filtro-agrupamento" multiple>
               <option value="">AGRUPAMENTO</option>
             </select>
-            <select id="filtro-alerta" style="border-color: rgba(245,158,11,0.5); color: #f59e0b;">
+            <select id="filtro-alerta">
               <option value="">&#9888; ALERTA</option>
               <option value="sim">&#128308; Com Alerta</option>
               <option value="nao">&#128994; Sem Alerta</option>
             </select>
-            <select id="filtro-marca" style="border-color: rgba(59,130,246,0.5); color: #60a5fa;">
+            <select id="filtro-marca">
               <option value="">&#128204; MARCAÇÃO</option>
               <option value="sim">&#11088; Apenas Marcados</option>
               <option value="nao">&#9898; Não Marcados</option>
@@ -2068,17 +2063,6 @@
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px; width: 100%;">
           <div style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
             <h2 id="form-title" style="margin:0; font-size:18px; line-height:1.15;">Novo Processo</h2>
-            <!-- SELO DE IA ACOMODADO À ESQUERDA NA MESMA LINHA DO CABEÇALHO (IMAGEM 2) -->
-            <div id="badge-topo-ia-destaque" style="display:inline-flex; align-items:center; gap:8px; padding:4px 12px; background:linear-gradient(135deg, rgba(99,102,241,0.28), rgba(168,85,247,0.28)); border:1.5px solid rgba(168,85,247,0.65); border-radius:10px; box-shadow:0 0 16px rgba(168,85,247,0.35);">
-              <img src="img/icone-ai-chip.png" alt="AI Chip" style="width:26px; height:26px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(168,85,247,0.9)); flex-shrink:0;">
-              <div style="display:flex; flex-direction:column; line-height:1.15;">
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.58</span>
-                </div>
-                <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
-              </div>
-            </div>
           </div>
 
           <!-- Seletores de Categoria e Tipo -->
@@ -2115,19 +2099,19 @@
         <div class="card" id="card-form-processo">
           <form id="form-processo">
             
-            <!-- GUIAS DE NAVEGAÇÃO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; width:100%;">
-              <div style="display:flex; gap:12px; align-items:center;">
-                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📋 OBJETO</button>
-                <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📜 Manifestação Técnica</button>
-                <button id="btn-guia-repositorio" type="button" onclick="alternarGuiaFormulario('repositorio')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" title="Repositório de Documentos, Análise do Plano de Trabalho e Google Drive">📁 Repositório & Análise CAM</button>
+            <!-- GUIAS DE NAVEGAÇÃO DO FORMULÁRIO (HARMONIZADAS EM PETRÓLEO, CHUMBO E CINZA) -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:1px solid var(--border); padding-bottom:14px; width:100%;">
+              <div style="display:flex; gap:10px; align-items:center;">
+                <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:#164e63; color:#ffffff; border:1px solid #164e63; font-weight:700; height:38px; font-size:13.5px; padding:0 20px; border-radius:6px; cursor:pointer; box-shadow:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:var(--transition);">📋 OBJETO</button>
+                <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:#ffffff; color:#475569; border:1px solid #cbd5e1; font-weight:600; height:38px; font-size:13.5px; padding:0 20px; border-radius:6px; cursor:pointer; box-shadow:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:var(--transition);">📜 Manifestação Técnica</button>
+                <button id="btn-guia-repositorio" type="button" onclick="alternarGuiaFormulario('repositorio')" style="background:#ffffff; color:#475569; border:1px solid #cbd5e1; font-weight:600; height:38px; font-size:13.5px; padding:0 20px; border-radius:6px; cursor:pointer; box-shadow:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:var(--transition);" title="Repositório de Documentos, Análise do Plano de Trabalho e Google Drive">📁 Repositório Análise CAM</button>
               </div>
 
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
-                <button type="button" id="btn-prestacao-contas" onclick="abrirModalPrestacaoContas()" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:1px solid #818cf8; box-shadow:0 3px 10px rgba(99,102,241,0.35); height: 42px; padding: 0 20px; font-size: 13.5px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;" title="Gerar despacho para verificação de regularidade e prestação de contas da entidade">📋 Prestação de Contas</button>
-                <button type="button" id="btn-gerar-manifestacao" onclick="gerarManifestacaoJPG()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:none; align-items:center; justify-content:center; gap:6px;">📄 Gerar Manifestação</button>
-                <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">Cancelar</button>
-                <button type="submit" class="btn btn-success" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">💾 Salvar Processo</button>
+                <button type="button" id="btn-prestacao-contas" onclick="abrirModalPrestacaoContas()" class="btn" style="background:#ffffff; color:#1e293b; border:1px solid #cbd5e1; box-shadow:none; height:38px; padding:0 16px; font-size:13px; font-weight:600; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; gap:6px; cursor:pointer;" title="Gerar despacho para verificação de regularidade e prestação de contas da entidade">📋 Prestação de Contas</button>
+                <button type="button" id="btn-gerar-manifestacao" onclick="gerarManifestacaoJPG()" class="btn action-report" style="background:#ffffff; color:#1e293b; border:1px solid #cbd5e1; box-shadow:none; height:38px; padding:0 16px; font-size:13px; font-weight:600; border-radius:6px; display:none; align-items:center; justify-content:center; gap:6px; cursor:pointer;">📄 Gerar Manifestação</button>
+                <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="background:#ffffff; border:1px solid #cbd5e1; color:#475569; height:38px; padding:0 18px; font-size:13.5px; font-weight:600; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;">Cancelar</button>
+                <button type="submit" class="btn btn-success" style="background:#164e63; color:#ffffff; border:1px solid #164e63; height:38px; padding:0 22px; font-size:13.5px; font-weight:700; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; box-shadow:none; cursor:pointer;">💾 Salvar Processo</button>
               </div>
             </div>
   
@@ -2138,13 +2122,13 @@
             <input type="hidden" id="form-tipo" name="tipo" value="">
 
             <!-- Autorizações -->
-            <div class="form-group full card-autorizacoes-header" style="position: relative; margin-bottom: 20px; padding: 14px 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box;">
+            <div class="form-group full card-autorizacoes-header" style="position: relative; margin-bottom: 20px; padding: 14px 20px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%;">
                 <label style="margin: 0; text-align: left; color: var(--text-primary); font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;">AUTORIZAÇÕES</label>
                 <!-- MARCAR PROCESSO NO CANTO SUPERIOR DIREITO NA LINHA DA AUTORIZAÇÃO -->
-                <div id="container-form-marca" style="display: flex; align-items: center; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.28); border-radius: 6px; padding: 5px 12px; transition: all 0.2s;">
-                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #fca5a5; user-select: none; margin: 0; font-size: 12px;">
-                    <input type="checkbox" id="form-marca" style="width: 16px; height: 16px; cursor: pointer; accent-color: #ef4444;">
+                <div id="container-form-marca" style="display: flex; align-items: center; background: #fee2e2; border: 1px solid #fca5a5; border-radius: 6px; padding: 5px 12px; transition: all 0.2s;">
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #dc2626; user-select: none; margin: 0; font-size: 12px;">
+                    <input type="checkbox" id="form-marca" style="width: 16px; height: 16px; cursor: pointer; accent-color: #dc2626;">
                     <span>📌 Marcar Processo (Chamar Atenção)</span>
                   </label>
                 </div>
@@ -2909,13 +2893,21 @@
               
               <!-- TOPO DO REPOSITÓRIO: IDENTIFICAÇÃO E AÇÕES RÁPIDAS -->
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:14px;">
-                <div>
-                  <h3 style="margin:0 0 4px 0; color:#34d399; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
-                    <span>📁</span> <span>REPOSITÓRIO DE DOCUMENTOS & ANÁLISE TÉCNICA CAM</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; width:100%;">
+                  <h3 style="margin:0; color:#34d399; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                    <span>📁</span> <span>REPOSITÓRIO DE DOCUMENTOS ANÁLISE TÉCNICA CAM</span>
                   </h3>
-                  <p style="margin:0; font-size:12px; color:#94a3b8;">
-                    Guarda de documentos do processo, integração Google Drive e Leitor Automático do Plano de Trabalho com Motor SCRIPT CAM.
-                  </p>
+                  <!-- SELO DE IA (MOVIDO PARA A DIREITA DO TÍTULO DO REPOSITÓRIO) -->
+                  <div id="badge-topo-ia-destaque" style="display:inline-flex; align-items:center; gap:8px; padding:4px 12px; background:#ecfeff; border:1px solid #a5f3fc; border-radius:8px;">
+                    <img src="img/icone-ai-chip.png" alt="AI Chip" style="width:24px; height:24px; object-fit:contain; flex-shrink:0;">
+                    <div style="display:flex; flex-direction:column; line-height:1.15;">
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="font-size:11.5px; font-weight:800; color:#164e63; letter-spacing:0.5px; white-space:nowrap;">ANÁLISE INTELIGENTE</span>
+                        <span style="background:#164e63; color:#ffffff; border:1px solid #164e63; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:700; letter-spacing:0.4px; white-space:nowrap;">v1.3.66</span>
+                      </div>
+                      <span style="font-size:10px; color:#475569; font-weight:600; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
+                    </div>
+                  </div>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                   <!-- SELEÇÃO DE MOTORES DE SCRIPT (CHECKBOXES PARA USAR FUNDAMENTOS, ORIGINAL OU AMBOS) -->
@@ -2976,7 +2968,6 @@
                       <span id="badge-docs-selecionados" style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700;">0 selecionados</span>
                       <span id="badge-persistencia-docs" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:2px 8px; border-radius:12px; font-size:10.5px; font-weight:700;" title="Documentos gravados fora da memória volátil (IndexedDB + Processo) com refresh automático a cada inserção">💾 Disponível Fora de Memória • Auto-Refresh Ativo</span>
                     </h4>
-                    <span style="font-size:11.5px; color:#94a3b8;">Marque (☑️) os documentos que devem ser analisados em conjunto sob a luz do Script Padrão (Script CAM V1.0) e apontados como referência.</span>
                   </div>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                     <button type="button" onclick="alternarSelecaoTodosDocumentos()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 12px; font-size:11.5px; font-weight:700; border-radius:6px; cursor:pointer;" title="Marcar ou desmarcar todos os documentos para análise">
@@ -3014,11 +3005,6 @@
 
                 <!-- PAINEL COMPACTO DO PIPELINE ANTIGRAVITY V2.0 (EXIBIDO APÓS ANALISAR OS DOCUMENTOS DO LOCAL AMARELO) -->
                 <div id="painel-resumo-auditoria-antigravity-v2" style="display:none; margin-top:12px; padding:14px; background:linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.9)); border:1.5px solid rgba(239,68,68,0.45); border-radius:10px; box-shadow:0 4px 16px rgba(0,0,0,0.4);"></div>
-
-                <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                  <span style="font-size:11px; color:#34d399; font-weight:600;">⚡ Motor Script CAM V1.0: Coerência • Conexão Documental • Legalidade • Metas e Valores</span>
-                  <span style="font-size:10.5px; color:#64748b;">Os documentos ficam associados ao número SEI deste processo.</span>
-                </div>
               </div>
 
               <!-- PAINEL DE ANÁLISE TÉCNICA CAM & OPORTUNÔMETRO (DINÂMICO) -->
@@ -3092,7 +3078,7 @@
                   <!-- RELÓGIO 3: MEDIDOR DE RISCO E CONFLITOS DE REGRAS (FRIEZA DA LEI) -->
                   <div style="background:radial-gradient(circle at top, rgba(239,68,68,0.12), rgba(0,0,0,0.45)); border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:14px; text-align:center;">
                     <span style="font-size:11px; font-weight:800; color:#f87171; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">
-                      ⚡ TERMÔMETRO DE RISCO & CONFLITO
+                      ⚡ TERMÔMETRO DE RISCO CONFLITO
                     </span>
                     <div style="position:relative; width:80px; height:80px; margin:0 auto 4px auto;">
                       <svg viewBox="0 0 36 36" style="width:100%; height:100%; transform:rotate(-90deg);">
@@ -3119,7 +3105,7 @@
                     </div>
                     <div style="margin-top:8px; display:flex; gap:6px;">
                       <button type="button" onclick="aplicarAnaliseNeutraAgora()" class="btn" style="background:rgba(255,255,255,0.08); color:#f8fafc; border:1px solid rgba(255,255,255,0.2); padding:5px 8px; font-size:10px; font-weight:800; border-radius:5px; cursor:pointer; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Disparar a análise estritamente neutra e crua sem maquiagem">
-                        ⚖️ Aplicar Análise Nua & Crua
+                        ⚖️ Aplicar Análise
                       </button>
                     </div>
                   </div>
@@ -3130,7 +3116,7 @@
                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                     <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                       <h5 style="margin:0; font-size:12.5px; color:#34d399; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
-                        📋 Matriz de Verificação de Conformidade, Coerência e Solução (Script CAM V1.0)
+                        📋 Matriz de Verificação de Conformidade, Coerência e Solução
                       </h5>
                       <!-- BOTÃO INCOERÊNCIAS: EXIBIDO SE E SOMENTE SE HOUVER ALGUMA INCOERÊNCIA (MARCADO EM AMARELO NA IMAGEM 1) -->
                       <button type="button" id="btn-cam-incoerencias" onclick="abrirModalIncoerenciasCAM()" style="display:none; background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:4px 10px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.4);" title="Visualizar inconsistências e pendências técnicas detectadas">
@@ -3140,7 +3126,6 @@
                         📄 Gerar TXT (Conformes e Pendências)
                       </button>
                     </div>
-                    <span style="font-size:11px; color:#94a3b8;">Use os botões de cada estágio para definir (✓ Conforme / ⏳ Pendente) e gerar o TXT individual ou geral</span>
                   </div>
                   <div id="cam-matriz-itens" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:12px; font-size:12px;">
                     <!-- Itens gerados dinamicamente via JS com coerência, solução, 2 botões por estágio e botão TXT -->
@@ -3184,8 +3169,8 @@
                       <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('pendencias')" class="btn" style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border:1px solid #fbbf24; padding:8px 14px; font-size:11.5px; font-weight:800; border-radius:8px; cursor:pointer; box-shadow:0 3px 10px rgba(245,158,11,0.35); display:inline-flex; align-items:center; gap:6px;" title="Gerar arquivo .TXT contendo as pendências e recomendações apontadas para resposta e saneamento">
                         <span>⏳</span> <span>Gerar TXT (Pendências p/ Resposta)</span>
                       </button>
-                      <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('todos')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:9px 18px; font-size:12.5px; font-weight:900; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.45); display:inline-flex; align-items:center; gap:7px;" title="Gerar arquivo .TXT completo com Conformes, Pendências, Recomendações e Campos para Resposta e Edição">
-                        <span>📄</span> <span>GERAR ARQUIVO TXT (CONFORMES E PENDÊNCIAS P/ RESPOSTA E EDIÇÃO)</span>
+                      <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('todos')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:8px 14px; font-size:11.5px; font-weight:800; border-radius:8px; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.35); display:inline-flex; align-items:center; gap:6px;" title="Gerar arquivo .TXT completo com Conformes, Pendências, Recomendações e Campos para Resposta e Edição">
+                        <span>📄</span> <span>Gerar TXT Completo</span>
                       </button>
                     </div>
                   </div>
@@ -3329,23 +3314,9 @@
       <div id="modal-documento-antigravity-v2" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:100005; justify-content:center; align-items:center; padding:18px;">
         <div style="background:#0f172a; border:1.5px solid rgba(239,68,68,0.55); border-radius:14px; max-width:980px; width:100%; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.9); overflow:hidden;">
           <!-- Header -->
-          <div style="padding:16px 22px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(239,68,68,0.18), rgba(15,23,42,0.95)); flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🛡️</span>
-              <div>
-                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  <h3 style="margin:0; color:#f8fafc; font-size:16px; font-weight:900;">RELATÓRIO DE AUDITORIA DE PARCERIAS & MINUTA DE NOTIFICAÇÃO (ANTIGRAVITY v2.0)</h3>
-                  <span id="badge-status-final-antigravity-v2" style="background:rgba(239,68,68,0.25); color:#fca5a5; border:1px solid #ef4444; padding:2px 10px; border-radius:12px; font-size:11px; font-weight:900;">EM ANÁLISE</span>
-                </div>
-                <span style="font-size:11.5px; color:#94a3b8;">Agente: <strong>AntiGravity_Convenio_Auditor v2.0.0</strong> • Validação Cruzada Doc A (Ofício) x Doc B (Plano de Trabalho) • Regras FIN-01, OBJ-02, REP-03</span>
-              </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <button type="button" onclick="abrirEditorScriptAntiGravityV2()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.2); padding:6px 12px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;">
-                ⚙️ Ver Script v2.0
-              </button>
-              <button type="button" onclick="fecharModalDocumentoAntiGravityV2()" class="btn" style="background:rgba(239,68,68,0.25); border:1.5px solid #ef4444; color:#fca5a5; font-size:15px; font-weight:900; cursor:pointer; padding:6px 14px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; gap:4px; box-shadow:0 0 10px rgba(239,68,68,0.4);" title="Fechar Janela">✕ Fechar</button>
-            </div>
+          <div style="padding:16px 22px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; background:linear-gradient(135deg, rgba(239,68,68,0.18), rgba(15,23,42,0.95)); gap:12px;">
+            <span style="font-size:26px;">🛡️</span>
+            <h3 style="margin:0; color:#f8fafc; font-size:16px; font-weight:900;">RELATÓRIO DE AUDITORIA DE PARCERIAS MINUTA DE NOTIFICAÇÃO</h3>
           </div>
 
           <!-- Abas de Visualização do Documento -->
@@ -3361,7 +3332,6 @@
                 🧩 Extração JSON Schema (Doc A & Doc B)
               </button>
             </div>
-            <span id="resumo-docs-analisados-agv2" style="font-size:11px; color:#38bdf8; font-weight:700;"></span>
           </div>
 
           <!-- Corpo do Modal -->
@@ -3384,15 +3354,13 @@
 
           <!-- Footer com Ações de Geração de Documento -->
           <div style="padding:14px 22px; border-top:1px solid rgba(255,255,255,0.1); background:#0f172a; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; flex:1;">
               <button type="button" onclick="copiarDocumentoAntiGravityV2()" class="btn" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
                 📋 Copiar Documento p/ SEI
               </button>
               <button type="button" onclick="aplicarAuditoriaAntiGravityNaManifestacao()" class="btn" style="background:rgba(16,185,129,0.16); color:#34d399; border:1px solid rgba(16,185,129,0.45); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
                 ✍️ Injetar na Manifestação Técnica
               </button>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
               <button type="button" onclick="baixarDocumentoAntiGravityV2('txt')" class="btn" style="background:rgba(245,158,11,0.18); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
                 📝 Baixar .TXT
               </button>
@@ -3402,7 +3370,13 @@
               <button type="button" onclick="imprimirDocumentoAntiGravityV2()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:9px 18px; font-size:12.5px; font-weight:900; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(16,185,129,0.45);">
                 🖨️ Imprimir / Gerar PDF Oficial
               </button>
-              <button type="button" onclick="fecharModalDocumentoAntiGravityV2()" class="btn" style="background:rgba(239,68,68,0.2); border:1.5px solid #ef4444; color:#fca5a5; font-size:12.5px; font-weight:900; cursor:pointer; padding:8px 16px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(239,68,68,0.3);" title="Fechar Modal de Auditoria">
+            </div>
+            <!-- VER SCRIPT + FECHAR (MOVIDOS DO TOPO PARA O CANTO INFERIOR DIREITO) -->
+            <div style="display:flex; gap:8px; align-items:center; margin-left:auto;">
+              <button type="button" onclick="abrirEditorScriptAntiGravityV2()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.2); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                ⚙️ Ver Script v2.0
+              </button>
+              <button type="button" onclick="fecharModalDocumentoAntiGravityV2()" class="btn" style="background:rgba(239,68,68,0.2); border:1.5px solid #ef4444; color:#fca5a5; font-size:12.5px; font-weight:900; cursor:pointer; padding:8px 16px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(239,68,68,0.3);" title="Fechar Janela">
                 ✕ Fechar
               </button>
             </div>
@@ -3607,13 +3581,13 @@
             </p>
           </div>
           <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-            <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
+            <span class="badge" style="background:#ecfdf5; color:#059669; border:1px solid #a7f3d0; font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.58
+            <span class="badge" style="background:#ecfeff; color:#164e63; border:1px solid #a5f3fc; font-weight:800; padding:6px 14px; font-size:12px; border-radius:6px; letter-spacing:0.5px;">
+              GBZ - v1.3.66
             </span>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#ffffff; color:#334155; border:1px solid #cbd5e1; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
           </div>
@@ -3884,7 +3858,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.58] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.66] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5032,269 +5006,237 @@
   </div>
 
   <!-- ============= MODAL POPUP: CADASTRO GERAL DE ENTIDADE / ESCOLA (29 CAMPOS - PLANILHA MESTRE) ============= -->
-  <div id="modal-popup-cadastro-entidade" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); backdrop-filter:blur(8px); z-index:99998; justify-content:center; align-items:center; padding:16px; box-sizing:border-box;">
-    <div style="background:#0f172a; border:1px solid rgba(16,185,129,0.55); border-radius:14px; max-width:980px; width:100%; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 20px 50px rgba(0,0,0,0.95); overflow:hidden; position:relative;">
+  <div id="modal-popup-cadastro-entidade" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99998; justify-content:center; align-items:center; padding:16px; box-sizing:border-box;">
+    <div style="background:#0f172a; border:1px solid rgba(148,163,184,0.25); border-radius:14px; max-width:1200px; width:96%; max-height:94vh; display:flex; flex-direction:column; box-shadow:0 25px 60px rgba(0,0,0,0.95); overflow:hidden; position:relative;">
       
-      <!-- Cabeçalho do Popup (Estilo Padrão Imagem 5) -->
-      <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(15,23,42,0.98) 100%);">
-        <div style="display:flex; align-items:center; gap:10px;">
+      <!-- Cabeçalho do Popup (Padronizado Neutro e Elegante) -->
+      <div style="padding:14px 24px; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; background:#0f172a;">
+        <div style="display:flex; align-items:center; gap:12px;">
           <span style="font-size:22px; line-height:1;">🏫</span>
           <div>
-            <h3 id="entidade-modal-titulo" style="margin:0; color:#34d399; font-size:17px; font-weight:800; letter-spacing:0.5px;">
+            <h3 id="entidade-modal-titulo" style="margin:0; color:#f8fafc; font-size:17px; font-weight:800; letter-spacing:0.3px;">
               Cadastro Geral de Entidade / Escola
             </h3>
-            <span style="font-size:11.5px; color:#94a3b8; font-weight:500;">
-              Base dos 52 Municípios de Rondônia (Conselhos Escolares, APAEs, EFAs e Prefeituras)
-            </span>
           </div>
         </div>
 
-        <div style="display:flex; align-items:center; gap:8px;">
-          <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
-            target="_blank" rel="noopener noreferrer"
-            style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:#6ee7b7; padding:6px 12px; border-radius:6px; font-size:11.5px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-            Planilha Oficial (Aba Entidades)
-          </a>
-          <button type="button" onclick="fecharModalCadastroEntidade()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#94a3b8; border-radius:6px; width:34px; height:34px; font-size:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(239,68,68,0.3)';" onmouseout="this.style.color='#94a3b8'; this.style.background='rgba(255,255,255,0.08)';" title="Fechar janela">✕</button>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" onclick="fecharModalCadastroEntidade()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#94a3b8; border-radius:8px; width:34px; height:34px; font-size:16px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(239,68,68,0.2)';" onmouseout="this.style.color='#94a3b8'; this.style.background='rgba(255,255,255,0.06)';" title="Fechar janela">✕</button>
         </div>
       </div>
 
-      <!-- BARRA DE MUNICÍPIO ANCORADO NO CABEÇALHO (VISÍVEL EM TODAS AS ABAS 1 A 5 - IMAGEM 5) -->
-      <div id="barra-municipio-ancorado-modal" style="padding:10px 20px; background:linear-gradient(90deg, rgba(16,185,129,0.2) 0%, rgba(15,23,42,0.98) 100%); border-bottom:1px solid rgba(16,185,129,0.45); display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; box-shadow:0 4px 12px rgba(0,0,0,0.4); position:relative; z-index:10;">
-        <div style="display:flex; align-items:center; gap:10px; flex:1 1 360px;">
-          <span style="font-size:12.5px; font-weight:900; color:#34d399; text-transform:uppercase; letter-spacing:0.6px; display:flex; align-items:center; gap:6px; white-space:nowrap;">
-            <span style="font-size:17px;">📍</span> MUNICÍPIO / DISTRITO:
+      <!-- BARRA DE MUNICÍPIO ANCORADO NO CABEÇALHO (PADRÃO NEUTRO E CLEAN - IMAGEM 3) -->
+      <div id="barra-municipio-ancorado-modal" style="padding:12px 24px; background:#1e293b; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; position:relative; z-index:10;">
+        <div style="display:flex; align-items:center; gap:12px; flex:1 1 380px;">
+          <span style="font-size:12px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; display:flex; align-items:center; gap:6px; white-space:nowrap;">
+            📍 Município / Distrito:
           </span>
-          <div style="position:relative; flex:1; min-width:220px;">
+          <div style="position:relative; flex:1; min-width:240px;">
             <input type="text" id="entidade-municipio-ancorado" list="list-municipios-ancorados"
-              placeholder="Selecione ou digite o Município de Rondônia..."
+              placeholder="Selecione ou digite o Município..."
               oninput="aoAlterarMunicipioAncorado(this.value)"
               autocomplete="off"
-              style="width:100%; height:38px; padding:6px 12px; background:#0f172a; border:2px solid #10b981; border-radius:6px; color:#ffffff; font-weight:800; font-size:13.5px; box-shadow:0 0 12px rgba(16,185,129,0.35); box-sizing:border-box; outline:none;"
-              title="Município ancorado no cabeçalho - sincronizado em todas as abas">
+              style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.18); border-radius:8px; color:#ffffff; font-weight:700; font-size:13.5px; box-sizing:border-box; outline:none; transition:border-color 0.2s;"
+              onfocus="this.style.borderColor='#38bdf8';" onblur="this.style.borderColor='rgba(255,255,255,0.18)';"
+              title="Município ancorado - filtre ou cadastre escolas deste município">
             <datalist id="list-municipios-ancorados"></datalist>
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
-          <span id="entidade-municipio-badge-count" style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:800; color:#6ee7b7; background:rgba(16,185,129,0.25); border:1px solid rgba(16,185,129,0.5); padding:5px 14px; border-radius:20px; white-space:nowrap; box-shadow:0 2px 6px rgba(0,0,0,0.3);">
-            🏫 0 escolas vinculadas
+          <button type="button" onclick="carregarTodasEscolasTabelaModal()" class="btn" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:#cbd5e1; padding:6px 14px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer;" title="Mostrar todas as escolas do Estado">
+            📋 Ver Todas as Escolas
+          </button>
+          <span id="entidade-municipio-badge-count" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:#cbd5e1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:6px 14px; border-radius:20px; white-space:nowrap;">
+            🏫 0 unidades vinculadas
           </span>
         </div>
       </div>
 
-      <!-- BARRA DE ABAS / BOTÕES 1 A 5 (IMAGEM 1 E 2: CADA UM ACESSA UM GRUPO DE INFORMAÇÕES) -->
-      <div id="barra-grupos-entidade-tabs" style="display:flex; align-items:center; gap:8px; padding:10px 20px; background:#0b1329; border-bottom:1px solid rgba(255,255,255,0.08); overflow-x:auto; scrollbar-width:thin;">
+      <!-- BARRA DE ABAS / BOTÕES 1 A 5 (CORES NEUTRAS, PADRONIZADAS E DISCRETAS - IMAGEM 3) -->
+      <div id="barra-grupos-entidade-tabs" style="display:flex; align-items:center; gap:8px; padding:10px 24px; background:#0f172a; border-bottom:1px solid rgba(255,255,255,0.08); overflow-x:auto;">
         
-        <!-- BOTÃO 1: CATEGORIA (AMARELO) -->
+        <!-- BOTÃO 1: CATEGORIA -->
         <button type="button" id="tab-grupo-btn-1" onclick="ativarGrupoFormEntidade(1)"
           class="btn-aba-grupo active"
-          style="display:flex; align-items:center; gap:8px; padding:7px 14px; border-radius:8px; border:2px solid #eab308; background:rgba(234,179,8,0.22); color:#fef08a; font-size:11.5px; font-weight:800; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
-          <span style="background:#eab308; color:#000; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;">1</span>
+          style="display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.08); color:#f8fafc; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
+          <span style="background:rgba(255,255,255,0.15); color:#fff; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">1</span>
           <span>CATEGORIA & PARCERIA</span>
         </button>
 
-        <!-- BOTÃO 2: IDENTIFICAÇÃO (VERMELHO) -->
+        <!-- BOTÃO 2: IDENTIFICAÇÃO -->
         <button type="button" id="tab-grupo-btn-2" onclick="ativarGrupoFormEntidade(2)"
           class="btn-aba-grupo"
-          style="display:flex; align-items:center; gap:8px; padding:7px 14px; border-radius:8px; border:1px solid rgba(239,68,68,0.35); background:rgba(239,68,68,0.08); color:#fca5a5; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
-          <span style="background:rgba(239,68,68,0.3); color:#f87171; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;">2</span>
+          style="display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; border:1px solid transparent; background:transparent; color:#94a3b8; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
+          <span style="background:rgba(255,255,255,0.08); color:#94a3b8; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">2</span>
           <span>IDENTIFICAÇÃO</span>
         </button>
 
-        <!-- BOTÃO 3: GESTÃO & CONTATOS (VERDE) -->
+        <!-- BOTÃO 3: GESTÃO & CONTATOS -->
         <button type="button" id="tab-grupo-btn-3" onclick="ativarGrupoFormEntidade(3)"
           class="btn-aba-grupo"
-          style="display:flex; align-items:center; gap:8px; padding:7px 14px; border-radius:8px; border:1px solid rgba(16,185,129,0.35); background:rgba(16,185,129,0.08); color:#6ee7b7; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
-          <span style="background:rgba(16,185,129,0.3); color:#34d399; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;">3</span>
+          style="display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; border:1px solid transparent; background:transparent; color:#94a3b8; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
+          <span style="background:rgba(255,255,255,0.08); color:#94a3b8; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">3</span>
           <span>GESTÃO & CONTATOS</span>
         </button>
 
-        <!-- BOTÃO 4: ENDEREÇO (ROXO / CIANO) -->
+        <!-- BOTÃO 4: ENDEREÇO -->
         <button type="button" id="tab-grupo-btn-4" onclick="ativarGrupoFormEntidade(4)"
           class="btn-aba-grupo"
-          style="display:flex; align-items:center; gap:8px; padding:7px 14px; border-radius:8px; border:1px solid rgba(168,85,247,0.35); background:rgba(168,85,247,0.08); color:#d8b4fe; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
-          <span style="background:rgba(168,85,247,0.3); color:#c084fc; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;">4</span>
+          style="display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; border:1px solid transparent; background:transparent; color:#94a3b8; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
+          <span style="background:rgba(255,255,255,0.08); color:#94a3b8; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">4</span>
           <span>ENDEREÇO</span>
         </button>
 
-        <!-- BOTÃO 5: INFRAESTRUTURA (ROSA) -->
+        <!-- BOTÃO 5: INFRAESTRUTURA -->
         <button type="button" id="tab-grupo-btn-5" onclick="ativarGrupoFormEntidade(5)"
           class="btn-aba-grupo"
-          style="display:flex; align-items:center; gap:8px; padding:7px 14px; border-radius:8px; border:1px solid rgba(236,72,153,0.35); background:rgba(236,72,153,0.08); color:#f9a8d4; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
-          <span style="background:rgba(236,72,153,0.3); color:#f472b6; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;">5</span>
+          style="display:flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; border:1px solid transparent; background:transparent; color:#94a3b8; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; transition:all 0.2s;">
+          <span style="background:rgba(255,255,255,0.08); color:#94a3b8; width:20px; height:20px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800;">5</span>
           <span>INFRAESTRUTURA</span>
         </button>
 
         <!-- ATALHO VER TODAS AS SEÇÕES -->
         <button type="button" id="tab-grupo-btn-todos" onclick="ativarGrupoFormEntidade('todos')"
           class="btn-aba-grupo"
-          style="display:flex; align-items:center; gap:6px; padding:7px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.04); color:#94a3b8; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; margin-left:auto; transition:all 0.2s;"
+          style="display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:8px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.04); color:#94a3b8; font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap; margin-left:auto; transition:all 0.2s;"
           title="Exibir todas as 5 seções do formulário juntas">
           <span>📋</span> <span>VER TODAS</span>
         </button>
       </div>
 
       <!-- Corpo do Formulário com todas as 29 Colunas e Tabela Inferior -->
-      <div id="container-corpo-modal-entidade" style="padding:20px; flex:1; overflow-y:auto; box-sizing:border-box;">
+      <div id="container-corpo-modal-entidade" style="padding:22px 26px; flex:1; overflow-y:auto; box-sizing:border-box;">
         <form id="form-cadastro-entidade" onsubmit="salvarCadastroEntidade(event)">
           <input type="hidden" id="entidade-form-id">
           <input type="hidden" id="entidade-form-origem">
 
           <!-- BANNER DE PARÂMETROS PRÉ-DEFINIDOS FIXADOS (QUANDO ACESSADO VIA LINK EXTERNO SEM SENHA) -->
-          <div id="banner-parametros-fixados" style="display:none; margin-bottom:16px; padding:14px 18px; border-radius:10px; border:2px solid #f59e0b; background:linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(15,23,42,0.98) 100%); box-shadow:0 0 16px rgba(245,158,11,0.3);">
-            <div style="display:flex; align-items:flex-start; gap:12px;">
-              <span style="font-size:24px; line-height:1;">🔒</span>
+          <div id="banner-parametros-fixados" style="display:none; margin-bottom:16px; padding:12px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:#1e293b;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-size:20px; line-height:1;">🔒</span>
               <div style="flex:1;">
-                <div style="font-size:13.5px; font-weight:900; color:#fbbf24; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;">
-                  Parâmetros Institucionais Pré-definidos & Bloqueados
+                <div style="font-size:12.5px; font-weight:700; color:#f8fafc; letter-spacing:0.3px;">
+                  Parâmetros Institucionais Pré-definidos
                 </div>
-                <div id="txt-detalhe-parametros-fixados" style="font-size:12px; color:#f1f5f9; line-height:1.5;">
-                  Este formulário foi configurado com parâmetros oficiais vinculados. Os campos de Município, Categoria, Competência e Regional estão fixados e não podem ser alterados — preencha e acrescente os dados da entidade para concluir o cadastro.
+                <div id="txt-detalhe-parametros-fixados" style="font-size:11.5px; color:#94a3b8; line-height:1.4;">
+                  Campos fixados pela administração pública. Preencha os demais dados para concluir o cadastro.
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- BANNER INFORMATIVO DE CATEGORIA: CONVÊNIO VS FOMENTO (LEI Nº 5.735/2024 & LEI 4.979/2021) -->
-          <div style="margin-bottom:16px; padding:12px 16px; border-radius:8px; border:1px solid rgba(56,189,248,0.4); background:linear-gradient(135deg, rgba(56,189,248,0.12) 0%, rgba(15,23,42,0.95) 100%);">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-              <div style="font-size:12px; color:#e2e8f0; line-height:1.4;">
-                <strong style="color:#38bdf8;">Regra Jurídico-Institucional CAM/SEDUC:</strong> 
-                <strong>Prefeituras</strong> executam via <span style="background:rgba(59,130,246,0.3); color:#93c5fd; padding:1px 6px; border-radius:4px; font-weight:700;">Convênio</span>. 
-                <strong>Conselhos Escolares</strong>, <strong>APAEs</strong> e <strong>EFAs</strong> executam via <span style="background:rgba(16,185,129,0.3); color:#6ee7b7; padding:1px 6px; border-radius:4px; font-weight:700;">Fomento</span>.
-              </div>
-            </div>
-          </div>
-
-          <!-- CAMINHO DA PLANILHA FONTE (TEXTBOX BRANCA) -->
-          <div style="margin-bottom:16px; display:flex; align-items:center; background:#ffffff; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 0 12px rgba(56,189,248,0.25); padding:4px 10px 4px 12px; gap:8px;">
-            <span style="font-size:12px; font-weight:900; color:#0f172a; white-space:nowrap; display:flex; align-items:center; gap:5px;">
-              <span style="color:#0284c7;">📁</span> <span>CAMINHO DA PLANILHA:</span>
-            </span>
-            <input type="text" readonly
-              value="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
-              onclick="this.select()"
-              title="Planilha oficial vinculada ao formulário"
-              style="flex:1; height:32px; background:#ffffff; color:#0f172a; border:none; font-family:'Consolas','Courier New',monospace; font-size:12px; font-weight:700; outline:none; text-overflow:ellipsis; cursor:text;">
-            <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
-              target="_blank" rel="noopener noreferrer"
-              title="Abrir Planilha Fonte Oficial no Google Drive"
-              style="background:#0284c7; color:#ffffff; font-size:11px; font-weight:800; padding:6px 12px; border-radius:6px; text-decoration:none; white-space:nowrap;">
-              Abrir ↗
-            </a>
           </div>
 
           <!-- GRUPO 1: CATEGORIA DA ENTIDADE & VINCULAÇÃO JURÍDICA (MARCAÇÃO AMARELA) -->
-          <div id="sec-grupo-entidade-1" style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(234,179,8,0.3); border-radius:10px; padding:16px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
+          <!-- GRUPO 1: CATEGORIA DA ENTIDADE & VINCULAÇÃO JURÍDICA -->
+          <div id="sec-grupo-entidade-1" style="margin-bottom:18px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="background:#eab308; color:#000; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:900;">1</span>
-                <span style="font-size:13px; font-weight:800; color:#facc15; text-transform:uppercase; letter-spacing:0.5px;">CATEGORIA DA ENTIDADE & VINCULAÇÃO JURÍDICA</span>
+                <span style="background:rgba(255,255,255,0.1); color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;">1</span>
+                <span style="font-size:13px; font-weight:700; color:#f8fafc; letter-spacing:0.3px;">CATEGORIA DA ENTIDADE & VINCULAÇÃO JURÍDICA</span>
               </div>
-              <span style="font-size:11px; color:#94a3b8;">Etapa 1 de 5</span>
+              <span style="font-size:11.5px; color:#94a3b8;">Etapa 1 de 5</span>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:12px;">
-              <label style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; cursor:pointer;">
-                <input type="radio" name="entidade-tipo-radio" value="Prefeitura" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#3b82f6;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:10px; margin-bottom:14px;">
+              <label style="display:flex; align-items:center; gap:10px; background:#0f172a; border:1px solid rgba(255,255,255,0.12); padding:10px 14px; border-radius:8px; cursor:pointer;">
+                <input type="radio" name="entidade-tipo-radio" value="Prefeitura" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#38bdf8;">
                 <div>
                   <div style="font-size:12.5px; font-weight:700; color:#fff;">Prefeitura Municipal</div>
-                  <div style="font-size:11px; color:#60a5fa;">Executa Convênio (C)</div>
+                  <div style="font-size:11px; color:#94a3b8;">Executa Convênio (C)</div>
                 </div>
               </label>
 
-              <label style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; cursor:pointer;">
-                <input type="radio" name="entidade-tipo-radio" value="Conselho Escolar" checked onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#10b981;">
+              <label style="display:flex; align-items:center; gap:10px; background:#0f172a; border:1px solid rgba(255,255,255,0.12); padding:10px 14px; border-radius:8px; cursor:pointer;">
+                <input type="radio" name="entidade-tipo-radio" value="Conselho Escolar" checked onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#38bdf8;">
                 <div>
                   <div style="font-size:12.5px; font-weight:700; color:#fff;">Conselho Escolar</div>
-                  <div style="font-size:11px; color:#34d399;">Executa Fomento (F)</div>
+                  <div style="font-size:11px; color:#94a3b8;">Executa Fomento (F)</div>
                 </div>
               </label>
 
-              <label style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; cursor:pointer;">
-                <input type="radio" name="entidade-tipo-radio" value="APAE" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#10b981;">
+              <label style="display:flex; align-items:center; gap:10px; background:#0f172a; border:1px solid rgba(255,255,255,0.12); padding:10px 14px; border-radius:8px; cursor:pointer;">
+                <input type="radio" name="entidade-tipo-radio" value="APAE" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#38bdf8;">
                 <div>
                   <div style="font-size:12.5px; font-weight:700; color:#fff;">APAE</div>
-                  <div style="font-size:11px; color:#34d399;">Executa Fomento (F)</div>
+                  <div style="font-size:11px; color:#94a3b8;">Executa Fomento (F)</div>
                 </div>
               </label>
 
-              <label style="display:flex; align-items:center; gap:8px; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.12); padding:10px 12px; border-radius:8px; cursor:pointer;">
-                <input type="radio" name="entidade-tipo-radio" value="EFA" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#10b981;">
+              <label style="display:flex; align-items:center; gap:10px; background:#0f172a; border:1px solid rgba(255,255,255,0.12); padding:10px 14px; border-radius:8px; cursor:pointer;">
+                <input type="radio" name="entidade-tipo-radio" value="EFA" onchange="aoSelecionarTipoEntidadeForm(this.value)" style="accent-color:#38bdf8;">
                 <div>
                   <div style="font-size:12.5px; font-weight:700; color:#fff;">EFA (Família Agrícola)</div>
-                  <div style="font-size:11px; color:#34d399;">Executa Fomento (F)</div>
+                  <div style="font-size:11px; color:#94a3b8;">Executa Fomento (F)</div>
                 </div>
               </label>
             </div>
 
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:14px;">
+            <div style="display:flex; gap:14px; flex-wrap:wrap; margin-bottom:16px;">
               <div style="flex:1 1 200px;">
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Categoria (Coluna B da Planilha) *</label>
-                <input type="text" id="entidade-categoria" required placeholder="Ex: Conselho Escolar / Municipal" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Categoria (Coluna B da Planilha) *</label>
+                <input type="text" id="entidade-categoria" required placeholder="Ex: Conselho Escolar / Municipal" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div style="flex:1 1 200px;">
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Tipo de Parceria Obrigatória</label>
-                <input type="text" id="entidade-parceria-prevista" readonly style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.4); border:1px solid rgba(16,185,129,0.3); border-radius:6px; color:#34d399; font-weight:700; font-size:13px; box-sizing:border-box;" value="Fomento (Termo de Fomento - F)">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Tipo de Parceria Obrigatória</label>
+                <input type="text" id="entidade-parceria-prevista" readonly style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#f8fafc; font-weight:700; font-size:13px; box-sizing:border-box; outline:none;" value="Fomento (Termo de Fomento - F)">
               </div>
             </div>
 
             <div style="display:flex; justify-content:flex-end;">
               <button type="button" onclick="ativarGrupoFormEntidade(2)"
-                style="display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:6px; background:#2563eb; color:#fff; font-size:12px; font-weight:700; border:none; cursor:pointer;">
+                style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border-radius:8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:12.5px; font-weight:700; cursor:pointer; transition:all 0.15s;"
+                onmouseover="this.style.background='rgba(56,189,248,0.2)';" onmouseout="this.style.background='rgba(255,255,255,0.1)';">
                 <span>Próximo: 2. Identificação</span> <span>➔</span>
               </button>
             </div>
           </div>
 
-          <!-- GRUPO 2: IDENTIFICAÇÃO DA ESCOLA / ENTIDADE (MARCAÇÃO VERMELHA) -->
-          <div id="sec-grupo-entidade-2" style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(239,68,68,0.3); border-radius:10px; padding:16px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
+          <!-- GRUPO 2: IDENTIFICAÇÃO DA ESCOLA / ENTIDADE -->
+          <div id="sec-grupo-entidade-2" style="margin-bottom:18px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="background:#ef4444; color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:900;">2</span>
-                <span style="font-size:13px; font-weight:800; color:#f87171; text-transform:uppercase; letter-spacing:0.5px;">IDENTIFICAÇÃO DA ESCOLA / ENTIDADE</span>
+                <span style="background:rgba(255,255,255,0.1); color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;">2</span>
+                <span style="font-size:13px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.3px;">IDENTIFICAÇÃO DA ESCOLA / ENTIDADE</span>
               </div>
-              <span style="font-size:11px; color:#94a3b8;">Etapa 2 de 5</span>
+              <span style="font-size:11.5px; color:#94a3b8;">Etapa 2 de 5</span>
             </div>
 
-            <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:12px;">
+            <div style="display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Nome Completo da Escola / Entidade *</label>
-                <input type="text" id="entidade-nome" required placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar..." style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome Completo da Escola / Entidade *</label>
+                <input type="text" id="entidade-nome" required placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.16); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none; transition:border-color 0.2s;" onfocus="this.style.borderColor='#38bdf8';" onblur="this.style.borderColor='rgba(255,255,255,0.16)';">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#34d399; margin-bottom:4px;">📍 Município / Distrito * (Sincronizado)</label>
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">📍 Município / Distrito * (Sincronizado)</label>
                 <input type="text" id="entidade-municipio" required list="list-municipios-ancorados"
                   oninput="aoAlterarMunicipioForm(this.value)"
                   placeholder="Ex: Alvorada do Oeste"
-                  style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:2px solid #10b981; border-radius:6px; color:#fff; font-size:13px; font-weight:700; box-sizing:border-box;">
+                  style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.16); border-radius:8px; color:#fff; font-size:13px; font-weight:700; box-sizing:border-box; outline:none; transition:border-color 0.2s;" onfocus="this.style.borderColor='#38bdf8';" onblur="this.style.borderColor='rgba(255,255,255,0.16)';">
               </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; margin-bottom:12px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:14px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">CNPJ</label>
-                <input type="text" id="entidade-cnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="mascaraCNPJInputPopup(this)" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">CNPJ</label>
+                <input type="text" id="entidade-cnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="mascaraCNPJInputPopup(this)" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Código INEP</label>
-                <input type="text" id="entidade-inep" placeholder="8 dígitos" maxlength="12" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Código INEP</label>
+                <input type="text" id="entidade-inep" placeholder="8 dígitos" maxlength="12" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Nº de Alunos</label>
-                <input type="number" id="entidade-alunos" min="0" placeholder="0" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nº de Alunos</label>
+                <input type="number" id="entidade-alunos" min="0" placeholder="0" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Modalidade</label>
-                <input type="text" id="entidade-modalidade" placeholder="Ex: Ensino Fundamental" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Modalidade</label>
+                <input type="text" id="entidade-modalidade" placeholder="Ex: Ensino Fundamental" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:14px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:14px; margin-bottom:16px;">
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Competência</label>
-                <select id="entidade-competencia" style="width:100%; height:38px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; padding:6px 10px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Competência</label>
+                <select id="entidade-competencia" style="width:100%; height:40px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; padding:6px 12px; box-sizing:border-box; outline:none;">
                   <option value="Municipal">Municipal</option>
                   <option value="Estadual">Estadual</option>
                   <option value="Privada/Filantrópica">Privada/Filantrópica</option>
@@ -5302,12 +5244,12 @@
                 </select>
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Super / Regional</label>
-                <input type="text" id="entidade-super" placeholder="Ex: CRE / Regional" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Super / Regional</label>
+                <input type="text" id="entidade-super" placeholder="Ex: CRE / Regional" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Localidade</label>
-                <select id="entidade-localidade" style="width:100%; height:38px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; padding:6px 10px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Localidade</label>
+                <select id="entidade-localidade" style="width:100%; height:40px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; padding:6px 12px; box-sizing:border-box; outline:none;">
                   <option value="Urbana">Urbana</option>
                   <option value="Rural">Rural</option>
                   <option value="Indígena">Indígena</option>
@@ -5318,142 +5260,145 @@
 
             <div style="display:flex; justify-content:space-between;">
               <button type="button" onclick="ativarGrupoFormEntidade(1)"
-                style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:6px; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.15); cursor:pointer;">
+                style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; background:rgba(255,255,255,0.06); color:#cbd5e1; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.12); cursor:pointer;">
                 <span>⬅️ 1. Categoria</span>
               </button>
               <button type="button" onclick="ativarGrupoFormEntidade(3)"
-                style="display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:6px; background:#10b981; color:#fff; font-size:12px; font-weight:700; border:none; cursor:pointer;">
+                style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border-radius:8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:12.5px; font-weight:700; cursor:pointer; transition:all 0.15s;"
+                onmouseover="this.style.background='rgba(56,189,248,0.2)';" onmouseout="this.style.background='rgba(255,255,255,0.1)';">
                 <span>Próximo: 3. Gestão & Contatos</span> <span>➔</span>
               </button>
             </div>
           </div>
 
-          <!-- GRUPO 3: GESTÃO & CONTATOS INSTITUCIONAIS (MARCAÇÃO VERDE) -->
-          <div id="sec-grupo-entidade-3" style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:16px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
+          <!-- GRUPO 3: GESTÃO & CONTATOS INSTITUCIONAIS -->
+          <div id="sec-grupo-entidade-3" style="margin-bottom:18px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="background:#10b981; color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:900;">3</span>
-                <span style="font-size:13px; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.5px;">GESTÃO & CONTATOS INSTITUCIONAIS</span>
+                <span style="background:rgba(255,255,255,0.1); color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;">3</span>
+                <span style="font-size:13px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.3px;">GESTÃO & CONTATOS INSTITUCIONAIS</span>
               </div>
-              <span style="font-size:11px; color:#94a3b8;">Etapa 3 de 5</span>
+              <span style="font-size:11.5px; color:#94a3b8;">Etapa 3 de 5</span>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:12px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Nome do diretor | Presidente | Prefeito</label>
-                <input type="text" id="entidade-diretor" placeholder="Nome completo" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome do diretor | Presidente | Prefeito</label>
+                <input type="text" id="entidade-diretor" placeholder="Nome completo" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Contato do diretor</label>
-                <input type="text" id="entidade-contato-diretor" placeholder="(69) 90000-0000" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Contato do diretor</label>
+                <input type="text" id="entidade-contato-diretor" placeholder="(69) 90000-0000" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Telefone da Escola / Entidade</label>
-                <input type="text" id="entidade-telefone" placeholder="(69) 3000-0000" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Telefone da Escola / Entidade</label>
+                <input type="text" id="entidade-telefone" placeholder="(69) 3000-0000" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Email da entidade</label>
-                <input type="email" id="entidade-email" placeholder="entidade@educacao.ro.gov.br" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Email da entidade</label>
+                <input type="email" id="entidade-email" placeholder="entidade@educacao.ro.gov.br" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:14px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:16px;">
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Nome do secretário</label>
-                <input type="text" id="entidade-secretario" placeholder="Nome do secretário" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome do secretário</label>
+                <input type="text" id="entidade-secretario" placeholder="Nome do secretário" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Contato do secretário</label>
-                <input type="text" id="entidade-contato-secretario" placeholder="(69) 90000-0000" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Contato do secretário</label>
+                <input type="text" id="entidade-contato-secretario" placeholder="(69) 90000-0000" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div style="grid-column:span 2;">
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Rede social (Facebook / Instagram)</label>
-                <input type="text" id="entidade-redes" placeholder="@escola ou link das redes" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Rede social (Facebook / Instagram)</label>
+                <input type="text" id="entidade-redes" placeholder="@escola ou link das redes" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
             </div>
 
-            <div style="display:flex; justify-content:space-between;">
+            <div style="display:flex; justify-content:space-between; margin-top:8px;">
               <button type="button" onclick="ativarGrupoFormEntidade(2)"
-                style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:6px; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.15); cursor:pointer;">
+                style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; background:rgba(255,255,255,0.06); color:#cbd5e1; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.12); cursor:pointer;">
                 <span>⬅️ 2. Identificação</span>
               </button>
               <button type="button" onclick="ativarGrupoFormEntidade(4)"
-                style="display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:6px; background:#8b5cf6; color:#fff; font-size:12px; font-weight:700; border:none; cursor:pointer;">
+                style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border-radius:8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:12.5px; font-weight:700; cursor:pointer; transition:all 0.15s;"
+                onmouseover="this.style.background='rgba(56,189,248,0.2)';" onmouseout="this.style.background='rgba(255,255,255,0.1)';">
                 <span>Próximo: 4. Endereço</span> <span>➔</span>
               </button>
             </div>
           </div>
 
-          <!-- GRUPO 4: ENDEREÇO & LOGRADOURO (MARCAÇÃO ROXA / CIANO) -->
-          <div id="sec-grupo-entidade-4" style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(168,85,247,0.3); border-radius:10px; padding:16px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
+          <!-- GRUPO 4: ENDEREÇO & LOGRADOURO -->
+          <div id="sec-grupo-entidade-4" style="margin-bottom:18px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="background:#8b5cf6; color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:900;">4</span>
-                <span style="font-size:13px; font-weight:800; color:#c084fc; text-transform:uppercase; letter-spacing:0.5px;">ENDEREÇO & LOGRADOURO</span>
+                <span style="background:rgba(255,255,255,0.1); color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;">4</span>
+                <span style="font-size:13px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.3px;">ENDEREÇO & LOGRADOURO</span>
               </div>
-              <span style="font-size:11px; color:#94a3b8;">Etapa 4 de 5</span>
+              <span style="font-size:11.5px; color:#94a3b8;">Etapa 4 de 5</span>
             </div>
 
-            <div style="display:grid; grid-template-columns:2fr 1fr; gap:12px; margin-bottom:12px;">
+            <div style="display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Endereço (Rua / Av / Linha)</label>
-                <input type="text" id="entidade-endereco" placeholder="Ex: Av. Principal, nº 123 ou Linha 14..." style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Endereço (Rua / Av / Linha)</label>
+                <input type="text" id="entidade-endereco" placeholder="Ex: Av. Principal, nº 123 ou Linha 14..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Bairro / Distrito / Aldeia</label>
-                <input type="text" id="entidade-bairro" placeholder="Ex: Centro / Zona Rural" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Bairro / Distrito / Aldeia</label>
+                <input type="text" id="entidade-bairro" placeholder="Ex: Centro / Zona Rural" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">Complemento</label>
-                <input type="text" id="entidade-complemento" placeholder="Ex: Próximo à praça central" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Complemento</label>
+                <input type="text" id="entidade-complemento" placeholder="Ex: Próximo à praça central" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; font-weight:700; color:#cbd5e1; margin-bottom:4px;">CEP</label>
-                <input type="text" id="entidade-cep" placeholder="76.000-000" maxlength="10" style="width:100%; height:38px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">CEP</label>
+                <input type="text" id="entidade-cep" placeholder="76.000-000" maxlength="10" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
             </div>
 
             <div style="display:flex; justify-content:space-between;">
               <button type="button" onclick="ativarGrupoFormEntidade(3)"
-                style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:6px; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.15); cursor:pointer;">
+                style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; background:rgba(255,255,255,0.06); color:#cbd5e1; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.12); cursor:pointer;">
                 <span>⬅️ 3. Gestão & Contatos</span>
               </button>
               <button type="button" onclick="ativarGrupoFormEntidade(5)"
-                style="display:inline-flex; align-items:center; gap:8px; padding:8px 18px; border-radius:6px; background:#ec4899; color:#fff; font-size:12px; font-weight:700; border:none; cursor:pointer;">
+                style="display:inline-flex; align-items:center; gap:8px; padding:8px 20px; border-radius:8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; font-size:12.5px; font-weight:700; cursor:pointer; transition:all 0.15s;"
+                onmouseover="this.style.background='rgba(56,189,248,0.2)';" onmouseout="this.style.background='rgba(255,255,255,0.1)';">
                 <span>Próximo: 5. Infraestrutura</span> <span>➔</span>
               </button>
             </div>
           </div>
 
-          <!-- GRUPO 5: INFRAESTRUTURA & ESPAÇOS PEDAGÓGICOS (MARCAÇÃO ROSA) -->
-          <div id="sec-grupo-entidade-5" style="margin-bottom:18px; background:rgba(255,255,255,0.02); border:1px solid rgba(236,72,153,0.3); border-radius:10px; padding:16px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
+          <!-- GRUPO 5: INFRAESTRUTURA & ESPAÇOS PEDAGÓGICOS -->
+          <div id="sec-grupo-entidade-5" style="margin-bottom:18px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <span style="background:#ec4899; color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:900;">5</span>
-                <span style="font-size:13px; font-weight:800; color:#f472b6; text-transform:uppercase; letter-spacing:0.5px;">INFRAESTRUTURA & ESPAÇOS PEDAGÓGICOS</span>
+                <span style="background:rgba(255,255,255,0.1); color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;">5</span>
+                <span style="font-size:13px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.3px;">INFRAESTRUTURA & ESPAÇOS PEDAGÓGICOS</span>
               </div>
-              <span style="font-size:11px; color:#94a3b8;">Etapa 5 de 5</span>
+              <span style="font-size:11.5px; color:#94a3b8;">Etapa 5 de 5</span>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:12px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">QUANT. SALA DE AULA</label>
-                <input type="number" id="entidade-salas-aula" min="0" placeholder="0" style="width:100%; height:36px; padding:6px; text-align:center; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#60a5fa; font-weight:700; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUANT. SALA DE AULA</label>
+                <input type="number" id="entidade-salas-aula" min="0" placeholder="0" style="width:100%; height:38px; padding:6px; text-align:center; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#f8fafc; font-weight:700; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">QUANT. SALA ADM</label>
-                <input type="number" id="entidade-salas-adm" min="0" placeholder="0" style="width:100%; height:36px; padding:6px; text-align:center; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#60a5fa; font-weight:700; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUANT. SALA ADM</label>
+                <input type="number" id="entidade-salas-adm" min="0" placeholder="0" style="width:100%; height:38px; padding:6px; text-align:center; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#f8fafc; font-weight:700; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">BANHEIROS</label>
-                <input type="text" id="entidade-banheiros" placeholder="Qtd / Desc" style="width:100%; height:36px; padding:6px; text-align:center; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">BANHEIROS</label>
+                <input type="text" id="entidade-banheiros" placeholder="Qtd / Desc" style="width:100%; height:38px; padding:6px; text-align:center; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">SALA DO AEE (S/N)</label>
-                <select id="entidade-sala-aee" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">SALA DO AEE (S/N)</label>
+                <select id="entidade-sala-aee" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="S">Sim (S)</option>
                   <option value="N">Não (N)</option>
@@ -5461,34 +5406,34 @@
               </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:16px;">
               <div>
-                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">PÁTIO (S/N)</label>
-                <select id="entidade-patio" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">PÁTIO (S/N)</label>
+                <select id="entidade-patio" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="S">Sim (S)</option>
                   <option value="N">Não (N)</option>
                 </select>
               </div>
               <div>
-                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">AUDITÓRIO (S/N)</label>
-                <select id="entidade-auditorio" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">AUDITÓRIO (S/N)</label>
+                <select id="entidade-auditorio" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="S">Sim (S)</option>
                   <option value="N">Não (N)</option>
                 </select>
               </div>
               <div>
-                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">REFEITÓRIO (S/N)</label>
-                <select id="entidade-refeitorio" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">REFEITÓRIO (S/N)</label>
+                <select id="entidade-refeitorio" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="S">Sim (S)</option>
                   <option value="N">Não (N)</option>
                 </select>
               </div>
               <div>
-                <label style="display:block; font-size:10px; color:#94a3b8; font-weight:700; margin-bottom:4px;">QUADRA (S/N)</label>
-                <select id="entidade-quadra" style="width:100%; height:36px; background:#1e293b; border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:12.5px; padding:4px; box-sizing:border-box;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUADRA (S/N)</label>
+                <select id="entidade-quadra" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="S">Sim (S)</option>
                   <option value="N">Não (N)</option>
@@ -5498,7 +5443,7 @@
 
             <div style="display:flex; justify-content:space-between;">
               <button type="button" onclick="ativarGrupoFormEntidade(4)"
-                style="display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border-radius:6px; background:rgba(255,255,255,0.08); color:#cbd5e1; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.15); cursor:pointer;">
+                style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; border-radius:8px; background:rgba(255,255,255,0.06); color:#cbd5e1; font-size:12px; font-weight:700; border:1px solid rgba(255,255,255,0.12); cursor:pointer;">
                 <span>⬅️ 4. Endereço</span>
               </button>
             </div>
@@ -5506,7 +5451,7 @@
 
           <!-- BOTÕES DE SUBMISSÃO E CANCELAMENTO -->
           <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">
-            <div style="font-size:11px; color:#94a3b8;">
+            <div style="font-size:11.5px; color:#94a3b8;">
               ⚡ Os dados cadastrados são sincronizados instantaneamente para os cadastros e combos de processos.
             </div>
             <div style="display:flex; gap:10px;">
@@ -5520,47 +5465,48 @@
           </div>
         </form>
 
-        <!-- ============= ÁREA MARCADA ROXO (IMAGEM 3 & 4): TABELA DE ESCOLAS VINCULADA AO MUNICÍPIO ============= -->
-        <div id="bloco-tabela-escolas-municipio" style="margin-top:22px; border-radius:10px; border:2px solid #8b5cf6; background:rgba(139,92,246,0.04); box-shadow:0 0 15px rgba(139,92,246,0.15); overflow:hidden;">
+        <!-- ============= TABELA DE ESCOLAS / ENTIDADES (PADRÃO HARMONIZADO NEUTRO E COM CRUD NA LINHA) ============= -->
+        <div id="bloco-tabela-escolas-municipio" style="margin-top:22px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:#1e293b; overflow:hidden;">
           
-          <!-- Cabeçalho da Tabela Vinculada (Área Roxa) -->
-          <div style="padding:12px 16px; background:linear-gradient(135deg, rgba(139,92,246,0.2) 0%, rgba(15,23,42,0.95) 100%); border-bottom:1px solid rgba(139,92,246,0.3); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; align-items:center; gap:8px;">
+          <!-- Cabeçalho da Tabela Vinculada -->
+          <div style="padding:14px 20px; background:#0f172a; border-bottom:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:10px;">
               <span style="font-size:18px;">🏫</span>
               <div>
-                <div style="font-size:13px; font-weight:800; color:#c084fc; letter-spacing:0.4px;">
-                  RELAÇÃO DE ESCOLAS / ENTIDADES: <span id="titulo-municipio-tabela-vinculada" style="color:#ffffff; text-decoration:underline;">(Todos os Municípios)</span>
+                <div style="font-size:13px; font-weight:700; color:#f8fafc; letter-spacing:0.3px;">
+                  RELAÇÃO DE ESCOLAS / ENTIDADES: <span id="titulo-municipio-tabela-vinculada" style="color:#38bdf8; font-weight:800;">(Todos os Municípios)</span>
                 </div>
-                <div style="font-size:11px; color:#94a3b8;">
-                  Lista vinculada ao município selecionado — clique em <span style="color:#34d399; font-weight:700;">✏️ Editar</span> para carregar os dados no formulário
+                <div style="font-size:11.5px; color:#94a3b8;">
+                  Lista de escolas cadastradas. Use as ações na linha para <strong style="color:#f8fafc;">Editar</strong>, <strong style="color:#f8fafc;">Duplicar</strong> ou <strong style="color:#f8fafc;">Excluir</strong>.
                 </div>
               </div>
             </div>
 
             <div style="display:flex; align-items:center; gap:10px;">
               <input type="text" id="filtro-busca-tabela-municipio"
-                placeholder="Filtrar escolas..."
+                placeholder="🔍 Filtrar por nome, INEP, diretor..."
                 oninput="filtrarEscolasTabelaMunicipioModal(this.value)"
-                style="height:32px; padding:4px 10px; background:rgba(0,0,0,0.4); border:1px solid rgba(139,92,246,0.4); border-radius:6px; color:#fff; font-size:12px; width:180px;">
-              <span id="badge-contador-tabela-municipio" style="background:rgba(139,92,246,0.25); border:1px solid #8b5cf6; color:#d8b4fe; padding:4px 10px; border-radius:14px; font-size:11.5px; font-weight:800; white-space:nowrap;">
+                style="height:36px; padding:6px 12px; background:#0f172a; border:1px solid rgba(255,255,255,0.16); border-radius:8px; color:#fff; font-size:12px; width:240px; outline:none;"
+                onfocus="this.style.borderColor='#38bdf8';" onblur="this.style.borderColor='rgba(255,255,255,0.16)';">
+              <span id="badge-contador-tabela-municipio" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color:#cbd5e1; padding:6px 14px; border-radius:14px; font-size:12px; font-weight:700; white-space:nowrap;">
                 0 unidades
               </span>
             </div>
           </div>
 
-          <!-- Tabela de Escolas (Idêntica à Imagem 4) -->
-          <div style="max-height:280px; overflow-y:auto; overflow-x:auto;">
+          <!-- Tabela de Escolas -->
+          <div style="max-height:320px; overflow-y:auto; overflow-x:auto;">
             <table style="width:100%; border-collapse:collapse; font-size:12px; text-align:left;">
               <thead>
-                <tr style="background:rgba(15,23,42,0.9); position:sticky; top:0; z-index:2; border-bottom:1px solid rgba(255,255,255,0.1);">
-                  <th style="padding:8px 12px; color:#94a3b8; font-weight:700; font-size:11px;">Competência / Município</th>
-                  <th style="padding:8px 12px; color:#94a3b8; font-weight:700; font-size:11px;">Nome da Escola / Entidade</th>
-                  <th style="padding:8px 12px; color:#94a3b8; font-weight:700; font-size:11px;">INEP</th>
-                  <th style="padding:8px 12px; color:#94a3b8; font-weight:700; font-size:11px;">Localidade</th>
-                  <th style="padding:8px 12px; color:#94a3b8; font-weight:700; font-size:11px;">Super / Regional</th>
-                  <th style="padding:8px 12px; color:#94a3b8; font-weight:700; font-size:11px; text-align:right;">Alunos</th>
-                  <th style="padding:8px 12px; color:#94a3b8; font-weight:700; font-size:11px;">Telefone / Contato</th>
-                  <th style="padding:8px 12px; color:#94a3b8; font-weight:700; font-size:11px; text-align:center;">Ação</th>
+                <tr style="background:#0f172a; position:sticky; top:0; z-index:2; border-bottom:1px solid rgba(255,255,255,0.1);">
+                  <th style="padding:10px 14px; color:#94a3b8; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.4px;">Competência / Município</th>
+                  <th style="padding:10px 14px; color:#94a3b8; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.4px;">Nome da Escola / Entidade</th>
+                  <th style="padding:10px 14px; color:#94a3b8; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.4px;">INEP</th>
+                  <th style="padding:10px 14px; color:#94a3b8; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.4px;">Localidade</th>
+                  <th style="padding:10px 14px; color:#94a3b8; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.4px;">Super / Regional</th>
+                  <th style="padding:10px 14px; color:#94a3b8; font-weight:700; font-size:11px; text-align:right; text-transform:uppercase; letter-spacing:0.4px;">Alunos</th>
+                  <th style="padding:10px 14px; color:#94a3b8; font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:0.4px;">Contato / Telefone</th>
+                  <th style="padding:10px 14px; color:#94a3b8; font-weight:700; font-size:11px; text-align:center; text-transform:uppercase; letter-spacing:0.4px; min-width:130px;">Ações (CRUD)</th>
                 </tr>
               </thead>
               <tbody id="tbody-escolas-municipio-modal">
@@ -5599,7 +5545,7 @@
         <!-- Campo 1: Município -->
         <div>
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Municipio</label>
-          <select id="link-gen-municipio"
+          <select id="link-gen-municipio" onchange="if(typeof atualizarSuperGeradorLink==='function')atualizarSuperGeradorLink();"
             style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
             <!-- Preenchido via JS com os 52 Municípios -->
           </select>
@@ -5608,7 +5554,7 @@
         <!-- Campo 2: Categoria da Entidade e Vinculação Jurídica -->
         <div>
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Categoria da Entidade e Vinculação Jurídica</label>
-          <select id="link-gen-categoria"
+          <select id="link-gen-categoria" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();"
             style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
             <option value="Conselho Escolar">Conselho Escolar (Executa Fomento - F)</option>
             <option value="Prefeitura Municipal">Prefeitura Municipal (Executa Convênio - C)</option>
@@ -5620,7 +5566,7 @@
         <!-- Campo 3: Competencia -->
         <div>
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Competencia</label>
-          <select id="link-gen-competencia"
+          <select id="link-gen-competencia" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();"
             style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
             <option value="Municipal">Municipal</option>
             <option value="Estadual">Estadual</option>
@@ -5629,11 +5575,11 @@
           </select>
         </div>
 
-        <!-- Campo 4: Super -->
+        <!-- Campo 4: Super (Ativado e editável / enable: true) -->
         <div>
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Super</label>
-          <select id="link-gen-super"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
+          <select id="link-gen-super" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;" title="Selecione ou altere a Regional / CRE vinculada">
             <option value="CRE - Porto Velho">CRE - Porto Velho</option>
             <option value="CRE - Ji-Paraná">CRE - Ji-Paraná</option>
             <option value="CRE - Ariquemes">CRE - Ariquemes</option>
@@ -5912,7 +5858,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.3.55"></script>
-  <script src="js/app.js?v=1.3.55"></script>
+  <script src="js/app.js?v=1.3.66"></script>
   <script src="js/auth-sap.js?v=1.3.55"></script>
   <script src="js/escolas.js?v=1.3.55" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
