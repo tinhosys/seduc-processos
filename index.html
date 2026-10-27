@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.64">
+  <link rel="stylesheet" href="css/style.css?v=1.3.65">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 22px; letter-spacing: 0.5px;'>GBZ - v1.3.64</div>
+    <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 22px; letter-spacing: 0.5px;'>GBZ - v1.3.65</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:700; color:#1e293b; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; letter-spacing: 0.5px;'>GBZ - v1.3.64</div>
+        <div style='text-align: center; color: #64748b; font-size: 12px; font-weight: 700; margin-top: 15px; margin-bottom: 8px; letter-spacing: 0.5px;'>GBZ - v1.3.65</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1004,16 +1004,16 @@
       <!-- TOPBAR HARMONIZADO -->
       <header class="topbar">
         <div style="display:flex;align-items:center;gap:12px;">
-          <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:#1e293b; cursor:pointer; padding: 4px 8px;">☰</button>
+          <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:var(--text-primary); cursor:pointer; padding: 4px 8px;">☰</button>
           <div style="display:flex; align-items:center; gap:8px;">
-            <span style="font-size:12px; font-weight:800; color:#164e63; background:#ecfeff; border:1px solid #a5f3fc; padding:3px 8px; border-radius:6px; letter-spacing:0.5px;">SEDUC • CAM</span>
-            <span style="color:#94a3b8; font-size:12px;">›</span>
-            <span style="font-size:13px; font-weight:600; color:#1e293b;" id="topbar-title-text">Gestão de Processos</span>
+            <span style="font-size:12px; font-weight:800; color:var(--petroleo-primary); background:var(--petroleo-subtle); border:1px solid var(--petroleo-border); padding:3px 8px; border-radius:6px; letter-spacing:0.5px;">SEDUC • CAM</span>
+            <span style="color:var(--text-muted); font-size:12px;">›</span>
+            <span style="font-size:13px; font-weight:600; color:var(--text-primary);" id="topbar-title-text">Gestão de Processos</span>
           </div>
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:10px;margin-left:auto;">
           <!-- Botão Modo mobile Global no Topo da Aplicação -->
-          <button type="button" id="btn-toggle-mobile" class="btn btn-secondary btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:0 12px; height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px; color:#164e63;" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up em todas as tabelas)">
+          <button type="button" id="btn-toggle-mobile" class="btn btn-secondary btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:0 12px; height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px; color:var(--petroleo-primary);" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up em todas as tabelas)">
             <span id="btn-toggle-mobile-icon">📱</span>
             <span id="btn-toggle-mobile-text" class="btn-toggle-mobile-text">Modo Mobile</span>
           </button>
@@ -1028,12 +1028,12 @@
           <button class="btn btn-secondary" onclick="recarregarDadosGlobais()" title="Recarregar dados da planilha" style="height:36px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">🔄 Recarregar</button>
 
           <div class="user-profile"
-            style="display:flex;align-items:center;gap:10px;margin-left:8px;padding-left:14px;border-left:1px solid #e2e8f0">
+            style="display:flex;align-items:center;gap:10px;margin-left:8px;padding-left:14px;border-left:1px solid var(--border)">
             <div style="text-align:right">
-              <div id="user-name" style="font-size:13px;font-weight:700;color:#0f172a">-</div>
-              <div id="user-role" style="font-size:11px;color:#64748b">Carregando...</div>
+              <div id="user-name" style="font-size:13px;font-weight:700;color:var(--text-primary)">-</div>
+              <div id="user-role" style="font-size:11px;color:var(--text-muted)">Carregando...</div>
             </div>
-            <button data-page="senha" onclick="navegar('senha')" style="background:transparent; border:none; cursor:pointer; color:#64748b; display:flex; align-items:center; padding:4px;" title="Trocar Senha">
+            <button data-page="senha" onclick="navegar('senha')" style="background:transparent; border:none; cursor:pointer; color:var(--text-muted); display:flex; align-items:center; padding:4px;" title="Trocar Senha">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </button>
             <button class="btn btn-danger" onclick="fazerLogout()" title="Sair do Sistema" style="height:36px; padding:0 14px; font-size:12px; font-weight:700;">Sair</button>
@@ -2902,7 +2902,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:800; color:#164e63; letter-spacing:0.5px; white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:#164e63; color:#ffffff; border:1px solid #164e63; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:700; letter-spacing:0.4px; white-space:nowrap;">v1.3.64</span>
+                        <span style="background:#164e63; color:#ffffff; border:1px solid #164e63; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:700; letter-spacing:0.4px; white-space:nowrap;">v1.3.65</span>
                       </div>
                       <span style="font-size:10px; color:#475569; font-weight:600; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3584,7 +3584,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:#ecfeff; color:#164e63; border:1px solid #a5f3fc; font-weight:800; padding:6px 14px; font-size:12px; border-radius:6px; letter-spacing:0.5px;">
-              GBZ - v1.3.64
+              GBZ - v1.3.65
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#ffffff; color:#334155; border:1px solid #cbd5e1; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3857,7 +3857,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.64] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.65] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5857,7 +5857,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.3.55"></script>
-  <script src="js/app.js?v=1.3.61"></script>
+  <script src="js/app.js?v=1.3.65"></script>
   <script src="js/auth-sap.js?v=1.3.55"></script>
   <script src="js/escolas.js?v=1.3.55" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>

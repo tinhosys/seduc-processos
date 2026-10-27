@@ -4,40 +4,87 @@
    DESIGN SYSTEM HARMONIZADO — TONS CLAROS, CHUMBO, CINZA E PETRÓLEO
    ============================================================ */
 :root {
-  /* Tons Claros */
-  --bg-primary:    #f8fafc; /* Fundo geral limpo e arejado */
-  --bg-secondary:  #ffffff; /* Fundo puro para Sidebar, Header e Modais */
-  --bg-card:       #ffffff; /* Fundo puro para Cards e Tabelas */
-  --bg-card-hover: #f1f5f9; /* Hover cinza sutil */
-  --border:        #e2e8f0; /* Borda sutil de 1px */
-  --border-subtle: #f1f5f9;
+  /* ============================================================
+     TEMA ESCURO (PADRÃO) — SUAVE, CHUMBO E PETRÓLEO (ALTO CONTRASTE)
+     ============================================================ */
+  --bg-primary:    #0b1320; /* Fundo geral escuro suave e confortável */
+  --bg-secondary:  #0f172a; /* Fundo puro para Sidebar, Header e Painéis */
+  --bg-card:       #1e293b; /* Fundo puro para Cards, Modais e Containers */
+  --bg-card-hover: #273549; /* Hover escuro contrastante */
+  --border:        #334155; /* Borda nítida de 1px */
+  --border-subtle: #1e293b;
 
-  /* Petróleo (Cor Institucional de Destaque e Ações Principais) */
+  /* Petróleo & Destaque (Vivo no Escuro) */
+  --petroleo-primary: #0284c7; /* Azul Petróleo / Ciano vivo para alto contraste */
+  --petroleo-hover:   #0369a1;
+  --petroleo-light:   #38bdf8;
+  --petroleo-subtle:  rgba(56, 189, 248, 0.15);
+  --petroleo-border:  #38bdf8;
+
+  /* Chumbo e Tipografia Clara de ALTO CONTRASTE */
+  --chumbo-dark:    #f8fafc;
+  --chumbo-primary: #f1f5f9;
+  --chumbo-medium:  #cbd5e1;
+  --text-primary:   #f8fafc; /* Branco puro de alta legibilidade */
+  --text-secondary: #cbd5e1; /* Cinza claro perfeitamente legível */
+  --text-muted:     #94a3b8; /* Cinza médio nítido */
+
+  /* Cores Funcionais Sóbrias */
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger:  #ef4444;
+
+  --blue:     #0284c7;
+  --blue-dk:  #0369a1;
+  --cyan:     #06b6d4;
+  --green:    #10b981;
+  --yellow:   #f59e0b;
+  --red:      #ef4444;
+  --purple:   #8b5cf6;
+  --orange:   #f97316;
+  --border-focus: #38bdf8;
+
+  /* Dimensões & Elevações */
+  --sidebar-w: 240px;
+  --radius:    8px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow:    0 4px 20px rgba(0, 0, 0, 0.4);
+  --transition: all 0.15s ease-in-out;
+}
+
+/* ============================================================
+   TEMA SUAVE (CLARO) — TONS CLAROS, CHUMBO E PETRÓLEO (ALTO CONTRASTE)
+   ============================================================ */
+body.tema-claro {
+  --bg-primary:    #f1f5f9; /* Fundo neutro e arejado */
+  --bg-secondary:  #ffffff; /* Sidebar e Topbar em branco puro */
+  --bg-card:       #ffffff; /* Cards e Modais em branco puro */
+  --bg-card-hover: #f8fafc; /* Hover claro sutil */
+  --border:        #cbd5e1; /* Borda cinza nítida */
+  --border-subtle: #e2e8f0;
+
+  /* Petróleo Institucional Corporativo */
   --petroleo-primary: #164e63; /* Cyan-900 / Deep Petrol */
-  --petroleo-hover:   #083344; /* Cyan-950 / Deepest Petrol */
-  --petroleo-light:   #0e7490; /* Cyan-700 / Medium Petrol */
-  --petroleo-subtle:  #ecfeff; /* Fundo suave petróleo */
-  --petroleo-border:  #a5f3fc; /* Borda suave petróleo */
+  --petroleo-hover:   #083344;
+  --petroleo-light:   #0e7490;
+  --petroleo-subtle:  #ecfeff;
+  --petroleo-border:  #a5f3fc;
 
-  /* Chumbo (Tipografia Forte e Títulos de Alta Legibilidade) */
+  /* Tipografia Chumbo Escuro de ALTO CONTRASTE */
   --chumbo-dark:    #0f172a; /* Slate-900 */
   --chumbo-primary: #1e293b; /* Slate-800 */
   --chumbo-medium:  #334155; /* Slate-700 */
-  --text-primary:   #1e293b;
-  --text-secondary: #334155;
+  --text-primary:   #0f172a; /* Chumbo escuro altíssimo contraste */
+  --text-secondary: #334155; /* Chumbo corporativo nítido */
+  --text-muted:     #64748b; /* Cinza médio de fácil leitura */
 
-  /* Cinza (Rótulos, Bordas e Elementos Neutros) */
-  --cinza-text:   #64748b; /* Slate-500 */
-  --cinza-light:  #94a3b8; /* Slate-400 */
-  --cinza-border: #cbd5e1; /* Slate-300 */
-  --text-muted:   #64748b;
+  /* Cores Funcionais */
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-danger:  #dc2626;
 
-  /* Cores Funcionais Sóbrias (Sem Neons) */
-  --color-success: #059669; /* Verde sóbrio */
-  --color-warning: #d97706; /* Âmbar sóbrio */
-  --color-danger:  #dc2626; /* Vermelho sóbrio */
-
-  /* Aliases de Compatibilidade */
   --blue:     #164e63;
   --blue-dk:  #083344;
   --cyan:     #0e7490;
@@ -48,129 +95,214 @@
   --orange:   #d97706;
   --border-focus: #164e63;
 
-  /* Dimensões & Elevações */
-  --sidebar-w: 240px;
-  --radius:    8px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03);
-  --shadow:    0 1px 3px rgba(0, 0, 0, 0.05);
-  --transition: all 0.15s ease-in-out;
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
 }
 
-/* ============================================================
-   APLICAÇÃO GLOBAL DA PALETA HARMONIZADA (TEMA CLARO PADRÃO)
-   ============================================================ */
-body, body.tema-claro {
-  background-color: #f8fafc !important;
-  color: #1e293b !important;
+body.tema-claro .app-layout {
+  background-color: #f1f5f9 !important;
 }
 
-body .app-layout {
-  background-color: #f8fafc !important;
-}
-
-body .sidebar {
+body.tema-claro .sidebar {
   background: #ffffff !important;
-  border-right: 1px solid #e2e8f0 !important;
-  box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.04) !important;
+  border-right: 1px solid #cbd5e1 !important;
+  box-shadow: 2px 0 8px -2px rgba(0, 0, 0, 0.05) !important;
+  color: #0f172a !important;
 }
 
-body .topbar {
+body.tema-claro .topbar {
   background: #ffffff !important;
-  border-bottom: 1px solid #e2e8f0 !important;
-  color: #1e293b !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
-}
-
-body .card,
-body .stat-card,
-body .card-box {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
-  color: #1e293b !important;
 }
 
-body .filters-bar {
+body.tema-claro .card,
+body.tema-claro .stat-card,
+body.tema-claro .card-box {
   background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
 }
 
-body .filters-bar input,
-body .filters-bar select,
-body .form-control,
-body input[type="text"],
-body input[type="search"],
-body input[type="date"],
-body input[type="number"],
-body input[type="password"],
-body select,
-body textarea {
+body.tema-claro .filters-bar {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.tema-claro .filters-bar input,
+body.tema-claro .filters-bar select,
+body.tema-claro .form-control,
+body.tema-claro input[type="text"],
+body.tema-claro input[type="search"],
+body.tema-claro input[type="date"],
+body.tema-claro input[type="number"],
+body.tema-claro input[type="password"],
+body.tema-claro select,
+body.tema-claro textarea {
   background: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
   color: #0f172a !important;
 }
 
-body input:focus,
-body select:focus,
-body textarea:focus {
+body.tema-claro input:focus,
+body.tema-claro select:focus,
+body.tema-claro textarea:focus {
   border-color: #164e63 !important;
   box-shadow: 0 0 0 3px rgba(22, 78, 99, 0.15) !important;
   background: #ffffff !important;
 }
 
-body .table-wrap {
+/* FILTROS MULTISELECT NO TEMA SUAVE (Acaba com os blocos pretos da imagem 1 e 2!) */
+body.tema-claro .custom-multiselect-btn,
+body.tema-claro .filter-row .custom-multiselect-btn,
+body.tema-claro .filter-row-grid-6 .custom-multiselect-btn {
   background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
 }
 
-body table thead,
-body table th {
+body.tema-claro .custom-multiselect-btn:hover,
+body.tema-claro .filter-row .custom-multiselect-btn:hover,
+body.tema-claro .filter-row-grid-6 .custom-multiselect-btn:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  color: #164e63 !important;
+}
+
+body.tema-claro .custom-multiselect-btn.has-selection,
+body.tema-claro .filter-row .custom-multiselect-btn.has-selection {
+  background: #ecfeff !important;
+  border-color: #164e63 !important;
+  color: #164e63 !important;
+}
+
+body.tema-claro .custom-multiselect-dropdown {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
+}
+
+body.tema-claro .custom-multiselect-header {
   background: #f1f5f9 !important;
-  color: #1e293b !important;
   border-bottom: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+body.tema-claro .custom-multiselect-item {
+  color: #1e293b !important;
+}
+
+body.tema-claro .custom-multiselect-item:hover {
+  background: #ecfeff !important;
+  color: #164e63 !important;
+}
+
+body.tema-claro .custom-multiselect-action {
+  color: #164e63 !important;
+}
+
+/* TABELA NO TEMA SUAVE */
+body.tema-claro .table-wrap {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+}
+
+body.tema-claro table thead,
+body.tema-claro table th {
+  background: #164e63 !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid #0e7490 !important;
   font-weight: 700 !important;
   text-transform: uppercase !important;
   font-size: 11px !important;
   letter-spacing: 0.5px !important;
 }
 
-body table td {
+body.tema-claro table td {
   background: #ffffff !important;
-  color: #334155 !important;
-  border-bottom: 1px solid #f1f5f9 !important;
+  color: #1e293b !important;
+  border-bottom: 1px solid #e2e8f0 !important;
 }
 
-body table tbody tr:hover td {
+body.tema-claro table tbody tr:nth-child(even) td {
   background: #f8fafc !important;
 }
 
-body .modal-content,
-body .modal-box,
-body .modal {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  color: #1e293b !important;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05) !important;
+body.tema-claro table tbody tr:hover td {
+  background: #ecfeff !important;
 }
 
-body .nav-item {
+/* Colunas Ancoradas no Tema Suave */
+body.tema-claro .table-wrap th:first-child,
+body.tema-claro .table-wrap td:first-child {
+  background-color: #ffffff !important;
+}
+body.tema-claro .table-wrap thead th:first-child {
+  background-color: #164e63 !important;
+  color: #ffffff !important;
+}
+body.tema-claro .table-wrap th[data-sort="prefixo"],
+body.tema-claro .table-wrap td.col-prefixo {
+  background-color: #ffffff !important;
+  border-right: 2px solid #cbd5e1 !important;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.05) !important;
+}
+body.tema-claro .table-wrap thead th[data-sort="prefixo"] {
+  background-color: #164e63 !important;
+  color: #ffffff !important;
+}
+body.tema-claro tbody tr:hover td:first-child,
+body.tema-claro tbody tr:hover td.col-prefixo {
+  background-color: #ecfeff !important;
+}
+
+body.tema-claro .modal-content,
+body.tema-claro .modal-box,
+body.tema-claro .modal {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15) !important;
+}
+
+body.tema-claro .nav-item {
   color: #334155 !important;
 }
 
-body .nav-item:hover {
+body.tema-claro .nav-item:hover {
   background: #f1f5f9 !important;
   color: #164e63 !important;
 }
 
-body .nav-item.active {
+body.tema-claro .nav-item.active {
   background: #ecfeff !important;
   color: #164e63 !important;
   border-left: 4px solid #164e63 !important;
   font-weight: 700 !important;
+}
+
+body.tema-claro .btn-primary {
+  background: #164e63 !important;
+  color: #ffffff !important;
+  border: 1px solid #164e63 !important;
+}
+
+body.tema-claro .btn-secondary,
+body.tema-claro .btn-ghost {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+body.tema-claro .btn-secondary:hover,
+body.tema-claro .btn-ghost:hover {
+  background: #f1f5f9 !important;
+  color: #164e63 !important;
+  border-color: #94a3b8 !important;
 }
 
 /* ============================================
@@ -519,7 +651,7 @@ body {
 }
 
 .stat-card {
-  background: #ffffff !important;
+  background: var(--bg-card) !important;
   border: 1px solid var(--border) !important;
   border-radius: var(--radius) !important;
   padding: 14px 16px !important;
@@ -529,18 +661,18 @@ body {
   transition: var(--transition) !important;
   position: relative !important;
   overflow: hidden !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 .stat-card::before {
   display: none !important;
 }
 
-.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 
 /* SUPER CARD FINANCEIRO */
 .super-card {
-  background: #ffffff !important;
+  background: var(--bg-card) !important;
   border: 1px solid var(--border) !important;
   padding: 15px 20px !important;
 }
@@ -554,7 +686,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
   padding-bottom: 4px;
 }
 .super-row:last-child {
@@ -564,7 +696,7 @@ body {
 
 .super-label {
   font-size: 11px;
-  color: var(--cinza-text);
+  color: var(--text-muted);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -573,7 +705,7 @@ body {
 .super-value {
   font-size: 17px;
   font-weight: 800;
-  color: var(--chumbo-dark);
+  color: var(--text-primary);
   font-family: monospace;
 }
 .super-value.green { color: var(--color-success); }
@@ -588,20 +720,20 @@ body {
 }
 
 .stat-card.blue   .stat-icon { background: var(--petroleo-subtle); color: var(--petroleo-primary); }
-.stat-card.green  .stat-icon { background: #ecfdf5; color: var(--color-success); }
-.stat-card.yellow .stat-icon { background: #fffbeb; color: var(--color-warning); }
-.stat-card.red    .stat-icon { background: #fef2f2; color: var(--color-danger); }
-.stat-card.purple .stat-icon { background: #f1f5f9; color: var(--chumbo-medium); }
+.stat-card.green  .stat-icon { background: rgba(16, 185, 129, 0.15); color: var(--color-success); }
+.stat-card.yellow .stat-icon { background: rgba(245, 158, 11, 0.15); color: var(--color-warning); }
+.stat-card.red    .stat-icon { background: rgba(239, 68, 68, 0.15); color: var(--color-danger); }
+.stat-card.purple .stat-icon { background: var(--bg-card-hover); color: var(--text-primary); }
 
-.stat-label { font-size: 12px; color: var(--cinza-text); font-weight: 500; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.25; }
-.stat-value { font-size: 22px; font-weight: 800; color: var(--chumbo-dark); line-height: 1.2; }
+.stat-label { font-size: 12px; color: var(--text-muted); font-weight: 600; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.25; }
+.stat-value { font-size: 22px; font-weight: 800; color: var(--text-primary); line-height: 1.2; }
 .stat-card.blue   .stat-value { color: var(--petroleo-primary); }
 .stat-card.green  .stat-value { color: var(--color-success); }
 .stat-card.yellow .stat-value { color: var(--color-warning); }
 .stat-card.red    .stat-value { color: var(--color-danger); }
-.stat-card.purple .stat-value { color: var(--chumbo-primary); }
+.stat-card.purple .stat-value { color: var(--text-primary); }
 
-.stat-sub { font-size: 11px; color: var(--cinza-text); }
+.stat-sub { font-size: 11px; color: var(--text-muted); }
 
 /* ============================================
    TABELA
@@ -619,16 +751,16 @@ table {
   table-layout: fixed;
 }
 
-thead { background: rgba(255,255,255,0.04); }
+thead { background: var(--bg-secondary); }
 
 th {
   padding: 12px 16px;
   text-align: left;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.7px;
-  color: var(--text-muted);
+  color: var(--petroleo-light);
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
   cursor: pointer;
@@ -639,8 +771,8 @@ th:hover { color: var(--text-primary); }
 
 td {
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
   vertical-align: middle;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -803,21 +935,21 @@ select option { background: #1e293b; }
 }
 
 .btn-secondary {
-  background: #ffffff !important;
-  color: var(--chumbo-primary) !important;
-  border: 1px solid var(--cinza-border) !important;
+  background: var(--bg-card) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border) !important;
   box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 .btn-secondary:hover {
   background: var(--bg-card-hover) !important;
   color: var(--petroleo-primary) !important;
-  border-color: var(--cinza-light) !important;
+  border-color: var(--petroleo-primary) !important;
 }
 
 .btn-danger {
-  background: #ffffff !important;
-  color: var(--color-danger) !important;
-  border: 1px solid #fca5a5 !important;
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
 }
 .btn-danger:hover {
   background: var(--color-danger) !important;
@@ -826,13 +958,14 @@ select option { background: #1e293b; }
 }
 
 .btn-ghost {
-  background: #ffffff !important;
-  color: var(--chumbo-primary) !important;
-  border: 1px solid var(--cinza-border) !important;
+  background: transparent !important;
+  color: var(--text-secondary) !important;
+  border: 1px solid var(--border) !important;
 }
 .btn-ghost:hover {
   background: var(--bg-card-hover) !important;
   color: var(--petroleo-primary) !important;
+  border-color: var(--petroleo-primary) !important;
 }
 
 .btn-sm { padding: 6px 12px; font-size: 12px; }
@@ -2240,11 +2373,11 @@ thead th {
   max-width: 100%;
 }
 .custom-multiselect-btn {
-  background: rgba(15,23,42,0.6);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 12px;
-  color: #fff;
+  color: var(--text-primary);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
@@ -2253,8 +2386,9 @@ thead th {
   min-height: 38px;
 }
 .custom-multiselect-btn.has-selection {
-  border-color: #3b82f6;
-  background: rgba(59,130,246,0.1);
+  border-color: var(--petroleo-primary);
+  background: var(--petroleo-subtle);
+  color: var(--petroleo-primary);
 }
 .custom-multiselect-text {
   overflow: hidden;
@@ -2263,7 +2397,7 @@ thead th {
 }
 .custom-multiselect-arrow {
   margin-left: 8px;
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 .custom-multiselect-dropdown {
   position: absolute;
@@ -2272,12 +2406,12 @@ thead th {
   width: 100%;
   max-height: none;
   overflow: hidden;
-  background: #1e293b;
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   margin-top: 4px;
   z-index: 1000;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow);
   padding: 4px;
 }
 .custom-multiselect-item {
@@ -2287,10 +2421,11 @@ thead th {
   cursor: pointer;
   border-radius: 4px;
   font-size: 13px;
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 .custom-multiselect-item:hover {
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-card-hover);
+  color: var(--petroleo-primary);
 }
 .custom-multiselect-item input[type="checkbox"] {
   margin-right: 8px;
@@ -2299,30 +2434,31 @@ thead th {
 .custom-multiselect-empty {
   padding: 8px;
   text-align: center;
-  color: #94a3b8;
+  color: var(--text-muted);
   font-size: 13px;
 }
 
 .custom-multiselect-header {
   padding: 8px 12px;
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid var(--border);
   font-size: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #1e293b;
+  background-color: var(--bg-card);
   position: sticky;
   top: -4px;
   z-index: 10;
   margin: -4px -4px 4px -4px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  color: var(--text-primary);
 }
 .custom-multiselect-action {
-  color: #38bdf8;
+  color: var(--petroleo-primary);
   cursor: pointer;
   user-select: none;
-  font-weight: 500;
+  font-weight: 600;
   transition: color 0.2s;
 }
 .custom-multiselect-action:hover {

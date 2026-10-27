@@ -535,7 +535,8 @@ function navegar(pagina) {
     'gdsm-novoregime': '🚀 GDSM — Novo Regime',
     'sistema-info': '🖥️ Informações do Sistema & Diagnóstico'
   };
-  document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
+  const elTopbarTitle = document.getElementById('topbar-title');
+  if (elTopbarTitle) elTopbarTitle.textContent = titles[pagina] || pagina;
 
   // Atualizar conteúdo
   if (pagina === 'dashboard') renderDashboard();
@@ -635,16 +636,20 @@ function renderDashboard() {
   const valorPago   = processos.filter(p => normalizar(p.status) === 'pago').reduce((a,p) => a + (p.valorOf || 0), 0);
   const valorAPagar = valorTotal - valorPago;
 
-  document.getElementById('stat-total').textContent      = total.toLocaleString('pt-BR');
-  document.getElementById('stat-valor-pago').textContent = formatCurrency(valorPago);
-  document.getElementById('stat-valor-total-global').textContent = formatCurrency(valorTotal);
-  document.getElementById('stat-valor-a-pagar').textContent = formatCurrency(valorAPagar);
-  document.getElementById('stat-autorizado').textContent = autorizados.toLocaleString('pt-BR');
-  const elStatCancelado = document.getElementById('stat-cancelado');
-  if (elStatCancelado) elStatCancelado.textContent = cancelados.toLocaleString('pt-BR');
-  document.getElementById('stat-pago').textContent       = pagos.toLocaleString('pt-BR');
-  document.getElementById('stat-pendente').textContent   = pendentes.toLocaleString('pt-BR');
-  document.getElementById('stat-prioridade').textContent = prioridade.toLocaleString('pt-BR');
+  const setElText = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val;
+  };
+
+  setElText('stat-total', total.toLocaleString('pt-BR'));
+  setElText('stat-valor-pago', formatCurrency(valorPago));
+  setElText('stat-valor-total-global', formatCurrency(valorTotal));
+  setElText('stat-valor-a-pagar', formatCurrency(valorAPagar));
+  setElText('stat-autorizado', autorizados.toLocaleString('pt-BR'));
+  setElText('stat-cancelado', cancelados.toLocaleString('pt-BR'));
+  setElText('stat-pago', pagos.toLocaleString('pt-BR'));
+  setElText('stat-pendente', pendentes.toLocaleString('pt-BR'));
+  setElText('stat-prioridade', prioridade.toLocaleString('pt-BR'));
 
   // --- Alertas de Datas ---
   let processosSemData = 0;
@@ -717,9 +722,11 @@ function renderDashboard() {
     '#06b6d4','#f97316','#6366f1','#ec4899','#14b8a6'
   ];
 
-  const ctxStatus = document.getElementById('chart-status').getContext('2d');
-  if (chartStatus) chartStatus.destroy();
-  chartStatus = new Chart(ctxStatus, {
+  const elChartStatus = document.getElementById('chart-status');
+  if (elChartStatus) {
+    const ctxStatus = elChartStatus.getContext('2d');
+    if (chartStatus) chartStatus.destroy();
+    chartStatus = new Chart(ctxStatus, {
     type: 'doughnut',
     data: {
       labels: statusLabels,
@@ -776,8 +783,8 @@ function renderDashboard() {
           }
         }
       }
-    }
-  });
+    });
+  }
 
   // Gráfico: Categoria
   const catCounts = {};
@@ -806,68 +813,71 @@ function renderDashboard() {
   };
   const colorsCat = catLabels.map(label => colorsCatMap[label] || '#6366f1');
 
-  const ctxCategoria = document.getElementById('chart-categoria').getContext('2d');
-  if (chartCategoria) chartCategoria.destroy();
-  chartCategoria = new Chart(ctxCategoria, {
-    type: 'doughnut',
-    data: {
-      labels: catLabels,
-      datasets: [{ data: catValues, backgroundColor: colorsCat, borderWidth: 0, hoverOffset: 4 }]
-    },
-    options: {
-      cutout: '65%',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          onClick: function(e, legendItem, legend) {
-            const index = legendItem.index;
-            const ci = legend.chart;
-            ci.toggleDataVisibility(index);
-            ci.update();
-          },
-          labels: {
-            color: '#f8fafc',
-            font: { size: 10 },
-            padding: 10,
-            generateLabels: (chart) => {
-              const data = chart.data;
-              if (data.labels.length && data.datasets.length) {
-                return data.labels.map((label, i) => {
-                  const meta = chart.getDatasetMeta(0);
-                  const style = meta.controller.getStyle(i);
-                  const value = data.datasets[0].data[i];
-                  const percent = ((value / totalCat) * 100).toFixed(1) + '%';
-                  const isHidden = !chart.getDataVisibility(i);
-                  return {
-                    text: `${label.toUpperCase()} (${percent})`,
-                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
-                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
-                    lineWidth: style.borderWidth,
-                    fontColor: isHidden ? '#475569' : '#f7f7f7',
-                    textDecoration: 'none',
-                    hidden: false,
-                    index: i
-                  };
-                });
+  const elChartCat = document.getElementById('chart-categoria');
+  if (elChartCat) {
+    const ctxCategoria = elChartCat.getContext('2d');
+    if (chartCategoria) chartCategoria.destroy();
+    chartCategoria = new Chart(ctxCategoria, {
+      type: 'doughnut',
+      data: {
+        labels: catLabels,
+        datasets: [{ data: catValues, backgroundColor: colorsCat, borderWidth: 0, hoverOffset: 4 }]
+      },
+      options: {
+        cutout: '65%',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            onClick: function(e, legendItem, legend) {
+              const index = legendItem.index;
+              const ci = legend.chart;
+              ci.toggleDataVisibility(index);
+              ci.update();
+            },
+            labels: {
+              color: '#f8fafc',
+              font: { size: 10 },
+              padding: 10,
+              generateLabels: (chart) => {
+                const data = chart.data;
+                if (data.labels.length && data.datasets.length) {
+                  return data.labels.map((label, i) => {
+                    const meta = chart.getDatasetMeta(0);
+                    const style = meta.controller.getStyle(i);
+                    const value = data.datasets[0].data[i];
+                    const percent = ((value / totalCat) * 100).toFixed(1) + '%';
+                    const isHidden = !chart.getDataVisibility(i);
+                    return {
+                      text: `${label.toUpperCase()} (${percent})`,
+                      fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
+                      strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                      lineWidth: style.borderWidth,
+                      fontColor: isHidden ? '#475569' : '#f7f7f7',
+                      textDecoration: 'none',
+                      hidden: false,
+                      index: i
+                    };
+                  });
+                }
+                return [];
               }
-              return [];
             }
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const val = context.parsed;
-              const pct = ((val / totalCat) * 100).toFixed(1) + '%';
-              return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const val = context.parsed;
+                const pct = ((val / totalCat) * 100).toFixed(1) + '%';
+                return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
+              }
             }
           }
         }
       }
-    }
-  });
+    });
+  }
 
   // Gráfico: Tipo
   const tipoCounts = {};
@@ -900,68 +910,71 @@ function renderDashboard() {
   };
   const colorsTipo = tipoLabels.map(label => colorsTipoMap[label] || '#6366f1');
 
-  const ctxTipo = document.getElementById('chart-tipo').getContext('2d');
-  if (chartTipo) chartTipo.destroy();
-  chartTipo = new Chart(ctxTipo, {
-    type: 'doughnut',
-    data: {
-      labels: tipoLabels,
-      datasets: [{ data: tipoValues, backgroundColor: colorsTipo, borderWidth: 0, hoverOffset: 4 }]
-    },
-    options: {
-      cutout: '65%',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'bottom',
-          onClick: function(e, legendItem, legend) {
-            const index = legendItem.index;
-            const ci = legend.chart;
-            ci.toggleDataVisibility(index);
-            ci.update();
-          },
-          labels: {
-            color: '#f8fafc',
-            font: { size: 10 },
-            padding: 10,
-            generateLabels: (chart) => {
-              const data = chart.data;
-              if (data.labels.length && data.datasets.length) {
-                return data.labels.map((label, i) => {
-                  const meta = chart.getDatasetMeta(0);
-                  const style = meta.controller.getStyle(i);
-                  const value = data.datasets[0].data[i];
-                  const percent = ((value / totalTipo) * 100).toFixed(1) + '%';
-                  const isHidden = !chart.getDataVisibility(i);
-                  return {
-                    text: `${label.toUpperCase()} (${percent})`,
-                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
-                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
-                    lineWidth: style.borderWidth,
-                    fontColor: isHidden ? '#475569' : '#f7f7f7',
-                    textDecoration: 'none',
-                    hidden: false,
-                    index: i
-                  };
-                });
+  const elChartTipo = document.getElementById('chart-tipo');
+  if (elChartTipo) {
+    const ctxTipo = elChartTipo.getContext('2d');
+    if (chartTipo) chartTipo.destroy();
+    chartTipo = new Chart(ctxTipo, {
+      type: 'doughnut',
+      data: {
+        labels: tipoLabels,
+        datasets: [{ data: tipoValues, backgroundColor: colorsTipo, borderWidth: 0, hoverOffset: 4 }]
+      },
+      options: {
+        cutout: '65%',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            onClick: function(e, legendItem, legend) {
+              const index = legendItem.index;
+              const ci = legend.chart;
+              ci.toggleDataVisibility(index);
+              ci.update();
+            },
+            labels: {
+              color: '#f8fafc',
+              font: { size: 10 },
+              padding: 10,
+              generateLabels: (chart) => {
+                const data = chart.data;
+                if (data.labels.length && data.datasets.length) {
+                  return data.labels.map((label, i) => {
+                    const meta = chart.getDatasetMeta(0);
+                    const style = meta.controller.getStyle(i);
+                    const value = data.datasets[0].data[i];
+                    const percent = ((value / totalTipo) * 100).toFixed(1) + '%';
+                    const isHidden = !chart.getDataVisibility(i);
+                    return {
+                      text: `${label.toUpperCase()} (${percent})`,
+                      fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
+                      strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                      lineWidth: style.borderWidth,
+                      fontColor: isHidden ? '#475569' : '#f7f7f7',
+                      textDecoration: 'none',
+                      hidden: false,
+                      index: i
+                    };
+                  });
+                }
+                return [];
               }
-              return [];
             }
-          }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              const val = context.parsed;
-              const pct = ((val / totalTipo) * 100).toFixed(1) + '%';
-              return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const val = context.parsed;
+                const pct = ((val / totalTipo) * 100).toFixed(1) + '%';
+                return ` ${context.label.toUpperCase()}: ${val} (${pct})`;
+              }
             }
           }
         }
       }
-    }
-  });
+    });
+  }
 
   // Gráfico: Todos Municípios por valor
   const munValor = {};
@@ -1785,9 +1798,12 @@ function renderProcessos() {
     </tr>`;
 
   // Info paginação
-  document.getElementById('pg-info').textContent = total === 0
-    ? 'Nenhum resultado'
-    : `Exibindo ${inicio + 1}–${Math.min(inicio + state.itensPorPagina, total)} de ${total} processos`;
+  const elPgInfo = document.getElementById('pg-info');
+  if (elPgInfo) {
+    elPgInfo.textContent = total === 0
+      ? 'Nenhum resultado'
+      : `Exibindo ${inicio + 1}–${Math.min(inicio + state.itensPorPagina, total)} de ${total} processos`;
+  }
 
   // Controles paginação
   renderPaginacao(totalPags);
@@ -2451,7 +2467,8 @@ function renderFormulario() {
     }
   }
 
-  document.getElementById('form-title').textContent = processo ? 'Editar Processo' : 'Novo Processo';
+  const elFormTitle = document.getElementById('form-title');
+  if (elFormTitle) elFormTitle.textContent = processo ? 'Editar Processo' : 'Novo Processo';
 
   // Lógica de Apontamento e Histórico
   const currentSessao = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
@@ -7317,7 +7334,8 @@ window.abrirTeModal = function(globalIdx) {
   if (!e) return;
   
   document.getElementById('te-form-cache-idx').value = globalIdx;
-  document.getElementById('te-modal-titulo').textContent = `Editar: ${e.nome || 'Escola'}`;
+  const elTeTitulo = document.getElementById('te-modal-titulo');
+  if (elTeTitulo) elTeTitulo.textContent = `Editar: ${e.nome || 'Escola'}`;
   
   // Identificação
   document.getElementById('te-form-nome').value = e.nome || '';
@@ -8282,12 +8300,16 @@ window.toggleTemaClaroSuave = toggleTemaClaroSuave;
 
 function aplicarTemaSalvo() {
   const salvo = localStorage.getItem('seduc_tema_suave_imagem2');
+  const btnText = document.getElementById('btn-toggle-tema-text');
+  const btnIcon = document.getElementById('btn-toggle-tema-icon');
   if (salvo === '1') {
     document.body.classList.add('tema-claro');
-    const btnText = document.getElementById('btn-toggle-tema-text');
-    const btnIcon = document.getElementById('btn-toggle-tema-icon');
     if (btnText) btnText.textContent = 'Tema Escuro';
     if (btnIcon) btnIcon.textContent = '🌙';
+  } else {
+    document.body.classList.remove('tema-claro');
+    if (btnText) btnText.textContent = 'Tema Suave';
+    if (btnIcon) btnIcon.textContent = '☀️';
   }
 }
 window.aplicarTemaSalvo = aplicarTemaSalvo;
