@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.38">
+  <link rel="stylesheet" href="css/style.css?v=1.3.60">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.59</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.60</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.59</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.60</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -2074,17 +2074,6 @@
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px; width: 100%;">
           <div style="display:flex; flex-direction:column; align-items:flex-start; gap:4px;">
             <h2 id="form-title" style="margin:0; font-size:18px; line-height:1.15;">Novo Processo</h2>
-            <!-- SELO DE IA ACOMODADO À ESQUERDA NA MESMA LINHA DO CABEÇALHO (IMAGEM 2) -->
-            <div id="badge-topo-ia-destaque" style="display:inline-flex; align-items:center; gap:8px; padding:4px 12px; background:linear-gradient(135deg, rgba(99,102,241,0.28), rgba(168,85,247,0.28)); border:1.5px solid rgba(168,85,247,0.65); border-radius:10px; box-shadow:0 0 16px rgba(168,85,247,0.35);">
-              <img src="img/icone-ai-chip.png" alt="AI Chip" style="width:26px; height:26px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(168,85,247,0.9)); flex-shrink:0;">
-              <div style="display:flex; flex-direction:column; line-height:1.15;">
-                <div style="display:flex; align-items:center; gap:6px;">
-                  <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                  <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.59</span>
-                </div>
-                <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
-              </div>
-            </div>
           </div>
 
           <!-- Seletores de Categoria e Tipo -->
@@ -2126,7 +2115,7 @@
               <div style="display:flex; gap:12px; align-items:center;">
                 <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📋 OBJETO</button>
                 <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📜 Manifestação Técnica</button>
-                <button id="btn-guia-repositorio" type="button" onclick="alternarGuiaFormulario('repositorio')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" title="Repositório de Documentos, Análise do Plano de Trabalho e Google Drive">📁 Repositório & Análise CAM</button>
+                <button id="btn-guia-repositorio" type="button" onclick="alternarGuiaFormulario('repositorio')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" title="Repositório de Documentos, Análise do Plano de Trabalho e Google Drive">📁 Repositório Análise CAM</button>
               </div>
 
               <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
@@ -2915,13 +2904,21 @@
               
               <!-- TOPO DO REPOSITÓRIO: IDENTIFICAÇÃO E AÇÕES RÁPIDAS -->
               <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:14px;">
-                <div>
-                  <h3 style="margin:0 0 4px 0; color:#34d399; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
-                    <span>📁</span> <span>REPOSITÓRIO DE DOCUMENTOS & ANÁLISE TÉCNICA CAM</span>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; width:100%;">
+                  <h3 style="margin:0; color:#34d399; font-size:16px; font-weight:800; display:flex; align-items:center; gap:8px;">
+                    <span>📁</span> <span>REPOSITÓRIO DE DOCUMENTOS ANÁLISE TÉCNICA CAM</span>
                   </h3>
-                  <p style="margin:0; font-size:12px; color:#94a3b8;">
-                    Guarda de documentos do processo, integração Google Drive e Leitor Automático do Plano de Trabalho com Motor SCRIPT CAM.
-                  </p>
+                  <!-- SELO DE IA (MOVIDO PARA A DIREITA DO TÍTULO DO REPOSITÓRIO) -->
+                  <div id="badge-topo-ia-destaque" style="display:inline-flex; align-items:center; gap:8px; padding:4px 12px; background:linear-gradient(135deg, rgba(99,102,241,0.28), rgba(168,85,247,0.28)); border:1.5px solid rgba(168,85,247,0.65); border-radius:10px; box-shadow:0 0 16px rgba(168,85,247,0.35);">
+                    <img src="img/icone-ai-chip.png" alt="AI Chip" style="width:26px; height:26px; object-fit:contain; filter:drop-shadow(0 0 6px rgba(168,85,247,0.9)); flex-shrink:0;">
+                    <div style="display:flex; flex-direction:column; line-height:1.15;">
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.60</span>
+                      </div>
+                      <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
+                    </div>
+                  </div>
                 </div>
                 <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
                   <!-- SELEÇÃO DE MOTORES DE SCRIPT (CHECKBOXES PARA USAR FUNDAMENTOS, ORIGINAL OU AMBOS) -->
@@ -2982,7 +2979,6 @@
                       <span id="badge-docs-selecionados" style="background:rgba(16,185,129,0.18); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:12px; font-size:11px; font-weight:700;">0 selecionados</span>
                       <span id="badge-persistencia-docs" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:2px 8px; border-radius:12px; font-size:10.5px; font-weight:700;" title="Documentos gravados fora da memória volátil (IndexedDB + Processo) com refresh automático a cada inserção">💾 Disponível Fora de Memória • Auto-Refresh Ativo</span>
                     </h4>
-                    <span style="font-size:11.5px; color:#94a3b8;">Marque (☑️) os documentos que devem ser analisados em conjunto sob a luz do Script Padrão (Script CAM V1.0) e apontados como referência.</span>
                   </div>
                   <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                     <button type="button" onclick="alternarSelecaoTodosDocumentos()" class="btn" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:6px 12px; font-size:11.5px; font-weight:700; border-radius:6px; cursor:pointer;" title="Marcar ou desmarcar todos os documentos para análise">
@@ -3020,11 +3016,6 @@
 
                 <!-- PAINEL COMPACTO DO PIPELINE ANTIGRAVITY V2.0 (EXIBIDO APÓS ANALISAR OS DOCUMENTOS DO LOCAL AMARELO) -->
                 <div id="painel-resumo-auditoria-antigravity-v2" style="display:none; margin-top:12px; padding:14px; background:linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.9)); border:1.5px solid rgba(239,68,68,0.45); border-radius:10px; box-shadow:0 4px 16px rgba(0,0,0,0.4);"></div>
-
-                <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                  <span style="font-size:11px; color:#34d399; font-weight:600;">⚡ Motor Script CAM V1.0: Coerência • Conexão Documental • Legalidade • Metas e Valores</span>
-                  <span style="font-size:10.5px; color:#64748b;">Os documentos ficam associados ao número SEI deste processo.</span>
-                </div>
               </div>
 
               <!-- PAINEL DE ANÁLISE TÉCNICA CAM & OPORTUNÔMETRO (DINÂMICO) -->
@@ -3098,7 +3089,7 @@
                   <!-- RELÓGIO 3: MEDIDOR DE RISCO E CONFLITOS DE REGRAS (FRIEZA DA LEI) -->
                   <div style="background:radial-gradient(circle at top, rgba(239,68,68,0.12), rgba(0,0,0,0.45)); border:1px solid rgba(239,68,68,0.3); border-radius:12px; padding:14px; text-align:center;">
                     <span style="font-size:11px; font-weight:800; color:#f87171; text-transform:uppercase; letter-spacing:0.5px; display:block; margin-bottom:6px;">
-                      ⚡ TERMÔMETRO DE RISCO & CONFLITO
+                      ⚡ TERMÔMETRO DE RISCO CONFLITO
                     </span>
                     <div style="position:relative; width:80px; height:80px; margin:0 auto 4px auto;">
                       <svg viewBox="0 0 36 36" style="width:100%; height:100%; transform:rotate(-90deg);">
@@ -3125,7 +3116,7 @@
                     </div>
                     <div style="margin-top:8px; display:flex; gap:6px;">
                       <button type="button" onclick="aplicarAnaliseNeutraAgora()" class="btn" style="background:rgba(255,255,255,0.08); color:#f8fafc; border:1px solid rgba(255,255,255,0.2); padding:5px 8px; font-size:10px; font-weight:800; border-radius:5px; cursor:pointer; width:100%; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Disparar a análise estritamente neutra e crua sem maquiagem">
-                        ⚖️ Aplicar Análise Nua & Crua
+                        ⚖️ Aplicar Análise
                       </button>
                     </div>
                   </div>
@@ -3136,7 +3127,7 @@
                   <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
                     <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                       <h5 style="margin:0; font-size:12.5px; color:#34d399; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">
-                        📋 Matriz de Verificação de Conformidade, Coerência e Solução (Script CAM V1.0)
+                        📋 Matriz de Verificação de Conformidade, Coerência e Solução
                       </h5>
                       <!-- BOTÃO INCOERÊNCIAS: EXIBIDO SE E SOMENTE SE HOUVER ALGUMA INCOERÊNCIA (MARCADO EM AMARELO NA IMAGEM 1) -->
                       <button type="button" id="btn-cam-incoerencias" onclick="abrirModalIncoerenciasCAM()" style="display:none; background:linear-gradient(135deg,#ef4444,#dc2626); color:#fff; border:none; padding:4px 10px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer; box-shadow:0 2px 6px rgba(239,68,68,0.4);" title="Visualizar inconsistências e pendências técnicas detectadas">
@@ -3146,7 +3137,6 @@
                         📄 Gerar TXT (Conformes e Pendências)
                       </button>
                     </div>
-                    <span style="font-size:11px; color:#94a3b8;">Use os botões de cada estágio para definir (✓ Conforme / ⏳ Pendente) e gerar o TXT individual ou geral</span>
                   </div>
                   <div id="cam-matriz-itens" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:12px; font-size:12px;">
                     <!-- Itens gerados dinamicamente via JS com coerência, solução, 2 botões por estágio e botão TXT -->
@@ -3190,8 +3180,8 @@
                       <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('pendencias')" class="btn" style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border:1px solid #fbbf24; padding:8px 14px; font-size:11.5px; font-weight:800; border-radius:8px; cursor:pointer; box-shadow:0 3px 10px rgba(245,158,11,0.35); display:inline-flex; align-items:center; gap:6px;" title="Gerar arquivo .TXT contendo as pendências e recomendações apontadas para resposta e saneamento">
                         <span>⏳</span> <span>Gerar TXT (Pendências p/ Resposta)</span>
                       </button>
-                      <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('todos')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:9px 18px; font-size:12.5px; font-weight:900; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.45); display:inline-flex; align-items:center; gap:7px;" title="Gerar arquivo .TXT completo com Conformes, Pendências, Recomendações e Campos para Resposta e Edição">
-                        <span>📄</span> <span>GERAR ARQUIVO TXT (CONFORMES E PENDÊNCIAS P/ RESPOSTA E EDIÇÃO)</span>
+                      <button type="button" onclick="gerarTxtRelatorioApontamentosCAM('todos')" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:8px 14px; font-size:11.5px; font-weight:800; border-radius:8px; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.35); display:inline-flex; align-items:center; gap:6px;" title="Gerar arquivo .TXT completo com Conformes, Pendências, Recomendações e Campos para Resposta e Edição">
+                        <span>📄</span> <span>Gerar TXT Completo</span>
                       </button>
                     </div>
                   </div>
@@ -3335,23 +3325,9 @@
       <div id="modal-documento-antigravity-v2" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); z-index:100005; justify-content:center; align-items:center; padding:18px;">
         <div style="background:#0f172a; border:1.5px solid rgba(239,68,68,0.55); border-radius:14px; max-width:980px; width:100%; max-height:92vh; display:flex; flex-direction:column; box-shadow:0 20px 60px rgba(0,0,0,0.9); overflow:hidden;">
           <!-- Header -->
-          <div style="padding:16px 22px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(239,68,68,0.18), rgba(15,23,42,0.95)); flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; align-items:center; gap:12px;">
-              <span style="font-size:26px;">🛡️</span>
-              <div>
-                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                  <h3 style="margin:0; color:#f8fafc; font-size:16px; font-weight:900;">RELATÓRIO DE AUDITORIA DE PARCERIAS & MINUTA DE NOTIFICAÇÃO (ANTIGRAVITY v2.0)</h3>
-                  <span id="badge-status-final-antigravity-v2" style="background:rgba(239,68,68,0.25); color:#fca5a5; border:1px solid #ef4444; padding:2px 10px; border-radius:12px; font-size:11px; font-weight:900;">EM ANÁLISE</span>
-                </div>
-                <span style="font-size:11.5px; color:#94a3b8;">Agente: <strong>AntiGravity_Convenio_Auditor v2.0.0</strong> • Validação Cruzada Doc A (Ofício) x Doc B (Plano de Trabalho) • Regras FIN-01, OBJ-02, REP-03</span>
-              </div>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <button type="button" onclick="abrirEditorScriptAntiGravityV2()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.2); padding:6px 12px; font-size:11px; font-weight:800; border-radius:6px; cursor:pointer;">
-                ⚙️ Ver Script v2.0
-              </button>
-              <button type="button" onclick="fecharModalDocumentoAntiGravityV2()" class="btn" style="background:rgba(239,68,68,0.25); border:1.5px solid #ef4444; color:#fca5a5; font-size:15px; font-weight:900; cursor:pointer; padding:6px 14px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; gap:4px; box-shadow:0 0 10px rgba(239,68,68,0.4);" title="Fechar Janela">✕ Fechar</button>
-            </div>
+          <div style="padding:16px 22px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; background:linear-gradient(135deg, rgba(239,68,68,0.18), rgba(15,23,42,0.95)); gap:12px;">
+            <span style="font-size:26px;">🛡️</span>
+            <h3 style="margin:0; color:#f8fafc; font-size:16px; font-weight:900;">RELATÓRIO DE AUDITORIA DE PARCERIAS MINUTA DE NOTIFICAÇÃO</h3>
           </div>
 
           <!-- Abas de Visualização do Documento -->
@@ -3367,7 +3343,6 @@
                 🧩 Extração JSON Schema (Doc A & Doc B)
               </button>
             </div>
-            <span id="resumo-docs-analisados-agv2" style="font-size:11px; color:#38bdf8; font-weight:700;"></span>
           </div>
 
           <!-- Corpo do Modal -->
@@ -3390,15 +3365,13 @@
 
           <!-- Footer com Ações de Geração de Documento -->
           <div style="padding:14px 22px; border-top:1px solid rgba(255,255,255,0.1); background:#0f172a; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; flex:1;">
               <button type="button" onclick="copiarDocumentoAntiGravityV2()" class="btn" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
                 📋 Copiar Documento p/ SEI
               </button>
               <button type="button" onclick="aplicarAuditoriaAntiGravityNaManifestacao()" class="btn" style="background:rgba(16,185,129,0.16); color:#34d399; border:1px solid rgba(16,185,129,0.45); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
                 ✍️ Injetar na Manifestação Técnica
               </button>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
               <button type="button" onclick="baixarDocumentoAntiGravityV2('txt')" class="btn" style="background:rgba(245,158,11,0.18); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
                 📝 Baixar .TXT
               </button>
@@ -3408,7 +3381,13 @@
               <button type="button" onclick="imprimirDocumentoAntiGravityV2()" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:9px 18px; font-size:12.5px; font-weight:900; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 14px rgba(16,185,129,0.45);">
                 🖨️ Imprimir / Gerar PDF Oficial
               </button>
-              <button type="button" onclick="fecharModalDocumentoAntiGravityV2()" class="btn" style="background:rgba(239,68,68,0.2); border:1.5px solid #ef4444; color:#fca5a5; font-size:12.5px; font-weight:900; cursor:pointer; padding:8px 16px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(239,68,68,0.3);" title="Fechar Modal de Auditoria">
+            </div>
+            <!-- VER SCRIPT + FECHAR (MOVIDOS DO TOPO PARA O CANTO INFERIOR DIREITO) -->
+            <div style="display:flex; gap:8px; align-items:center; margin-left:auto;">
+              <button type="button" onclick="abrirEditorScriptAntiGravityV2()" class="btn" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.2); padding:8px 14px; font-size:12px; font-weight:800; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                ⚙️ Ver Script v2.0
+              </button>
+              <button type="button" onclick="fecharModalDocumentoAntiGravityV2()" class="btn" style="background:rgba(239,68,68,0.2); border:1.5px solid #ef4444; color:#fca5a5; font-size:12.5px; font-weight:900; cursor:pointer; padding:8px 16px; border-radius:8px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(239,68,68,0.3);" title="Fechar Janela">
                 ✕ Fechar
               </button>
             </div>
@@ -3617,7 +3596,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.59
+              GBZ - v1.3.60
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3890,7 +3869,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.59] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.60] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5918,7 +5897,7 @@
 
   <!-- Scripts -->
   <script src="js/dados.js?v=1.3.55"></script>
-  <script src="js/app.js?v=1.3.55"></script>
+  <script src="js/app.js?v=1.3.60"></script>
   <script src="js/auth-sap.js?v=1.3.55"></script>
   <script src="js/escolas.js?v=1.3.55" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>

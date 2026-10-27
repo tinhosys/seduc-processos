@@ -13025,54 +13025,64 @@ function recalcularMetricasERenderizarAnaliseCAM() {
   }
   if (boxRelatorio) {
     const docsNomes = (analise.nomesDocumentos || []).join(', ') || 'Dados do Processo SEI';
-    const itensPendentesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status !== 'Conforme').map(({ m, idx }) => `
-      <div style="margin-bottom:8px; padding:10px 12px; background:rgba(245,158,11,0.08); border-left:3px solid ${m.status === 'Inconsistente' ? '#ef4444' : '#f59e0b'}; border-radius:6px;">
+    // Cabeçalho de seção padronizado (chip numerado + título) — layout harmonizado (Imagem 3)
+    const tituloSecaoCAM = (num, texto, cor) => `
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:${cor}22; border:1px solid ${cor}88; color:${cor}; font-size:11px; font-weight:900; flex-shrink:0;">${num}</span>
+        <span style="font-size:12px; font-weight:800; color:${cor}; text-transform:uppercase; letter-spacing:0.4px;">${texto}</span>
+        <span style="flex:1; height:1px; background:linear-gradient(90deg, ${cor}55, transparent);"></span>
+      </div>`;
+
+    const itensPendentesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status !== 'Conforme').map(({ m, idx }) => {
+      const corP = m.status === 'Inconsistente' ? '#f87171' : '#fbbf24';
+      return `
+      <div style="margin-bottom:8px; padding:12px 14px; background:rgba(245,158,11,0.06); border:1px solid ${corP}40; border-left:3px solid ${corP}; border-radius:8px; display:flex; flex-direction:column; gap:6px;">
         <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-          <div style="font-weight:800; color:${m.status === 'Inconsistente' ? '#f87171' : '#fbbf24'}; font-size:12px;">
-            ${m.status === 'Inconsistente' ? '✕' : '⏳'} Estágio ${idx + 1}: ${m.nome} — ${m.desc}
+          <div style="font-weight:800; color:${corP}; font-size:12px;">
+            ${m.status === 'Inconsistente' ? '✕' : '⏳'} Estágio ${idx + 1}: ${m.nome} <span style="color:#e2e8f0; font-weight:600;">— ${m.desc}</span>
           </div>
-          <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(245,158,11,0.18); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:2px 8px; font-size:10px; font-weight:800; border-radius:4px; cursor:pointer;" title="Gerar arquivo .TXT deste apontamento para resposta e edição">
-            📄 Gerar TXT deste Apontamento
+          <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(245,158,11,0.16); color:#fbbf24; border:1px solid rgba(245,158,11,0.45); padding:3px 10px; font-size:10.5px; font-weight:800; border-radius:6px; cursor:pointer;" title="Gerar arquivo .TXT deste apontamento para resposta e edição">
+            📄 TXT
           </button>
         </div>
-        <div style="font-size:11.5px; color:#cbd5e1; margin-top:3px;"><strong>Coerência/Diagnóstico:</strong> ${m.coerencia}</div>
-        <div style="font-size:11.5px; color:#34d399; margin-top:2px;"><strong>Solução Recomendada:</strong> ${m.solucao}</div>
-        <div style="margin-top:6px; display:flex; align-items:center; gap:6px;">
-          <span style="font-size:10.5px; color:#94a3b8; font-weight:700; white-space:nowrap;">✏️ Resposta / Edição:</span>
-          <input type="text" value="${(m.respostaEditada || '').replace(/"/g, '&quot;')}" oninput="atualizarRespostaApontamentoCAM(${idx}, this.value)" placeholder="Digite aqui a resposta ou providência adotada (será incluída automaticamente no arquivo .TXT)..." style="flex:1; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.14); border-radius:5px; padding:4px 8px; color:#f8fafc; font-size:11px;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:8px;">
+          <div style="font-size:11.5px; color:#cbd5e1; background:rgba(0,0,0,0.2); padding:8px 10px; border-radius:6px; line-height:1.45;"><strong style="color:#38bdf8;">Diagnóstico:</strong> ${m.coerencia}</div>
+          <div style="font-size:11.5px; color:#d1fae5; background:rgba(16,185,129,0.07); padding:8px 10px; border-radius:6px; line-height:1.45;"><strong style="color:#34d399;">Solução:</strong> ${m.solucao}</div>
         </div>
-      </div>
-    `).join('');
+        <input type="text" value="${(m.respostaEditada || '').replace(/"/g, '&quot;')}" oninput="atualizarRespostaApontamentoCAM(${idx}, this.value)" placeholder="✏️ Resposta / providência adotada (incluída no arquivo .TXT)..." style="width:100%; box-sizing:border-box; background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.12); border-radius:6px; padding:6px 10px; color:#f8fafc; font-size:11px;">
+      </div>`;
+    }).join('');
 
     const itensConformesHtml = matriz.map((m, idx) => ({ m, idx })).filter(x => x.m.status === 'Conforme').map(({ m, idx }) => `
-      <div style="padding:6px 10px; background:rgba(16,185,129,0.07); border-left:3px solid #10b981; border-radius:5px; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
-        <div style="font-size:11.5px; color:#d1fae5;">
-          <strong style="color:#34d399;">✓ Estágio ${idx + 1}: ${m.nome}</strong> — ${m.desc}
+      <div style="padding:10px 12px; background:rgba(16,185,129,0.06); border:1px solid rgba(16,185,129,0.22); border-top:3px solid #10b981; border-radius:8px; display:flex; flex-direction:column; justify-content:space-between; gap:8px; min-height:92px;">
+        <div style="font-size:11.5px; color:#cbd5e1; line-height:1.4;">
+          <div style="color:#34d399; font-weight:800; margin-bottom:3px;">✓ ${idx + 1}. ${m.nome}</div>
+          ${m.desc}
         </div>
-        <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.35); padding:2px 7px; font-size:10px; font-weight:800; border-radius:4px; cursor:pointer;" title="Gerar arquivo .TXT deste estágio conforme">
-          📄 TXT
-        </button>
+        <div style="display:flex; justify-content:flex-end;">
+          <button type="button" onclick="gerarTxtEstagioIndividualCAM(${idx})" class="btn" style="background:rgba(16,185,129,0.14); color:#34d399; border:1px solid rgba(16,185,129,0.35); padding:3px 10px; font-size:10.5px; font-weight:800; border-radius:6px; cursor:pointer;" title="Gerar arquivo .TXT deste estágio conforme">
+            📄 TXT
+          </button>
+        </div>
       </div>
     `).join('');
 
     boxRelatorio.innerHTML = `
-      <div style="margin-bottom:10px; padding:10px 12px; background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.2); border-radius:8px;">
-        <div style="font-weight:800; color:#38bdf8; margin-bottom:4px;">1. Conjunto Documental e Conexão entre os Documentos Analisados (${(analise.nomesDocumentos || []).length} doc(s)):</div>
-        <div style="font-size:12px; color:#e2e8f0;"><strong>Documentos Verificados (☑️):</strong> ${docsNomes}</div>
-        <div style="font-size:12px; color:#cbd5e1; margin-top:4px;">${analise.sinteseConexaoLegalidade || ''}</div>
-      </div>
-      <div style="margin-bottom:10px;">
-        <div style="font-weight:800; color:${qtdPendentes > 0 ? '#fbbf24' : '#34d399'}; margin-bottom:6px;">
-          2. Quadro de Pendências Identificadas e Soluções de Saneamento (Com Campo p/ Resposta e Exportação .TXT):
+      <div style="margin-bottom:14px;">
+        ${tituloSecaoCAM(1, `Conjunto Documental e Conexão (${(analise.nomesDocumentos || []).length} doc(s))`, '#38bdf8')}
+        <div style="padding:10px 12px; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.18); border-radius:8px;">
+          <div style="font-size:12px; color:#e2e8f0;"><strong style="color:#38bdf8;">Documentos Verificados:</strong> ${docsNomes}</div>
+          <div style="font-size:12px; color:#cbd5e1; margin-top:6px; line-height:1.5;">${analise.sinteseConexaoLegalidade || ''}</div>
         </div>
-        ${itensPendentesHtml || '<div style="padding:8px 12px; background:rgba(16,185,129,0.1); border-left:3px solid #10b981; border-radius:4px; color:#34d399; font-weight:700;">✓ Nenhuma pendência impeditiva no conjunto de documentos analisados. Proposta apta à emissão de Manifestação Técnica Favorável.</div>'}
+      </div>
+      <div style="margin-bottom:14px;">
+        ${tituloSecaoCAM(2, 'Pendências e Soluções de Saneamento', qtdPendentes > 0 ? '#fbbf24' : '#34d399')}
+        ${itensPendentesHtml || '<div style="padding:10px 12px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-left:3px solid #10b981; border-radius:8px; color:#34d399; font-weight:700; font-size:12px;">✓ Nenhuma pendência impeditiva no conjunto de documentos analisados. Proposta apta à emissão de Manifestação Técnica Favorável.</div>'}
       </div>
       ${itensConformesHtml ? `
       <div>
-        <div style="font-weight:800; color:#34d399; margin-bottom:6px; font-size:12px;">
-          3. Etapas Verificadas em Conformidade (${matriz.length - qtdPendentes} de ${matriz.length}):
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:6px;">
+        ${tituloSecaoCAM(3, `Etapas em Conformidade (${matriz.length - qtdPendentes} de ${matriz.length})`, '#34d399')}
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:8px;">
           ${itensConformesHtml}
         </div>
       </div>
