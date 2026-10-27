@@ -4578,7 +4578,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Página inicial
-  navegar('dashboard');
+  const canDashInit = (typeof window.podeAcessarDashboard === 'function') ? window.podeAcessarDashboard() : false;
+  navegar(canDashInit ? 'dashboard' : 'processos');
 });
 
 // ---- EXPORTAÇÃO ----
