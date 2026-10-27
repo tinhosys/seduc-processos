@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.55
+// Versão do Sistema: v1.3.63
 // ============================================================
-window.APP_VERSION = 'v1.3.55';
+window.APP_VERSION = 'v1.3.63';
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -325,6 +325,57 @@ function encontrarEscolaSemelhante(nomeDigitado) {
 }
 
 
+// ============================================================
+// COMPONENTES PADRONIZADOS REUTILIZÁVEIS (PADRÃO SEI)
+// ============================================================
+window.StandardInput = function({ id, label, type = 'text', placeholder = '', value = '', required = false, list = '', helper = '' }) {
+  return `
+    <div class="std-input-group">
+      ${label ? `<label class="std-label" for="${id}">${label}${required ? ' *' : ''}</label>` : ''}
+      <input type="${type}" id="${id}" name="${id}" class="std-input" placeholder="${placeholder}" value="${value}" ${required ? 'required' : ''} ${list ? `list="${list}"` : ''} autocomplete="off">
+      ${helper ? `<span class="std-helper" style="font-size:11px;color:#6b7280;margin-top:2px;">${helper}</span>` : ''}
+    </div>
+  `;
+};
+
+window.StandardButton = function({ id = '', text, variant = 'primary', icon = '', onclick = '', title = '', type = 'button' }) {
+  // variant: primary | secondary | danger | ghost
+  const varClass = `btn-${variant}`;
+  return `
+    <button type="${type}" ${id ? `id="${id}"` : ''} class="btn ${varClass}" ${onclick ? `onclick="${onclick}"` : ''} ${title ? `title="${title}"` : ''}>
+      ${icon ? `<span class="btn-icon">${icon}</span>` : ''}
+      <span class="btn-text">${text}</span>
+    </button>
+  `;
+};
+
+window.StandardTable = function({ id = '', columns = [], rows = [], emptyMessage = 'Nenhum registro encontrado' }) {
+  const headerHtml = columns.map(col => `<th>${col.label || col}</th>`).join('');
+  let bodyHtml = '';
+  if (!rows || rows.length === 0) {
+    bodyHtml = `<tr><td colspan="${columns.length}" style="text-align:center;padding:24px;color:#6b7280;">${emptyMessage}</td></tr>`;
+  } else {
+    bodyHtml = rows.map(row => {
+      const cells = columns.map(col => {
+        const key = col.key || col;
+        return `<td>${row[key] !== undefined ? row[key] : ''}</td>`;
+      }).join('');
+      return `<tr>${cells}</tr>`;
+    }).join('');
+  }
+  return `
+    <div class="table-wrap std-table-wrap">
+      <table ${id ? `id="${id}"` : ''} class="std-table">
+        <thead class="std-thead"><tr>${headerHtml}</tr></thead>
+        <tbody class="std-tbody">${bodyHtml}</tbody>
+      </table>
+    </div>
+  `;
+};
+
+// ============================================================
+// NAVEGAÇÃO ENTRE SEÇÕES DO FORMULÁRIO (PADRÃO SEI CONTÍNUO)
+// ============================================================
 function alternarGuiaFormulario(guia) {
   const btnObjeto = document.getElementById('btn-guia-objeto');
   const btnObjetivo = document.getElementById('btn-guia-objetivo');
@@ -333,38 +384,43 @@ function alternarGuiaFormulario(guia) {
   const tabObjetivo = document.getElementById('tab-content-objetivo');
   const tabRepositorio = document.getElementById('tab-content-repositorio');
   const btnManifestacao = document.getElementById('btn-gerar-manifestacao');
-  const btnPrestacao = document.getElementById('btn-prestacao-contas');
   const containerExcluir = document.getElementById('container-excluir-form');
 
-  if (!tabObjeto || !tabObjetivo) return;
+  // No modelo contínuo SEI, todas as seções permanecem visíveis
+  if (tabObjeto) tabObjeto.style.display = 'block';
+  if (tabObjetivo) tabObjetivo.style.display = 'block';
+  if (tabRepositorio) tabRepositorio.style.display = 'block';
+  if (btnManifestacao) btnManifestacao.style.display = 'inline-flex';
+
+  if (containerExcluir) {
+    const isEditando = typeof state !== 'undefined' && state.editandoId;
+    containerExcluir.style.display = isEditando ? 'flex' : 'none';
+  }
 
   const resetBtn = (btn) => {
     if (!btn) return;
-    btn.style.background = 'none';
-    btn.style.color = 'var(--text-secondary)';
-    btn.style.border = '1px solid transparent';
-    btn.style.boxShadow = 'none';
+    btn.style.background = '#ffffff';
+    btn.style.color = '#374151';
+    btn.style.borderColor = '#d1d5db';
+    btn.style.fontWeight = '600';
   };
 
   const highlightBtn = (btn) => {
     if (!btn) return;
-    btn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+    btn.style.background = '#0f766e';
     btn.style.color = '#ffffff';
-    btn.style.border = '1px solid #34d399';
-    btn.style.boxShadow = '0 3px 12px rgba(16,185,129,0.3)';
+    btn.style.borderColor = '#0f766e';
+    btn.style.fontWeight = '700';
   };
 
+  resetBtn(btnObjeto);
+  resetBtn(btnObjetivo);
+  resetBtn(btnRepositorio);
+
+  let targetElement = null;
   if (guia === 'objetivo') {
-    tabObjeto.style.display = 'none';
-    tabObjetivo.style.display = 'block';
-    if (tabRepositorio) tabRepositorio.style.display = 'none';
-    if (btnManifestacao) btnManifestacao.style.display = 'inline-flex';
-    if (containerExcluir) containerExcluir.style.display = 'none';
-
-    resetBtn(btnObjeto);
-    resetBtn(btnRepositorio);
     highlightBtn(btnObjetivo);
-
+    targetElement = tabObjetivo;
     if (typeof renderizarChecksReferenciasRelatorio === 'function') {
       renderizarChecksReferenciasRelatorio();
     }
@@ -372,44 +428,20 @@ function alternarGuiaFormulario(guia) {
       garantirContextoSecao4();
     }
   } else if (guia === 'repositorio') {
-    tabObjeto.style.display = 'none';
-    tabObjetivo.style.display = 'none';
-    if (tabRepositorio) tabRepositorio.style.display = 'block';
-    if (btnManifestacao) btnManifestacao.style.display = 'inline-flex';
-    if (containerExcluir) containerExcluir.style.display = 'none';
-
-    resetBtn(btnObjeto);
-    resetBtn(btnObjetivo);
     highlightBtn(btnRepositorio);
-
-    // Carrega/atualiza visualização dos arquivos do repositório fora de memória e analisa conjunto se houver documentos
+    targetElement = tabRepositorio;
     if (typeof refreshRepositorioProcesso === 'function') {
       refreshRepositorioProcesso(false);
-    } else {
-      if (typeof renderizarRepositorioArquivos === 'function') {
-        renderizarRepositorioArquivos();
-      }
-      if (typeof analisarConjuntoDocumentalCAM === 'function' && Array.isArray(window._repositorioArquivosAtuais) && window._repositorioArquivosAtuais.length > 0) {
-        analisarConjuntoDocumentalCAM(true);
-      } else if (typeof limparAnaliseCAM === 'function') {
-        limparAnaliseCAM();
-      }
+    } else if (typeof renderizarRepositorioArquivos === 'function') {
+      renderizarRepositorioArquivos();
     }
   } else {
-    tabObjeto.style.display = 'block';
-    tabObjetivo.style.display = 'none';
-    if (tabRepositorio) tabRepositorio.style.display = 'none';
-    if (btnManifestacao) btnManifestacao.style.display = 'none';
-
-    // Na aba 1 (Objeto), exibe o container excluir se estiver editando um processo
-    if (containerExcluir) {
-      const isEditando = typeof state !== 'undefined' && state.editandoId;
-      containerExcluir.style.display = isEditando ? 'flex' : 'none';
-    }
-
     highlightBtn(btnObjeto);
-    resetBtn(btnObjetivo);
-    resetBtn(btnRepositorio);
+    targetElement = tabObjeto;
+  }
+
+  if (targetElement && typeof targetElement.scrollIntoView === 'function') {
+    targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 window.alternarGuiaFormulario = alternarGuiaFormulario;
@@ -723,7 +755,7 @@ function renderDashboard() {
     type: 'doughnut',
     data: {
       labels: statusLabels,
-      datasets: [{ data: statusValues, backgroundColor: colorsStatus, borderWidth: 2, borderColor: '#0a0f1e' }]
+      datasets: [{ data: statusValues, backgroundColor: colorsStatus, borderWidth: 2, borderColor: '#ffffff' }]
     },
     options: {
       responsive: true,
@@ -738,8 +770,8 @@ function renderDashboard() {
             ci.update();
           },
           labels: { 
-            color: '#f8fafc', 
-            font: { size: 10 }, 
+            color: '#374151', 
+            font: { size: 10, weight: '500' }, 
             padding: 10,
             generateLabels: (chart) => {
               const data = chart.data;
@@ -752,10 +784,10 @@ function renderDashboard() {
                   const isHidden = !chart.getDataVisibility(i);
                   return {
                     text: `${label.toUpperCase()} (${percent})`,
-                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
-                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                    fillStyle: isHidden ? 'rgba(0,0,0,0.05)' : style.backgroundColor,
+                    strokeStyle: isHidden ? 'rgba(0,0,0,0.1)' : '#ffffff',
                     lineWidth: style.borderWidth,
-                    fontColor: isHidden ? '#475569' : '#f7f7f7',
+                    fontColor: isHidden ? '#9ca3af' : '#1f2937',
                     textDecoration: 'none',
                     hidden: false,
                     index: i
@@ -812,7 +844,7 @@ function renderDashboard() {
     type: 'doughnut',
     data: {
       labels: catLabels,
-      datasets: [{ data: catValues, backgroundColor: colorsCat, borderWidth: 0, hoverOffset: 4 }]
+      datasets: [{ data: catValues, backgroundColor: colorsCat, borderWidth: 2, borderColor: '#ffffff', hoverOffset: 4 }]
     },
     options: {
       cutout: '65%',
@@ -828,8 +860,8 @@ function renderDashboard() {
             ci.update();
           },
           labels: {
-            color: '#f8fafc',
-            font: { size: 10 },
+            color: '#374151',
+            font: { size: 10, weight: '500' },
             padding: 10,
             generateLabels: (chart) => {
               const data = chart.data;
@@ -842,10 +874,10 @@ function renderDashboard() {
                   const isHidden = !chart.getDataVisibility(i);
                   return {
                     text: `${label.toUpperCase()} (${percent})`,
-                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
-                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                    fillStyle: isHidden ? 'rgba(0,0,0,0.05)' : style.backgroundColor,
+                    strokeStyle: isHidden ? 'rgba(0,0,0,0.1)' : '#ffffff',
                     lineWidth: style.borderWidth,
-                    fontColor: isHidden ? '#475569' : '#f7f7f7',
+                    fontColor: isHidden ? '#9ca3af' : '#1f2937',
                     textDecoration: 'none',
                     hidden: false,
                     index: i
@@ -906,7 +938,7 @@ function renderDashboard() {
     type: 'doughnut',
     data: {
       labels: tipoLabels,
-      datasets: [{ data: tipoValues, backgroundColor: colorsTipo, borderWidth: 0, hoverOffset: 4 }]
+      datasets: [{ data: tipoValues, backgroundColor: colorsTipo, borderWidth: 2, borderColor: '#ffffff', hoverOffset: 4 }]
     },
     options: {
       cutout: '65%',
@@ -922,8 +954,8 @@ function renderDashboard() {
             ci.update();
           },
           labels: {
-            color: '#f8fafc',
-            font: { size: 10 },
+            color: '#374151',
+            font: { size: 10, weight: '500' },
             padding: 10,
             generateLabels: (chart) => {
               const data = chart.data;
@@ -936,10 +968,10 @@ function renderDashboard() {
                   const isHidden = !chart.getDataVisibility(i);
                   return {
                     text: `${label.toUpperCase()} (${percent})`,
-                    fillStyle: isHidden ? 'rgba(255,255,255,0.05)' : style.backgroundColor,
-                    strokeStyle: isHidden ? 'rgba(255,255,255,0.1)' : style.borderColor,
+                    fillStyle: isHidden ? 'rgba(0,0,0,0.05)' : style.backgroundColor,
+                    strokeStyle: isHidden ? 'rgba(0,0,0,0.1)' : '#ffffff',
                     lineWidth: style.borderWidth,
-                    fontColor: isHidden ? '#475569' : '#f7f7f7',
+                    fontColor: isHidden ? '#9ca3af' : '#1f2937',
                     textDecoration: 'none',
                     hidden: false,
                     index: i
@@ -998,8 +1030,8 @@ function renderDashboard() {
         indexAxis: 'y',
         plugins: { legend: { display: false } },
         scales: {
-          x: { ticks: { color: '#64748b', callback: v => 'R$ ' + (v/1e6).toFixed(1)+'M' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-          y: { ticks: { color: '#94a3b8', font: { size: 11 } }, grid: { display: false } }
+          x: { ticks: { color: '#4b5563', callback: v => 'R$ ' + (v/1e6).toFixed(1)+'M' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+          y: { ticks: { color: '#4b5563', font: { size: 11, weight: '500' } }, grid: { display: false } }
         }
       }
     });
@@ -1016,8 +1048,8 @@ function renderDashboard() {
     const prefixoValues = prefixoLabels.map(k => prefixoCounts[k]);
     
     const colorsPrefixo = [
-      '#6366f1','#ec4899','#14b8a6','#8b5cf6','#f97316',
-      '#3b82f6','#10b981','#f59e0b','#ef4444','#06b6d4'
+      '#0f766e','#0284c7','#10b981','#6366f1','#f59e0b',
+      '#ea580c','#06b6d4','#8b5cf6','#ec4899','#64748b'
     ];
     
     const ctxPrefixo = document.getElementById('chart-prefixo');
@@ -1042,8 +1074,8 @@ function renderDashboard() {
             legend: { display: false }
           },
           scales: {
-            y: { beginAtZero: true, grid: { color: '#1f2937' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#4b5563' } },
+            x: { grid: { display: false }, ticks: { color: '#4b5563' } }
           }
         }
       });
@@ -1163,24 +1195,24 @@ async function renderChartAcessosDashboard() {
           scales: {
             x: {
               ticks: {
-                color: '#f8fafc',
+                color: '#4b5563',
                 font: { size: 10, weight: '600' },
                 maxRotation: 25,
                 minRotation: 0
               },
-              grid: { color: 'rgba(255,255,255,0.04)' }
+              grid: { color: 'rgba(0,0,0,0.06)' }
             },
             y: {
               ticks: {
-                color: '#94a3b8',
+                color: '#6b7280',
                 callback: v => v + '%'
               },
-              grid: { color: 'rgba(255,255,255,0.05)' },
+              grid: { color: 'rgba(0,0,0,0.06)' },
               max: 100,
               title: {
                 display: true,
                 text: '% do total de acessos',
-                color: '#64748b',
+                color: '#4b5563',
                 font: { size: 10 }
               }
             }
