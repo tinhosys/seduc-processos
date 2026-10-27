@@ -7512,10 +7512,16 @@ function ativarGrupoFormEntidade(num) {
     if (btn) {
       if (num === i) {
         btn.classList.add('active');
-        btn.style.boxShadow = '0 0 14px rgba(56,189,248,0.55)';
-        btn.style.filter = 'brightness(1.15)';
+        btn.style.background = 'rgba(255,255,255,0.1)';
+        btn.style.borderColor = 'rgba(255,255,255,0.25)';
+        btn.style.color = '#ffffff';
+        btn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.3)';
+        btn.style.filter = 'none';
       } else {
         btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.borderColor = 'transparent';
+        btn.style.color = '#94a3b8';
         btn.style.boxShadow = 'none';
         btn.style.filter = 'none';
       }
@@ -7525,12 +7531,12 @@ function ativarGrupoFormEntidade(num) {
   const btnTodos = document.getElementById('tab-grupo-btn-todos');
   if (btnTodos) {
     if (num === 'todos') {
-      btnTodos.style.background = 'rgba(56,189,248,0.25)';
-      btnTodos.style.borderColor = '#38bdf8';
-      btnTodos.style.color = '#38bdf8';
+      btnTodos.style.background = 'rgba(255,255,255,0.12)';
+      btnTodos.style.borderColor = 'rgba(255,255,255,0.3)';
+      btnTodos.style.color = '#ffffff';
     } else {
       btnTodos.style.background = 'rgba(255,255,255,0.04)';
-      btnTodos.style.borderColor = 'rgba(255,255,255,0.12)';
+      btnTodos.style.borderColor = 'rgba(255,255,255,0.1)';
       btnTodos.style.color = '#94a3b8';
     }
   }
@@ -7564,8 +7570,8 @@ function filtrarEscolasTabelaMunicipioModal(busca) {
 }
 window.filtrarEscolasTabelaMunicipioModal = filtrarEscolasTabelaMunicipioModal;
 
-// Renderiza a Tabela de Escolas Vinculada ao Município (Área Roxa - Imagem 3 & 4)
-function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto = '') {
+// Renderiza a Tabela de Escolas Vinculada ao Município (Padrão Harmonizado com CRUD Completo)
+function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto = '', forcarTodas = false) {
   const tbody = document.getElementById('tbody-escolas-municipio-modal');
   const tituloMun = document.getElementById('titulo-municipio-tabela-vinculada');
   const badgeContador = document.getElementById('badge-contador-tabela-municipio');
@@ -7573,10 +7579,6 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
 
   const munLimpo = String(municipioFiltro || '').trim();
   const nMun = _normMun(munLimpo);
-
-  if (tituloMun) {
-    tituloMun.textContent = munLimpo ? munLimpo.toUpperCase() : '(Todos os Municípios)';
-  }
 
   // Agrega todas as escolas conhecidas evitando duplicatas
   const mapaUnico = new Map();
@@ -7606,11 +7608,31 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
     }
   });
 
-  let lista = Array.from(mapaUnico.values());
+  let todasEscolas = Array.from(mapaUnico.values());
 
-  // Filtra por Município se especificado
-  if (nMun) {
-    lista = lista.filter(e => _normMun(e.municipio) === nMun || _normMun(e.municipio).includes(nMun) || nMun.includes(_normMun(e.municipio)));
+  // Se forçarTodas ou não houver filtro de município, mostra todas
+  let lista = todasEscolas;
+  let exibindoTodas = false;
+
+  if (nMun && !forcarTodas) {
+    const filtradas = todasEscolas.filter(e => _normMun(e.municipio) === nMun || _normMun(e.municipio).includes(nMun) || nMun.includes(_normMun(e.municipio)));
+    if (filtradas.length > 0) {
+      lista = filtradas;
+    } else {
+      // Se o município filtrado não possui escolas, exibe as escolas gerais e sinaliza
+      lista = todasEscolas;
+      exibindoTodas = true;
+    }
+  } else if (!nMun) {
+    exibindoTodas = true;
+  }
+
+  if (tituloMun) {
+    if (exibindoTodas) {
+      tituloMun.textContent = munLimpo ? `(Mostrando Todas - Nenhuma vinculada a ${munLimpo})` : '(Todas as Escolas)';
+    } else {
+      tituloMun.textContent = munLimpo.toUpperCase();
+    }
   }
 
   // Filtro de busca textual se houver
@@ -7619,30 +7641,30 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
     lista = lista.filter(e => 
       (e.nome || '').toLowerCase().includes(bLimpo) ||
       (e.inep || '').toLowerCase().includes(bLimpo) ||
+      (e.municipio || '').toLowerCase().includes(bLimpo) ||
       (e.diretor || '').toLowerCase().includes(bLimpo) ||
       (e.super || '').toLowerCase().includes(bLimpo)
     );
   }
 
-  // Ordena por nome
-  lista.sort((a,b) => (a.nome || '').localeCompare(b.nome || '', 'pt-BR'));
+  // Ordena por município e depois por nome
+  lista.sort((a,b) => (a.municipio || '').localeCompare(b.municipio || '', 'pt-BR') || (a.nome || '').localeCompare(b.nome || '', 'pt-BR'));
 
   // Atualiza badges de contagem
   const total = lista.length;
   const textoTotal = `${total} unidade${total === 1 ? '' : 's'}`;
   if (badgeContador) badgeContador.textContent = textoTotal;
-  if (badgeHeader) badgeHeader.textContent = `🏫 ${textoTotal} vinculada${total === 1 ? '' : 's'}`;
+  if (badgeHeader) badgeHeader.textContent = `🏫 ${textoTotal} ${exibindoTodas ? 'no total' : 'vinculadas'}`;
 
   if (!tbody) return;
 
   if (lista.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="8" style="padding:24px 16px; text-align:center; color:#94a3b8; font-size:12.5px;">
-          <div style="font-size:22px; margin-bottom:6px;">🏫</div>
-          ${munLimpo 
-            ? `Nenhuma escola encontrada para o município <strong>${munLimpo}</strong>.<br><span style="font-size:11.5px; color:#64748b;">Preencha o formulário acima e clique em "Salvar Entidade / Escola" para cadastrar a primeira!</span>`
-            : 'Selecione ou digite um município no cabeçalho ancorado para listar as escolas vinculadas.'}
+        <td colspan="8" style="padding:28px 16px; text-align:center; color:#94a3b8; font-size:12.5px;">
+          <div style="font-size:24px; margin-bottom:6px;">🏫</div>
+          Nenhuma escola encontrada.${bLimpo ? ' Tente outro termo de busca.' : ''}<br>
+          <span style="font-size:11.5px; color:#64748b;">Preencha o formulário acima e clique em "Salvar Entidade / Escola" para adicionar!</span>
         </td>
       </tr>
     `;
@@ -7652,13 +7674,13 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
   tbody.innerHTML = lista.map((e) => {
     const comp = e.competencia || 'Municipal';
     const compBadge = comp === 'Estadual'
-      ? '<span style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:800;">Estadual</span>'
-      : '<span style="background:rgba(59,130,246,0.2); color:#60a5fa; border:1px solid rgba(59,130,246,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:800;">Municipal</span>';
+      ? '<span style="background:rgba(255,255,255,0.08); color:#f8fafc; border:1px solid rgba(255,255,255,0.18); padding:2px 8px; border-radius:4px; font-size:10.5px; font-weight:700;">Estadual</span>'
+      : '<span style="background:rgba(255,255,255,0.05); color:#cbd5e1; border:1px solid rgba(255,255,255,0.12); padding:2px 8px; border-radius:4px; font-size:10.5px; font-weight:700;">Municipal</span>';
 
     const loc = e.localidade || e.localizacao || 'Urbana';
     const locBadge = loc.toLowerCase().includes('rural')
-      ? '<span style="background:rgba(245,158,11,0.2); color:#fbbf24; border:1px solid rgba(245,158,11,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:700;">Rural</span>'
-      : '<span style="background:rgba(6,182,212,0.2); color:#22d3ee; border:1px solid rgba(6,182,212,0.4); padding:2px 6px; border-radius:4px; font-size:10.5px; font-weight:700;">Urbana</span>';
+      ? '<span style="background:rgba(255,255,255,0.05); color:#e2e8f0; border:1px solid rgba(255,255,255,0.1); padding:2px 8px; border-radius:4px; font-size:10.5px;">Rural</span>'
+      : '<span style="background:rgba(255,255,255,0.05); color:#e2e8f0; border:1px solid rgba(255,255,255,0.1); padding:2px 8px; border-radius:4px; font-size:10.5px;">Urbana</span>';
 
     const alunos = Number(e.alunos || e.totalMatricula || 0);
     const alunosStr = alunos > 0 ? alunos.toLocaleString('pt-BR') : '-';
@@ -7667,44 +7689,121 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
     const idRef = e.inep || e.id || e.nome;
 
     return `
-      <tr style="border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s;" onmouseover="this.style.background='rgba(139,92,246,0.08)'" onmouseout="this.style.background='transparent'">
-        <td style="padding:8px 12px; white-space:nowrap;">
-          <div style="display:flex; align-items:center; gap:6px;">
+      <tr style="border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s;" onmouseover="this.style.background='rgba(255,255,255,0.03)'" onmouseout="this.style.background='transparent'">
+        <td style="padding:10px 14px; white-space:nowrap;">
+          <div style="display:flex; align-items:center; gap:8px;">
             ${compBadge}
-            <span style="color:#cbd5e1; font-weight:600; font-size:11.5px;">${e.municipio || '-'}</span>
+            <span style="color:#e2e8f0; font-weight:600; font-size:12px;">${e.municipio || '-'}</span>
           </div>
         </td>
-        <td style="padding:8px 12px; font-weight:700; color:#ffffff; font-size:12px; max-width:240px;">
+        <td style="padding:10px 14px; font-weight:700; color:#f8fafc; font-size:12.5px; max-width:280px;">
           ${e.nome || '-'}
         </td>
-        <td style="padding:8px 12px; font-family:monospace; color:#93c5fd; font-size:11.5px; white-space:nowrap;">
+        <td style="padding:10px 14px; font-family:monospace; color:#38bdf8; font-size:12px; white-space:nowrap;">
           ${e.inep || '-'}
         </td>
-        <td style="padding:8px 12px; white-space:nowrap;">
+        <td style="padding:10px 14px; white-space:nowrap;">
           ${locBadge}
         </td>
-        <td style="padding:8px 12px; color:#cbd5e1; font-size:11.5px; white-space:nowrap;">
+        <td style="padding:10px 14px; color:#cbd5e1; font-size:12px; white-space:nowrap;">
           ${superReg}
         </td>
-        <td style="padding:8px 12px; text-align:right; font-weight:800; color:#34d399; font-size:12px; white-space:nowrap;">
+        <td style="padding:10px 14px; text-align:right; font-weight:700; color:#f8fafc; font-size:12px; white-space:nowrap;">
           ${alunosStr}
         </td>
-        <td style="padding:8px 12px; color:#94a3b8; font-size:11px; white-space:nowrap;">
+        <td style="padding:10px 14px; color:#94a3b8; font-size:11.5px; white-space:nowrap;">
           ${tel}
         </td>
-        <td style="padding:8px 12px; text-align:center; white-space:nowrap;">
-          <button type="button" onclick="carregarEscolaNoFormModal('${encodeURIComponent(idRef)}')"
-            title="Carregar ${e.nome} no formulário para edição"
-            style="background:linear-gradient(135deg,#10b981,#059669); border:1px solid rgba(52,211,153,0.6); color:#fff; width:30px; height:30px; border-radius:6px; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(16,185,129,0.35); transition:transform 0.15s;"
-            onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-            ✏️
-          </button>
+        <td style="padding:10px 14px; text-align:center; white-space:nowrap;">
+          <div style="display:inline-flex; align-items:center; gap:6px;">
+            <!-- EDITAR (CRUD) -->
+            <button type="button" onclick="carregarEscolaNoFormModal('${encodeURIComponent(idRef)}')"
+              title="Editar ${e.nome} no formulário"
+              style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.2); color:#f8fafc; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:11.5px; font-weight:700; display:inline-flex; align-items:center; gap:4px; transition:all 0.15s;"
+              onmouseover="this.style.background='rgba(56,189,248,0.2)'; this.style.borderColor='#38bdf8';" onmouseout="this.style.background='rgba(255,255,255,0.08)'; this.style.borderColor='rgba(255,255,255,0.2)';">
+              ✏️ <span>Editar</span>
+            </button>
+            <!-- DUPLICAR / BASEAR NOVO -->
+            <button type="button" onclick="duplicarEscolaNoFormModal('${encodeURIComponent(idRef)}')"
+              title="Usar ${e.nome} como modelo para nova escola"
+              style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14); color:#cbd5e1; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11.5px; display:inline-flex; align-items:center; gap:4px; transition:all 0.15s;"
+              onmouseover="this.style.background='rgba(255,255,255,0.12)';" onmouseout="this.style.background='rgba(255,255,255,0.05)';">
+              📋 <span>Duplicar</span>
+            </button>
+            <!-- EXCLUIR LOCAL -->
+            <button type="button" onclick="excluirEscolaLocalModal('${encodeURIComponent(idRef)}')"
+              title="Excluir cadastro desta escola"
+              style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#fca5a5; padding:4px 8px; border-radius:6px; cursor:pointer; font-size:11.5px; display:inline-flex; align-items:center; justify-content:center; transition:all 0.15s;"
+              onmouseover="this.style.background='rgba(239,68,68,0.25)';" onmouseout="this.style.background='rgba(239,68,68,0.1)';">
+              🗑️
+            </button>
+          </div>
         </td>
       </tr>
     `;
   }).join('');
 }
 window.renderizarTabelaEscolasMunicipioModal = renderizarTabelaEscolasMunicipioModal;
+
+// Mostra todas as escolas do Estado na tabela do modal
+function carregarTodasEscolasTabelaModal() {
+  const fMun = document.getElementById('entidade-municipio-ancorado');
+  if (fMun) fMun.value = '';
+  renderizarTabelaEscolasMunicipioModal('', '', true);
+}
+window.carregarTodasEscolasTabelaModal = carregarTodasEscolasTabelaModal;
+
+// Duplicar / usar escola existente como modelo para novo cadastro
+function duplicarEscolaNoFormModal(idRefEncoded) {
+  carregarEscolaNoFormModal(idRefEncoded);
+  const idEl = document.getElementById('entidade-form-id');
+  if (idEl) idEl.value = ''; // limpa id para salvar como novo
+  const nomeEl = document.getElementById('entidade-nome');
+  if (nomeEl) {
+    nomeEl.value = `${nomeEl.value} (Cópia)`;
+    nomeEl.focus();
+  }
+  const inepEl = document.getElementById('entidade-inep');
+  if (inepEl) inepEl.value = '';
+  if (typeof toast === 'function') toast('Dados carregados como modelo para nova escola', 'info');
+}
+window.duplicarEscolaNoFormModal = duplicarEscolaNoFormModal;
+
+// Excluir escola do cadastro local
+function excluirEscolaLocalModal(idRefEncoded) {
+  const target = decodeURIComponent(idRefEncoded).trim().toLowerCase();
+  if (!confirm('Deseja realmente remover o registro desta escola?')) return;
+
+  try {
+    let loc = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+    loc = loc.filter(e => 
+      String(e.inep || e.codigoInep || '').trim().toLowerCase() !== target &&
+      String(e.id || '').trim().toLowerCase() !== target &&
+      String(e.nome || '').trim().toLowerCase() !== target
+    );
+    localStorage.setItem('seduc_entidades_cadastradas_local', JSON.stringify(loc));
+  } catch(e) {}
+
+  if (typeof _teCache !== 'undefined' && Array.isArray(_teCache)) {
+    _teCache = _teCache.filter(e => 
+      String(e.inep || e.codigoInep || '').trim().toLowerCase() !== target &&
+      String(e.id || '').trim().toLowerCase() !== target &&
+      String(e.nome || '').trim().toLowerCase() !== target
+    );
+  }
+  if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) {
+    _escolasCache = _escolasCache.filter(e => 
+      String(e.inep || e.codigoInep || '').trim().toLowerCase() !== target &&
+      String(e.id || '').trim().toLowerCase() !== target &&
+      String(e.nome || '').trim().toLowerCase() !== target
+    );
+  }
+
+  const munAtual = document.getElementById('entidade-municipio-ancorado')?.value || '';
+  renderizarTabelaEscolasMunicipioModal(munAtual);
+  if (typeof toast === 'function') toast('Registro removido com sucesso!', 'success');
+}
+window.excluirEscolaLocalModal = excluirEscolaLocalModal;
 
 // Carrega os dados de uma escola diretamente para edição no formulário
 function carregarEscolaNoFormModal(idRefEncoded) {
