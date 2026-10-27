@@ -7498,7 +7498,7 @@ var _grupoEntidadeAtivo = 1;
 
 function ativarGrupoFormEntidade(num) {
   _grupoEntidadeAtivo = num;
-  const botoes = [1, 2, 3, 4, 5];
+  const botoes = [2, 3, 4, 5];
 
   botoes.forEach(i => {
     const btn = document.getElementById(`tab-grupo-btn-${i}`);
@@ -7572,6 +7572,12 @@ window.filtrarEscolasTabelaMunicipioModal = filtrarEscolasTabelaMunicipioModal;
 
 // Renderiza a Tabela de Escolas Vinculada ao Município (Padrão Harmonizado com CRUD Completo)
 function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto = '', forcarTodas = false) {
+  // Se o cache de escolas ainda estiver vazio, dispara o carregamento da API de escolas
+  if ((typeof _escolasCache === 'undefined' || !_escolasCache || _escolasCache.length === 0) && typeof carregarEscolasAPI === 'function') {
+    carregarEscolasAPI(true).then(() => {
+      renderizarTabelaEscolasMunicipioModal(municipioFiltro, buscaTexto, forcarTodas);
+    }).catch(() => {});
+  }
   const tbody = document.getElementById('tbody-escolas-municipio-modal');
   const tituloMun = document.getElementById('titulo-municipio-tabela-vinculada');
   const badgeContador = document.getElementById('badge-contador-tabela-municipio');
@@ -7904,7 +7910,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
 
     aoSelecionarTipoEntidadeForm(tipoRadio);
-    ativarGrupoFormEntidade(1);
+    ativarGrupoFormEntidade(2);
   } else {
     if (tituloEl) tituloEl.textContent = 'Cadastro Geral de Entidade / Escola';
     setVal('entidade-form-id', '');
@@ -7923,7 +7929,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
       setVal('entidade-municipio', '');
       setVal('entidade-municipio-ancorado', '');
     }
-    ativarGrupoFormEntidade(1);
+    ativarGrupoFormEntidade(2);
   }
 
   renderizarTabelaEscolasMunicipioModal(munAtivo);
@@ -8338,9 +8344,10 @@ function gerarLinkCadastroComParametros() {
   const cat = (document.getElementById('link-gen-categoria')?.value || '').trim();
   const comp = (document.getElementById('link-gen-competencia')?.value || '').trim();
   const sup = (document.getElementById('link-gen-super')?.value || '').trim();
+  const parc = (document.getElementById('link-gen-parceria')?.value || 'Fomento (Termo de Fomento - F)').trim();
 
   const base = window.location.origin + window.location.pathname;
-  const url = `${base}?cadastro_entidade=1&mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}`;
+  const url = `${base}?cadastro_entidade=1&mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}&parc=${encodeURIComponent(parc)}`;
 
   const inputOut = document.getElementById('link-gen-resultado');
   if (inputOut) inputOut.value = url;
@@ -8394,6 +8401,12 @@ function iniciarModoCadastroExterno(urlParams) {
   const cat = urlParams.get('cat') || 'Conselho Escolar';
   const comp = urlParams.get('comp') || 'Municipal';
   const sup = urlParams.get('sup') || '';
+  let parc = urlParams.get('parc') || '';
+  if (!parc) {
+    parc = cat.toUpperCase().includes('PREFEITURA')
+      ? 'Convênio (Termo de Convênio - C)'
+      : 'Fomento (Termo de Fomento - F)';
+  }
 
   window._modoCadastroExternoAtivo = true;
 
@@ -8433,6 +8446,7 @@ function iniciarModoCadastroExterno(urlParams) {
         <span style="background:rgba(59,130,246,0.3); border:1px solid #3b82f6; color:#bfdbfe; padding:2px 8px; border-radius:4px; font-weight:700;">🏛️ Categoria: ${cat}</span>
         <span style="background:rgba(16,185,129,0.3); border:1px solid #10b981; color:#a7f3d0; padding:2px 8px; border-radius:4px; font-weight:700;">⚖️ Competência: ${comp}</span>
         <span style="background:rgba(168,85,247,0.3); border:1px solid #a855f7; color:#e9d5ff; padding:2px 8px; border-radius:4px; font-weight:700;">🏢 Regional: ${sup || 'Geral'}</span>
+        <span style="background:rgba(16,185,129,0.25); border:1px solid #10b981; color:#34d399; padding:2px 8px; border-radius:4px; font-weight:700;">🤝 Parceria: ${parc}</span>
       </div>
       <div style="margin-top:6px; color:#cbd5e1; font-size:11.5px;">Estes dados foram fixados pela administração pública e não podem ser alterados. Preencha e acrescente os demais dados da unidade escolar para concluir o cadastro.</div>
     `;
