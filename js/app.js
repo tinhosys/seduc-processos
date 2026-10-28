@@ -8346,8 +8346,9 @@ function gerarLinkCadastroComParametros() {
   const sup = (document.getElementById('link-gen-super')?.value || '').trim();
   const parc = (document.getElementById('link-gen-parceria')?.value || 'Fomento (Termo de Fomento - F)').trim();
 
-  const base = window.location.origin + window.location.pathname;
-  const url = `${base}?cadastro_entidade=1&mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}&parc=${encodeURIComponent(parc)}`;
+  const currentPath = window.location.pathname;
+  const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+  const url = `${window.location.origin}${basePath}cadastro.html?mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}&parc=${encodeURIComponent(parc)}`;
 
   const inputOut = document.getElementById('link-gen-resultado');
   if (inputOut) inputOut.value = url;
@@ -8527,16 +8528,15 @@ function iniciarModoCadastroExterno(urlParams) {
 }
 window.iniciarModoCadastroExterno = iniciarModoCadastroExterno;
 
-// Auto-ativação ao carregar página quando acessada via link gerado pré-definido
+// Auto-redirecionamento para a página nova cadastro.html quando acessada via link externo pré-definido
 document.addEventListener('DOMContentLoaded', () => {
   try {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('cadastro_entidade') === '1' || (params.has('mun') && params.has('cat'))) {
-      setTimeout(() => {
-        if (typeof iniciarModoCadastroExterno === 'function') {
-          iniciarModoCadastroExterno(params);
-        }
-      }, 300);
+    if (params.get('cadastro_entidade') === '1' || (params.has('mun') && params.has('cat') && !params.has('tab'))) {
+      const currentPath = window.location.pathname;
+      const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+      window.location.replace(`${window.location.origin}${basePath}cadastro.html?${params.toString()}`);
+      return;
     }
   } catch (e) {
     console.warn('Erro ao verificar parâmetros de cadastro externo:', e);

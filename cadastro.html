@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro Geral de Entidade / Escola - SEDUC/RO</title>
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+  <style>
+    /* ============================================================
+       ESTILOS LIMPOS E CONTRASTE DIRETO - CADASTRO DE ENTIDADE
+       ============================================================ */
+    :root {
+      --bg-page: #0b1120;
+      --bg-card: #151e32;
+      --bg-section: #1e293b;
+      --bg-input: #0f172a;
+      --border-color: #334155;
+      --border-input: #475569;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --accent: #38bdf8;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      min-height: 100vh;
+      width: 100%;
+      overflow-x: hidden;
+      line-height: 1.45;
+    }
+
+    /* TOPO: NOME DO MUNICÍPIO (30 PT) E BARRA DE CONTROLE */
+    .top-header {
+      background: #090e17;
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    .top-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+    }
+
+    /* NOME DO MUNICÍPIO: CENTRALIZADO, FONTE 30 PT, SEM LEGENDA */
+    .municipio-titulo-topo {
+      flex: 1;
+      text-align: center;
+      font-size: 30pt;
+      font-weight: 900;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+    }
+
+    .btn-fechar {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-fechar:hover {
+      background: #ef4444;
+      color: #ffffff;
+      border-color: #ef4444;
+    }
+
+    /* BARRA DO PRAZO (8 DIAS A PARTIR DO 1º CLIQUE) */
+    .prazo-banner {
+      background: linear-gradient(90deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 10px 18px;
+      margin: 12px 24px 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .prazo-info-bloco {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+    }
+
+    .badge-prazo {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+    }
+    .badge-prazo.ativo {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid #10b981;
+      color: #6ee7b7;
+    }
+    .badge-prazo.alerta {
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid #f59e0b;
+      color: #fcd34d;
+    }
+    .badge-prazo.expirado {
+      background: rgba(239, 68, 68, 0.25);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+    }
+
+    /* LAYOUT PRINCIPAL: LATERAL COM BANNER + ÁREA TOTAL EXPANDIDA */
+    .layout-wrapper {
+      display: flex;
+      gap: 22px;
+      padding: 20px 24px 40px 24px;
+      width: 100%;
+      align-items: flex-start;
+      box-sizing: border-box;
+    }
+
+    /* LATERAL: IMAGEM 3 (BANNER CADASTRE TODAS AS ESCOLAS) */
+    .sidebar-banner {
+      width: 270px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 100px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #090e17;
+    }
+
+    .sidebar-banner img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ÁREA DIREITA: EXPANDIDA EM TODA A EXTENSÃO DA PÁGINA */
+    .content-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* BADGE INSTITUCIONAL DOS PARÂMETROS FIXADOS */
+    .params-badge-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .params-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill-param {
+      background: #0f172a;
+      border: 1px solid #334155;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ABAS DE NAVEGAÇÃO */
+    .tabs-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255,255,255,0.04);
+    }
+    .tab-btn.active {
+      background: #1e293b;
+      color: var(--primary);
+      border-color: rgba(16,185,129,0.4);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .tab-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      background: rgba(255,255,255,0.08);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .tab-btn.active .tab-num {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    /* FORMULÁRIO E SEÇÕES */
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .form-group-section {
+      background: var(--bg-section);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-main);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* GRID DE CAMPOS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 1024px) {
+      .layout-wrapper { flex-direction: column; }
+      .sidebar-banner { width: 100%; position: static; max-height: 250px; overflow: hidden; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .municipio-titulo-topo { font-size: 20pt; }
+    }
+
+    /* ESTILO DE INPUTS - ALTO CONTRASTE */
+    label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      height: 40px;
+      padding: 8px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-input);
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+    }
+    .form-control::placeholder {
+      color: #64748b;
+    }
+    .form-control[readonly], .form-control[disabled] {
+      background: rgba(15, 23, 42, 0.85);
+      border-color: #334155;
+      color: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    /* BOTÕES DE AÇÃO DO FORM */
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 16px;
+    }
+
+    .btn-salvar {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      height: 42px;
+      padding: 0 28px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-salvar:hover:not(:disabled) {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    .btn-salvar:disabled {
+      background: #475569;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .btn-limpar {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #cbd5e1;
+      height: 42px;
+      padding: 0 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-limpar:hover {
+      background: rgba(255,255,255,0.12);
+      color: #ffffff;
+    }
+
+    /* TABELA DE ESCOLAS - APROVEITAMENTO TOTAL DA LARGURA */
+    .table-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .table-header-bar {
+      padding: 14px 20px;
+      background: #0f172a;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .table-search-input {
+      width: 320px;
+      height: 36px;
+      padding: 6px 14px;
+      background: #090e17;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 12.5px;
+      outline: none;
+    }
+    .table-search-input:focus {
+      border-color: var(--accent);
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: left;
+    }
+
+    th {
+      background: #111827;
+      color: #94a3b8;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      color: #e2e8f0;
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255,255,255,0.02);
+    }
+
+    .badge-comp {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-comp.municipal { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-comp.estadual { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .badge-comp.privada { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    .btn-acao {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #cbd5e1;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-acao:hover {
+      background: var(--accent);
+      color: #0f172a;
+      border-color: var(--accent);
+    }
+    .btn-acao.delete:hover {
+      background: var(--danger);
+      color: #ffffff;
+      border-color: var(--danger);
+    }
+
+    /* MENSAGEM TOAST */
+    #toast-msg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid var(--accent);
+      color: #ffffff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      z-index: 99999;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== TOPO: MUNICÍPIO (30 PT) E FECHAR ==================== -->
+  <header class="top-header">
+    <div class="top-header-row">
+      <div style="width: 120px;"></div>
+      <!-- NOME DO MUNICÍPIO: SOMENTE NOME, FONTE 30 PT, CENTRALIZADO (MARCAÇÃO AMARELA) -->
+      <h1 id="municipio-topo" class="municipio-titulo-topo">RONDÔNIA</h1>
+      <div style="width: 120px; display: flex; justify-content: flex-end;">
+        <button type="button" onclick="fecharJanelaCadastro()" class="btn-fechar" title="Fechar formulário">
+          ✕ Fechar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== BANNER DE PRAZO: 1º CLIQUE + 8 DIAS ==================== -->
+  <div class="prazo-banner">
+    <div class="prazo-info-bloco">
+      <span style="font-size: 20px;">⏳</span>
+      <div>
+        <div style="font-weight: 800; font-size: 13px; color: #f8fafc;" id="prazo-status-titulo">
+          Prazo Oficial para Cadastro das Escolas
+        </div>
+        <div style="color: #94a3b8; font-size: 12px;" id="prazo-datas-detalhe">
+          Início: <span id="data-primeiro-clique">--/--/----</span> | Limite (+8 dias): <span id="data-limite">--/--/----</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span id="badge-prazo-dias" class="badge-prazo ativo">Calculando prazo...</span>
+    </div>
+  </div>
+
+  <!-- ==================== LAYOUT PRINCIPAL: BANNER LATERAL + CONTEÚDO ==================== -->
+  <div class="layout-wrapper">
+    
+    <!-- LATERAL: IMAGEM 3 (MARCAÇÃO VERDE ESCURO) -->
+    <aside class="sidebar-banner">
+      <img src="img/banner-cadastre-escolas.png" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO">
+    </aside>
+
+    <!-- ÁREA EXPANDIDA: FORMULÁRIO E TABELA -->
+    <main class="content-area">
+
+      <!-- BADGE DOS PARÂMETROS FIXADOS DA ADMINISTRAÇÃO -->
+      <div class="params-badge-card">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px;">🔒</span>
+          <span style="font-size: 12.5px; font-weight: 800; color: #f8fafc;">Parâmetros Vinculados:</span>
+        </div>
+        <div class="params-pills">
+          <span class="pill-param">📍 <strong id="param-municipio">Carregando...</strong></span>
+          <span class="pill-param">🏛️ <strong id="param-categoria">Conselho Escolar</strong></span>
+          <span class="pill-param">⚖️ <strong id="param-competencia">Municipal</strong></span>
+          <span class="pill-param">🏢 <strong id="param-super">Regional</strong></span>
+          <span class="pill-param">📜 <strong id="param-parceria">Fomento</strong></span>
+        </div>
+      </div>
+
+      <!-- ABAS DO FORMULÁRIO -->
+      <div class="tabs-nav">
+        <button type="button" class="tab-btn active" id="tab-btn-2" onclick="ativarAba(2)">
+          <span class="tab-num">2</span> IDENTIFICAÇÃO
+        </button>
+        <button type="button" class="tab-btn" id="tab-btn-3" onclick="ativarAba(3)">
+          <span class="tab-num">3</span> GESTÃO & CONTATOS
+        </button>
+        <button type="button" class="tab-btn" id="tab-btn-4" onclick="ativarAba(4)">
+          <span class="tab-num">4</span> ENDEREÇO
+        </button>
+        <button type="button" class="tab-btn" id="tab-btn-5" onclick="ativarAba(5)">
+          <span class="tab-num">5</span> INFRAESTRUTURA
+        </button>
+        <button type="button" class="tab-btn" id="tab-btn-todas" onclick="ativarAba('todas')" style="margin-left: auto;">
+          <span>📋</span> VER TODAS
+        </button>
+      </div>
+
+      <!-- CARD DO FORMULÁRIO -->
+      <div class="form-card">
+        <form id="form-cadastro" onsubmit="salvarEntidade(event)">
+          <input type="hidden" id="entidade-id">
+          <input type="hidden" id="entidade-categoria" value="Conselho Escolar">
+          <input type="hidden" id="entidade-parceria" value="Fomento (Termo de Fomento - F)">
+
+          <!-- SEÇÃO 2: IDENTIFICAÇÃO -->
+          <div class="form-group-section" id="sec-aba-2">
+            <div class="section-header">
+              <span class="section-title"><span class="tab-num">2</span> Identificação da Escola / Entidade</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 2 de 5</span>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label>Nome Completo da Escola / Entidade *</label>
+                <input type="text" id="entidade-nome" required class="form-control" placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar...">
+              </div>
+              <div>
+                <label>Município / Distrito * (Fixado)</label>
+                <input type="text" id="entidade-municipio" required readonly class="form-control" style="font-weight: 800; color: #fef08a;">
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div>
+                <label>CNPJ</label>
+                <input type="text" id="entidade-cnpj" maxlength="18" oninput="mascaraCNPJ(this)" class="form-control" placeholder="00.000.000/0000-00">
+              </div>
+              <div>
+                <label>Código INEP</label>
+                <input type="text" id="entidade-inep" maxlength="12" class="form-control" placeholder="8 dígitos">
+              </div>
+              <div>
+                <label>Nº de Alunos</label>
+                <input type="number" id="entidade-alunos" min="0" class="form-control" placeholder="0">
+              </div>
+              <div>
+                <label>Modalidade</label>
+                <input type="text" id="entidade-modalidade" class="form-control" placeholder="Ex: Ensino Fundamental">
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div>
+                <label>Competência (Fixada)</label>
+                <input type="text" id="entidade-competencia" readonly class="form-control" value="Municipal">
+              </div>
+              <div>
+                <label>Super / Regional (Fixada)</label>
+                <input type="text" id="entidade-super" readonly class="form-control" placeholder="Regional">
+              </div>
+              <div>
+                <label>Localidade</label>
+                <select id="entidade-localidade" class="form-control">
+                  <option value="Urbana">Urbana</option>
+                  <option value="Rural">Rural</option>
+                  <option value="Indígena">Indígena</option>
+                  <option value="Quilombola">Quilombola</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 3: GESTÃO & CONTATOS -->
+          <div class="form-group-section" id="sec-aba-3" style="display: none;">
+            <div class="section-header">
+              <span class="section-title"><span class="tab-num">3</span> Gestão & Contatos Institucionais</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 3 de 5</span>
+            </div>
+
+            <div class="grid-4">
+              <div>
+                <label>Nome do Diretor | Presidente</label>
+                <input type="text" id="entidade-diretor" class="form-control" placeholder="Nome completo">
+              </div>
+              <div>
+                <label>Contato do Diretor</label>
+                <input type="text" id="entidade-contato-diretor" class="form-control" placeholder="(69) 90000-0000">
+              </div>
+              <div>
+                <label>Telefone da Unidade</label>
+                <input type="text" id="entidade-telefone" class="form-control" placeholder="(69) 3000-0000">
+              </div>
+              <div>
+                <label>E-mail Institucional</label>
+                <input type="email" id="entidade-email" class="form-control" placeholder="escola@educacao.ro.gov.br">
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div>
+                <label>Nome do Secretário(a)</label>
+                <input type="text" id="entidade-secretario" class="form-control" placeholder="Nome completo">
+              </div>
+              <div>
+                <label>Contato do Secretário(a)</label>
+                <input type="text" id="entidade-contato-secretario" class="form-control" placeholder="(69) 90000-0000">
+              </div>
+              <div>
+                <label>Redes Sociais (Instagram/Facebook)</label>
+                <input type="text" id="entidade-redes" class="form-control" placeholder="@escola ou link">
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 4: ENDEREÇO -->
+          <div class="form-group-section" id="sec-aba-4" style="display: none;">
+            <div class="section-header">
+              <span class="section-title"><span class="tab-num">4</span> Endereço & Localização</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 4 de 5</span>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label>Endereço (Rua / Av / Linha)</label>
+                <input type="text" id="entidade-endereco" class="form-control" placeholder="Ex: Av. Principal, nº 123">
+              </div>
+              <div>
+                <label>Bairro / Distrito / Linha</label>
+                <input type="text" id="entidade-bairro" class="form-control" placeholder="Ex: Centro / Zona Rural">
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div>
+                <label>Complemento</label>
+                <input type="text" id="entidade-complemento" class="form-control" placeholder="Próximo à igreja / praça">
+              </div>
+              <div>
+                <label>CEP</label>
+                <input type="text" id="entidade-cep" class="form-control" placeholder="76.000-000">
+              </div>
+            </div>
+          </div>
+
+          <!-- SEÇÃO 5: INFRAESTRUTURA -->
+          <div class="form-group-section" id="sec-aba-5" style="display: none;">
+            <div class="section-header">
+              <span class="section-title"><span class="tab-num">5</span> Infraestrutura & Espaços</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 5 de 5</span>
+            </div>
+
+            <div class="grid-4">
+              <div>
+                <label>Salas de Aula</label>
+                <input type="number" id="entidade-salas-aula" min="0" class="form-control" placeholder="0">
+              </div>
+              <div>
+                <label>Salas Administrativas</label>
+                <input type="number" id="entidade-salas-adm" min="0" class="form-control" placeholder="0">
+              </div>
+              <div>
+                <label>Banheiros</label>
+                <input type="text" id="entidade-banheiros" class="form-control" placeholder="Qtd / Desc">
+              </div>
+              <div>
+                <label>Sala do AEE</label>
+                <select id="entidade-sala-aee" class="form-control">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-4">
+              <div>
+                <label>Pátio</label>
+                <select id="entidade-patio" class="form-control">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+              <div>
+                <label>Auditório</label>
+                <select id="entidade-auditorio" class="form-control">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+              <div>
+                <label>Refeitório</label>
+                <select id="entidade-refeitorio" class="form-control">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+              <div>
+                <label>Quadra de Esportes</label>
+                <select id="entidade-quadra" class="form-control">
+                  <option value="">-</option>
+                  <option value="S">Sim (S)</option>
+                  <option value="N">Não (N)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTÕES DE AÇÃO -->
+          <div class="form-actions">
+            <div style="font-size: 12px; color: var(--text-muted);">
+              ⚡ Cadastros salvos são registrados e sincronizados instantaneamente com o sistema estadual.
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button type="button" onclick="limparFormulario()" class="btn-limpar">
+                Limpar Formulário
+              </button>
+              <button type="submit" id="btn-submit-salvar" class="btn-salvar">
+                💾 Salvar Entidade / Escola
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- TABELA DE ESCOLAS DO MUNICÍPIO: LARGURA TOTAL -->
+      <div class="table-card">
+        <div class="table-header-bar">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 20px;">🏫</span>
+            <div>
+              <div style="font-size: 13.5px; font-weight: 800; color: #f8fafc;">
+                RELAÇÃO DE ESCOLAS / ENTIDADES DE <span id="titulo-tabela-municipio" style="color: var(--accent);"></span>
+              </div>
+              <div style="font-size: 11.5px; color: var(--text-muted);" id="subtitulo-tabela-contagem">
+                Carregando escolas...
+              </div>
+            </div>
+          </div>
+          <div>
+            <input type="text" id="busca-escola-tabela" class="table-search-input" placeholder="🔍 Filtrar por nome, INEP, diretor..." oninput="filtrarTabelaLocal(this.value)">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style="width: 110px;">Competência</th>
+                <th>Nome da Escola / Entidade</th>
+                <th style="width: 100px;">INEP</th>
+                <th style="width: 90px; text-align: center;">Alunos</th>
+                <th style="width: 130px;">Localidade</th>
+                <th>Diretor(a)</th>
+                <th style="width: 120px;">Contato</th>
+                <th style="width: 160px; text-align: center;">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-escolas">
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                  Carregando lista de escolas...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <div id="toast-msg"></div>
+
+  <!-- SCRIPTS ESSENCIAIS -->
+  <script src="js/dados.js"></script>
+  <script src="js/escolas.js"></script>
+
+  <script>
+    /* ============================================================
+       LÓGICA STANDALONE DA PÁGINA CADASTRO.HTML
+       ============================================================ */
+
+    // 1. Maximizar janela imediatamente ao carregar
+    try {
+      window.moveTo(0, 0);
+      window.resizeTo(screen.availWidth, screen.availHeight);
+    } catch (e) {}
+
+    let _municipioAtual = '';
+    let _categoriaAtual = 'Conselho Escolar';
+    let _competenciaAtual = 'Municipal';
+    let _superAtual = '';
+    let _parceriaAtual = 'Fomento (Termo de Fomento - F)';
+    let _escolasMunicipioCache = [];
+    let _linkExpirado = false;
+
+    // Toast feedback
+    function showToast(msg, duration = 3000) {
+      const toast = document.getElementById('toast-msg');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, duration);
+    }
+
+    // Fechar Janela
+    function fecharJanelaCadastro() {
+      window.close();
+      setTimeout(() => {
+        if (confirm('Deseja retornar ao painel principal do sistema?')) {
+          window.location.href = 'index.html';
+        }
+      }, 250);
+    }
+
+    // Formatação de data
+    function formatarDataHora(ts) {
+      const d = new Date(ts);
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} às ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    // Inicialização do Prazo (Grava 1º clique e soma +8 dias)
+    function inicializarPrazo(municipio) {
+      const chaveStorage = 'seduc_prazo_cadastro_' + (municipio || 'GERAL').trim().toUpperCase();
+      let infoPrazo = null;
+      try {
+        const dados = localStorage.getItem(chaveStorage);
+        if (dados) infoPrazo = JSON.parse(dados);
+      } catch (e) {}
+
+      const agora = Date.now();
+      if (!infoPrazo || !infoPrazo.inicio) {
+        infoPrazo = {
+          inicio: agora,
+          prazo: agora + (8 * 24 * 60 * 60 * 1000) // 8 dias
+        };
+        try {
+          localStorage.setItem(chaveStorage, JSON.stringify(infoPrazo));
+        } catch (e) {}
+      }
+
+      const diffMs = infoPrazo.prazo - agora;
+      const diasRestantes = Math.ceil(diffMs / (24 * 60 * 60 * 1000));
+      _linkExpirado = diffMs <= 0;
+
+      document.getElementById('data-primeiro-clique').textContent = formatarDataHora(infoPrazo.inicio);
+      document.getElementById('data-limite').textContent = formatarDataHora(infoPrazo.prazo);
+
+      const badge = document.getElementById('badge-prazo-dias');
+      const submitBtn = document.getElementById('btn-submit-salvar');
+
+      if (_linkExpirado) {
+        badge.className = 'badge-prazo expirado';
+        badge.textContent = '⚠️ Prazo Encerrado';
+        document.getElementById('prazo-status-titulo').innerHTML = '<span style="color:#ef4444;">⚠️ Link Expirado - O prazo de 8 dias para envio encerrou-se</span>';
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.title = 'Envios bloqueados: o prazo de 8 dias deste link expirou.';
+        }
+      } else if (diasRestantes <= 2) {
+        badge.className = 'badge-prazo alerta';
+        badge.textContent = `⏳ Atenção: restam ${diasRestantes} dia(s)`;
+      } else {
+        badge.className = 'badge-prazo ativo';
+        badge.textContent = `⏳ Prazo Ativo: restam ${diasRestantes} dias`;
+      }
+    }
+
+    // Máscara CNPJ
+    function mascaraCNPJ(input) {
+      let v = input.value.replace(/\D/g, '');
+      if (v.length > 14) v = v.slice(0, 14);
+      v = v.replace(/^(\d{2})(\d)/, '$1.$2');
+      v = v.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+      v = v.replace(/\.(\d{3})(\d)/, '.$1/$2');
+      v = v.replace(/(\d{4})(\d)/, '$1-$2');
+      input.value = v;
+    }
+
+    // Alternar Abas do Formulário
+    function ativarAba(abaNum) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      const btnAlvo = document.getElementById(`tab-btn-${abaNum}`);
+      if (btnAlvo) btnAlvo.classList.add('active');
+
+      const secoes = [2, 3, 4, 5];
+      if (abaNum === 'todas') {
+        secoes.forEach(n => {
+          const sec = document.getElementById(`sec-aba-${n}`);
+          if (sec) sec.style.display = 'block';
+        });
+      } else {
+        secoes.forEach(n => {
+          const sec = document.getElementById(`sec-aba-${n}`);
+          if (sec) sec.style.display = (n === abaNum) ? 'block' : 'none';
+        });
+      }
+    }
+
+    // Carregar Escolas do Município
+    async function carregarEscolasDoMunicipio() {
+      const tbody = document.getElementById('tbody-escolas');
+      const subtitulo = document.getElementById('subtitulo-tabela-contagem');
+      if (subtitulo) subtitulo.textContent = 'Buscando escolas cadastradas...';
+
+      // Aguarda API de escolas caso ainda não esteja em memória
+      if (typeof _escolasCache === 'undefined' || !_escolasCache || _escolasCache.length === 0) {
+        if (typeof carregarEscolasAPI === 'function') {
+          try { await carregarEscolasAPI(true); } catch(e) {}
+        }
+      }
+
+      const pools = [];
+      if (typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache)) pools.push(_escolasCache);
+      try {
+        const locais = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+        if (Array.isArray(locais)) pools.push(locais);
+      } catch(e) {}
+
+      const nMun = (_municipioAtual || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const mapa = new Map();
+
+      pools.forEach(arr => {
+        arr.forEach(esc => {
+          const escMun = (esc.municipio || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          if (!nMun || escMun.includes(nMun) || nMun.includes(escMun)) {
+            const key = (esc.id || esc.nome || '') + '_' + (esc.municipio || '');
+            if (!mapa.has(key)) mapa.set(key, esc);
+          }
+        });
+      });
+
+      _escolasMunicipioCache = Array.from(mapa.values());
+      renderizarTabela(_escolasMunicipioCache);
+    }
+
+    // Renderizar Linhas da Tabela
+    function renderizarTabela(lista) {
+      const tbody = document.getElementById('tbody-escolas');
+      const subtitulo = document.getElementById('subtitulo-tabela-contagem');
+      if (!tbody) return;
+
+      if (!lista || lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhuma escola encontrada para este município. Cadastre a primeira acima!</td></tr>`;
+        if (subtitulo) subtitulo.textContent = '0 unidades cadastradas no momento';
+        return;
+      }
+
+      if (subtitulo) subtitulo.textContent = `${lista.length} unidades encontradas em ${_municipioAtual}`;
+
+      tbody.innerHTML = lista.map(esc => {
+        const id = esc.id || `esc_${Math.random()}`;
+        const comp = esc.competencia || 'Municipal';
+        const compCls = comp.toLowerCase().includes('estadual') ? 'estadual' : (comp.toLowerCase().includes('privada') ? 'privada' : 'municipal');
+        const nome = esc.nome || 'Escola sem nome';
+        const inep = esc.codigoInep || esc.inep || '-';
+        const alunos = esc.totalMatricula || esc.alunos || '-';
+        const loc = esc.localizacao || esc.localidade || 'Urbana';
+        const diretor = esc.diretor || '-';
+        const tel = esc.contatoDiretor || esc.telefone || '-';
+
+        return `
+          <tr>
+            <td><span class="badge-comp ${compCls}">${comp}</span></td>
+            <td><strong style="color:#ffffff;">${nome}</strong></td>
+            <td style="font-family:monospace; color:#38bdf8;">${inep}</td>
+            <td style="text-align:center; font-weight:700;">${alunos}</td>
+            <td>${loc}</td>
+            <td>${diretor}</td>
+            <td>${tel}</td>
+            <td style="text-align:center; white-space:nowrap;">
+              <button type="button" class="btn-acao" onclick="editarEscola('${encodeURIComponent(JSON.stringify(esc))}')" title="Editar dados">✏️ Editar</button>
+              <button type="button" class="btn-acao" onclick="duplicarEscola('${encodeURIComponent(JSON.stringify(esc))}')" title="Usar como modelo">📋 Duplicar</button>
+              <button type="button" class="btn-acao delete" onclick="excluirEscola('${id}', '${encodeURIComponent(nome)}')" title="Remover cadastro">🗑️</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Filtrar Tabela Localmente
+    function filtrarTabelaLocal(termo) {
+      const t = (termo || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (!t) {
+        renderizarTabela(_escolasMunicipioCache);
+        return;
+      }
+      const filtradas = _escolasMunicipioCache.filter(e => {
+        const campos = [e.nome, e.codigoInep, e.inep, e.diretor, e.competencia, e.localidade, e.localizacao].join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return campos.includes(t);
+      });
+      renderizarTabela(filtradas);
+    }
+
+    // Editar Escola
+    function editarEscola(jsonEncoded) {
+      try {
+        const esc = JSON.parse(decodeURIComponent(jsonEncoded));
+        document.getElementById('entidade-id').value = esc.id || '';
+        document.getElementById('entidade-nome').value = esc.nome || '';
+        document.getElementById('entidade-cnpj').value = esc.cnpj || '';
+        document.getElementById('entidade-inep').value = esc.codigoInep || esc.inep || '';
+        document.getElementById('entidade-alunos').value = esc.totalMatricula || esc.alunos || '';
+        document.getElementById('entidade-modalidade').value = esc.modalidade || '';
+        document.getElementById('entidade-localidade').value = esc.localizacao || esc.localidade || 'Urbana';
+        document.getElementById('entidade-diretor').value = esc.diretor || '';
+        document.getElementById('entidade-contato-diretor').value = esc.contatoDiretor || '';
+        document.getElementById('entidade-telefone').value = esc.telefone || '';
+        document.getElementById('entidade-email').value = esc.email || '';
+        document.getElementById('entidade-secretario').value = esc.secretario || '';
+        document.getElementById('entidade-contato-secretario').value = esc.contatoSecretario || '';
+        document.getElementById('entidade-redes').value = esc.redesSociais || esc.redes || '';
+        document.getElementById('entidade-endereco').value = esc.endereco || '';
+        document.getElementById('entidade-bairro').value = esc.bairro || '';
+        document.getElementById('entidade-complemento').value = esc.complemento || '';
+        document.getElementById('entidade-cep').value = esc.cep || '';
+        document.getElementById('entidade-salas-aula').value = esc.salasAula || esc.salas || '';
+        document.getElementById('entidade-salas-adm').value = esc.salasAdm || '';
+        document.getElementById('entidade-banheiros').value = esc.banheiros || '';
+        document.getElementById('entidade-sala-aee').value = esc.salaAEE || '';
+        document.getElementById('entidade-patio').value = esc.patio || '';
+        document.getElementById('entidade-auditorio').value = esc.auditorio || '';
+        document.getElementById('entidade-refeitorio').value = esc.refeitorio || '';
+        document.getElementById('entidade-quadra').value = esc.quadra || '';
+
+        ativarAba(2);
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+        document.getElementById('entidade-nome')?.focus();
+        showToast('Dados da escola carregados para edição!');
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // Duplicar Escola
+    function duplicarEscola(jsonEncoded) {
+      editarEscola(jsonEncoded);
+      document.getElementById('entidade-id').value = '';
+      const nomeEl = document.getElementById('entidade-nome');
+      if (nomeEl) nomeEl.value = nomeEl.value + ' (Cópia)';
+      const inepEl = document.getElementById('entidade-inep');
+      if (inepEl) inepEl.value = '';
+      showToast('Registro duplicado como novo modelo!');
+    }
+
+    // Excluir Escola
+    function excluirEscola(id, nomeEncoded) {
+      const nome = decodeURIComponent(nomeEncoded);
+      if (!confirm(`Deseja realmente excluir a escola "${nome}" do cadastro local?`)) return;
+
+      try {
+        let locais = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+        locais = locais.filter(e => e.id !== id && e.nome !== nome);
+        localStorage.setItem('seduc_entidades_cadastradas_local', JSON.stringify(locais));
+      } catch (e) {}
+
+      _escolasMunicipioCache = _escolasMunicipioCache.filter(e => e.id !== id && e.nome !== nome);
+      renderizarTabela(_escolasMunicipioCache);
+      showToast(`Escola "${nome}" excluída.`);
+    }
+
+    // Limpar Formulário
+    function limparFormulario() {
+      document.getElementById('entidade-id').value = '';
+      document.getElementById('entidade-nome').value = '';
+      document.getElementById('entidade-cnpj').value = '';
+      document.getElementById('entidade-inep').value = '';
+      document.getElementById('entidade-alunos').value = '';
+      document.getElementById('entidade-modalidade').value = '';
+      document.getElementById('entidade-diretor').value = '';
+      document.getElementById('entidade-contato-diretor').value = '';
+      document.getElementById('entidade-telefone').value = '';
+      document.getElementById('entidade-email').value = '';
+      document.getElementById('entidade-secretario').value = '';
+      document.getElementById('entidade-contato-secretario').value = '';
+      document.getElementById('entidade-redes').value = '';
+      document.getElementById('entidade-endereco').value = '';
+      document.getElementById('entidade-bairro').value = '';
+      document.getElementById('entidade-complemento').value = '';
+      document.getElementById('entidade-cep').value = '';
+      document.getElementById('entidade-salas-aula').value = '';
+      document.getElementById('entidade-salas-adm').value = '';
+      document.getElementById('entidade-banheiros').value = '';
+      document.getElementById('entidade-sala-aee').value = '';
+      document.getElementById('entidade-patio').value = '';
+      document.getElementById('entidade-auditorio').value = '';
+      document.getElementById('entidade-refeitorio').value = '';
+      document.getElementById('entidade-quadra').value = '';
+      ativarAba(2);
+      document.getElementById('entidade-nome')?.focus();
+    }
+
+    // Salvar Entidade / Escola
+    async function salvarEntidade(e) {
+      e.preventDefault();
+      if (_linkExpirado) {
+        alert('⚠️ Este link está expirado. O prazo de 8 dias para envio de cadastros já foi encerrado.');
+        return;
+      }
+
+      const getVal = id => (document.getElementById(id)?.value || '').trim();
+      const nome = getVal('entidade-nome');
+      if (!nome) {
+        alert('Informe o Nome Completo da Escola / Entidade.');
+        ativarAba(2);
+        document.getElementById('entidade-nome')?.focus();
+        return;
+      }
+
+      const id = getVal('entidade-id') || `ent_${Date.now()}`;
+      const novaEntidade = {
+        id: id,
+        categoria: _categoriaAtual,
+        nome: nome,
+        municipio: _municipioAtual,
+        alunos: getVal('entidade-alunos'),
+        modalidade: getVal('entidade-modalidade'),
+        inep: getVal('entidade-inep'),
+        cnpj: getVal('entidade-cnpj'),
+        endereco: getVal('entidade-endereco'),
+        bairro: getVal('entidade-bairro'),
+        complemento: getVal('entidade-complemento'),
+        cep: getVal('entidade-cep'),
+        competencia: _competenciaAtual,
+        super: _superAtual,
+        redesSociais: getVal('entidade-redes'),
+        telefone: getVal('entidade-telefone'),
+        email: getVal('entidade-email'),
+        diretor: getVal('entidade-diretor'),
+        contatoDiretor: getVal('entidade-contato-diretor'),
+        secretario: getVal('entidade-secretario'),
+        contatoSecretario: getVal('entidade-contato-secretario'),
+        salasAula: getVal('entidade-salas-aula'),
+        salasAdm: getVal('entidade-salas-adm'),
+        salaAEE: getVal('entidade-sala-aee'),
+        banheiros: getVal('entidade-banheiros'),
+        patio: getVal('entidade-patio'),
+        auditorio: getVal('entidade-auditorio'),
+        refeitorio: getVal('entidade-refeitorio'),
+        quadra: getVal('entidade-quadra'),
+        localidade: getVal('entidade-localidade')
+      };
+
+      // Salva localmente
+      try {
+        let locais = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+        const idx = locais.findIndex(x => x.id === id || (x.nome === nome && x.municipio === _municipioAtual));
+        if (idx >= 0) locais[idx] = novaEntidade;
+        else locais.unshift(novaEntidade);
+        localStorage.setItem('seduc_entidades_cadastradas_local', JSON.stringify(locais));
+      } catch (err) {}
+
+      // Atualiza lista em exibição
+      const idxCache = _escolasMunicipioCache.findIndex(x => x.id === id || (x.nome === nome && x.municipio === _municipioAtual));
+      if (idxCache >= 0) _escolasMunicipioCache[idxCache] = novaEntidade;
+      else _escolasMunicipioCache.unshift(novaEntidade);
+      renderizarTabela(_escolasMunicipioCache);
+
+      // Envia assíncrono para o servidor se disponível
+      try {
+        fetch('https://seduc-backend.onrender.com/api/entidades', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(novaEntidade)
+        }).catch(() => {});
+      } catch (err) {}
+
+      showToast(`🎉 "${nome}" salva com sucesso!`);
+      limparFormulario();
+    }
+
+    // Inicialização da Página
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      _municipioAtual = (params.get('mun') || "Alta Floresta D'Oeste").trim();
+      _categoriaAtual = (params.get('cat') || 'Conselho Escolar').trim();
+      _competenciaAtual = (params.get('comp') || 'Municipal').trim();
+      _superAtual = (params.get('sup') || '').trim();
+      _parceriaAtual = (params.get('parc') || 'Fomento (Termo de Fomento - F)').trim();
+
+      // Ajusta Regional com base no mapeamento se vazio
+      if (!_superAtual && typeof MUNICIPIOS_CRE_MAPEAMENTO !== 'undefined') {
+        _superAtual = MUNICIPIOS_CRE_MAPEAMENTO[_municipioAtual] || 'CRE Regional';
+      }
+
+      // Preenche cabeçalho: SOMENTE NOME DO MUNICÍPIO EM FONTE 30 PT (MARCAÇÃO AMARELA)
+      const topoMun = document.getElementById('municipio-topo');
+      if (topoMun) topoMun.textContent = _municipioAtual.toUpperCase();
+
+      document.title = `${_municipioAtual.toUpperCase()} - Cadastro de Entidades / Escolas`;
+
+      // Atualiza Badges dos parâmetros
+      document.getElementById('param-municipio').textContent = _municipioAtual;
+      document.getElementById('param-categoria').textContent = _categoriaAtual;
+      document.getElementById('param-competencia').textContent = _competenciaAtual;
+      document.getElementById('param-super').textContent = _superAtual || 'CRE Regional';
+      document.getElementById('param-parceria').textContent = _parceriaAtual.split('(')[0].trim();
+
+      // Inicializa campos fixados do formulário
+      document.getElementById('entidade-municipio').value = _municipioAtual;
+      document.getElementById('entidade-competencia').value = _competenciaAtual;
+      document.getElementById('entidade-super').value = _superAtual || 'Regional';
+      document.getElementById('entidade-categoria').value = _categoriaAtual;
+      document.getElementById('entidade-parceria').value = _parceriaAtual;
+
+      // Inicializa Prazo (1º clique + 8 dias)
+      inicializarPrazo(_municipioAtual);
+
+      // Atualiza Título da Tabela
+      document.getElementById('titulo-tabela-municipio').textContent = _municipioAtual.toUpperCase();
+
+      // Carrega Escolas do Município
+      carregarEscolasDoMunicipio();
+
+      // Foca no nome da escola para digitação imediata
+      setTimeout(() => {
+        document.getElementById('entidade-nome')?.focus();
+      }, 300);
+    });
+  </script>
+</body>
+</html>

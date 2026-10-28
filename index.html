@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.63</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.64</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.63</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.64</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -2914,7 +2914,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.63</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.64</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3596,7 +3596,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.63
+              GBZ - v1.3.64
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3869,7 +3869,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.63] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.64] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -4010,7 +4010,7 @@
               Recarregar
             </button>
             <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
-              target="_blank" rel="noopener" class="action-editor action-adm"
+              target="_blank" rel="noopener" class="action-adm" id="btn-acessar-planilha-escolas"
               style="background:linear-gradient(135deg,#10b981,#059669);border:none;color:white;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;box-shadow:0 4px 14px rgba(16,185,129,0.35);">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
               Acessar Planilha
@@ -4115,38 +4115,13 @@
             </div>
 
           </div>
-          <!-- Linha 3: limpar e caminho da planilha (textbox branca) -->
-          <div style="display:flex; width:100%; margin-top:5px; gap:12px; align-items:stretch; flex-wrap:wrap;">
+          <!-- Linha 3: limpar parâmetros -->
+          <div style="display:flex; width:100%; margin-top:5px; gap:12px; align-items:center;">
             <button onclick="limparFiltrosEscolas()" 
                     onmouseover="this.style.background='#d97706'" 
                     onmouseout="this.style.background='#f59e0b'"
-                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:260px; min-height:42px; padding:8px 16px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s; flex-shrink:0;">
+                    style="display:flex; align-items:center; justify-content:center; gap:8px; width:260px; min-height:40px; padding:8px 16px; border-radius:8px; background:#f59e0b; border:none; color:white; font-weight:800; font-size:13px; cursor:pointer; text-transform:uppercase; letter-spacing: 0.5px; transition: background 0.2s; flex-shrink:0;">
               <span style="font-size:16px;">&times;</span>Limpar parâmetros</button>
-
-            <!-- TEXTBOX BRANCA: CAMINHO DA PLANILHA FONTE -->
-            <div style="flex:1; min-width:320px; display:flex; align-items:center; background:#ffffff; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 0 14px rgba(56,189,248,0.35); padding:3px 8px 3px 12px; gap:8px;">
-              <span style="font-size:13px; font-weight:900; color:#0f172a; white-space:nowrap; display:flex; align-items:center; gap:6px;">
-                <span style="color:#0284c7;">📁</span> <span>CAMINHO DA PLANILHA:</span>
-              </span>
-              <input type="text" id="escolas-caminho-planilha-input" readonly
-                value="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
-                title="Caminho oficial da planilha Google Sheets em carregamento"
-                onclick="this.select()"
-                style="flex:1; height:34px; background:#ffffff; color:#0f172a; border:none; font-family:'Consolas','Courier New',monospace; font-size:12.5px; font-weight:700; outline:none; text-overflow:ellipsis; cursor:text;">
-              <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0"
-                target="_blank" rel="noopener noreferrer"
-                title="Abrir Planilha Fonte Oficial no Google Drive"
-                style="background:#0284c7; color:#ffffff; font-size:11.5px; font-weight:800; padding:6px 12px; border-radius:6px; text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; transition:background 0.2s;"
-                onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">
-                <span>Abrir</span> ↗
-              </a>
-              <button type="button" onclick="navigator.clipboard.writeText('https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit?gid=0#gid=0'); if(typeof toast==='function'){toast('Caminho da planilha copiado!','success');}else{alert('Caminho copiado!');}"
-                title="Copiar URL da Planilha"
-                style="background:#f1f5f9; border:1px solid #cbd5e1; color:#0f172a; font-size:11.5px; font-weight:700; padding:6px 10px; border-radius:6px; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"
-                onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
-                📋 Copiar
-              </button>
-            </div>
           </div>
         </div>
 
