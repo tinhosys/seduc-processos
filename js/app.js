@@ -3215,6 +3215,100 @@ function sugerirDadosEscolaPopup() {
 }
 window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
 
+// Sincroniza Tipo de Entidade -> Categoria (Fomento x Convênio) - Imagem 1
+function aoMudarTipoEntidadeNovoProcesso(tipo) {
+  const catSel = document.getElementById('popup-novo-categoria');
+  const tipoVal = (tipo || '').trim();
+  if (tipoVal === 'Conselho' || tipoVal === 'APAE' || tipoVal === 'EFA') {
+    if (catSel) catSel.value = 'F';
+  } else if (tipoVal === 'Prefeitura') {
+    if (catSel) catSel.value = 'C';
+  }
+  if (typeof atualizarEntidadesMunicipioPopup === 'function') {
+    atualizarEntidadesMunicipioPopup();
+  }
+  if (typeof verificarDemandaRegistradaPopup === 'function') {
+    verificarDemandaRegistradaPopup();
+  }
+}
+window.aoMudarTipoEntidadeNovoProcesso = aoMudarTipoEntidadeNovoProcesso;
+
+// Sincroniza Categoria manual -> Tipo de Entidade - Imagem 2
+function aoMudarCategoriaManualProcesso() {
+  const catSel = document.getElementById('popup-novo-categoria');
+  const tipoSel = document.getElementById('popup-novo-tipo-entidade');
+  if (!catSel || !tipoSel) return;
+  const cat = (catSel.value || '').trim().toUpperCase();
+  if (cat === 'F') {
+    if (!tipoSel.value || tipoSel.value === 'Prefeitura') {
+      tipoSel.value = 'Conselho';
+    }
+  } else if (cat === 'C' || cat === 'T') {
+    if (tipoSel.value !== 'Prefeitura') {
+      tipoSel.value = 'Prefeitura';
+    }
+  } else if (!cat) {
+    tipoSel.value = '';
+  }
+  if (typeof atualizarEntidadesMunicipioPopup === 'function') {
+    atualizarEntidadesMunicipioPopup();
+  }
+  if (typeof verificarDemandaRegistradaPopup === 'function') {
+    verificarDemandaRegistradaPopup();
+  }
+}
+window.aoMudarCategoriaManualProcesso = aoMudarCategoriaManualProcesso;
+
+// Acessa SEI/RO e copia o número do processo (Imagem 3 - Marcação Vermelha)
+function acessarSEIPopup(btn) {
+  const row = btn ? btn.closest('div') : null;
+  const inputNum = row ? row.querySelector('.form-numero-item') : document.querySelector('.form-numero-item');
+  const numProc = inputNum ? inputNum.value.trim() : '';
+  if (numProc) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(numProc).catch(() => {});
+    }
+    if (typeof toast === 'function') toast(`Processo copiado (${numProc})! Acessando SEI/RO...`, 'success');
+  } else {
+    if (typeof toast === 'function') toast('Acessando sistema SEI/RO...', 'info');
+  }
+  window.open('https://sei.ro.gov.br/sei/modulos/pesquisa/md_pesq_processo_pesquisar.php?acao_externa=protocolo_pesquisar&acao_origem_externa=protocolo_pesquisar&id_orgao_acesso_externo=0', '_blank');
+}
+window.acessarSEIPopup = acessarSEIPopup;
+
+// Copia CNPJ para área de transferência com feedback visual imediato (Imagem 3 - Marcação Amarela)
+function copiarCNPJPopup(btn) {
+  const cnpjInput = document.getElementById('popup-novo-cnpj');
+  let val = cnpjInput ? cnpjInput.value.trim() : '';
+  if (!val || val === '00.000.000/0000-00') {
+    const intInput = document.getElementById('popup-novo-interessado');
+    const nomeInt = intInput ? intInput.value.trim() : '';
+    if (nomeInt && window._popupEntidadesCacheMap && window._popupEntidadesCacheMap.has(nomeInt)) {
+      val = window._popupEntidadesCacheMap.get(nomeInt)?.cnpj || '';
+      if (val && cnpjInput) cnpjInput.value = val;
+    }
+  }
+  if (!val || val === '00.000.000/0000-00') {
+    if (typeof toast === 'function') toast('Nenhum CNPJ informado para copiar.', 'warning');
+    else alert('Nenhum CNPJ informado.');
+    return;
+  }
+  const original = btn ? btn.innerHTML : '';
+  const feedback = () => {
+    if (btn) {
+      btn.innerHTML = '<span style="font-size:11px;font-weight:900;color:#10b981;">✓ Copiado</span>';
+      setTimeout(() => { btn.innerHTML = original; }, 1600);
+    }
+    if (typeof toast === 'function') toast('CNPJ copiado: ' + val, 'success');
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(feedback).catch(feedback);
+  } else {
+    feedback();
+  }
+}
+window.copiarCNPJPopup = copiarCNPJPopup;
+
 // Atualiza o combo de Interessado / Escola no popup filtrando ESTRITAMENTE pelo município escolhido e categoria definida
 function atualizarEntidadesMunicipioPopup() {
   const munInput = document.getElementById('popup-novo-municipio');
@@ -3695,6 +3789,14 @@ function adicionarCampoNumeroPopup(val = '') {
   div.innerHTML = `
     <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0 12px; height:40px; border-radius:6px; font-weight:800; font-size:16px; flex-shrink:0; background:#dc2626; color:#fff; border:none; cursor:pointer;" title="Remover processo">-</button>
     <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" value="${val}" oninput="verificarProcessoExistentePopup(this)" onblur="verificarProcessoExistentePopup(this)">
+    <button type="button" class="btn btn-ghost" onclick="copiarCNPJPopup(this)" style="padding:0 10px; height:40px; border:1px solid rgba(245,158,11,0.7); border-radius:6px; background:rgba(245,158,11,0.15); color:#fbbf24; font-size:11.5px; font-weight:800; cursor:pointer; flex-shrink:0; display:inline-flex; align-items:center; gap:5px; box-shadow:0 0 10px rgba(245,158,11,0.25); white-space:nowrap;" title="Copiar CNPJ da Entidade">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      <span>Copia CNPJ</span>
+    </button>
+    <button type="button" class="btn btn-ghost" onclick="acessarSEIPopup(this)" style="padding:0 10px; height:40px; border:1px solid rgba(239,68,68,0.7); border-radius:6px; background:rgba(239,68,68,0.15); color:#f87171; font-size:11.5px; font-weight:800; cursor:pointer; flex-shrink:0; display:inline-flex; align-items:center; gap:5px; box-shadow:0 0 10px rgba(239,68,68,0.25); white-space:nowrap;" title="Acessar SEI (Copia número do processo e abre o SEI/RO)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      <span>Acessa SEI</span>
+    </button>
   `;
   container.appendChild(div);
 }
@@ -7860,7 +7962,15 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
 
   const setVal = (id, val) => {
     const el = document.getElementById(id);
-    if (el) el.value = (val !== null && val !== undefined) ? String(val) : '';
+    if (!el) return;
+    const sVal = (val !== null && val !== undefined) ? String(val) : '';
+    if (el.tagName === 'SELECT' && sVal && !Array.from(el.options).some(o => o.value === sVal)) {
+      const opt = document.createElement('option');
+      opt.value = sVal;
+      opt.textContent = sVal;
+      el.appendChild(opt);
+    }
+    el.value = sVal;
   };
 
   const tituloEl = document.getElementById('entidade-modal-titulo');
@@ -8250,26 +8360,207 @@ window.exportarCadastrosLocaisCSV = exportarCadastrosLocaisCSV;
 
 // ============================================================
 // GERADOR DE LINK PRÉ-DEFINIDO & CADASTRO EXTERNO SEM SENHA
-// (IMAGEM 2, IMAGEM 3 & IMAGEM 1)
+// (IMAGEM 2, IMAGEM 3 & IMAGEM 5)
 // ============================================================
+
+// Base de dados e estado dos 5 Combos do Gerador de Link (Imagem 5)
+window._linkGenData = {
+  municipio: {
+    selected: 'Alta Floresta D\'Oeste',
+    todosLabel: 'TODOS OS MUNICÍPIOS',
+    options: [
+      "Alta Floresta D'Oeste", "Alto Alegre dos Parecis", "Alto Paraíso", "Alvorada D'Oeste", "Ariquemes", "Buritis", "Cabixi", "Cacaulândia", "Cacoal", "Campo Novo de Rondônia", "Candeias do Jamari", "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste", "Corumbiara", "Costa Marques", "Cujubim", "Espigão D'Oeste", "Governador Jorge Teixeira", "Guajará-Mirim", "Itapuã do Oeste", "Jaru", "Ji-Paraná", "Machadinho D'Oeste", "Ministro Andreazza", "Mirante da Serra", "Monte Negro", "Nova Brasilândia D'Oeste", "Nova Mamoré", "Nova União", "Novo Horizonte do Oeste", "Ouro Preto do Oeste", "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente Médici", "Primavera de Rondônia", "Rio Crespo", "Rolim de Moura", "Santa Luzia D'Oeste", "São Felipe D'Oeste", "São Francisco do Guaporé", "São Miguel do Guaporé", "Seringueiras", "Teixeirópolis", "Theobroma", "Urupá", "Vale do Anari", "Vale do Paraíso", "Vilhena"
+    ]
+  },
+  categoria: {
+    selected: 'Conselho Escolar',
+    todosLabel: 'TODAS AS CATEGORIAS',
+    options: [
+      { value: 'Conselho Escolar', label: 'Conselho Escolar (Executa Fomento - F)' },
+      { value: 'Prefeitura Municipal', label: 'Prefeitura Municipal (Executa Convênio - C)' },
+      { value: 'APAE', label: 'APAE (Executa Fomento - F)' },
+      { value: 'EFA', label: 'EFA - Família Agrícola (Executa Fomento - F)' }
+    ]
+  },
+  competencia: {
+    selected: 'Municipal',
+    todosLabel: 'TODAS AS COMPETÊNCIAS',
+    options: ['Municipal', 'Estadual', 'Privada/Filantrópica', 'Federal']
+  },
+  super: {
+    selected: 'CRE - Alta Floresta D\'Oeste',
+    todosLabel: 'TODAS AS REGIONAIS (CRES)',
+    options: [
+      'CRE - Porto Velho', 'CRE - Ji-Paraná', 'CRE - Ariquemes', 'CRE - Cacoal',
+      'CRE - Vilhena', 'CRE - Jaru', 'CRE - Rolim de Moura', 'CRE - Guajará-Mirim',
+      'CRE - Ouro Preto do Oeste', 'CRE - Pimenta Bueno', 'CRE - Buritis',
+      'CRE - Machadinho D\'Oeste', 'CRE - Espigão D\'Oeste', 'CRE - Alta Floresta D\'Oeste',
+      'CRE - Cerejeiras', 'CRE - São Francisco do Guaporé'
+    ]
+  },
+  parceria: {
+    selected: 'Fomento (Termo de Fomento - F)',
+    todosLabel: 'TODOS OS TIPOS DE PARCERIA',
+    options: [
+      'Fomento (Termo de Fomento - F)',
+      'Convênio (Termo de Convênio - C)',
+      'Termo de Cooperação (T)',
+      'Acordo de Cooperação'
+    ]
+  }
+};
+
+window.initLinkGenCombos = function() {
+  if (typeof LISTA_52_MUNICIPIOS_RO !== 'undefined' && Array.isArray(LISTA_52_MUNICIPIOS_RO) && LISTA_52_MUNICIPIOS_RO.length > 0) {
+    window._linkGenData.municipio.options = LISTA_52_MUNICIPIOS_RO;
+  }
+  const campos = ['municipio', 'categoria', 'competencia', 'super', 'parceria'];
+  campos.forEach(c => renderizarLinkGenCombo(c));
+};
+
+window.renderizarLinkGenCombo = function(campo, filtroTexto = '') {
+  const listEl = document.getElementById(`list-link-gen-${campo}`);
+  const labelEl = document.getElementById(`label-link-gen-${campo}`);
+  const hiddenInput = document.getElementById(`link-gen-${campo}`);
+  if (!listEl) return;
+
+  const data = window._linkGenData[campo];
+  if (!data) return;
+
+  const sel = data.selected || 'Todos';
+  if (labelEl) {
+    if (sel === 'Todos' || sel === 'TODOS') {
+      labelEl.textContent = data.todosLabel || 'TODOS';
+    } else {
+      const matchOpt = data.options.find(o => (typeof o === 'string' ? o : o.value) === sel);
+      labelEl.textContent = matchOpt ? (typeof matchOpt === 'string' ? matchOpt : matchOpt.label) : sel;
+    }
+  }
+  if (hiddenInput) {
+    hiddenInput.value = sel;
+  }
+
+  let html = '';
+  // 1. OPÇÃO 'TODOS' NA MARCAÇÃO AMARELA NO TOPO (Imagem 5)
+  const isTodosChecked = (sel === 'Todos' || sel === 'TODOS');
+  html += `
+    <div class="link-gen-item" onclick="selecionarLinkGenItem('${campo}', 'Todos')"
+      style="display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:800; color:#fff; border-bottom:2px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.18); transition:background 0.15s;"
+      onmouseover="this.style.background='rgba(245,158,11,0.32)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'">
+      <!-- MARCAÇÃO VERMELHA: CHECK PARA SELEÇÃO -->
+      <span class="link-gen-check" style="width:18px; height:18px; border:2px solid ${isTodosChecked ? '#10b981' : '#fbbf24'}; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; background:${isTodosChecked ? '#10b981' : 'rgba(0,0,0,0.4)'}; transition:all 0.15s;">
+        ${isTodosChecked ? '<span style="color:#fff; font-size:12px; font-weight:900; line-height:1;">✓</span>' : ''}
+      </span>
+      <span style="color:#fbbf24; font-weight:900; letter-spacing:0.5px;">${data.todosLabel || 'TODOS'}</span>
+    </div>
+  `;
+
+  // 2. DEMAIS OPÇÕES COM CHECK NA MARCAÇÃO VERMELHA (Imagem 5)
+  const normFiltro = (filtroTexto || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  data.options.forEach(opt => {
+    const val = typeof opt === 'string' ? opt : opt.value;
+    const lbl = typeof opt === 'string' ? opt : opt.label;
+    const normLbl = lbl.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (normFiltro && !normLbl.includes(normFiltro)) return;
+
+    const isChecked = (sel === val);
+    html += `
+      <div class="link-gen-item" onclick="selecionarLinkGenItem('${campo}', '${val.replace(/'/g, "\\'")}')"
+        style="display:flex; align-items:center; gap:10px; padding:9px 14px; cursor:pointer; font-size:13px; font-weight:700; color:#f8fafc; border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s; background:${isChecked ? 'rgba(37,99,235,0.35)' : 'transparent'};"
+        onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='${isChecked ? 'rgba(37,99,235,0.35)' : 'transparent'}'">
+        <!-- MARCAÇÃO VERMELHA: CHECK PARA SELEÇÃO -->
+        <span class="link-gen-check" style="width:18px; height:18px; border:2px solid ${isChecked ? '#10b981' : 'rgba(255,255,255,0.35)'}; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; background:${isChecked ? '#10b981' : 'rgba(0,0,0,0.4)'}; transition:all 0.15s;">
+          ${isChecked ? '<span style="color:#fff; font-size:12px; font-weight:900; line-height:1;">✓</span>' : ''}
+        </span>
+        <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${lbl}</span>
+      </div>
+    `;
+  });
+
+  listEl.innerHTML = html;
+};
+
+window.selecionarLinkGenItem = function(campo, valor) {
+  if (!window._linkGenData || !window._linkGenData[campo]) return;
+  window._linkGenData[campo].selected = valor;
+  const hiddenInput = document.getElementById(`link-gen-${campo}`);
+  if (hiddenInput) {
+    hiddenInput.value = valor;
+    hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  // Se for município e não for 'Todos', atualiza a Super vinculada
+  if (campo === 'municipio') {
+    if (valor !== 'Todos' && typeof getSuperPorMunicipio === 'function') {
+      const supCalc = getSuperPorMunicipio(valor);
+      if (supCalc) {
+        const cleanSup = supCalc.replace(/^SUPER\s+/i, '').trim().toUpperCase();
+        const found = window._linkGenData.super.options.find(opt => {
+          const s = opt.replace(/^CRE\s*-\s*/i, '').trim().toUpperCase();
+          return s === cleanSup || s.includes(cleanSup) || cleanSup.includes(s);
+        });
+        if (found) {
+          window._linkGenData.super.selected = found;
+          renderizarLinkGenCombo('super');
+        }
+      }
+    } else if (valor === 'Todos') {
+      window._linkGenData.super.selected = 'Todos';
+      renderizarLinkGenCombo('super');
+    }
+  }
+
+  renderizarLinkGenCombo(campo);
+  fecharLinkGenDropdowns();
+  gerarLinkCadastroComParametros();
+};
+
+window.toggleLinkGenDropdown = function(campo) {
+  const drop = document.getElementById(`drop-link-gen-${campo}`);
+  if (!drop) return;
+  const isAberto = drop.style.display !== 'none';
+  fecharLinkGenDropdowns();
+  if (!isAberto) {
+    drop.style.display = 'block';
+    renderizarLinkGenCombo(campo);
+    const searchInput = drop.querySelector('input[type="text"]');
+    if (searchInput) {
+      searchInput.value = '';
+      setTimeout(() => searchInput.focus(), 50);
+    }
+  }
+};
+
+window.filtrarLinkGenOpcoes = function(campo, texto) {
+  renderizarLinkGenCombo(campo, texto);
+};
+
+window.fecharLinkGenDropdowns = function() {
+  document.querySelectorAll('.link-gen-combo-dropdown').forEach(d => {
+    d.style.display = 'none';
+  });
+};
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.link-gen-combo-wrap')) {
+    window.fecharLinkGenDropdowns();
+  }
+});
+
 function abrirModalGeradorLink() {
-  popularMunicipiosGeradorLink();
-  atualizarSuperGeradorLink();
-  const selSup = document.getElementById('link-gen-super');
-  if (selSup) {
-    selSup.disabled = false;
-    selSup.removeAttribute('readonly');
-    selSup.style.pointerEvents = 'auto';
-    selSup.style.cursor = 'pointer';
+  if (typeof initLinkGenCombos === 'function') {
+    initLinkGenCombos();
   }
   const modal = document.getElementById('modal-gerador-link-cadastro');
   if (modal) modal.style.display = 'flex';
+  gerarLinkCadastroComParametros();
 }
 window.abrirModalGeradorLink = abrirModalGeradorLink;
 
 function fecharModalGeradorLink() {
   const modal = document.getElementById('modal-gerador-link-cadastro');
   if (modal) modal.style.display = 'none';
+  fecharLinkGenDropdowns();
 }
 window.fecharModalGeradorLink = fecharModalGeradorLink;
 
@@ -8300,42 +8591,29 @@ window.aplicarTemaSalvo = aplicarTemaSalvo;
 
 function atualizarSuperGeradorLink() {
   const selMun = document.getElementById('link-gen-municipio');
-  const selSup = document.getElementById('link-gen-super');
-  if (!selMun || !selSup) return;
-  const mun = (selMun.value || '').trim();
-  const superCalc = getSuperPorMunicipio(mun);
-  
-  // Normalizar para casar com as opções 'CRE - Nome'
-  let targetVal = '';
-  const cleanSup = superCalc.replace(/^SUPER\s+/i, '').trim().toUpperCase();
-  for (let i = 0; i < selSup.options.length; i++) {
-    const optVal = selSup.options[i].value.replace(/^CRE\s*-\s*/i, '').trim().toUpperCase();
-    if (optVal === cleanSup || optVal.includes(cleanSup) || cleanSup.includes(optVal)) {
-      targetVal = selSup.options[i].value;
-      break;
+  const mun = (selMun ? selMun.value : '').trim();
+  if (mun && mun !== 'Todos' && typeof getSuperPorMunicipio === 'function') {
+    const superCalc = getSuperPorMunicipio(mun);
+    const cleanSup = superCalc.replace(/^SUPER\s+/i, '').trim().toUpperCase();
+    if (window._linkGenData && window._linkGenData.super) {
+      const found = window._linkGenData.super.options.find(opt => {
+        const s = opt.replace(/^CRE\s*-\s*/i, '').trim().toUpperCase();
+        return s === cleanSup || s.includes(cleanSup) || cleanSup.includes(s);
+      });
+      if (found) {
+        window._linkGenData.super.selected = found;
+        renderizarLinkGenCombo('super');
+      }
     }
   }
-  if (targetVal) {
-    selSup.value = targetVal;
-  }
-  // Garantir explicitamente que esteja ativado (enable: true)
-  selSup.disabled = false;
-  selSup.removeAttribute('readonly');
-  selSup.style.pointerEvents = 'auto';
-  selSup.style.cursor = 'pointer';
-
-  // Sincroniza e gera o link automaticamente para o município selecionado
   gerarLinkCadastroComParametros();
 }
 window.atualizarSuperGeradorLink = atualizarSuperGeradorLink;
 
 function popularMunicipiosGeradorLink() {
-  const sel = document.getElementById('link-gen-municipio');
-  if (!sel) return;
-  if (sel.children.length <= 1) {
-    sel.innerHTML = LISTA_52_MUNICIPIOS_RO.map(m => `<option value="${m}">${m}</option>`).join('');
+  if (typeof initLinkGenCombos === 'function') {
+    initLinkGenCombos();
   }
-  atualizarSuperGeradorLink();
 }
 window.popularMunicipiosGeradorLink = popularMunicipiosGeradorLink;
 

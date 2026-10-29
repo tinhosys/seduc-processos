@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.61">
+  <link rel="stylesheet" href="css/style.css?v=1.3.65">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.64</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.65</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.64</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.65</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1885,6 +1885,16 @@
                     <div style="display:flex; gap:6px; align-items:center;">
                       <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumeroPopup()" style="padding:0 12px; height:40px; border:1px solid rgba(16,185,129,0.5); border-radius:6px; font-weight:800; font-size:18px; color:#34d399; background:rgba(16,185,129,0.1); cursor:pointer; flex-shrink:0;" title="Adicionar outro processo">+</button>
                       <input type="text" name="popup_numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="flex:1; height:40px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" oninput="verificarProcessoExistentePopup(this)" onblur="verificarProcessoExistentePopup(this)">
+                      <!-- MARCAÇÃO AMARELA: COPIA CNPJ (IMAGEM 3) -->
+                      <button type="button" class="btn btn-ghost" onclick="copiarCNPJPopup(this)" style="padding:0 10px; height:40px; border:1px solid rgba(245,158,11,0.7); border-radius:6px; background:rgba(245,158,11,0.15); color:#fbbf24; font-size:11.5px; font-weight:800; cursor:pointer; flex-shrink:0; display:inline-flex; align-items:center; gap:5px; box-shadow:0 0 10px rgba(245,158,11,0.25); white-space:nowrap;" title="Copiar CNPJ da Entidade">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <span>Copia CNPJ</span>
+                      </button>
+                      <!-- MARCAÇÃO VERMELHA: ACESSA SEI (IMAGEM 3) -->
+                      <button type="button" class="btn btn-ghost" onclick="acessarSEIPopup(this)" style="padding:0 10px; height:40px; border:1px solid rgba(239,68,68,0.7); border-radius:6px; background:rgba(239,68,68,0.15); color:#f87171; font-size:11.5px; font-weight:800; cursor:pointer; flex-shrink:0; display:inline-flex; align-items:center; gap:5px; box-shadow:0 0 10px rgba(239,68,68,0.25); white-space:nowrap;" title="Acessar SEI (Copia número do processo e abre o SEI/RO)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        <span>Acessa SEI</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1952,14 +1962,14 @@
                   </button>
                 </div>
 
-                <!-- CONTAINER DINÂMICO DA RECEITA FEDERAL DO POPUP (EXPANSÍVEL) -->
-                <div id="popup-novo-container-receita" style="width:100%; display:none; flex-direction:column; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.45); border-radius:8px; padding:10px 14px; box-shadow:0 2px 10px rgba(0,0,0,0.35); box-sizing:border-box;">
+                <!-- CONTAINER DINÂMICO DA RECEITA FEDERAL DO POPUP (EXPANSÍVEL) - MARCAÇÃO VERDE IMAGEM 3 -->
+                <div id="popup-novo-container-receita" style="width:100%; display:flex; flex-direction:column; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.55); border-radius:8px; padding:10px 14px; box-shadow:0 2px 12px rgba(0,0,0,0.4); box-sizing:border-box;">
                   <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;" onclick="togglePainelReceitaPopup()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
                     <div style="display:flex; align-items:center; gap:10px;">
                       <img src="img/logo-receita-federal.png" alt="Receita Federal" style="height:24px; width:auto; border-radius:4px; background:#ffffff; padding:2px 4px; flex-shrink:0; object-fit:contain;">
                       <div style="display:flex; flex-direction:column;">
                         <span style="font-size:12px; font-weight:800; color:#38bdf8; letter-spacing:0.3px; text-transform:uppercase;">DADOS DA RECEITA FEDERAL</span>
-                        <span id="popup-novo-subtitulo-receita" style="font-size:11px; color:#94a3b8; font-weight:500;">Clique para expandir / recolher detalhes</span>
+                        <span id="popup-novo-subtitulo-receita" style="font-size:11px; color:#94a3b8; font-weight:500;">Situação Cadastral e Dados Oficiais</span>
                       </div>
                     </div>
                     <button type="button" onclick="event.stopPropagation(); togglePainelReceitaPopup();" style="background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.45); border-radius:6px; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;">
@@ -1967,7 +1977,11 @@
                     </button>
                   </div>
                   <div id="popup-novo-corpo-receita" style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(148,163,184,0.18); display:block;">
-                    <div id="popup-novo-label-receita" style="font-size:12px; color:#cbd5e1; line-height:1.55; user-select:text;"></div>
+                    <div id="popup-novo-label-receita" style="font-size:12px; color:#cbd5e1; line-height:1.55; user-select:text;">
+                      <div style="color:#94a3b8; font-style:italic; display:flex; align-items:center; gap:6px;">
+                        <span>⚡</span> <span>Digite ou cole o CNPJ acima para consultar instantaneamente a situação cadastral na Receita Federal.</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2914,7 +2928,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.64</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.65</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3596,7 +3610,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.64
+              GBZ - v1.3.65
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3869,7 +3883,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.64] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.65] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5153,8 +5167,21 @@
                 <input type="number" id="entidade-alunos" min="0" placeholder="0" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Modalidade</label>
-                <input type="text" id="entidade-modalidade" placeholder="Ex: Ensino Fundamental" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
+                <label for="entidade-modalidade" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Modalidade</label>
+                <select id="entidade-modalidade" style="width:100%; height:40px; padding:6px 12px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none; cursor:pointer;">
+                  <option value="">Selecione a Modalidade...</option>
+                  <option value="Ensino Fundamental">Ensino Fundamental</option>
+                  <option value="Ensino Médio">Ensino Médio</option>
+                  <option value="Educação Infantil">Educação Infantil</option>
+                  <option value="Creche">Creche</option>
+                  <option value="EJA (Fund.)">EJA (Fund.)</option>
+                  <option value="EJA (Médio)">EJA (Médio)</option>
+                  <option value="Educação Especial / AEE">Educação Especial / AEE</option>
+                  <option value="Educação Profissional">Educação Profissional</option>
+                  <option value="Educação do Campo">Educação do Campo</option>
+                  <option value="Educação Indígena">Educação Indígena</option>
+                  <option value="Outra / Geral">Outra / Geral</option>
+                </select>
               </div>
             </div>
 
@@ -5467,73 +5494,77 @@
       <!-- Corpo do Gerador de Link (Campos idênticos à Imagem 3) -->
       <div style="padding:20px; display:flex; flex-direction:column; gap:14px;">
         
-        <!-- Campo 1: Município -->
-        <div>
+        <!-- Campo 1: Município (Imagem 5) -->
+        <div class="link-gen-combo-wrap" id="wrap-link-gen-municipio" style="position:relative;">
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Municipio</label>
-          <select id="link-gen-municipio" onchange="if(typeof atualizarSuperGeradorLink==='function')atualizarSuperGeradorLink();"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
-            <!-- Preenchido via JS com os 52 Municípios -->
-          </select>
+          <input type="hidden" id="link-gen-municipio" value="Alta Floresta D'Oeste" onchange="if(typeof atualizarSuperGeradorLink==='function')atualizarSuperGeradorLink();">
+          <button type="button" class="link-gen-combo-btn" id="btn-link-gen-municipio" onclick="toggleLinkGenDropdown('municipio')"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
+            <span class="link-gen-combo-label" id="label-link-gen-municipio">Alta Floresta D'Oeste</span>
+            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+          </button>
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-municipio" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+            <div style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.1); background:#1e293b;">
+              <input type="text" placeholder="🔍 Buscar município..." oninput="filtrarLinkGenOpcoes('municipio', this.value)" style="width:100%; height:32px; padding:4px 8px; background:#0f172a; border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; outline:none; box-sizing:border-box;">
+            </div>
+            <div class="link-gen-combo-list" id="list-link-gen-municipio" style="max-height:210px; overflow-y:auto;"></div>
+          </div>
         </div>
 
-        <!-- Campo 2: Categoria da Entidade e Vinculação Jurídica -->
-        <div>
+        <!-- Campo 2: Categoria da Entidade e Vinculação Jurídica (Imagem 5) -->
+        <div class="link-gen-combo-wrap" id="wrap-link-gen-categoria" style="position:relative;">
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Categoria da Entidade e Vinculação Jurídica</label>
-          <select id="link-gen-categoria" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
-            <option value="Conselho Escolar">Conselho Escolar (Executa Fomento - F)</option>
-            <option value="Prefeitura Municipal">Prefeitura Municipal (Executa Convênio - C)</option>
-            <option value="APAE">APAE (Executa Fomento - F)</option>
-            <option value="EFA">EFA - Família Agrícola (Executa Fomento - F)</option>
-          </select>
+          <input type="hidden" id="link-gen-categoria" value="Conselho Escolar" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
+          <button type="button" class="link-gen-combo-btn" id="btn-link-gen-categoria" onclick="toggleLinkGenDropdown('categoria')"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
+            <span class="link-gen-combo-label" id="label-link-gen-categoria">Conselho Escolar (Executa Fomento - F)</span>
+            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+          </button>
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-categoria" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+            <div class="link-gen-combo-list" id="list-link-gen-categoria" style="max-height:210px; overflow-y:auto;"></div>
+          </div>
         </div>
 
-        <!-- Campo 3: Competencia -->
-        <div>
+        <!-- Campo 3: Competencia (Imagem 5) -->
+        <div class="link-gen-combo-wrap" id="wrap-link-gen-competencia" style="position:relative;">
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Competencia</label>
-          <select id="link-gen-competencia" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
-            <option value="Municipal">Municipal</option>
-            <option value="Estadual">Estadual</option>
-            <option value="Privada/Filantrópica">Privada/Filantrópica</option>
-            <option value="Federal">Federal</option>
-          </select>
+          <input type="hidden" id="link-gen-competencia" value="Municipal" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
+          <button type="button" class="link-gen-combo-btn" id="btn-link-gen-competencia" onclick="toggleLinkGenDropdown('competencia')"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
+            <span class="link-gen-combo-label" id="label-link-gen-competencia">Municipal</span>
+            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+          </button>
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-competencia" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+            <div class="link-gen-combo-list" id="list-link-gen-competencia" style="max-height:210px; overflow-y:auto;"></div>
+          </div>
         </div>
 
-        <!-- Campo 4: Super (Ativado e editável / enable: true) -->
-        <div>
+        <!-- Campo 4: Super (Imagem 5) -->
+        <div class="link-gen-combo-wrap" id="wrap-link-gen-super" style="position:relative;">
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Super</label>
-          <select id="link-gen-super" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;" title="Selecione ou altere a Regional / CRE vinculada">
-            <option value="CRE - Porto Velho">CRE - Porto Velho</option>
-            <option value="CRE - Ji-Paraná">CRE - Ji-Paraná</option>
-            <option value="CRE - Ariquemes">CRE - Ariquemes</option>
-            <option value="CRE - Cacoal">CRE - Cacoal</option>
-            <option value="CRE - Vilhena">CRE - Vilhena</option>
-            <option value="CRE - Jaru">CRE - Jaru</option>
-            <option value="CRE - Rolim de Moura">CRE - Rolim de Moura</option>
-            <option value="CRE - Guajará-Mirim">CRE - Guajará-Mirim</option>
-            <option value="CRE - Ouro Preto do Oeste">CRE - Ouro Preto do Oeste</option>
-            <option value="CRE - Pimenta Bueno">CRE - Pimenta Bueno</option>
-            <option value="CRE - Buritis">CRE - Buritis</option>
-            <option value="CRE - Machadinho D'Oeste">CRE - Machadinho D'Oeste</option>
-            <option value="CRE - Espigão D'Oeste">CRE - Espigão D'Oeste</option>
-            <option value="CRE - Alta Floresta D'Oeste">CRE - Alta Floresta D'Oeste</option>
-            <option value="CRE - Cerejeiras">CRE - Cerejeiras</option>
-            <option value="CRE - São Francisco do Guaporé">CRE - São Francisco do Guaporé</option>
-          </select>
+          <input type="hidden" id="link-gen-super" value="CRE - Alta Floresta D'Oeste" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
+          <button type="button" class="link-gen-combo-btn" id="btn-link-gen-super" onclick="toggleLinkGenDropdown('super')"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;" title="Selecione ou altere a Regional / CRE vinculada">
+            <span class="link-gen-combo-label" id="label-link-gen-super">CRE - Alta Floresta D'Oeste</span>
+            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+          </button>
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-super" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+            <div class="link-gen-combo-list" id="list-link-gen-super" style="max-height:210px; overflow-y:auto;"></div>
+          </div>
         </div>
 
-                <!-- Campo 5: Tipo de Parceria (Imagem 2) -->
-        <div>
+        <!-- Campo 5: Tipo de Parceria (Imagem 5) -->
+        <div class="link-gen-combo-wrap" id="wrap-link-gen-parceria" style="position:relative;">
           <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Tipo de Parceria</label>
-          <select id="link-gen-parceria" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 12px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer;">
-            <option value="Fomento (Termo de Fomento - F)">Fomento (Termo de Fomento - F)</option>
-            <option value="Convênio (Termo de Convênio - C)">Convênio (Termo de Convênio - C)</option>
-            <option value="Termo de Cooperação (T)">Termo de Cooperação (T)</option>
-            <option value="Acordo de Cooperação">Acordo de Cooperação</option>
-          </select>
+          <input type="hidden" id="link-gen-parceria" value="Fomento (Termo de Fomento - F)" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
+          <button type="button" class="link-gen-combo-btn" id="btn-link-gen-parceria" onclick="toggleLinkGenDropdown('parceria')"
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
+            <span class="link-gen-combo-label" id="label-link-gen-parceria">Fomento (Termo de Fomento - F)</span>
+            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+          </button>
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-parceria" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+            <div class="link-gen-combo-list" id="list-link-gen-parceria" style="max-height:210px; overflow-y:auto;"></div>
+          </div>
         </div>
 
         <!-- Botão Verde: gerar link -->
@@ -5794,10 +5825,10 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.55"></script>
-  <script src="js/app.js?v=1.3.61"></script>
-  <script src="js/auth-sap.js?v=1.3.55"></script>
-  <script src="js/escolas.js?v=1.3.55" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.3.65"></script>
+  <script src="js/app.js?v=1.3.65"></script>
+  <script src="js/auth-sap.js?v=1.3.65"></script>
+  <script src="js/escolas.js?v=1.3.65" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>

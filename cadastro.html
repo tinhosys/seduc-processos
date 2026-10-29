@@ -656,8 +656,21 @@
                 <input type="number" id="entidade-alunos" min="0" class="form-control" placeholder="0">
               </div>
               <div>
-                <label>Modalidade</label>
-                <input type="text" id="entidade-modalidade" class="form-control" placeholder="Ex: Ensino Fundamental">
+                <label for="entidade-modalidade">Modalidade</label>
+                <select id="entidade-modalidade" class="form-control" style="cursor:pointer;">
+                  <option value="">Selecione a Modalidade...</option>
+                  <option value="Ensino Fundamental">Ensino Fundamental</option>
+                  <option value="Ensino Médio">Ensino Médio</option>
+                  <option value="Educação Infantil">Educação Infantil</option>
+                  <option value="Creche">Creche</option>
+                  <option value="EJA (Fund.)">EJA (Fund.)</option>
+                  <option value="EJA (Médio)">EJA (Médio)</option>
+                  <option value="Educação Especial / AEE">Educação Especial / AEE</option>
+                  <option value="Educação Profissional">Educação Profissional</option>
+                  <option value="Educação do Campo">Educação do Campo</option>
+                  <option value="Educação Indígena">Educação Indígena</option>
+                  <option value="Outra / Geral">Outra / Geral</option>
+                </select>
               </div>
             </div>
 
@@ -1039,7 +1052,7 @@
       pools.forEach(arr => {
         arr.forEach(esc => {
           const escMun = (esc.municipio || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-          if (!nMun || escMun.includes(nMun) || nMun.includes(escMun)) {
+          if (!nMun || nMun === 'todos' || escMun.includes(nMun) || nMun.includes(escMun)) {
             const key = (esc.id || esc.nome || '') + '_' + (esc.municipio || '');
             if (!mapa.has(key)) mapa.set(key, esc);
           }
@@ -1116,9 +1129,17 @@
         document.getElementById('entidade-nome').value = esc.nome || '';
         document.getElementById('entidade-cnpj').value = esc.cnpj || '';
         document.getElementById('entidade-inep').value = esc.codigoInep || esc.inep || '';
-        document.getElementById('entidade-alunos').value = esc.totalMatricula || esc.alunos || '';
-        document.getElementById('entidade-modalidade').value = esc.modalidade || '';
-        document.getElementById('entidade-localidade').value = esc.localizacao || esc.localidade || 'Urbana';
+        const selMod = document.getElementById('entidade-modalidade');
+        const mVal = esc.modalidade || '';
+        if (selMod) {
+          if (mVal && !Array.from(selMod.options).some(o => o.value === mVal)) {
+            const opt = document.createElement('option');
+            opt.value = mVal;
+            opt.textContent = mVal;
+            selMod.appendChild(opt);
+          }
+          selMod.value = mVal;
+        }
         document.getElementById('entidade-diretor').value = esc.diretor || '';
         document.getElementById('entidade-contato-diretor').value = esc.contatoDiretor || '';
         document.getElementById('entidade-telefone').value = esc.telefone || '';
@@ -1301,23 +1322,33 @@
 
       // Preenche cabeçalho: SOMENTE NOME DO MUNICÍPIO EM FONTE 30 PT (MARCAÇÃO AMARELA)
       const topoMun = document.getElementById('municipio-topo');
-      if (topoMun) topoMun.textContent = _municipioAtual.toUpperCase();
+      const isTodos = _municipioAtual.toUpperCase() === 'TODOS';
+      if (topoMun) topoMun.textContent = isTodos ? 'TODOS OS MUNICÍPIOS' : _municipioAtual.toUpperCase();
 
-      document.title = `${_municipioAtual.toUpperCase()} - Cadastro de Entidades / Escolas`;
+      document.title = isTodos ? 'TODOS OS MUNICÍPIOS - Cadastro de Entidades / Escolas' : `${_municipioAtual.toUpperCase()} - Cadastro de Entidades / Escolas`;
 
       // Atualiza Badges dos parâmetros
-      document.getElementById('param-municipio').textContent = _municipioAtual;
-      document.getElementById('param-categoria').textContent = _categoriaAtual;
-      document.getElementById('param-competencia').textContent = _competenciaAtual;
-      document.getElementById('param-super').textContent = _superAtual || 'CRE Regional';
-      document.getElementById('param-parceria').textContent = _parceriaAtual.split('(')[0].trim();
+      document.getElementById('param-municipio').textContent = isTodos ? 'Todos os Municípios' : _municipioAtual;
+      document.getElementById('param-categoria').textContent = _categoriaAtual.toUpperCase() === 'TODOS' ? 'Todas as Categorias' : _categoriaAtual;
+      document.getElementById('param-competencia').textContent = _competenciaAtual.toUpperCase() === 'TODOS' ? 'Todas as Competências' : _competenciaAtual;
+      document.getElementById('param-super').textContent = _superAtual.toUpperCase() === 'TODOS' ? 'Todas as Regionais (CREs)' : (_superAtual || 'CRE Regional');
+      document.getElementById('param-parceria').textContent = _parceriaAtual.toUpperCase() === 'TODOS' ? 'Todos os Tipos' : _parceriaAtual.split('(')[0].trim();
 
       // Inicializa campos fixados do formulário
-      document.getElementById('entidade-municipio').value = _municipioAtual;
-      document.getElementById('entidade-competencia').value = _competenciaAtual;
-      document.getElementById('entidade-super').value = _superAtual || 'Regional';
-      document.getElementById('entidade-categoria').value = _categoriaAtual;
-      document.getElementById('entidade-parceria').value = _parceriaAtual;
+      const entMun = document.getElementById('entidade-municipio');
+      if (entMun) {
+        if (isTodos) {
+          entMun.readOnly = false;
+          entMun.placeholder = 'Digite o Município da escola...';
+          entMun.value = '';
+        } else {
+          entMun.value = _municipioAtual;
+        }
+      }
+      document.getElementById('entidade-competencia').value = _competenciaAtual.toUpperCase() === 'TODOS' ? 'Municipal' : _competenciaAtual;
+      document.getElementById('entidade-super').value = _superAtual.toUpperCase() === 'TODOS' ? 'Regional' : (_superAtual || 'Regional');
+      document.getElementById('entidade-categoria').value = _categoriaAtual.toUpperCase() === 'TODOS' ? 'Conselho Escolar' : _categoriaAtual;
+      document.getElementById('entidade-parceria').value = _parceriaAtual.toUpperCase() === 'TODOS' ? 'Fomento (Termo de Fomento - F)' : _parceriaAtual;
 
       // Inicializa Prazo (1º clique + 8 dias)
       inicializarPrazo(_municipioAtual);

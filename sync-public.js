@@ -5,6 +5,7 @@ const ROOT = __dirname;
 const PUBLIC = path.join(ROOT, 'planilha-google-form', 'public');
 const files = [
   { src: 'index.html',        dst: 'index.html' },
+  { src: 'cadastro.html',     dst: 'cadastro.html' },
   { src: 'js/dados.js',       dst: 'js/dados.js' },
   { src: 'js/app.js',         dst: 'js/app.js' },
   { src: 'js/multi-select.js',dst: 'js/multi-select.js' },
