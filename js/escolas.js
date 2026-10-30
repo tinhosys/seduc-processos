@@ -352,6 +352,31 @@ function _parseRow(row) {
     return null;
   }
 
+  // Colunas estendidas (Nova Versão)
+  const linha              = val(29);
+  const rodoviaKm          = val(30);
+  const sitioRio           = val(31);
+  const plusCode           = val(32);
+  const acessibilidade     = val(33);
+  const cozinha            = val(34);
+  const depositoSeco       = val(35);
+  const depositoPereciveis = val(36);
+  const almoxarifadoAdm    = val(37);
+  const depositoGeral      = val(38);
+  const biblioteca         = val(39);
+  const dml                = val(40);
+  const quadraCoberta      = val(41);
+  const quadraPiso         = val(42);
+  const labInfo            = val(43);
+  const hall               = val(44);
+  const ppci               = val(45);
+  const fonteAgua          = val(46);
+  const energiaSolar       = val(47);
+  const tipoAbertura       = val(48);
+  const tipoForro          = val(49);
+  const tipoPiso           = val(50);
+  const muradaGradeada     = val(51);
+
   if (!nome || nome.length < 2) return null;
 
   if (!comp) {
@@ -385,6 +410,10 @@ function _parseRow(row) {
     bairro: bairro,
     complemento: complemento,
     cep: cep,
+    linha: linha,
+    rodoviaKm: rodoviaKm,
+    sitioRio: sitioRio,
+    plusCode: plusCode,
     super: superV,
     codigoSuper: superV,
     redesSociais: redesSociais,
@@ -400,9 +429,30 @@ function _parseRow(row) {
     salaAEE: salaAEE,
     banheiros: banheiros,
     patio: patio,
+    patioCoberto: patio,
     auditorio: auditorio,
     refeitorio: refeitorio,
     quadra: quadra,
+    acessibilidade: acessibilidade,
+    cozinha: cozinha,
+    depositoSeco: depositoSeco,
+    depositoPereciveis: depositoPereciveis,
+    almoxarifadoAdm: almoxarifadoAdm,
+    deposito: depositoGeral,
+    depositoGeral: depositoGeral,
+    biblioteca: biblioteca,
+    dml: dml,
+    quadraCoberta: quadraCoberta,
+    quadraPiso: quadraPiso,
+    labInfo: labInfo,
+    hall: hall,
+    ppci: ppci,
+    fonteAgua: fonteAgua,
+    energiaSolar: energiaSolar,
+    tipoAbertura: tipoAbertura,
+    tipoForro: tipoForro,
+    tipoPiso: tipoPiso,
+    muradaGradeada: muradaGradeada,
     localidade: localidade || 'Urbana',
     localizacao: localidade || 'Urbana',
     modalidades: modalidadeStr ? [{ modalidade: modalidadeStr, alunos: alunos }] : []

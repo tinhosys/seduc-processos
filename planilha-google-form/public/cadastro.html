@@ -363,6 +363,47 @@
       cursor: not-allowed;
     }
 
+    /* DROPDOWN MULTI-SELECT MODALIDADE */
+    .mod-checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #e2e8f0;
+      transition: background 0.15s;
+    }
+    .mod-checkbox-item:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #ffffff;
+    }
+    .mod-checkbox-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #059669;
+      cursor: pointer;
+    }
+    .badge-modalidade-item {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #7dd3fc;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-sep-virgula {
+      color: #94a3b8;
+      font-weight: 800;
+      margin-right: 4px;
+    }
+
     /* BOTÕES DE AÇÃO DO FORM */
     .form-actions {
       display: flex;
@@ -593,7 +634,7 @@
           <span class="pill-param">📍 <strong id="param-municipio">Carregando...</strong></span>
           <span class="pill-param">🏛️ <strong id="param-categoria">Conselho Escolar</strong></span>
           <span class="pill-param">⚖️ <strong id="param-competencia">Municipal</strong></span>
-          <span class="pill-param">🏢 <strong id="param-super">Regional</strong></span>
+          <span class="pill-param">🏢 <strong id="param-super">SUPER</strong></span>
           <span class="pill-param">📜 <strong id="param-parceria">Fomento</strong></span>
         </div>
       </div>
@@ -633,7 +674,7 @@
 
             <div class="grid-2">
               <div>
-                <label>Nome Completo da Escola / Entidade *</label>
+                <label id="lbl-entidade-nome">Nome Completo da Escola / Entidade *</label>
                 <input type="text" id="entidade-nome" required class="form-control" placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar...">
               </div>
               <div>
@@ -647,30 +688,44 @@
                 <label>CNPJ</label>
                 <input type="text" id="entidade-cnpj" maxlength="18" oninput="mascaraCNPJ(this)" class="form-control" placeholder="00.000.000/0000-00">
               </div>
-              <div>
+              <div id="wrap-entidade-inep">
                 <label>Código INEP</label>
                 <input type="text" id="entidade-inep" maxlength="12" class="form-control" placeholder="8 dígitos">
               </div>
-              <div>
+              <div id="wrap-entidade-alunos">
                 <label>Nº de Alunos</label>
                 <input type="number" id="entidade-alunos" min="0" class="form-control" placeholder="0">
               </div>
-              <div>
-                <label for="entidade-modalidade">Modalidade</label>
-                <select id="entidade-modalidade" class="form-control" style="cursor:pointer;">
-                  <option value="">Selecione a Modalidade...</option>
-                  <option value="Ensino Fundamental">Ensino Fundamental</option>
-                  <option value="Ensino Médio">Ensino Médio</option>
-                  <option value="Educação Infantil">Educação Infantil</option>
-                  <option value="Creche">Creche</option>
-                  <option value="EJA (Fund.)">EJA (Fund.)</option>
-                  <option value="EJA (Médio)">EJA (Médio)</option>
-                  <option value="Educação Especial / AEE">Educação Especial / AEE</option>
-                  <option value="Educação Profissional">Educação Profissional</option>
-                  <option value="Educação do Campo">Educação do Campo</option>
-                  <option value="Educação Indígena">Educação Indígena</option>
-                  <option value="Outra / Geral">Outra / Geral</option>
-                </select>
+              <div style="position:relative;" id="wrap-entidade-modalidade">
+                <label for="entidade-modalidade-trigger">Modalidade</label>
+                <div id="entidade-modalidade-trigger" class="form-control" style="cursor:pointer; display:flex; align-items:center; justify-content:space-between; user-select:none; height:40px; padding:6px 12px;" onclick="toggleDropdownModalidade(event)">
+                  <span id="txt-modalidade-trigger" style="color:#94a3b8; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    Selecione a(s) Modalidade(s)...
+                  </span>
+                  <span style="font-size:11px; color:#38bdf8; margin-left:6px;">▼</span>
+                </div>
+                
+                <!-- DROPDOWN COM CHECKBOXES -->
+                <div id="drop-modalidade-opcoes" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; min-width:260px; max-height:250px; overflow-y:auto; background:#0f172a; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 12px 35px rgba(0,0,0,0.85); z-index:9999; padding:6px 8px;">
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Ensino Fundamental" onchange="aoMudarModalidadeCheck()"> Ensino Fundamental</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Ensino Médio" onchange="aoMudarModalidadeCheck()"> Ensino Médio</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Infantil" onchange="aoMudarModalidadeCheck()"> Educação Infantil</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Creche" onchange="aoMudarModalidadeCheck()"> Creche</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="EJA (Fund.)" onchange="aoMudarModalidadeCheck()"> EJA (Fund.)</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="EJA (Médio)" onchange="aoMudarModalidadeCheck()"> EJA (Médio)</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Especial / AEE" onchange="aoMudarModalidadeCheck()"> Educação Especial / AEE</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Profissional" onchange="aoMudarModalidadeCheck()"> Educação Profissional</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação do Campo" onchange="aoMudarModalidadeCheck()"> Educação do Campo</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Indígena" onchange="aoMudarModalidadeCheck()"> Educação Indígena</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Outra / Geral" onchange="aoMudarModalidadeCheck()"> Outra / Geral</label>
+                </div>
+                
+                <input type="hidden" id="entidade-modalidade" value="">
+                
+                <!-- RELAÇÃO VISUAL ABAIXO SEPARADA POR VÍRGULA (IMAGEM 5) -->
+                <div id="box-modalidades-selecionadas" style="margin-top:6px; min-height:20px; font-size:11.5px; line-height:1.4;">
+                  <span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>
+                </div>
               </div>
             </div>
 
@@ -680,8 +735,8 @@
                 <input type="text" id="entidade-competencia" readonly class="form-control" value="Municipal">
               </div>
               <div>
-                <label>Super / Regional (Fixada)</label>
-                <input type="text" id="entidade-super" readonly class="form-control" placeholder="Regional">
+                <label>Superintendência de Educação (Fixada)</label>
+                <input type="text" id="entidade-super" readonly class="form-control" placeholder="Superintendência de Educação">
               </div>
               <div>
                 <label>Localidade</label>
@@ -704,34 +759,34 @@
 
             <div class="grid-4">
               <div>
-                <label>Nome do Diretor | Presidente</label>
+                <label id="lbl-entidade-diretor">Nome do Diretor | Presidente</label>
                 <input type="text" id="entidade-diretor" class="form-control" placeholder="Nome completo">
               </div>
               <div>
-                <label>Contato do Diretor</label>
+                <label id="lbl-entidade-contato-diretor">Contato do Diretor</label>
                 <input type="text" id="entidade-contato-diretor" class="form-control" placeholder="(69) 90000-0000">
               </div>
               <div>
-                <label>Telefone da Unidade</label>
+                <label id="lbl-entidade-telefone">Telefone da Unidade</label>
                 <input type="text" id="entidade-telefone" class="form-control" placeholder="(69) 3000-0000">
               </div>
               <div>
-                <label>E-mail Institucional</label>
+                <label id="lbl-entidade-email">E-mail Institucional</label>
                 <input type="email" id="entidade-email" class="form-control" placeholder="escola@educacao.ro.gov.br">
               </div>
             </div>
 
             <div class="grid-3">
               <div>
-                <label>Nome do Secretário(a)</label>
+                <label id="lbl-entidade-secretario">Nome do Secretário(a)</label>
                 <input type="text" id="entidade-secretario" class="form-control" placeholder="Nome completo">
               </div>
               <div>
-                <label>Contato do Secretário(a)</label>
+                <label id="lbl-entidade-contato-secretario">Contato do Secretário(a)</label>
                 <input type="text" id="entidade-contato-secretario" class="form-control" placeholder="(69) 90000-0000">
               </div>
               <div>
-                <label>Redes Sociais (Instagram/Facebook)</label>
+                <label id="lbl-entidade-redes">Redes Sociais (Instagram/Facebook)</label>
                 <input type="text" id="entidade-redes" class="form-control" placeholder="@escola ou link">
               </div>
             </div>
@@ -765,6 +820,48 @@
                 <input type="text" id="entidade-cep" class="form-control" placeholder="76.000-000">
               </div>
             </div>
+
+            <!-- COMPLEMENTO RURAL / DETALHES ADICIONAIS (IMAGEM 2) -->
+            <div style="background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 14px; margin-bottom: 14px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                <span style="font-size:16px;">🌾</span>
+                <span style="font-size:12px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.4px;">
+                  Detalhes Específicos & Acesso Rural (Linha, BR, Km, Sítio, Rio)
+                </span>
+              </div>
+              <div class="grid-3" style="margin-bottom:0;">
+                <div>
+                  <label>Linha / Estrada</label>
+                  <input type="text" id="entidade-linha" class="form-control" placeholder="Ex: Linha 60, Linha C-15...">
+                </div>
+                <div>
+                  <label>Rodovia / BR & KM</label>
+                  <input type="text" id="entidade-rodovia-km" class="form-control" placeholder="Ex: BR-364, Km 14...">
+                </div>
+                <div>
+                  <label>Sítio / Fazenda / Gleba / Rio</label>
+                  <input type="text" id="entidade-sitio-rio" class="form-control" placeholder="Ex: Sítio Três Meninas / Rio Machado...">
+                </div>
+              </div>
+            </div>
+
+            <!-- PLUS CODE DO GOOGLE MAPS (IMAGEM 2) -->
+            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; padding: 14px; margin-bottom: 8px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                <label style="margin-bottom:0; display:flex; align-items:center; gap:6px; color:#6ee7b7; font-weight:800;">
+                  <span>📍</span> Plus Code (Google Maps)
+                </label>
+                <a href="https://maps.google.com/pluscodes/" target="_blank" rel="noopener noreferrer"
+                  style="font-size:11.5px; color:#38bdf8; text-decoration:underline; font-weight:800; display:inline-flex; align-items:center; gap:4px;"
+                  title="Saiba o que é e como encontrar o Plus Code da escola no Google Maps">
+                  ❓ O que é PLUS CODE? ↗
+                </a>
+              </div>
+              <input type="text" id="entidade-plus-code" class="form-control" placeholder="Ex: 87PJ8M2C+4X ou cole o código Plus Code do Google Maps">
+              <div style="font-size:11px; color:#94a3b8; margin-top:5px; line-height:1.4;">
+                💡 <strong>Plus Code</strong> é o código de localização digital oficial do Google Maps, ideal para escolas sem nome de rua ou em áreas rurais. Encontre-o clicando na localização da escola no Google Maps.
+              </div>
+            </div>
           </div>
 
           <!-- SEÇÃO 5: INFRAESTRUTURA -->
@@ -774,60 +871,248 @@
               <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 5 de 5</span>
             </div>
 
+            <!-- LINHA 1: SALAS & SANITÁRIOS -->
             <div class="grid-4">
               <div>
-                <label>Salas de Aula</label>
+                <label>Salas de Aula (Qtde)</label>
                 <input type="number" id="entidade-salas-aula" min="0" class="form-control" placeholder="0">
               </div>
               <div>
-                <label>Salas Administrativas</label>
+                <label>Salas Administrativas (Qtde)</label>
                 <input type="number" id="entidade-salas-adm" min="0" class="form-control" placeholder="0">
               </div>
               <div>
-                <label>Banheiros</label>
-                <input type="text" id="entidade-banheiros" class="form-control" placeholder="Qtd / Desc">
+                <label>Banheiros (Qtde)</label>
+                <input type="text" id="entidade-banheiros" class="form-control" placeholder="Ex: 4 sanitários">
               </div>
               <div>
-                <label>Sala do AEE</label>
+                <label>Sala do AEE (Sim / Não)</label>
                 <select id="entidade-sala-aee" class="form-control">
                   <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
                 </select>
               </div>
             </div>
 
+            <!-- LINHA 2: CONVIVÊNCIA & ALIMENTAÇÃO -->
             <div class="grid-4">
               <div>
-                <label>Pátio</label>
-                <select id="entidade-patio" class="form-control">
-                  <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
-                </select>
-              </div>
-              <div>
-                <label>Auditório</label>
+                <label>Auditório (Sim / Não)</label>
                 <select id="entidade-auditorio" class="form-control">
                   <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
                 </select>
               </div>
               <div>
-                <label>Refeitório</label>
+                <label>Pátio Coberto (Sim / Não)</label>
+                <select id="entidade-patio-coberto" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Refeitório (Sim / Não)</label>
                 <select id="entidade-refeitorio" class="form-control">
                   <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
                 </select>
               </div>
               <div>
-                <label>Quadra de Esportes</label>
+                <label>Área de Cocção (Cozinha)</label>
+                <select id="entidade-cozinha" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 3: ARMAZENAMENTO & ALMOXARIFADO -->
+            <div class="grid-4">
+              <div>
+                <label>Depósito Seco (Mantimentos)</label>
+                <select id="entidade-deposito-seco" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Depósito Perecíveis (Área Fria)</label>
+                <select id="entidade-deposito-pereciveis" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Almoxarifado Administrativo</label>
+                <select id="entidade-almoxarifado-adm" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Depósito Geral</label>
+                <select id="entidade-deposito" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 4: PEDAGÓGICO, APOIO & SERVIÇOS -->
+            <div class="grid-4">
+              <div>
+                <label>Biblioteca (Sim / Não)</label>
+                <select id="entidade-biblioteca" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Laboratório de Informática</label>
+                <select id="entidade-lab-info" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Hall de Acolhimento</label>
+                <select id="entidade-hall" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>DML (Material de Limpeza)</label>
+                <select id="entidade-dml" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 5: COMPLEXO ESPORTIVO & ACESSIBILIDADE -->
+            <div class="grid-4">
+              <div>
+                <label>Quadra Poliesportiva</label>
                 <select id="entidade-quadra" class="form-control">
                   <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Quadra Coberta? (Sim / Não)</label>
+                <select id="entidade-quadra-coberta" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                  <option value="Não se aplica">Não se aplica</option>
+                </select>
+              </div>
+              <div>
+                <label>Piso da Quadra</label>
+                <select id="entidade-quadra-piso" class="form-control">
+                  <option value="">-</option>
+                  <option value="Granelite">Granelite</option>
+                  <option value="Concreto">Concreto</option>
+                  <option value="Outro">Outro</option>
+                  <option value="Não se aplica">Não se aplica</option>
+                </select>
+              </div>
+              <div>
+                <label>Acessibilidade (Sim / Não)</label>
+                <select id="entidade-acessibilidade" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 6: SEGURANÇA, UTILIDADES & ENERGIA -->
+            <div class="grid-4">
+              <div>
+                <label>PPCI (Prev. Incêndio)</label>
+                <select id="entidade-ppci" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Fonte de Água</label>
+                <select id="entidade-fonte-agua" class="form-control">
+                  <option value="">-</option>
+                  <option value="Poço Simples">Poço Simples</option>
+                  <option value="Poço Artesiano">Poço Artesiano</option>
+                  <option value="Serviço de Água e Esgoto">Serviço de Água e Esgoto</option>
+                  <option value="Outra">Outra</option>
+                </select>
+              </div>
+              <div>
+                <label>Energia Solar (Sim / Não)</label>
+                <select id="entidade-energia-solar" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Escola Murada / Gradeada</label>
+                <select id="entidade-murada-gradeada" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 7: ESTRUTURA E ACABAMENTO PREDIAL -->
+            <div class="grid-3">
+              <div>
+                <label>Tipo de Abertura</label>
+                <select id="entidade-tipo-abertura" class="form-control">
+                  <option value="">-</option>
+                  <option value="Ferro">Ferro</option>
+                  <option value="Grade">Grade</option>
+                  <option value="Vidro Temperado">Vidro Temperado</option>
+                  <option value="Madeira">Madeira</option>
+                  <option value="ACM">ACM</option>
+                  <option value="Misto">Misto</option>
+                </select>
+              </div>
+              <div>
+                <label>Tipo de Forro</label>
+                <select id="entidade-tipo-forro" class="form-control">
+                  <option value="">-</option>
+                  <option value="Madeira">Madeira</option>
+                  <option value="Gesso">Gesso</option>
+                  <option value="PVC">PVC</option>
+                  <option value="Laje">Laje</option>
+                  <option value="Sem Forro">Sem Forro</option>
+                </select>
+              </div>
+              <div>
+                <label>Tipo de Piso da Escola</label>
+                <select id="entidade-tipo-piso" class="form-control">
+                  <option value="">-</option>
+                  <option value="Cerâmica">Cerâmica</option>
+                  <option value="Concreto">Concreto</option>
+                  <option value="Granelite">Granelite</option>
+                  <option value="Outros">Outros</option>
                 </select>
               </div>
             </div>
@@ -1026,11 +1311,200 @@
       }
     }
 
-    // Carregar Escolas do Município
+    // ============================================================
+    // GESTÃO DE MODALIDADE (MÚLTIPLA SELEÇÃO & VISUALIZAÇÃO COM VÍRGULA)
+    // ============================================================
+    function toggleDropdownModalidade(e) {
+      if (e) e.stopPropagation();
+      const drop = document.getElementById('drop-modalidade-opcoes');
+      if (!drop) return;
+      drop.style.display = (drop.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function aoMudarModalidadeCheck() {
+      const drop = document.getElementById('drop-modalidade-opcoes');
+      if (!drop) return;
+      const checks = drop.querySelectorAll('input[type="checkbox"]:checked');
+      const valores = Array.from(checks).map(c => c.value);
+      
+      const hiddenInput = document.getElementById('entidade-modalidade');
+      if (hiddenInput) hiddenInput.value = valores.join(', ');
+
+      const triggerTxt = document.getElementById('txt-modalidade-trigger');
+      if (triggerTxt) {
+        if (valores.length === 0) {
+          triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
+          triggerTxt.style.color = '#94a3b8';
+        } else {
+          triggerTxt.textContent = `${valores.length} selecionada(s)`;
+          triggerTxt.style.color = '#38bdf8';
+        }
+      }
+
+      // Visualização abaixo com cada modalidade separada por vírgula (Imagem 5)
+      const box = document.getElementById('box-modalidades-selecionadas');
+      if (box) {
+        if (valores.length === 0) {
+          box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
+        } else {
+          box.innerHTML = `
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-top:4px;">
+              ${valores.map((v, idx) => `
+                <span class="badge-modalidade-item">${v}</span>${idx < valores.length - 1 ? '<span class="badge-sep-virgula">,</span>' : ''}
+              `).join('')}
+            </div>
+          `;
+        }
+      }
+    }
+
+    function setModalidadesSelecionadas(str) {
+      limparModalidades();
+      if (!str) return;
+      const partes = str.split(/[,;/]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+      const drop = document.getElementById('drop-modalidade-opcoes');
+      if (!drop) return;
+      
+      const allChecks = drop.querySelectorAll('input[type="checkbox"]');
+      allChecks.forEach(cb => {
+        const valNorm = cb.value.trim().toLowerCase();
+        if (partes.some(p => p === valNorm || valNorm.includes(p) || p.includes(valNorm))) {
+          cb.checked = true;
+        }
+      });
+      aoMudarModalidadeCheck();
+    }
+
+    function limparModalidades() {
+      const drop = document.getElementById('drop-modalidade-opcoes');
+      if (drop) {
+        drop.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+      }
+      const hiddenInput = document.getElementById('entidade-modalidade');
+      if (hiddenInput) hiddenInput.value = '';
+      const triggerTxt = document.getElementById('txt-modalidade-trigger');
+      if (triggerTxt) {
+        triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
+        triggerTxt.style.color = '#94a3b8';
+      }
+      const box = document.getElementById('box-modalidades-selecionadas');
+      if (box) {
+        box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
+      }
+    }
+
+    // Fecha popover de modalidade ao clicar fora
+    document.addEventListener('click', (e) => {
+      const wrap = document.getElementById('wrap-entidade-modalidade');
+      const drop = document.getElementById('drop-modalidade-opcoes');
+      if (drop && wrap && !wrap.contains(e.target)) {
+        drop.style.display = 'none';
+      }
+    });
+
+    // ============================================================
+    // ATUALIZAÇÃO DINÂMICA DE LEGENDAS POR CATEGORIA (IMAGENS 3, 4 E 5)
+    // ============================================================
+    function atualizarLegendasPorCategoria(cat) {
+      const c = (cat || '').toUpperCase();
+      const lblNome = document.getElementById('lbl-entidade-nome');
+      const inputNome = document.getElementById('entidade-nome');
+      const wrapInep = document.getElementById('wrap-entidade-inep');
+      const inepInput = document.getElementById('entidade-inep');
+      const wrapAlunos = document.getElementById('wrap-entidade-alunos');
+      const alunosInput = document.getElementById('entidade-alunos');
+
+      const lblDir = document.getElementById('lbl-entidade-diretor');
+      const inpDir = document.getElementById('entidade-diretor');
+      const lblCtDir = document.getElementById('lbl-entidade-contato-diretor');
+
+      const lblTel = document.getElementById('lbl-entidade-telefone');
+
+      const lblSec = document.getElementById('lbl-entidade-secretario');
+      const inpSec = document.getElementById('entidade-secretario');
+      const lblCtSec = document.getElementById('lbl-entidade-contato-secretario');
+
+      if (c.includes('PREFEITURA')) {
+        // Imagem 5: Prefeitura
+        if (lblNome) lblNome.innerHTML = 'Nome da Prefeitura Municipal *';
+        if (inputNome) inputNome.placeholder = 'Ex: Prefeitura Municipal de Ji-Paraná...';
+        // INEP e Alunos NÃO ficam disponíveis para Prefeitura
+        if (wrapInep) wrapInep.style.display = 'none';
+        if (inepInput) inepInput.value = '';
+        if (wrapAlunos) wrapAlunos.style.display = 'none';
+        if (alunosInput) alunosInput.value = '';
+
+        // Imagem 3: Gestão para Prefeitura
+        if (lblDir) lblDir.textContent = 'Nome do Prefeito(a)';
+        if (inpDir) inpDir.placeholder = 'Nome completo do(a) Prefeito(a)';
+        if (lblCtDir) lblCtDir.textContent = 'Contato do Prefeito(a)';
+
+        if (lblTel) lblTel.textContent = 'Telefone da Prefeitura / Sede';
+
+        if (lblSec) lblSec.textContent = 'Secretário Municipal de Educação';
+        if (inpSec) inpSec.placeholder = 'Nome completo do(a) Secretário(a) de Educação';
+        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário(a) de Educação';
+      } else if (c.includes('APAE')) {
+        // Imagem 5: APAE
+        if (lblNome) lblNome.innerHTML = 'Nome da Entidade (APAE) *';
+        if (inputNome) inputNome.placeholder = 'Ex: APAE de Ji-Paraná...';
+        if (wrapInep) wrapInep.style.display = 'block';
+        if (wrapAlunos) wrapAlunos.style.display = 'block';
+
+        // Imagem 3: APAE (Presidente, Secretário Geral)
+        if (lblDir) lblDir.textContent = 'Nome do Presidente';
+        if (inpDir) inpDir.placeholder = 'Nome completo do Presidente';
+        if (lblCtDir) lblCtDir.textContent = 'Contato do Presidente';
+
+        if (lblTel) lblTel.textContent = 'Telefone da Unidade / Sede';
+
+        if (lblSec) lblSec.textContent = 'Secretário Geral';
+        if (inpSec) inpSec.placeholder = 'Nome completo do Secretário Geral';
+        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário Geral';
+      } else if (c.includes('EFA') || c.includes('FAMILIA AGRICOLA') || c.includes('FAMÍLIA AGRÍCOLA')) {
+        // Imagem 5: EFA
+        if (lblNome) lblNome.innerHTML = 'Nome da Entidade (EFA - Família Agrícola) *';
+        if (inputNome) inputNome.placeholder = 'Ex: EFA Vale do Paraíso...';
+        if (wrapInep) wrapInep.style.display = 'block';
+        if (wrapAlunos) wrapAlunos.style.display = 'block';
+
+        // Imagem 3: EFA mesma da APAE (Presidente, Secretário Geral)
+        if (lblDir) lblDir.textContent = 'Nome do Presidente';
+        if (inpDir) inpDir.placeholder = 'Nome completo do Presidente';
+        if (lblCtDir) lblCtDir.textContent = 'Contato do Presidente';
+
+        if (lblTel) lblTel.textContent = 'Telefone da Unidade / Sede';
+
+        if (lblSec) lblSec.textContent = 'Secretário Geral';
+        if (inpSec) inpSec.placeholder = 'Nome completo do Secretário Geral';
+        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário Geral';
+      } else {
+        // Conselho Escolar (Padrão)
+        if (lblNome) lblNome.innerHTML = 'Nome da Escola / Conselho Escolar *';
+        if (inputNome) inputNome.placeholder = 'Ex: EMEF Marechal Rondon ou Conselho Escolar...';
+        if (wrapInep) wrapInep.style.display = 'block';
+        if (wrapAlunos) wrapAlunos.style.display = 'block';
+
+        // Imagem 3: Conselho Escolar (Presidente / Diretor, Secretário)
+        if (lblDir) lblDir.textContent = 'Nome do Diretor | Presidente';
+        if (inpDir) inpDir.placeholder = 'Nome completo do Diretor ou Presidente';
+        if (lblCtDir) lblCtDir.textContent = 'Contato do Diretor | Presidente';
+
+        if (lblTel) lblTel.textContent = 'Telefone da Unidade';
+
+        if (lblSec) lblSec.textContent = 'Nome do Secretário(a)';
+        if (inpSec) inpSec.placeholder = 'Nome completo do Secretário(a)';
+        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário(a)';
+      }
+    }
+
+    // ============================================================
+    // CARREGAR ESCOLAS VINCULADAS AOS PARÂMETROS FIXADOS
+    // ============================================================
     async function carregarEscolasDoMunicipio() {
       const tbody = document.getElementById('tbody-escolas');
       const subtitulo = document.getElementById('subtitulo-tabela-contagem');
-      if (subtitulo) subtitulo.textContent = 'Buscando escolas cadastradas...';
+      if (subtitulo) subtitulo.textContent = 'Buscando registros cadastrados...';
 
       // Aguarda API de escolas caso ainda não esteja em memória
       if (typeof _escolasCache === 'undefined' || !_escolasCache || _escolasCache.length === 0) {
@@ -1047,15 +1521,57 @@
       } catch(e) {}
 
       const nMun = (_municipioAtual || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const nCat = (_categoriaAtual || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const nComp = (_competenciaAtual || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const nSuper = (_superAtual || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+      const isTodosMun = !nMun || nMun === 'todos' || nMun.includes('todos');
+      const isTodosCat = !nCat || nCat === 'todos' || nCat.includes('todas');
+      const isTodosComp = !nComp || nComp === 'todos' || nComp.includes('todas');
+      const isTodosSuper = !nSuper || nSuper === 'todos' || nSuper.includes('todas');
+
       const mapa = new Map();
 
       pools.forEach(arr => {
         arr.forEach(esc => {
           const escMun = (esc.municipio || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-          if (!nMun || nMun === 'todos' || escMun.includes(nMun) || nMun.includes(escMun)) {
-            const key = (esc.id || esc.nome || '') + '_' + (esc.municipio || '');
-            if (!mapa.has(key)) mapa.set(key, esc);
+          const escCat = (esc.categoria || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          const escComp = (esc.competencia || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          const escSuper = (esc.super || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+          // Filtro Município
+          if (!isTodosMun && !escMun.includes(nMun) && !nMun.includes(escMun)) return;
+
+          // Filtro Categoria Vinculada (Imagem 5)
+          if (!isTodosCat) {
+            if (nCat.includes('conselho')) {
+              if (escCat && !escCat.includes('conselho') && !escCat.includes('escola')) return;
+            } else if (nCat.includes('prefeitura')) {
+              if (!escCat.includes('prefeitura')) return;
+            } else if (nCat.includes('apae')) {
+              if (!escCat.includes('apae')) return;
+            } else if (nCat.includes('efa') || nCat.includes('agricola') || nCat.includes('agrícola')) {
+              if (!escCat.includes('efa') && !escCat.includes('agricola')) return;
+            }
           }
+
+          // Filtro Competência Vinculada
+          if (!isTodosComp) {
+            if (nComp.includes('municipal') && !escComp.includes('municipal')) return;
+            if (nComp.includes('estadual') && !escComp.includes('estadual')) return;
+            if (nComp.includes('federal') && !escComp.includes('federal')) return;
+            if (nComp.includes('privada') && !escComp.includes('privada')) return;
+          }
+
+          // Filtro Superintendência (SUPER)
+          if (!isTodosSuper) {
+            const cleanSup = nSuper.replace(/^super\s*-\s*/i, '').replace(/^super\s+/i, '').replace(/^cre\s*-\s*/i, '').trim();
+            const cleanEscSup = escSuper.replace(/^super\s*-\s*/i, '').replace(/^super\s+/i, '').replace(/^cre\s*-\s*/i, '').trim();
+            if (cleanSup && cleanEscSup && !cleanEscSup.includes(cleanSup) && !cleanEscSup.includes(cleanEscSup)) return;
+          }
+
+          const key = (esc.id || esc.nome || '') + '_' + (esc.municipio || '');
+          if (!mapa.has(key)) mapa.set(key, esc);
         });
       });
 
@@ -1070,12 +1586,12 @@
       if (!tbody) return;
 
       if (!lista || lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhuma escola encontrada para este município. Cadastre a primeira acima!</td></tr>`;
-        if (subtitulo) subtitulo.textContent = '0 unidades cadastradas no momento';
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhuma unidade encontrada para estes parâmetros. Cadastre a primeira acima!</td></tr>`;
+        if (subtitulo) subtitulo.textContent = '0 unidades cadastradas com os parâmetros vinculados';
         return;
       }
 
-      if (subtitulo) subtitulo.textContent = `${lista.length} unidades encontradas em ${_municipioAtual}`;
+      if (subtitulo) subtitulo.textContent = `${lista.length} unidades vinculadas a ${_municipioAtual}`;
 
       tbody.innerHTML = lista.map(esc => {
         const id = esc.id || `esc_${Math.random()}`;
@@ -1115,7 +1631,7 @@
         return;
       }
       const filtradas = _escolasMunicipioCache.filter(e => {
-        const campos = [e.nome, e.codigoInep, e.inep, e.diretor, e.competencia, e.localidade, e.localizacao].join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const campos = [e.nome, e.codigoInep, e.inep, e.diretor, e.competencia, e.localidade, e.localizacao, e.endereco, e.linha, e.plusCode].join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         return campos.includes(t);
       });
       renderizarTabela(filtradas);
@@ -1125,40 +1641,64 @@
     function editarEscola(jsonEncoded) {
       try {
         const esc = JSON.parse(decodeURIComponent(jsonEncoded));
-        document.getElementById('entidade-id').value = esc.id || '';
-        document.getElementById('entidade-nome').value = esc.nome || '';
-        document.getElementById('entidade-cnpj').value = esc.cnpj || '';
-        document.getElementById('entidade-inep').value = esc.codigoInep || esc.inep || '';
-        const selMod = document.getElementById('entidade-modalidade');
-        const mVal = esc.modalidade || '';
-        if (selMod) {
-          if (mVal && !Array.from(selMod.options).some(o => o.value === mVal)) {
-            const opt = document.createElement('option');
-            opt.value = mVal;
-            opt.textContent = mVal;
-            selMod.appendChild(opt);
-          }
-          selMod.value = mVal;
-        }
-        document.getElementById('entidade-diretor').value = esc.diretor || '';
-        document.getElementById('entidade-contato-diretor').value = esc.contatoDiretor || '';
-        document.getElementById('entidade-telefone').value = esc.telefone || '';
-        document.getElementById('entidade-email').value = esc.email || '';
-        document.getElementById('entidade-secretario').value = esc.secretario || '';
-        document.getElementById('entidade-contato-secretario').value = esc.contatoSecretario || '';
-        document.getElementById('entidade-redes').value = esc.redesSociais || esc.redes || '';
-        document.getElementById('entidade-endereco').value = esc.endereco || '';
-        document.getElementById('entidade-bairro').value = esc.bairro || '';
-        document.getElementById('entidade-complemento').value = esc.complemento || '';
-        document.getElementById('entidade-cep').value = esc.cep || '';
-        document.getElementById('entidade-salas-aula').value = esc.salasAula || esc.salas || '';
-        document.getElementById('entidade-salas-adm').value = esc.salasAdm || '';
-        document.getElementById('entidade-banheiros').value = esc.banheiros || '';
-        document.getElementById('entidade-sala-aee').value = esc.salaAEE || '';
-        document.getElementById('entidade-patio').value = esc.patio || '';
-        document.getElementById('entidade-auditorio').value = esc.auditorio || '';
-        document.getElementById('entidade-refeitorio').value = esc.refeitorio || '';
-        document.getElementById('entidade-quadra').value = esc.quadra || '';
+        const setVal = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val || '';
+        };
+
+        setVal('entidade-id', esc.id);
+        setVal('entidade-nome', esc.nome);
+        setVal('entidade-cnpj', esc.cnpj);
+        setVal('entidade-inep', esc.codigoInep || esc.inep);
+        setVal('entidade-alunos', esc.totalMatricula || esc.alunos);
+        setVal('entidade-localidade', esc.localidade || esc.localizacao || 'Urbana');
+
+        setModalidadesSelecionadas(esc.modalidade || esc.modalidadeStr || '');
+
+        setVal('entidade-diretor', esc.diretor);
+        setVal('entidade-contato-diretor', esc.contatoDiretor);
+        setVal('entidade-telefone', esc.telefone);
+        setVal('entidade-email', esc.email);
+        setVal('entidade-secretario', esc.secretario);
+        setVal('entidade-contato-secretario', esc.contatoSecretario);
+        setVal('entidade-redes', esc.redesSociais || esc.redes);
+
+        setVal('entidade-endereco', esc.endereco);
+        setVal('entidade-bairro', esc.bairro);
+        setVal('entidade-complemento', esc.complemento);
+        setVal('entidade-cep', esc.cep);
+        setVal('entidade-linha', esc.linha);
+        setVal('entidade-rodovia-km', esc.rodoviaKm);
+        setVal('entidade-sitio-rio', esc.sitioRio);
+        setVal('entidade-plus-code', esc.plusCode);
+
+        setVal('entidade-salas-aula', esc.salasAula || esc.salas);
+        setVal('entidade-salas-adm', esc.salasAdm);
+        setVal('entidade-banheiros', esc.banheiros);
+        setVal('entidade-sala-aee', esc.salaAEE);
+        setVal('entidade-auditorio', esc.auditorio);
+        setVal('entidade-patio-coberto', esc.patioCoberto || esc.patio);
+        setVal('entidade-refeitorio', esc.refeitorio);
+        setVal('entidade-cozinha', esc.cozinha);
+        setVal('entidade-deposito-seco', esc.depositoSeco);
+        setVal('entidade-deposito-pereciveis', esc.depositoPereciveis);
+        setVal('entidade-almoxarifado-adm', esc.almoxarifadoAdm);
+        setVal('entidade-deposito', esc.depositoGeral || esc.deposito);
+        setVal('entidade-biblioteca', esc.biblioteca);
+        setVal('entidade-lab-info', esc.labInfo);
+        setVal('entidade-hall', esc.hall);
+        setVal('entidade-dml', esc.dml);
+        setVal('entidade-quadra', esc.quadra);
+        setVal('entidade-quadra-coberta', esc.quadraCoberta);
+        setVal('entidade-quadra-piso', esc.quadraPiso);
+        setVal('entidade-acessibilidade', esc.acessibilidade);
+        setVal('entidade-ppci', esc.ppci);
+        setVal('entidade-fonte-agua', esc.fonteAgua);
+        setVal('entidade-energia-solar', esc.energiaSolar);
+        setVal('entidade-murada-gradeada', esc.muradaGradeada);
+        setVal('entidade-tipo-abertura', esc.tipoAbertura);
+        setVal('entidade-tipo-forro', esc.tipoForro);
+        setVal('entidade-tipo-piso', esc.tipoPiso);
 
         ativarAba(2);
         window.scrollTo({ top: 120, behavior: 'smooth' });
@@ -1198,31 +1738,25 @@
 
     // Limpar Formulário
     function limparFormulario() {
-      document.getElementById('entidade-id').value = '';
-      document.getElementById('entidade-nome').value = '';
-      document.getElementById('entidade-cnpj').value = '';
-      document.getElementById('entidade-inep').value = '';
-      document.getElementById('entidade-alunos').value = '';
-      document.getElementById('entidade-modalidade').value = '';
-      document.getElementById('entidade-diretor').value = '';
-      document.getElementById('entidade-contato-diretor').value = '';
-      document.getElementById('entidade-telefone').value = '';
-      document.getElementById('entidade-email').value = '';
-      document.getElementById('entidade-secretario').value = '';
-      document.getElementById('entidade-contato-secretario').value = '';
-      document.getElementById('entidade-redes').value = '';
-      document.getElementById('entidade-endereco').value = '';
-      document.getElementById('entidade-bairro').value = '';
-      document.getElementById('entidade-complemento').value = '';
-      document.getElementById('entidade-cep').value = '';
-      document.getElementById('entidade-salas-aula').value = '';
-      document.getElementById('entidade-salas-adm').value = '';
-      document.getElementById('entidade-banheiros').value = '';
-      document.getElementById('entidade-sala-aee').value = '';
-      document.getElementById('entidade-patio').value = '';
-      document.getElementById('entidade-auditorio').value = '';
-      document.getElementById('entidade-refeitorio').value = '';
-      document.getElementById('entidade-quadra').value = '';
+      const ids = [
+        'entidade-id', 'entidade-nome', 'entidade-cnpj', 'entidade-inep', 'entidade-alunos',
+        'entidade-diretor', 'entidade-contato-diretor', 'entidade-telefone', 'entidade-email',
+        'entidade-secretario', 'entidade-contato-secretario', 'entidade-redes',
+        'entidade-endereco', 'entidade-bairro', 'entidade-complemento', 'entidade-cep',
+        'entidade-linha', 'entidade-rodovia-km', 'entidade-sitio-rio', 'entidade-plus-code',
+        'entidade-salas-aula', 'entidade-salas-adm', 'entidade-banheiros', 'entidade-sala-aee',
+        'entidade-auditorio', 'entidade-patio-coberto', 'entidade-refeitorio', 'entidade-cozinha',
+        'entidade-deposito-seco', 'entidade-deposito-pereciveis', 'entidade-almoxarifado-adm',
+        'entidade-deposito', 'entidade-biblioteca', 'entidade-lab-info', 'entidade-hall',
+        'entidade-dml', 'entidade-quadra', 'entidade-quadra-coberta', 'entidade-quadra-piso',
+        'entidade-acessibilidade', 'entidade-ppci', 'entidade-fonte-agua', 'entidade-energia-solar',
+        'entidade-murada-gradeada', 'entidade-tipo-abertura', 'entidade-tipo-forro', 'entidade-tipo-piso'
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      limparModalidades();
       ativarAba(2);
       document.getElementById('entidade-nome')?.focus();
     }
@@ -1238,7 +1772,7 @@
       const getVal = id => (document.getElementById(id)?.value || '').trim();
       const nome = getVal('entidade-nome');
       if (!nome) {
-        alert('Informe o Nome Completo da Escola / Entidade.');
+        alert('Informe o Nome da Escola / Entidade.');
         ativarAba(2);
         document.getElementById('entidade-nome')?.focus();
         return;
@@ -1267,15 +1801,42 @@
         contatoDiretor: getVal('entidade-contato-diretor'),
         secretario: getVal('entidade-secretario'),
         contatoSecretario: getVal('entidade-contato-secretario'),
+        localidade: getVal('entidade-localidade') || 'Urbana',
+        // Campos de Endereço:
+        linha: getVal('entidade-linha'),
+        rodoviaKm: getVal('entidade-rodovia-km'),
+        sitioRio: getVal('entidade-sitio-rio'),
+        plusCode: getVal('entidade-plus-code'),
+        // Campos de Infraestrutura & Espaços (Imagem 1):
         salasAula: getVal('entidade-salas-aula'),
         salasAdm: getVal('entidade-salas-adm'),
-        salaAEE: getVal('entidade-sala-aee'),
         banheiros: getVal('entidade-banheiros'),
-        patio: getVal('entidade-patio'),
+        salaAEE: getVal('entidade-sala-aee'),
         auditorio: getVal('entidade-auditorio'),
+        patio: getVal('entidade-patio-coberto'),
+        patioCoberto: getVal('entidade-patio-coberto'),
         refeitorio: getVal('entidade-refeitorio'),
+        cozinha: getVal('entidade-cozinha'),
+        depositoSeco: getVal('entidade-deposito-seco'),
+        depositoPereciveis: getVal('entidade-deposito-pereciveis'),
+        almoxarifadoAdm: getVal('entidade-almoxarifado-adm'),
+        deposito: getVal('entidade-deposito'),
+        depositoGeral: getVal('entidade-deposito'),
+        biblioteca: getVal('entidade-biblioteca'),
+        labInfo: getVal('entidade-lab-info'),
+        hall: getVal('entidade-hall'),
+        dml: getVal('entidade-dml'),
         quadra: getVal('entidade-quadra'),
-        localidade: getVal('entidade-localidade')
+        quadraCoberta: getVal('entidade-quadra-coberta'),
+        quadraPiso: getVal('entidade-quadra-piso'),
+        acessibilidade: getVal('entidade-acessibilidade'),
+        ppci: getVal('entidade-ppci'),
+        fonteAgua: getVal('entidade-fonte-agua'),
+        energiaSolar: getVal('entidade-energia-solar'),
+        muradaGradeada: getVal('entidade-murada-gradeada'),
+        tipoAbertura: getVal('entidade-tipo-abertura'),
+        tipoForro: getVal('entidade-tipo-forro'),
+        tipoPiso: getVal('entidade-tipo-piso')
       };
 
       // Salva localmente
@@ -1315,9 +1876,14 @@
       _superAtual = (params.get('sup') || '').trim();
       _parceriaAtual = (params.get('parc') || 'Fomento (Termo de Fomento - F)').trim();
 
-      // Ajusta Regional com base no mapeamento se vazio
-      if (!_superAtual && typeof MUNICIPIOS_CRE_MAPEAMENTO !== 'undefined') {
-        _superAtual = MUNICIPIOS_CRE_MAPEAMENTO[_municipioAtual] || 'CRE Regional';
+      // Ajusta SUPER: remove qualquer prefixo legado 'CRE' e assegura 'SUPER'
+      _superAtual = _superAtual.replace(/^CRE\s*-\s*/i, 'SUPER - ').replace(/^CRE\s+/i, 'SUPER ');
+      if (!_superAtual || _superAtual.toUpperCase().includes('CRE')) {
+        if (typeof getSuperPorMunicipio === 'function') {
+          _superAtual = getSuperPorMunicipio(_municipioAtual) || 'SUPER Regional';
+        } else {
+          _superAtual = 'SUPER - ' + _municipioAtual;
+        }
       }
 
       // Preenche cabeçalho: SOMENTE NOME DO MUNICÍPIO EM FONTE 30 PT (MARCAÇÃO AMARELA)
@@ -1327,11 +1893,11 @@
 
       document.title = isTodos ? 'TODOS OS MUNICÍPIOS - Cadastro de Entidades / Escolas' : `${_municipioAtual.toUpperCase()} - Cadastro de Entidades / Escolas`;
 
-      // Atualiza Badges dos parâmetros
+      // Atualiza Badges dos parâmetros vinculados
       document.getElementById('param-municipio').textContent = isTodos ? 'Todos os Municípios' : _municipioAtual;
       document.getElementById('param-categoria').textContent = _categoriaAtual.toUpperCase() === 'TODOS' ? 'Todas as Categorias' : _categoriaAtual;
       document.getElementById('param-competencia').textContent = _competenciaAtual.toUpperCase() === 'TODOS' ? 'Todas as Competências' : _competenciaAtual;
-      document.getElementById('param-super').textContent = _superAtual.toUpperCase() === 'TODOS' ? 'Todas as Regionais (CREs)' : (_superAtual || 'CRE Regional');
+      document.getElementById('param-super').textContent = _superAtual.toUpperCase() === 'TODOS' ? 'Todas as Superintendências (SUPER)' : (_superAtual || 'SUPER Regional');
       document.getElementById('param-parceria').textContent = _parceriaAtual.toUpperCase() === 'TODOS' ? 'Todos os Tipos' : _parceriaAtual.split('(')[0].trim();
 
       // Inicializa campos fixados do formulário
@@ -1346,9 +1912,12 @@
         }
       }
       document.getElementById('entidade-competencia').value = _competenciaAtual.toUpperCase() === 'TODOS' ? 'Municipal' : _competenciaAtual;
-      document.getElementById('entidade-super').value = _superAtual.toUpperCase() === 'TODOS' ? 'Regional' : (_superAtual || 'Regional');
+      document.getElementById('entidade-super').value = _superAtual.toUpperCase() === 'TODOS' ? 'SUPER Regional' : (_superAtual || 'SUPER Regional');
       document.getElementById('entidade-categoria').value = _categoriaAtual.toUpperCase() === 'TODOS' ? 'Conselho Escolar' : _categoriaAtual;
       document.getElementById('entidade-parceria').value = _parceriaAtual.toUpperCase() === 'TODOS' ? 'Fomento (Termo de Fomento - F)' : _parceriaAtual;
+
+      // Aplica legendas dinâmicas com base na categoria
+      atualizarLegendasPorCategoria(_categoriaAtual);
 
       // Inicializa Prazo (1º clique + 8 dias)
       inicializarPrazo(_municipioAtual);
@@ -1356,7 +1925,7 @@
       // Atualiza Título da Tabela
       document.getElementById('titulo-tabela-municipio').textContent = _municipioAtual.toUpperCase();
 
-      // Carrega Escolas do Município
+      // Carrega Escolas vinculadas aos parâmetros
       carregarEscolasDoMunicipio();
 
       // Foca no nome da escola para digitação imediata

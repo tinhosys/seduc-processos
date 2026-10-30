@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.66">
+  <link rel="stylesheet" href="css/style.css?v=1.3.67">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.66</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.67</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.66</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.67</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -2928,7 +2928,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.66</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.67</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3610,7 +3610,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.66
+              GBZ - v1.3.67
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3883,7 +3883,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.66] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.67] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5153,7 +5153,7 @@
 
             <div style="display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome Completo da Escola / Entidade *</label>
+                <label id="lbl-entidade-nome-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome Completo da Escola / Entidade *</label>
                 <input type="text" id="entidade-nome" required placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.16); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none; transition:border-color 0.2s;" onfocus="this.style.borderColor='#38bdf8';" onblur="this.style.borderColor='rgba(255,255,255,0.16)';">
               </div>
               <div>
@@ -5170,30 +5170,42 @@
                 <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">CNPJ</label>
                 <input type="text" id="entidade-cnpj" placeholder="00.000.000/0000-00" maxlength="18" oninput="mascaraCNPJInputPopup(this)" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
-              <div>
+              <div id="wrap-entidade-inep-modal">
                 <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Código INEP</label>
                 <input type="text" id="entidade-inep" placeholder="8 dígitos" maxlength="12" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
-              <div>
+              <div id="wrap-entidade-alunos-modal">
                 <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nº de Alunos</label>
                 <input type="number" id="entidade-alunos" min="0" placeholder="0" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
-              <div>
-                <label for="entidade-modalidade" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Modalidade</label>
-                <select id="entidade-modalidade" style="width:100%; height:40px; padding:6px 12px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none; cursor:pointer;">
-                  <option value="">Selecione a Modalidade...</option>
-                  <option value="Ensino Fundamental">Ensino Fundamental</option>
-                  <option value="Ensino Médio">Ensino Médio</option>
-                  <option value="Educação Infantil">Educação Infantil</option>
-                  <option value="Creche">Creche</option>
-                  <option value="EJA (Fund.)">EJA (Fund.)</option>
-                  <option value="EJA (Médio)">EJA (Médio)</option>
-                  <option value="Educação Especial / AEE">Educação Especial / AEE</option>
-                  <option value="Educação Profissional">Educação Profissional</option>
-                  <option value="Educação do Campo">Educação do Campo</option>
-                  <option value="Educação Indígena">Educação Indígena</option>
-                  <option value="Outra / Geral">Outra / Geral</option>
-                </select>
+              <div style="position:relative;" id="wrap-entidade-modalidade-modal">
+                <label for="entidade-modalidade-modal-trigger" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Modalidade</label>
+                <div id="entidade-modalidade-modal-trigger" style="width:100%; height:40px; padding:6px 12px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="toggleDropdownModalidadeModal(event)">
+                  <span id="txt-modalidade-modal-trigger" style="color:#94a3b8; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Selecione a(s) Modalidade(s)...</span>
+                  <span style="font-size:11px; color:#38bdf8; margin-left:6px;">▼</span>
+                </div>
+                
+                <!-- DROPDOWN COM CHECKBOXES MODAL -->
+                <div id="drop-modalidade-modal-opcoes" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; min-width:240px; max-height:220px; overflow-y:auto; background:#0f172a; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 12px 35px rgba(0,0,0,0.85); z-index:9999; padding:6px 8px;">
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Ensino Fundamental" onchange="aoMudarModalidadeModalCheck()"> Ensino Fundamental</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Ensino Médio" onchange="aoMudarModalidadeModalCheck()"> Ensino Médio</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Infantil" onchange="aoMudarModalidadeModalCheck()"> Educação Infantil</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Creche" onchange="aoMudarModalidadeModalCheck()"> Creche</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="EJA (Fund.)" onchange="aoMudarModalidadeModalCheck()"> EJA (Fund.)</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="EJA (Médio)" onchange="aoMudarModalidadeModalCheck()"> EJA (Médio)</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Especial / AEE" onchange="aoMudarModalidadeModalCheck()"> Educação Especial / AEE</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Profissional" onchange="aoMudarModalidadeModalCheck()"> Educação Profissional</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação do Campo" onchange="aoMudarModalidadeModalCheck()"> Educação do Campo</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Indígena" onchange="aoMudarModalidadeModalCheck()"> Educação Indígena</label>
+                  <label class="mod-checkbox-item"><input type="checkbox" value="Outra / Geral" onchange="aoMudarModalidadeModalCheck()"> Outra / Geral</label>
+                </div>
+                
+                <input type="hidden" id="entidade-modalidade" value="">
+                
+                <!-- RELAÇÃO VISUAL ABAIXO SEPARADA POR VÍRGULA (IMAGEM 5) -->
+                <div id="box-modalidades-selecionadas-modal" style="margin-top:6px; min-height:20px; font-size:11.5px; line-height:1.4;">
+                  <span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>
+                </div>
               </div>
             </div>
 
@@ -5208,8 +5220,8 @@
                 </select>
               </div>
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Super / Regional</label>
-                <input type="text" id="entidade-super" placeholder="Ex: CRE / Regional" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Superintendência de Educação (SUPER)</label>
+                <input type="text" id="entidade-super" placeholder="SUPER - ..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
                 <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Localidade</label>
@@ -5247,34 +5259,34 @@
 
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome do diretor | Presidente | Prefeito</label>
+                <label id="lbl-entidade-diretor-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome do diretor | Presidente | Prefeito</label>
                 <input type="text" id="entidade-diretor" placeholder="Nome completo" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Contato do diretor</label>
+                <label id="lbl-entidade-contato-diretor-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Contato do diretor</label>
                 <input type="text" id="entidade-contato-diretor" placeholder="(69) 90000-0000" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Telefone da Escola / Entidade</label>
+                <label id="lbl-entidade-telefone-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Telefone da Escola / Entidade</label>
                 <input type="text" id="entidade-telefone" placeholder="(69) 3000-0000" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Email da entidade</label>
+                <label id="lbl-entidade-email-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Email da entidade</label>
                 <input type="email" id="entidade-email" placeholder="entidade@educacao.ro.gov.br" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
             </div>
 
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin-bottom:16px;">
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome do secretário</label>
+                <label id="lbl-entidade-secretario-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nome do secretário</label>
                 <input type="text" id="entidade-secretario" placeholder="Nome do secretário" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Contato do secretário</label>
+                <label id="lbl-entidade-contato-secretario-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Contato do secretário</label>
                 <input type="text" id="entidade-contato-secretario" placeholder="(69) 90000-0000" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div style="grid-column:span 2;">
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Rede social (Facebook / Instagram)</label>
+                <label id="lbl-entidade-redes-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Rede social (Facebook / Instagram)</label>
                 <input type="text" id="entidade-redes" placeholder="@escola ou link das redes" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
             </div>
@@ -5313,7 +5325,7 @@
               </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px;">
               <div>
                 <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Complemento</label>
                 <input type="text" id="entidade-complemento" placeholder="Ex: Próximo à praça central" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
@@ -5321,6 +5333,48 @@
               <div>
                 <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">CEP</label>
                 <input type="text" id="entidade-cep" placeholder="76.000-000" maxlength="10" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
+              </div>
+            </div>
+
+            <!-- COMPLEMENTO RURAL / DETALHES ADICIONAIS (IMAGEM 2) -->
+            <div style="background: rgba(15, 23, 42, 0.6); border: 1px dashed rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 14px; margin-bottom: 14px;">
+              <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                <span style="font-size:16px;">🌾</span>
+                <span style="font-size:12px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.4px;">
+                  Detalhes Específicos & Acesso Rural (Linha, BR, Km, Sítio, Rio)
+                </span>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:0;">
+                <div>
+                  <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Linha / Estrada</label>
+                  <input type="text" id="entidade-linha" placeholder="Ex: Linha 60, Linha C-15..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
+                </div>
+                <div>
+                  <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Rodovia / BR & KM</label>
+                  <input type="text" id="entidade-rodovia-km" placeholder="Ex: BR-364, Km 14..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
+                </div>
+                <div>
+                  <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Sítio / Fazenda / Gleba / Rio</label>
+                  <input type="text" id="entidade-sitio-rio" placeholder="Ex: Sítio Três Meninas / Rio Machado..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
+                </div>
+              </div>
+            </div>
+
+            <!-- PLUS CODE DO GOOGLE MAPS (IMAGEM 2) -->
+            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; padding: 14px; margin-bottom: 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+                <label style="margin-bottom:0; display:flex; align-items:center; gap:6px; color:#6ee7b7; font-size:11.5px; font-weight:800;">
+                  <span>📍</span> Plus Code (Google Maps)
+                </label>
+                <a href="https://maps.google.com/pluscodes/" target="_blank" rel="noopener noreferrer"
+                  style="font-size:11.5px; color:#38bdf8; text-decoration:underline; font-weight:800; display:inline-flex; align-items:center; gap:4px;"
+                  title="Saiba o que é e como encontrar o Plus Code da escola no Google Maps">
+                  ❓ O que é PLUS CODE? ↗
+                </a>
+              </div>
+              <input type="text" id="entidade-plus-code" placeholder="Ex: 87PJ8M2C+4X ou cole o código Plus Code do Google Maps" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
+              <div style="font-size:11px; color:#94a3b8; margin-top:5px; line-height:1.4;">
+                💡 <strong>Plus Code</strong> é o código de localização digital oficial do Google Maps, ideal para escolas sem nome de rua ou em áreas rurais. Encontre-o clicando na localização da escola no Google Maps.
               </div>
             </div>
 
@@ -5338,6 +5392,8 @@
           </div>
 
           <!-- GRUPO 5: INFRAESTRUTURA & ESPAÇOS PEDAGÓGICOS -->
+                    <!-- GRUPO 5: INFRAESTRUTURA & ESPAÃ‡OS PEDAGÃ“GICOS (IMAGEM 1) -->
+                    <!-- GRUPO 5: INFRAESTRUTURA & ESPAÇOS PEDAGÓGICOS (IMAGEM 1) -->
           <div id="sec-grupo-entidade-5" style="margin-bottom:18px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px;">
             <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px;">
               <div style="display:flex; align-items:center; gap:8px;">
@@ -5347,6 +5403,7 @@
               <span style="font-size:11.5px; color:#94a3b8;">Etapa 5 de 5</span>
             </div>
 
+            <!-- LINHA 1: SALAS & SANITÁRIOS -->
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUANT. SALA DE AULA</label>
@@ -5357,50 +5414,237 @@
                 <input type="number" id="entidade-salas-adm" min="0" placeholder="0" style="width:100%; height:38px; padding:6px; text-align:center; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#f8fafc; font-weight:700; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">BANHEIROS</label>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">BANHEIROS (QTDE)</label>
                 <input type="text" id="entidade-banheiros" placeholder="Qtd / Desc" style="width:100%; height:38px; padding:6px; text-align:center; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">SALA DO AEE (S/N)</label>
                 <select id="entidade-sala-aee" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
                 </select>
               </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:16px;">
-              <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">PÁTIO (S/N)</label>
-                <select id="entidade-patio" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
-                  <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
-                </select>
-              </div>
+            <!-- LINHA 2: CONVIVÊNCIA & ALIMENTAÇÃO -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">AUDITÓRIO (S/N)</label>
                 <select id="entidade-auditorio" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">PÁTIO COBERTO (S/N)</label>
+                <select id="entidade-patio-coberto" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
                 </select>
               </div>
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">REFEITÓRIO (S/N)</label>
                 <select id="entidade-refeitorio" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
                 </select>
               </div>
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUADRA (S/N)</label>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ÁREA DE COCÇÃO (COZINHA)</label>
+                <select id="entidade-cozinha" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 3: ARMAZENAMENTO & ALMOXARIFADO -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">DEPÓSITO SECO (MANTIMENTOS)</label>
+                <select id="entidade-deposito-seco" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">DEPÓSITO PERECÍVEIS (ÁREA FRIA)</label>
+                <select id="entidade-deposito-pereciveis" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ALMOXARIFADO ADM</label>
+                <select id="entidade-almoxarifado-adm" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">DEPÓSITO GERAL</label>
+                <select id="entidade-deposito" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 4: PEDAGÓGICO, APOIO & SERVIÇOS -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">BIBLIOTECA (S/N)</label>
+                <select id="entidade-biblioteca" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">LAB. DE INFORMÁTICA</label>
+                <select id="entidade-lab-info" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">HALL DE ACOLHIMENTO</label>
+                <select id="entidade-hall" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">DML (MAT. LIMPEZA)</label>
+                <select id="entidade-dml" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 5: COMPLEXO ESPORTIVO & ACESSIBILIDADE -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUADRA POLIESPORTIVA</label>
                 <select id="entidade-quadra" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
-                  <option value="S">Sim (S)</option>
-                  <option value="N">Não (N)</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUADRA COBERTA (S/N)</label>
+                <select id="entidade-quadra-coberta" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                  <option value="Não se aplica">Não se aplica</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">PISO DA QUADRA</label>
+                <select id="entidade-quadra-piso" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Granelite">Granelite</option>
+                  <option value="Concreto">Concreto</option>
+                  <option value="Outro">Outro</option>
+                  <option value="Não se aplica">Não se aplica</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ACESSIBILIDADE (S/N)</label>
+                <select id="entidade-acessibilidade" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 6: SEGURANÇA, UTILIDADES & ENERGIA -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">PPCI (PREV. INCÊNDIO)</label>
+                <select id="entidade-ppci" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">FONTE DE ÁGUA</label>
+                <select id="entidade-fonte-agua" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Poço Simples">Poço Simples</option>
+                  <option value="Poço Artesiano">Poço Artesiano</option>
+                  <option value="Serviço de Água e Esgoto">Serviço de Água e Esgoto</option>
+                  <option value="Outra">Outra</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ENERGIA SOLAR (S/N)</label>
+                <select id="entidade-energia-solar" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ESCOLA MURADA / GRADEADA</label>
+                <select id="entidade-murada-gradeada" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 7: ESTRUTURA E ACABAMENTO PREDIAL -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:16px;">
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE ABERTURA</label>
+                <select id="entidade-tipo-abertura" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Ferro">Ferro</option>
+                  <option value="Grade">Grade</option>
+                  <option value="Vidro Temperado">Vidro Temperado</option>
+                  <option value="Madeira">Madeira</option>
+                  <option value="ACM">ACM</option>
+                  <option value="Misto">Misto</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE FORRO</label>
+                <select id="entidade-tipo-forro" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Madeira">Madeira</option>
+                  <option value="Gesso">Gesso</option>
+                  <option value="PVC">PVC</option>
+                  <option value="Laje">Laje</option>
+                  <option value="Sem Forro">Sem Forro</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE PISO DA ESCOLA</label>
+                <select id="entidade-tipo-piso" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Cerâmica">Cerâmica</option>
+                  <option value="Concreto">Concreto</option>
+                  <option value="Granelite">Granelite</option>
+                  <option value="Outros">Outros</option>
                 </select>
               </div>
             </div>
@@ -5553,11 +5797,11 @@
 
         <!-- Campo 4: Super (Imagem 5) -->
         <div class="link-gen-combo-wrap" id="wrap-link-gen-super" style="position:relative;">
-          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Super</label>
-          <input type="hidden" id="link-gen-super" value="CRE - Alta Floresta D'Oeste" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
+          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Superintendência de Educação (SUPER)</label>
+          <input type="hidden" id="link-gen-super" value="SUPER - Alta Floresta D'Oeste" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
           <button type="button" class="link-gen-combo-btn" id="btn-link-gen-super" onclick="toggleLinkGenDropdown('super')"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;" title="Selecione ou altere a Regional / CRE vinculada">
-            <span class="link-gen-combo-label" id="label-link-gen-super">CRE - Alta Floresta D'Oeste</span>
+            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;" title="Selecione ou altere a Superintendência vinculada">
+            <span class="link-gen-combo-label" id="label-link-gen-super">SUPER - Alta Floresta D'Oeste</span>
             <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
           </button>
           <div class="link-gen-combo-dropdown" id="drop-link-gen-super" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
@@ -5837,10 +6081,10 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.66"></script>
-  <script src="js/app.js?v=1.3.66"></script>
-  <script src="js/auth-sap.js?v=1.3.66"></script>
-  <script src="js/escolas.js?v=1.3.66" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.3.67"></script>
+  <script src="js/app.js?v=1.3.67"></script>
+  <script src="js/auth-sap.js?v=1.3.67"></script>
+  <script src="js/escolas.js?v=1.3.67" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>

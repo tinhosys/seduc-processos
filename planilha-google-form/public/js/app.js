@@ -8117,6 +8117,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-secretario', dadosExistentes.secretario || '');
     setVal('entidade-contato-secretario', dadosExistentes.contatoSecretario || '');
     setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
+    setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
     setVal('entidade-salas-adm', dadosExistentes.salasAdm || '');
     setVal('entidade-sala-aee', dadosExistentes.salaAEE || '');
     setVal('entidade-banheiros', dadosExistentes.banheiros || '');
@@ -8125,6 +8126,36 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-refeitorio', dadosExistentes.refeitorio || '');
     setVal('entidade-quadra', dadosExistentes.quadra || '');
     setVal('entidade-localidade', dadosExistentes.localidade || dadosExistentes.localizacao || 'Urbana');
+
+    // Novos campos de endereço rural e Plus Code
+    setVal('entidade-linha', dadosExistentes.linha || '');
+    setVal('entidade-rodovia-km', dadosExistentes.rodoviaKm || '');
+    setVal('entidade-sitio-rio', dadosExistentes.sitioRio || '');
+    setVal('entidade-plus-code', dadosExistentes.plusCode || '');
+
+    // Novos campos de infraestrutura (27 itens)
+    setVal('entidade-patio-coberto', dadosExistentes.patioCoberto || dadosExistentes.patio || '');
+    setVal('entidade-cozinha', dadosExistentes.cozinha || '');
+    setVal('entidade-deposito-seco', dadosExistentes.depositoSeco || '');
+    setVal('entidade-deposito-pereciveis', dadosExistentes.depositoPereciveis || '');
+    setVal('entidade-almoxarifado-adm', dadosExistentes.almoxarifadoAdm || '');
+    setVal('entidade-deposito', dadosExistentes.depositoGeral || dadosExistentes.deposito || '');
+    setVal('entidade-biblioteca', dadosExistentes.biblioteca || '');
+    setVal('entidade-lab-info', dadosExistentes.labInfo || '');
+    setVal('entidade-hall', dadosExistentes.hall || '');
+    setVal('entidade-dml', dadosExistentes.dml || '');
+    setVal('entidade-quadra-coberta', dadosExistentes.quadraCoberta || '');
+    setVal('entidade-quadra-piso', dadosExistentes.quadraPiso || '');
+    setVal('entidade-acessibilidade', dadosExistentes.acessibilidade || '');
+    setVal('entidade-ppci', dadosExistentes.ppci || '');
+    setVal('entidade-fonte-agua', dadosExistentes.fonteAgua || '');
+    setVal('entidade-energia-solar', dadosExistentes.energiaSolar || '');
+    setVal('entidade-murada-gradeada', dadosExistentes.muradaGradeada || '');
+    setVal('entidade-tipo-abertura', dadosExistentes.tipoAbertura || '');
+    setVal('entidade-tipo-forro', dadosExistentes.tipoForro || '');
+    setVal('entidade-tipo-piso', dadosExistentes.tipoPiso || '');
+
+    setModalidadesModalSelecionadas(dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '');
 
     // Sincronizar radio
     const catUpper = String(dadosExistentes.categoria || '').toUpperCase();
@@ -8141,6 +8172,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-categoria', 'Conselho Escolar');
     setVal('entidade-competencia', 'Municipal');
     setVal('entidade-localidade', 'Urbana');
+    setModalidadesModalSelecionadas('');
     aoSelecionarTipoEntidadeForm('Conselho Escolar');
 
     // Se houver um município já selecionado na aba de contatos ou no filtro, pré-preenche
@@ -8167,6 +8199,118 @@ function fecharModalCadastroEntidade() {
   if (modal) modal.style.display = 'none';
 }
 window.fecharModalCadastroEntidade = fecharModalCadastroEntidade;
+
+// Funções de Modalidade Multi-Select para o Modal Incorporado (Imagem 5)
+function toggleDropdownModalidadeModal(e) {
+  if (e) e.stopPropagation();
+  const drop = document.getElementById('drop-modalidade-modal-opcoes');
+  if (drop) {
+    drop.style.display = (drop.style.display === 'none' || drop.style.display === '') ? 'block' : 'none';
+  }
+}
+window.toggleDropdownModalidadeModal = toggleDropdownModalidadeModal;
+
+function aoMudarModalidadeModalCheck() {
+  const container = document.getElementById('drop-modalidade-modal-opcoes');
+  if (!container) return;
+  const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+  const selecionadas = Array.from(checkboxes).map(c => c.value);
+  
+  const hiddenInput = document.getElementById('entidade-modalidade');
+  if (hiddenInput) hiddenInput.value = selecionadas.join(', ');
+  
+  const triggerTxt = document.getElementById('txt-modalidade-modal-trigger');
+  if (triggerTxt) {
+    if (selecionadas.length === 0) {
+      triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
+      triggerTxt.style.color = '#94a3b8';
+    } else {
+      triggerTxt.textContent = `${selecionadas.length} selecionada(s)`;
+      triggerTxt.style.color = '#38bdf8';
+    }
+  }
+  
+  const box = document.getElementById('box-modalidades-selecionadas-modal');
+  if (box) {
+    if (selecionadas.length === 0) {
+      box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
+    } else {
+      box.innerHTML = selecionadas.map((mod, idx) => {
+        const isUltimo = (idx === selecionadas.length - 1);
+        return `<span class="badge-modalidade-item">${mod}</span>${!isUltimo ? '<span class="badge-sep-virgula">, </span>' : ''}`;
+      }).join('');
+    }
+  }
+}
+window.aoMudarModalidadeModalCheck = aoMudarModalidadeModalCheck;
+
+function setModalidadesModalSelecionadas(modStr) {
+  const container = document.getElementById('drop-modalidade-modal-opcoes');
+  if (!container) return;
+  const arr = String(modStr || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+  const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+  checkboxes.forEach(cb => {
+    const v = cb.value.trim().toLowerCase();
+    cb.checked = arr.some(a => a === v || v.includes(a) || a.includes(v));
+  });
+  aoMudarModalidadeModalCheck();
+}
+window.setModalidadesModalSelecionadas = setModalidadesModalSelecionadas;
+
+// Atualiza legendas dinâmicas e visibilidade do INEP / Alunos no modal (Imagens 3, 4 e 5)
+function atualizarLegendasModalPorCategoria(categoria) {
+  const cat = String(categoria || '').toUpperCase();
+  const isPrefeitura = cat.includes('PREFEITURA');
+  const isApae = cat.includes('APAE');
+  const isEfa = (cat.includes('EFA') || cat.includes('AGRICOLA') || cat.includes('AGRÍCOLA'));
+
+  // 1. Identificação - Nome da Entidade / Escola (Imagem 5)
+  const lblNome = document.getElementById('lbl-entidade-nome-modal') || document.getElementById('lbl-entidade-nome');
+  if (lblNome) {
+    if (isPrefeitura) lblNome.innerHTML = 'Nome da Prefeitura Municipal *';
+    else if (isApae || isEfa) lblNome.innerHTML = 'Nome da Entidade *';
+    else lblNome.innerHTML = 'Nome da Escola *';
+  }
+
+  // 2. INEP e Alunos: apenas NÃO ficam disponíveis para prefeituras (Imagem 5)
+  const wrapInep = document.getElementById('wrap-entidade-inep-modal') || document.getElementById('wrap-entidade-inep');
+  const wrapAlunos = document.getElementById('wrap-entidade-alunos-modal') || document.getElementById('wrap-entidade-alunos');
+  if (wrapInep) wrapInep.style.display = isPrefeitura ? 'none' : 'block';
+  if (wrapAlunos) wrapAlunos.style.display = isPrefeitura ? 'none' : 'block';
+
+  // 3. Gestão & Contatos (Imagens 3 e 4)
+  const lblDir = document.getElementById('lbl-entidade-diretor-modal') || document.getElementById('lbl-entidade-diretor');
+  const lblContDir = document.getElementById('lbl-entidade-contato-diretor-modal') || document.getElementById('lbl-entidade-contato-diretor');
+  const lblTel = document.getElementById('lbl-entidade-telefone-modal') || document.getElementById('lbl-entidade-telefone');
+  const lblEmail = document.getElementById('lbl-entidade-email-modal') || document.getElementById('lbl-entidade-email');
+  const lblSec = document.getElementById('lbl-entidade-secretario-modal') || document.getElementById('lbl-entidade-secretario');
+  const lblContSec = document.getElementById('lbl-entidade-contato-secretario-modal') || document.getElementById('lbl-entidade-contato-secretario');
+
+  if (isPrefeitura) {
+    if (lblDir) lblDir.textContent = 'Nome do(a) Prefeito(a) *';
+    if (lblContDir) lblContDir.textContent = 'Contato do Gabinete do Prefeito';
+    if (lblTel) lblTel.textContent = 'Telefone da Prefeitura';
+    if (lblEmail) lblEmail.textContent = 'E-mail Oficial da Prefeitura';
+    if (lblSec) lblSec.textContent = 'Secretário Municipal de Educação (SEMED) *';
+    if (lblContSec) lblContSec.textContent = 'Contato do Secretário de Educação';
+  } else if (isApae || isEfa) {
+    if (lblDir) lblDir.textContent = 'Presidente da Entidade *';
+    if (lblContDir) lblContDir.textContent = 'Contato do Presidente';
+    if (lblTel) lblTel.textContent = 'Telefone da Entidade';
+    if (lblEmail) lblEmail.textContent = 'E-mail da Entidade';
+    if (lblSec) lblSec.textContent = 'Secretário(a) Geral *';
+    if (lblContSec) lblContSec.textContent = 'Contato do Secretário(a) Geral';
+  } else {
+    // Conselho Escolar / Escola
+    if (lblDir) lblDir.textContent = 'Nome do Diretor | Presidente *';
+    if (lblContDir) lblContDir.textContent = 'Contato do Diretor';
+    if (lblTel) lblTel.textContent = 'Telefone da Unidade Escolar';
+    if (lblEmail) lblEmail.textContent = 'E-mail da Escola';
+    if (lblSec) lblSec.textContent = 'Nome do Secretário(a) Escolar *';
+    if (lblContSec) lblContSec.textContent = 'Contato do Secretário(a)';
+  }
+}
+window.atualizarLegendasModalPorCategoria = atualizarLegendasModalPorCategoria;
 
 // Sincroniza a categoria da entidade e a modalidade jurídica de parceria (Fomento vs Convênio)
 function aoSelecionarTipoEntidadeForm(tipo) {
@@ -8197,6 +8341,9 @@ function aoSelecionarTipoEntidadeForm(tipo) {
       parceriaInput.style.borderColor = 'rgba(16,185,129,0.5)';
     }
   }
+
+  // Atualiza legendas dinâmicas e visibilidade do INEP / Alunos no modal (Imagens 3, 4 e 5)
+  atualizarLegendasModalPorCategoria(tipo);
 }
 window.aoSelecionarTipoEntidadeForm = aoSelecionarTipoEntidadeForm;
 
@@ -8249,10 +8396,37 @@ function salvarCadastroEntidade(e) {
     salaAEE: getV('entidade-sala-aee'),
     banheiros: getV('entidade-banheiros'),
     patio: getV('entidade-patio'),
+    patioCoberto: getV('entidade-patio-coberto') || getV('entidade-patio'),
     auditorio: getV('entidade-auditorio'),
     refeitorio: getV('entidade-refeitorio'),
     quadra: getV('entidade-quadra'),
-    localidade: getV('entidade-localidade')
+    localidade: getV('entidade-localidade'),
+    // Novos campos de endereço:
+    linha: getV('entidade-linha'),
+    rodoviaKm: getV('entidade-rodovia-km'),
+    sitioRio: getV('entidade-sitio-rio'),
+    plusCode: getV('entidade-plus-code'),
+    // Novos campos de infraestrutura:
+    acessibilidade: getV('entidade-acessibilidade'),
+    cozinha: getV('entidade-cozinha'),
+    depositoSeco: getV('entidade-deposito-seco'),
+    depositoPereciveis: getV('entidade-deposito-pereciveis'),
+    almoxarifadoAdm: getV('entidade-almoxarifado-adm'),
+    deposito: getV('entidade-deposito'),
+    depositoGeral: getV('entidade-deposito'),
+    biblioteca: getV('entidade-biblioteca'),
+    dml: getV('entidade-dml'),
+    quadraCoberta: getV('entidade-quadra-coberta'),
+    quadraPiso: getV('entidade-quadra-piso'),
+    labInfo: getV('entidade-lab-info'),
+    hall: getV('entidade-hall'),
+    ppci: getV('entidade-ppci'),
+    fonteAgua: getV('entidade-fonte-agua'),
+    energiaSolar: getV('entidade-energia-solar'),
+    tipoAbertura: getV('entidade-tipo-abertura'),
+    tipoForro: getV('entidade-tipo-forro'),
+    tipoPiso: getV('entidade-tipo-piso'),
+    muradaGradeada: getV('entidade-murada-gradeada')
   };
 
   // 1. Atualizar ou inserir em _teCache (Multi-aba de escolas)
@@ -8502,14 +8676,14 @@ window._linkGenData = {
     options: ['Municipal', 'Estadual', 'Privada/Filantrópica', 'Federal']
   },
   super: {
-    selected: 'CRE - Alta Floresta D\'Oeste',
-    todosLabel: 'TODAS AS REGIONAIS (CRES)',
+    selected: 'SUPER - Alta Floresta D\'Oeste',
+    todosLabel: 'TODAS AS SUPERINTENDÊNCIAS (SUPER)',
     options: [
-      'CRE - Porto Velho', 'CRE - Ji-Paraná', 'CRE - Ariquemes', 'CRE - Cacoal',
-      'CRE - Vilhena', 'CRE - Jaru', 'CRE - Rolim de Moura', 'CRE - Guajará-Mirim',
-      'CRE - Ouro Preto do Oeste', 'CRE - Pimenta Bueno', 'CRE - Buritis',
-      'CRE - Machadinho D\'Oeste', 'CRE - Espigão D\'Oeste', 'CRE - Alta Floresta D\'Oeste',
-      'CRE - Cerejeiras', 'CRE - São Francisco do Guaporé'
+      'SUPER - Porto Velho', 'SUPER - Ji-Paraná', 'SUPER - Ariquemes', 'SUPER - Cacoal',
+      'SUPER - Vilhena', 'SUPER - Jaru', 'SUPER - Rolim de Moura', 'SUPER - Guajará-Mirim',
+      'SUPER - Ouro Preto do Oeste', 'SUPER - Pimenta Bueno', 'SUPER - Buritis',
+      'SUPER - Machadinho D\'Oeste', 'SUPER - Espigão D\'Oeste', 'SUPER - Alta Floresta D\'Oeste',
+      'SUPER - Cerejeiras', 'SUPER - São Francisco do Guaporé'
     ]
   },
   parceria: {

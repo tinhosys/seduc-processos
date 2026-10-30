@@ -1099,6 +1099,34 @@ function mapRowToEscolaObj(headers, row) {
   const quadra          = get(['quadra (s/n)', 'quadra poliesportiva', 'quadra']);
   const localidade      = get(['localidade (urbana/rural)', 'localidade', 'localização', 'localizacao', 'localiza']);
 
+  // Novos campos complementares de Endereço (Rural & Plus Code)
+  const linha           = get(['linha / estrada', 'linha', 'estrada']);
+  const rodoviaKm       = get(['rodovia / br e km', 'rodovia', 'br', 'km']);
+  const sitioRio        = get(['sítio / fazenda / rio', 'sitio / fazenda / rio', 'sítio', 'sitio', 'rio', 'fazenda', 'gleba']);
+  const plusCode        = get(['plus code (google)', 'plus code', 'pluscode', 'google plus code', 'code plus']);
+
+  // Novos campos complementares de Infraestrutura & Espaços
+  const acessibilidade      = get(['acessibilidade (s/n)', 'acessibilidade']);
+  const patioCoberto        = get(['pátio coberto', 'patio coberto', 'pátio', 'patio']);
+  const cozinha             = get(['área de cocção (cozinha)', 'área de cocção', 'area de coccao', 'cozinha']);
+  const depositoSeco        = get(['depósito seco (mantimentos)', 'depósito seco', 'deposito seco', 'almoxarifado de mantimento secos']);
+  const depositoPereciveis  = get(['depósito de perecíveis (área fria)', 'depósito de perecíveis', 'deposito de pereciveis', 'deposito de pareciveis', 'área fria']);
+  const almoxarifadoAdm     = get(['almoxarifado administrativo', 'almoxarifado']);
+  const depositoGeral       = get(['depósito geral', 'depósito', 'deposito']);
+  const biblioteca          = get(['biblioteca']);
+  const dml                 = get(['dml (depósito material limpeza)', 'dml']);
+  const quadraCoberta       = get(['quadra coberta', 'se é coberta', 'quadra coberta (s/n)']);
+  const quadraPiso          = get(['piso da quadra', 'piso de piso']);
+  const labInfo             = get(['laboratório de informática', 'laboratorio de informatica', 'laboratório de informartica']);
+  const hall                = get(['hall de acolhimento', 'hall']);
+  const ppci                = get(['ppci']);
+  const fonteAgua           = get(['fonte de água', 'fonte de agua']);
+  const energiaSolar        = get(['energia solar']);
+  const tipoAbertura        = get(['tipo de abertura', 'abertura']);
+  const tipoForro           = get(['tipo de forro', 'forro']);
+  const tipoPiso            = get(['tipo de piso da escola', 'tipo de piso', 'piso']);
+  const muradaGradeada      = get(['escola murada ou gradeada', 'escola murado ou gradeado', 'murado ou gradeado', 'murada']);
+
   return {
     codigoSuper: get(['codigo super', 'cod super', 'cd super']) || superV,
     super: superV,
@@ -1115,6 +1143,10 @@ function mapRowToEscolaObj(headers, row) {
     complemento: complemento,
     bairro: bairro,
     cep: cep,
+    linha: linha,
+    rodoviaKm: rodoviaKm,
+    sitioRio: sitioRio,
+    plusCode: plusCode,
     telefone: telefone,
     totalMatricula: alunos,
     alunos: alunos,
@@ -1126,9 +1158,30 @@ function mapRowToEscolaObj(headers, row) {
     salaAEE: salaAEE,
     banheiros: banheiros,
     patio: patio,
+    patioCoberto: patioCoberto || patio,
     auditorio: auditorio,
     refeitorio: refeitorio,
     quadra: quadra,
+    cozinha: cozinha,
+    depositoSeco: depositoSeco,
+    depositoPereciveis: depositoPereciveis,
+    almoxarifadoAdm: almoxarifadoAdm,
+    deposito: depositoGeral,
+    depositoGeral: depositoGeral,
+    biblioteca: biblioteca,
+    dml: dml,
+    quadraCoberta: quadraCoberta,
+    quadraPiso: quadraPiso,
+    labInfo: labInfo,
+    hall: hall,
+    ppci: ppci,
+    fonteAgua: fonteAgua,
+    energiaSolar: energiaSolar,
+    acessibilidade: acessibilidade,
+    tipoAbertura: tipoAbertura,
+    tipoForro: tipoForro,
+    tipoPiso: tipoPiso,
+    muradaGradeada: muradaGradeada,
     diretor: diretor,
     contatoDiretor: contatoDiretor,
     secretario: secretario,
@@ -1212,16 +1265,41 @@ app.post("/api/escolas", async (req, res) => {
       data.salasAdm || "",
       data.salaAEE || "",
       data.banheiros || "",
-      data.patio || "",
+      data.patioCoberto || data.patio || "",
       data.auditorio || "",
       data.refeitorio || "",
       data.quadra || "",
-      data.localidade || data.localizacao || "Urbana"
+      data.localidade || data.localizacao || "Urbana",
+      // Endereço adicional (Rural & Plus Code):
+      data.linha || "",
+      data.rodoviaKm || "",
+      data.sitioRio || "",
+      data.plusCode || "",
+      // Infraestrutura e Espaços (Nova Versão):
+      data.acessibilidade || "",
+      data.cozinha || "",
+      data.depositoSeco || "",
+      data.depositoPereciveis || "",
+      data.almoxarifadoAdm || "",
+      data.depositoGeral || data.deposito || "",
+      data.biblioteca || "",
+      data.dml || "",
+      data.quadraCoberta || "",
+      data.quadraPiso || "",
+      data.labInfo || "",
+      data.hall || "",
+      data.ppci || "",
+      data.fonteAgua || "",
+      data.energiaSolar || "",
+      data.tipoAbertura || "",
+      data.tipoForro || "",
+      data.tipoPiso || "",
+      data.muradaGradeada || ""
     ];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: targetSheetId,
-      range: "'ENTIDADES'!A:AC",
+      range: "'ENTIDADES'!A:AZ",
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
@@ -1418,14 +1496,23 @@ app.post("/api/contatos", editorOnly, async (req, res) => {
   }
 });
 
-// ====== ENDPOINT: CADASTRO GERAL DE ENTIDADES (29 CAMPOS - ABA ENTIDADES) ======
+// ====== ENDPOINT: CADASTRO GERAL DE ENTIDADES (NOVA VERSÃO ESTENDIDA - ABA ENTIDADES) ======
 const defaultEntidadesHeaders = [
   "Município", "Categoria da parceria", "Nome da escola | Entidade | Prefeitura", "Nº de alunos", "Modalidade",
   "INEP", "CNPJ", "Endereço", "Bairro | Distrito | Aldeia", "Complemento", "CEP", "Competência",
   "Super", "Rede social", "Telefone", "Email da entidade", "Nome do diretor | Presidente | Prefeito",
   "Contato do diretor", "Nome do secretário", "Contato do secretário", "Quant. salas de aula",
-  "Quant. salas administrativas", "Sala do AEE", "Banheiros", "Pátio", "Auditório",
-  "Refeitório (s/n)", "Quadra (s/n)", "Localidade (urbana/rural)"
+  "Quant. salas administrativas", "Sala do AEE", "Banheiros", "Pátio Coberto", "Auditório",
+  "Refeitório (s/n)", "Quadra (s/n)", "Localidade (urbana/rural)",
+  // Novos campos Endereço Complementar (Rural & Plus Code):
+  "Linha / Estrada", "Rodovia / BR e KM", "Sítio / Fazenda / Rio", "Plus Code (Google)",
+  // Novos campos Infraestrutura e Espaços (Nova Versão):
+  "Acessibilidade", "Área de Cocção (Cozinha)", "Depósito Seco (Mantimentos)",
+  "Depósito de Perecíveis (Área Fria)", "Almoxarifado Administrativo", "Depósito Geral",
+  "Biblioteca", "DML (Depósito Material Limpeza)", "Quadra Coberta", "Piso da Quadra",
+  "Laboratório de Informática", "Hall de Acolhimento", "PPCI", "Fonte de Água",
+  "Energia Solar", "Tipo de Abertura", "Tipo de Forro", "Tipo de Piso da Escola",
+  "Escola Murada ou Gradeada"
 ];
 
 const DEFAULT_AGENT_EMAIL = "planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com";
@@ -1440,7 +1527,7 @@ app.post("/api/entidades", async (req, res) => {
     try {
       const headerDefRes = await sheets.spreadsheets.values.get({
         spreadsheetId: ENTIDADES_SHEET_ID,
-        range: "'Entidades'!A1:AC1"
+        range: "'Entidades'!A1:AZ1"
       });
       if (headerDefRes.data.values && headerDefRes.data.values[0] && headerDefRes.data.values[0].length > 0) {
         headers = headerDefRes.data.values[0];
@@ -1449,7 +1536,7 @@ app.post("/api/entidades", async (req, res) => {
       console.warn("Aba Entidades pode não ter cabeçalho ainda ou requer apêndice:", e.message);
     }
 
-    // Mapear dados para as 29 colunas na ordem exata da planilha
+    // Mapear dados para as colunas na ordem exata da planilha
     const newRow = [
       data.municipio || "",
       data.categoria || "",
@@ -1471,20 +1558,45 @@ app.post("/api/entidades", async (req, res) => {
       data.contatoDiretor || "",
       data.secretario || "",
       data.contatoSecretario || "",
-      data.salasAula || "",
+      data.salasAula || data.salas || "",
       data.salasAdm || "",
       data.salaAEE || "",
       data.banheiros || "",
-      data.patio || "",
+      data.patioCoberto || data.patio || "",
       data.auditorio || "",
       data.refeitorio || "",
       data.quadra || "",
-      data.localidade || ""
+      data.localidade || "",
+      // Endereço adicional:
+      data.linha || "",
+      data.rodoviaKm || "",
+      data.sitioRio || "",
+      data.plusCode || "",
+      // Infraestrutura adicional:
+      data.acessibilidade || "",
+      data.cozinha || "",
+      data.depositoSeco || "",
+      data.depositoPereciveis || "",
+      data.almoxarifadoAdm || "",
+      data.depositoGeral || data.deposito || "",
+      data.biblioteca || "",
+      data.dml || "",
+      data.quadraCoberta || "",
+      data.quadraPiso || "",
+      data.labInfo || "",
+      data.hall || "",
+      data.ppci || "",
+      data.fonteAgua || "",
+      data.energiaSolar || "",
+      data.tipoAbertura || "",
+      data.tipoForro || "",
+      data.tipoPiso || "",
+      data.muradaGradeada || ""
     ];
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: ENTIDADES_SHEET_ID,
-      range: "'Entidades'!A:AC",
+      range: "'Entidades'!A:AZ",
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
