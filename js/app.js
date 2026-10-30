@@ -6357,6 +6357,8 @@ function enviarLinkWhatsApp() {
 }
 
 // ---- PROCESSOS REPETIDOS ----
+window._gruposRepetidosAbertos = window._gruposRepetidosAbertos || null;
+
 function renderProcessosRepetidos() {
   const badge = document.getElementById('total-repetidos-badge');
   const tbody = document.getElementById('table-repetidos-body');
@@ -6398,12 +6400,17 @@ function renderProcessosRepetidos() {
     badge.textContent = `${repetidos.length} Números com Ocorrências Repetidas`;
   }
 
+  // Na primeira execução, abre todos os grupos por padrão para facilitar a conferência
+  if (window._gruposRepetidosAbertos === null) {
+    window._gruposRepetidosAbertos = new Set(repetidos.map(g => g.numero));
+  }
+
   if (repetidos.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-muted); font-size: 14px;">
-          <h3>🔍 Nenhum processo repetido encontrado!</h3>
-          <p style="margin-top: 6px;">Todos os números de processos válidos na planilha são únicos.</p>
+        <td colspan="8" style="padding: 36px 20px; text-align: center; color: var(--text-muted); font-size: 14px;">
+          <h3 style="color: #34d399; margin-bottom: 8px;">🎉 Nenhum processo repetido encontrado!</h3>
+          <p style="margin: 0; color: #94a3b8;">Todos os números de processos válidos na planilha são únicos.</p>
         </td>
       </tr>
     `;
@@ -6414,40 +6421,66 @@ function renderProcessosRepetidos() {
   repetidos.forEach((grp, idx) => {
     const totalOcorrencias = grp.itens.length;
     const safeNumClass = grp.numero.replace(/[^a-zA-Z0-9]/g, '_');
+    const isAberto = window._gruposRepetidosAbertos.has(grp.numero);
     
-    // 1. Linha Pai: Exibe apenas o botão de expansão e o número do processo
+    // 1. Linha Pai: Exibe botão de expansão e número do processo (8 colunas no total)
     html += `
-      <tr style="background: rgba(30, 41, 59, 0.85); border-bottom: 1px solid var(--border);">
-        <td style="padding: 12px; text-align: center; cursor: pointer; user-select: none; font-size: 14px; font-weight: 900; color: var(--blue);" onclick="toggleGrupoRepetidoTabela('${grp.numero}', this)">
-          ➕
+      <tr style="background: rgba(30, 41, 59, 0.95); border-bottom: 1px solid var(--border);">
+        <td style="padding: 10px 8px; width: 50px; text-align: center; cursor: pointer; user-select: none; font-size: 14px; font-weight: 900; color: #38bdf8; border-right: 1px solid rgba(255,255,255,0.06);" 
+            onclick="toggleGrupoRepetidoTabela('${grp.numero.replace(/'/g, "\\'")}', this)"
+            title="Clique para expandir/recolher ocorrências deste processo">
+          ${isAberto ? '➖' : '➕'}
         </td>
-        <td colspan="6" style="padding: 12px; font-weight: 700; font-family: monospace; color: var(--text-primary); font-size: 14px;">
+        <td colspan="7" style="padding: 10px 14px; font-weight: 700; font-family: monospace; color: var(--text-primary); font-size: 13.5px;">
           Nº PROCESSO: <span style="color: #60a5fa; letter-spacing: 0.5px;">${grp.numero}</span>
-          <span style="font-size: 11px; font-weight: 700; margin-left: 12px; padding: 3px 8px; border-radius: 12px; background: rgba(239, 68, 68, 0.12); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.2); text-transform: uppercase;">${totalOcorrencias} Ocorrências</span>
+          <span style="font-size: 11px; font-weight: 800; margin-left: 12px; padding: 2px 9px; border-radius: 10px; background: rgba(239, 68, 68, 0.16); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); text-transform: uppercase;">${totalOcorrencias} Ocorrências</span>
         </td>
       </tr>
     `;
     
-    // 2. Linhas Filhas: Listadas abaixo em linha, uma abaixo da outra
+    // 2. Linhas Filhas: Reacomodadas à esquerda com largura exata e botão Excluir
     grp.itens.forEach(p => {
+      const pId = p.id || '';
+      const pNum = (p.numero || '').replace(/'/g, "\\'");
+      const pPref = (p.prefixo || '').replace(/'/g, "\\'");
+      const pInt = (p.interessado || '').replace(/'/g, "\\'");
+      
       html += `
-        <tr class="filha-repetido-${safeNumClass}" style="display: none; background: rgba(0, 0, 0, 0.15); border-bottom: 1px solid rgba(255, 255, 255, 0.03); cursor: pointer; transition: background 0.15s;" onclick="editarProcesso('${p.id}')" title="Clique para editar este processo">
-          <td style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 11px; font-weight: bold;">
+        <tr class="filha-repetido-${safeNumClass}" style="${isAberto ? 'display: table-row;' : 'display: none;'} background: rgba(0, 0, 0, 0.22); border-bottom: 1px solid rgba(255, 255, 255, 0.04); cursor: pointer; transition: background 0.15s;" 
+            onclick="editarProcesso('${pId}')" 
+            onmouseover="this.style.background='rgba(59, 130, 246, 0.1)'" 
+            onmouseout="this.style.background='rgba(0, 0, 0, 0.22)'"
+            title="Clique para abrir e editar este processo">
+          <td style="padding: 9px 8px; width: 50px; text-align: center; color: var(--text-muted); font-size: 11px; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.04);">
             —
           </td>
-          <td style="padding: 12px; font-weight: 600; color: var(--text-primary);">${p.prefixo || '—'}</td>
-          <td style="padding: 12px; color: var(--text-primary);">${p.municipio || '—'}</td>
-          <td style="padding: 12px; color: var(--text-primary); font-weight: 500;" title="${p.interessado || ''}">
-            ${p.interessado ? (p.interessado.length > 40 ? p.interessado.substring(0, 37) + '...' : p.interessado) : '—'}
+          <td style="padding: 9px 10px; width: 85px; font-weight: 700; color: #93c5fd; border-right: 1px solid rgba(255,255,255,0.04); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.prefixo || ''}">
+            ${p.prefixo || '—'}
           </td>
-          <td style="padding: 12px; color: var(--text-secondary);" title="${p.objeto || ''}">
-            ${p.objeto ? (p.objeto.length > 55 ? p.objeto.substring(0, 52) + '...' : p.objeto) : '—'}
+          <td style="padding: 9px 10px; width: 145px; color: var(--text-primary); font-weight: 600; border-right: 1px solid rgba(255,255,255,0.04); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.municipio || ''}">
+            ${p.municipio || '—'}
           </td>
-          <td style="padding: 12px;">
-            <span class="badge ${getStatusBadgeClass(p.status)}">${p.status || '—'}</span>
+          <td style="padding: 9px 10px; width: 280px; color: var(--text-primary); font-weight: 500; border-right: 1px solid rgba(255,255,255,0.04); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.interessado || ''}">
+            ${p.interessado || '—'}
           </td>
-          <td style="padding: 12px; font-family: monospace; font-weight: 600; color: var(--green); text-align: right; padding-right: 16px;">
+          <td style="padding: 9px 10px; width: 330px; color: var(--text-secondary); border-right: 1px solid rgba(255,255,255,0.04); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${p.objeto || ''}">
+            ${p.objeto || '—'}
+          </td>
+          <td style="padding: 9px 10px; width: 130px; text-align: center; border-right: 1px solid rgba(255,255,255,0.04); white-space: nowrap;">
+            <span class="badge ${getStatusBadgeClass(p.status)}" style="font-size: 11px; padding: 3px 8px; font-weight: 700;">${p.status || '—'}</span>
+          </td>
+          <td style="padding: 9px 12px; width: 130px; font-family: monospace; font-weight: 700; color: #34d399; text-align: right; border-right: 1px solid rgba(255,255,255,0.04); white-space: nowrap;">
             ${formatCurrency(p.valorOf)}
+          </td>
+          <td style="padding: 7px 10px; width: 100px; text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
+            <button type="button" 
+              onclick="excluirProcessoRepetidoDireto(event, '${pId}', '${pNum}', '${pPref}', '${pInt}')"
+              style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; background: rgba(239, 68, 68, 0.16); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); padding: 5px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 800; cursor: pointer; transition: all 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.3);"
+              onmouseover="this.style.background='#ef4444'; this.style.color='#ffffff'; this.style.borderColor='#dc2626';"
+              onmouseout="this.style.background='rgba(239, 68, 68, 0.16)'; this.style.color='#f87171'; this.style.borderColor='rgba(239, 68, 68, 0.35)';"
+              title="Excluir este registro duplicado da planilha">
+              🗑️ Excluir
+            </button>
           </td>
         </tr>
       `;
@@ -6460,7 +6493,6 @@ function renderProcessosRepetidos() {
 function toggleGrupoRepetidoTabela(numeroProcesso, btnElement) {
   const safeNumClass = numeroProcesso.replace(/[^a-zA-Z0-9]/g, '_');
   const linhasFilhas = document.querySelectorAll(`.filha-repetido-${safeNumClass}`);
-  
   if (linhasFilhas.length === 0) return;
   
   const estaOculto = linhasFilhas[0].style.display === 'none';
@@ -6470,27 +6502,109 @@ function toggleGrupoRepetidoTabela(numeroProcesso, btnElement) {
   });
   
   btnElement.textContent = estaOculto ? '➖' : '➕';
+
+  if (!window._gruposRepetidosAbertos) window._gruposRepetidosAbertos = new Set();
+  if (estaOculto) {
+    window._gruposRepetidosAbertos.add(numeroProcesso);
+  } else {
+    window._gruposRepetidosAbertos.delete(numeroProcesso);
+  }
 }
 
-async function excluirProcessoDireto(id) {
-  if (confirm("Tem certeza de que deseja excluir este processo repetido? Esta ação não pode ser desfeita e removerá o registro na planilha.")) {
-    try {
+function expandirTodosRepetidos() {
+  const processos = carregarProcessos();
+  const grupos = {};
+  processos.forEach(p => {
+    if (!p.numero) return;
+    const numClean = p.numero.trim();
+    if (numClean === "****" || numClean === "-" || numClean === "—" || numClean.toLowerCase().startsWith("s/n")) return;
+    if (!grupos[numClean]) grupos[numClean] = [];
+    grupos[numClean].push(p);
+  });
+  const repetidos = Object.keys(grupos).filter(num => grupos[num].length > 1);
+  window._gruposRepetidosAbertos = new Set(repetidos);
+  renderProcessosRepetidos();
+}
+window.expandirTodosRepetidos = expandirTodosRepetidos;
+
+function recolherTodosRepetidos() {
+  window._gruposRepetidosAbertos = new Set();
+  renderProcessosRepetidos();
+}
+window.recolherTodosRepetidos = recolherTodosRepetidos;
+
+async function excluirProcessoRepetidoDireto(event, id, numero, prefixo, interessado) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+
+  const descItem = [
+    numero ? `Nº Processo: ${numero}` : null,
+    prefixo ? `Prefixo: ${prefixo}` : null,
+    interessado ? `Interessado: ${interessado}` : null
+  ].filter(Boolean).join('\n• ');
+
+  const confirma = confirm(
+    `⚠️ CONFIRMAÇÃO DE EXCLUSÃO DE REGISTRO\n\n` +
+    `Deseja realmente EXCLUIR este registro da planilha?\n\n` +
+    `• ${descItem}\n\n` +
+    `Esta ação removerá permanentemente esta ocorrência duplicada da planilha e atualizará a tela instantaneamente.`
+  );
+
+  if (!confirma) return;
+
+  // 1. REFRESH INSTANTÂNEO NO MODELO EM MEMÓRIA (0ms)
+  if (Array.isArray(window.processosCache)) {
+    window.processosCache = window.processosCache.filter(p => String(p.id) !== String(id));
+  }
+
+  // Garante que o grupo pai permaneça aberto após a remoção da linha
+  if (numero && window._gruposRepetidosAbertos) {
+    window._gruposRepetidosAbertos.add(numero);
+  }
+
+  // 2. RE-RENDERIZA IMEDIATAMENTE A TELA DE REPETIDOS
+  renderProcessosRepetidos();
+
+  // 3. SE O FORMULÁRIO/MODAL ESTIVER ABERTO COM ESTE PROCESSO, FECHA/LIMPA
+  const modalProc = document.getElementById('modal-processo');
+  const inputId = document.getElementById('proc-id') || document.getElementById('processo-id');
+  if (modalProc && modalProc.style.display !== 'none' && inputId && String(inputId.value) === String(id)) {
+    if (typeof fecharModalProcesso === 'function') fecharModalProcesso();
+    else modalProc.style.display = 'none';
+  }
+
+  // 4. ATUALIZA A TABELA PRINCIPAL E BADGES SE ATIVOS
+  if (typeof renderTabela === 'function') {
+    try { renderTabela(); } catch(e) {}
+  }
+  if (typeof atualizarBadgesDashboard === 'function') {
+    try { atualizarBadgesDashboard(); } catch(e) {}
+  }
+
+  toast("Registro excluído com sucesso!", "success");
+
+  // 5. ENVIA A REQUISIÇÃO AO SERVIDOR/PLANILHA EM SEGUNDO PLANO
+  try {
+    if (typeof excluirProcesso === 'function') {
       await excluirProcesso(id);
-      toast("Processo excludo com sucesso!", "success");
-      if (typeof inicializarDados === 'function') {
-        await inicializarDados();
-      }
-      renderProcessosRepetidos();
-    } catch (err) {
-      console.error(err);
-      toast("Erro ao excluir o processo.", "error");
+    } else {
+      await fetch((window.API_BASE || '') + `/api/registros/${id}`, {
+        method: 'DELETE',
+        headers: typeof getHeaders === 'function' ? getHeaders() : { 'Content-Type': 'application/json' }
+      });
     }
+  } catch (err) {
+    console.error("Erro ao sincronizar exclusão com o servidor:", err);
+    toast("Aviso: Houve uma falha ao sincronizar a exclusão com a planilha.", "warning");
   }
 }
 
 window.renderProcessosRepetidos = renderProcessosRepetidos;
 window.toggleGrupoRepetidoTabela = toggleGrupoRepetidoTabela;
-window.excluirProcessoDireto = excluirProcessoDireto;
+window.excluirProcessoRepetidoDireto = excluirProcessoRepetidoDireto;
+window.excluirProcessoDireto = excluirProcessoRepetidoDireto;
 window.editarProcesso = editarProcesso;
 
 setTimeout(() => {
