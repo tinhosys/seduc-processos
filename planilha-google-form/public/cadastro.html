@@ -637,7 +637,7 @@
       <a href="https://api.whatsapp.com/send?phone=5569999064881&text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20cadastro%20de%20escolas%20e%20entidades%20da%20SEDUC/RO."
         target="_blank" rel="noopener noreferrer"
         title="Fale conosco no WhatsApp: (69) 99906-4881">
-        <img src="img/banner-cadastre-escolas.jpg?v=1.3.70" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881">
+        <img src="img/banner-cadastre-escolas.jpg?v=1.3.71" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881">
       </a>
     </aside>
 
@@ -784,11 +784,11 @@
               </div>
               <div>
                 <label id="lbl-entidade-contato-diretor">Contato do Diretor | Presidente *</label>
-                <input type="text" id="entidade-contato-diretor" required class="form-control" placeholder="(69) 90000-0000">
+                <input type="text" id="entidade-contato-diretor" required class="form-control" placeholder="(69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneCelular(this)">
               </div>
               <div>
                 <label id="lbl-entidade-telefone">Telefone da Unidade</label>
-                <input type="text" id="entidade-telefone" class="form-control" placeholder="(69) 3000-0000">
+                <input type="text" id="entidade-telefone" class="form-control" placeholder="(69) 0000-0000 ou (69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneUnidade(this)">
               </div>
               <div>
                 <label id="lbl-entidade-email">E-mail Institucional</label>
@@ -803,7 +803,7 @@
               </div>
               <div>
                 <label id="lbl-entidade-contato-secretario">Contato do Secretário(a) *</label>
-                <input type="text" id="entidade-contato-secretario" required class="form-control" placeholder="(69) 90000-0000">
+                <input type="text" id="entidade-contato-secretario" required class="form-control" placeholder="(69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneCelular(this)">
               </div>
               <div>
                 <label id="lbl-entidade-redes">Redes Sociais (Instagram/Facebook) *</label>
@@ -1331,6 +1331,68 @@
       input.value = v;
     }
 
+    // Máscaras de Telefone
+    // Verde: Contato Diretor / Secretário -> Máscara fixa celular: (00) 0 0000-0000 (11 dígitos)
+    function formatarTelefoneCelular(v) {
+      if (!v) return '';
+      let d = String(v).replace(/\D/g, '');
+      if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
+      if (d.length > 11) d = d.substring(0, 11);
+      if (d.length > 7) {
+        return '(' + d.substring(0, 2) + ') ' + d.substring(2, 3) + ' ' + d.substring(3, 7) + '-' + d.substring(7);
+      } else if (d.length > 3) {
+        return '(' + d.substring(0, 2) + ') ' + d.substring(2, 3) + ' ' + d.substring(3);
+      } else if (d.length > 2) {
+        return '(' + d.substring(0, 2) + ') ' + d.substring(2);
+      } else if (d.length > 0) {
+        return '(' + d;
+      }
+      return '';
+    }
+
+    function mascaraTelefoneCelular(input) {
+      if (!input) return;
+      input.value = formatarTelefoneCelular(input.value);
+    }
+
+    // Vermelho: Telefone da Unidade -> Dinâmica:
+    // Se após DDD o dígito <> 9, é fixo: (00) 0000-0000 (10 dígitos)
+    // Se após DDD o dígito for 9, é celular: (00) 9 0000-0000 (11 dígitos)
+    function formatarTelefoneUnidade(v) {
+      if (!v) return '';
+      let d = String(v).replace(/\D/g, '');
+      if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
+      if (d.length === 0) return '';
+      if (d.length <= 2) return '(' + d;
+
+      // Se o primeiro dígito após DDD não for 9, trata-se de telefone fixo
+      if (d[2] !== '9') {
+        if (d.length > 10) d = d.substring(0, 10);
+        if (d.length > 6) {
+          return '(' + d.substring(0, 2) + ') ' + d.substring(2, 6) + '-' + d.substring(6);
+        } else if (d.length > 2) {
+          return '(' + d.substring(0, 2) + ') ' + d.substring(2);
+        }
+        return '(' + d;
+      }
+
+      // Se o primeiro dígito após DDD for 9, trata-se de celular
+      if (d.length > 11) d = d.substring(0, 11);
+      if (d.length > 7) {
+        return '(' + d.substring(0, 2) + ') ' + d.substring(2, 3) + ' ' + d.substring(3, 7) + '-' + d.substring(7);
+      } else if (d.length > 3) {
+        return '(' + d.substring(0, 2) + ') ' + d.substring(2, 3) + ' ' + d.substring(3);
+      } else if (d.length > 2) {
+        return '(' + d.substring(0, 2) + ') ' + d.substring(2);
+      }
+      return '(' + d;
+    }
+
+    function mascaraTelefoneUnidade(input) {
+      if (!input) return;
+      input.value = formatarTelefoneUnidade(input.value);
+    }
+
     // Alternar Abas do Formulário
     function ativarAba(abaNum) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1725,11 +1787,11 @@
         setModalidadesSelecionadas(esc.modalidade || esc.modalidadeStr || '');
 
         setVal('entidade-diretor', esc.diretor);
-        setVal('entidade-contato-diretor', esc.contatoDiretor);
-        setVal('entidade-telefone', esc.telefone);
+        setVal('entidade-contato-diretor', formatarTelefoneCelular(esc.contatoDiretor));
+        setVal('entidade-telefone', formatarTelefoneUnidade(esc.telefone));
         setVal('entidade-email', esc.email);
         setVal('entidade-secretario', esc.secretario);
-        setVal('entidade-contato-secretario', esc.contatoSecretario);
+        setVal('entidade-contato-secretario', formatarTelefoneCelular(esc.contatoSecretario));
         setVal('entidade-redes', esc.redesSociais || esc.redes);
 
         setVal('entidade-endereco', esc.endereco);

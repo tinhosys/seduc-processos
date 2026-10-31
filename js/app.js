@@ -8113,12 +8113,12 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-competencia', dadosExistentes.competencia || 'Municipal');
     setVal('entidade-super', dadosExistentes.super || dadosExistentes.codigoSuper || '');
     setVal('entidade-redes', dadosExistentes.redesSociais || dadosExistentes.redes || '');
-    setVal('entidade-telefone', dadosExistentes.telefone || '');
+    setVal('entidade-telefone', formatarTelefoneUnidade(dadosExistentes.telefone || ''));
     setVal('entidade-email', dadosExistentes.email || '');
     setVal('entidade-diretor', dadosExistentes.diretor || '');
-    setVal('entidade-contato-diretor', dadosExistentes.contatoDiretor || '');
+    setVal('entidade-contato-diretor', formatarTelefoneCelular(dadosExistentes.contatoDiretor || ''));
     setVal('entidade-secretario', dadosExistentes.secretario || '');
-    setVal('entidade-contato-secretario', dadosExistentes.contatoSecretario || '');
+    setVal('entidade-contato-secretario', formatarTelefoneCelular(dadosExistentes.contatoSecretario || ''));
     setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
     setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
     setVal('entidade-salas-adm', dadosExistentes.salasAdm || '');
@@ -12667,6 +12667,72 @@ function mascaraCNPJInput(el) {
   }
 }
 window.mascaraCNPJInput = mascaraCNPJInput;
+
+// ---- MÁSCARAS DE TELEFONE (CELULAR FIXO 11 DÍGITOS E TELEFONE DA UNIDADE DINÂMICO) ----
+// Verde: Contato Diretor / Secretário -> Máscara fixa celular: (00) 0 0000-0000 (11 dígitos)
+function formatarTelefoneCelular(v) {
+  if (!v) return '';
+  let d = String(v).replace(/\D/g, '');
+  if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
+  if (d.length > 11) d = d.substring(0, 11);
+  if (d.length > 7) {
+    return '(' + d.substring(0, 2) + ') ' + d.substring(2, 3) + ' ' + d.substring(3, 7) + '-' + d.substring(7);
+  } else if (d.length > 3) {
+    return '(' + d.substring(0, 2) + ') ' + d.substring(2, 3) + ' ' + d.substring(3);
+  } else if (d.length > 2) {
+    return '(' + d.substring(0, 2) + ') ' + d.substring(2);
+  } else if (d.length > 0) {
+    return '(' + d;
+  }
+  return '';
+}
+window.formatarTelefoneCelular = formatarTelefoneCelular;
+
+function mascaraTelefoneCelular(input) {
+  if (!input) return;
+  input.value = formatarTelefoneCelular(input.value);
+}
+window.mascaraTelefoneCelular = mascaraTelefoneCelular;
+
+// Vermelho: Telefone da Unidade -> Dinâmica:
+// Se após DDD o dígito <> 9, é fixo: (00) 0000-0000 (10 dígitos)
+// Se após DDD o dígito for 9, é celular: (00) 9 0000-0000 (11 dígitos)
+function formatarTelefoneUnidade(v) {
+  if (!v) return '';
+  let d = String(v).replace(/\D/g, '');
+  if (d.length > 11 && d.startsWith('55')) d = d.slice(2);
+  if (d.length === 0) return '';
+  if (d.length <= 2) return '(' + d;
+
+  // Se o primeiro dígito após DDD não for 9, trata-se de telefone fixo
+  if (d[2] !== '9') {
+    if (d.length > 10) d = d.substring(0, 10);
+    if (d.length > 6) {
+      return '(' + d.substring(0, 2) + ') ' + d.substring(2, 6) + '-' + d.substring(6);
+    } else if (d.length > 2) {
+      return '(' + d.substring(0, 2) + ') ' + d.substring(2);
+    }
+    return '(' + d;
+  }
+
+  // Se o primeiro dígito após DDD for 9, trata-se de celular
+  if (d.length > 11) d = d.substring(0, 11);
+  if (d.length > 7) {
+    return '(' + d.substring(0, 2) + ') ' + d.substring(2, 3) + ' ' + d.substring(3, 7) + '-' + d.substring(7);
+  } else if (d.length > 3) {
+    return '(' + d.substring(0, 2) + ') ' + d.substring(2, 3) + ' ' + d.substring(3);
+  } else if (d.length > 2) {
+    return '(' + d.substring(0, 2) + ') ' + d.substring(2);
+  }
+  return '(' + d;
+}
+window.formatarTelefoneUnidade = formatarTelefoneUnidade;
+
+function mascaraTelefoneUnidade(input) {
+  if (!input) return;
+  input.value = formatarTelefoneUnidade(input.value);
+}
+window.mascaraTelefoneUnidade = mascaraTelefoneUnidade;
 
 async function extrairEPreencherCNPJPlano() {
   const el = document.getElementById('form-cnpj');
