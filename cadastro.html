@@ -689,11 +689,11 @@
                 <input type="text" id="entidade-cnpj" maxlength="18" oninput="mascaraCNPJ(this)" class="form-control" placeholder="00.000.000/0000-00">
               </div>
               <div id="wrap-entidade-inep">
-                <label>Código INEP</label>
+                <label>Código INEP *</label>
                 <input type="text" id="entidade-inep" maxlength="12" class="form-control" placeholder="8 dígitos">
               </div>
               <div id="wrap-entidade-alunos">
-                <label>Nº de Alunos</label>
+                <label>Nº de Alunos *</label>
                 <input type="number" id="entidade-alunos" min="0" class="form-control" placeholder="0">
               </div>
               <div style="position:relative;" id="wrap-entidade-modalidade">
@@ -731,15 +731,15 @@
 
             <div class="grid-3">
               <div>
-                <label>Competência (Fixada)</label>
+                <label>Competência * (Fixada)</label>
                 <input type="text" id="entidade-competencia" readonly class="form-control" value="Municipal">
               </div>
               <div>
-                <label>Superintendência de Educação (Fixada)</label>
+                <label>Superintendência de Educação * (Fixada)</label>
                 <input type="text" id="entidade-super" readonly class="form-control" placeholder="Superintendência de Educação">
               </div>
               <div>
-                <label>Localidade</label>
+                <label>Localidade *</label>
                 <select id="entidade-localidade" class="form-control">
                   <option value="Urbana">Urbana</option>
                   <option value="Rural">Rural</option>
@@ -759,12 +759,12 @@
 
             <div class="grid-4">
               <div>
-                <label id="lbl-entidade-diretor">Nome do Diretor | Presidente</label>
-                <input type="text" id="entidade-diretor" class="form-control" placeholder="Nome completo">
+                <label id="lbl-entidade-diretor">Nome do Diretor | Presidente *</label>
+                <input type="text" id="entidade-diretor" required class="form-control" placeholder="Nome completo">
               </div>
               <div>
-                <label id="lbl-entidade-contato-diretor">Contato do Diretor</label>
-                <input type="text" id="entidade-contato-diretor" class="form-control" placeholder="(69) 90000-0000">
+                <label id="lbl-entidade-contato-diretor">Contato do Diretor | Presidente *</label>
+                <input type="text" id="entidade-contato-diretor" required class="form-control" placeholder="(69) 90000-0000">
               </div>
               <div>
                 <label id="lbl-entidade-telefone">Telefone da Unidade</label>
@@ -778,16 +778,16 @@
 
             <div class="grid-3">
               <div>
-                <label id="lbl-entidade-secretario">Nome do Secretário(a)</label>
-                <input type="text" id="entidade-secretario" class="form-control" placeholder="Nome completo">
+                <label id="lbl-entidade-secretario">Nome do Secretário(a) *</label>
+                <input type="text" id="entidade-secretario" required class="form-control" placeholder="Nome completo (se não houver, digite Não tem)">
               </div>
               <div>
-                <label id="lbl-entidade-contato-secretario">Contato do Secretário(a)</label>
-                <input type="text" id="entidade-contato-secretario" class="form-control" placeholder="(69) 90000-0000">
+                <label id="lbl-entidade-contato-secretario">Contato do Secretário(a) *</label>
+                <input type="text" id="entidade-contato-secretario" required class="form-control" placeholder="(69) 90000-0000">
               </div>
               <div>
-                <label id="lbl-entidade-redes">Redes Sociais (Instagram/Facebook)</label>
-                <input type="text" id="entidade-redes" class="form-control" placeholder="@escola ou link">
+                <label id="lbl-entidade-redes">Redes Sociais (Instagram/Facebook) *</label>
+                <input type="text" id="entidade-redes" required class="form-control" placeholder="@escola ou link (se não possuir, digite Não possui)">
               </div>
             </div>
           </div>
@@ -801,12 +801,12 @@
 
             <div class="grid-2">
               <div>
-                <label>Endereço (Rua / Av / Linha)</label>
-                <input type="text" id="entidade-endereco" class="form-control" placeholder="Ex: Av. Principal, nº 123">
+                <label>Endereço (Rua / Av / Linha) *</label>
+                <input type="text" id="entidade-endereco" required class="form-control" placeholder="Ex: Av. Principal, nº 123 ou Linha 14...">
               </div>
               <div>
-                <label>Bairro / Distrito / Linha</label>
-                <input type="text" id="entidade-bairro" class="form-control" placeholder="Ex: Centro / Zona Rural">
+                <label>Bairro / Distrito / Linha *</label>
+                <input type="text" id="entidade-bairro" required class="form-control" placeholder="Ex: Centro / Zona Rural">
               </div>
             </div>
 
@@ -845,21 +845,41 @@
               </div>
             </div>
 
-            <!-- PLUS CODE DO GOOGLE MAPS (IMAGEM 2) -->
-            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; padding: 14px; margin-bottom: 8px;">
-              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
-                <label style="margin-bottom:0; display:flex; align-items:center; gap:6px; color:#6ee7b7; font-weight:800;">
+            <!-- PLUS CODE DO GOOGLE MAPS COM LINK DE ACESSO (IMAGEM 3 NO QUADRO VERDE) -->
+            <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 8px; padding: 14px; margin-bottom: 8px;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+                <label style="margin-bottom:0; display:flex; align-items:center; gap:6px; color:#6ee7b7; font-weight:800; font-size:12px;">
                   <span>📍</span> Plus Code (Google Maps)
                 </label>
-                <a href="https://maps.google.com/pluscodes/" target="_blank" rel="noopener noreferrer"
-                  style="font-size:11.5px; color:#38bdf8; text-decoration:underline; font-weight:800; display:inline-flex; align-items:center; gap:4px;"
-                  title="Saiba o que é e como encontrar o Plus Code da escola no Google Maps">
-                  ❓ O que é PLUS CODE? ↗
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                  <a id="link-acesso-plus-code-top" href="https://maps.google.com" target="_blank" rel="noopener noreferrer"
+                    style="font-size:12px; color:#34d399; background:rgba(16,185,129,0.18); border:1px solid rgba(16,185,129,0.5); padding:4px 10px; border-radius:6px; text-decoration:none; font-weight:800; display:inline-flex; align-items:center; gap:5px;"
+                    title="Clique para abrir diretamente no Google Maps a localização exata deste Plus Code">
+                    🌐 Link de Acesso (Google Maps) ↗
+                  </a>
+                  <a href="https://maps.google.com/pluscodes/" target="_blank" rel="noopener noreferrer"
+                    style="font-size:11.5px; color:#38bdf8; text-decoration:underline; font-weight:800; display:inline-flex; align-items:center; gap:4px;"
+                    title="Saiba o que é e como encontrar o Plus Code da escola no Google Maps">
+                    ❓ O que é PLUS CODE? ↗
+                  </a>
+                </div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <input type="text" id="entidade-plus-code" class="form-control" placeholder="Ex: 87PJ8M2C+4X ou cole o código Plus Code do Google Maps" oninput="atualizarLinkAcessoPlusCode(this.value)">
+                <a id="btn-acesso-maps" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" class="btn btn-sm"
+                  style="background:#059669; color:#ffffff; font-weight:700; font-size:12px; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; height:38px; padding:0 14px; border-radius:6px; text-decoration:none; border:1px solid #10b981; box-shadow:0 2px 5px rgba(0,0,0,0.25);"
+                  title="Abrir no Google Maps">
+                  🌐 Link de Acesso ↗
                 </a>
               </div>
-              <input type="text" id="entidade-plus-code" class="form-control" placeholder="Ex: 87PJ8M2C+4X ou cole o código Plus Code do Google Maps">
-              <div style="font-size:11px; color:#94a3b8; margin-top:5px; line-height:1.4;">
+              <div style="font-size:11px; color:#94a3b8; margin-top:6px; line-height:1.4;">
                 💡 <strong>Plus Code</strong> é o código de localização digital oficial do Google Maps, ideal para escolas sem nome de rua ou em áreas rurais. Encontre-o clicando na localização da escola no Google Maps.
+              </div>
+              <div id="box-preview-link-acesso" style="display:flex; align-items:center; gap:6px; margin-top:6px; font-size:11.5px; color:#6ee7b7; background:rgba(6,78,59,0.3); border:1px dashed rgba(16,185,129,0.35); border-radius:6px; padding:6px 10px;">
+                <span>🔗</span> <strong>Link de Acesso direto:</strong>
+                <a id="url-acesso-plus-code" href="https://maps.google.com" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:underline; word-break:break-all;">
+                  https://maps.google.com
+                </a>
               </div>
             </div>
           </div>
@@ -1437,13 +1457,15 @@
         // Imagem 3: Gestão para Prefeitura
         if (lblDir) lblDir.textContent = 'Nome do Prefeito(a)';
         if (inpDir) inpDir.placeholder = 'Nome completo do(a) Prefeito(a)';
-        if (lblCtDir) lblCtDir.textContent = 'Contato do Prefeito(a)';
+        if (lblDir) lblDir.textContent = 'Nome do(a) Prefeito(a) *';
+        if (inpDir) inpDir.placeholder = 'Nome completo do(a) Prefeito(a)';
+        if (lblCtDir) lblCtDir.textContent = 'Contato do Gabinete do Prefeito *';
 
         if (lblTel) lblTel.textContent = 'Telefone da Prefeitura / Sede';
 
-        if (lblSec) lblSec.textContent = 'Secretário Municipal de Educação';
+        if (lblSec) lblSec.textContent = 'Secretário Municipal de Educação (SEMED) *';
         if (inpSec) inpSec.placeholder = 'Nome completo do(a) Secretário(a) de Educação';
-        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário(a) de Educação';
+        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário(a) de Educação *';
       } else if (c.includes('APAE')) {
         // Imagem 5: APAE
         if (lblNome) lblNome.innerHTML = 'Nome da Entidade (APAE) *';
@@ -1452,15 +1474,15 @@
         if (wrapAlunos) wrapAlunos.style.display = 'block';
 
         // Imagem 3: APAE (Presidente, Secretário Geral)
-        if (lblDir) lblDir.textContent = 'Nome do Presidente';
+        if (lblDir) lblDir.textContent = 'Nome do Presidente *';
         if (inpDir) inpDir.placeholder = 'Nome completo do Presidente';
-        if (lblCtDir) lblCtDir.textContent = 'Contato do Presidente';
+        if (lblCtDir) lblCtDir.textContent = 'Contato do Presidente *';
 
         if (lblTel) lblTel.textContent = 'Telefone da Unidade / Sede';
 
-        if (lblSec) lblSec.textContent = 'Secretário Geral';
+        if (lblSec) lblSec.textContent = 'Secretário Geral *';
         if (inpSec) inpSec.placeholder = 'Nome completo do Secretário Geral';
-        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário Geral';
+        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário Geral *';
       } else if (c.includes('EFA') || c.includes('FAMILIA AGRICOLA') || c.includes('FAMÍLIA AGRÍCOLA')) {
         // Imagem 5: EFA
         if (lblNome) lblNome.innerHTML = 'Nome da Entidade (EFA - Família Agrícola) *';
@@ -1469,15 +1491,15 @@
         if (wrapAlunos) wrapAlunos.style.display = 'block';
 
         // Imagem 3: EFA mesma da APAE (Presidente, Secretário Geral)
-        if (lblDir) lblDir.textContent = 'Nome do Presidente';
+        if (lblDir) lblDir.textContent = 'Nome do Presidente *';
         if (inpDir) inpDir.placeholder = 'Nome completo do Presidente';
-        if (lblCtDir) lblCtDir.textContent = 'Contato do Presidente';
+        if (lblCtDir) lblCtDir.textContent = 'Contato do Presidente *';
 
         if (lblTel) lblTel.textContent = 'Telefone da Unidade / Sede';
 
-        if (lblSec) lblSec.textContent = 'Secretário Geral';
+        if (lblSec) lblSec.textContent = 'Secretário Geral *';
         if (inpSec) inpSec.placeholder = 'Nome completo do Secretário Geral';
-        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário Geral';
+        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário Geral *';
       } else {
         // Conselho Escolar (Padrão)
         if (lblNome) lblNome.innerHTML = 'Nome da Escola / Conselho Escolar *';
@@ -1486,17 +1508,44 @@
         if (wrapAlunos) wrapAlunos.style.display = 'block';
 
         // Imagem 3: Conselho Escolar (Presidente / Diretor, Secretário)
-        if (lblDir) lblDir.textContent = 'Nome do Diretor | Presidente';
+        if (lblDir) lblDir.textContent = 'Nome do Diretor | Presidente *';
         if (inpDir) inpDir.placeholder = 'Nome completo do Diretor ou Presidente';
-        if (lblCtDir) lblCtDir.textContent = 'Contato do Diretor | Presidente';
+        if (lblCtDir) lblCtDir.textContent = 'Contato do Diretor | Presidente *';
 
         if (lblTel) lblTel.textContent = 'Telefone da Unidade';
 
-        if (lblSec) lblSec.textContent = 'Nome do Secretário(a)';
+        if (lblSec) lblSec.textContent = 'Nome do Secretário(a) *';
         if (inpSec) inpSec.placeholder = 'Nome completo do Secretário(a)';
-        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário(a)';
+        if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário(a) *';
       }
     }
+
+    // ============================================================
+    // ATUALIZAR LINK DE ACESSO DO PLUS CODE (IMAGEM 3 NO QUADRO VERDE)
+    // ============================================================
+    function atualizarLinkAcessoPlusCode(val) {
+      val = (val || '').trim();
+      let url = 'https://maps.google.com';
+      if (val) {
+        url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(val)}`;
+      } else {
+        const nome = (document.getElementById('entidade-nome')?.value || '').trim();
+        const mun = (document.getElementById('entidade-municipio')?.value || _municipioAtual || '').trim();
+        if (nome || mun) {
+          url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((nome ? nome + ', ' : '') + (mun ? mun + ' - RO' : 'Rondônia'))}`;
+        }
+      }
+      const topLink = document.getElementById('link-acesso-plus-code-top');
+      if (topLink) topLink.href = url;
+      const btn = document.getElementById('btn-acesso-maps');
+      if (btn) btn.href = url;
+      const urlTxt = document.getElementById('url-acesso-plus-code');
+      if (urlTxt) {
+        urlTxt.href = url;
+        urlTxt.textContent = url;
+      }
+    }
+    window.atualizarLinkAcessoPlusCode = atualizarLinkAcessoPlusCode;
 
     // ============================================================
     // CARREGAR ESCOLAS VINCULADAS AOS PARÂMETROS FIXADOS
@@ -1599,8 +1648,8 @@
         const compCls = comp.toLowerCase().includes('estadual') ? 'estadual' : (comp.toLowerCase().includes('privada') ? 'privada' : 'municipal');
         const nome = esc.nome || 'Escola sem nome';
         const inep = esc.codigoInep || esc.inep || '-';
-        const alunos = esc.totalMatricula || esc.alunos || '-';
         const loc = esc.localizacao || esc.localidade || 'Urbana';
+        const pCode = esc.plusCode ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" rel="noopener noreferrer" style="font-size:10.5px; color:#34d399; text-decoration:underline; font-weight:700; display:inline-flex; align-items:center; gap:2px;" title="Abrir localização no Google Maps">🌐 Link de Acesso ↗</a>` : '';
         const diretor = esc.diretor || '-';
         const tel = esc.contatoDiretor || esc.telefone || '-';
 
@@ -1610,7 +1659,7 @@
             <td><strong style="color:#ffffff;">${nome}</strong></td>
             <td style="font-family:monospace; color:#38bdf8;">${inep}</td>
             <td style="text-align:center; font-weight:700;">${alunos}</td>
-            <td>${loc}</td>
+            <td>${loc}${pCode}</td>
             <td>${diretor}</td>
             <td>${tel}</td>
             <td style="text-align:center; white-space:nowrap;">
@@ -1671,6 +1720,7 @@
         setVal('entidade-rodovia-km', esc.rodoviaKm);
         setVal('entidade-sitio-rio', esc.sitioRio);
         setVal('entidade-plus-code', esc.plusCode);
+        atualizarLinkAcessoPlusCode(esc.plusCode);
 
         setVal('entidade-salas-aula', esc.salasAula || esc.salas);
         setVal('entidade-salas-adm', esc.salasAdm);
@@ -1757,6 +1807,7 @@
         if (el) el.value = '';
       });
       limparModalidades();
+      atualizarLinkAcessoPlusCode('');
       ativarAba(2);
       document.getElementById('entidade-nome')?.focus();
     }
@@ -1772,9 +1823,91 @@
       const getVal = id => (document.getElementById(id)?.value || '').trim();
       const nome = getVal('entidade-nome');
       if (!nome) {
-        alert('Informe o Nome da Escola / Entidade.');
+        alert('Informe o Nome da Escola / Entidade * (Requerido).');
         ativarAba(2);
         document.getElementById('entidade-nome')?.focus();
+        return;
+      }
+
+      const isPrefeitura = _categoriaAtual && _categoriaAtual.toLowerCase().includes('prefeitura');
+
+      // Campos requeridos da Aba 2 (Identificação) - exceto Prefeitura
+      if (!isPrefeitura) {
+        const inep = getVal('entidade-inep');
+        if (!inep) {
+          alert('Informe o Código INEP * (Requerido).');
+          ativarAba(2);
+          document.getElementById('entidade-inep')?.focus();
+          return;
+        }
+        const alunos = getVal('entidade-alunos');
+        if (alunos === '' || alunos === null) {
+          alert('Informe o Nº de Alunos * (Requerido).');
+          ativarAba(2);
+          document.getElementById('entidade-alunos')?.focus();
+          return;
+        }
+      }
+
+      // Campos requeridos da Aba 3 (Gestão & Contatos)
+      const diretor = getVal('entidade-diretor');
+      if (!diretor) {
+        const lblDir = document.getElementById('lbl-entidade-diretor')?.textContent || 'Diretor | Presidente';
+        alert(`Informe o campo: ${lblDir} (Requerido).`);
+        ativarAba(3);
+        document.getElementById('entidade-diretor')?.focus();
+        return;
+      }
+
+      const contatoDir = getVal('entidade-contato-diretor');
+      if (!contatoDir) {
+        const lblCt = document.getElementById('lbl-entidade-contato-diretor')?.textContent || 'Contato do Diretor | Presidente';
+        alert(`Informe o campo: ${lblCt} (Requerido).`);
+        ativarAba(3);
+        document.getElementById('entidade-contato-diretor')?.focus();
+        return;
+      }
+
+      const secretario = getVal('entidade-secretario');
+      if (!secretario) {
+        const lblSec = document.getElementById('lbl-entidade-secretario')?.textContent || 'Secretário(a)';
+        alert(`Informe o campo: ${lblSec} (Requerido). Se não houver, digite "Não tem".`);
+        ativarAba(3);
+        document.getElementById('entidade-secretario')?.focus();
+        return;
+      }
+
+      const contatoSec = getVal('entidade-contato-secretario');
+      if (!contatoSec) {
+        const lblCtSec = document.getElementById('lbl-entidade-contato-secretario')?.textContent || 'Contato do Secretário(a)';
+        alert(`Informe o campo: ${lblCtSec} (Requerido). Se não houver, digite "Não tem".`);
+        ativarAba(3);
+        document.getElementById('entidade-contato-secretario')?.focus();
+        return;
+      }
+
+      const redes = getVal('entidade-redes');
+      if (!redes) {
+        alert('Informe as Redes Sociais * (Instagram/Facebook/Site). Se não possuir, digite "Não possui".');
+        ativarAba(3);
+        document.getElementById('entidade-redes')?.focus();
+        return;
+      }
+
+      // Campos requeridos da Aba 4 (Endereço & Localização)
+      const endereco = getVal('entidade-endereco');
+      if (!endereco) {
+        alert('Informe o Endereço (Rua / Av / Linha) * (Requerido).');
+        ativarAba(4);
+        document.getElementById('entidade-endereco')?.focus();
+        return;
+      }
+
+      const bairro = getVal('entidade-bairro');
+      if (!bairro) {
+        alert('Informe o Bairro / Distrito / Linha * (Requerido).');
+        ativarAba(4);
+        document.getElementById('entidade-bairro')?.focus();
         return;
       }
 

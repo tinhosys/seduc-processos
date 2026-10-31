@@ -7903,6 +7903,9 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
     const locBadge = loc.toLowerCase().includes('rural')
       ? '<span style="background:rgba(255,255,255,0.05); color:#e2e8f0; border:1px solid rgba(255,255,255,0.1); padding:2px 8px; border-radius:4px; font-size:10.5px;">Rural</span>'
       : '<span style="background:rgba(255,255,255,0.05); color:#e2e8f0; border:1px solid rgba(255,255,255,0.1); padding:2px 8px; border-radius:4px; font-size:10.5px;">Urbana</span>';
+    const plusModal = e.plusCode
+      ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.plusCode)}" target="_blank" rel="noopener noreferrer" style="font-size:10px; color:#34d399; text-decoration:underline; font-weight:700; display:inline-flex; align-items:center; gap:2px;" title="Abrir localização no Google Maps">🌐 Link de Acesso ↗</a>`
+      : '';
 
     const alunos = Number(e.alunos || e.totalMatricula || 0);
     const alunosStr = alunos > 0 ? alunos.toLocaleString('pt-BR') : '-';
@@ -7925,7 +7928,7 @@ function renderizarTabelaEscolasMunicipioModal(municipioFiltro = '', buscaTexto 
           ${e.inep || '-'}
         </td>
         <td style="padding:10px 14px; white-space:nowrap;">
-          ${locBadge}
+          ${locBadge}${plusModal}
         </td>
         <td style="padding:10px 14px; color:#cbd5e1; font-size:12px; white-space:nowrap;">
           ${superReg}
@@ -8189,6 +8192,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
   }
 
   renderizarTabelaEscolasMunicipioModal(munAtivo);
+  atualizarLinkAcessoPlusCode(dadosExistentes ? dadosExistentes.plusCode : '');
 
   modal.style.display = 'flex';
 }
@@ -8288,29 +8292,63 @@ function atualizarLegendasModalPorCategoria(categoria) {
 
   if (isPrefeitura) {
     if (lblDir) lblDir.textContent = 'Nome do(a) Prefeito(a) *';
-    if (lblContDir) lblContDir.textContent = 'Contato do Gabinete do Prefeito';
+    if (lblContDir) lblContDir.textContent = 'Contato do Gabinete do Prefeito *';
     if (lblTel) lblTel.textContent = 'Telefone da Prefeitura';
     if (lblEmail) lblEmail.textContent = 'E-mail Oficial da Prefeitura';
     if (lblSec) lblSec.textContent = 'Secretário Municipal de Educação (SEMED) *';
-    if (lblContSec) lblContSec.textContent = 'Contato do Secretário de Educação';
+    if (lblContSec) lblContSec.textContent = 'Contato do Secretário de Educação *';
   } else if (isApae || isEfa) {
     if (lblDir) lblDir.textContent = 'Presidente da Entidade *';
-    if (lblContDir) lblContDir.textContent = 'Contato do Presidente';
+    if (lblContDir) lblContDir.textContent = 'Contato do Presidente *';
     if (lblTel) lblTel.textContent = 'Telefone da Entidade';
     if (lblEmail) lblEmail.textContent = 'E-mail da Entidade';
     if (lblSec) lblSec.textContent = 'Secretário(a) Geral *';
-    if (lblContSec) lblContSec.textContent = 'Contato do Secretário(a) Geral';
+    if (lblContSec) lblContSec.textContent = 'Contato do Secretário(a) Geral *';
   } else {
     // Conselho Escolar / Escola
     if (lblDir) lblDir.textContent = 'Nome do Diretor | Presidente *';
-    if (lblContDir) lblContDir.textContent = 'Contato do Diretor';
+    if (lblContDir) lblContDir.textContent = 'Contato do Diretor | Presidente *';
     if (lblTel) lblTel.textContent = 'Telefone da Unidade Escolar';
     if (lblEmail) lblEmail.textContent = 'E-mail da Escola';
-    if (lblSec) lblSec.textContent = 'Nome do Secretário(a) Escolar *';
-    if (lblContSec) lblContSec.textContent = 'Contato do Secretário(a)';
+    if (lblSec) lblSec.textContent = 'Nome do Secretário(a) *';
+    if (lblContSec) lblContSec.textContent = 'Contato do Secretário(a) *';
   }
 }
 window.atualizarLegendasModalPorCategoria = atualizarLegendasModalPorCategoria;
+
+// Atualiza o link de acesso no modal e formulário
+function atualizarLinkAcessoPlusCode(val) {
+  val = (val || '').trim();
+  let url = 'https://maps.google.com';
+  if (val) {
+    url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(val)}`;
+  } else {
+    const nome = (document.getElementById('entidade-nome')?.value || '').trim();
+    const mun = (document.getElementById('entidade-municipio')?.value || '').trim();
+    if (nome || mun) {
+      url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((nome ? nome + ', ' : '') + (mun ? mun + ' - RO' : 'Rondônia'))}`;
+    }
+  }
+  const topLinkModal = document.getElementById('link-acesso-modal-plus-code-top');
+  if (topLinkModal) topLinkModal.href = url;
+  const btnModal = document.getElementById('btn-acesso-modal-maps');
+  if (btnModal) btnModal.href = url;
+  const urlTxtModal = document.getElementById('url-acesso-modal-plus-code');
+  if (urlTxtModal) {
+    urlTxtModal.href = url;
+    urlTxtModal.textContent = url;
+  }
+  const topLink = document.getElementById('link-acesso-plus-code-top');
+  if (topLink) topLink.href = url;
+  const btn = document.getElementById('btn-acesso-maps');
+  if (btn) btn.href = url;
+  const urlTxt = document.getElementById('url-acesso-plus-code');
+  if (urlTxt) {
+    urlTxt.href = url;
+    urlTxt.textContent = url;
+  }
+}
+window.atualizarLinkAcessoPlusCode = atualizarLinkAcessoPlusCode;
 
 // Sincroniza a categoria da entidade e a modalidade jurídica de parceria (Fomento vs Convênio)
 function aoSelecionarTipoEntidadeForm(tipo) {
@@ -8360,12 +8398,92 @@ function salvarCadastroEntidade(e) {
 
   if (!nome) {
     if (typeof toast === 'function') toast('Informe o Nome da Escola / Entidade *', 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
     document.getElementById('entidade-nome')?.focus();
     return;
   }
   if (!municipio) {
     if (typeof toast === 'function') toast('Informe o Município / Distrito *', 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
     document.getElementById('entidade-municipio')?.focus();
+    return;
+  }
+
+  const isPrefeitura = categoria && categoria.toLowerCase().includes('prefeitura');
+  if (!isPrefeitura) {
+    const inep = getV('entidade-inep');
+    if (!inep) {
+      if (typeof toast === 'function') toast('Informe o Código INEP * (Requerido)', 'error');
+      if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
+      document.getElementById('entidade-inep')?.focus();
+      return;
+    }
+    const alunos = getV('entidade-alunos');
+    if (alunos === '' || alunos === null) {
+      if (typeof toast === 'function') toast('Informe o Nº de Alunos * (Requerido)', 'error');
+      if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
+      document.getElementById('entidade-alunos')?.focus();
+      return;
+    }
+  }
+
+  const diretor = getV('entidade-diretor');
+  if (!diretor) {
+    const lblDir = document.getElementById('lbl-entidade-diretor-modal')?.textContent || 'Diretor | Presidente';
+    if (typeof toast === 'function') toast(`Informe o campo: ${lblDir} (Requerido)`, 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    document.getElementById('entidade-diretor')?.focus();
+    return;
+  }
+
+  const contatoDir = getV('entidade-contato-diretor');
+  if (!contatoDir) {
+    const lblCt = document.getElementById('lbl-entidade-contato-diretor-modal')?.textContent || 'Contato do Diretor | Presidente';
+    if (typeof toast === 'function') toast(`Informe o campo: ${lblCt} (Requerido)`, 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    document.getElementById('entidade-contato-diretor')?.focus();
+    return;
+  }
+
+  const secretario = getV('entidade-secretario');
+  if (!secretario) {
+    const lblSec = document.getElementById('lbl-entidade-secretario-modal')?.textContent || 'Secretário(a)';
+    if (typeof toast === 'function') toast(`Informe o campo: ${lblSec} (Requerido). Se não houver, digite "Não tem".`, 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    document.getElementById('entidade-secretario')?.focus();
+    return;
+  }
+
+  const contatoSec = getV('entidade-contato-secretario');
+  if (!contatoSec) {
+    const lblCtSec = document.getElementById('lbl-entidade-contato-secretario-modal')?.textContent || 'Contato do Secretário(a)';
+    if (typeof toast === 'function') toast(`Informe o campo: ${lblCtSec} (Requerido). Se não houver, digite "Não tem".`, 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    document.getElementById('entidade-contato-secretario')?.focus();
+    return;
+  }
+
+  const redes = getV('entidade-redes');
+  if (!redes) {
+    if (typeof toast === 'function') toast('Informe as Redes Sociais * (ou digite "Não possui")', 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    document.getElementById('entidade-redes')?.focus();
+    return;
+  }
+
+  const endereco = getV('entidade-endereco');
+  if (!endereco) {
+    if (typeof toast === 'function') toast('Informe o Endereço (Rua / Av / Linha) * (Requerido)', 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(4);
+    document.getElementById('entidade-endereco')?.focus();
+    return;
+  }
+
+  const bairro = getV('entidade-bairro');
+  if (!bairro) {
+    if (typeof toast === 'function') toast('Informe o Bairro / Distrito / Linha * (Requerido)', 'error');
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(4);
+    document.getElementById('entidade-bairro')?.focus();
     return;
   }
 
