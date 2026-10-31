@@ -148,7 +148,7 @@
       box-sizing: border-box;
     }
 
-    /* LATERAL: IMAGEM 3 (BANNER CADASTRE TODAS AS ESCOLAS) */
+    /* LATERAL: BANNER CADASTRE TODAS AS ESCOLAS (COM LINK WHATSAPP) */
     .sidebar-banner {
       width: 270px;
       flex-shrink: 0;
@@ -159,12 +159,28 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.6);
       border: 1px solid rgba(255,255,255,0.1);
       background: #090e17;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .sidebar-banner:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(37, 211, 102, 0.35);
+      border-color: rgba(37, 211, 102, 0.6);
+    }
+
+    .sidebar-banner a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      text-decoration: none;
+      cursor: pointer;
     }
 
     .sidebar-banner img {
       width: 100%;
       height: auto;
       display: block;
+      cursor: pointer;
     }
 
     /* ÁREA DIREITA: EXPANDIDA EM TODA A EXTENSÃO DA PÁGINA */
@@ -321,7 +337,7 @@
 
     @media (max-width: 1024px) {
       .layout-wrapper { flex-direction: column; }
-      .sidebar-banner { width: 100%; position: static; max-height: 250px; overflow: hidden; }
+      .sidebar-banner { width: 100%; max-width: 360px; margin: 0 auto 18px auto; position: static; max-height: none; overflow: visible; }
       .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
       .municipio-titulo-topo { font-size: 20pt; }
     }
@@ -616,9 +632,13 @@
   <!-- ==================== LAYOUT PRINCIPAL: BANNER LATERAL + CONTEÚDO ==================== -->
   <div class="layout-wrapper">
     
-    <!-- LATERAL: IMAGEM 3 (MARCAÇÃO VERDE ESCURO) -->
+    <!-- LATERAL: BANNER COM LINK PARA WHATSAPP EM TODA A IMAGEM (69 99922-1336) -->
     <aside class="sidebar-banner">
-      <img src="img/banner-cadastre-escolas.png" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO">
+      <a href="https://api.whatsapp.com/send?phone=5569999221336&text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20cadastro%20de%20escolas%20e%20entidades%20da%20SEDUC/RO."
+        target="_blank" rel="noopener noreferrer"
+        title="Fale conosco no WhatsApp: (69) 99922-1336">
+        <img src="img/banner-cadastre-escolas.jpg?v=1.3.69" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99922-1336">
+      </a>
     </aside>
 
     <!-- ÁREA EXPANDIDA: FORMULÁRIO E TABELA -->
