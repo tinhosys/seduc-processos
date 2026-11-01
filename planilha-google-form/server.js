@@ -1515,7 +1515,7 @@ const defaultEntidadesHeaders = [
   "Biblioteca", "DML (Depósito Material Limpeza)", "Quadra Coberta", "Piso da Quadra",
   "Laboratório de Informática", "Hall de Acolhimento", "PPCI", "Fonte de Água",
   "Energia Solar", "Tipo de Abertura", "Tipo de Forro", "Tipo de Piso", "Tipo de Telhado",
-  "Escola Murada ou Gradeada",
+  "Escola Murada ou Gradeada", "Observações da Infraestrutura",
   // Dados do Registrador (Quem prestou as informações):
   "Nome do Registrador", "Telefone Celular do Registrador", "Email do Registrador", "Cargo do Registrador"
 ];
@@ -1598,6 +1598,7 @@ app.post("/api/entidades", async (req, res) => {
       data.tipoPiso || "",
       data.tipoTelhado || "",
       data.muradaGradeada || "",
+      data.observacoes || "",
       // Dados do Registrador:
       data.registradorNome || "",
       data.registradorTelefone || "",
