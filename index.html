@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.84">
+  <link rel="stylesheet" href="css/style.css?v=1.3.85">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -832,7 +832,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.84</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.85</div>
 
   </div>
 </div>
@@ -909,15 +909,15 @@
         </a>
       </div>
 
-      <!-- LINK DE CADASTRO NO MENU PRINCIPAL (MARCAÇÃO AMARELA IMAGEM 1) -->
+      <!-- LINK DE CADASTRO NO MENU PRINCIPAL - DISPONÍVEL PARA TODOS -->
       <div style="padding: 0 10px 6px 10px;">
-        <a href="#" class="nav-item action-editor action-adm" id="nav-sidebar-gerar-link-cadastro" onclick="abrirModalGeradorLink(); fecharSubmenus(); return false;"
+        <a href="#" class="nav-item" id="nav-sidebar-gerar-link-cadastro" onclick="abrirModalGeradorLink(); fecharSubmenus(); return false;"
           style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.85)); border: 1px solid rgba(56, 189, 248, 0.5); border-radius: 8px; color: #38bdf8; font-weight: 800; box-shadow: 0 0 14px rgba(2, 132, 199, 0.25); display: flex; align-items: center; gap: 9px; padding: 9px 12px; transition: all 0.2s;"
           onmouseover="this.style.boxShadow='0 0 20px rgba(56,189,248,0.55)'; this.style.borderColor='#38bdf8'; this.style.background='linear-gradient(135deg, rgba(2, 132, 199, 0.4), rgba(15, 23, 42, 0.95))';"
           onmouseout="this.style.boxShadow='0 0 14px rgba(2, 132, 199, 0.25)'; this.style.borderColor='rgba(56,189,248,0.5)'; this.style.background='linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.85))';"
-          title="Gerar Link de Cadastro de Escolas / Entidades com parâmetros pré-definidos">
+          title="Link de Cadastro das Escolas / Entidades">
           <span style="font-size: 15px; line-height: 1;">🔗</span>
-          <span style="font-size: 12.5px; font-weight: 800; letter-spacing: 0.3px; color: #ffffff;">Gerar Link de Cadastro</span>
+          <span style="font-size: 12.5px; font-weight: 800; letter-spacing: 0.3px; color: #ffffff;">Link de Cadastro das Escolas</span>
         </a>
       </div>
 
@@ -1133,7 +1133,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.84</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.85</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -3116,7 +3116,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.84</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.85</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3798,7 +3798,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.84
+              GBZ - v1.3.85
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4071,7 +4071,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.84] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.85] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6339,11 +6339,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.84"></script>
-  <script src="js/auth-sap.js?v=1.3.84"></script>
-  <script src="js/dados.js?v=1.3.84"></script>
-  <script src="js/app.js?v=1.3.84"></script>
-  <script src="js/escolas.js?v=1.3.84" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.85"></script>
+  <script src="js/auth-sap.js?v=1.3.85"></script>
+  <script src="js/dados.js?v=1.3.85"></script>
+  <script src="js/app.js?v=1.3.85"></script>
+  <script src="js/escolas.js?v=1.3.85" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>

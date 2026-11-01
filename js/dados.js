@@ -383,6 +383,8 @@ async function adicionarProcesso(dados) {
         tabName: 'todos',
         cnpj: dados.cnpj || '',
         CNPJ: dados.cnpj || '',
+        analista: dados.analista || '',
+        ANALISTA: dados.analista || '',
         DIGITO: dados.digito || dados.DIGITO || '', 
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })
@@ -412,6 +414,8 @@ async function atualizarProcesso(id, dados) {
         ...dados, 
         cnpj: dados.cnpj || '',
         CNPJ: dados.cnpj || '',
+        analista: dados.analista || '',
+        ANALISTA: dados.analista || '',
         DIGITO: dados.digito || dados.DIGITO || '', 
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })

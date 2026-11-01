@@ -229,6 +229,12 @@ function aplicarPermissoes(nivel) {
   if (!canDash && typeof state !== 'undefined' && state && state.page === 'dashboard') {
     if (typeof navegar === 'function') navegar('processos');
   }
+
+  // Botão Link de Cadastro das Escolas sempre visível para todos os perfis
+  const btnLinkCad = document.getElementById('nav-sidebar-gerar-link-cadastro');
+  if (btnLinkCad) {
+    btnLinkCad.style.setProperty('display', 'flex', 'important');
+  }
 }
 
 // Exibe a tela de login

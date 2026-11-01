@@ -370,7 +370,8 @@ const defaultHeaders = [
   "METRAGEM (M²)",
   "DETALHAMENTO ITENS",
   "DEMAIS OBSERVACOES",
-  "EXECUTIVO"
+  "EXECUTIVO",
+  "ANALISTA"
 ];
 
 async function getAllRows() {
@@ -563,6 +564,8 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
       val = data.cnpj !== undefined ? data.cnpj : (data.CNPJ !== undefined ? data.CNPJ : '');
     } else if (hLow.includes('executivo')) {
       val = data.executivo !== undefined ? data.executivo : (data.EXECUTIVO !== undefined ? data.EXECUTIVO : '');
+    } else if (hLow.includes('analista')) {
+      val = data.analista !== undefined ? data.analista : (data.ANALISTA !== undefined ? data.ANALISTA : '');
     }
 
     if (hLow.includes('contato')) {

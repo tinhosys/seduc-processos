@@ -1,4 +1,4 @@
-﻿import express from "express";
+import express from "express";
 import dotenv from "dotenv";
 import { google } from "googleapis";
 import crypto from "crypto";
@@ -288,6 +288,7 @@ function mapDataToRow(data, headers, originalRow = []) {
     else if (hLow.includes('obs')) val = data.obs;
     else if (hLow === 'data') val = data.data;
     else if (hLow.includes('anota')) val = data.anotacao;
+    else if (hLow.includes('analista')) val = data.analista !== undefined ? data.analista : (data.ANALISTA !== undefined ? data.ANALISTA : '');
     else if (hLow.includes('contato')) {
       if (Array.isArray(data.contatos) && data.contatos.length > 0) {
         val = data.contatos.map(c => {
