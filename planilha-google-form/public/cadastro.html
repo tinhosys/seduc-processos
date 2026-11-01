@@ -150,7 +150,8 @@
 
     /* LATERAL: BANNER CADASTRE TODAS AS ESCOLAS (COM LINK WHATSAPP) */
     .sidebar-banner {
-      width: 330px;
+      width: 250px;
+      max-width: 250px;
       flex-shrink: 0;
       position: sticky;
       top: 100px;
@@ -179,6 +180,8 @@
     .sidebar-banner img {
       width: 100%;
       height: auto;
+      max-height: 430px;
+      object-fit: contain;
       display: block;
       cursor: pointer;
     }
@@ -337,7 +340,7 @@
 
     @media (max-width: 1024px) {
       .layout-wrapper { flex-direction: column; }
-      .sidebar-banner { width: 100%; max-width: 440px; margin: 0 auto 20px auto; position: static; max-height: none; overflow: visible; }
+      .sidebar-banner { width: 100%; max-width: 320px; margin: 0 auto 20px auto; position: static; max-height: none; overflow: visible; }
       .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
       .municipio-titulo-topo { font-size: 20pt; }
     }
@@ -364,6 +367,11 @@
       box-sizing: border-box;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    select.form-control {
+      appearance: auto;
+      -webkit-appearance: auto;
+      cursor: pointer;
     }
     .form-control:focus {
       border-color: var(--accent);
@@ -637,7 +645,7 @@
       <a href="https://api.whatsapp.com/send?phone=5569999064881&text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20cadastro%20de%20escolas%20e%20entidades%20da%20SEDUC/RO."
         target="_blank" rel="noopener noreferrer"
         title="Fale conosco no WhatsApp: (69) 99906-4881">
-        <img src="img/banner-cadastre-escolas.jpg?v=1.3.71" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881">
+        <img src="img/banner-cadastre-escolas.jpg?v=1.3.72" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881">
       </a>
     </aside>
 
@@ -661,17 +669,17 @@
 
       <!-- ABAS DO FORMULÁRIO -->
       <div class="tabs-nav">
-        <button type="button" class="tab-btn active" id="tab-btn-2" onclick="ativarAba(2)">
-          <span class="tab-num">2</span> IDENTIFICAÇÃO
+        <button type="button" class="tab-btn active" id="tab-btn-1" onclick="ativarAba(1)">
+          <span class="tab-num">1</span> IDENTIFICAÇÃO
+        </button>
+        <button type="button" class="tab-btn" id="tab-btn-2" onclick="ativarAba(2)">
+          <span class="tab-num">2</span> GESTÃO & CONTATOS
         </button>
         <button type="button" class="tab-btn" id="tab-btn-3" onclick="ativarAba(3)">
-          <span class="tab-num">3</span> GESTÃO & CONTATOS
+          <span class="tab-num">3</span> ENDEREÇO
         </button>
         <button type="button" class="tab-btn" id="tab-btn-4" onclick="ativarAba(4)">
-          <span class="tab-num">4</span> ENDEREÇO
-        </button>
-        <button type="button" class="tab-btn" id="tab-btn-5" onclick="ativarAba(5)">
-          <span class="tab-num">5</span> INFRAESTRUTURA
+          <span class="tab-num">4</span> INFRAESTRUTURA
         </button>
         <button type="button" class="tab-btn" id="tab-btn-todas" onclick="ativarAba('todas')" style="margin-left: auto;">
           <span>📋</span> VER TODAS
@@ -685,11 +693,11 @@
           <input type="hidden" id="entidade-categoria" value="Conselho Escolar">
           <input type="hidden" id="entidade-parceria" value="Fomento (Termo de Fomento - F)">
 
-          <!-- SEÇÃO 2: IDENTIFICAÇÃO -->
-          <div class="form-group-section" id="sec-aba-2">
+          <!-- SEÇÃO 1: IDENTIFICAÇÃO -->
+          <div class="form-group-section" id="sec-aba-1">
             <div class="section-header">
-              <span class="section-title"><span class="tab-num">2</span> Identificação da Escola / Entidade</span>
-              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 2 de 5</span>
+              <span class="section-title"><span class="tab-num">1</span> Identificação da Escola / Entidade</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 1 de 4</span>
             </div>
 
             <div class="grid-2">
@@ -698,8 +706,10 @@
                 <input type="text" id="entidade-nome" required class="form-control" placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar...">
               </div>
               <div>
-                <label>Município / Distrito * (Fixado)</label>
-                <input type="text" id="entidade-municipio" required readonly class="form-control" style="font-weight: 800; color: #fef08a;">
+                <label id="lbl-entidade-municipio">Município / Distrito *</label>
+                <select id="entidade-municipio" required class="form-control" onchange="aoMudarMunicipioNoForm(this.value)" style="font-weight: 700; color: #fef08a;">
+                  <option value="">Selecione o Município da escola / entidade...</option>
+                </select>
               </div>
             </div>
 
@@ -768,13 +778,44 @@
                 </select>
               </div>
             </div>
+
+            <!-- DADOS DO REGISTRADOR (QUEM FEZ A INFORMAÇÃO) -->
+            <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 8px; padding: 14px; margin-top: 14px; margin-bottom: 6px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 6px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <span style="font-size: 16px;">👤</span>
+                  <span style="font-size: 12px; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.4px;">
+                    Dados do Registrador (Quem fez a informação)
+                  </span>
+                </div>
+                <span style="font-size: 11px; color: #94a3b8;">* Identificação obrigatória do responsável pelo preenchimento</span>
+              </div>
+              <div class="grid-4" style="margin-bottom: 0;">
+                <div>
+                  <label>Nome de registrador *</label>
+                  <input type="text" id="entidade-registrador-nome" required class="form-control" placeholder="Nome completo do registrador">
+                </div>
+                <div>
+                  <label>Telefone celular *</label>
+                  <input type="text" id="entidade-registrador-telefone" required class="form-control" placeholder="(69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneCelular(this)">
+                </div>
+                <div>
+                  <label>Email *</label>
+                  <input type="email" id="entidade-registrador-email" required class="form-control" placeholder="email@exemplo.com">
+                </div>
+                <div>
+                  <label>Cargo *</label>
+                  <input type="text" id="entidade-registrador-cargo" required class="form-control" placeholder="Ex: Diretor, Secretário, etc.">
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- SEÇÃO 3: GESTÃO & CONTATOS -->
-          <div class="form-group-section" id="sec-aba-3" style="display: none;">
+          <!-- SEÇÃO 2: GESTÃO & CONTATOS -->
+          <div class="form-group-section" id="sec-aba-2" style="display: none;">
             <div class="section-header">
-              <span class="section-title"><span class="tab-num">3</span> Gestão & Contatos Institucionais</span>
-              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 3 de 5</span>
+              <span class="section-title"><span class="tab-num">2</span> Gestão & Contatos Institucionais</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 2 de 4</span>
             </div>
 
             <div class="grid-4">
@@ -812,11 +853,11 @@
             </div>
           </div>
 
-          <!-- SEÇÃO 4: ENDEREÇO -->
-          <div class="form-group-section" id="sec-aba-4" style="display: none;">
+          <!-- SEÇÃO 3: ENDEREÇO -->
+          <div class="form-group-section" id="sec-aba-3" style="display: none;">
             <div class="section-header">
-              <span class="section-title"><span class="tab-num">4</span> Endereço & Localização</span>
-              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 4 de 5</span>
+              <span class="section-title"><span class="tab-num">3</span> Endereço & Localização</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 3 de 4</span>
             </div>
 
             <div class="grid-2">
@@ -904,11 +945,11 @@
             </div>
           </div>
 
-          <!-- SEÇÃO 5: INFRAESTRUTURA -->
-          <div class="form-group-section" id="sec-aba-5" style="display: none;">
+          <!-- SEÇÃO 4: INFRAESTRUTURA -->
+          <div class="form-group-section" id="sec-aba-4" style="display: none;">
             <div class="section-header">
-              <span class="section-title"><span class="tab-num">5</span> Infraestrutura & Espaços</span>
-              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 5 de 5</span>
+              <span class="section-title"><span class="tab-num">4</span> Infraestrutura & Espaços</span>
+              <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 4 de 4</span>
             </div>
 
             <!-- LINHA 1: SALAS & SANITÁRIOS -->
@@ -1399,7 +1440,7 @@
       const btnAlvo = document.getElementById(`tab-btn-${abaNum}`);
       if (btnAlvo) btnAlvo.classList.add('active');
 
-      const secoes = [2, 3, 4, 5];
+      const secoes = [1, 2, 3, 4];
       if (abaNum === 'todas') {
         secoes.forEach(n => {
           const sec = document.getElementById(`sec-aba-${n}`);
@@ -1411,6 +1452,132 @@
           if (sec) sec.style.display = (n === abaNum) ? 'block' : 'none';
         });
       }
+    }
+
+    // ============================================================
+    // BASE DE DADOS DOS MUNICÍPIOS DE RONDÔNIA & SUPERINTENDÊNCIAS
+    // ============================================================
+    const LISTA_MUNICIPIOS_RO = [
+      "Alta Floresta D'Oeste", "Alto Alegre dos Parecis", "Alto Paraíso", "Alvorada D'Oeste",
+      "Ariquemes", "Buritis", "Cabixi", "Cacaulândia", "Cacoal", "Campo Novo de Rondônia",
+      "Candeias do Jamari", "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste",
+      "Corumbiara", "Costa Marques", "Cujubim", "Espigão D'Oeste", "Governador Jorge Teixeira",
+      "Guajará-Mirim", "Itapuã do Oeste", "Jaru", "Ji-Paraná", "Machadinho D'Oeste",
+      "Ministro Andreazza", "Mirante da Serra", "Monte Negro", "Nova Brasilândia D'Oeste",
+      "Nova Mamoré", "Nova União", "Novo Horizonte do Oeste", "Ouro Preto do Oeste",
+      "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente Médici",
+      "Primavera de Rondônia", "Rio Crespo", "Rolim de Moura", "Santa Luzia D'Oeste",
+      "São Felipe D'Oeste", "São Francisco do Guaporé", "São Miguel do Guaporé", "Seringueiras",
+      "Teixeirópolis", "Theobroma", "Urupá", "Vale do Anari", "Vale do Paraíso", "Vilhena"
+    ];
+
+    const MAPA_MUNICIPIOS_SUPER = {
+      'alta floresta': 'ALTA FLORESTA',
+      'alto alegre dos parecis': 'ALTA FLORESTA',
+      'alto paraiso': 'ARIQUEMES',
+      'alvorada do oeste': 'JI-PARANA',
+      'ariquemes': 'ARIQUEMES',
+      'buritis': 'BURITIS',
+      'cabixi': 'CEREJEIRAS',
+      'cacoal': 'CACOAL',
+      'cacaulandia': 'ARIQUEMES',
+      'campo novo de ro': 'BURITIS',
+      'campo novo de rondonia': 'BURITIS',
+      'candeias do jamari': 'PORTO VELHO',
+      'castanheiras': 'ROLIM DE MOURA',
+      'cerejeiras': 'CEREJEIRAS',
+      'chupinguaia': 'VILHENA',
+      'colorado do oeste': 'CEREJEIRAS',
+      'corumbiara': 'CEREJEIRAS',
+      'costa marques': 'COSTA MARQUES',
+      'cujubim': 'ARIQUEMES',
+      'espigao do oeste': 'ESPIGAO DO OESTE',
+      'espigao d\'oeste': 'ESPIGAO DO OESTE',
+      'gov. jorge teixeira': 'JARU',
+      'governador jorge teixeira': 'JARU',
+      'guajara-mirim': 'GUAJARA-MIRIM',
+      'guajara mirim': 'GUAJARA-MIRIM',
+      'itapua do oeste': 'PORTO VELHO',
+      'jaru': 'JARU',
+      'ji-parana': 'JI-PARANA',
+      'ji parana': 'JI-PARANA',
+      'machadinho do oeste': 'MACHADINHO DOESTE',
+      'machadinho d\'oeste': 'MACHADINHO DOESTE',
+      'ministro andreazza': 'CACOAL',
+      'mirante da serra': 'OURO PRETO DO OESTE',
+      'monte negro': 'ARIQUEMES',
+      'nova brasilandia': 'ROLIM DE MOURA',
+      'nova mamore': 'GUAJARA-MIRIM',
+      'nova uniao': 'OURO PRETO DO OESTE',
+      'novo horizonte': 'ROLIM DE MOURA',
+      'ouro preto': 'OURO PRETO DO OESTE',
+      'ouro preto do oeste': 'OURO PRETO DO OESTE',
+      'parecis': 'PIMENTA BUENO',
+      'pimenta bueno': 'PIMENTA BUENO',
+      'pimenteiras do oeste': 'CEREJEIRAS',
+      'porto velho': 'PORTO VELHO',
+      'presidente medici': 'JI-PARANA',
+      'primavera de rondonia': 'PIMENTA BUENO',
+      'rio crespo': 'ARIQUEMES',
+      'rolim de moura': 'ROLIM DE MOURA',
+      'santa luzia': 'ROLIM DE MOURA',
+      'sao felipe do oeste': 'PIMENTA BUENO',
+      'sao francisco do guapore': 'SAO FRANCISCO',
+      'sao francisco': 'SAO FRANCISCO',
+      'sao miguel do guapore': 'SAO FRANCISCO',
+      'sao miguel': 'SAO FRANCISCO',
+      'seringueiras': 'SAO FRANCISCO',
+      'teixeiropolis': 'OURO PRETO DO OESTE',
+      'theobroma': 'JARU',
+      'urupa': 'OURO PRETO DO OESTE',
+      'vale do anari': 'MACHADINHO DOESTE',
+      'vale do paraiso': 'OURO PRETO DO OESTE',
+      'vilhena': 'VILHENA'
+    };
+
+    function normalizarMunicipioParaSuper(mun) {
+      if (!mun) return '';
+      return mun.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    }
+
+    function getSuperPorMunicipio(mun) {
+      if (!mun) return '';
+      const norm = normalizarMunicipioParaSuper(mun);
+      for (const [key, value] of Object.entries(MAPA_MUNICIPIOS_SUPER)) {
+        if (norm === key || norm.includes(key)) {
+          return 'SUPER - ' + value;
+        }
+      }
+      return 'SUPER Regional';
+    }
+
+    function aoMudarMunicipioNoForm(mun) {
+      if (!mun) return;
+      const supEl = document.getElementById('entidade-super');
+      if (supEl) supEl.value = getSuperPorMunicipio(mun);
+    }
+
+    function getTituloCabecalhoCategoria(cat, mun) {
+      const c = (cat || '').toUpperCase().trim();
+      const m = (mun || '').trim();
+      const isTodos = !m || m.toUpperCase() === 'TODOS';
+
+      if (c.includes('EFA') || c.includes('FAMILIA AGRICOLA') || c.includes('FAMÍLIA AGRÍCOLA')) {
+        return isTodos ? 'EFA - ESCOLA FAMÍLIA AGRÍCOLA' : `EFA - ESCOLA FAMÍLIA AGRÍCOLA - ${m.toUpperCase()}`;
+      }
+      if (c.includes('APAE')) {
+        return isTodos ? 'APAE - ASSOCIAÇÃO DE PAIS E AMIGOS DOS EXCEPCIONAIS' : `APAE - ASSOCIAÇÃO DE PAIS E AMIGOS DOS EXCEPCIONAIS - ${m.toUpperCase()}`;
+      }
+      if (c.includes('PREFEITURA')) {
+        return isTodos ? 'PREFEITURA MUNICIPAL' : `PREFEITURA MUNICIPAL DE ${m.toUpperCase()}`;
+      }
+      if (c.includes('CONSELHO')) {
+        return isTodos ? 'CONSELHO ESCOLAR' : `CONSELHO ESCOLAR - ${m.toUpperCase()}`;
+      }
+      if (c && c !== 'TODOS' && c !== 'TODAS') {
+        return isTodos ? c : `${c} - ${m.toUpperCase()}`;
+      }
+      return isTodos ? 'TODOS OS MUNICÍPIOS' : m.toUpperCase();
     }
 
     // ============================================================
@@ -1495,6 +1662,59 @@
       }
     }
 
+    // Regra estrita de modalidades:
+    // EFA = 'Educação do Campo' (somente para EFA)
+    // APAE = 'Educação Especial / AEE' (somente para APAE)
+    function ajustarOpcoesModalidadePorCategoria(cat) {
+      const c = (cat || '').toUpperCase();
+      const drop = document.getElementById('drop-modalidade-opcoes');
+      if (!drop) return;
+
+      const isEFA = c.includes('EFA') || c.includes('FAMILIA AGRICOLA') || c.includes('FAMÍLIA AGRÍCOLA');
+      const isAPAE = c.includes('APAE');
+
+      const labels = drop.querySelectorAll('label.mod-checkbox-item');
+      labels.forEach(lbl => {
+        const input = lbl.querySelector('input[type="checkbox"]');
+        if (!input) return;
+        const v = (input.value || '').toLowerCase();
+
+        if (v.includes('campo')) {
+          // Educação do Campo: APENAS disponível na categoria EFA
+          lbl.style.display = isEFA ? 'flex' : 'none';
+          if (!isEFA) input.checked = false;
+        } else if (v.includes('especial') || v.includes('aee')) {
+          // Educação Especial: APENAS disponível na categoria APAE
+          lbl.style.display = isAPAE ? 'flex' : 'none';
+          if (!isAPAE) input.checked = false;
+        } else {
+          // Demais modalidades gerais
+          if (isAPAE) {
+            lbl.style.display = 'none';
+            input.checked = false;
+          } else if (isEFA) {
+            lbl.style.display = (v.includes('fundamental') || v.includes('médio') || v.includes('medio') || v.includes('profissional') || v.includes('eja')) ? 'flex' : 'none';
+            if (lbl.style.display === 'none') input.checked = false;
+          } else {
+            lbl.style.display = 'flex';
+          }
+        }
+      });
+
+      // Auto-seleção padrão se vazio
+      const checkAtual = drop.querySelectorAll('input[type="checkbox"]:checked');
+      if (checkAtual.length === 0) {
+        if (isEFA) {
+          const cbCampo = Array.from(drop.querySelectorAll('input[type="checkbox"]')).find(cb => cb.value.toLowerCase().includes('campo'));
+          if (cbCampo) cbCampo.checked = true;
+        } else if (isAPAE) {
+          const cbEsp = Array.from(drop.querySelectorAll('input[type="checkbox"]')).find(cb => cb.value.toLowerCase().includes('especial') || cb.value.toLowerCase().includes('aee'));
+          if (cbEsp) cbEsp.checked = true;
+        }
+      }
+      aoMudarModalidadeCheck();
+    }
+
     // Fecha popover de modalidade ao clicar fora
     document.addEventListener('click', (e) => {
       const wrap = document.getElementById('wrap-entidade-modalidade');
@@ -1537,8 +1757,6 @@
         if (alunosInput) alunosInput.value = '';
 
         // Imagem 3: Gestão para Prefeitura
-        if (lblDir) lblDir.textContent = 'Nome do Prefeito(a)';
-        if (inpDir) inpDir.placeholder = 'Nome completo do(a) Prefeito(a)';
         if (lblDir) lblDir.textContent = 'Nome do(a) Prefeito(a) *';
         if (inpDir) inpDir.placeholder = 'Nome completo do(a) Prefeito(a)';
         if (lblCtDir) lblCtDir.textContent = 'Contato do Gabinete do Prefeito *';
@@ -1600,6 +1818,9 @@
         if (inpSec) inpSec.placeholder = 'Nome completo do Secretário(a)';
         if (lblCtSec) lblCtSec.textContent = 'Contato do Secretário(a) *';
       }
+
+      // Aplica restrição de modalidades para EFA e APAE
+      ajustarOpcoesModalidadePorCategoria(c);
     }
 
     // ============================================================
@@ -1779,10 +2000,17 @@
 
         setVal('entidade-id', esc.id);
         setVal('entidade-nome', esc.nome);
+        setVal('entidade-municipio', esc.municipio || '');
         setVal('entidade-cnpj', esc.cnpj);
         setVal('entidade-inep', esc.codigoInep || esc.inep);
         setVal('entidade-alunos', esc.totalMatricula || esc.alunos);
         setVal('entidade-localidade', esc.localidade || esc.localizacao || 'Urbana');
+
+        // Dados do Registrador
+        setVal('entidade-registrador-nome', esc.registradorNome || '');
+        setVal('entidade-registrador-telefone', formatarTelefoneCelular(esc.registradorTelefone || ''));
+        setVal('entidade-registrador-email', esc.registradorEmail || '');
+        setVal('entidade-registrador-cargo', esc.registradorCargo || '');
 
         setModalidadesSelecionadas(esc.modalidade || esc.modalidadeStr || '');
 
@@ -1832,7 +2060,7 @@
         setVal('entidade-tipo-forro', esc.tipoForro);
         setVal('entidade-tipo-piso', esc.tipoPiso);
 
-        ativarAba(2);
+        ativarAba(1);
         window.scrollTo({ top: 120, behavior: 'smooth' });
         document.getElementById('entidade-nome')?.focus();
         showToast('Dados da escola carregados para edição!');
@@ -1872,6 +2100,7 @@
     function limparFormulario() {
       const ids = [
         'entidade-id', 'entidade-nome', 'entidade-cnpj', 'entidade-inep', 'entidade-alunos',
+        'entidade-registrador-nome', 'entidade-registrador-telefone', 'entidade-registrador-email', 'entidade-registrador-cargo',
         'entidade-diretor', 'entidade-contato-diretor', 'entidade-telefone', 'entidade-email',
         'entidade-secretario', 'entidade-contato-secretario', 'entidade-redes',
         'entidade-endereco', 'entidade-bairro', 'entidade-complemento', 'entidade-cep',
@@ -1888,9 +2117,14 @@
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
+      if (_municipioAtual.toUpperCase() === 'TODOS') {
+        const selMun = document.getElementById('entidade-municipio');
+        if (selMun) selMun.value = '';
+      }
       limparModalidades();
       atualizarLinkAcessoPlusCode('');
-      ativarAba(2);
+      ajustarOpcoesModalidadePorCategoria(_categoriaAtual);
+      ativarAba(1);
       document.getElementById('entidade-nome')?.focus();
     }
 
@@ -1905,38 +2139,76 @@
       const getVal = id => (document.getElementById(id)?.value || '').trim();
       const nome = getVal('entidade-nome');
       if (!nome) {
-        alert('Informe o Nome da Escola / Entidade * (Requerido).');
-        ativarAba(2);
+        alert('Informe o Nome Completo da Escola / Entidade * (Requerido).');
+        ativarAba(1);
         document.getElementById('entidade-nome')?.focus();
+        return;
+      }
+
+      const munEscolhido = getVal('entidade-municipio');
+      if (!munEscolhido || munEscolhido.toUpperCase() === 'TODOS') {
+        alert('Selecione o Município / Distrito da Escola ou Entidade * (Requerido).');
+        ativarAba(1);
+        document.getElementById('entidade-municipio')?.focus();
         return;
       }
 
       const isPrefeitura = _categoriaAtual && _categoriaAtual.toLowerCase().includes('prefeitura');
 
-      // Campos requeridos da Aba 2 (Identificação) - exceto Prefeitura
+      // Campos requeridos da Aba 1 (Identificação) - exceto Prefeitura
       if (!isPrefeitura) {
         const inep = getVal('entidade-inep');
         if (!inep) {
           alert('Informe o Código INEP * (Requerido).');
-          ativarAba(2);
+          ativarAba(1);
           document.getElementById('entidade-inep')?.focus();
           return;
         }
         const alunos = getVal('entidade-alunos');
         if (alunos === '' || alunos === null) {
           alert('Informe o Nº de Alunos * (Requerido).');
-          ativarAba(2);
+          ativarAba(1);
           document.getElementById('entidade-alunos')?.focus();
           return;
         }
       }
 
-      // Campos requeridos da Aba 3 (Gestão & Contatos)
+      // Validação dos Dados do Registrador (Quem fez a informação)
+      const regNome = getVal('entidade-registrador-nome');
+      if (!regNome) {
+        alert('Informe o Nome de registrador * (Requerido).');
+        ativarAba(1);
+        document.getElementById('entidade-registrador-nome')?.focus();
+        return;
+      }
+      const regTel = getVal('entidade-registrador-telefone');
+      if (!regTel) {
+        alert('Informe o Telefone celular do registrador * (Requerido).');
+        ativarAba(1);
+        document.getElementById('entidade-registrador-telefone')?.focus();
+        return;
+      }
+      const regEmail = getVal('entidade-registrador-email');
+      if (!regEmail) {
+        alert('Informe o Email do registrador * (Requerido).');
+        ativarAba(1);
+        document.getElementById('entidade-registrador-email')?.focus();
+        return;
+      }
+      const regCargo = getVal('entidade-registrador-cargo');
+      if (!regCargo) {
+        alert('Informe o Cargo do registrador * (Requerido).');
+        ativarAba(1);
+        document.getElementById('entidade-registrador-cargo')?.focus();
+        return;
+      }
+
+      // Campos requeridos da Aba 2 (Gestão & Contatos)
       const diretor = getVal('entidade-diretor');
       if (!diretor) {
         const lblDir = document.getElementById('lbl-entidade-diretor')?.textContent || 'Diretor | Presidente';
         alert(`Informe o campo: ${lblDir} (Requerido).`);
-        ativarAba(3);
+        ativarAba(2);
         document.getElementById('entidade-diretor')?.focus();
         return;
       }
@@ -1945,7 +2217,7 @@
       if (!contatoDir) {
         const lblCt = document.getElementById('lbl-entidade-contato-diretor')?.textContent || 'Contato do Diretor | Presidente';
         alert(`Informe o campo: ${lblCt} (Requerido).`);
-        ativarAba(3);
+        ativarAba(2);
         document.getElementById('entidade-contato-diretor')?.focus();
         return;
       }
@@ -1954,7 +2226,7 @@
       if (!secretario) {
         const lblSec = document.getElementById('lbl-entidade-secretario')?.textContent || 'Secretário(a)';
         alert(`Informe o campo: ${lblSec} (Requerido). Se não houver, digite "Não tem".`);
-        ativarAba(3);
+        ativarAba(2);
         document.getElementById('entidade-secretario')?.focus();
         return;
       }
@@ -1963,7 +2235,7 @@
       if (!contatoSec) {
         const lblCtSec = document.getElementById('lbl-entidade-contato-secretario')?.textContent || 'Contato do Secretário(a)';
         alert(`Informe o campo: ${lblCtSec} (Requerido). Se não houver, digite "Não tem".`);
-        ativarAba(3);
+        ativarAba(2);
         document.getElementById('entidade-contato-secretario')?.focus();
         return;
       }
@@ -1971,16 +2243,16 @@
       const redes = getVal('entidade-redes');
       if (!redes) {
         alert('Informe as Redes Sociais * (Instagram/Facebook/Site). Se não possuir, digite "Não possui".');
-        ativarAba(3);
+        ativarAba(2);
         document.getElementById('entidade-redes')?.focus();
         return;
       }
 
-      // Campos requeridos da Aba 4 (Endereço & Localização)
+      // Campos requeridos da Aba 3 (Endereço & Localização)
       const endereco = getVal('entidade-endereco');
       if (!endereco) {
         alert('Informe o Endereço (Rua / Av / Linha) * (Requerido).');
-        ativarAba(4);
+        ativarAba(3);
         document.getElementById('entidade-endereco')?.focus();
         return;
       }
@@ -1988,7 +2260,7 @@
       const bairro = getVal('entidade-bairro');
       if (!bairro) {
         alert('Informe o Bairro / Distrito / Linha * (Requerido).');
-        ativarAba(4);
+        ativarAba(3);
         document.getElementById('entidade-bairro')?.focus();
         return;
       }
@@ -1998,7 +2270,7 @@
         id: id,
         categoria: _categoriaAtual,
         nome: nome,
-        municipio: _municipioAtual,
+        municipio: munEscolhido,
         alunos: getVal('entidade-alunos'),
         modalidade: getVal('entidade-modalidade'),
         inep: getVal('entidade-inep'),
@@ -2008,7 +2280,7 @@
         complemento: getVal('entidade-complemento'),
         cep: getVal('entidade-cep'),
         competencia: _competenciaAtual,
-        super: _superAtual,
+        super: getVal('entidade-super') || _superAtual,
         redesSociais: getVal('entidade-redes'),
         telefone: getVal('entidade-telefone'),
         email: getVal('entidade-email'),
@@ -2017,6 +2289,11 @@
         secretario: getVal('entidade-secretario'),
         contatoSecretario: getVal('entidade-contato-secretario'),
         localidade: getVal('entidade-localidade') || 'Urbana',
+        // Dados de quem fez a informação (Registrador):
+        registradorNome: regNome,
+        registradorTelefone: regTel,
+        registradorEmail: regEmail,
+        registradorCargo: regCargo,
         // Campos de Endereço:
         linha: getVal('entidade-linha'),
         rodoviaKm: getVal('entidade-rodovia-km'),
@@ -2057,14 +2334,14 @@
       // Salva localmente
       try {
         let locais = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
-        const idx = locais.findIndex(x => x.id === id || (x.nome === nome && x.municipio === _municipioAtual));
+        const idx = locais.findIndex(x => x.id === id || (x.nome === nome && x.municipio === munEscolhido));
         if (idx >= 0) locais[idx] = novaEntidade;
         else locais.unshift(novaEntidade);
         localStorage.setItem('seduc_entidades_cadastradas_local', JSON.stringify(locais));
       } catch (err) {}
 
       // Atualiza lista em exibição
-      const idxCache = _escolasMunicipioCache.findIndex(x => x.id === id || (x.nome === nome && x.municipio === _municipioAtual));
+      const idxCache = _escolasMunicipioCache.findIndex(x => x.id === id || (x.nome === nome && x.municipio === munEscolhido));
       if (idxCache >= 0) _escolasMunicipioCache[idxCache] = novaEntidade;
       else _escolasMunicipioCache.unshift(novaEntidade);
       renderizarTabela(_escolasMunicipioCache);
@@ -2094,19 +2371,16 @@
       // Ajusta SUPER: remove qualquer prefixo legado 'CRE' e assegura 'SUPER'
       _superAtual = _superAtual.replace(/^CRE\s*-\s*/i, 'SUPER - ').replace(/^CRE\s+/i, 'SUPER ');
       if (!_superAtual || _superAtual.toUpperCase().includes('CRE')) {
-        if (typeof getSuperPorMunicipio === 'function') {
-          _superAtual = getSuperPorMunicipio(_municipioAtual) || 'SUPER Regional';
-        } else {
-          _superAtual = 'SUPER - ' + _municipioAtual;
-        }
+        _superAtual = getSuperPorMunicipio(_municipioAtual) || 'SUPER Regional';
       }
 
-      // Preenche cabeçalho: SOMENTE NOME DO MUNICÍPIO EM FONTE 30 PT (MARCAÇÃO AMARELA)
+      // Preenche cabeçalho com a categoria da entidade relacionada (EFA, APAE, etc.)
       const topoMun = document.getElementById('municipio-topo');
       const isTodos = _municipioAtual.toUpperCase() === 'TODOS';
-      if (topoMun) topoMun.textContent = isTodos ? 'TODOS OS MUNICÍPIOS' : _municipioAtual.toUpperCase();
+      const tituloCabecalho = getTituloCabecalhoCategoria(_categoriaAtual, _municipioAtual);
+      if (topoMun) topoMun.textContent = tituloCabecalho;
 
-      document.title = isTodos ? 'TODOS OS MUNICÍPIOS - Cadastro de Entidades / Escolas' : `${_municipioAtual.toUpperCase()} - Cadastro de Entidades / Escolas`;
+      document.title = `${tituloCabecalho} - Cadastro de Entidades / Escolas`;
 
       // Atualiza Badges dos parâmetros vinculados
       document.getElementById('param-municipio').textContent = isTodos ? 'Todos os Municípios' : _municipioAtual;
@@ -2115,24 +2389,31 @@
       document.getElementById('param-super').textContent = _superAtual.toUpperCase() === 'TODOS' ? 'Todas as Superintendências (SUPER)' : (_superAtual || 'SUPER Regional');
       document.getElementById('param-parceria').textContent = _parceriaAtual.toUpperCase() === 'TODOS' ? 'Todos os Tipos' : _parceriaAtual.split('(')[0].trim();
 
-      // Inicializa campos fixados do formulário
+      // Inicializa Combo com todos os Municípios de Rondônia com seta padrão
       const entMun = document.getElementById('entidade-municipio');
       if (entMun) {
+        entMun.innerHTML = '<option value="">Selecione o Município da escola / entidade...</option>' +
+          LISTA_MUNICIPIOS_RO.map(m => `<option value="${m}">${m}</option>`).join('');
+
         if (isTodos) {
-          entMun.readOnly = false;
-          entMun.placeholder = 'Digite o Município da escola...';
           entMun.value = '';
         } else {
-          entMun.value = _municipioAtual;
+          const mNorm = normalizarMunicipioParaSuper(_municipioAtual);
+          const match = LISTA_MUNICIPIOS_RO.find(m => normalizarMunicipioParaSuper(m) === mNorm || m.toLowerCase() === _municipioAtual.toLowerCase());
+          entMun.value = match || _municipioAtual;
         }
       }
+
       document.getElementById('entidade-competencia').value = _competenciaAtual.toUpperCase() === 'TODOS' ? 'Municipal' : _competenciaAtual;
       document.getElementById('entidade-super').value = _superAtual.toUpperCase() === 'TODOS' ? 'SUPER Regional' : (_superAtual || 'SUPER Regional');
       document.getElementById('entidade-categoria').value = _categoriaAtual.toUpperCase() === 'TODOS' ? 'Conselho Escolar' : _categoriaAtual;
       document.getElementById('entidade-parceria').value = _parceriaAtual.toUpperCase() === 'TODOS' ? 'Fomento (Termo de Fomento - F)' : _parceriaAtual;
 
-      // Aplica legendas dinâmicas com base na categoria
+      // Aplica legendas dinâmicas e restrições de modalidades com base na categoria
       atualizarLegendasPorCategoria(_categoriaAtual);
+
+      // Ativa a primeira aba (1 - IDENTIFICAÇÃO)
+      ativarAba(1);
 
       // Inicializa Prazo (1º clique + 8 dias)
       inicializarPrazo(_municipioAtual);

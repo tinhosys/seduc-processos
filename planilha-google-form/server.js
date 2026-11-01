@@ -1512,7 +1512,9 @@ const defaultEntidadesHeaders = [
   "Biblioteca", "DML (Depósito Material Limpeza)", "Quadra Coberta", "Piso da Quadra",
   "Laboratório de Informática", "Hall de Acolhimento", "PPCI", "Fonte de Água",
   "Energia Solar", "Tipo de Abertura", "Tipo de Forro", "Tipo de Piso da Escola",
-  "Escola Murada ou Gradeada"
+  "Escola Murada ou Gradeada",
+  // Dados do Registrador (Quem prestou as informações):
+  "Nome do Registrador", "Telefone Celular do Registrador", "Email do Registrador", "Cargo do Registrador"
 ];
 
 const DEFAULT_AGENT_EMAIL = "planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com";
@@ -1591,7 +1593,12 @@ app.post("/api/entidades", async (req, res) => {
       data.tipoAbertura || "",
       data.tipoForro || "",
       data.tipoPiso || "",
-      data.muradaGradeada || ""
+      data.muradaGradeada || "",
+      // Dados do Registrador:
+      data.registradorNome || "",
+      data.registradorTelefone || "",
+      data.registradorEmail || "",
+      data.registradorCargo || ""
     ];
 
     await sheets.spreadsheets.values.append({

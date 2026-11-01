@@ -7709,12 +7709,13 @@ function popularMunicipiosAncorados() {
 }
 window.popularMunicipiosAncorados = popularMunicipiosAncorados;
 
-// Controle de Navegação das Abas 1 a 5 (Imagens 1 e 2)
+// Controle de Navegação das Abas 1 a 4 (Identificação, Gestão/Contatos, Endereço, Infraestrutura)
 var _grupoEntidadeAtivo = 1;
 
 function ativarGrupoFormEntidade(num) {
+  if (num === 5) num = 4;
   _grupoEntidadeAtivo = num;
-  const botoes = [2, 3, 4, 5];
+  const botoes = [1, 2, 3, 4];
 
   botoes.forEach(i => {
     const btn = document.getElementById(`tab-grupo-btn-${i}`);
@@ -8061,7 +8062,7 @@ function carregarEscolaNoFormModal(idRefEncoded) {
   }
 
   abrirModalCadastroEntidade(escola);
-  ativarGrupoFormEntidade(2); // abre no grupo 2 (Identificação) para conferência direta
+  ativarGrupoFormEntidade(1); // abre no grupo 1 (Identificação) para conferência direta
   const container = document.getElementById('container-corpo-modal-entidade');
   if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
   if (typeof toast === 'function') toast(`Carregados dados de: ${escola.nome}`, 'info', 2000);
@@ -8168,7 +8169,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
 
     aoSelecionarTipoEntidadeForm(tipoRadio);
-    ativarGrupoFormEntidade(2);
+    ativarGrupoFormEntidade(1);
   } else {
     if (tituloEl) tituloEl.textContent = 'Cadastro Geral de Entidade / Escola';
     setVal('entidade-form-id', '');
@@ -8188,7 +8189,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
       setVal('entidade-municipio', '');
       setVal('entidade-municipio-ancorado', '');
     }
-    ativarGrupoFormEntidade(2);
+    ativarGrupoFormEntidade(1);
   }
 
   renderizarTabelaEscolasMunicipioModal(munAtivo);
@@ -8313,6 +8314,53 @@ function atualizarLegendasModalPorCategoria(categoria) {
     if (lblSec) lblSec.textContent = 'Nome do Secretário(a) *';
     if (lblContSec) lblContSec.textContent = 'Contato do Secretário(a) *';
   }
+
+  // 4. Modalidades permitidas por categoria:
+  // EFA = 'Educação do Campo' (somente)
+  // APAE = 'Educação Especial / AEE' (somente)
+  const modalItems = document.querySelectorAll('#drop-modalidade-modal-opcoes .mod-checkbox-item');
+  if (modalItems && modalItems.length > 0) {
+    modalItems.forEach(item => {
+      const cb = item.querySelector('input[type="checkbox"]');
+      if (!cb) return;
+      const val = cb.value;
+      const isCampo = (val === 'Educação do Campo');
+      const isEspecial = (val === 'Educação Especial / AEE' || val === 'Educação Especial');
+      if (isEfa) {
+        if (isCampo) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+          cb.checked = false;
+        }
+      } else if (isApae) {
+        if (isEspecial) {
+          item.style.display = 'flex';
+        } else {
+          item.style.display = 'none';
+          cb.checked = false;
+        }
+      } else {
+        if (isCampo || isEspecial) {
+          item.style.display = 'none';
+          cb.checked = false;
+        } else {
+          item.style.display = 'flex';
+        }
+      }
+    });
+
+    const hiddenInput = document.getElementById('entidade-modalidade');
+    const currentVal = hiddenInput ? hiddenInput.value.trim() : '';
+    if (isEfa && !currentVal) {
+      const cbCampo = document.querySelector('#drop-modalidade-modal-opcoes input[value="Educação do Campo"]');
+      if (cbCampo) cbCampo.checked = true;
+    } else if (isApae && !currentVal) {
+      const cbEspecial = document.querySelector('#drop-modalidade-modal-opcoes input[value="Educação Especial / AEE"]');
+      if (cbEspecial) cbEspecial.checked = true;
+    }
+    if (typeof aoMudarModalidadeModalCheck === 'function') aoMudarModalidadeModalCheck();
+  }
 }
 window.atualizarLegendasModalPorCategoria = atualizarLegendasModalPorCategoria;
 
@@ -8398,13 +8446,13 @@ function salvarCadastroEntidade(e) {
 
   if (!nome) {
     if (typeof toast === 'function') toast('Informe o Nome da Escola / Entidade *', 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(1);
     document.getElementById('entidade-nome')?.focus();
     return;
   }
   if (!municipio) {
     if (typeof toast === 'function') toast('Informe o Município / Distrito *', 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(1);
     document.getElementById('entidade-municipio')?.focus();
     return;
   }
@@ -8414,14 +8462,14 @@ function salvarCadastroEntidade(e) {
     const inep = getV('entidade-inep');
     if (!inep) {
       if (typeof toast === 'function') toast('Informe o Código INEP * (Requerido)', 'error');
-      if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
+      if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(1);
       document.getElementById('entidade-inep')?.focus();
       return;
     }
     const alunos = getV('entidade-alunos');
     if (alunos === '' || alunos === null) {
       if (typeof toast === 'function') toast('Informe o Nº de Alunos * (Requerido)', 'error');
-      if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
+      if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(1);
       document.getElementById('entidade-alunos')?.focus();
       return;
     }
@@ -8431,7 +8479,7 @@ function salvarCadastroEntidade(e) {
   if (!diretor) {
     const lblDir = document.getElementById('lbl-entidade-diretor-modal')?.textContent || 'Diretor | Presidente';
     if (typeof toast === 'function') toast(`Informe o campo: ${lblDir} (Requerido)`, 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
     document.getElementById('entidade-diretor')?.focus();
     return;
   }
@@ -8440,7 +8488,7 @@ function salvarCadastroEntidade(e) {
   if (!contatoDir) {
     const lblCt = document.getElementById('lbl-entidade-contato-diretor-modal')?.textContent || 'Contato do Diretor | Presidente';
     if (typeof toast === 'function') toast(`Informe o campo: ${lblCt} (Requerido)`, 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
     document.getElementById('entidade-contato-diretor')?.focus();
     return;
   }
@@ -8449,7 +8497,7 @@ function salvarCadastroEntidade(e) {
   if (!secretario) {
     const lblSec = document.getElementById('lbl-entidade-secretario-modal')?.textContent || 'Secretário(a)';
     if (typeof toast === 'function') toast(`Informe o campo: ${lblSec} (Requerido). Se não houver, digite "Não tem".`, 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
     document.getElementById('entidade-secretario')?.focus();
     return;
   }
@@ -8458,7 +8506,7 @@ function salvarCadastroEntidade(e) {
   if (!contatoSec) {
     const lblCtSec = document.getElementById('lbl-entidade-contato-secretario-modal')?.textContent || 'Contato do Secretário(a)';
     if (typeof toast === 'function') toast(`Informe o campo: ${lblCtSec} (Requerido). Se não houver, digite "Não tem".`, 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
     document.getElementById('entidade-contato-secretario')?.focus();
     return;
   }
@@ -8466,7 +8514,7 @@ function salvarCadastroEntidade(e) {
   const redes = getV('entidade-redes');
   if (!redes) {
     if (typeof toast === 'function') toast('Informe as Redes Sociais * (ou digite "Não possui")', 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(2);
     document.getElementById('entidade-redes')?.focus();
     return;
   }
@@ -8474,7 +8522,7 @@ function salvarCadastroEntidade(e) {
   const endereco = getV('entidade-endereco');
   if (!endereco) {
     if (typeof toast === 'function') toast('Informe o Endereço (Rua / Av / Linha) * (Requerido)', 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(4);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
     document.getElementById('entidade-endereco')?.focus();
     return;
   }
@@ -8482,7 +8530,7 @@ function salvarCadastroEntidade(e) {
   const bairro = getV('entidade-bairro');
   if (!bairro) {
     if (typeof toast === 'function') toast('Informe o Bairro / Distrito / Linha * (Requerido)', 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(4);
+    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(3);
     document.getElementById('entidade-bairro')?.focus();
     return;
   }
@@ -9202,9 +9250,9 @@ function iniciarModoCadastroExterno(urlParams) {
     renderizarTabelaEscolasMunicipioModal(mun);
   }
 
-  // Abre na Aba 2 (Identificação) e foca no nome da escola/entidade para digitação imediata
+  // Abre na Aba 1 (Identificação) e foca no nome da escola/entidade para digitação imediata
   if (typeof ativarGrupoFormEntidade === 'function') {
-    ativarGrupoFormEntidade(2);
+    ativarGrupoFormEntidade(1);
   }
   setTimeout(() => {
     document.getElementById('entidade-nome')?.focus();
