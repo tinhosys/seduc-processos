@@ -2350,15 +2350,27 @@ function renderFormulario() {
         cnpjEl.value = ext.cnpj;
       }
     }
-    if (typeof atualizarLabelResultadoCNPJReceita === 'function') {
-      if (p.cnpjReceitaTexto) {
-        atualizarLabelResultadoCNPJReceita(p.cnpjReceitaTexto, 'ativa');
-      } else {
+    const cnpjLimpoProc = String(p.cnpj || '').replace(/\D/g, '');
+    const isCnpjProcValido = cnpjLimpoProc.length === 14 && !/^0+$/.test(cnpjLimpoProc);
+
+    if (!isCnpjProcValido) {
+      p.cnpjReceitaTexto = '';
+      p.cnpjDadosReceita = null;
+      if (typeof limparDadosReceitaFederal === 'function') {
+        limparDadosReceitaFederal(true);
+      } else if (typeof atualizarLabelResultadoCNPJReceita === 'function') {
         atualizarLabelResultadoCNPJReceita('', 'idle');
       }
-    }
-    if (cnpjEl && cnpjEl.value.trim() && typeof consultarCNPJReceitaSemCaptcha === 'function') {
-      consultarCNPJReceitaSemCaptcha(cnpjEl.value.trim(), true);
+    } else {
+      if (typeof atualizarLabelResultadoCNPJReceita === 'function') {
+        if (p.cnpjDadosReceita) {
+          atualizarLabelResultadoCNPJReceita(p.cnpjDadosReceita, 'ativa');
+        } else if (p.cnpjReceitaTexto) {
+          atualizarLabelResultadoCNPJReceita(p.cnpjReceitaTexto, 'ativa');
+        } else {
+          consultarCNPJReceitaSemCaptcha(cnpjLimpoProc, true);
+        }
+      }
     }
     window._linkGoogleDriveAtual = p.linkGoogleDrive || '';
     window._analiseCamAtual = (window._repositorioArquivosAtuais.length > 0 && p.analiseCam) ? JSON.parse(JSON.stringify(p.analiseCam)) : null;
@@ -2420,7 +2432,11 @@ function renderFormulario() {
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
     if (document.getElementById('form-cnpj')) document.getElementById('form-cnpj').value = '';
-    if (typeof atualizarLabelResultadoCNPJReceita === 'function') atualizarLabelResultadoCNPJReceita('', 'idle');
+    if (typeof limparDadosReceitaFederal === 'function') {
+      limparDadosReceitaFederal(true);
+    } else if (typeof atualizarLabelResultadoCNPJReceita === 'function') {
+      atualizarLabelResultadoCNPJReceita('', 'idle');
+    }
     updateSegmentControl('categoria', '');
     updateSegmentControl('tipo', '');
     document.getElementById('container-numeros').innerHTML = `
@@ -2988,6 +3004,11 @@ function abrirModalNovoProcesso() {
   const labelReceitaPopup = document.getElementById('popup-novo-label-receita');
   if (labelReceitaPopup) labelReceitaPopup.innerHTML = '';
   window._popupUltimoResultadoCNPJReceitaTexto = '';
+  const sugPopup = document.getElementById('popup-novo-sugestao-cnpj');
+  if (sugPopup) {
+    sugPopup.style.display = 'none';
+    sugPopup.innerHTML = '';
+  }
 
   // Reset do banner de duplicidade / alerta de demanda
   const alertaBanner = document.getElementById('popup-novo-alerta-duplicidade');
@@ -3156,63 +3177,149 @@ function verificarDemandaRegistradaPopup() {
 }
 window.verificarDemandaRegistradaPopup = verificarDemandaRegistradaPopup;
 
+// Cruzamento inteligente de CNPJ: cruza nome da escola/entidade e município com outros registros existentes (processos, catálogo de escolas, cadastro local)
+function buscarCNPJPorCruzamento(nomeEntidade, municipio) {
+  if (!nomeEntidade || String(nomeEntidade).trim().length < 3) return null;
+  const munNorm = _normTextoPopup(municipio || '');
+
+  const limparParaTokens = (txt) => {
+    return String(txt || '')
+      .toUpperCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/\[FOMENTO\]|\[CONV[EÊ]NIO\]|\[OUTROS\]/gi, ' ')
+      .replace(/CONSELHO\s+ESCOLAR(\s+DO|\s+DA|\s+DE)?/gi, ' ')
+      .replace(/ESCOLA\s+MUNICIPAL(\s+DE\s+ENSINO\s+FUNDAMENTAL)?/gi, ' ')
+      .replace(/EMEF|EMEIEF|EFA|APAE|COL[EÉ]GIO|CENTRO\s+MUNICIPAL/gi, ' ')
+      .replace(/\|CE|\(CONSELHO\s+ESCOLAR\)/gi, ' ')
+      .replace(/[^A-Z0-9\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+
+  const strLimpa = limparParaTokens(nomeEntidade);
+  const stopwords = ['DOS','DAS','COM','PARA','SEM','SOB','SAO','SANTA','SANTO','PROFESSOR','PROFESSORA','PADRE','DOUTOR','DE','DA','DO','EM','E'];
+  const tokens = strLimpa.split(' ').filter(t => t.length >= 3 && !stopwords.includes(t));
+  if (tokens.length === 0) return null;
+
+  const eCNPJValido = (v) => {
+    if (!v) return false;
+    const str = String(v).trim();
+    if (/[a-zA-Z]/.test(str)) return false; // NUNCA permitir endereço como CNPJ
+    const d = str.replace(/\D/g, '');
+    return d.length === 14 && !/^0+$/.test(d);
+  };
+
+  // 1. Prioridade: Processos Cadastrados no sistema (histórico real)
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  for (const p of procs) {
+    if (!p.interessado || !eCNPJValido(p.cnpj)) continue;
+    const pMun = _normTextoPopup(p.municipio || '');
+    if (munNorm && pMun && pMun !== munNorm && !pMun.includes(munNorm) && !munNorm.includes(pMun)) continue;
+
+    const pTokens = limparParaTokens(p.interessado);
+    const todosTokensBatem = tokens.every(tok => pTokens.includes(tok));
+    if (todosTokensBatem) {
+      const dLimpo = String(p.cnpj).replace(/\D/g, '');
+      return {
+        cnpj: typeof formatarCNPJ === 'function' ? formatarCNPJ(dLimpo) : dLimpo,
+        origem: `Processo nº ${p.numero || 'Anterior'}`,
+        entidade: p.interessado
+      };
+    }
+  }
+
+  // 2. Prioridade: Cache de Escolas do Município / Geral
+  const escolas = window._escolasCache || (typeof _escolasCache !== 'undefined' ? _escolasCache : []) || [];
+  for (const e of escolas) {
+    if (!e.nome || !eCNPJValido(e.cnpj)) continue;
+    const eMun = _normTextoPopup(e.municipio || '');
+    if (munNorm && eMun && eMun !== munNorm && !eMun.includes(munNorm) && !munNorm.includes(eMun)) continue;
+
+    const eTokens = limparParaTokens(e.nome);
+    const todosTokensBatem = tokens.every(tok => eTokens.includes(tok));
+    if (todosTokensBatem) {
+      const dLimpo = String(e.cnpj).replace(/\D/g, '');
+      return {
+        cnpj: typeof formatarCNPJ === 'function' ? formatarCNPJ(dLimpo) : dLimpo,
+        origem: `Cadastro Escolar (${e.nome})`,
+        entidade: e.nome
+      };
+    }
+  }
+
+  // 3. Prioridade: LocalStorage seduc_entidades_cadastradas_local
+  try {
+    const locais = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+    for (const l of locais) {
+      if (!l.nome || !eCNPJValido(l.cnpj)) continue;
+      const lMun = _normTextoPopup(l.municipio || '');
+      if (munNorm && lMun && lMun !== munNorm && !lMun.includes(munNorm) && !munNorm.includes(lMun)) continue;
+
+      const lTokens = limparParaTokens(l.nome);
+      const todosTokensBatem = tokens.every(tok => lTokens.includes(tok));
+      if (todosTokensBatem) {
+        const dLimpo = String(l.cnpj).replace(/\D/g, '');
+        return {
+          cnpj: typeof formatarCNPJ === 'function' ? formatarCNPJ(dLimpo) : dLimpo,
+          origem: `Registro Local (${l.nome})`,
+          entidade: l.nome
+        };
+      }
+    }
+  } catch (err) {}
+
+  return null;
+}
+window.buscarCNPJPorCruzamento = buscarCNPJPorCruzamento;
+
+function aplicarSugestaoCNPJPopup(cnpjFormatado) {
+  const inputCnpj = document.getElementById('popup-novo-cnpj');
+  if (inputCnpj && cnpjFormatado) {
+    inputCnpj.value = cnpjFormatado;
+    if (typeof consultarCNPJPopup === 'function') {
+      consultarCNPJPopup(cnpjFormatado, false);
+    }
+  }
+  const sug = document.getElementById('popup-novo-sugestao-cnpj');
+  if (sug) sug.style.display = 'none';
+}
+window.aplicarSugestaoCNPJPopup = aplicarSugestaoCNPJPopup;
+
 // Sugestão e Auto-preenchimento de Dados da Escola (CNPJ, Entidade, Responsável, Telefone)
 function sugerirDadosEscolaPopup() {
   const inputInt = document.getElementById('popup-novo-interessado');
   const inputMun = document.getElementById('popup-novo-municipio');
   const inputCnpj = document.getElementById('popup-novo-cnpj');
+  const sug = document.getElementById('popup-novo-sugestao-cnpj');
 
   const nomeDigitado = (inputInt ? inputInt.value : '').trim();
+  const munDigitado = (inputMun ? inputMun.value : '').trim();
   if (!nomeDigitado || nomeDigitado.length < 3) return;
 
-  const nomeNorm = _normTextoPopup(nomeDigitado);
-  const munNorm = _normTextoPopup(inputMun ? inputMun.value : '');
-
-  // 1. Procurar em processos já cadastrados com cadastro completo
-  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
-  const procComDados = procs.find(p => {
-    if (!p.interessado) return false;
-    const pInt = _normTextoPopup(p.interessado);
-    const pMun = _normTextoPopup(p.municipio);
-    const mesmoNome = (pInt === nomeNorm || pInt.includes(nomeNorm) || nomeNorm.includes(pInt));
-    if (!mesmoNome) return false;
-    if (munNorm && pMun && pMun !== munNorm && !pMun.includes(munNorm) && !munNorm.includes(pMun)) return false;
-    return (p.cnpj && String(p.cnpj).replace(/\D/g, '').length === 14);
-  });
-
-  if (procComDados) {
-    if (inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00')) {
-      inputCnpj.value = procComDados.cnpj;
+  const resultadoCruzamento = buscarCNPJPorCruzamento(nomeDigitado, munDigitado);
+  if (resultadoCruzamento && resultadoCruzamento.cnpj) {
+    if (inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00' || /[a-zA-Z]/.test(inputCnpj.value))) {
+      inputCnpj.value = resultadoCruzamento.cnpj;
       if (typeof consultarCNPJPopup === 'function') {
-        consultarCNPJPopup(procComDados.cnpj, true);
+        consultarCNPJPopup(resultadoCruzamento.cnpj, true);
       }
     }
-    return;
-  }
-
-  // 2. Procurar em _escolasCache
-  const escolas = window._escolasCache || (typeof _escolasCache !== 'undefined' ? _escolasCache : []) || [];
-  if (Array.isArray(escolas) && escolas.length > 0) {
-    const esc = escolas.find(e => {
-      if (!e.nome) return false;
-      const eNome = _normTextoPopup(e.nome);
-      const eMun = _normTextoPopup(e.municipio);
-      const bateNome = (eNome === nomeNorm || eNome.includes(nomeNorm) || nomeNorm.includes(eNome));
-      if (!bateNome) return false;
-      if (munNorm && eMun && eMun !== munNorm && !eMun.includes(munNorm) && !munNorm.includes(eMun)) return false;
-      return true;
-    });
-
-    if (esc) {
-      if (esc.cnpj && inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00')) {
-        inputCnpj.value = esc.cnpj;
-        if (typeof consultarCNPJPopup === 'function') {
-          consultarCNPJPopup(esc.cnpj, true);
-        }
-      }
+    if (sug) {
+      sug.style.display = 'flex';
+      sug.innerHTML = `<span>💡 <strong>CNPJ vinculado por cruzamento (${resultadoCruzamento.origem}):</strong> <span style="font-family:monospace; font-weight:800; color:#34d399;">${resultadoCruzamento.cnpj}</span></span> <button type="button" onclick="aplicarSugestaoCNPJPopup('${resultadoCruzamento.cnpj}')" style="background:#10b981; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-weight:700; cursor:pointer;">✓ Aplicar</button>`;
+    }
+  } else {
+    // Se não encontrou CNPJ por cruzamento e o input tinha texto de endereço ou zeros, limpa!
+    if (inputCnpj && (/[a-zA-Z]/.test(inputCnpj.value) || inputCnpj.value.trim() === '00.000.000/0000-00')) {
+      inputCnpj.value = '';
+    }
+    if (sug) {
+      sug.style.display = 'none';
+      sug.innerHTML = '';
     }
   }
 }
+window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
 window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
 
 // Sincroniza Tipo de Entidade -> Categoria (Fomento x Convênio) - Imagem 1
@@ -3620,15 +3727,44 @@ function onSelecionarSelectEntidadePopup(selEl) {
     inputInt.value = val;
   }
 
-  // Preenche o CNPJ correspondente se existir
+  // Preenche o CNPJ correspondente se existir e for válido, ou cruza com outros registros
+  let cnpjAplicado = '';
   const mapa = window._popupEntidadesCacheMap;
   if (mapa && mapa.has(val)) {
     const ent = mapa.get(val);
-    const inputCnpj = document.getElementById('popup-novo-cnpj');
-    if (ent.cnpj && inputCnpj) {
-      inputCnpj.value = ent.cnpj;
+    const cLimpo = ent.cnpj ? String(ent.cnpj).replace(/\D/g, '') : '';
+    if (cLimpo.length === 14 && !/^0+$/.test(cLimpo) && !/[a-zA-Z]/.test(ent.cnpj)) {
+      cnpjAplicado = typeof formatarCNPJ === 'function' ? formatarCNPJ(cLimpo) : cLimpo;
+    }
+  }
+
+  const munInput = document.getElementById('popup-novo-municipio');
+  const munAtual = munInput ? munInput.value : '';
+
+  // Se não tem CNPJ válido no mapa, busca em outros registros por cruzamento
+  if (!cnpjAplicado && typeof buscarCNPJPorCruzamento === 'function') {
+    const cruzado = buscarCNPJPorCruzamento(val, munAtual);
+    if (cruzado && cruzado.cnpj) {
+      cnpjAplicado = cruzado.cnpj;
+      const sug = document.getElementById('popup-novo-sugestao-cnpj');
+      if (sug) {
+        sug.style.display = 'flex';
+        sug.innerHTML = `<span>💡 <strong>CNPJ vinculado por cruzamento (${cruzado.origem}):</strong> <span style="font-family:monospace; font-weight:800; color:#34d399;">${cruzado.cnpj}</span></span> <button type="button" onclick="aplicarSugestaoCNPJPopup('${cruzado.cnpj}')" style="background:#10b981; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-weight:700; cursor:pointer;">✓ Aplicar</button>`;
+      }
+    }
+  }
+
+  const inputCnpj = document.getElementById('popup-novo-cnpj');
+  if (inputCnpj) {
+    if (cnpjAplicado) {
+      inputCnpj.value = cnpjAplicado;
       if (typeof consultarCNPJPopup === 'function') {
-        consultarCNPJPopup(ent.cnpj, true);
+        consultarCNPJPopup(cnpjAplicado, true);
+      }
+    } else {
+      inputCnpj.value = '';
+      if (typeof limparDadosReceitaPopup === 'function') {
+        limparDadosReceitaPopup();
       }
     }
   }
@@ -3760,18 +3896,44 @@ function onSelecionarOuDigitarInteressadoPopup() {
   }
 
   // 1. Verifica no mapa de entidades gerado para o município
+  let cnpjAplicado = '';
   const mapa = window._popupEntidadesCacheMap;
   if (mapa && mapa.has(val)) {
     const ent = mapa.get(val);
-    if (ent.cnpj && inputCnpj && (!inputCnpj.value.trim() || inputCnpj.value.trim() === '00.000.000/0000-00')) {
-      inputCnpj.value = ent.cnpj;
-      if (typeof consultarCNPJPopup === 'function') {
-        consultarCNPJPopup(ent.cnpj, true);
+    const cLimpo = ent.cnpj ? String(ent.cnpj).replace(/\D/g, '') : '';
+    if (cLimpo.length === 14 && !/^0+$/.test(cLimpo) && !/[a-zA-Z]/.test(ent.cnpj)) {
+      cnpjAplicado = typeof formatarCNPJ === 'function' ? formatarCNPJ(cLimpo) : cLimpo;
+    }
+  }
+
+  const munInput = document.getElementById('popup-novo-municipio');
+  const munAtual = munInput ? munInput.value : '';
+
+  // 2. Se não tem no mapa, busca em outros registros por cruzamento
+  if (!cnpjAplicado && typeof buscarCNPJPorCruzamento === 'function') {
+    const cruzado = buscarCNPJPorCruzamento(val, munAtual);
+    if (cruzado && cruzado.cnpj) {
+      cnpjAplicado = cruzado.cnpj;
+      const sug = document.getElementById('popup-novo-sugestao-cnpj');
+      if (sug) {
+        sug.style.display = 'flex';
+        sug.innerHTML = `<span>💡 <strong>CNPJ sugerido por cruzamento (${cruzado.origem}):</strong> <span style="font-family:monospace; font-weight:800; color:#34d399;">${cruzado.cnpj}</span></span> <button type="button" onclick="aplicarSugestaoCNPJPopup('${cruzado.cnpj}')" style="background:#10b981; color:#fff; border:none; border-radius:4px; padding:3px 8px; font-weight:700; cursor:pointer;">✓ Aplicar</button>`;
       }
     }
-  } else {
-    // 2. Fallback geral de sugestão
-    sugerirDadosEscolaPopup();
+  }
+
+  if (inputCnpj) {
+    if (cnpjAplicado) {
+      inputCnpj.value = cnpjAplicado;
+      if (typeof consultarCNPJPopup === 'function') {
+        consultarCNPJPopup(cnpjAplicado, true);
+      }
+    } else {
+      if (/[a-zA-Z]/.test(inputCnpj.value) || inputCnpj.value.trim() === '00.000.000/0000-00') {
+        inputCnpj.value = '';
+      }
+      sugerirDadosEscolaPopup();
+    }
   }
 
   // 3. Verifica se a entidade já foi contemplada e gera painel UAU
@@ -3958,8 +4120,20 @@ function autoPreencherCNPJPopup(el) {
   if (!el) return;
   el.removeAttribute('required');
   el.required = false;
-  if (el.value.trim() && el.value.replace(/\D/g, '').length === 14) {
+  const raw = el.value.trim();
+  const digits = raw.replace(/\D/g, '');
+
+  if (digits.length === 14 && !/^0+$/.test(digits)) {
     consultarCNPJPopup(el.value.trim(), true);
+    return;
+  }
+
+  // Se vazio, zerado ou contiver letras (endereço acidental): limpa o campo e o painel da Receita
+  if (!raw || digits === '00000000000000' || digits.length === 0 || /[a-zA-Z]/.test(raw)) {
+    el.value = '';
+    if (typeof limparDadosReceitaPopup === 'function') {
+      limparDadosReceitaPopup();
+    }
   }
 }
 window.autoPreencherCNPJPopup = autoPreencherCNPJPopup;
@@ -4204,6 +4378,38 @@ function consultarCNPJPopupManualmente() {
   consultarCNPJPopup(val, false);
 }
 window.consultarCNPJPopupManualmente = consultarCNPJPopupManualmente;
+
+function limparDadosReceitaPopup() {
+  const el = document.getElementById('popup-novo-cnpj');
+  if (el) el.value = '';
+  const box = document.getElementById('popup-novo-container-receita');
+  if (box) box.style.display = 'none';
+  const lbl = document.getElementById('popup-novo-label-receita');
+  if (lbl) lbl.innerHTML = '<div style="color:#94a3b8; font-style:italic;">Digite ou cole o CNPJ acima para consultar na Receita Federal.</div>';
+  const sub = document.getElementById('popup-novo-subtitulo-receita');
+  if (sub) sub.textContent = 'Situação Cadastral e Dados Oficiais';
+  const sug = document.getElementById('popup-novo-sugestao-cnpj');
+  if (sug) {
+    sug.style.display = 'none';
+    sug.innerHTML = '';
+  }
+  window._popupUltimoResultadoCNPJReceitaTexto = '';
+}
+window.limparDadosReceitaPopup = limparDadosReceitaPopup;
+
+async function recarregarCNPJPopup() {
+  const el = document.getElementById('popup-novo-cnpj');
+  const raw = el ? el.value : '';
+  const cnpjLimpo = String(raw || '').replace(/\D/g, '');
+  if (cnpjLimpo.length !== 14 || /^0+$/.test(cnpjLimpo)) {
+    limparDadosReceitaPopup();
+    if (typeof toast === 'function') toast('Informe um CNPJ válido de 14 dígitos para consultar.', 'warning');
+    if (el) el.focus();
+    return;
+  }
+  await consultarCNPJPopup(cnpjLimpo, false);
+}
+window.recarregarCNPJPopup = recarregarCNPJPopup;
 
 function novoProcesso() {
   abrirModalNovoProcesso();
@@ -12747,12 +12953,91 @@ function atualizarLabelResultadoCNPJReceita(dadosOuTexto, statusTipo) {
 }
 window.atualizarLabelResultadoCNPJReceita = atualizarLabelResultadoCNPJReceita;
 
+function limparDadosReceitaFederal(silencioso) {
+  window._ultimoResultadoCNPJReceitaTexto = '';
+  const lbl = document.getElementById('label-resultado-cnpj-receita');
+  const box = document.getElementById('container-resultado-cnpj-receita');
+  const subResumo = document.getElementById('subtitulo-resumo-cnpj-receita');
+  const corpo = document.getElementById('corpo-detalhes-receita-cnpj');
+  const seta = document.getElementById('svg-seta-detalhes-receita');
+
+  if (lbl) {
+    lbl.innerHTML = '<div style="color:#94a3b8; font-style:italic;">Nenhum CNPJ informado. Digite um CNPJ válido de 14 dígitos ou clique em <strong>"⚡ Extrair do Plano"</strong> para consultar a Receita Federal.</div>';
+    lbl.style.color = '#cbd5e1';
+  }
+  if (subResumo) {
+    subResumo.textContent = 'Sem consulta ativa na Receita Federal';
+  }
+  if (box) {
+    box.style.borderColor = 'rgba(56,189,248,0.35)';
+    box.style.background = 'rgba(15,23,42,0.85)';
+  }
+  if (corpo) {
+    corpo.style.display = 'none';
+  }
+  if (seta) {
+    seta.style.transform = 'rotate(0deg)';
+  }
+
+  // Se estiver editando um processo no formulário principal, limpa o texto na memória do objeto
+  if (typeof state !== 'undefined' && state.editandoId && typeof buscarProcessoPorId === 'function') {
+    const proc = buscarProcessoPorId(state.editandoId);
+    if (proc) {
+      const cL = String(proc.cnpj || '').replace(/\D/g, '');
+      if (cL.length !== 14 || /^0+$/.test(cL)) {
+        proc.cnpjReceitaTexto = '';
+        proc.cnpjDadosReceita = null;
+      }
+    }
+  }
+
+  if (!silencioso && typeof toast === 'function') {
+    toast('Dados da Receita Federal limpos com sucesso.', 'info');
+  }
+}
+window.limparDadosReceitaFederal = limparDadosReceitaFederal;
+
+async function recarregarDadosReceitaFederal() {
+  const elCnpj = document.getElementById('form-cnpj');
+  const raw = elCnpj ? elCnpj.value : '';
+  const cnpjLimpo = String(raw || '').replace(/\D/g, '');
+
+  if (cnpjLimpo.length !== 14 || /^0+$/.test(cnpjLimpo)) {
+    limparDadosReceitaFederal(true);
+    if (typeof toast === 'function') {
+      toast('Informe um CNPJ válido de 14 dígitos no campo para atualizar a consulta na Receita Federal.', 'warning');
+    }
+    if (elCnpj) elCnpj.focus();
+    return;
+  }
+
+  // Limpa o cache para forçar busca atualizada na Receita Federal
+  try {
+    localStorage.removeItem('seduc_cache_cnpj_' + cnpjLimpo);
+  } catch (e) {}
+
+  const svgRefresh = document.getElementById('svg-refresh-receita');
+  if (svgRefresh) svgRefresh.style.animation = 'spinReceita 0.8s linear infinite';
+
+  try {
+    if (typeof toast === 'function') {
+      toast('Atualizando consulta do CNPJ na base da Receita Federal...', 'info');
+    }
+    await consultarCNPJReceitaSemCaptcha(cnpjLimpo, false);
+  } finally {
+    if (svgRefresh) svgRefresh.style.animation = '';
+  }
+}
+window.recarregarDadosReceitaFederal = recarregarDadosReceitaFederal;
+
 async function consultarCNPJReceitaSemCaptcha(cnpjInput, silencioso) {
   const elCnpj = document.getElementById('form-cnpj');
   const raw = cnpjInput !== undefined ? cnpjInput : (elCnpj ? elCnpj.value : '');
   const cnpjLimpo = String(raw || '').replace(/\D/g, '');
 
-  if (cnpjLimpo.length !== 14) {
+  // Se não há CNPJ, não busque nada e faça um clean
+  if (!cnpjLimpo || cnpjLimpo.length !== 14 || /^0+$/.test(cnpjLimpo)) {
+    limparDadosReceitaFederal(true);
     if (!silencioso && typeof toast === 'function') {
       toast('Informe ou extraia um CNPJ válido de 14 dígitos para consultar na Receita Federal.', 'warning');
     }
@@ -13069,18 +13354,30 @@ function autoPreencherCNPJSeVazio(el) {
   if (!el) return;
   el.removeAttribute('required');
   el.required = false;
-  if (el.value.trim()) {
-    if (el.value.replace(/\D/g, '').length === 14) {
-      consultarCNPJReceitaSemCaptcha(el.value.trim(), true);
-    }
+  const raw = el.value.trim();
+  const digits = raw.replace(/\D/g, '');
+
+  if (digits.length === 14 && !/^0+$/.test(digits)) {
+    consultarCNPJReceitaSemCaptcha(el.value.trim(), true);
     return;
   }
+
+  // Se o campo estiver vazio, zerado ou inválido, faz um clean e não busca nada
+  if (!raw || digits === '00000000000000' || digits.length === 0) {
+    if (typeof limparDadosReceitaFederal === 'function') {
+      limparDadosReceitaFederal(true);
+    }
+  }
+
   const arqs = Array.isArray(window._repositorioArquivosAtuais) ? window._repositorioArquivosAtuais : [];
   if (arqs.length > 0) {
     const res = extrairCNPJEEntidadeDoProcesso();
     if (res && res.cnpj && !res.cnpj.includes('X')) {
-      el.value = res.cnpj;
-      consultarCNPJReceitaSemCaptcha(res.cnpj, true);
+      const cLimpo = res.cnpj.replace(/\D/g, '');
+      if (cLimpo.length === 14 && !/^0+$/.test(cLimpo)) {
+        el.value = res.cnpj;
+        consultarCNPJReceitaSemCaptcha(res.cnpj, true);
+      }
     }
   }
 }

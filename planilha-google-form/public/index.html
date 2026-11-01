@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.80">
+  <link rel="stylesheet" href="css/style.css?v=1.3.81">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.80</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.81</div>
 
   </div>
 </div>
@@ -1008,7 +1008,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.80</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.81</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1978,6 +1978,10 @@
                   </button>
                 </div>
 
+                <!-- SUGESTÃO INTELIGENTE DE CNPJ (CRUZAMENTO HISTÓRICO POR NOME/MUNICÍPIO) -->
+                <div id="popup-novo-sugestao-cnpj" style="display:none; margin-top:4px; font-size:11.5px; color:#38bdf8; background:rgba(14,165,233,0.12); border:1px solid rgba(14,165,233,0.35); padding:6px 10px; border-radius:6px; align-items:center; justify-content:space-between; gap:6px;">
+                </div>
+
                 <!-- CONTAINER DINÂMICO DA RECEITA FEDERAL DO POPUP (EXPANSÍVEL) - MARCAÇÃO VERDE IMAGEM 3 -->
                 <div id="popup-novo-container-receita" style="width:100%; display:flex; flex-direction:column; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.55); border-radius:8px; padding:10px 14px; box-shadow:0 2px 12px rgba(0,0,0,0.4); box-sizing:border-box;">
                   <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;" onclick="togglePainelReceitaPopup()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
@@ -1988,9 +1992,18 @@
                         <span id="popup-novo-subtitulo-receita" style="font-size:11px; color:#94a3b8; font-weight:500;">Situação Cadastral e Dados Oficiais</span>
                       </div>
                     </div>
-                    <button type="button" onclick="event.stopPropagation(); togglePainelReceitaPopup();" style="background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.45); border-radius:6px; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;">
-                      <svg id="popup-novo-seta-receita" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </button>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                      <button type="button" onclick="event.stopPropagation(); recarregarCNPJPopup();" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.45); border-radius:6px; height:28px; padding:0 8px; display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; cursor:pointer;" title="Atualizar dados da Receita Federal">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        <span>Atualizar</span>
+                      </button>
+                      <button type="button" onclick="event.stopPropagation(); limparDadosReceitaPopup();" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.15); border-radius:6px; height:28px; padding:0 6px; display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:600; cursor:pointer;" title="Limpar dados cadastrais da Receita Federal">
+                        <span>✕</span>
+                      </button>
+                      <button type="button" onclick="event.stopPropagation(); togglePainelReceitaPopup();" style="background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.45); border-radius:6px; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;">
+                        <svg id="popup-novo-seta-receita" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      </button>
+                    </div>
                   </div>
                   <div id="popup-novo-corpo-receita" style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(148,163,184,0.18); display:block;">
                     <div id="popup-novo-label-receita" style="font-size:12px; color:#cbd5e1; line-height:1.55; user-select:text;">
@@ -2317,10 +2330,24 @@
                       </div>
                     </div>
 
-                    <!-- SETA PARA BAIXO EM VERMELHO (MOSTRA / ESCONDE) -->
-                    <button type="button" id="btn-toggle-detalhes-receita" onclick="event.stopPropagation(); togglePainelReceitaCNPJ();" style="background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.45); border-radius:6px; width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform 0.25s ease;" title="Expandir ou recolher dados cadastrais">
-                      <svg id="svg-seta-detalhes-receita" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </button>
+                    <!-- AÇÕES DA RECEITA FEDERAL: REFRESH (MARCADO DE VERDE NA IMAGEM 1) + CLEAN + TOGGLE EXPANDIR -->
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      <!-- REFRESH MARCADO VERDE (IMAGEM 1) -->
+                      <button type="button" id="btn-refresh-receita" onclick="event.stopPropagation(); recarregarDadosReceitaFederal();" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.45); border-radius:6px; height:30px; padding:0 10px; display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; cursor:pointer; transition:all 0.2s ease;" title="Atualizar / Refrescar consulta na base da Receita Federal (limpa cache da memória e reconsulta)">
+                        <svg id="svg-refresh-receita" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        <span>Atualizar</span>
+                      </button>
+
+                      <!-- BOTAO CLEAN / LIMPAR MEMÓRIA -->
+                      <button type="button" id="btn-clean-receita" onclick="event.stopPropagation(); limparDadosReceitaFederal();" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.15); border-radius:6px; height:30px; padding:0 8px; display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; cursor:pointer; transition:all 0.2s ease;" title="Limpar dados cadastrais da memória e recolher painel">
+                        <span>✕ Limpar</span>
+                      </button>
+
+                      <!-- SETA PARA BAIXO EM VERMELHO (MOSTRA / ESCONDE) -->
+                      <button type="button" id="btn-toggle-detalhes-receita" onclick="event.stopPropagation(); togglePainelReceitaCNPJ();" style="background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.45); border-radius:6px; width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform 0.25s ease;" title="Expandir ou recolher dados cadastrais">
+                        <svg id="svg-seta-detalhes-receita" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      </button>
+                    </div>
                   </div>
 
                   <!-- ÁREA MARCADA EM AMARELO COM O PADRÃO DE INFORMAÇÕES COLETADAS -->
@@ -2944,7 +2971,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.80</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.81</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3626,7 +3653,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.80
+              GBZ - v1.3.81
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3899,7 +3926,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.80] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.81] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6167,10 +6194,10 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.80"></script>
-  <script src="js/app.js?v=1.3.80"></script>
-  <script src="js/auth-sap.js?v=1.3.80"></script>
-  <script src="js/escolas.js?v=1.3.80" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.3.81"></script>
+  <script src="js/app.js?v=1.3.81"></script>
+  <script src="js/auth-sap.js?v=1.3.81"></script>
+  <script src="js/escolas.js?v=1.3.81" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>

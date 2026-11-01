@@ -273,6 +273,17 @@ function _parseGvizText(text) {
   } catch(e) { return null; }
 }
 
+function _limparEValidarCNPJ(v) {
+  if (!v) return '';
+  const s = String(v).trim();
+  if (/[a-zA-Z]/.test(s)) return ''; // Se contém letras (ex: ALMIRANTE BARROSO), é endereço e não CNPJ
+  const digits = s.replace(/\D/g, '');
+  if (digits.length === 14 && !/^0+$/.test(digits)) {
+    return digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5');
+  }
+  return '';
+}
+
 function _parseRow(row) {
   if (!row.c || row.c.length === 0) return null;
   const val = (idx) => (row.c[idx] && row.c[idx].v !== null && row.c[idx].v !== undefined) ? String(row.c[idx].v).trim() : '';
@@ -301,10 +312,31 @@ function _parseRow(row) {
     alunos            = parseInt(val(3).replace(/[^\d]/g, '')) || 0;
     modalidadeStr     = val(4);
     codigoInep        = val(5);
-    cnpj              = val(6);
-    endereco          = val(7);
-    bairro            = val(8);
-    complemento       = val(9);
+
+    // Validação estrita do CNPJ (Evita que endereço como 'ALMIRANTE BARROSO - 986' vá para o CNPJ - Imagem 2)
+    const cnpjCol6 = _limparEValidarCNPJ(val(6));
+    if (cnpjCol6) {
+      cnpj = cnpjCol6;
+      endereco = val(7);
+      bairro = val(8);
+      complemento = val(9);
+    } else {
+      let cFound = '';
+      for (let c = 5; c <= 10; c++) {
+        const cTest = _limparEValidarCNPJ(val(c));
+        if (cTest) { cFound = cTest; break; }
+      }
+      cnpj = cFound;
+      if (val(6) && /[a-zA-Z]/.test(val(6))) {
+        endereco = val(6);
+        bairro = val(7) || val(8);
+        complemento = val(8) || val(9);
+      } else {
+        endereco = val(7);
+        bairro = val(8);
+        complemento = val(9);
+      }
+    }
     cep               = val(10);
     comp              = val(11);
     superV            = val(12);

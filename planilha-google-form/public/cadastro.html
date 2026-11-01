@@ -760,7 +760,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.80"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.81"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1598,8 +1598,8 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.80"></script>
-  <script src="js/escolas.js?v=1.3.80"></script>
+  <script src="js/dados.js?v=1.3.81"></script>
+  <script src="js/escolas.js?v=1.3.81"></script>
 
   <script>
     /* ============================================================
@@ -3530,21 +3530,21 @@
     }
     window.imprimirRelatorioLinha = imprimirRelatorioLinha;
 
-    // Relatório 1: REGISTRO ATUAL (Ficha Cadastral Individual Completa)
+    // Relatório 1: REGISTRO ATUAL (Ficha Cadastral Individual Completa - Acomodada em 1 Única Folha A4)
     function imprimirRelatorioRegistroAtual(escolaObj) {
       const esc = escolaObj || obterDadosEscolaAtual();
       if (!esc || !esc.nome) {
-        alert('Nenhuma escola selecionada ou preenchida no formulário.\\nPreencha os dados da escola ou clique em ✏️ Editar na tabela para emitir a Ficha Cadastral Individual.');
+        alert('Nenhuma escola selecionada ou preenchida no formulário.\nPreencha os dados da escola ou clique em ✏️ Editar na tabela para emitir a Ficha Cadastral Individual.');
         return;
       }
 
       const agora = new Date();
       const pad = n => String(n).padStart(2, '0');
       const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-      const bannerUrl = new URL('img/banner-cadastre-escolas-horizontal.png?v=1.3.80', window.location.href).href;
+      const bannerUrl = new URL('img/banner-cadastre-escolas-horizontal.png?v=1.3.81', window.location.href).href;
 
       const pCodeLink = esc.plusCode
-        ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" style="color:#0284c7; text-decoration:underline; font-weight:700;">${esc.plusCode} ↗ (Ver no Google Maps)</a>`
+        ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" style="color:#0284c7; text-decoration:underline; font-weight:700;">${esc.plusCode} ↗ (Google Maps)</a>`
         : '-';
 
       const win = window.open('', '_blank');
@@ -3557,15 +3557,17 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>SEDUC/CAM - Ficha Cadastral - \${esc.nome}</title>
+  <title>SEDUC/CAM - Ficha Cadastral - ${esc.nome}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Arial, -apple-system, sans-serif;
       color: #0f172a;
       background: #f1f5f9;
-      line-height: 1.4;
-      font-size: 11pt;
+      line-height: 1.25;
+      font-size: 8.5pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
     .no-print-bar {
       position: sticky;
@@ -3573,7 +3575,7 @@
       z-index: 99999;
       background: #090e17;
       color: #ffffff;
-      padding: 10px 24px;
+      padding: 8px 18px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -3584,10 +3586,10 @@
       background: #10b981;
       color: #ffffff;
       border: none;
-      padding: 8px 18px;
+      padding: 7px 16px;
       border-radius: 6px;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -3599,10 +3601,10 @@
       background: rgba(239, 68, 68, 0.2);
       border: 1px solid #ef4444;
       color: #fca5a5;
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 6px;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11.5px;
       cursor: pointer;
     }
     .btn-fechar:hover { background: #ef4444; color: #fff; }
@@ -3611,134 +3613,137 @@
     .report-header-sticky {
       position: -webkit-sticky;
       position: sticky;
-      top: 50px;
+      top: 45px;
       z-index: 10000;
       background: #ffffff;
       border-bottom: 2px solid #0284c7;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-      will-change: transform;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     .report-banner-img {
       width: 100%;
       height: auto;
-      max-height: 115px;
+      max-height: 52px;
       object-fit: cover;
       display: block;
     }
     .report-title-strip {
       background: #0f172a;
       color: #ffffff;
-      padding: 8px 18px;
+      padding: 4px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 6px;
     }
     .report-title-strip h1 {
-      font-size: 12pt;
+      font-size: 9.5pt;
       font-weight: 900;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
       color: #38bdf8;
     }
     .report-meta-tag {
       background: rgba(56, 189, 248, 0.2);
       border: 1px solid #38bdf8;
-      padding: 2px 8px;
+      padding: 1px 6px;
       border-radius: 4px;
-      font-size: 8.5pt;
+      font-size: 7.5pt;
       font-weight: 800;
       color: #e0f2fe;
     }
 
     .report-paper {
-      max-width: 980px;
-      margin: 18px auto 40px auto;
+      max-width: 900px;
+      margin: 10px auto 25px auto;
       background: #ffffff;
-      padding: 24px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+      border-radius: 6px;
     }
 
     .section-block {
-      margin-bottom: 18px;
+      margin-bottom: 6px;
       border: 1px solid #cbd5e1;
-      border-radius: 6px;
+      border-radius: 4px;
       overflow: hidden;
       page-break-inside: avoid;
     }
     .section-header {
       background: #1e293b;
       color: #ffffff;
-      padding: 7px 12px;
-      font-size: 10pt;
+      padding: 3px 8px;
+      font-size: 7.8pt;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
     .data-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 1px;
-      background: #e2e8f0;
+      background: #cbd5e1;
       padding: 1px;
     }
     .data-cell {
       background: #ffffff;
-      padding: 7px 10px;
+      padding: 3px 6px;
     }
     .data-cell.span-2 { grid-column: span 2; }
+    .data-cell.span-3 { grid-column: span 3; }
     .data-cell.span-all { grid-column: 1 / -1; }
     .cell-label {
-      font-size: 8pt;
+      font-size: 6.2pt;
       font-weight: 700;
       color: #64748b;
       text-transform: uppercase;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
       display: block;
+      line-height: 1.1;
     }
     .cell-val {
-      font-size: 10pt;
+      font-size: 7.6pt;
       font-weight: 600;
       color: #0f172a;
       word-break: break-word;
+      line-height: 1.2;
     }
     .cell-val.destaque {
       color: #0284c7;
       font-weight: 800;
-      font-size: 11pt;
+      font-size: 8.5pt;
     }
 
     .signatures-block {
       display: flex;
       justify-content: space-around;
-      margin-top: 35px;
-      margin-bottom: 20px;
+      margin-top: 8px;
+      margin-bottom: 4px;
       page-break-inside: avoid;
     }
     .sig-line {
-      width: 42%;
+      width: 44%;
       text-align: center;
       border-top: 1px solid #475569;
-      padding-top: 6px;
-      font-size: 9pt;
+      padding-top: 2px;
+      font-size: 7.2pt;
       color: #1e293b;
-      font-weight: 600;
+      font-weight: 700;
+      line-height: 1.2;
     }
 
     /* RODAPÉ PADRÃO SEDUC / CAM */
     .report-footer {
-      border-top: 2px solid #0284c7;
-      padding-top: 8px;
-      margin-top: 20px;
+      border-top: 1.5px solid #0284c7;
+      padding-top: 3px;
+      margin-top: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 8.5pt;
+      font-size: 7pt;
       color: #475569;
       font-weight: 600;
     }
@@ -3749,34 +3754,45 @@
         position: static;
         box-shadow: none;
       }
-      body { background: #ffffff; }
+      body {
+        background: #ffffff;
+        font-size: 7.5pt;
+        line-height: 1.15;
+      }
       .report-paper {
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        box-shadow: none;
-        border-radius: 0;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+      }
+      .report-banner-img {
+        max-height: 42px !important;
+      }
+      .section-block {
+        margin-bottom: 4px !important;
+        page-break-inside: avoid !important;
+      }
+      .data-cell {
+        padding: 2px 4px !important;
+      }
+      .cell-label {
+        font-size: 5.8pt !important;
+      }
+      .cell-val {
+        font-size: 7.2pt !important;
+      }
+      .signatures-block {
+        margin-top: 6px !important;
+        margin-bottom: 3px !important;
+      }
+      .report-footer {
+        margin-top: 4px !important;
+        padding-top: 2px !important;
       }
       @page {
         size: A4 portrait;
-        margin: 8mm 8mm 14mm 8mm;
-        @bottom-left {
-          content: "SEDUC / CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICIPIOS";
-          font-size: 8pt;
-          font-weight: 700;
-          color: #334155;
-        }
-        @bottom-center {
-          content: "${dataHoraStr}";
-          font-size: 8pt;
-          color: #64748b;
-        }
-        @bottom-right {
-          content: "Página " counter(page) " de " counter(pages);
-          font-size: 8pt;
-          font-weight: 700;
-          color: #0f172a;
-        }
+        margin: 4mm 5mm;
       }
     }
   </style>
@@ -3785,11 +3801,11 @@
 
   <!-- BARRA DE AÇÕES (NÃO IMPRIME) -->
   <div class="no-print-bar">
-    <div style="display:flex; align-items:center; gap:10px;">
-      <span style="font-size:16px;">🏛️</span>
-      <span style="font-weight:800; font-size:13px; color:#38bdf8;">SEDUC / CAM — SISTEMA DE GESTÃO E ARTICULAÇÃO MUNICIPAL</span>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="font-size:15px;">🏛️</span>
+      <span style="font-weight:800; font-size:12px; color:#38bdf8;">SEDUC / CAM — FICHA CADASTRAL INDIVIDUAL (A4 - 1 FOLHA)</span>
     </div>
-    <div style="display:flex; align-items:center; gap:12px;">
+    <div style="display:flex; align-items:center; gap:10px;">
       <button type="button" class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
       <button type="button" class="btn-fechar" onclick="window.close()">✕ Fechar</button>
     </div>
@@ -3800,10 +3816,10 @@
     <img src="${bannerUrl}" alt="CAM SEDUC/RO - Coordenadoria de Articulação com os Municípios" class="report-banner-img">
     <div class="report-title-strip">
       <h1>FICHA CADASTRAL DA UNIDADE ESCOLAR</h1>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <span class="report-meta-tag">MUNICÍPIO: \${(esc.municipio || 'RONDÔNIA').toUpperCase()}</span>
-        <span class="report-meta-tag">CATEGORIA: \${(esc.categoria || 'Conselho Escolar').toUpperCase()}</span>
-        <span class="report-meta-tag">COMPETÊNCIA: \${(esc.competencia || 'Municipal').toUpperCase()}</span>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <span class="report-meta-tag">MUNICÍPIO: ${(esc.municipio || 'RONDÔNIA').toUpperCase()}</span>
+        <span class="report-meta-tag">CATEGORIA: ${(esc.categoria || 'Conselho Escolar').toUpperCase()}</span>
+        <span class="report-meta-tag">COMPETÊNCIA: ${(esc.competencia || 'Municipal').toUpperCase()}</span>
       </div>
     </div>
   </div>
@@ -3816,43 +3832,43 @@
       <div class="data-grid">
         <div class="data-cell span-2">
           <span class="cell-label">Nome da Escola / Entidade</span>
-          <span class="cell-val destaque">\${esc.nome}</span>
+          <span class="cell-val destaque">${esc.nome || 'Não informada'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Município / Distrito</span>
-          <span class="cell-val">\${esc.municipio || '-'}</span>
+          <span class="cell-val">${esc.municipio || '-'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Código INEP</span>
-          <span class="cell-val" style="font-family:monospace; font-weight:800; color:#0284c7;">\${esc.codigoInep || esc.inep || 'Não informado'}</span>
+          <span class="cell-val" style="font-family:monospace; font-weight:800; color:#0284c7;">${esc.codigoInep || esc.inep || 'Não informado'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">CNPJ Oficial</span>
-          <span class="cell-val" style="font-family:monospace;">\${esc.cnpj || 'Não informado'}</span>
+          <span class="cell-val" style="font-family:monospace; font-weight:700;">${esc.cnpj || 'Não informado'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Total de Matrícula (Alunos)</span>
-          <span class="cell-val" style="font-weight:800; color:#059669;">\${esc.totalMatricula || esc.alunos || '0'}</span>
+          <span class="cell-val" style="font-weight:800; color:#059669;">${esc.totalMatricula || esc.alunos || '0'}</span>
         </div>
         <div class="data-cell">
-          <span class="cell-label">Superintendência (SUPER/CRE)</span>
-          <span class="cell-val">\${esc.super || '-'}</span>
+          <span class="cell-label">Superintendência (SUPER)</span>
+          <span class="cell-val">${esc.super || '-'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Competência / Esfera</span>
-          <span class="cell-val">\${esc.competencia || 'Municipal'}</span>
+          <span class="cell-val">${esc.competencia || 'Municipal'}</span>
         </div>
-        <div class="data-cell">
+        <div class="data-cell span-2">
           <span class="cell-label">Categoria</span>
-          <span class="cell-val">\${esc.categoria || 'Conselho Escolar'}</span>
+          <span class="cell-val">${esc.categoria || 'Conselho Escolar'}</span>
         </div>
-        <div class="data-cell span-all">
+        <div class="data-cell span-2">
           <span class="cell-label">Modalidades de Ensino Atendidas</span>
-          <span class="cell-val">\${esc.modalidades || esc.modalidade || 'Geral'}</span>
+          <span class="cell-val">${esc.modalidades || esc.modalidade || 'Geral'}</span>
         </div>
         <div class="data-cell span-all">
           <span class="cell-label">Tipo de Parceria / Vinculação</span>
-          <span class="cell-val">\${esc.parceria || 'Fomento (Termo de Fomento - F)'}</span>
+          <span class="cell-val">${esc.parceria || 'Fomento (Termo de Fomento - F)'}</span>
         </div>
       </div>
     </div>
@@ -3863,31 +3879,31 @@
       <div class="data-grid">
         <div class="data-cell span-2">
           <span class="cell-label">Diretor(a) / Gestor(a) Geral</span>
-          <span class="cell-val">\${esc.diretor || 'Não informado'}</span>
+          <span class="cell-val">${esc.diretor || 'Não informado'}</span>
         </div>
         <div class="data-cell">
-          <span class="cell-label">Contato do Diretor / WhatsApp</span>
-          <span class="cell-val">\${esc.contatoDiretor || '-'}</span>
+          <span class="cell-label">Contato Diretor / WhatsApp</span>
+          <span class="cell-val">${esc.contatoDiretor || '-'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Telefone da Unidade / Sede</span>
-          <span class="cell-val">\${esc.telefone || '-'}</span>
+          <span class="cell-val">${esc.telefone || '-'}</span>
         </div>
         <div class="data-cell span-2">
           <span class="cell-label">E-mail Institucional</span>
-          <span class="cell-val">\${esc.email || '-'}</span>
+          <span class="cell-val">${esc.email || '-'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Secretário(a) / SEMED</span>
-          <span class="cell-val">\${esc.secretario || '-'}</span>
+          <span class="cell-val">${esc.secretario || '-'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Contato do Secretário(a)</span>
-          <span class="cell-val">\${esc.contatoSecretario || '-'}</span>
+          <span class="cell-val">${esc.contatoSecretario || '-'}</span>
         </div>
         <div class="data-cell span-all">
           <span class="cell-label">Redes Sociais Oficiais</span>
-          <span class="cell-val">\${esc.redesSociais || esc.redes || 'Não possui'}</span>
+          <span class="cell-val">${esc.redesSociais || esc.redes || 'Não possui'}</span>
         </div>
       </div>
     </div>
@@ -3898,31 +3914,31 @@
       <div class="data-grid">
         <div class="data-cell">
           <span class="cell-label">Localidade</span>
-          <span class="cell-val" style="font-weight:700;">\${esc.localidade || esc.localizacao || 'Urbana'}</span>
+          <span class="cell-val" style="font-weight:700;">${esc.localidade || esc.localizacao || 'Urbana'}</span>
         </div>
         <div class="data-cell span-2">
           <span class="cell-label">Logradouro / Endereço</span>
-          <span class="cell-val">\${esc.endereco || '-'}</span>
+          <span class="cell-val">${esc.endereco || '-'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Bairro</span>
-          <span class="cell-val">\${esc.bairro || '-'}</span>
+          <span class="cell-val">${esc.bairro || '-'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">CEP</span>
-          <span class="cell-val">\${esc.cep || '-'}</span>
+          <span class="cell-val">${esc.cep || '-'}</span>
         </div>
         <div class="data-cell span-2">
           <span class="cell-label">Complemento / Ponto de Referência</span>
-          <span class="cell-val">\${esc.complemento || '-'}</span>
+          <span class="cell-val">${esc.complemento || '-'}</span>
         </div>
-        <div class="data-cell span-all">
-          <span class="cell-label">Dados Zona Rural (Linha, Rodovia, Sítio, Rio)</span>
-          <span class="cell-val">Linha: \${esc.linha || '-'} | Rodovia/Km: \${esc.rodoviaKm || '-'} | Sítio/Rio: \${esc.sitioRio || '-'}</span>
+        <div class="data-cell">
+          <span class="cell-label">Zona Rural</span>
+          <span class="cell-val">Linha: ${esc.linha || '-'} | Km: ${esc.rodoviaKm || '-'}</span>
         </div>
         <div class="data-cell span-all">
           <span class="cell-label">Código Plus Code / Localização Georreferenciada</span>
-          <span class="cell-val">\${pCodeLink}</span>
+          <span class="cell-val">${pCodeLink}</span>
         </div>
       </div>
     </div>
@@ -3931,51 +3947,34 @@
     <div class="section-block">
       <div class="section-header">🏗️ 4. Infraestrutura & Sistemas Construtivos</div>
       <div class="data-grid">
-        <div class="data-cell"><span class="cell-label">Salas de Aula</span><span class="cell-val">\${esc.salasAula || esc.salas || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Salas Administrativas</span><span class="cell-val">\${esc.salasAdm || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Banheiros</span><span class="cell-val">\${esc.banheiros || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Sala de Recursos (AEE)</span><span class="cell-val">\${esc.salaAEE || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Pátio Coberto</span><span class="cell-val">\${esc.patioCoberto || esc.patio || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Refeitório</span><span class="cell-val">\${esc.refeitorio || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Cozinha</span><span class="cell-val">\${esc.cozinha || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Biblioteca</span><span class="cell-val">\${esc.biblioteca || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Laboratório de Informática</span><span class="cell-val">\${esc.labInfo || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Auditório</span><span class="cell-val">\${esc.auditorio || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Depósito Geral</span><span class="cell-val">\${esc.depositoGeral || esc.deposito || '0'}</span></div>
-        <div class="data-cell"><span class="cell-label">Almoxarifado ADM</span><span class="cell-val">\${esc.almoxarifadoAdm || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Salas de Aula</span><span class="cell-val">${esc.salasAula || esc.salas || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Salas Administrativas</span><span class="cell-val">${esc.salasAdm || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Banheiros</span><span class="cell-val">${esc.banheiros || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Sala de Recursos (AEE)</span><span class="cell-val">${esc.salaAEE || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Pátio Coberto</span><span class="cell-val">${esc.patioCoberto || esc.patio || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Refeitório</span><span class="cell-val">${esc.refeitorio || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Cozinha</span><span class="cell-val">${esc.cozinha || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Biblioteca</span><span class="cell-val">${esc.biblioteca || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Laboratório Info</span><span class="cell-val">${esc.labInfo || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Auditório</span><span class="cell-val">${esc.auditorio || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Depósito / DML</span><span class="cell-val">${esc.depositoGeral || esc.deposito || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Almoxarifado</span><span class="cell-val">${esc.almoxarifadoAdm || '0'}</span></div>
         <div class="data-cell span-2">
           <span class="cell-label">Quadra Poliesportiva</span>
-          <span class="cell-val">\${esc.quadra || 'Não possui'} \${esc.quadraCoberta ? ' • ' + esc.quadraCoberta : ''} \${esc.quadraPiso ? '(' + esc.quadraPiso + ')' : ''}</span>
+          <span class="cell-val">${esc.quadra || 'Não possui'}${esc.quadraCoberta ? ' • ' + esc.quadraCoberta : ''}${esc.quadraPiso ? ' (' + esc.quadraPiso + ')' : ''}</span>
         </div>
-        <div class="data-cell">
-          <span class="cell-label">Abastecimento de Água</span>
-          <span class="cell-val">\${esc.fonteAgua || 'Não informado'}</span>
-        </div>
-        <div class="data-cell">
-          <span class="cell-label">Energia Solar</span>
-          <span class="cell-val">\${esc.energiaSolar || 'Não'}</span>
-        </div>
-        <div class="data-cell">
-          <span class="cell-label">Cercamento do Prédio</span>
-          <span class="cell-val">\${esc.muradaGradeada || 'Não informado'}</span>
-        </div>
-        <div class="data-cell">
-          <span class="cell-label">Acessibilidade PCD</span>
-          <span class="cell-val">\${esc.acessibilidade || 'Não informado'}</span>
-        </div>
-        <div class="data-cell">
-          <span class="cell-label">PPCI (Prevenção Incêndio)</span>
-          <span class="cell-val">\${esc.ppci || 'Não informado'}</span>
-        </div>
-
-        <div class="data-cell"><span class="cell-label">Tipo de Aberturas / Esquadrias</span><span class="cell-val">\${esc.tipoAbertura || 'Padrão'}</span></div>
-        <div class="data-cell"><span class="cell-label">Tipo de Forro</span><span class="cell-val">\${esc.tipoForro || 'Padrão'}</span></div>
-        <div class="data-cell"><span class="cell-label">Tipo de Pavimentação / Piso</span><span class="cell-val">\${esc.tipoPiso || 'Padrão'}</span></div>
-        <div class="data-cell"><span class="cell-label">Tipo de Cobertura / Telhado</span><span class="cell-val">\${esc.tipoTelhado || 'Padrão'}</span></div>
-
+        <div class="data-cell"><span class="cell-label">Fonte de Água</span><span class="cell-val">${esc.fonteAgua || 'Não informado'}</span></div>
+        <div class="data-cell"><span class="cell-label">Energia Solar</span><span class="cell-val">${esc.energiaSolar || 'Não'}</span></div>
+        <div class="data-cell"><span class="cell-label">Murada / Gradeada</span><span class="cell-val">${esc.muradaGradeada || 'Não informado'}</span></div>
+        <div class="data-cell"><span class="cell-label">Acessibilidade</span><span class="cell-val">${esc.acessibilidade || 'Não informado'}</span></div>
+        <div class="data-cell"><span class="cell-label">PPCI (Incêndio)</span><span class="cell-val">${esc.ppci || 'Não informado'}</span></div>
+        <div class="data-cell"><span class="cell-label">Tipo de Aberturas</span><span class="cell-val">${esc.tipoAbertura || 'Padrão'}</span></div>
+        <div class="data-cell"><span class="cell-label">Tipo de Forro</span><span class="cell-val">${esc.tipoForro || 'Padrão'}</span></div>
+        <div class="data-cell"><span class="cell-label">Piso Predial</span><span class="cell-val">${esc.tipoPiso || 'Padrão'}</span></div>
+        <div class="data-cell"><span class="cell-label">Cobertura / Telhado</span><span class="cell-val">${esc.tipoTelhado || 'Padrão'}</span></div>
         <div class="data-cell span-all">
-          <span class="cell-label">Observações Gerais da Infraestrutura</span>
-          <span class="cell-val">\${esc.observacoes || esc.obs || 'Nenhuma observação registrada.'}</span>
+          <span class="cell-label">Observações Gerais</span>
+          <span class="cell-val">${esc.observacoes || esc.obs || 'Nenhuma observação registrada.'}</span>
         </div>
       </div>
     </div>
@@ -3986,19 +3985,15 @@
       <div class="data-grid">
         <div class="data-cell span-2">
           <span class="cell-label">Nome do Informante</span>
-          <span class="cell-val">\${esc.registradorNome || 'Não informado'}</span>
+          <span class="cell-val">${esc.registradorNome || 'Não informado'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Cargo / Função</span>
-          <span class="cell-val">\${esc.registradorCargo || '-'}</span>
+          <span class="cell-val">${esc.registradorCargo || '-'}</span>
         </div>
         <div class="data-cell">
           <span class="cell-label">Telefone Celular</span>
-          <span class="cell-val">\${esc.registradorTelefone || '-'}</span>
-        </div>
-        <div class="data-cell span-2">
-          <span class="cell-label">E-mail de Contato</span>
-          <span class="cell-val">\${esc.registradorEmail || '-'}</span>
+          <span class="cell-val">${esc.registradorTelefone || '-'}</span>
         </div>
       </div>
     </div>
@@ -4006,12 +4001,12 @@
     <!-- TERMO & ASSINATURAS -->
     <div class="signatures-block">
       <div class="sig-line">
-        \${esc.diretor || 'Diretor(a) / Gestor(a)'}<br>
-        <span style="font-size:8pt; color:#64748b; font-weight:normal;">Assinatura do Responsável pela Entidade / Escola</span>
+        ${esc.diretor || 'Diretor(a) / Gestor(a)'}<br>
+        <span style="font-size:6.5pt; color:#64748b; font-weight:normal;">Assinatura do Responsável pela Entidade / Escola</span>
       </div>
       <div class="sig-line">
-        \${esc.registradorNome || 'Responsável pelo Preenchimento'}<br>
-        <span style="font-size:8pt; color:#64748b; font-weight:normal;">Validação do Cadastro • SEDUC/CAM</span>
+        ${esc.registradorNome || 'Responsável pelo Preenchimento'}<br>
+        <span style="font-size:6.5pt; color:#64748b; font-weight:normal;">Validação do Cadastro • SEDUC/CAM</span>
       </div>
     </div>
 
@@ -4033,7 +4028,7 @@
     }
     window.imprimirRelatorioRegistroAtual = imprimirRelatorioRegistroAtual;
 
-    // Relatório 2: TODOS REGISTROS (Consolidado com Quebra por Município e Sequência de Escolas)
+    // Relatório 2: TODOS REGISTROS (Consolidado com Quebra por Município - Formato Paisagem A4)
     function imprimirRelatorioTodosRegistros() {
       let lista = _escolasMunicipioCache && _escolasMunicipioCache.length > 0 ? [..._escolasMunicipioCache] : [];
 
@@ -4049,14 +4044,14 @@
       }
 
       if (lista.length === 0) {
-        alert('Nenhuma escola encontrada para emissão do relatório geral.\\nCadastre ao menos uma escola ou aguarde o carregamento dos dados.');
+        alert('Nenhuma escola encontrada para emissão do relatório geral.\nCadastre ao menos uma escola ou aguarde o carregamento dos dados.');
         return;
       }
 
       const agora = new Date();
       const pad = n => String(n).padStart(2, '0');
       const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-      const bannerUrl = new URL('img/banner-cadastre-escolas-horizontal.png?v=1.3.80', window.location.href).href;
+      const bannerUrl = new URL('img/banner-cadastre-escolas-horizontal.png?v=1.3.81', window.location.href).href;
 
       // Agrupar por Município para a QUEBRA POR MUNICÍPIO
       const agrupadoPorMunicipio = {};
@@ -4093,69 +4088,72 @@
 
         const pageBreakClass = mIdx > 0 ? 'page-break' : '';
 
+        const linhasEscolas = mEscolas.map((esc, sIdx) => {
+          const seqMun = sIdx + 1;
+          const inep = esc.codigoInep || esc.inep || '-';
+          const cat = esc.categoria || 'Conselho Escolar';
+          const comp = esc.competencia || 'Municipal';
+          const diretor = esc.diretor || '-';
+          const tel = esc.contatoDiretor || esc.telefone || '-';
+          const loc = esc.localizacao || esc.localidade || 'Urbana';
+          const alunos = esc.totalMatricula || esc.alunos || '0';
+          const cnpjLinha = esc.cnpj ? `<br><span style="font-size:7.5pt; color:#64748b; font-family:monospace;">CNPJ: ${esc.cnpj}</span>` : '';
+
+          return `
+            <tr>
+              <td style="text-align:center; font-weight:800; color:#64748b;">${seqMun}</td>
+              <td>
+                <strong style="color:#0f172a; font-size:9pt;">${esc.nome}</strong>
+                ${cnpjLinha}
+              </td>
+              <td style="text-align:center; font-family:monospace; font-weight:700; color:#0284c7;">${inep}</td>
+              <td>
+                <span style="font-size:8pt; font-weight:700; color:#334155;">${cat}</span>
+                <br><span style="font-size:7pt; color:#64748b;">${comp}</span>
+              </td>
+              <td style="font-size:8.5pt;">${diretor}</td>
+              <td style="font-size:8pt; font-family:monospace;">${tel}</td>
+              <td style="text-align:center; font-size:8pt;">${loc}</td>
+              <td style="text-align:center; font-weight:800; color:#059669;">${alunos}</td>
+            </tr>
+          `;
+        }).join('');
+
         tabelaCorpoHtml += `
-          <div class="bloco-municipio \${pageBreakClass}">
+          <div class="bloco-municipio ${pageBreakClass}">
             <div class="header-quebra-municipio">
-              <div style="font-size:12pt; font-weight:900; color:#ffffff;">
-                🏛️ MUNICÍPIO: \${munNome.toUpperCase()}
+              <div style="font-size:11pt; font-weight:900; color:#ffffff;">
+                🏛️ MUNICÍPIO: ${munNome.toUpperCase()}
               </div>
               <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                <span class="badge-mun">Escolas: \${mEscolas.length}</span>
-                <span class="badge-mun">Alunos: \${totalAlunosMun.toLocaleString('pt-BR')}</span>
+                <span class="badge-mun">Escolas: ${mEscolas.length}</span>
+                <span class="badge-mun">Alunos: ${totalAlunosMun.toLocaleString('pt-BR')}</span>
               </div>
             </div>
 
             <table class="tabela-escolas-todos">
               <thead>
                 <tr>
-                  <th style="width:40px; text-align:center;">#</th>
+                  <th style="width:36px; text-align:center;">#</th>
                   <th>Nome da Entidade / Escola</th>
                   <th style="width:85px; text-align:center;">INEP</th>
-                  <th style="width:130px;">Categoria</th>
+                  <th style="width:125px;">Categoria</th>
                   <th>Diretor(a) / Gestor(a)</th>
                   <th style="width:115px;">Contato</th>
-                  <th style="width:85px; text-align:center;">Localidade</th>
+                  <th style="width:80px; text-align:center;">Localidade</th>
                   <th style="width:65px; text-align:center;">Alunos</th>
                 </tr>
               </thead>
               <tbody>
-                \${mEscolas.map((esc, sIdx) => {
-                  const seqMun = sIdx + 1;
-                  const inep = esc.codigoInep || esc.inep || '-';
-                  const cat = esc.categoria || 'Conselho Escolar';
-                  const comp = esc.competencia || 'Municipal';
-                  const diretor = esc.diretor || '-';
-                  const tel = esc.contatoDiretor || esc.telefone || '-';
-                  const loc = esc.localizacao || esc.localidade || 'Urbana';
-                  const alunos = esc.totalMatricula || esc.alunos || '0';
-
-                  return \`
-                    <tr>
-                      <td style="text-align:center; font-weight:800; color:#64748b;">\${seqMun}</td>
-                      <td>
-                        <strong style="color:#0f172a; font-size:9.5pt;">\${esc.nome}</strong>
-                        \${esc.cnpj ? \`<br><span style="font-size:8pt; color:#64748b; font-family:monospace;">CNPJ: \${esc.cnpj}</span>\` : ''}
-                      </td>
-                      <td style="text-align:center; font-family:monospace; font-weight:700; color:#0284c7;">\${inep}</td>
-                      <td>
-                        <span style="font-size:8.5pt; font-weight:700; color:#334155;">\${cat}</span>
-                        <br><span style="font-size:7.5pt; color:#64748b;">\${comp}</span>
-                      </td>
-                      <td style="font-size:9pt;">\${diretor}</td>
-                      <td style="font-size:8.5pt; font-family:monospace;">\${tel}</td>
-                      <td style="text-align:center; font-size:8.5pt;">\${loc}</td>
-                      <td style="text-align:center; font-weight:800; color:#059669;">\${alunos}</td>
-                    </tr>
-                  \`;
-                }).join('')}
+                ${linhasEscolas}
               </tbody>
               <tfoot>
                 <tr class="linha-subtotal">
-                  <td colspan="7" style="text-align:right; font-weight:800; padding:6px 12px; color:#334155;">
-                    Subtotal do Município (\${munNome}):
+                  <td colspan="7" style="text-align:right; font-weight:800; padding:5px 10px; color:#334155;">
+                    Subtotal do Município (${munNome}):
                   </td>
-                  <td style="text-align:center; font-weight:900; color:#0284c7; background:rgba(2,132,199,0.1); padding:6px;">
-                    \${totalAlunosMun.toLocaleString('pt-BR')}
+                  <td style="text-align:center; font-weight:900; color:#0284c7; background:rgba(2,132,199,0.1); padding:5px;">
+                    ${totalAlunosMun.toLocaleString('pt-BR')}
                   </td>
                 </tr>
               </tfoot>
@@ -4168,15 +4166,17 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>SEDUC/CAM - Relação Geral de Escolas por Município</title>
+  <title>SEDUC/CAM - Relação Geral de Escolas por Município (Paisagem)</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Arial, -apple-system, sans-serif;
       color: #0f172a;
       background: #f1f5f9;
-      line-height: 1.35;
-      font-size: 10pt;
+      line-height: 1.3;
+      font-size: 9pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
     }
     .no-print-bar {
       position: sticky;
@@ -4184,7 +4184,7 @@
       z-index: 99999;
       background: #090e17;
       color: #ffffff;
-      padding: 10px 24px;
+      padding: 8px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -4195,10 +4195,10 @@
       background: #ef4444;
       color: #ffffff;
       border: none;
-      padding: 8px 18px;
+      padding: 7px 16px;
       border-radius: 6px;
       font-weight: 800;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -4210,10 +4210,10 @@
       background: rgba(239, 68, 68, 0.2);
       border: 1px solid #ef4444;
       color: #fca5a5;
-      padding: 7px 14px;
+      padding: 6px 12px;
       border-radius: 6px;
       font-weight: 700;
-      font-size: 12px;
+      font-size: 11.5px;
       cursor: pointer;
     }
     .btn-fechar:hover { background: #ef4444; color: #fff; }
@@ -4222,72 +4222,71 @@
     .report-header-sticky {
       position: -webkit-sticky;
       position: sticky;
-      top: 50px;
+      top: 45px;
       z-index: 10000;
       background: #ffffff;
       border-bottom: 2px solid #0284c7;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-      will-change: transform;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
     }
     .report-banner-img {
       width: 100%;
       height: auto;
-      max-height: 110px;
+      max-height: 65px;
       object-fit: cover;
       display: block;
     }
     .report-title-strip {
       background: #0f172a;
       color: #ffffff;
-      padding: 8px 18px;
+      padding: 6px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
     .report-title-strip h1 {
-      font-size: 11.5pt;
+      font-size: 10.5pt;
       font-weight: 900;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       color: #38bdf8;
     }
     .resumo-stats {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       align-items: center;
     }
     .badge-stat {
       background: rgba(56, 189, 248, 0.2);
       border: 1px solid #38bdf8;
-      padding: 2px 8px;
+      padding: 1px 7px;
       border-radius: 4px;
-      font-size: 8.5pt;
+      font-size: 8pt;
       font-weight: 800;
       color: #e0f2fe;
     }
 
     .report-paper {
-      max-width: 1150px;
-      margin: 18px auto 40px auto;
+      max-width: 1200px;
+      margin: 14px auto 35px auto;
       background: #ffffff;
-      padding: 20px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 3px 16px rgba(0,0,0,0.06);
+      border-radius: 6px;
     }
 
     /* BLOCO DO MUNICÍPIO (QUEBRA POR MUNICÍPIO) */
     .bloco-municipio {
-      margin-bottom: 26px;
+      margin-bottom: 20px;
       border: 1px solid #cbd5e1;
-      border-radius: 6px;
+      border-radius: 5px;
       overflow: hidden;
       page-break-inside: auto;
     }
     .header-quebra-municipio {
       background: #1e293b;
-      padding: 8px 14px;
+      padding: 6px 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -4297,9 +4296,9 @@
       background: rgba(2, 132, 199, 0.25);
       border: 1px solid #38bdf8;
       color: #e0f2fe;
-      font-size: 8.5pt;
+      font-size: 8pt;
       font-weight: 800;
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-radius: 4px;
     }
 
@@ -4307,21 +4306,21 @@
     .tabela-escolas-todos {
       width: 100%;
       border-collapse: collapse;
-      font-size: 9pt;
+      font-size: 8.5pt;
     }
     .tabela-escolas-todos th {
       background: #f8fafc;
       color: #334155;
       font-weight: 800;
-      font-size: 8pt;
+      font-size: 7.5pt;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
-      padding: 7px 8px;
+      letter-spacing: 0.3px;
+      padding: 6px 7px;
       border-bottom: 1.5px solid #cbd5e1;
       text-align: left;
     }
     .tabela-escolas-todos td {
-      padding: 6px 8px;
+      padding: 5px 7px;
       border-bottom: 1px solid #e2e8f0;
       vertical-align: middle;
     }
@@ -4339,24 +4338,24 @@
     .quadro-geral-final {
       background: #0f172a;
       color: #ffffff;
-      padding: 12px 18px;
-      border-radius: 6px;
+      padding: 10px 16px;
+      border-radius: 5px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 15px;
+      margin-top: 14px;
       page-break-inside: avoid;
     }
 
     /* RODAPÉ PADRÃO SEDUC / CAM */
     .report-footer {
       border-top: 2px solid #0284c7;
-      padding-top: 8px;
-      margin-top: 20px;
+      padding-top: 6px;
+      margin-top: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 8.5pt;
+      font-size: 8pt;
       color: #475569;
       font-weight: 600;
     }
@@ -4379,24 +4378,7 @@
       tr { page-break-inside: avoid; }
       @page {
         size: A4 landscape;
-        margin: 8mm 8mm 14mm 8mm;
-        @bottom-left {
-          content: "SEDUC / CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICIPIOS";
-          font-size: 8pt;
-          font-weight: 700;
-          color: #334155;
-        }
-        @bottom-center {
-          content: "${dataHoraStr}";
-          font-size: 8pt;
-          color: #64748b;
-        }
-        @bottom-right {
-          content: "Página " counter(page) " de " counter(pages);
-          font-size: 8pt;
-          font-weight: 700;
-          color: #0f172a;
-        }
+        margin: 6mm 8mm 10mm 8mm;
       }
     }
   </style>
@@ -4407,7 +4389,7 @@
   <div class="no-print-bar">
     <div style="display:flex; align-items:center; gap:10px;">
       <span style="font-size:16px;">🏛️</span>
-      <span style="font-weight:800; font-size:13px; color:#38bdf8;">SEDUC / CAM — SISTEMA DE GESTÃO E ARTICULAÇÃO MUNICIPAL</span>
+      <span style="font-weight:800; font-size:12.5px; color:#38bdf8;">SEDUC / CAM — RELAÇÃO GERAL CONSOLIDADA (A4 PAISAGEM)</span>
     </div>
     <div style="display:flex; align-items:center; gap:12px;">
       <button type="button" class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
@@ -4421,26 +4403,26 @@
     <div class="report-title-strip">
       <h1>RELAÇÃO GERAL DE ESCOLAS E ENTIDADES CADASTRADAS (SEDUC / CAM)</h1>
       <div class="resumo-stats">
-        <span class="badge-stat">MUNICÍPIOS: \${munsNomes.length}</span>
-        <span class="badge-stat">UNIDADES: \${lista.length}</span>
-        <span class="badge-stat">TOTAL ALUNOS: \${totalGeralAlunos.toLocaleString('pt-BR')}</span>
+        <span class="badge-stat">MUNICÍPIOS: ${munsNomes.length}</span>
+        <span class="badge-stat">UNIDADES: ${lista.length}</span>
+        <span class="badge-stat">TOTAL ALUNOS: ${totalGeralAlunos.toLocaleString('pt-BR')}</span>
       </div>
     </div>
   </div>
 
   <div class="report-paper">
 
-    \${tabelaCorpoHtml}
+    ${tabelaCorpoHtml}
 
     <!-- CONSOLIDAÇÃO GERAL FINAL -->
     <div class="quadro-geral-final">
-      <div style="font-weight:900; font-size:11pt; color:#38bdf8;">
+      <div style="font-weight:900; font-size:10.5pt; color:#38bdf8;">
         TOTAL GERAL CONSOLIDADO DE TODAS AS UNIDADES CADASTRADAS
       </div>
-      <div style="display:flex; gap:16px; font-weight:800; font-size:10pt;">
-        <span>Municípios: \${munsNomes.length}</span>
-        <span>Escolas / Entidades: \${lista.length}</span>
-        <span style="color:#34d399;">Total de Alunos: \${totalGeralAlunos.toLocaleString('pt-BR')}</span>
+      <div style="display:flex; gap:14px; font-weight:800; font-size:9.5pt;">
+        <span>Municípios: ${munsNomes.length}</span>
+        <span>Escolas / Entidades: ${lista.length}</span>
+        <span style="color:#34d399;">Total de Alunos: ${totalGeralAlunos.toLocaleString('pt-BR')}</span>
       </div>
     </div>
 
