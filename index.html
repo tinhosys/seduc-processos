@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.75">
+  <link rel="stylesheet" href="css/style.css?v=1.3.76">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.75</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.76</div>
 
   </div>
 </div>
@@ -781,6 +781,18 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path></svg>
             <span>FINANCEIRO</span>
           </span>
+        </a>
+      </div>
+
+      <!-- LINK DE CADASTRO NO MENU PRINCIPAL (MARCAÇÃO AMARELA IMAGEM 1) -->
+      <div style="padding: 0 10px 6px 10px;">
+        <a href="#" class="nav-item action-editor action-adm" id="nav-sidebar-gerar-link-cadastro" onclick="abrirModalGeradorLink(); fecharSubmenus(); return false;"
+          style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.85)); border: 1px solid rgba(56, 189, 248, 0.5); border-radius: 8px; color: #38bdf8; font-weight: 800; box-shadow: 0 0 14px rgba(2, 132, 199, 0.25); display: flex; align-items: center; gap: 9px; padding: 9px 12px; transition: all 0.2s;"
+          onmouseover="this.style.boxShadow='0 0 20px rgba(56,189,248,0.55)'; this.style.borderColor='#38bdf8'; this.style.background='linear-gradient(135deg, rgba(2, 132, 199, 0.4), rgba(15, 23, 42, 0.95))';"
+          onmouseout="this.style.boxShadow='0 0 14px rgba(2, 132, 199, 0.25)'; this.style.borderColor='rgba(56,189,248,0.5)'; this.style.background='linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.85))';"
+          title="Gerar Link de Cadastro de Escolas / Entidades com parâmetros pré-definidos">
+          <span style="font-size: 15px; line-height: 1;">🔗</span>
+          <span style="font-size: 12.5px; font-weight: 800; letter-spacing: 0.3px; color: #ffffff;">Gerar Link de Cadastro</span>
         </a>
       </div>
 
@@ -949,6 +961,10 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line></svg>
               <span>Mapa de Escolas</span>
             </a>
+            <a href="#" class="nav-item nav-form-item" onclick="abrirModalGeradorLink(); return false;" title="Gerar link de cadastro com parâmetros pré-definidos">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              <span>Gerar Link de Cadastro</span>
+            </a>
           </div>
         </div>
 
@@ -992,7 +1008,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.75</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.76</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -2928,7 +2944,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.75</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.76</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3610,7 +3626,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.75
+              GBZ - v1.3.76
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3883,7 +3899,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.75] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.76] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -4013,12 +4029,12 @@
             <span id="escolas-salas-badge" style="display:inline-flex;align-items:center;padding:8px 16px;border-radius:8px;font-size:15px;font-weight:700;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.3);font-family:monospace;letter-spacing:0.5px;">🚪 0 Salas</span>
           </div>
           <div style="display:flex;align-items:stretch;gap:10px;height:38px;">
-            <!-- BOTÃO GERAR LINK DE CADASTRO (MARCAÇÃO VERDE IMAGEM 2) -->
+            <!-- BOTÃO GERAR LINK DE CADASTRO (MARCAÇÃO AMARELA IMAGEM 1) -->
             <button type="button" class="btn action-editor action-adm" onclick="abrirModalGeradorLink()" id="btn-gerar-link-cadastro"
-              title="Gerar link de acesso para cadastro sem senha com parâmetros pré-definidos (Imagem 3)"
-              style="background:linear-gradient(135deg,#059669,#047857); color:#fff; border:1px solid rgba(52,211,153,0.7); padding:0 16px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(5,150,105,0.45); height:38px; white-space:nowrap; transition:all 0.2s;"
-              onmouseover="this.style.boxShadow='0 0 22px rgba(52,211,153,0.75)';"
-              onmouseout="this.style.boxShadow='0 0 16px rgba(5,150,105,0.45)';">
+              title="Gerar link de acesso para cadastro sem senha com parâmetros pré-definidos"
+              style="background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:1px solid #38bdf8; padding:0 16px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(2,132,199,0.45); height:38px; white-space:nowrap; transition:all 0.2s;"
+              onmouseover="this.style.boxShadow='0 0 22px rgba(56,189,248,0.7)';"
+              onmouseout="this.style.boxShadow='0 0 16px rgba(2,132,199,0.45)';">
               <span style="font-size:15px; line-height:1;">🔗</span>
               <span>Gerar Link de Cadastro</span>
             </button>
@@ -4675,10 +4691,10 @@
       </div>
       <div style="display:flex;align-items:center;gap:10px;">
         <button type="button" class="btn action-editor action-adm" onclick="abrirModalGeradorLink()"
-          title="Gerar link de acesso para cadastro sem senha com parâmetros pré-definidos (Imagem 3)"
-          style="background:linear-gradient(135deg,#059669,#047857); color:#fff; border:1px solid rgba(52,211,153,0.7); padding:9px 18px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(5,150,105,0.45); height:38px; white-space:nowrap; transition:all 0.2s;"
-          onmouseover="this.style.boxShadow='0 0 22px rgba(52,211,153,0.75)';"
-          onmouseout="this.style.boxShadow='0 0 16px rgba(5,150,105,0.45)';">
+          title="Gerar link de acesso para cadastro sem senha com parâmetros pré-definidos"
+          style="background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:1px solid #38bdf8; padding:9px 18px; border-radius:8px; font-weight:800; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 0 16px rgba(2,132,199,0.45); height:38px; white-space:nowrap; transition:all 0.2s;"
+          onmouseover="this.style.boxShadow='0 0 22px rgba(56,189,248,0.7)';"
+          onmouseout="this.style.boxShadow='0 0 16px rgba(2,132,199,0.45)';">
           <span style="font-size:15px; line-height:1;">🔗</span>
           <span>Gerar Link de Cadastro</span>
         </button>
@@ -5781,40 +5797,42 @@
     </div>
   </div>
 
-  <!-- ============= MODAL POPUP: GERADOR DE LINK COM PARÂMETROS PRÉ-DEFINIDOS (IMAGEM 3) ============= -->
+  <!-- ============= MODAL POPUP: GERADOR DE LINK COM PARÂMETROS PRÉ-DEFINIDOS (IMAGEM 2) ============= -->
   <div id="modal-gerador-link-cadastro" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99999; justify-content:center; align-items:center; padding:16px; box-sizing:border-box;">
-    <div style="background:#0f172a; border:2px solid #ea580c; border-radius:14px; max-width:540px; width:100%; box-shadow:0 25px 60px rgba(0,0,0,0.95); overflow:hidden; position:relative; display:flex; flex-direction:column;">
+    <div style="background:#0f172a; border:1px solid rgba(56,189,248,0.4); border-radius:14px; max-width:540px; width:100%; box-shadow:0 25px 60px rgba(0,0,0,0.95), 0 0 35px rgba(56,189,248,0.15); overflow:hidden; position:relative; display:flex; flex-direction:column;">
       
-      <!-- Cabeçalho do Gerador de Link -->
-      <div style="padding:14px 20px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(234,88,12,0.2) 0%, rgba(15,23,42,0.98) 100%);">
+      <!-- Cabeçalho do Gerador de Link (Padrão Azul Tons sobre Tons) -->
+      <div style="padding:16px 20px; border-bottom:1px solid rgba(56,189,248,0.25); display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(14,165,233,0.15) 0%, rgba(15,23,42,0.98) 100%);">
         <div style="display:flex; align-items:center; gap:10px;">
           <span style="font-size:22px; line-height:1;">🔗</span>
           <div>
-            <h3 style="margin:0; color:#fb923c; font-size:16px; font-weight:800; letter-spacing:0.5px;">
+            <h3 style="margin:0; color:#38bdf8; font-size:16px; font-weight:800; letter-spacing:0.5px;">
               Gerador de Link Pré-definido
             </h3>
-            <span style="font-size:11px; color:#94a3b8; font-weight:500;">
-              Acesso direto para cadastro sem senha com parâmetros fixados pela SEDUC/RO
+            <span style="font-size:11px; color:#94a3b8; font-weight:600;">
+              Acesso direto para cadastro de parceiros da educação - SEDUC/CAM/RO
             </span>
           </div>
         </div>
         <button type="button" onclick="fecharModalGeradorLink()" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#94a3b8; border-radius:6px; width:32px; height:32px; font-size:15px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; transition:all 0.2s;" onmouseover="this.style.color='#fff'; this.style.background='rgba(239,68,68,0.3)';" onmouseout="this.style.color='#94a3b8'; this.style.background='rgba(255,255,255,0.08)';" title="Fechar">✕</button>
       </div>
 
-      <!-- Corpo do Gerador de Link (Campos idênticos à Imagem 3) -->
-      <div style="padding:20px; display:flex; flex-direction:column; gap:14px;">
+      <!-- Corpo do Gerador de Link (Padrão Azul do Sistema, Tons sobre Tons) -->
+      <div style="padding:20px; display:flex; flex-direction:column; gap:13px;">
         
-        <!-- Campo 1: Município (Imagem 5) -->
+        <!-- Campo 1: Município (com Acentuação Correta) -->
         <div class="link-gen-combo-wrap" id="wrap-link-gen-municipio" style="position:relative;">
-          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Municipio</label>
+          <label style="display:block; font-size:12px; font-weight:700; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">Município *</label>
           <input type="hidden" id="link-gen-municipio" value="Alta Floresta D'Oeste" onchange="if(typeof atualizarSuperGeradorLink==='function')atualizarSuperGeradorLink();">
           <button type="button" class="link-gen-combo-btn" id="btn-link-gen-municipio" onclick="toggleLinkGenDropdown('municipio')"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
+            style="width:100%; height:44px; background:#1e293b; color:#ffffff; font-weight:700; font-size:13.5px; border:1px solid #334155; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box; transition:all 0.2s;"
+            onmouseover="this.style.borderColor='#38bdf8'; this.style.background='#0f172a';"
+            onmouseout="this.style.borderColor='#334155'; this.style.background='#1e293b';">
             <span class="link-gen-combo-label" id="label-link-gen-municipio">Alta Floresta D'Oeste</span>
-            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+            <span style="font-size:12px; color:#38bdf8; margin-left:8px;">▾</span>
           </button>
-          <div class="link-gen-combo-dropdown" id="drop-link-gen-municipio" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
-            <!-- CABEÇALHO DO COMBO: TODOS MUNICÍPIOS / LIMPAR PARÂMETRO (IMAGEM 1) -->
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-municipio" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:1px solid #38bdf8; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+            <!-- CABEÇALHO DO COMBO: TODOS MUNICÍPIOS / LIMPAR PARÂMETRO -->
             <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:rgba(30,41,59,0.95); border-bottom:1px solid rgba(255,255,255,0.12);">
               <button type="button" onclick="marcarTodosMunicipiosLinkGen(true)" style="background:transparent; border:none; color:#38bdf8; font-size:12px; font-weight:800; cursor:pointer; padding:2px 4px; text-decoration:underline; display:flex; align-items:center; gap:4px;" onmouseover="this.style.color='#7dd3fc'" onmouseout="this.style.color='#38bdf8'">
                 <span>✓</span> Todos os Municípios
@@ -5824,109 +5842,114 @@
               </button>
             </div>
             <div style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.1); background:#0f172a;">
-              <input type="text" placeholder="🔍 Buscar município..." oninput="filtrarLinkGenOpcoes('municipio', this.value)" style="width:100%; height:32px; padding:4px 8px; background:#1e293b; border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; outline:none; box-sizing:border-box;">
+              <input type="text" placeholder="🔍 Buscar município..." oninput="filtrarLinkGenOpcoes('municipio', this.value)" style="width:100%; height:32px; padding:4px 8px; background:#1e293b; border:1px solid #334155; border-radius:6px; color:#fff; font-size:12px; outline:none; box-sizing:border-box;">
             </div>
             <div class="link-gen-combo-list" id="list-link-gen-municipio" style="max-height:210px; overflow-y:auto;"></div>
           </div>
         </div>
 
-        <!-- Campo 2: Categoria da Entidade e Vinculação Jurídica (Imagem 5) -->
+        <!-- Campo 2: Categoria da Entidade (Sem o texto riscado de vermelho 'e Vinculação Jurídica') -->
         <div class="link-gen-combo-wrap" id="wrap-link-gen-categoria" style="position:relative;">
-          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Categoria da Entidade e Vinculação Jurídica</label>
+          <label style="display:block; font-size:12px; font-weight:700; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">Categoria da Entidade *</label>
           <input type="hidden" id="link-gen-categoria" value="Conselho Escolar" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
           <button type="button" class="link-gen-combo-btn" id="btn-link-gen-categoria" onclick="toggleLinkGenDropdown('categoria')"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
+            style="width:100%; height:44px; background:#1e293b; color:#ffffff; font-weight:700; font-size:13.5px; border:1px solid #334155; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box; transition:all 0.2s;"
+            onmouseover="this.style.borderColor='#38bdf8'; this.style.background='#0f172a';"
+            onmouseout="this.style.borderColor='#334155'; this.style.background='#1e293b';">
             <span class="link-gen-combo-label" id="label-link-gen-categoria">Conselho Escolar (Executa Fomento - F)</span>
-            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+            <span style="font-size:12px; color:#38bdf8; margin-left:8px;">▾</span>
           </button>
-          <div class="link-gen-combo-dropdown" id="drop-link-gen-categoria" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-categoria" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:1px solid #38bdf8; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
             <div class="link-gen-combo-list" id="list-link-gen-categoria" style="max-height:210px; overflow-y:auto;"></div>
           </div>
         </div>
 
-        <!-- Campo 3: Competencia (Imagem 5) -->
+        <!-- Campo 3: Competência (com Acentuação Correta) -->
         <div class="link-gen-combo-wrap" id="wrap-link-gen-competencia" style="position:relative;">
-          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Competencia</label>
+          <label style="display:block; font-size:12px; font-weight:700; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">Competência *</label>
           <input type="hidden" id="link-gen-competencia" value="Municipal" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
           <button type="button" class="link-gen-combo-btn" id="btn-link-gen-competencia" onclick="toggleLinkGenDropdown('competencia')"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
+            style="width:100%; height:44px; background:#1e293b; color:#ffffff; font-weight:700; font-size:13.5px; border:1px solid #334155; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box; transition:all 0.2s;"
+            onmouseover="this.style.borderColor='#38bdf8'; this.style.background='#0f172a';"
+            onmouseout="this.style.borderColor='#334155'; this.style.background='#1e293b';">
             <span class="link-gen-combo-label" id="label-link-gen-competencia">Municipal</span>
-            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+            <span style="font-size:12px; color:#38bdf8; margin-left:8px;">▾</span>
           </button>
-          <div class="link-gen-combo-dropdown" id="drop-link-gen-competencia" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-competencia" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:1px solid #38bdf8; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
             <div class="link-gen-combo-list" id="list-link-gen-competencia" style="max-height:210px; overflow-y:auto;"></div>
           </div>
         </div>
 
-        <!-- Campo 4: Super (Imagem 5) -->
+        <!-- Campo 4: Super (com Acentuação Correta) -->
         <div class="link-gen-combo-wrap" id="wrap-link-gen-super" style="position:relative;">
-          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Superintendência de Educação (SUPER)</label>
+          <label style="display:block; font-size:12px; font-weight:700; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">Superintendência de Educação (SUPER) *</label>
           <input type="hidden" id="link-gen-super" value="SUPER - Alta Floresta D'Oeste" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
           <button type="button" class="link-gen-combo-btn" id="btn-link-gen-super" onclick="toggleLinkGenDropdown('super')"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;" title="Selecione ou altere a Superintendência vinculada">
+            style="width:100%; height:44px; background:#1e293b; color:#ffffff; font-weight:700; font-size:13.5px; border:1px solid #334155; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box; transition:all 0.2s;"
+            onmouseover="this.style.borderColor='#38bdf8'; this.style.background='#0f172a';"
+            onmouseout="this.style.borderColor='#334155'; this.style.background='#1e293b';" title="Selecione ou altere a Superintendência vinculada">
             <span class="link-gen-combo-label" id="label-link-gen-super">SUPER - Alta Floresta D'Oeste</span>
-            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+            <span style="font-size:12px; color:#38bdf8; margin-left:8px;">▾</span>
           </button>
-          <div class="link-gen-combo-dropdown" id="drop-link-gen-super" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-super" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:1px solid #38bdf8; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
             <div class="link-gen-combo-list" id="list-link-gen-super" style="max-height:210px; overflow-y:auto;"></div>
           </div>
         </div>
 
-        <!-- Campo 5: Tipo de Parceria (Imagem 5) -->
+        <!-- Campo 5: Tipo de Parceria (com Acentuação Correta) -->
         <div class="link-gen-combo-wrap" id="wrap-link-gen-parceria" style="position:relative;">
-          <label style="display:block; font-size:13px; font-weight:800; color:#ffffff; margin-bottom:6px;">Tipo de Parceria</label>
+          <label style="display:block; font-size:12px; font-weight:700; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">Tipo de Parceria *</label>
           <input type="hidden" id="link-gen-parceria" value="Fomento (Termo de Fomento - F)" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
           <button type="button" class="link-gen-combo-btn" id="btn-link-gen-parceria" onclick="toggleLinkGenDropdown('parceria')"
-            style="width:100%; height:44px; background:#ea580c; color:#ffffff; font-weight:800; font-size:14px; border:2px solid #fbbf24; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 3px 10px rgba(234,88,12,0.35); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
+            style="width:100%; height:44px; background:#1e293b; color:#ffffff; font-weight:700; font-size:13.5px; border:1px solid #334155; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box; transition:all 0.2s;"
+            onmouseover="this.style.borderColor='#38bdf8'; this.style.background='#0f172a';"
+            onmouseout="this.style.borderColor='#334155'; this.style.background='#1e293b';">
             <span class="link-gen-combo-label" id="label-link-gen-parceria">Fomento (Termo de Fomento - F)</span>
-            <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
+            <span style="font-size:12px; color:#38bdf8; margin-left:8px;">▾</span>
           </button>
-          <div class="link-gen-combo-dropdown" id="drop-link-gen-parceria" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
+          <div class="link-gen-combo-dropdown" id="drop-link-gen-parceria" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:1px solid #38bdf8; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
             <div class="link-gen-combo-list" id="list-link-gen-parceria" style="max-height:210px; overflow-y:auto;"></div>
           </div>
         </div>
 
-        <!-- Botão Verde: gerar link -->
-        <div style="display:flex; justify-content:flex-end; margin-top:4px;">
-          <button type="button" onclick="gerarLinkCadastroComParametros()"
-            style="background:#059669; color:#ffffff; font-weight:900; font-size:15px; padding:10px 28px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(5,150,105,0.45); transition:transform 0.15s;"
-            onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-            gerar link
+        <!-- BOTÕES REACOMODADOS NA MESMA DIMENSÃO (IMAGEM 2) -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px;">
+          <button type="button" onclick="gerarLinkCadastroComParametros()" id="btn-modal-gerar-link"
+            style="height:44px; background:linear-gradient(135deg,#0284c7,#0369a1); color:#ffffff; font-weight:800; font-size:13.5px; border:1px solid #38bdf8; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(2,132,199,0.35); transition:all 0.2s;"
+            onmouseover="this.style.boxShadow='0 0 20px rgba(56,189,248,0.55)'; this.style.transform='translateY(-1px)';"
+            onmouseout="this.style.boxShadow='0 4px 14px rgba(2,132,199,0.35)'; this.style.transform='none';">
+            <span style="font-size:15px;">⚡</span>
+            <span>Gerar Link</span>
+          </button>
+
+          <button type="button" onclick="copiarLinkCadastroGerado()" id="btn-modal-copiar-link"
+            style="height:44px; background:linear-gradient(135deg,#059669,#047857); color:#ffffff; font-weight:800; font-size:13.5px; border:1px solid #34d399; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(5,150,105,0.35); transition:all 0.2s;"
+            onmouseover="this.style.boxShadow='0 0 20px rgba(52,211,153,0.55)'; this.style.transform='translateY(-1px)';"
+            onmouseout="this.style.boxShadow='0 4px 14px rgba(5,150,105,0.35)'; this.style.transform='none';">
+            <span style="font-size:15px;">📋</span>
+            <span>Copiar Link</span>
           </button>
         </div>
 
-        <div style="font-size:12px; color:#cbd5e1; font-weight:600;">
-          Gerar link de acesso para cadastro sem senha
-        </div>
-
-        <!-- Campo de Texto para Compartilhar -->
-        <div>
-          <input type="text" id="link-gen-resultado" readonly
-            placeholder="Clique em 'gerar link' para criar o endereço de acesso..."
-            onclick="this.select()"
-            style="width:100%; height:44px; padding:8px 12px; background:#ffffff; color:#0f172a; border:2px solid #38bdf8; border-radius:8px; font-weight:800; font-size:12px; font-family:monospace; box-sizing:border-box;">
-        </div>
-
-        <!-- Compartilhar e Botão Copiar -->
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-          <span style="font-size:13.5px; font-weight:800; color:#e2e8f0;">compartilhar link gerado</span>
-          <div style="display:flex; gap:8px;">
-            <button type="button" onclick="copiarLinkCadastroGerado()"
-              style="background:#dc2626; color:#ffffff; border:none; padding:10px 26px; border-radius:8px; font-weight:900; font-size:15px; cursor:pointer; box-shadow:0 4px 12px rgba(220,38,38,0.4); transition:transform 0.15s;"
-              onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
-              Copiar
-            </button>
-            <button type="button" onclick="testarLinkCadastroGerado()"
-              style="background:#2563eb; color:#ffffff; border:none; padding:10px 18px; border-radius:8px; font-weight:800; font-size:12.5px; cursor:pointer; box-shadow:0 4px 12px rgba(37,99,235,0.4);">
-              Abrir / Testar ↗
-            </button>
+        <!-- MENSAGEM DE LINK GERADO COM SUCESSO, DATA E HORA, E LINK EM FONTE 7 (TIPO LINK) -->
+        <div id="box-link-gen-sucesso" style="display:none; background:rgba(15,23,42,0.95); border:1px solid rgba(56,189,248,0.35); border-radius:8px; padding:12px; margin-top:4px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+            <div style="display:flex; align-items:center; gap:6px; color:#38bdf8; font-weight:800; font-size:12.5px;">
+              <span>✅</span>
+              <span>Link gerado com sucesso!</span>
+            </div>
+            <div id="msg-link-gen-datahora" style="color:#94a3b8; font-size:11px; font-weight:600;"></div>
           </div>
+          <div style="background:#090e17; border:1px solid #1e293b; border-radius:6px; padding:8px 10px; word-break:break-all;">
+            <a id="link-gen-anchor" href="#" target="_blank" rel="noopener noreferrer"
+              style="font-size:7pt; color:#38bdf8; text-decoration:underline; font-family:'Consolas','Courier New',monospace; line-height:1.35; display:block; cursor:pointer;"
+              title="Clique para abrir ou testar este link diretamente">
+              https://...
+            </a>
+          </div>
+          <input type="hidden" id="link-gen-resultado" value="">
         </div>
 
-        <!-- Texto Explicativo Institucional (Imagens 3 e 4) -->
-        <div style="margin-top:6px; padding:12px 14px; background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); border-radius:8px; font-size:10.5px; font-weight:700; color:#94a3b8; line-height:1.45; text-transform:uppercase;">
-          FORMULÁRIO GERA LINK COM OS PARÂMETROS JÁ PRÉ-DEFINIDOS. ESTE LINK SÓ JÁ ABRE O FORMULÁRIO DE CADASTRO DE ENTIDADE SEM SENHA, ENTRA DIRETO, NUMA PAGE ÚNICA, ABRE O FORM DE CADASTRO DE ENTIDADE COM OS PARÂMETROS DEFINIDOS JÁ PREENCHIDO E NÃO PODE MUDAR, SOMENTE ACRESCENTAR, JÁ FICA CADASTRADO.
-        </div>
       </div>
     </div>
   </div>
@@ -6144,10 +6167,10 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.75"></script>
-  <script src="js/app.js?v=1.3.75"></script>
-  <script src="js/auth-sap.js?v=1.3.75"></script>
-  <script src="js/escolas.js?v=1.3.75" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.3.76"></script>
+  <script src="js/app.js?v=1.3.76"></script>
+  <script src="js/auth-sap.js?v=1.3.76"></script>
+  <script src="js/escolas.js?v=1.3.76" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>

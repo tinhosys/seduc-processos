@@ -9034,12 +9034,12 @@ window.renderizarLinkGenCombo = function(campo, filtroTexto = '') {
   const isTodosChecked = (sel === 'Todos' || sel === 'TODOS');
   html += `
     <div class="link-gen-item" onclick="selecionarLinkGenItem('${campo}', 'Todos')"
-      style="display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:800; color:#fff; border-bottom:2px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.18); transition:background 0.15s;"
-      onmouseover="this.style.background='rgba(245,158,11,0.32)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'">
-      <span class="link-gen-check" style="width:18px; height:18px; border:2px solid ${isTodosChecked ? '#10b981' : '#fbbf24'}; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; background:${isTodosChecked ? '#10b981' : 'rgba(0,0,0,0.4)'}; transition:all 0.15s;">
+      style="display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:800; color:#fff; border-bottom:2px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.12); transition:background 0.15s;"
+      onmouseover="this.style.background='rgba(56,189,248,0.22)'" onmouseout="this.style.background='rgba(56,189,248,0.12)'">
+      <span class="link-gen-check" style="width:18px; height:18px; border:2px solid ${isTodosChecked ? '#38bdf8' : '#64748b'}; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; background:${isTodosChecked ? '#0284c7' : 'rgba(0,0,0,0.4)'}; transition:all 0.15s;">
         ${isTodosChecked ? '<span style="color:#fff; font-size:12px; font-weight:900; line-height:1;">✓</span>' : ''}
       </span>
-      <span style="color:#fbbf24; font-weight:900; letter-spacing:0.5px;">${data.todosLabel || 'TODOS'}</span>
+      <span style="color:#38bdf8; font-weight:900; letter-spacing:0.5px;">${data.todosLabel || 'TODOS'}</span>
     </div>
   `;
 
@@ -9264,7 +9264,30 @@ function gerarLinkCadastroComParametros() {
 
   const inputOut = document.getElementById('link-gen-resultado');
   if (inputOut) inputOut.value = url;
-  if (typeof toast === 'function') toast('Link pré-definido gerado com sucesso!', 'success');
+
+  const boxSucesso = document.getElementById('box-link-gen-sucesso');
+  if (boxSucesso) boxSucesso.style.display = 'block';
+
+  const anchor = document.getElementById('link-gen-anchor');
+  if (anchor) {
+    anchor.href = url;
+    anchor.textContent = url;
+  }
+
+  const agora = new Date();
+  const dia = String(agora.getDate()).padStart(2, '0');
+  const mes = String(agora.getMonth() + 1).padStart(2, '0');
+  const ano = agora.getFullYear();
+  const hora = String(agora.getHours()).padStart(2, '0');
+  const min = String(agora.getMinutes()).padStart(2, '0');
+  const seg = String(agora.getSeconds()).padStart(2, '0');
+  const dataHoraTxt = `${dia}/${mes}/${ano} às ${hora}:${min}:${seg}`;
+
+  const elDataHora = document.getElementById('msg-link-gen-datahora');
+  if (elDataHora) {
+    elDataHora.textContent = `Gerado em: ${dataHoraTxt}`;
+  }
+
   return url;
 }
 window.gerarLinkCadastroComParametros = gerarLinkCadastroComParametros;
