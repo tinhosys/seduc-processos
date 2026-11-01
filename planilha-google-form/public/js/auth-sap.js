@@ -65,7 +65,8 @@ window.isUsuarioAdmin = function() {
 // ============================================================
 
 function maskCelular(v) {
-  v = v.replace(/\D/g, "");
+  if (!v) return '';
+  v = String(v).replace(/\D/g, "");
   if (v.length > 11) v = v.substring(0, 11);
   if (v.length > 7) {
     return "(" + v.substring(0, 2) + ") " + v.substring(2, 3) + " " + v.substring(3, 7) + "-" + v.substring(7);
@@ -78,6 +79,7 @@ function maskCelular(v) {
   }
   return v;
 }
+window.maskCelular = maskCelular;
 
 const SAP_SESSION_KEY = 'sap_session_token';
 const SAP_USER_KEY    = 'sap_user_data';
@@ -238,6 +240,11 @@ function mostrarLogin(mensagem) {
   const app = document.querySelector('.app-layout');
   if (app) app.style.display = 'none';
 
+  const lw = document.getElementById('login-whatsapp');
+  if (lw && lw.value && typeof maskCelular === 'function') {
+    lw.value = maskCelular(lw.value);
+  }
+
   if (mensagem) {
     const errDiv = document.getElementById('login-error');
     if (errDiv) errDiv.textContent = mensagem;
@@ -253,7 +260,7 @@ function ocultarLogin() {
   if (app) app.style.display = '';
 }
 
-// ====== CHAMADO PELO BOTÃƒO "ENTRAR" ======
+// ====== CHAMADO PELO BOTÃO "ENTRAR" ======
 async function realizarLogin() {
   const whatsappInput = document.getElementById('login-whatsapp');
   const senhaInput = document.getElementById('login-senha');
@@ -263,6 +270,9 @@ async function realizarLogin() {
 
   const rawWhatsapp = whatsappInput ? whatsappInput.value.trim() : '';
   const whatsapp = rawWhatsapp.replace(/\D/g, '');
+  if (whatsappInput && whatsapp && typeof maskCelular === 'function') {
+    whatsappInput.value = maskCelular(whatsapp);
+  }
   const senha = senhaInput ? senhaInput.value.trim() : '';
 
   if (!whatsapp || whatsapp.length < 10 || whatsapp.length > 11) {

@@ -380,3 +380,23 @@ window.addEventListener("resize", () => {
   });
   window._dropdownJustClosed = Date.now();
 });
+
+
+// Auto-inicializar multiselects padr�o quando o DOM estiver pronto
+function autoInitMultiSelects() {
+  const selects = ['filtro-municipio', 'filtro-super', 'filtro-prefixo', 'filtro-localizacao', 'filtro-status', 'filtro-ano', 'filtro-categoria', 'filtro-tipo', 'filtro-agrupamento', 'filtro-analista', 'filtro-executivo'];
+  selects.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.multiple && !el._multiSelectInstance) {
+      window.initMultiSelect(id);
+    }
+  });
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', autoInitMultiSelects);
+} else {
+  autoInitMultiSelects();
+}
+window.addEventListener('load', autoInitMultiSelects);
+setTimeout(autoInitMultiSelects, 300);

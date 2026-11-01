@@ -2072,11 +2072,15 @@ input:checked ~ .toggle-text {
   position: sticky !important;
   left: 40px !important;
   z-index: 25 !important;
-  width: 110px !important;
-  min-width: 110px !important;
+  width: 75px !important;
+  min-width: 75px !important;
+  max-width: 75px !important;
   background-color: #0b132b !important;
   border-right: 2px solid rgba(56, 189, 248, 0.35) !important;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5) !important;
+  padding: 4px 2px !important;
+  text-align: center !important;
+  vertical-align: middle !important;
 }
 
 .table-wrap thead th:first-child {
@@ -2226,6 +2230,7 @@ thead th {
   box-sizing: border-box !important;
 }
 
+.filter-row select,
 .filter-row-grid-6 select {
   height: 38px !important;
   min-height: 38px !important;

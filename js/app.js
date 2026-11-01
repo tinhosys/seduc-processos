@@ -1660,6 +1660,9 @@ function renderProcessos() {
   preencherSelectFiltro('filtro-prefixo',     [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-objeto',      [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-analista',    [...new Set(todosProcs.map(p => p.analista).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')));
+  if (window.initMultiSelect && !document.getElementById('filtro-analista')?._multiSelectInstance) {
+    window.initMultiSelect('filtro-analista');
+  }
   const _isAdmRender = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
   const _contFiltroExec = document.getElementById('container-filtro-executivo');
   if (_contFiltroExec) _contFiltroExec.style.setProperty('display', _isAdmRender ? 'block' : 'none', 'important');
@@ -4780,7 +4783,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Limpar todos os selects múltiplos e simples
-    ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto','filtro-executivo',
+    ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto','filtro-analista','filtro-executivo',
      'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento'].forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -4855,6 +4858,9 @@ document.addEventListener('DOMContentLoaded', () => {
       preencherSelectFiltro('filtro-municipio', [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
       preencherSelectFiltro('filtro-objeto', [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
       preencherSelectFiltro('filtro-analista', [...new Set(todosProcs.map(p => p.analista).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')));
+      if (window.initMultiSelect && !document.getElementById('filtro-analista')?._multiSelectInstance) {
+        window.initMultiSelect('filtro-analista');
+      }
       const _isAdmPop = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
       if (_isAdmPop) {
         preencherSelectFiltro('filtro-prefixo', [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
