@@ -340,11 +340,65 @@
       position: sticky !important;
       left: 40px !important;
       z-index: 25 !important;
-      width: 110px !important;
-      min-width: 110px !important;
+      width: 65px !important;
+      min-width: 65px !important;
+      max-width: 65px !important;
       background-color: #0b132b !important;
       border-right: 2px solid rgba(56, 189, 248, 0.35) !important;
       box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* REGRA ESTRITA: PREFIXO VISÍVEL SOMENTE E UNICAMENTE PELO PERFIL ADMIN */
+    body:not(.role-adm) #page-processos .table-wrap th[data-sort="prefixo"],
+    body:not(.role-adm) #page-processos .table-wrap td.col-prefixo,
+    body:not(.role-adm) #filtro-prefixo,
+    body:not(.role-adm) .custom-multiselect[data-select-id="filtro-prefixo"] {
+      display: none !important;
+    }
+
+    /* COMPONENTE PREFIXO ADMIN - REDUZIDO EM 50% COM HOVER INTERATIVO */
+    .prefixo-cell-container {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .prefixo-mini-chip {
+      cursor: pointer;
+      display: inline-flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.2s ease;
+      max-width: 58px;
+    }
+    .prefixo-cell-container:hover .prefixo-mini-chip {
+      background: rgba(56,189,248,0.12);
+      border-color: rgba(56,189,248,0.4);
+      box-shadow: 0 0 8px rgba(56,189,248,0.3);
+    }
+    .prefixo-cell-container .prefixo-hover-card {
+      display: none;
+      position: absolute;
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 99999;
+      background: #0b132b;
+      border: 1.5px solid #38bdf8;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.9), 0 0 16px rgba(56, 189, 248, 0.35);
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-width: 190px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .prefixo-cell-container:hover .prefixo-hover-card {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     #page-processos .table-wrap thead th:first-child {
@@ -726,7 +780,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.81</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.82</div>
 
   </div>
 </div>
@@ -1008,7 +1062,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.81</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.82</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1689,11 +1743,18 @@
             </div>
           </div>
 
-          <!-- LINHA 2: OBJETO ENCURTADO + EXECUTIVO + GRUPO (DÍGITO) NA MESMA LINHA -->
+          <!-- LINHA 2: OBJETO ENCURTADO + ANALISTA + EXECUTIVO + GRUPO (DÍGITO) NA MESMA LINHA -->
           <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center;">
-            <div style="flex: 1 1 320px; min-width: 200px;">
+            <div style="flex: 1 1 280px; min-width: 180px;">
               <select id="filtro-objeto" style="width:100%;">
                 <option value="">OBJETO</option>
+              </select>
+            </div>
+
+            <!-- CAMPO ANALISTA (COMBO COM MULTI-SELEÇÃO) - IMAGEM 2 -->
+            <div id="container-filtro-analista" style="flex: 0 0 220px; width: 220px; min-width: 170px;">
+              <select id="filtro-analista" multiple style="width:100%;">
+                <option value="">ANALISTA</option>
               </select>
             </div>
 
@@ -1750,7 +1811,7 @@
             <select id="filtro-super" multiple>
               <option value="">SUPER</option>
             </select>
-            <select id="filtro-prefixo" multiple>
+            <select id="filtro-prefixo" class="action-adm" multiple>
               <option value="">PREFIXO</option>
             </select>
             <select id="filtro-localizacao" multiple>
@@ -1798,7 +1859,7 @@
             <thead>
               <tr>
                 <th style="width: 40px; text-align: center;"><input type="checkbox" id="check-all-processos" onchange="toggleAllProcessos(this)" style="cursor:pointer; transform: scale(1.2);"></th>
-                <th data-sort="prefixo" style="width: 110px;">Prefixo</th>
+                <th data-sort="prefixo" class="action-adm col-prefixo" style="width: 65px;">Prefixo</th>
                 <th data-sort="MUNICÍPIO" style="width: 120px;">MUNICÍPIO</th>
                 <th data-sort="numero" style="width: 145px;">Nº Processo</th>
                 <th data-sort="interessado" style="min-width: 140px;">Interessado</th>
@@ -2057,6 +2118,13 @@
               <div style="margin-bottom:14px;">
                 <label for="popup-novo-valorOf" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Valor Oficial (R$) *</label>
                 <input type="text" id="popup-novo-valorOf" placeholder="0,00" class="input-currency" required style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+              </div>
+
+              <!-- LINHA 5.1: ANALISTA -->
+              <div style="margin-bottom:14px;">
+                <label for="popup-novo-analista" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:5px;">Analista</label>
+                <input type="text" id="popup-novo-analista" placeholder="Selecione ou digite o analista responsável..." list="popup-list-analistas" autocomplete="off" style="width:100%; height:40px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; font-size:13px; box-sizing:border-box;">
+                <datalist id="popup-list-analistas"></datalist>
               </div>
 
               <!-- LINHA 6: CAMPOS PREVIAMENTE PREENCHIDOS (STATUS, LOCALIZAÇÃO, DATA [HOJE]) -->
@@ -2390,6 +2458,12 @@
                   <button type="button" onclick="inserirDataHoje()" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59,130,246,0.35)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(59,130,246,0.2)'; this.style.color='#60a5fa';">Hoje</button>
                 </div>
                 <input type="date" id="form-data">
+              </div>
+
+              <div class="form-group" id="group-form-analista">
+                <label for="form-analista">Analista</label>
+                <input type="text" id="form-analista" list="list-analistas" autocomplete="off" placeholder="Selecione ou digite o analista..." style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 13px;">
+                <datalist id="list-analistas"></datalist>
               </div>
 
               <div class="form-group action-adm" id="group-form-executivo" style="display: none;">
@@ -2971,7 +3045,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.81</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.82</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3653,7 +3727,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.81
+              GBZ - v1.3.82
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3926,7 +4000,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.81] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.82] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6194,10 +6268,10 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.81"></script>
-  <script src="js/app.js?v=1.3.81"></script>
-  <script src="js/auth-sap.js?v=1.3.81"></script>
-  <script src="js/escolas.js?v=1.3.81" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.3.82"></script>
+  <script src="js/app.js?v=1.3.82"></script>
+  <script src="js/auth-sap.js?v=1.3.82"></script>
+  <script src="js/escolas.js?v=1.3.82" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>

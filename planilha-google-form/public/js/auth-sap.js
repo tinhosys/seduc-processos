@@ -195,6 +195,22 @@ function aplicarPermissoes(nivel) {
     state.filtros.executivo = [];
   }
 
+  // Controle estrito da coluna e filtro PREFIXO (SOMENTE E UNICAMENTE O PERFIL ADMIN)
+  const thPrefixo = document.querySelector('#page-processos th[data-sort="prefixo"]');
+  if (thPrefixo) {
+    thPrefixo.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  }
+  document.querySelectorAll('#page-processos td.col-prefixo').forEach(td => {
+    td.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  });
+  const selPrefixo = document.getElementById('filtro-prefixo');
+  if (selPrefixo && selPrefixo._multiSelectInstance && selPrefixo._multiSelectInstance.wrapper) {
+    selPrefixo._multiSelectInstance.wrapper.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  }
+  if (!isAdminUser && typeof state !== 'undefined' && state && state.filtros) {
+    state.filtros.prefixo = [];
+  }
+
   // Controle restrito do Dashboard (somente Elton, Admin, 69 99922-1336)
   const canDash = typeof window.podeAcessarDashboard === 'function' ? window.podeAcessarDashboard() : false;
   if (canDash) {

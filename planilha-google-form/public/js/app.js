@@ -79,7 +79,7 @@ window.limparFiltros = function() {
   });
 
   // Limpar todos os selects múltiplos e simples
-  ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto','filtro-executivo',
+  ['filtro-status','filtro-localizacao','filtro-super','filtro-municipio','filtro-objeto','filtro-analista','filtro-executivo',
    'filtro-prefixo','filtro-categoria','filtro-tipo','filtro-ano','filtro-agrupamento'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
@@ -429,6 +429,7 @@ let state = {
     super: [],
     objeto: [],
     executivo: [],
+    analista: [],
     prefixo: [],
     apontamento: false,
     alerta: '',
@@ -1302,7 +1303,7 @@ function getSuperPorMunicipio(mun) {
 // ---- LISTA DE PROCESSOS ----
 function getFiltrados() {
   let lista = carregarProcessos();
-  const { busca, status, localizacao, municipio, objeto, executivo, prefixo, alerta, marca, categoria, tipo, ano } = state.filtros;
+  const { busca, status, localizacao, municipio, objeto, executivo, analista, prefixo, alerta, marca, categoria, tipo, ano } = state.filtros;
 
   if (alerta === 'sim') {
     lista = lista.filter(p => String(p.alerta || '').trim() === '1');
@@ -1323,6 +1324,7 @@ function getFiltrados() {
       normalizar(p.interessado).includes(q) ||
       normalizar(p.municipio).includes(q) ||
       normalizar(p.objeto).includes(q) ||
+      normalizar(p.analista).includes(q) ||
       ((typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) && normalizar(p.executivo).includes(q)) ||
       normalizar(p.obs).includes(q) ||
       normalizar(p.anotacao).includes(q) ||
@@ -1367,6 +1369,7 @@ function getFiltrados() {
   filterByMultiple('localizacao', localizacao);
   filterByMultiple('municipio', municipio);
   filterByMultiple('objeto', objeto);
+  filterByMultiple('analista', analista);
   if (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) { filterByMultiple('executivo', executivo); }
   filterByMultiple('categoria', categoria);
   filterByMultiple('tipo', tipo);
@@ -1656,6 +1659,7 @@ function renderProcessos() {
   preencherSelectFiltro('filtro-municipio',   [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-prefixo',     [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
   preencherSelectFiltro('filtro-objeto',      [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
+  preencherSelectFiltro('filtro-analista',    [...new Set(todosProcs.map(p => p.analista).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')));
   const _isAdmRender = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
   const _contFiltroExec = document.getElementById('container-filtro-executivo');
   if (_contFiltroExec) _contFiltroExec.style.setProperty('display', _isAdmRender ? 'block' : 'none', 'important');
@@ -1702,6 +1706,8 @@ function renderProcessos() {
   preencherDatalist('list-prefixos', 'prefixo');
   preencherDatalist('list-interessados', 'interessado');
   preencherDatalist('list-objetos', 'objeto');
+  preencherDatalist('list-analistas', 'analista');
+  preencherDatalist('popup-list-analistas', 'analista');
   if (_isAdmRender) { preencherDatalist('list-executivos', 'executivo'); } else { const _dlExec = document.getElementById('list-executivos'); if (_dlExec) _dlExec.innerHTML = ''; }
   preencherDatalist('list-agrupamentos', 'agrupamento');
   preencherDatalist('list-municipios', 'municipio');
@@ -1719,32 +1725,71 @@ function renderProcessos() {
     return `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} ${isPago ? 'linha-pago' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
       <td onclick="event.stopPropagation()" style="text-align: center;"><input type="checkbox" class="check-processo" value="${p.id}" style="cursor:pointer; transform: scale(1.2);"></td>
-      <td class="col-prefixo" title="${p.prefixo}">
-        <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
-          <!-- Linha 1: PREFIXO -->
-          <div style="display: flex; align-items: center; white-space: nowrap; gap: 4px;">
-            <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'}" style="flex-shrink: 0; font-size: 11px; padding: 2px 6px;">
-              ${p.prefixo || '—'}
-            </span>
-            ${p.ano ? `<span style="padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px; font-size: 10px; color: #cbd5e1; flex-shrink: 0;">${p.ano}</span>` : ''}
+      <td class="col-prefixo" title="${p.prefixo || ''}">
+        <div class="prefixo-cell-container">
+          <!-- Trigger Compacto (Diminuído 50%) -->
+          <div class="prefixo-mini-chip">
+            <div style="display:flex; align-items:center; gap:3px;">
+              <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'}" style="font-size:9px; padding:1px 4px; font-weight:800; line-height:1;">
+                ${p.prefixo || '—'}
+              </span>
+              ${p.ano ? `<span style="font-size:8px; color:#cbd5e1; font-weight:700;">${p.ano}</span>` : ''}
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:2px; margin-top:1px;">
+              <span style="font-size:7.5px; color:#94a3b8; font-weight:700;">${p.categoria || ''}${p.tipo ? `·${p.tipo}` : ''}</span>
+              <div style="display:inline-flex; gap:2px; align-items:center;">
+                <div style="width:4.5px; height:4.5px; border-radius:50%; background-color:${p.CAM === '1' ? '#10b981' : '#ef4444'};"></div>
+                <div style="width:4.5px; height:4.5px; border-radius:50%; background-color:${p.GAB === '1' ? '#10b981' : '#ef4444'};"></div>
+                <div style="width:4.5px; height:4.5px; border-radius:50%; background-color:${p.CC === '1' ? '#10b981' : '#ef4444'};"></div>
+              </div>
+            </div>
           </div>
-          <!-- Linha 2: CATEGORIA; TIPO; MARCAÇÃO -->
-          <div style="display: flex; flex-wrap: nowrap; gap: 4px; align-items: center; white-space: nowrap; margin-left: -4px;">
-            ${getCategoryBadge(p.categoria)}
-            ${getTypeBadge(p.tipo)}
-            ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado - Ver Observações" style="margin-left:4px; font-size:12px; line-height: 1; flex-shrink: 0;">📌</span>' : ''}
-          </div>
-          <!-- Linha 3: CAM; GAB; CC -->
-          <div style="display: flex; gap: 6px; align-items: center; margin-top: 1px;">
-            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: ${p.CAM === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 3px rgba(0,0,0,0.3);" title="CAM"></div>
-            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: ${p.GAB === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 3px rgba(0,0,0,0.3);" title="GABINETE"></div>
-            <div style="width: 8px; height: 8px; border-radius: 50%; background-color: ${p.CC === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 3px rgba(0,0,0,0.3);" title="CASA CIVIL"></div>
+
+          <!-- Componente Flutuante Completo (Exibido apenas ao passar o mouse) -->
+          <div class="prefixo-hover-card">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; border-bottom:1px solid rgba(56,189,248,0.25); padding-bottom:5px;">
+              <span style="color:#38bdf8; font-weight:800; font-size:12px; letter-spacing:0.5px;">PREFIXO: ${escapeHtml(p.prefixo || '—')}</span>
+              ${p.ano ? `<span style="background:rgba(255,255,255,0.1); color:#f8fafc; font-size:10px; font-weight:700; padding:1px 5px; border-radius:4px;">${p.ano}</span>` : ''}
+            </div>
+            <div style="display:flex; align-items:center; gap:6px; margin-top:2px;">
+              <span style="font-size:10.5px; color:#94a3b8; font-weight:600;">Parceria:</span>
+              ${getCategoryBadge(p.categoria)}
+              ${getTypeBadge(p.tipo)}
+              ${p.marca === '1' || p.marca === 'SIM' ? '<span class="badge-marca" title="Processo Marcado" style="font-size:11px;">📌 Marcado</span>' : ''}
+            </div>
+            <div style="display:flex; flex-direction:column; gap:3px; margin-top:4px; font-size:10px; color:#cbd5e1; border-top:1px solid rgba(255,255,255,0.08); padding-top:4px;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; border-radius:50%; background-color:${p.CAM === '1' ? '#10b981' : '#ef4444'}; display:inline-block;"></span>
+                <span>CAM: <strong>${p.CAM === '1' ? 'Autorizado' : 'Pendente'}</strong></span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; border-radius:50%; background-color:${p.GAB === '1' ? '#10b981' : '#ef4444'}; display:inline-block;"></span>
+                <span>Gabinete: <strong>${p.GAB === '1' ? 'Autorizado' : 'Pendente'}</strong></span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span style="width:7px; height:7px; border-radius:50%; background-color:${p.CC === '1' ? '#10b981' : '#ef4444'}; display:inline-block;"></span>
+                <span>Casa Civil: <strong>${p.CC === '1' ? 'Autorizado' : 'Pendente'}</strong></span>
+              </div>
+            </div>
           </div>
         </div>
       </td>
       <td class="col-municipio" title="${p.municipio || ''}">
-        <span class="desktop-cell-view">${hl(p.municipio, busca)}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Município', p.municipio, 9)}</span>
+        <div style="display:flex; flex-direction:column; gap:2px;">
+          <span class="desktop-cell-view" style="font-weight:600;">${hl(p.municipio, busca)}</span>
+          <span class="mobile-cell-view">${renderMobileCell('Município', p.municipio, 9)}</span>
+          ${p.analista ? `
+            <div class="tag-analista-municipio" title="Analista Responsável: ${escapeHtml(p.analista)}" style="display:inline-flex; align-items:center; gap:3px; font-size:10px; color:#38bdf8; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.3); border-radius:4px; padding:1px 5px; width:fit-content; max-width:115px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              <span style="font-size:9px; color:#94a3b8;">👤</span>
+              <span style="font-weight:700; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(p.analista)}</span>
+            </div>
+          ` : `
+            <div class="tag-analista-municipio tag-analista-vazio" title="Sem analista definido" style="display:inline-flex; align-items:center; gap:3px; font-size:9px; color:#64748b; background:rgba(255,255,255,0.03); border:1px dashed rgba(255,255,255,0.1); border-radius:4px; padding:1px 4px; width:fit-content;">
+              <span style="font-size:8px;">👤</span>
+              <span>—</span>
+            </div>
+          `}
+        </div>
       </td>
       <td class="col-numero">
         <span class="desktop-cell-view">${p.numero ? p.numero.split(/\s+/).map(n => hl(n, busca)).join('<br>') : '—'}</span>
@@ -2021,6 +2066,7 @@ function preencherSelectFiltro(id, opcoes) {
   else if (id === 'filtro-localizacao') placeholder = 'LOCALIZAÇÃO';
   else if (id === 'filtro-municipio') placeholder = 'MUNICÍPIO';
   else if (id === 'filtro-objeto') placeholder = 'OBJETO';
+  else if (id === 'filtro-analista') placeholder = 'ANALISTA';
   else if (id === 'filtro-executivo') placeholder = 'EXECUTIVO';
   else if (id === 'filtro-ano') placeholder = 'ANO';
   else if (id === 'filtro-prefixo') placeholder = 'PREFIXO';
@@ -2241,6 +2287,7 @@ function renderFormulario() {
     document.getElementById('form-digito').value = window.limparDigitoValor(p.digito || p.DIGITO || '');
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
     document.getElementById('form-municipio').value   = p.municipio   || '';
+    if (document.getElementById('form-analista')) document.getElementById('form-analista').value = p.analista || '';
     document.getElementById('form-anotacao').value = p ? (p.anotacao || '') : '';
 
     const groupHistorico = document.getElementById('group-historico-apontamentos');
@@ -2427,6 +2474,7 @@ function renderFormulario() {
     if (typeof setManifestacaoTipo === 'function') setManifestacaoTipo('favoravel');
     document.getElementById('form-ano').value = '';
     document.getElementById('form-agrupamento').value = '';
+    if (document.getElementById('form-analista')) document.getElementById('form-analista').value = '';
     if (document.getElementById('form-executivo')) document.getElementById('form-executivo').value = '';
     document.getElementById('form-digito').value = '';
     document.getElementById('form-categoria').value   = '';
@@ -2553,6 +2601,7 @@ function salvarFormulario(e) {
     municipio:   document.getElementById('form-municipio').value.trim(),
     numero:      numerosJoined,
     interessado: document.getElementById('form-interessado').value.trim(),
+    analista:    (document.getElementById('form-analista')?.value || '').trim(),
     cnpj:        (document.getElementById('form-cnpj')?.value || '').trim(),
     cnpjReceitaTexto: window._ultimoResultadoCNPJReceitaTexto || '',
     objeto:      document.getElementById('form-objeto').value.trim(),
@@ -2996,7 +3045,9 @@ function abrirModalNovoProcesso() {
     anoEl.value = new Date().getFullYear();
   }
 
-  // Reset do campo CNPJ e container Receita Federal do popup
+  // Reset do campo CNPJ e Analista e container Receita Federal do popup
+  const analistaPopupEl = document.getElementById('popup-novo-analista');
+  if (analistaPopupEl) analistaPopupEl.value = '';
   const cnpjPopupEl = document.getElementById('popup-novo-cnpj');
   if (cnpjPopupEl) cnpjPopupEl.value = '';
   const containerReceitaPopup = document.getElementById('popup-novo-container-receita');
@@ -4040,6 +4091,7 @@ async function salvarNovoProcessoPopup(e) {
     municipio:   municipio,
     numero:      numerosJoined,
     interessado: interessado,
+    analista:    (document.getElementById('popup-novo-analista')?.value || '').trim(),
     cnpj:        (document.getElementById('popup-novo-cnpj')?.value || '').trim(),
     cnpjReceitaTexto: window._popupUltimoResultadoCNPJReceitaTexto || '',
     objeto:      (document.getElementById('popup-novo-objeto')?.value || '').trim(),
@@ -4612,6 +4664,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('filtro-super')?.addEventListener('change', () => aplicarFiltro('super', null));
   document.getElementById('filtro-municipio')?.addEventListener('change', () => aplicarFiltro('municipio', null));
   document.getElementById('filtro-objeto')?.addEventListener('change', () => aplicarFiltro('objeto', null));
+  document.getElementById('filtro-analista')?.addEventListener('change', () => aplicarFiltro('analista', null));
   document.getElementById('filtro-executivo')?.addEventListener('change', () => aplicarFiltro('executivo', null));
   document.getElementById('filtro-categoria')?.addEventListener('change', () => aplicarFiltro('categoria', null));
   document.getElementById('filtro-tipo')?.addEventListener('change', () => aplicarFiltro('tipo', null));
@@ -4800,9 +4853,21 @@ document.addEventListener('DOMContentLoaded', () => {
       preencherSelectFiltro('filtro-super', superList);
 
       preencherSelectFiltro('filtro-municipio', [...new Set(todosProcs.map(p => p.municipio).filter(Boolean))].sort());
-      preencherSelectFiltro('filtro-prefixo', [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
       preencherSelectFiltro('filtro-objeto', [...new Set(todosProcs.map(p => p.objeto).filter(Boolean))].sort());
+      preencherSelectFiltro('filtro-analista', [...new Set(todosProcs.map(p => p.analista).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')));
       const _isAdmPop = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
+      if (_isAdmPop) {
+        preencherSelectFiltro('filtro-prefixo', [...new Set(todosProcs.map(p => p.prefixo).filter(Boolean))].sort());
+      } else {
+        state.filtros.prefixo = [];
+        const _selPrefPop = document.getElementById('filtro-prefixo');
+        if (_selPrefPop) {
+          _selPrefPop.innerHTML = '<option value="">PREFIXO</option>';
+          if (_selPrefPop._multiSelectInstance && _selPrefPop._multiSelectInstance.wrapper) {
+            _selPrefPop._multiSelectInstance.wrapper.style.setProperty('display', 'none', 'important');
+          }
+        }
+      }
       const _contExecPop = document.getElementById('container-filtro-executivo');
       if (_contExecPop) _contExecPop.style.setProperty('display', _isAdmPop ? 'block' : 'none', 'important');
       if (_isAdmPop) {
@@ -4931,12 +4996,11 @@ function exportarPDF() {
   const userName = userElement ? userElement.textContent : 'Admin';
   const dateTimeStr = "Impresso em: " + dateStr + " às " + timeStr + " | Usuário: " + userName;
 
-  const tableColumn = ["Prefixo", "Município", "Nº Processo", "Interessado", "Objeto", "Status", "Localização", "Valor Oficial", "Data"];
+  const tableColumn = ["Município", "Nº Processo", "Interessado", "Objeto", "Status", "Localização", "Valor Oficial", "Data"];
   
   const tableRows = filtrados.map(p => {
     const num = p.numero ? p.numero.replace(/, /g, '\n') : '';
     return [
-      p.prefixo || '',
       p.municipio || '',
       num,
       p.interessado || '',
@@ -5150,31 +5214,13 @@ function imprimirPadrao(filtrados = getFiltrados()) {
       updatePrintDateTime();
       
       let rowsHtml = filtrados.map((p, index) => {
-        
-        
-        
-        
-        const prefixoFormatado = `
-          <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
-            <div style="font-weight: bold; margin-bottom: 2px;">${p.prefixo || '-'}</div>
-            <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
-              <span>${p.categoria || '-'}</span><span style="color:#999;">|</span><span>${p.tipo || '-'}</span><span style="color:#999;">|</span>
-              <div style="display: flex; font-size: 15px; line-height: 1; color: #000; align-items: center; margin-left: 1px;">
-                <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
-              </div>
-            </div>
-          </div>
-        `;
         return `
           <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
             <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${index + 1}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${prefixoFormatado}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:11%;">${p.municipio || '-'}</td>
-            <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:9px; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:15%;">${p.interessado || '-'}</td>
-            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
+            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:12%;">${p.municipio || '-'}</td>
+            <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:9px; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:16%;">${p.interessado || '-'}</td>
+            <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:26%;">${p.objeto || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; text-transform: uppercase; font-size:10px; width:8%;">${p.status || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${p.localizacao || '-'}</td>
             <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:7%;">${formatDate(p.data)}</td>
@@ -5185,7 +5231,7 @@ function imprimirPadrao(filtrados = getFiltrados()) {
       const totalValorPadrao = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
       const totalRowPadrao = `
         <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; font-weight:bold; background:#f9fafb;">
-          <td colspan="9" style="border: 1px solid #ccc; padding: 2px; text-align:right; font-size:10px;">TOTAL GERAL (${filtrados.length} processos):</td>
+          <td colspan="8" style="border: 1px solid #ccc; padding: 2px; text-align:right; font-size:10px;">TOTAL GERAL (${filtrados.length} processos):</td>
           <td style="border: 1px solid #ccc; padding: 2px; text-align:right; font-size:10px;">${formatNumberOnly(totalValorPadrao)}</td></tr>`;
       rowsHtml += totalRowPadrao;
 
@@ -5196,11 +5242,10 @@ function imprimirPadrao(filtrados = getFiltrados()) {
             <table class="print-table-detalhado" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:20px;">
               <colgroup>
                 <col style="width: 3%;">
-                <col style="width: 7%;">
-                <col style="width: 11%;">
                 <col style="width: 12%;">
-                <col style="width: 15%;">
-                <col style="width: 22%;">
+                <col style="width: 13%;">
+                <col style="width: 16%;">
+                <col style="width: 26%;">
                 <col style="width: 8%;">
                 <col style="width: 7%;">
                 <col style="width: 7%;">
@@ -5208,18 +5253,17 @@ function imprimirPadrao(filtrados = getFiltrados()) {
               </colgroup>
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#1e3a8a;"><th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
-                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
-                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
-                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
-                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
-                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:13%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:16%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:26%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
                   <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:8%; font-size:10.5px; font-weight:bold;">STATUS</th>
                   <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">LOCAL</th>
                   <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:center; width:7%; font-size:10.5px; font-weight:bold;">DATA</th>
                   <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:right; width:8%; font-size:10.5px; font-weight:bold;">VALOR R$</th>
                 </tr>
               </thead>
-              ${rowsHtml || '<tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr></tbody>'}
+              ${rowsHtml || '<tbody><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td colspan="9" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr></tbody>'}
             </table>
           </td></tr></tbody>
           <tfoot><tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;"><td>${getCommonFooter()}</td></tr></tfoot>
@@ -5270,28 +5314,14 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   }
 
   let rowsHtml = filtrados.map((p, index) => {
-    const prefixoFormatado = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.2;">
-        <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
-        <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
-          <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
-          <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
-            <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-            <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-            <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
-          </div>
-        </div>
-      </div>
-    `;
     const zebraBg = index % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
     return `
       <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${index + 1}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
-        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
-        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:12%;">${p.municipio || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:16%;">${p.interessado || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
@@ -5303,7 +5333,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
   const totalRow = `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
-      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td colspan="8" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
       <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
     </tr>`;
   rowsHtml += totalRow;
@@ -5332,11 +5362,10 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
             <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
               <colgroup>
                 <col style="width: 3%;">
-                <col style="width: 7%;">
-                <col style="width: 11%;">
                 <col style="width: 12%;">
-                <col style="width: 14%;">
-                <col style="width: 19%;">
+                <col style="width: 13%;">
+                <col style="width: 16%;">
+                <col style="width: 22%;">
                 <col style="width: 8%;">
                 <col style="width: 7%;">
                 <col style="width: 7%;">
@@ -5345,11 +5374,10 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:bold;">Nº</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">PREFIXO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:bold;">MUNICÍPIO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:bold;">PROCESSO SEI</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:14%; font-size:10px; font-weight:bold;">INTERESSADO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:19%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:13%; font-size:10px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:16%; font-size:10px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:bold;">STATUS</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">LOCAL</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:bold;">DATA</th>
@@ -5357,7 +5385,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
                 </tr>
               </thead>
               <tbody>
-                ${rowsHtml || '<tr><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+                ${rowsHtml || '<tr><td colspan="9" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
               </tbody>
             </table>
           </td>
@@ -5468,7 +5496,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
     // Linha de Cabeçalho do Grupo com cor padrão #008080, sem palavra DÍGITO e sem negrito
     rowsHtml += `
       <tr class="no-page-break group-header-digito" style="page-break-inside: avoid; break-inside: avoid; background-color: #008080 !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <td colspan="10" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <td colspan="9" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <span style="color: #ffffff !important; font-weight: normal; letter-spacing: 0.5px;">${chave}</span>
           <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #ffffff !important;">(${procs.length} processos &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
         </td>
@@ -5477,30 +5505,16 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
 
     procs.forEach(p => {
       globalIndex++;
-      const prefixoFormatado = `
-        <div style="font-family: Arial, sans-serif; line-height: 1.2;">
-          <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
-          <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
-            <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
-            <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
-              <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-              <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-              <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
-            </div>
-          </div>
-        </div>
-      `;
       const zebraBg = globalIndex % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
 
       // Linha Principal do Processo (sem negritos)
       rowsHtml += `
         <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
-          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:12%;">${p.municipio || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:16%;">${p.interessado || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
@@ -5521,7 +5535,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
         const memoTexto = partesMemo.join(' - ');
         rowsHtml += `
           <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color: #fff9f9;">
-            <td colspan="10" style="border: 1px solid #cbd5e1; border-top: none; padding: 2px 8px 3px 12px; font-size: 8.5px; font-style: italic; color: #dc2626; line-height: 1.3;">
+            <td colspan="9" style="border: 1px solid #cbd5e1; border-top: none; padding: 2px 8px 3px 12px; font-size: 8.5px; font-style: italic; color: #dc2626; line-height: 1.3;">
               ${memoTexto}
             </td>
           </tr>
@@ -5533,7 +5547,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
   const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
   const totalRow = `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
-      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td colspan="8" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
       <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
     </tr>`;
   rowsHtml += totalRow;
@@ -5562,11 +5576,10 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
             <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
               <colgroup>
                 <col style="width: 3%;">
-                <col style="width: 7%;">
-                <col style="width: 11%;">
                 <col style="width: 12%;">
-                <col style="width: 14%;">
-                <col style="width: 19%;">
+                <col style="width: 13%;">
+                <col style="width: 16%;">
+                <col style="width: 22%;">
                 <col style="width: 8%;">
                 <col style="width: 7%;">
                 <col style="width: 7%;">
@@ -5575,11 +5588,10 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
               <thead>
                 <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:normal;">Nº</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:normal;">PREFIXO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:normal;">MUNICÍPIO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:normal;">PROCESSO SEI</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:14%; font-size:10px; font-weight:normal;">INTERESSADO</th>
-                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:19%; font-size:10px; font-weight:normal;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:12%; font-size:10px; font-weight:normal;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:13%; font-size:10px; font-weight:normal;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:16%; font-size:10px; font-weight:normal;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:normal;">OBJETO / FINALIDADE</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:normal;">STATUS</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:normal;">LOCAL</th>
                   <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:normal;">DATA</th>
@@ -5587,7 +5599,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
                 </tr>
               </thead>
               <tbody>
-                ${rowsHtml || '<tr><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+                ${rowsHtml || '<tr><td colspan="9" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
               </tbody>
             </table>
           </td>
@@ -5715,30 +5727,13 @@ function imprimirDetalhado() {
   let tableRows = '';
   filtrados.forEach((p, i) => {
     
-        
-        
-        
-        const prefixoFormatado = `
-          <div style="font-family: Arial, sans-serif; font-size: 9px; line-height: 1.2;">
-            <div style="font-weight: bold; margin-bottom: 2px;">${p.prefixo || '-'}</div>
-            <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
-              <span>${p.categoria || '-'}</span><span style="color:#999;">|</span><span>${p.tipo || '-'}</span><span style="color:#999;">|</span>
-              <div style="display: flex; font-size: 15px; line-height: 1; color: #000; align-items: center; margin-left: 1px;">
-                <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-                <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
-              </div>
-            </div>
-          </div>
-        `;
     tableRows += `
       <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
         <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:3%;">${i + 1}</td>
-        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${prefixoFormatado}</td>
-        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:11%;">${p.municipio || '-'}</td>
-        <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:9px; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
-        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:15%;">${p.interessado || '-'}</td>
-        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
+        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:12%;">${p.municipio || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #ccc; padding: 2px; font-size:9px; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:16%;">${p.interessado || '-'}</td>
+        <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; white-space:normal; word-wrap:break-word; width:26%;">${p.objeto || '-'}</td>
         <td style="border: 1px solid #ccc; padding: 2px; text-transform: uppercase; font-size:10px; width:8%;">${p.status || '-'}</td>
         <td style="border: 1px solid #ccc; padding: 2px; font-size:10px; width:7%;">${p.localizacao || '-'}</td>
         <td style="border: 1px solid #ccc; padding: 2px; text-align:center; font-size:10px; width:7%;">${formatDate(p.data)}</td>
@@ -5747,7 +5742,7 @@ function imprimirDetalhado() {
   const totalValorDetalhado = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
   tableRows += `
     <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; font-weight:bold; background:#f9fafb;">
-      <td colspan="9" style="border: 1px solid #ccc; padding: 2px; text-align:right; font-size:10px;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td colspan="8" style="border: 1px solid #ccc; padding: 2px; text-align:right; font-size:10px;">TOTAL GERAL (${filtrados.length} processos):</td>
       <td style="border: 1px solid #ccc; padding: 2px; text-align:right; font-size:10px;">${formatNumberOnly(totalValorDetalhado)}</td></tr>`;
 
   const tableHtml = `
@@ -5756,11 +5751,10 @@ function imprimirDetalhado() {
 
             <colgroup>
               <col style="width: 3%;">
-              <col style="width: 7%;">
-              <col style="width: 11%;">
               <col style="width: 12%;">
-              <col style="width: 15%;">
-              <col style="width: 22%;">
+              <col style="width: 13%;">
+              <col style="width: 16%;">
+              <col style="width: 26%;">
               <col style="width: 8%;">
               <col style="width: 7%;">
               <col style="width: 7%;">
@@ -5769,11 +5763,10 @@ function imprimirDetalhado() {
   
             <thead>
             <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#1e3a8a;"><th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:center; width:3%; font-size:10.5px; font-weight:bold;">Nº</th>
-              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">PREFIXO</th>
-              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:11%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
-              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
-              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:15%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
-              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:22%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:12%; font-size:10.5px; font-weight:bold;">MUNICÍPIO</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:13%; font-size:10.5px; font-weight:bold;">PROCESSO SEI</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:16%; font-size:10.5px; font-weight:bold;">INTERESSADO</th>
+              <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:26%; font-size:10.5px; font-weight:bold;">OBJETO / FINALIDADE</th>
               <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:8%; font-size:10.5px; font-weight:bold;">STATUS</th>
               <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:left; width:7%; font-size:10.5px; font-weight:bold;">LOCAL</th>
               <th style="color:#ffffff; background-color:#1e3a8a; border: 1px solid #93c5fd; border-top: none; padding: 2px; text-align:center; width:7%; font-size:10.5px; font-weight:bold;">DATA</th>
@@ -11034,11 +11027,10 @@ window.renderizarCanvasRelatorioPadrao = function(lista, isSelecao) {
 
   const cols = [
     { label: 'Nº', width: 36, align: 'center' },
-    { label: 'PREFIXO', width: 86, align: 'left' },
-    { label: 'MUNICÍPIO', width: 120, align: 'left' },
-    { label: 'PROCESSO SEI', width: 160, align: 'left' },
-    { label: 'INTERESSADO', width: 164, align: 'left' },
-    { label: 'OBJETO / FINALIDADE', width: 250, align: 'left' },
+    { label: 'MUNICÍPIO', width: 140, align: 'left' },
+    { label: 'PROCESSO SEI', width: 176, align: 'left' },
+    { label: 'INTERESSADO', width: 184, align: 'left' },
+    { label: 'OBJETO / FINALIDADE', width: 280, align: 'left' },
     { label: 'STATUS', width: 114, align: 'left' },
     { label: 'LOCAL', width: 90, align: 'left' },
     { label: 'DATA', width: 75, align: 'center' },
@@ -11152,24 +11144,6 @@ window.renderizarCanvasRelatorioPadrao = function(lista, isSelecao) {
         ctx.font = '10px Arial, sans-serif';
         ctx.fillStyle = '#475569';
         ctx.fillText(String(idx + 1), textX, y + 26);
-      } else if (c.label === 'PREFIXO') {
-        ctx.font = 'bold 9.5px Arial, sans-serif';
-        ctx.fillStyle = '#0f172a';
-        ctx.fillText((p.prefixo || '-').substring(0, 14), textX, y + 17);
-
-        ctx.font = '8px Arial, sans-serif';
-        ctx.fillStyle = '#64748b';
-        const subPref = ((p.categoria || '-') + ' ' + (p.tipo || '-')).trim().substring(0, 8);
-        ctx.fillText(subPref, textX, y + 31);
-
-        const circX = textX + 46;
-        ctx.font = '14px Arial, sans-serif';
-        ctx.fillStyle = p.CAM === '1' ? '#0f172a' : '#cbd5e1';
-        ctx.fillText('●', circX, y + 31);
-        ctx.fillStyle = p.GAB === '1' ? '#0f172a' : '#cbd5e1';
-        ctx.fillText('●', circX + 9, y + 31);
-        ctx.fillStyle = p.CC === '1' ? '#0f172a' : '#cbd5e1';
-        ctx.fillText('●', circX + 18, y + 31);
       } else if (c.label === 'MUNICÍPIO') {
         ctx.font = '10px Arial, sans-serif';
         ctx.fillStyle = '#0f172a';
@@ -11346,7 +11320,7 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
 
     rowsHtml += `
       <tr style="background-color: #008080 !important; color: #ffffff !important;">
-        <td colspan="10" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase;">
+        <td colspan="9" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase;">
           <span style="color: #ffffff !important; font-weight: normal; letter-spacing: 0.5px;">${chave}</span>
           <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #ffffff !important;">(${procs.length} PROCESSOS &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
         </td>
@@ -11355,29 +11329,15 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
 
     procs.forEach(p => {
       globalIndex++;
-      const prefixoFormatado = `
-        <div style="font-family: Arial, sans-serif; line-height: 1.2;">
-          <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
-          <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
-            <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
-            <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
-              <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
-              <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
-              <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
-            </div>
-          </div>
-        </div>
-      `;
       const zebraBg = globalIndex % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
 
       rowsHtml += `
         <tr style="${zebraBg}">
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
-          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:14%;">${p.numero || '-'}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:14%;">${p.interessado || '-'}</td>
-          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:19%;">${p.objeto || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:12%;">${p.municipio || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:16%;">${p.interessado || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
@@ -11422,13 +11382,12 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
       </div>
       <table style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-break:normal; overflow-wrap:break-word; hyphens:none;">
         <colgroup>
-          <col style="width: 3%;"><col style="width: 7%;"><col style="width: 11%;"><col style="width: 12%;"><col style="width: 14%;">
-          <col style="width: 19%;"><col style="width: 8%;"><col style="width: 7%;"><col style="width: 7%;"><col style="width: 12%;">
+          <col style="width: 3%;"><col style="width: 12%;"><col style="width: 13%;"><col style="width: 16%;"><col style="width: 22%;">
+          <col style="width: 8%;"><col style="width: 7%;"><col style="width: 7%;"><col style="width: 12%;">
         </colgroup>
         <thead>
           <tr style="background-color:#0f172a; color:#ffffff;">
             <th style="border: 1px solid #1e293b; padding: 6px 2px; text-align:center; font-size:9.5px; font-weight:bold; color:#ffffff;">Nº</th>
-            <th style="border: 1px solid #1e293b; padding: 6px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#ffffff;">PREFIXO</th>
             <th style="border: 1px solid #1e293b; padding: 6px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#ffffff;">MUNICÍPIO</th>
             <th style="border: 1px solid #1e293b; padding: 6px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#ffffff;">PROCESSO SEI</th>
             <th style="border: 1px solid #1e293b; padding: 6px 2px; text-align:left; font-size:9.5px; font-weight:bold; color:#ffffff;">INTERESSADO</th>

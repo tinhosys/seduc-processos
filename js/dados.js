@@ -215,6 +215,7 @@ const mapToApp = (row) => {
     cnpj: row['CNPJ'] || row['cnpj'] || row['Cnpj'] || '',
     detalhamentoItens: row['DETALHAMENTO ITENS'] || row['detalhamento itens'] || row.detalhamentoItens || '',
     demaisObservacoes: row['DEMAIS OBSERVACOES'] || row['demais observacoes'] || row.demaisObservacoes || '',
+    analista: String(row['ANALISTA'] || row['Analista'] || row.analista || '').trim(),
     ultimaEdicao: row['ULTIMA EDICAO LOGIN'] || row['ULTIMA EDICAO'] || row['ultima edicao'] || row['Última edição'] || '',
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || '',
     alerta: String(alertaStr || '').trim(),
@@ -247,6 +248,7 @@ const mapToSheet = (dados) => {
     'CONTATO': Array.isArray(dados.contatos) ? dados.contatos.map(c => (c.detalhes && c.whatsapp) ? `${c.detalhes.trim()} - ${c.whatsapp.trim()}` : (c.detalhes || c.whatsapp || '').trim()).filter(Boolean).join('; ') : (dados.contato || ''),
     'APONTAMENTO': dados.apontamento || '',
     'ALERTA': dados.alerta || '',
+    'ANALISTA': dados.analista || '',
     'ULTIMA EDICAO LOGIN': dados.ultimaEdicao || '',
     'DATA/HORA EDICAO': dados.dataHoraEdicao || '',
     'MARCA': dados.marca || '',
@@ -300,11 +302,62 @@ async function inicializarDados() {
       if (typeof checkAlertasADM === 'function') {
          checkAlertasADM(window.processosCache);
       }
+
+      // Sincronização direta de ANALISTA com a planilha Google Oficial
+      sincronizarAnalistasDaPlanilha();
     }
   } catch (err) {
     console.error('Erro ao carregar do backend:', err);
   }
 }
+
+// Carrega a coluna ANALISTA diretamente da planilha oficial Google Sheets (aba todos - gid 168431103)
+async function sincronizarAnalistasDaPlanilha() {
+  const SHEET_ID = '1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E';
+  const GID = '168431103';
+  try {
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}&nocache=${Date.now()}`;
+    const res = await fetch(url);
+    if (!res.ok) return;
+    const txt = await res.text();
+    const jsonStr = txt.replace(/^\/\*O_o\*\/\s*google\.visualization\.Query\.setResponse\(/, '').replace(/\);?\s*$/, '');
+    const data = JSON.parse(jsonStr);
+    if (!data.table || !data.table.cols || !data.table.rows) return;
+
+    let idxAnalista = -1;
+    let idxProcesso = -1;
+    data.table.cols.forEach((col, idx) => {
+      const lbl = String(col.label || '').toUpperCase().trim();
+      if (lbl === 'ANALISTA') idxAnalista = idx;
+      if (lbl === 'PROCESSOS' || lbl === 'PROCESSO' || lbl === 'Nº PROCESSO') idxProcesso = idx;
+    });
+
+    if (idxAnalista === -1) return;
+
+    let houveAtualizacao = false;
+    data.table.rows.forEach((r, rowIdx) => {
+      const valAnalista = (r.c && r.c[idxAnalista] && r.c[idxAnalista].v) ? String(r.c[idxAnalista].v).trim() : '';
+      const valProc = (idxProcesso !== -1 && r.c && r.c[idxProcesso] && r.c[idxProcesso].v) ? String(r.c[idxProcesso].v).trim() : '';
+      const rowNum = rowIdx + 2;
+
+      if (window.processosCache && window.processosCache.length > 0) {
+        const proc = window.processosCache.find(p => (valProc && p.numero === valProc) || p._rowNumber === rowNum);
+        if (proc && valAnalista && proc.analista !== valAnalista) {
+          proc.analista = valAnalista;
+          houveAtualizacao = true;
+        }
+      }
+    });
+
+    if (houveAtualizacao) {
+      if (typeof window.popularFiltrosProcessos === 'function') window.popularFiltrosProcessos();
+      if (typeof window.renderProcessos === 'function') window.renderProcessos();
+    }
+  } catch (err) {
+    console.warn('sincronizarAnalistasDaPlanilha:', err);
+  }
+}
+window.sincronizarAnalistasDaPlanilha = sincronizarAnalistasDaPlanilha;
 
 function carregarProcessos() {
   return window.processosCache || [];
