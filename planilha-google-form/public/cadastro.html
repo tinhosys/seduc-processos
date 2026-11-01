@@ -164,7 +164,7 @@
       top: 0;
       z-index: 10000;
       width: 100%;
-      background: #000000;
+      background: #0b1120;
       line-height: 0;
       margin: 0;
       padding: 0;
@@ -189,7 +189,7 @@
       width: 100%;
       height: auto;
       display: block;
-      aspect-ratio: 2560 / 320;
+      aspect-ratio: 1024 / 341;
       object-fit: cover;
       image-rendering: -webkit-optimize-contrast;
       transition: filter 0.2s ease;
@@ -760,7 +760,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cam-topo.png?v=1.3.86"
+           src="img/banner-cam-topo.png?v=1.3.87"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1598,8 +1598,8 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.86"></script>
-  <script src="js/escolas.js?v=1.3.86"></script>
+  <script src="js/dados.js?v=1.3.87"></script>
+  <script src="js/escolas.js?v=1.3.87"></script>
 
   <script>
     /* ============================================================
@@ -3541,7 +3541,7 @@
       const agora = new Date();
       const pad = n => String(n).padStart(2, '0');
       const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-      const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.86', window.location.href).href;
+      const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.87', window.location.href).href;
 
       const pCodeLink = esc.plusCode
         ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" style="color:#0284c7; text-decoration:underline; font-weight:700;">${esc.plusCode} ↗ (Google Maps)</a>`
@@ -3609,94 +3609,98 @@
     }
     .btn-fechar:hover { background: #ef4444; color: #fff; }
 
-    /* CABEÇALHO COM IMAGEM FIXA NA TELA */
-    .report-header-sticky {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 45px;
-      z-index: 10000;
+    /* CABEÇALHO OFICIAL: BANNER 170mm COM PROPORÇÃO REAL (IMAGEM 3) */
+    .report-paper {
+      width: 170mm;
+      max-width: 100%;
+      margin: 12px auto 25px auto;
       background: #ffffff;
-      border-bottom: 2px solid #0284c7;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 0;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+    }
+    .report-banner-wrap {
+      width: 170mm;
+      max-width: 100%;
+      margin: 0 auto 6px auto;
+      text-align: center;
+      background: transparent;
     }
     .report-banner-img {
-      width: 100%;
-      height: auto;
-      max-height: 52px;
-      object-fit: cover;
-      display: block;
-    }
-    .report-title-strip {
-      background: #0f172a;
-      color: #ffffff;
-      padding: 4px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .report-title-strip h1 {
-      font-size: 9.5pt;
-      font-weight: 900;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
-      color: #38bdf8;
-    }
-    .report-meta-tag {
-      background: rgba(56, 189, 248, 0.2);
-      border: 1px solid #38bdf8;
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 7.5pt;
-      font-weight: 800;
-      color: #e0f2fe;
+      width: 170mm !important;
+      max-width: 100% !important;
+      height: auto !important;
+      display: block !important;
+      margin: 0 auto !important;
+      object-fit: contain !important;
+      background: transparent !important;
     }
 
-    .report-paper {
-      max-width: 900px;
-      margin: 10px auto 25px auto;
-      background: #ffffff;
-      padding: 12px 16px;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
-      border-radius: 6px;
+    /* CARD DE TÍTULO SÓBRIO E PROFISSIONAL (SEM FUNDO PRETO) */
+    .report-title-card {
+      border-top: 2px solid #0284c7;
+      border-bottom: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 5px 8px;
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .report-title-main {
+      font-size: 10.5pt;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      color: #0f172a;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .report-meta-text {
+      font-size: 7.6pt;
+      color: #334155;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .report-meta-text .sep {
+      color: #94a3b8;
     }
 
     .section-block {
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       border: 1px solid #cbd5e1;
-      border-radius: 4px;
+      border-radius: 3px;
       overflow: hidden;
       page-break-inside: avoid;
     }
     .section-header {
-      background: #1e293b;
-      color: #ffffff;
+      background: #f1f5f9;
+      color: #0f172a;
       padding: 3px 8px;
-      font-size: 7.8pt;
+      font-size: 7.5pt;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
+      border-bottom: 1.5px solid #cbd5e1;
+      border-left: 4px solid #0284c7;
       display: flex;
       align-items: center;
-      gap: 5px;
     }
     .data-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1px;
       background: #cbd5e1;
-      padding: 1px;
+      padding: 0;
     }
     .data-cell {
       background: #ffffff;
-      padding: 3px 6px;
+      padding: 2.5px 6px;
     }
     .data-cell.span-2 { grid-column: span 2; }
     .data-cell.span-3 { grid-column: span 3; }
     .data-cell.span-all { grid-column: 1 / -1; }
     .cell-label {
-      font-size: 6.2pt;
+      font-size: 6pt;
       font-weight: 700;
       color: #64748b;
       text-transform: uppercase;
@@ -3705,7 +3709,7 @@
       line-height: 1.1;
     }
     .cell-val {
-      font-size: 7.6pt;
+      font-size: 7.5pt;
       font-weight: 600;
       color: #0f172a;
       word-break: break-word;
@@ -3714,15 +3718,15 @@
     .cell-val.destaque {
       color: #0284c7;
       font-weight: 800;
-      font-size: 8.5pt;
+      font-size: 8pt;
     }
 
     .signatures-block {
       display: flex;
       justify-content: space-around;
       align-items: flex-end;
-      margin-top: 36px;
-      margin-bottom: 12px;
+      margin-top: 32px;
+      margin-bottom: 10px;
       page-break-inside: avoid;
       gap: 30px;
     }
@@ -3735,79 +3739,83 @@
       text-align: center;
     }
     .sig-space {
-      height: 60px;
+      height: 55px;
       width: 100%;
     }
     .sig-line {
       width: 100%;
       border-top: 1.5px solid #334155;
-      padding-top: 6px;
+      padding-top: 5px;
       text-align: center;
     }
     .sig-name {
-      font-size: 8.5pt;
+      font-size: 8.2pt;
       color: #0f172a;
       font-weight: 800;
       line-height: 1.2;
     }
     .sig-role {
-      font-size: 7.2pt;
-      color: #64748b;
+      font-size: 7pt;
+      color: #475569;
       font-weight: 600;
       margin-top: 2px;
     }
 
     /* RODAPÉ PADRÃO SEDUC / CAM */
     .report-footer {
-      border-top: 1.5px solid #0284c7;
+      border-top: 1.5px solid #cbd5e1;
       padding-top: 4px;
-      margin-top: 12px;
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 7.2pt;
+      font-size: 7pt;
       color: #475569;
       font-weight: 600;
     }
 
     @media print {
       .no-print-bar { display: none !important; }
-      .report-header-sticky {
-        position: static;
-        box-shadow: none;
-      }
       body {
-        background: #ffffff;
-        font-size: 7.6pt;
+        background: #ffffff !important;
+        font-size: 7.5pt;
         line-height: 1.18;
       }
       .report-paper {
-        max-width: 100% !important;
-        margin: 0 !important;
+        width: 170mm !important;
+        max-width: 170mm !important;
+        margin: 0 auto !important;
         padding: 0 !important;
         box-shadow: none !important;
-        border-radius: 0 !important;
+        border: none !important;
+      }
+      .report-banner-wrap {
+        width: 170mm !important;
+        margin: 0 auto 5px auto !important;
+        background: transparent !important;
       }
       .report-banner-img {
-        max-height: 48px !important;
+        width: 170mm !important;
+        max-width: 170mm !important;
+        height: auto !important;
         object-fit: contain !important;
-        background: #000000 !important;
+        background: transparent !important;
       }
       .section-block {
-        margin-bottom: 4.5px !important;
+        margin-bottom: 4px !important;
         page-break-inside: avoid !important;
       }
       .data-cell {
-        padding: 2.5px 5px !important;
+        padding: 2.2px 5px !important;
       }
       .cell-label {
         font-size: 5.8pt !important;
       }
       .cell-val {
-        font-size: 7.4pt !important;
+        font-size: 7.3pt !important;
       }
       .signatures-block {
-        margin-top: 28px !important;
+        margin-top: 26px !important;
         margin-bottom: 8px !important;
         gap: 25px !important;
       }
@@ -3824,12 +3832,12 @@
         font-size: 6.8pt !important;
       }
       .report-footer {
-        margin-top: 14px !important;
+        margin-top: 10px !important;
         padding-top: 3px !important;
       }
       @page {
         size: A4 portrait;
-        margin: 4mm 5mm;
+        margin: 10mm 15mm 12mm 15mm;
       }
     }
   </style>
@@ -3848,20 +3856,26 @@
     </div>
   </div>
 
-  <!-- CABEÇALHO OFICIAL COM IMAGEM BANNER FIXA NA ROLAGEM -->
-  <div class="report-header-sticky">
-    <img src="${bannerUrl}" alt="CAM SEDUC/RO - Coordenadoria de Articulação com os Municípios" class="report-banner-img">
-    <div class="report-title-strip">
-      <h1>FICHA CADASTRAL DA UNIDADE ESCOLAR</h1>
-      <div style="display:flex; gap:6px; align-items:center;">
-        <span class="report-meta-tag">MUNICÍPIO: ${(esc.municipio || 'RONDÔNIA').toUpperCase()}</span>
-        <span class="report-meta-tag">CATEGORIA: ${(esc.categoria || 'Conselho Escolar').toUpperCase()}</span>
-        <span class="report-meta-tag">COMPETÊNCIA: ${(esc.competencia || 'Municipal').toUpperCase()}</span>
+  <div class="report-paper">
+
+    <!-- CABEÇALHO OFICIAL: BANNER 170mm COM PROPORÇÃO REAL (IMAGEM 3) -->
+    <div class="report-banner-wrap">
+      <img src="${bannerUrl}" alt="CAM SEDUC/RO - Coordenadoria de Articulação com os Municípios" class="report-banner-img">
+    </div>
+
+    <!-- TÍTULO INSTITUCIONAL E PARÂMETROS ESCRITOS -->
+    <div class="report-title-card">
+      <h1 class="report-title-main">FICHA CADASTRAL DA UNIDADE ESCOLAR</h1>
+      <div class="report-meta-text">
+        <span><strong>MUNICÍPIO:</strong> ${(esc.municipio || 'RONDÔNIA').toUpperCase()}</span>
+        <span class="sep">•</span>
+        <span><strong>CATEGORIA:</strong> ${esc.categoria || 'Conselho Escolar'}</span>
+        <span class="sep">•</span>
+        <span><strong>COMPETÊNCIA:</strong> ${esc.competencia || 'Municipal'}</span>
+        <span class="sep">•</span>
+        <span><strong>SUPER:</strong> ${esc.super || _superAtual || 'Regional'}</span>
       </div>
     </div>
-  </div>
-
-  <div class="report-paper">
 
     <!-- 1. IDENTIFICAÇÃO DA ESCOLA / ENTIDADE -->
     <div class="section-block">
@@ -4062,12 +4076,28 @@
 
   </div>
 
+  <!-- DISPARO DIRETO DO AMBIENTE DE IMPRESSÃO PADRÃO -->
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        try {
+          window.focus();
+          window.print();
+        } catch(e) {
+          console.error(e);
+        }
+      }, 350);
+    });
+  </script>
 </body>
 </html>`;
 
       win.document.open();
       win.document.write(html);
       win.document.close();
+      setTimeout(function() {
+        try { win.focus(); } catch(e) {}
+      }, 200);
     }
     window.imprimirRelatorioRegistroAtual = imprimirRelatorioRegistroAtual;
 
@@ -4175,7 +4205,7 @@
       const agora = new Date();
       const pad = n => String(n).padStart(2, '0');
       const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-      const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.86', window.location.href).href;
+      const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.87', window.location.href).href;
 
       // Agrupa por Município (ACOMODE E INFORME MUNICÍPIO COMO GRUPO)
       const agrupadoPorMunicipio = {};
@@ -4235,15 +4265,15 @@
                   ${cnpjLinha}
                 </div>
               </td>
-              <td style="font-size:7.5pt; vertical-align:middle;">
-                <span class="badge-tag-loc ${loc.toLowerCase().includes('rural') ? 'rural' : 'urbana'}">${loc}</span>
+              <td style="font-size:7.2pt; vertical-align:middle;">
+                <span class="badge-tag-loc">${loc}</span>
                 ${endLinha}
               </td>
-              <td style="font-size:7.5pt; vertical-align:middle;">
+              <td style="font-size:7.2pt; vertical-align:middle;">
                 <div style="font-weight:700; color:#1e293b;">${diretor}</div>
-                <div style="font-size:7.2pt; color:#0284c7; font-family:monospace;">${tel}</div>
+                <div style="font-size:7pt; color:#334155; font-family:monospace;">${tel}</div>
               </td>
-              <td style="text-align:center; font-weight:800; color:#059669; font-size:8.5pt;">${alunos}</td>
+              <td style="text-align:center; font-weight:800; color:#0f172a; font-size:8pt;">${alunos}</td>
             </tr>
           `;
         }).join('');
@@ -4253,11 +4283,10 @@
           <div class="bloco-municipio">
             <div class="header-quebra-municipio">
               <div class="header-mun-title">
-                🏛️ MUNICÍPIO: ${munNome.toUpperCase()}
+                MUNICÍPIO: ${munNome.toUpperCase()}
               </div>
-              <div class="header-mun-badges">
-                <span class="badge-mun">Unidades: ${mEscolas.length}</span>
-                <span class="badge-mun">Total Matrículas: ${totalAlunosMun.toLocaleString('pt-BR')}</span>
+              <div class="header-mun-info">
+                ${mEscolas.length} ${mEscolas.length === 1 ? 'Unidade' : 'Unidades'} &nbsp;|&nbsp; ${totalAlunosMun.toLocaleString('pt-BR')} Matrículas
               </div>
             </div>
 
@@ -4266,9 +4295,9 @@
                 <tr>
                   <th style="width:28px; text-align:center;">#</th>
                   <th>Entidade / Unidade Escolar</th>
-                  <th style="width:130px;">Localidade / Endereço</th>
-                  <th style="width:135px;">Gestão & Contato</th>
-                  <th style="width:60px; text-align:center;">Alunos</th>
+                  <th style="width:145px;">Localidade / Endereço</th>
+                  <th style="width:150px;">Gestão & Contato</th>
+                  <th style="width:65px; text-align:center;">Alunos</th>
                 </tr>
               </thead>
               <tbody>
@@ -4276,10 +4305,10 @@
               </tbody>
               <tfoot>
                 <tr class="linha-subtotal">
-                  <td colspan="4" style="text-align:right; font-weight:800; padding:5px 8px; color:#1e293b; font-size:8pt;">
-                    Subtotal do Município (${munNome}): <span style="color:#64748b; font-weight:600;">${mEscolas.length} ${mEscolas.length === 1 ? 'unidade' : 'unidades'}</span>
+                  <td colspan="4" style="text-align:right; font-weight:800; padding:4px 8px; color:#1e293b; font-size:7.5pt;">
+                    Subtotal (${munNome}): <span style="color:#64748b; font-weight:600;">${mEscolas.length} ${mEscolas.length === 1 ? 'unidade' : 'unidades'}</span>
                   </td>
-                  <td style="text-align:center; font-weight:900; color:#0284c7; background:rgba(2,132,199,0.08); padding:5px; font-size:8.5pt;">
+                  <td style="text-align:center; font-weight:900; color:#0f172a; background:#f1f5f9; padding:4px; font-size:8pt;">
                     ${totalAlunosMun.toLocaleString('pt-BR')}
                   </td>
                 </tr>
@@ -4345,187 +4374,150 @@
     }
     .btn-fechar:hover { background: #ef4444; color: #fff; }
 
-    /* CABEÇALHO COM IMAGEM FIXA NA ROLAGEM */
-    .report-header-sticky {
-      position: -webkit-sticky;
-      position: sticky;
-      top: 45px;
-      z-index: 10000;
-      background: #000000;
-      border-bottom: 2px solid #0284c7;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+    /* CABEÇALHO OFICIAL: BANNER 170mm COM PROPORÇÃO REAL (IMAGEM 3) */
+    .report-paper {
+      width: 170mm;
+      max-width: 100%;
+      margin: 12px auto 25px auto;
+      background: #ffffff;
+      padding: 0;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+    }
+    .report-banner-wrap {
+      width: 170mm;
+      max-width: 100%;
+      margin: 0 auto 6px auto;
+      text-align: center;
+      background: transparent;
     }
     .report-banner-img {
-      width: 100%;
-      height: auto;
-      max-height: 60px;
-      object-fit: contain;
-      display: block;
-      background: #000000;
+      width: 170mm !important;
+      max-width: 100% !important;
+      height: auto !important;
+      display: block !important;
+      margin: 0 auto !important;
+      object-fit: contain !important;
+      background: transparent !important;
     }
-    .report-title-strip {
-      background: #0f172a;
-      color: #ffffff;
-      padding: 5px 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
+
+    /* CARD DE TÍTULO SÓBRIO E PROFISSIONAL (SEM FUNDO PRETO) */
+    .report-title-card {
+      border-top: 2px solid #0284c7;
+      border-bottom: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 6px 10px;
+      margin-bottom: 8px;
+      text-align: center;
     }
-    .report-title-strip h1 {
-      font-size: 9.5pt;
+    .report-title-main {
+      font-size: 10.5pt;
       font-weight: 900;
       letter-spacing: 0.3px;
+      color: #0f172a;
       text-transform: uppercase;
-      color: #38bdf8;
+      margin-bottom: 2px;
     }
-    .resumo-stats {
-      display: flex;
-      gap: 6px;
-      align-items: center;
+    .report-sub-title {
+      font-size: 7.6pt;
+      color: #475569;
+      font-weight: 600;
     }
-    .badge-stat {
-      background: rgba(56, 189, 248, 0.2);
-      border: 1px solid #38bdf8;
-      padding: 1px 7px;
-      border-radius: 4px;
-      font-size: 7.5pt;
-      font-weight: 800;
-      color: #e0f2fe;
+    .report-params-written {
+      font-size: 7.4pt;
+      color: #1e293b;
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px solid #e2e8f0;
+      line-height: 1.4;
     }
-
-    /* BARRA DOS PARÂMETROS VINCULADOS FIXADOS (MARCAÇÃO LARANJA DA IMAGEM 4) */
-    .report-params-bar {
-      background: #1e293b;
-      border-bottom: 1px solid #334155;
-      padding: 5px 12px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 6px;
-    }
-    .params-pills-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      align-items: center;
-    }
-    .pill-badge {
-      background: rgba(234, 88, 12, 0.2);
-      border: 1px solid #ea580c;
-      color: #fed7aa;
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-size: 7.2pt;
+    .report-stats-written {
+      font-size: 7.6pt;
+      color: #0f172a;
+      margin-top: 3px;
       font-weight: 700;
-    }
-
-    .report-paper {
-      max-width: 900px;
-      margin: 12px auto 30px auto;
-      background: #ffffff;
-      padding: 14px;
-      box-shadow: 0 3px 16px rgba(0,0,0,0.06);
-      border-radius: 6px;
     }
 
     /* BLOCO DO MUNICÍPIO (ACOMODAÇÃO SEQUENCIAL - SEM QUEBRA DE PÁGINA) */
     .bloco-municipio {
-      margin-bottom: 14px;
+      margin-bottom: 10px;
       border: 1px solid #cbd5e1;
-      border-radius: 5px;
+      border-radius: 3px;
       overflow: hidden;
       page-break-inside: auto;
     }
     .header-quebra-municipio {
-      background: #1e293b;
-      padding: 5px 10px;
+      background: #f1f5f9;
+      padding: 4px 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #0284c7;
+      border-bottom: 1.5px solid #0284c7;
+      border-top: 1px solid #cbd5e1;
       page-break-inside: avoid;
       page-break-after: avoid;
     }
     .header-mun-title {
-      font-size: 9pt;
-      font-weight: 900;
-      color: #ffffff;
+      font-size: 8.2pt;
+      font-weight: 800;
+      color: #0f172a;
       letter-spacing: 0.3px;
     }
-    .header-mun-badges {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .badge-mun {
-      background: rgba(2, 132, 199, 0.25);
-      border: 1px solid #38bdf8;
-      color: #e0f2fe;
-      font-size: 7.2pt;
-      font-weight: 800;
-      padding: 1px 6px;
-      border-radius: 4px;
+    .header-mun-info {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: #334155;
     }
 
     /* TABELA DE ESCOLAS NO FORMATO RETRATO */
     .tabela-escolas-todos {
       width: 100%;
       border-collapse: collapse;
-      font-size: 8pt;
+      font-size: 7.8pt;
     }
     .tabela-escolas-todos th {
       background: #f8fafc;
-      color: #334155;
+      color: #1e293b;
       font-weight: 800;
-      font-size: 7.2pt;
+      font-size: 7pt;
       text-transform: uppercase;
       letter-spacing: 0.3px;
-      padding: 5px 6px;
+      padding: 4px 6px;
       border-bottom: 1.5px solid #cbd5e1;
       text-align: left;
     }
     .tabela-escolas-todos td {
-      padding: 4px 6px;
+      padding: 3.5px 6px;
       border-bottom: 1px solid #e2e8f0;
       vertical-align: middle;
     }
     .tabela-escolas-todos tr:nth-child(even) td {
-      background: #f8fafc;
+      background: #fafafa;
     }
     .linha-subtotal td {
       background: #f1f5f9 !important;
       border-top: 1.5px solid #94a3b8;
     }
     .badge-tag-loc {
-      display: inline-block;
-      padding: 1px 5px;
-      border-radius: 3px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
       font-size: 6.8pt;
       font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      display: inline-block;
       text-transform: uppercase;
-    }
-    .badge-tag-loc.urbana {
-      background: rgba(2, 132, 199, 0.12);
-      color: #0284c7;
-      border: 1px solid rgba(2, 132, 199, 0.3);
-    }
-    .badge-tag-loc.rural {
-      background: rgba(16, 185, 129, 0.12);
-      color: #059669;
-      border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .quadro-geral-final {
-      background: #0f172a;
-      color: #ffffff;
-      padding: 8px 12px;
-      border-radius: 5px;
+      background: #f8fafc;
+      border: 1.5px solid #0284c7;
+      border-radius: 3px;
+      padding: 6px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 12px;
+      margin-top: 10px;
       page-break-inside: avoid;
     }
 
@@ -4534,8 +4526,8 @@
       display: flex;
       justify-content: space-around;
       align-items: flex-end;
-      margin-top: 36px;
-      margin-bottom: 12px;
+      margin-top: 32px;
+      margin-bottom: 10px;
       page-break-inside: avoid;
       gap: 30px;
     }
@@ -4548,66 +4540,70 @@
       text-align: center;
     }
     .sig-space {
-      height: 60px;
+      height: 55px;
       width: 100%;
     }
     .sig-line {
       width: 100%;
       border-top: 1.5px solid #334155;
-      padding-top: 6px;
+      padding-top: 5px;
       text-align: center;
     }
     .sig-name {
-      font-size: 8.5pt;
+      font-size: 8.2pt;
       color: #0f172a;
       font-weight: 800;
       line-height: 1.2;
     }
     .sig-role {
-      font-size: 7.2pt;
-      color: #64748b;
+      font-size: 7pt;
+      color: #475569;
       font-weight: 600;
       margin-top: 2px;
     }
 
     /* RODAPÉ OFICIAL PADRÃO SEDUC / CAM */
     .report-footer {
-      border-top: 2px solid #0284c7;
-      padding-top: 6px;
-      margin-top: 14px;
+      border-top: 1.5px solid #cbd5e1;
+      padding-top: 4px;
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 7.5pt;
+      font-size: 7pt;
       color: #475569;
       font-weight: 600;
     }
 
     @media print {
       .no-print-bar { display: none !important; }
-      .report-header-sticky {
-        position: static;
-        box-shadow: none;
-      }
       body {
-        background: #ffffff;
-        font-size: 7.8pt;
+        background: #ffffff !important;
+        font-size: 7.5pt;
+        line-height: 1.18;
       }
       .report-paper {
-        max-width: 100% !important;
-        margin: 0 !important;
+        width: 170mm !important;
+        max-width: 170mm !important;
+        margin: 0 auto !important;
         padding: 0 !important;
         box-shadow: none !important;
-        border-radius: 0 !important;
+        border: none !important;
+      }
+      .report-banner-wrap {
+        width: 170mm !important;
+        margin: 0 auto 5px auto !important;
+        background: transparent !important;
       }
       .report-banner-img {
-        max-height: 48px !important;
+        width: 170mm !important;
+        max-width: 170mm !important;
+        height: auto !important;
         object-fit: contain !important;
-        background: #000000 !important;
+        background: transparent !important;
       }
       .bloco-municipio {
-        margin-bottom: 12px !important;
-        border: 1px solid #cbd5e1;
+        margin-bottom: 8px !important;
         page-break-inside: auto !important;
       }
       .header-quebra-municipio {
@@ -4618,7 +4614,7 @@
         page-break-inside: avoid !important;
       }
       .signatures-block {
-        margin-top: 28px !important;
+        margin-top: 26px !important;
         margin-bottom: 8px !important;
         gap: 25px !important;
       }
@@ -4635,12 +4631,12 @@
         font-size: 6.8pt !important;
       }
       .report-footer {
-        margin-top: 12px !important;
+        margin-top: 10px !important;
         padding-top: 3px !important;
       }
       @page {
         size: A4 portrait;
-        margin: 6mm 7mm 8mm 7mm;
+        margin: 10mm 15mm 12mm 15mm;
       }
     }
   </style>
@@ -4651,7 +4647,7 @@
   <div class="no-print-bar">
     <div style="display:flex; align-items:center; gap:10px;">
       <span style="font-size:16px;">🏛️</span>
-      <span style="font-weight:800; font-size:12px; color:#38bdf8;">SEDUC / CAM — RELAÇÃO CONSOLIDADA DOS PARÂMETROS VINCULADOS (A4 RETRATO)</span>
+      <span style="font-weight:800; font-size:12px; color:#38bdf8;">SEDUC / CAM — RELAÇÃO GERAL CONSOLIDADA (A4 RETRATO)</span>
     </div>
     <div style="display:flex; align-items:center; gap:12px;">
       <button type="button" class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
@@ -4659,45 +4655,43 @@
     </div>
   </div>
 
-  <!-- CABEÇALHO OFICIAL COM IMAGEM BANNER FIXA NA ROLAGEM -->
-  <div class="report-header-sticky">
-    <img src="${bannerUrl}" alt="CAM SEDUC/RO - Coordenadoria de Articulação com os Municípios" class="report-banner-img">
-    <div class="report-title-strip">
-      <h1>RELAÇÃO GERAL DE ESCOLAS E ENTIDADES CADASTRADAS (SEDUC / CAM)</h1>
-      <div class="resumo-stats">
-        <span class="badge-stat">MUNICÍPIOS: ${munsNomes.length}</span>
-        <span class="badge-stat">UNIDADES: ${lista.length}</span>
-        <span class="badge-stat">TOTAL MATRÍCULAS: ${totalGeralAlunos.toLocaleString('pt-BR')}</span>
-      </div>
-    </div>
-    <!-- BARRA DOS PARÂMETROS VINCULADOS FIXADOS (MARCAÇÃO LARANJA DA IMAGEM 4) -->
-    <div class="report-params-bar">
-      <div style="font-size:7.5pt; font-weight:800; color:#fbbf24; text-transform:uppercase;">
-        🔒 Parâmetros Vinculados:
-      </div>
-      <div class="params-pills-list">
-        <span class="pill-badge">📍 Município: <strong>${_municipioAtual || 'Todos'}</strong></span>
-        <span class="pill-badge">🏛️ Categoria: <strong>${_categoriaAtual || 'Conselho Escolar'}</strong></span>
-        <span class="pill-badge">⚖️ Competência: <strong>${_competenciaAtual || 'Municipal'}</strong></span>
-        <span class="pill-badge">🏢 SUPER: <strong>${_superAtual || 'SUPER Regional'}</strong></span>
-        <span class="pill-badge">📜 Vinculação: <strong>${_parceriaAtual ? _parceriaAtual.split('(')[0].trim() : 'Fomento'}</strong></span>
-      </div>
-    </div>
-  </div>
-
   <div class="report-paper">
+
+    <!-- CABEÇALHO OFICIAL: BANNER 170mm COM PROPORÇÃO REAL (IMAGEM 3) -->
+    <div class="report-banner-wrap">
+      <img src="${bannerUrl}" alt="CAM SEDUC/RO - Coordenadoria de Articulação com os Municípios" class="report-banner-img">
+    </div>
+
+    <!-- TÍTULO INSTITUCIONAL E PARÂMETROS ESCRITOS -->
+    <div class="report-title-card">
+      <h1 class="report-title-main">RELAÇÃO GERAL DE ESCOLAS E ENTIDADES CADASTRADAS</h1>
+      <div class="report-sub-title">SEDUC/RO • Coordenadoria de Articulação com os Municípios (CAM)</div>
+      <div class="report-params-written">
+        <strong>Parâmetros Selecionados:</strong> 
+        Município: <strong>${_municipioAtual || 'Todos'}</strong> &nbsp;|&nbsp; 
+        Categoria: <strong>${_categoriaAtual || 'Conselho Escolar'}</strong> &nbsp;|&nbsp; 
+        Competência: <strong>${_competenciaAtual || 'Municipal'}</strong> &nbsp;|&nbsp; 
+        SUPER: <strong>${_superAtual || 'Regional'}</strong> &nbsp;|&nbsp; 
+        Vinculação: <strong>${_parceriaAtual ? _parceriaAtual.split('(')[0].trim() : 'Fomento'}</strong>
+      </div>
+      <div class="report-stats-written">
+        Municípios Atendidos: <strong>${munsNomes.length}</strong> &nbsp;•&nbsp; 
+        Unidades Escolares: <strong>${lista.length}</strong> &nbsp;•&nbsp; 
+        Total de Matrículas / Alunos: <strong>${totalGeralAlunos.toLocaleString('pt-BR')}</strong>
+      </div>
+    </div>
 
     ${tabelaCorpoHtml}
 
     <!-- CONSOLIDAÇÃO GERAL FINAL -->
     <div class="quadro-geral-final">
-      <div style="font-weight:900; font-size:9.5pt; color:#38bdf8;">
-        TOTAL GERAL CONSOLIDADO DOS PARÂMETROS VINCULADOS
+      <div style="font-weight:800; font-size:8.8pt; color:#0f172a;">
+        TOTAL GERAL CONSOLIDADO DOS PARÂMETROS
       </div>
-      <div style="display:flex; gap:12px; font-weight:800; font-size:8.5pt;">
-        <span>Municípios: ${munsNomes.length}</span>
-        <span>Escolas / Entidades: ${lista.length}</span>
-        <span style="color:#34d399;">Total de Matrículas: ${totalGeralAlunos.toLocaleString('pt-BR')}</span>
+      <div style="display:flex; gap:14px; font-weight:700; font-size:8.2pt; color:#1e293b;">
+        <span>Municípios: <strong>${munsNomes.length}</strong></span>
+        <span>Escolas / Entidades: <strong>${lista.length}</strong></span>
+        <span>Total de Matrículas: <strong>${totalGeralAlunos.toLocaleString('pt-BR')}</strong></span>
       </div>
     </div>
 
@@ -4728,12 +4722,28 @@
 
   </div>
 
+  <!-- DISPARO DIRETO DO AMBIENTE DE IMPRESSÃO PADRÃO -->
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        try {
+          window.focus();
+          window.print();
+        } catch(e) {
+          console.error('Erro ao acionar impressao automatica:', e);
+        }
+      }, 350);
+    });
+  </script>
 </body>
 </html>`;
 
       win.document.open();
       win.document.write(html);
       win.document.close();
+      setTimeout(function() {
+        try { win.focus(); } catch(e) {}
+      }, 200);
     }
     window.imprimirRelatorioTodosRegistros = imprimirRelatorioTodosRegistros;
 
