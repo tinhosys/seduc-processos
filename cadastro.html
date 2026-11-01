@@ -32,12 +32,16 @@
       font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
     }
 
-    html, body {
+    html {
+      overflow-x: clip;
+    }
+
+    body {
       background-color: var(--bg-page);
       color: var(--text-main);
       min-height: 100vh;
       width: 100%;
-      overflow-x: hidden;
+      overflow-x: clip;
       line-height: 1.45;
     }
 
@@ -155,6 +159,7 @@
 
     /* ==================== BANNER INSTITUCIONAL DO TOPO (100% LARGURA, RESPONSIVO, ALTURA PROPORCIONAL, ANCORADO NO TOPO) ==================== */
     .topo-banner-wrapper {
+      position: -webkit-sticky;
       position: sticky;
       top: 0;
       z-index: 10000;
@@ -166,6 +171,8 @@
       border-bottom: 2px solid #0284c7;
       box-shadow: 0 4px 20px rgba(0,0,0,0.85);
       display: block;
+      will-change: transform;
+      transform: translateZ(0);
     }
 
     .topo-banner-wrapper a {
@@ -559,6 +566,50 @@
       border-color: #475569;
       color: #94a3b8;
     }
+    /* BOTÕES DE RELATÓRIO OFICIAL SEDUC/CAM (IMAGEM 2) */
+    .btn-relatorio-atual {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1.5px solid #10b981;
+      color: #6ee7b7;
+      font-weight: 800;
+      padding: 9px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      transition: all 0.2s;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+    }
+    .btn-relatorio-atual:hover {
+      background: #10b981;
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.6);
+      transform: translateY(-1px);
+    }
+    .btn-relatorio-todos {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1.5px solid #ef4444;
+      color: #fca5a5;
+      font-weight: 800;
+      padding: 9px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      transition: all 0.2s;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+    }
+    .btn-relatorio-todos:hover {
+      background: #ef4444;
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(239, 68, 68, 0.6);
+      transform: translateY(-1px);
+    }
+
     .btn-novo-registro {
       background: rgba(56, 189, 248, 0.15);
       border: 1px solid #38bdf8;
@@ -709,7 +760,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.79"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.80"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1468,6 +1519,14 @@
               ⚡ Cadastros salvos são registrados e sincronizados instantaneamente com o sistema estadual.
             </div>
             <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <!-- BOTÃO MARCADO EM VERDE (IMAGEM 2): REGISTRO ATUAL -->
+              <button type="button" onclick="imprimirRelatorioRegistroAtual()" class="btn-relatorio-atual" id="btn-relatorio-atual" title="Emitir Relatório Oficial Completo do Registro Atual (Padrão SEDUC/CAM)">
+                📄 Registro Atual
+              </button>
+              <!-- BOTÃO MARCADO EM VERMELHO (IMAGEM 2): TODOS REGISTROS -->
+              <button type="button" onclick="imprimirRelatorioTodosRegistros()" class="btn-relatorio-todos" id="btn-relatorio-todos" title="Emitir Relatório Consolidado de Todos os Registros com Quebra por Município">
+                📑 Todos Registros
+              </button>
               <button type="button" onclick="novoRegistro()" class="btn-novo-registro">
                 ➕ Novo Registro
               </button>
@@ -1539,8 +1598,8 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.79"></script>
-  <script src="js/escolas.js?v=1.3.79"></script>
+  <script src="js/dados.js?v=1.3.80"></script>
+  <script src="js/escolas.js?v=1.3.80"></script>
 
   <script>
     /* ============================================================
@@ -2782,6 +2841,7 @@
             <td>${diretor}</td>
             <td>${tel}</td>
             <td style="text-align:center; white-space:nowrap;">
+              <button type="button" class="btn-acao" onclick="imprimirRelatorioLinha('${encodeURIComponent(JSON.stringify(esc))}')" title="Emitir Relatório Individual Oficial" style="color:#6ee7b7; border-color:rgba(16,185,129,0.4);">📄 Imprimir</button>
               <button type="button" class="btn-acao" onclick="editarEscola('${encodeURIComponent(JSON.stringify(esc))}')" title="Editar dados">✏️ Editar</button>
               <button type="button" class="btn-acao" onclick="duplicarEscola('${encodeURIComponent(JSON.stringify(esc))}')" title="Usar como modelo">📋 Duplicar</button>
               <button type="button" class="btn-acao delete" onclick="excluirEscola('${id}', '${encodeURIComponent(nome)}')" title="Remover cadastro">🗑️</button>
@@ -3360,6 +3420,1047 @@
       showToast(`🎉 "${nome}" salva com sucesso!`);
       limparFormulario();
     }
+
+    // ============================================================
+    // MÓDULO DE RELATÓRIOS OFICIAIS SEDUC/CAM (PADRÃO ESTADUAL)
+    // ============================================================
+
+    // Coleta dados completos da escola atual no formulário ou cache
+    function obterDadosEscolaAtual() {
+      const getVal = id => (document.getElementById(id)?.value || '').trim();
+      const nome = getVal('entidade-nome');
+
+      if (nome) {
+        const mods = [];
+        document.querySelectorAll('#drop-modalidade-opcoes input[type="checkbox"]:checked').forEach(cb => {
+          mods.push(cb.value);
+        });
+
+        return {
+          id: getVal('entidade-id') || `cad_${Date.now()}`,
+          nome: nome,
+          municipio: getVal('entidade-municipio') || _municipioAtual || 'Rondônia',
+          cnpj: getVal('entidade-cnpj'),
+          inep: getVal('entidade-inep'),
+          codigoInep: getVal('entidade-inep'),
+          alunos: getVal('entidade-alunos') || '0',
+          totalMatricula: getVal('entidade-alunos') || '0',
+          modalidades: mods.join(', ') || 'Geral',
+          modalidade: mods.join(', ') || 'Geral',
+          competencia: getVal('entidade-competencia') || _competenciaAtual || 'Municipal',
+          super: getVal('entidade-super') || _superAtual || 'SUPER Regional',
+          categoria: getVal('entidade-categoria') || _categoriaAtual || 'Conselho Escolar',
+          parceria: getVal('entidade-parceria') || _parceriaAtual || 'Fomento',
+
+          // Gestão
+          diretor: getVal('entidade-diretor'),
+          contatoDiretor: getVal('entidade-contato-diretor'),
+          telefone: getVal('entidade-telefone'),
+          email: getVal('entidade-email'),
+          secretario: getVal('entidade-secretario'),
+          contatoSecretario: getVal('entidade-contato-secretario'),
+          redesSociais: getVal('entidade-redes'),
+
+          // Endereço
+          localidade: getVal('entidade-localidade') || 'Urbana',
+          localizacao: getVal('entidade-localidade') || 'Urbana',
+          endereco: getVal('entidade-endereco'),
+          bairro: getVal('entidade-bairro'),
+          complemento: getVal('entidade-complemento'),
+          cep: getVal('entidade-cep'),
+          linha: getVal('entidade-linha'),
+          rodoviaKm: getVal('entidade-rodovia-km'),
+          sitioRio: getVal('entidade-sitio-rio'),
+          plusCode: getVal('entidade-plus-code'),
+
+          // Infraestrutura
+          salasAula: getVal('entidade-salas-aula'),
+          salasAdm: getVal('entidade-salas-adm'),
+          banheiros: getVal('entidade-banheiros'),
+          salaAEE: getVal('entidade-sala-aee'),
+          auditorio: getVal('entidade-auditorio'),
+          patioCoberto: getVal('entidade-patio-coberto'),
+          refeitorio: getVal('entidade-refeitorio'),
+          cozinha: getVal('entidade-cozinha'),
+          depositoSeco: getVal('entidade-deposito-seco'),
+          depositoPereciveis: getVal('entidade-deposito-pereciveis'),
+          almoxarifadoAdm: getVal('entidade-almoxarifado-adm'),
+          depositoGeral: getVal('entidade-deposito'),
+          biblioteca: getVal('entidade-biblioteca'),
+          labInfo: getVal('entidade-lab-info'),
+          hall: getVal('entidade-hall'),
+          dml: getVal('entidade-dml'),
+          quadra: getVal('entidade-quadra'),
+          quadraCoberta: getVal('entidade-quadra-coberta'),
+          quadraPiso: getVal('entidade-quadra-piso'),
+          acessibilidade: getVal('entidade-acessibilidade'),
+          ppci: getVal('entidade-ppci'),
+          fonteAgua: getVal('entidade-fonte-agua'),
+          energiaSolar: getVal('entidade-energia-solar'),
+          muradaGradeada: getVal('entidade-murada-gradeada'),
+          tipoAbertura: getVal('entidade-tipo-abertura'),
+          tipoForro: getVal('entidade-tipo-forro'),
+          tipoPiso: getVal('entidade-tipo-piso'),
+          tipoTelhado: getVal('entidade-tipo-telhado'),
+          observacoes: getVal('entidade-observacoes'),
+
+          // Registrador
+          registradorNome: getVal('entidade-registrador-nome'),
+          registradorTelefone: getVal('entidade-registrador-telefone'),
+          registradorEmail: getVal('entidade-registrador-email'),
+          registradorCargo: getVal('entidade-registrador-cargo')
+        };
+      }
+
+      // Se o formulário estiver em branco, mas houver escolas carregadas na tabela
+      if (_escolasMunicipioCache && _escolasMunicipioCache.length > 0) {
+        return _escolasMunicipioCache[0];
+      }
+      return null;
+    }
+
+    // Atalho para imprimir relatório individual a partir de linha da tabela
+    function imprimirRelatorioLinha(jsonEncoded) {
+      try {
+        const esc = JSON.parse(decodeURIComponent(jsonEncoded));
+        imprimirRelatorioRegistroAtual(esc);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    window.imprimirRelatorioLinha = imprimirRelatorioLinha;
+
+    // Relatório 1: REGISTRO ATUAL (Ficha Cadastral Individual Completa)
+    function imprimirRelatorioRegistroAtual(escolaObj) {
+      const esc = escolaObj || obterDadosEscolaAtual();
+      if (!esc || !esc.nome) {
+        alert('Nenhuma escola selecionada ou preenchida no formulário.\\nPreencha os dados da escola ou clique em ✏️ Editar na tabela para emitir a Ficha Cadastral Individual.');
+        return;
+      }
+
+      const agora = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
+      const bannerUrl = new URL('img/banner-cadastre-escolas-horizontal.png?v=1.3.80', window.location.href).href;
+
+      const pCodeLink = esc.plusCode
+        ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" style="color:#0284c7; text-decoration:underline; font-weight:700;">${esc.plusCode} ↗ (Ver no Google Maps)</a>`
+        : '-';
+
+      const win = window.open('', '_blank');
+      if (!win) {
+        alert('O navegador bloqueou a abertura da janela de impressão. Por favor, permita pop-ups para este site.');
+        return;
+      }
+
+      const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>SEDUC/CAM - Ficha Cadastral - \${esc.nome}</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, -apple-system, sans-serif;
+      color: #0f172a;
+      background: #f1f5f9;
+      line-height: 1.4;
+      font-size: 11pt;
+    }
+    .no-print-bar {
+      position: sticky;
+      top: 0;
+      z-index: 99999;
+      background: #090e17;
+      color: #ffffff;
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .btn-print {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-print:hover { background: #059669; }
+    .btn-fechar {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-fechar:hover { background: #ef4444; color: #fff; }
+
+    /* CABEÇALHO COM IMAGEM FIXA NA TELA */
+    .report-header-sticky {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 50px;
+      z-index: 10000;
+      background: #ffffff;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      will-change: transform;
+    }
+    .report-banner-img {
+      width: 100%;
+      height: auto;
+      max-height: 115px;
+      object-fit: cover;
+      display: block;
+    }
+    .report-title-strip {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 8px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .report-title-strip h1 {
+      font-size: 12pt;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #38bdf8;
+    }
+    .report-meta-tag {
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid #38bdf8;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 8.5pt;
+      font-weight: 800;
+      color: #e0f2fe;
+    }
+
+    .report-paper {
+      max-width: 980px;
+      margin: 18px auto 40px auto;
+      background: #ffffff;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-radius: 8px;
+    }
+
+    .section-block {
+      margin-bottom: 18px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+      page-break-inside: avoid;
+    }
+    .section-header {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 7px 12px;
+      font-size: 10pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1px;
+      background: #e2e8f0;
+      padding: 1px;
+    }
+    .data-cell {
+      background: #ffffff;
+      padding: 7px 10px;
+    }
+    .data-cell.span-2 { grid-column: span 2; }
+    .data-cell.span-all { grid-column: 1 / -1; }
+    .cell-label {
+      font-size: 8pt;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+      display: block;
+    }
+    .cell-val {
+      font-size: 10pt;
+      font-weight: 600;
+      color: #0f172a;
+      word-break: break-word;
+    }
+    .cell-val.destaque {
+      color: #0284c7;
+      font-weight: 800;
+      font-size: 11pt;
+    }
+
+    .signatures-block {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 35px;
+      margin-bottom: 20px;
+      page-break-inside: avoid;
+    }
+    .sig-line {
+      width: 42%;
+      text-align: center;
+      border-top: 1px solid #475569;
+      padding-top: 6px;
+      font-size: 9pt;
+      color: #1e293b;
+      font-weight: 600;
+    }
+
+    /* RODAPÉ PADRÃO SEDUC / CAM */
+    .report-footer {
+      border-top: 2px solid #0284c7;
+      padding-top: 8px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5pt;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    @media print {
+      .no-print-bar { display: none !important; }
+      .report-header-sticky {
+        position: static;
+        box-shadow: none;
+      }
+      body { background: #ffffff; }
+      .report-paper {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 8mm 8mm 14mm 8mm;
+        @bottom-left {
+          content: "SEDUC / CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICIPIOS";
+          font-size: 8pt;
+          font-weight: 700;
+          color: #334155;
+        }
+        @bottom-center {
+          content: "${dataHoraStr}";
+          font-size: 8pt;
+          color: #64748b;
+        }
+        @bottom-right {
+          content: "Página " counter(page) " de " counter(pages);
+          font-size: 8pt;
+          font-weight: 700;
+          color: #0f172a;
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE AÇÕES (NÃO IMPRIME) -->
+  <div class="no-print-bar">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-size:16px;">🏛️</span>
+      <span style="font-weight:800; font-size:13px; color:#38bdf8;">SEDUC / CAM — SISTEMA DE GESTÃO E ARTICULAÇÃO MUNICIPAL</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button type="button" class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+      <button type="button" class="btn-fechar" onclick="window.close()">✕ Fechar</button>
+    </div>
+  </div>
+
+  <!-- CABEÇALHO OFICIAL COM IMAGEM BANNER FIXA NA ROLAGEM -->
+  <div class="report-header-sticky">
+    <img src="${bannerUrl}" alt="CAM SEDUC/RO - Coordenadoria de Articulação com os Municípios" class="report-banner-img">
+    <div class="report-title-strip">
+      <h1>FICHA CADASTRAL DA UNIDADE ESCOLAR</h1>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <span class="report-meta-tag">MUNICÍPIO: \${(esc.municipio || 'RONDÔNIA').toUpperCase()}</span>
+        <span class="report-meta-tag">CATEGORIA: \${(esc.categoria || 'Conselho Escolar').toUpperCase()}</span>
+        <span class="report-meta-tag">COMPETÊNCIA: \${(esc.competencia || 'Municipal').toUpperCase()}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-paper">
+
+    <!-- 1. IDENTIFICAÇÃO DA ESCOLA / ENTIDADE -->
+    <div class="section-block">
+      <div class="section-header">🏫 1. Identificação da Entidade / Escola</div>
+      <div class="data-grid">
+        <div class="data-cell span-2">
+          <span class="cell-label">Nome da Escola / Entidade</span>
+          <span class="cell-val destaque">\${esc.nome}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Município / Distrito</span>
+          <span class="cell-val">\${esc.municipio || '-'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Código INEP</span>
+          <span class="cell-val" style="font-family:monospace; font-weight:800; color:#0284c7;">\${esc.codigoInep || esc.inep || 'Não informado'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">CNPJ Oficial</span>
+          <span class="cell-val" style="font-family:monospace;">\${esc.cnpj || 'Não informado'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Total de Matrícula (Alunos)</span>
+          <span class="cell-val" style="font-weight:800; color:#059669;">\${esc.totalMatricula || esc.alunos || '0'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Superintendência (SUPER/CRE)</span>
+          <span class="cell-val">\${esc.super || '-'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Competência / Esfera</span>
+          <span class="cell-val">\${esc.competencia || 'Municipal'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Categoria</span>
+          <span class="cell-val">\${esc.categoria || 'Conselho Escolar'}</span>
+        </div>
+        <div class="data-cell span-all">
+          <span class="cell-label">Modalidades de Ensino Atendidas</span>
+          <span class="cell-val">\${esc.modalidades || esc.modalidade || 'Geral'}</span>
+        </div>
+        <div class="data-cell span-all">
+          <span class="cell-label">Tipo de Parceria / Vinculação</span>
+          <span class="cell-val">\${esc.parceria || 'Fomento (Termo de Fomento - F)'}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. GESTÃO & CONTATOS -->
+    <div class="section-block">
+      <div class="section-header">👥 2. Gestão, Direção & Contatos</div>
+      <div class="data-grid">
+        <div class="data-cell span-2">
+          <span class="cell-label">Diretor(a) / Gestor(a) Geral</span>
+          <span class="cell-val">\${esc.diretor || 'Não informado'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Contato do Diretor / WhatsApp</span>
+          <span class="cell-val">\${esc.contatoDiretor || '-'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Telefone da Unidade / Sede</span>
+          <span class="cell-val">\${esc.telefone || '-'}</span>
+        </div>
+        <div class="data-cell span-2">
+          <span class="cell-label">E-mail Institucional</span>
+          <span class="cell-val">\${esc.email || '-'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Secretário(a) / SEMED</span>
+          <span class="cell-val">\${esc.secretario || '-'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Contato do Secretário(a)</span>
+          <span class="cell-val">\${esc.contatoSecretario || '-'}</span>
+        </div>
+        <div class="data-cell span-all">
+          <span class="cell-label">Redes Sociais Oficiais</span>
+          <span class="cell-val">\${esc.redesSociais || esc.redes || 'Não possui'}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. ENDEREÇO & LOCALIZAÇÃO -->
+    <div class="section-block">
+      <div class="section-header">📍 3. Endereço & Localização Geográfica</div>
+      <div class="data-grid">
+        <div class="data-cell">
+          <span class="cell-label">Localidade</span>
+          <span class="cell-val" style="font-weight:700;">\${esc.localidade || esc.localizacao || 'Urbana'}</span>
+        </div>
+        <div class="data-cell span-2">
+          <span class="cell-label">Logradouro / Endereço</span>
+          <span class="cell-val">\${esc.endereco || '-'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Bairro</span>
+          <span class="cell-val">\${esc.bairro || '-'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">CEP</span>
+          <span class="cell-val">\${esc.cep || '-'}</span>
+        </div>
+        <div class="data-cell span-2">
+          <span class="cell-label">Complemento / Ponto de Referência</span>
+          <span class="cell-val">\${esc.complemento || '-'}</span>
+        </div>
+        <div class="data-cell span-all">
+          <span class="cell-label">Dados Zona Rural (Linha, Rodovia, Sítio, Rio)</span>
+          <span class="cell-val">Linha: \${esc.linha || '-'} | Rodovia/Km: \${esc.rodoviaKm || '-'} | Sítio/Rio: \${esc.sitioRio || '-'}</span>
+        </div>
+        <div class="data-cell span-all">
+          <span class="cell-label">Código Plus Code / Localização Georreferenciada</span>
+          <span class="cell-val">\${pCodeLink}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. INFRAESTRUTURA & ESTRUTURA FÍSICA -->
+    <div class="section-block">
+      <div class="section-header">🏗️ 4. Infraestrutura & Sistemas Construtivos</div>
+      <div class="data-grid">
+        <div class="data-cell"><span class="cell-label">Salas de Aula</span><span class="cell-val">\${esc.salasAula || esc.salas || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Salas Administrativas</span><span class="cell-val">\${esc.salasAdm || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Banheiros</span><span class="cell-val">\${esc.banheiros || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Sala de Recursos (AEE)</span><span class="cell-val">\${esc.salaAEE || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Pátio Coberto</span><span class="cell-val">\${esc.patioCoberto || esc.patio || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Refeitório</span><span class="cell-val">\${esc.refeitorio || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Cozinha</span><span class="cell-val">\${esc.cozinha || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Biblioteca</span><span class="cell-val">\${esc.biblioteca || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Laboratório de Informática</span><span class="cell-val">\${esc.labInfo || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Auditório</span><span class="cell-val">\${esc.auditorio || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Depósito Geral</span><span class="cell-val">\${esc.depositoGeral || esc.deposito || '0'}</span></div>
+        <div class="data-cell"><span class="cell-label">Almoxarifado ADM</span><span class="cell-val">\${esc.almoxarifadoAdm || '0'}</span></div>
+        <div class="data-cell span-2">
+          <span class="cell-label">Quadra Poliesportiva</span>
+          <span class="cell-val">\${esc.quadra || 'Não possui'} \${esc.quadraCoberta ? ' • ' + esc.quadraCoberta : ''} \${esc.quadraPiso ? '(' + esc.quadraPiso + ')' : ''}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Abastecimento de Água</span>
+          <span class="cell-val">\${esc.fonteAgua || 'Não informado'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Energia Solar</span>
+          <span class="cell-val">\${esc.energiaSolar || 'Não'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Cercamento do Prédio</span>
+          <span class="cell-val">\${esc.muradaGradeada || 'Não informado'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Acessibilidade PCD</span>
+          <span class="cell-val">\${esc.acessibilidade || 'Não informado'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">PPCI (Prevenção Incêndio)</span>
+          <span class="cell-val">\${esc.ppci || 'Não informado'}</span>
+        </div>
+
+        <div class="data-cell"><span class="cell-label">Tipo de Aberturas / Esquadrias</span><span class="cell-val">\${esc.tipoAbertura || 'Padrão'}</span></div>
+        <div class="data-cell"><span class="cell-label">Tipo de Forro</span><span class="cell-val">\${esc.tipoForro || 'Padrão'}</span></div>
+        <div class="data-cell"><span class="cell-label">Tipo de Pavimentação / Piso</span><span class="cell-val">\${esc.tipoPiso || 'Padrão'}</span></div>
+        <div class="data-cell"><span class="cell-label">Tipo de Cobertura / Telhado</span><span class="cell-val">\${esc.tipoTelhado || 'Padrão'}</span></div>
+
+        <div class="data-cell span-all">
+          <span class="cell-label">Observações Gerais da Infraestrutura</span>
+          <span class="cell-val">\${esc.observacoes || esc.obs || 'Nenhuma observação registrada.'}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. DADOS DO REGISTRADOR -->
+    <div class="section-block">
+      <div class="section-header">👤 5. Dados do Responsável pelo Preenchimento (Registrador)</div>
+      <div class="data-grid">
+        <div class="data-cell span-2">
+          <span class="cell-label">Nome do Informante</span>
+          <span class="cell-val">\${esc.registradorNome || 'Não informado'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Cargo / Função</span>
+          <span class="cell-val">\${esc.registradorCargo || '-'}</span>
+        </div>
+        <div class="data-cell">
+          <span class="cell-label">Telefone Celular</span>
+          <span class="cell-val">\${esc.registradorTelefone || '-'}</span>
+        </div>
+        <div class="data-cell span-2">
+          <span class="cell-label">E-mail de Contato</span>
+          <span class="cell-val">\${esc.registradorEmail || '-'}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TERMO & ASSINATURAS -->
+    <div class="signatures-block">
+      <div class="sig-line">
+        \${esc.diretor || 'Diretor(a) / Gestor(a)'}<br>
+        <span style="font-size:8pt; color:#64748b; font-weight:normal;">Assinatura do Responsável pela Entidade / Escola</span>
+      </div>
+      <div class="sig-line">
+        \${esc.registradorNome || 'Responsável pelo Preenchimento'}<br>
+        <span style="font-size:8pt; color:#64748b; font-weight:normal;">Validação do Cadastro • SEDUC/CAM</span>
+      </div>
+    </div>
+
+    <!-- RODAPÉ OFICIAL -->
+    <div class="report-footer">
+      <div>SEDUC / CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICIPIOS</div>
+      <div>${dataHoraStr}</div>
+      <div>Página 1 de 1</div>
+    </div>
+
+  </div>
+
+</body>
+</html>`;
+
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+    }
+    window.imprimirRelatorioRegistroAtual = imprimirRelatorioRegistroAtual;
+
+    // Relatório 2: TODOS REGISTROS (Consolidado com Quebra por Município e Sequência de Escolas)
+    function imprimirRelatorioTodosRegistros() {
+      let lista = _escolasMunicipioCache && _escolasMunicipioCache.length > 0 ? [..._escolasMunicipioCache] : [];
+
+      if (lista.length === 0) {
+        try {
+          const locais = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
+          if (Array.isArray(locais) && locais.length > 0) lista = locais;
+        } catch (e) {}
+      }
+
+      if (lista.length === 0 && typeof _escolasCache !== 'undefined' && Array.isArray(_escolasCache) && _escolasCache.length > 0) {
+        lista = [..._escolasCache];
+      }
+
+      if (lista.length === 0) {
+        alert('Nenhuma escola encontrada para emissão do relatório geral.\\nCadastre ao menos uma escola ou aguarde o carregamento dos dados.');
+        return;
+      }
+
+      const agora = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
+      const bannerUrl = new URL('img/banner-cadastre-escolas-horizontal.png?v=1.3.80', window.location.href).href;
+
+      // Agrupar por Município para a QUEBRA POR MUNICÍPIO
+      const agrupadoPorMunicipio = {};
+      lista.forEach(esc => {
+        const mun = (esc.municipio || _municipioAtual || 'RONDÔNIA').trim();
+        if (!agrupadoPorMunicipio[mun]) agrupadoPorMunicipio[mun] = [];
+        agrupadoPorMunicipio[mun].push(esc);
+      });
+
+      const munsNomes = Object.keys(agrupadoPorMunicipio).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+      const totalGeralAlunos = lista.reduce((acc, esc) => {
+        const raw = esc.totalMatricula || esc.alunos || esc.matriculas || 0;
+        const n = parseInt(String(raw).replace(/\D/g, ''), 10);
+        return acc + (isNaN(n) ? 0 : n);
+      }, 0);
+
+      const win = window.open('', '_blank');
+      if (!win) {
+        alert('O navegador bloqueou a abertura da janela de impressão. Por favor, permita pop-ups para este site.');
+        return;
+      }
+
+      let tabelaCorpoHtml = '';
+
+      munsNomes.forEach((munNome, mIdx) => {
+        const mEscolas = agrupadoPorMunicipio[munNome];
+        mEscolas.sort((a, b) => (a.nome || '').localeCompare(b.nome || '', 'pt-BR'));
+
+        const totalAlunosMun = mEscolas.reduce((acc, esc) => {
+          const raw = esc.totalMatricula || esc.alunos || esc.matriculas || 0;
+          const n = parseInt(String(raw).replace(/\D/g, ''), 10);
+          return acc + (isNaN(n) ? 0 : n);
+        }, 0);
+
+        const pageBreakClass = mIdx > 0 ? 'page-break' : '';
+
+        tabelaCorpoHtml += `
+          <div class="bloco-municipio \${pageBreakClass}">
+            <div class="header-quebra-municipio">
+              <div style="font-size:12pt; font-weight:900; color:#ffffff;">
+                🏛️ MUNICÍPIO: \${munNome.toUpperCase()}
+              </div>
+              <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <span class="badge-mun">Escolas: \${mEscolas.length}</span>
+                <span class="badge-mun">Alunos: \${totalAlunosMun.toLocaleString('pt-BR')}</span>
+              </div>
+            </div>
+
+            <table class="tabela-escolas-todos">
+              <thead>
+                <tr>
+                  <th style="width:40px; text-align:center;">#</th>
+                  <th>Nome da Entidade / Escola</th>
+                  <th style="width:85px; text-align:center;">INEP</th>
+                  <th style="width:130px;">Categoria</th>
+                  <th>Diretor(a) / Gestor(a)</th>
+                  <th style="width:115px;">Contato</th>
+                  <th style="width:85px; text-align:center;">Localidade</th>
+                  <th style="width:65px; text-align:center;">Alunos</th>
+                </tr>
+              </thead>
+              <tbody>
+                \${mEscolas.map((esc, sIdx) => {
+                  const seqMun = sIdx + 1;
+                  const inep = esc.codigoInep || esc.inep || '-';
+                  const cat = esc.categoria || 'Conselho Escolar';
+                  const comp = esc.competencia || 'Municipal';
+                  const diretor = esc.diretor || '-';
+                  const tel = esc.contatoDiretor || esc.telefone || '-';
+                  const loc = esc.localizacao || esc.localidade || 'Urbana';
+                  const alunos = esc.totalMatricula || esc.alunos || '0';
+
+                  return \`
+                    <tr>
+                      <td style="text-align:center; font-weight:800; color:#64748b;">\${seqMun}</td>
+                      <td>
+                        <strong style="color:#0f172a; font-size:9.5pt;">\${esc.nome}</strong>
+                        \${esc.cnpj ? \`<br><span style="font-size:8pt; color:#64748b; font-family:monospace;">CNPJ: \${esc.cnpj}</span>\` : ''}
+                      </td>
+                      <td style="text-align:center; font-family:monospace; font-weight:700; color:#0284c7;">\${inep}</td>
+                      <td>
+                        <span style="font-size:8.5pt; font-weight:700; color:#334155;">\${cat}</span>
+                        <br><span style="font-size:7.5pt; color:#64748b;">\${comp}</span>
+                      </td>
+                      <td style="font-size:9pt;">\${diretor}</td>
+                      <td style="font-size:8.5pt; font-family:monospace;">\${tel}</td>
+                      <td style="text-align:center; font-size:8.5pt;">\${loc}</td>
+                      <td style="text-align:center; font-weight:800; color:#059669;">\${alunos}</td>
+                    </tr>
+                  \`;
+                }).join('')}
+              </tbody>
+              <tfoot>
+                <tr class="linha-subtotal">
+                  <td colspan="7" style="text-align:right; font-weight:800; padding:6px 12px; color:#334155;">
+                    Subtotal do Município (\${munNome}):
+                  </td>
+                  <td style="text-align:center; font-weight:900; color:#0284c7; background:rgba(2,132,199,0.1); padding:6px;">
+                    \${totalAlunosMun.toLocaleString('pt-BR')}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        `;
+      });
+
+      const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>SEDUC/CAM - Relação Geral de Escolas por Município</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, -apple-system, sans-serif;
+      color: #0f172a;
+      background: #f1f5f9;
+      line-height: 1.35;
+      font-size: 10pt;
+    }
+    .no-print-bar {
+      position: sticky;
+      top: 0;
+      z-index: 99999;
+      background: #090e17;
+      color: #ffffff;
+      padding: 10px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+    .btn-print {
+      background: #ef4444;
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-print:hover { background: #dc2626; }
+    .btn-fechar {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #fca5a5;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-fechar:hover { background: #ef4444; color: #fff; }
+
+    /* CABEÇALHO COM IMAGEM FIXA NA ROLAGEM */
+    .report-header-sticky {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 50px;
+      z-index: 10000;
+      background: #ffffff;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      will-change: transform;
+    }
+    .report-banner-img {
+      width: 100%;
+      height: auto;
+      max-height: 110px;
+      object-fit: cover;
+      display: block;
+    }
+    .report-title-strip {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 8px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .report-title-strip h1 {
+      font-size: 11.5pt;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #38bdf8;
+    }
+    .resumo-stats {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .badge-stat {
+      background: rgba(56, 189, 248, 0.2);
+      border: 1px solid #38bdf8;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 8.5pt;
+      font-weight: 800;
+      color: #e0f2fe;
+    }
+
+    .report-paper {
+      max-width: 1150px;
+      margin: 18px auto 40px auto;
+      background: #ffffff;
+      padding: 20px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-radius: 8px;
+    }
+
+    /* BLOCO DO MUNICÍPIO (QUEBRA POR MUNICÍPIO) */
+    .bloco-municipio {
+      margin-bottom: 26px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      overflow: hidden;
+      page-break-inside: auto;
+    }
+    .header-quebra-municipio {
+      background: #1e293b;
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #0284c7;
+    }
+    .badge-mun {
+      background: rgba(2, 132, 199, 0.25);
+      border: 1px solid #38bdf8;
+      color: #e0f2fe;
+      font-size: 8.5pt;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* TABELA DE ESCOLAS */
+    .tabela-escolas-todos {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+    }
+    .tabela-escolas-todos th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 800;
+      font-size: 8pt;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 7px 8px;
+      border-bottom: 1.5px solid #cbd5e1;
+      text-align: left;
+    }
+    .tabela-escolas-todos td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+    }
+    .tabela-escolas-todos tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    .tabela-escolas-todos tr:hover td {
+      background: #f1f5f9;
+    }
+    .linha-subtotal td {
+      background: #f1f5f9 !important;
+      border-top: 1.5px solid #94a3b8;
+    }
+
+    .quadro-geral-final {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+      page-break-inside: avoid;
+    }
+
+    /* RODAPÉ PADRÃO SEDUC / CAM */
+    .report-footer {
+      border-top: 2px solid #0284c7;
+      padding-top: 8px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5pt;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    @media print {
+      .no-print-bar { display: none !important; }
+      .report-header-sticky {
+        position: static;
+        box-shadow: none;
+      }
+      body { background: #ffffff; }
+      .report-paper {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+      .page-break { page-break-before: always; }
+      tr { page-break-inside: avoid; }
+      @page {
+        size: A4 landscape;
+        margin: 8mm 8mm 14mm 8mm;
+        @bottom-left {
+          content: "SEDUC / CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICIPIOS";
+          font-size: 8pt;
+          font-weight: 700;
+          color: #334155;
+        }
+        @bottom-center {
+          content: "${dataHoraStr}";
+          font-size: 8pt;
+          color: #64748b;
+        }
+        @bottom-right {
+          content: "Página " counter(page) " de " counter(pages);
+          font-size: 8pt;
+          font-weight: 700;
+          color: #0f172a;
+        }
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE AÇÕES (NÃO IMPRIME) -->
+  <div class="no-print-bar">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span style="font-size:16px;">🏛️</span>
+      <span style="font-weight:800; font-size:13px; color:#38bdf8;">SEDUC / CAM — SISTEMA DE GESTÃO E ARTICULAÇÃO MUNICIPAL</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <button type="button" class="btn-print" onclick="window.print()">🖨️ Imprimir / Salvar PDF</button>
+      <button type="button" class="btn-fechar" onclick="window.close()">✕ Fechar</button>
+    </div>
+  </div>
+
+  <!-- CABEÇALHO OFICIAL COM IMAGEM BANNER FIXA NA ROLAGEM -->
+  <div class="report-header-sticky">
+    <img src="${bannerUrl}" alt="CAM SEDUC/RO - Coordenadoria de Articulação com os Municípios" class="report-banner-img">
+    <div class="report-title-strip">
+      <h1>RELAÇÃO GERAL DE ESCOLAS E ENTIDADES CADASTRADAS (SEDUC / CAM)</h1>
+      <div class="resumo-stats">
+        <span class="badge-stat">MUNICÍPIOS: \${munsNomes.length}</span>
+        <span class="badge-stat">UNIDADES: \${lista.length}</span>
+        <span class="badge-stat">TOTAL ALUNOS: \${totalGeralAlunos.toLocaleString('pt-BR')}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-paper">
+
+    \${tabelaCorpoHtml}
+
+    <!-- CONSOLIDAÇÃO GERAL FINAL -->
+    <div class="quadro-geral-final">
+      <div style="font-weight:900; font-size:11pt; color:#38bdf8;">
+        TOTAL GERAL CONSOLIDADO DE TODAS AS UNIDADES CADASTRADAS
+      </div>
+      <div style="display:flex; gap:16px; font-weight:800; font-size:10pt;">
+        <span>Municípios: \${munsNomes.length}</span>
+        <span>Escolas / Entidades: \${lista.length}</span>
+        <span style="color:#34d399;">Total de Alunos: \${totalGeralAlunos.toLocaleString('pt-BR')}</span>
+      </div>
+    </div>
+
+    <!-- RODAPÉ OFICIAL -->
+    <div class="report-footer">
+      <div>SEDUC / CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICIPIOS</div>
+      <div>${dataHoraStr}</div>
+      <div>Documento Oficial • SEDUC/RO</div>
+    </div>
+
+  </div>
+
+</body>
+</html>`;
+
+      win.document.open();
+      win.document.write(html);
+      win.document.close();
+    }
+    window.imprimirRelatorioTodosRegistros = imprimirRelatorioTodosRegistros;
 
     // Inicialização da Página
     window.addEventListener('DOMContentLoaded', () => {
