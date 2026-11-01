@@ -373,6 +373,20 @@
       -webkit-appearance: auto;
       cursor: pointer;
     }
+    .combo-desc-box {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 6px;
+      line-height: 1.35;
+      min-height: 42px;
+      padding: 6px 10px;
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+      box-sizing: border-box;
+      word-break: break-word;
+      transition: all 0.2s ease;
+    }
     .form-control:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
@@ -645,7 +659,7 @@
       <a href="https://api.whatsapp.com/send?phone=5569999064881&text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20cadastro%20de%20escolas%20e%20entidades%20da%20SEDUC/RO."
         target="_blank" rel="noopener noreferrer"
         title="Fale conosco no WhatsApp: (69) 99906-4881">
-        <img src="img/banner-cadastre-escolas.jpg?v=1.3.72" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881">
+        <img src="img/banner-cadastre-escolas.jpg?v=1.3.73" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881">
       </a>
     </aside>
 
@@ -1161,40 +1175,81 @@
               </div>
             </div>
 
-            <!-- LINHA 7: ESTRUTURA E ACABAMENTO PREDIAL -->
-            <div class="grid-3">
+            <!-- LINHA 7: ESTRUTURA E ACABAMENTO PREDIAL (COMBOS COM ESPECIFICAÇÃO TÉCNICA) -->
+            <div class="grid-4">
               <div>
-                <label>Tipo de Abertura</label>
-                <select id="entidade-tipo-abertura" class="form-control">
+                <label>Tipo de Abertura (Portas / Janelas)</label>
+                <select id="entidade-tipo-abertura" class="form-control" onchange="aoMudarComboInfra('tipo-abertura', this.value)">
                   <option value="">-</option>
-                  <option value="Ferro">Ferro</option>
-                  <option value="Grade">Grade</option>
-                  <option value="Vidro Temperado">Vidro Temperado</option>
-                  <option value="Madeira">Madeira</option>
-                  <option value="ACM">ACM</option>
-                  <option value="Misto">Misto</option>
+                  <option value="Ferro" title="Esquadrias e portões de ferro/aço, alta resistência mecânica e segurança contra arrombamento.">Ferro</option>
+                  <option value="Alumínio" title="Esquadrias leves, resistentes à corrosão e maresia, com alta durabilidade e baixa manutenção.">Alumínio</option>
+                  <option value="Vidro Temperado (Blindex)" title="Folhas de vidro de alta resistência a impactos térmicos e mecânicos, permitindo ampla iluminação.">Vidro Temperado (Blindex)</option>
+                  <option value="Madeira" title="Folhas e esquadrias de madeira maciça ou compensada, com isolamento acústico e aconchego visual.">Madeira</option>
+                  <option value="Grade de Proteção" title="Estruturas metálicas de proteção fixadas nas janelas e portas para segurança reforçada.">Grade de Proteção</option>
+                  <option value="ACM (Alumínio Composto)" title="Chapas de alumínio composto com núcleo termoplástico, moderno, leve e de alta durabilidade.">ACM (Alumínio Composto)</option>
+                  <option value="PVC" title="Esquadrias em cloreto de polivinila com excelente vedação termoacústica e baixa manutenção.">PVC</option>
+                  <option value="Misto" title="Combinação de diferentes materiais nas esquadrias (ex: ferro com vidro, madeira com grade).">Misto</option>
                 </select>
+                <div id="desc-entidade-tipo-abertura" class="combo-desc-box">Selecione para ver a especificação técnica...</div>
               </div>
               <div>
                 <label>Tipo de Forro</label>
-                <select id="entidade-tipo-forro" class="form-control">
+                <select id="entidade-tipo-forro" class="form-control" onchange="aoMudarComboInfra('tipo-forro', this.value)">
                   <option value="">-</option>
-                  <option value="Madeira">Madeira</option>
-                  <option value="Gesso">Gesso</option>
-                  <option value="PVC">PVC</option>
-                  <option value="Laje">Laje</option>
-                  <option value="Sem Forro">Sem Forro</option>
+                  <option value="Gesso Acartonado (Drywall)" title="Chapas de gesso revestidas com papel cartão. Instalação rápida, permite curvas, sancas e projetos de iluminação embutida complexos.">Gesso Acartonado (Drywall)</option>
+                  <option value="Gesso em Placas (Plaquinha)" title="Placas pequenas de gesso fundido penduradas por arames e chumbadas. Mais barato, porém gera mais sujeira e trincas que o drywall.">Gesso em Placas (Plaquinha)</option>
+                  <option value="PVC" title="Placas de plástico leves, imunes a cupins e umidade, de baixo custo e instalação muito rápida (não exige pintura).">PVC</option>
+                  <option value="Madeira (Lambri)" title="Réguas de madeira maciça encaixadas. Oferece excelente isolamento térmico e estética aconchegante.">Madeira (Lambri)</option>
+                  <option value="Isopor (EPS)" title="Placas modulares leves, excelente isolante térmico e acústico, comumente texturizadas. Muito usado em galpões e lojas.">Isopor (EPS)</option>
+                  <option value="Fibra Mineral" title="Placas modulares suportadas por perfis metálicos, usadas em ambientes corporativos devido à sua altíssima absorção acústica.">Fibra Mineral</option>
+                  <option value="Metálico" title="Feito de alumínio ou aço (Colmeia ou Réguas), visual contemporâneo ou industrial, permite acesso fácil e constante às instalações elétricas e de ar-condicionado.">Metálico</option>
+                  <option value="Lã de Vidro / Lã de Rocha" title="Forros termoacústicos focados em isolamento extremo (cinemas, estúdios, indústrias).">Lã de Vidro / Lã de Rocha</option>
+                  <option value="Laje Aparente / Cimento" title="Sem nenhum revestimento, deixando o concreto estrutural e as tubulações à vista (estilo brutalista/industrial).">Laje Aparente / Cimento</option>
+                  <option value="Bambu / Palha" title="Fibras naturais trançadas, uso predominante em quiosques, áreas de lazer, bangalôs e projetos rústicos.">Bambu / Palha</option>
+                  <option value="Sem Forro" title="Estrutura predial sem forro instalado, com cobertura direta à vista.">Sem Forro</option>
                 </select>
+                <div id="desc-entidade-tipo-forro" class="combo-desc-box">Selecione para ver a especificação técnica...</div>
               </div>
               <div>
-                <label>Tipo de Piso da Escola</label>
-                <select id="entidade-tipo-piso" class="form-control">
+                <label>Tipo de Piso</label>
+                <select id="entidade-tipo-piso" class="form-control" onchange="aoMudarComboInfra('tipo-piso', this.value)">
                   <option value="">-</option>
-                  <option value="Cerâmica">Cerâmica</option>
-                  <option value="Concreto">Concreto</option>
-                  <option value="Granelite">Granelite</option>
-                  <option value="Outros">Outros</option>
+                  <option value="Cerâmica" title="Placas de argila cozida com esmalte, muito comuns, de baixo custo e alta variedade de estampas.">Cerâmica</option>
+                  <option value="Porcelanato" title="Cerâmica de alta tecnologia, baixíssima absorção de água e alta resistência. Encontrado nas versões polido (brilhante), acetinado (fosco) e rústico (antiderrapante).">Porcelanato</option>
+                  <option value="Granilite" title="Mistura de cimento (branco ou comum) com agregados (mármore, granito, vidro). É monolítico (sem emendas) e extremamente durável.">Granilite</option>
+                  <option value="Assoalho de Madeira" title="Tábuas longas de madeira maciça, tradicionais, nobres e de alta durabilidade (permitem raspagem e novo envernizamento).">Assoalho de Madeira</option>
+                  <option value="Taco / Parquet" title="Pequenas peças de madeira maciça dispostas em padrões geométricos.">Taco / Parquet</option>
+                  <option value="Piso Laminado" title="Réguas de HDF (derivado de madeira) com estampa fotográfica na superfície, instalação rápida por sistema de clique ou cola.">Piso Laminado</option>
+                  <option value="Piso Vinílico (PVC)" title="Flexível, com ótimo desempenho acústico (&quot;não faz toc-toc&quot;), instalado colado ou clicado. Imita perfeitamente madeira e cimento.">Piso Vinílico (PVC)</option>
+                  <option value="Cimento Queimado" title="Argamassa de cimento, areia e água alisada na própria obra, com visual rústico/industrial.">Cimento Queimado</option>
+                  <option value="Granito" title="Rocha natural magmática de altíssima dureza e durabilidade, muito resistente a riscos e desgaste. Encontrado em chapas ou placas com acabamentos polido, levigado, apicoado ou jateado.">Granito</option>
+                  <option value="Mármore" title="Pedra natural nobre, mais porosa e menos resistente a riscos que o granito, valorizada pela estética sofisticada em áreas internas.">Mármore</option>
+                  <option value="Chão Batido" title="Piso de terra compactada, rústico e tradicional. Comum em construções vernaculares, rurais antigas ou estruturas provisórias, dispensando revestimentos industrializados.">Chão Batido</option>
+                  <option value="Epóxi (Porcelanato Líquido)" title="Resina autonivelante, sem emendas, de alto brilho e resistência. Muito usado em indústrias, garagens e hospitais.">Epóxi (Porcelanato Líquido)</option>
+                  <option value="Pedras Naturais" title="Ardósia, São Tomé, Miracema e Pedra Mineira. Comuns em áreas externas, calçadas e bordas de piscina.">Pedras Naturais</option>
+                  <option value="Piso Intertravado (Pavers)" title="Blocos de concreto pré-fabricados assentados sobre areia, ideais para calçadas e tráfego de veículos (permitem drenagem de água).">Piso Intertravado (Pavers)</option>
+                  <option value="Carpete" title="Revestimento têxtil (nylon, lã, poliéster), focado em conforto térmico e acústico, geralmente em placas ou rolos corporativos.">Carpete</option>
+                  <option value="Piso Emborrachado" title="Placas ou rolos de borracha, antiderrapantes, comuns em rampas, academias e áreas de alto tráfego. (Pastilhado/Moeda)">Piso Emborrachado</option>
+                  <option value="Piso Tátil" title="Pisos com relevo (direcional ou de alerta) para acessibilidade e orientação de pessoas com deficiência visual.">Piso Tátil</option>
+                  <option value="Outros" title="Outros tipos de pavimentação ou revestimento de piso não listados.">Outros</option>
                 </select>
+                <div id="desc-entidade-tipo-piso" class="combo-desc-box">Selecione para ver a especificação técnica...</div>
+              </div>
+              <div>
+                <label>Tipo de Telhado</label>
+                <select id="entidade-tipo-telhado" class="form-control" onchange="aoMudarComboInfra('tipo-telhado', this.value)">
+                  <option value="">-</option>
+                  <option value="Telhas Termoacústicas" title="Compostas por duas telhas metálicas com um núcleo isolante (EPS ou poliuretano). Altamente recomendadas para escolas e edifícios públicos para conforto térmico e redução de ruído.">Telhas Termoacústicas</option>
+                  <option value="Telhas Metálicas" title="Chapas de aço de alta resistência e leveza. Escolha padrão para cobrir grandes vãos sem necessidade de muitos pilares (quadras poliesportivas, ginásios, pátios).">Telhas Metálicas</option>
+                  <option value="Telhas de Fibrocimento" title="Opção tradicional, de baixo custo e instalação rápida, comum em construções públicas populares. Fabricadas sem amianto, utilizando fios sintéticos e cimento.">Telhas de Fibrocimento</option>
+                  <option value="Laje Impermeabilizada" title="Estrutura sem telhas aparentes, escondida por platibandas. Recebe tratamento rigoroso com manta asfáltica. Padrão em hospitais contemporâneos e universidades.">Laje Impermeabilizada</option>
+                  <option value="Telhas Cerâmicas" title="Modelos clássicos (colonial, romana) que oferecem excelente conforto térmico natural. Comuns em escolas tradicionais, porém exigem estrutura de cobertura mais robusta.">Telhas Cerâmicas</option>
+                  <option value="Coberturas Translúcidas" title="Materiais (Policarbonato ou Vidro) que permitem a passagem de luz solar. Usados estrategicamente em passarelas, saguões e pátios internos.">Coberturas Translúcidas</option>
+                  <option value="Telhas de Concreto" title="Extremamente duráveis, impermeáveis e com manutenção quase nula. Por serem pesadas, exigem estrutura reforçada.">Telhas de Concreto</option>
+                  <option value="Telhas Ecológicas" title="Fabricadas a partir de fibras vegetais impermeabilizadas ou materiais reciclados. Opções leves para projetos públicos com foco em sustentabilidade.">Telhas Ecológicas</option>
+                  <option value="Outros" title="Outros tipos de cobertura ou telhado não especificados.">Outros</option>
+                </select>
+                <div id="desc-entidade-tipo-telhado" class="combo-desc-box">Selecione para ver a especificação técnica...</div>
               </div>
             </div>
           </div>
@@ -1266,8 +1321,8 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js"></script>
-  <script src="js/escolas.js"></script>
+  <script src="js/dados.js?v=1.3.73"></script>
+  <script src="js/escolas.js?v=1.3.73"></script>
 
   <script>
     /* ============================================================
@@ -1892,7 +1947,15 @@
           const escSuper = (esc.super || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
           // Filtro Município
-          if (!isTodosMun && !escMun.includes(nMun) && !nMun.includes(escMun)) return;
+          if (!isTodosMun) {
+            const bateMun = window._municipiosPermitidos && window._municipiosPermitidos.length > 0
+              ? window._municipiosPermitidos.some(m => {
+                  const mClean = m.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                  return escMun === mClean || escMun.includes(mClean) || mClean.includes(escMun);
+                })
+              : (escMun.includes(nMun) || nMun.includes(escMun));
+            if (!bateMun) return;
+          }
 
           // Filtro Categoria Vinculada (Imagem 5)
           if (!isTodosCat) {
@@ -1955,6 +2018,7 @@
         const pCode = esc.plusCode ? `<br><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" rel="noopener noreferrer" style="font-size:10.5px; color:#34d399; text-decoration:underline; font-weight:700; display:inline-flex; align-items:center; gap:2px;" title="Abrir localização no Google Maps">🌐 Link de Acesso ↗</a>` : '';
         const diretor = esc.diretor || '-';
         const tel = esc.contatoDiretor || esc.telefone || '-';
+        const alunos = esc.totalMatricula || esc.alunos || '-';
 
         return `
           <tr>
@@ -1988,6 +2052,88 @@
       });
       renderizarTabela(filtradas);
     }
+
+    // DESCRIÇÕES TÉCNICAS DOS MATERIAIS DE INFRAESTRUTURA (COLUNA 2 DO GUIA DE SISTEMAS CONSTRUTIVOS)
+    const DESCRICOES_MATERIAIS = {
+      'tipo-abertura': {
+        "Ferro": "Esquadrias e portões de ferro/aço, alta resistência mecânica e segurança contra arrombamento.",
+        "Alumínio": "Esquadrias leves, resistentes à corrosão e maresia, com alta durabilidade e baixa manutenção.",
+        "Vidro Temperado (Blindex)": "Folhas de vidro de alta resistência a impactos térmicos e mecânicos, permitindo ampla iluminação.",
+        "Madeira": "Folhas e esquadrias de madeira maciça ou compensada, com isolamento acústico e aconchego visual.",
+        "Grade de Proteção": "Estruturas metálicas de proteção fixadas nas janelas e portas para segurança reforçada.",
+        "ACM (Alumínio Composto)": "Chapas de alumínio composto com núcleo termoplástico, moderno, leve e de alta durabilidade.",
+        "PVC": "Esquadrias em cloreto de polivinila com excelente vedação termoacústica e baixa manutenção.",
+        "Misto": "Combinação de diferentes materiais nas esquadrias (ex: ferro com vidro, madeira com grade)."
+      },
+      'tipo-forro': {
+        "Gesso Acartonado (Drywall)": "Chapas de gesso revestidas com papel cartão. Instalação rápida, permite curvas, sancas e projetos de iluminação embutida complexos.",
+        "Gesso em Placas (Plaquinha)": "Placas pequenas de gesso fundido penduradas por arames e chumbadas. Mais barato, porém gera mais sujeira e trincas que o drywall.",
+        "PVC": "Placas de plástico leves, imunes a cupins e umidade, de baixo custo e instalação muito rápida (não exige pintura).",
+        "Madeira (Lambri)": "Réguas de madeira maciça encaixadas. Oferece excelente isolamento térmico e estética aconchegante.",
+        "Isopor (EPS)": "Placas modulares leves, excelente isolante térmico e acústico, comumente texturizadas. Muito usado em galpões e lojas.",
+        "Fibra Mineral": "Placas modulares suportadas por perfis metálicos, usadas em ambientes corporativos devido à sua altíssima absorção acústica.",
+        "Metálico": "Feito de alumínio ou aço (Colmeia ou Réguas), visual contemporâneo ou industrial, permite acesso fácil e constante às instalações elétricas e de ar-condicionado.",
+        "Lã de Vidro / Lã de Rocha": "Forros termoacústicos focados em isolamento extremo (cinemas, estúdios, indústrias).",
+        "Laje Aparente / Cimento": "Sem nenhum revestimento, deixando o concreto estrutural e as tubulações à vista (estilo brutalista/industrial).",
+        "Bambu / Palha": "Fibras naturais trançadas, uso predominante em quiosques, áreas de lazer, bangalôs e projetos rústicos.",
+        "Sem Forro": "Estrutura predial sem forro instalado, com cobertura direta à vista."
+      },
+      'tipo-piso': {
+        "Cerâmica": "Placas de argila cozida com esmalte, muito comuns, de baixo custo e alta variedade de estampas.",
+        "Porcelanato": "Cerâmica de alta tecnologia, baixíssima absorção de água e alta resistência. Encontrado nas versões polido (brilhante), acetinado (fosco) e rústico (antiderrapante).",
+        "Granilite": "Mistura de cimento (branco ou comum) com agregados (mármore, granito, vidro). É monolítico (sem emendas) e extremamente durável.",
+        "Assoalho de Madeira": "Tábuas longas de madeira maciça, tradicionais, nobres e de alta durabilidade (permitem raspagem e novo envernizamento).",
+        "Taco / Parquet": "Pequenas peças de madeira maciça dispostas em padrões geométricos.",
+        "Piso Laminado": "Réguas de HDF (derivado de madeira) com estampa fotográfica na superfície, instalação rápida por sistema de clique ou cola.",
+        "Piso Vinílico (PVC)": "Flexível, com ótimo desempenho acústico (\"não faz toc-toc\"), instalado colado ou clicado. Imita perfeitamente madeira e cimento.",
+        "Cimento Queimado": "Argamassa de cimento, areia e água alisada na própria obra, com visual rústico/industrial.",
+        "Granito": "Rocha natural magmática de altíssima dureza e durabilidade, muito resistente a riscos e desgaste. Encontrado em chapas ou placas com acabamentos polido, levigado, apicoado ou jateado.",
+        "Mármore": "Pedra natural nobre, mais porosa e menos resistente a riscos que o granito, valorizada pela estética sofisticada em áreas internas.",
+        "Chão Batido": "Piso de terra compactada, rústico e tradicional. Comum em construções vernaculares, rurais antigas ou estruturas provisórias, dispensando revestimentos industrializados.",
+        "Epóxi (Porcelanato Líquido)": "Resina autonivelante, sem emendas, de alto brilho e resistência. Muito usado em indústrias, garagens e hospitais.",
+        "Pedras Naturais": "Ardósia, São Tomé, Miracema e Pedra Mineira. Comuns em áreas externas, calçadas e bordas de piscina.",
+        "Piso Intertravado (Pavers)": "Blocos de concreto pré-fabricados assentados sobre areia, ideais para calçadas e tráfego de veículos (permitem drenagem de água).",
+        "Carpete": "Revestimento têxtil (nylon, lã, poliéster), focado em conforto térmico e acústico, geralmente em placas ou rolos corporativos.",
+        "Piso Emborrachado": "Placas ou rolos de borracha, antiderrapantes, comuns em rampas, academias e áreas de alto tráfego. (Pastilhado/Moeda)",
+        "Piso Tátil": "Pisos com relevo (direcional ou de alerta) para acessibilidade e orientação de pessoas com deficiência visual.",
+        "Outros": "Outros tipos de pavimentação ou revestimento de piso não listados."
+      },
+      'tipo-telhado': {
+        "Telhas Termoacústicas": "Compostas por duas telhas metálicas com um núcleo isolante (EPS ou poliuretano). Altamente recomendadas para escolas e edifícios públicos para conforto térmico e redução de ruído.",
+        "Telhas Metálicas": "Chapas de aço de alta resistência e leveza. Escolha padrão para cobrir grandes vãos sem necessidade de muitos pilares (quadras poliesportivas, ginásios, pátios).",
+        "Telhas de Fibrocimento": "Opção tradicional, de baixo custo e instalação rápida, comum em construções públicas populares. Fabricadas sem amianto, utilizando fios sintéticos e cimento.",
+        "Laje Impermeabilizada": "Estrutura sem telhas aparentes, escondida por platibandas. Recebe tratamento rigoroso com manta asfáltica. Padrão em hospitais contemporâneos e universidades.",
+        "Telhas Cerâmicas": "Modelos clássicos (colonial, romana) que oferecem excelente conforto térmico natural. Comuns em escolas tradicionais, porém exigem estrutura de cobertura mais robusta.",
+        "Coberturas Translúcidas": "Materiais (Policarbonato ou Vidro) que permitem a passagem de luz solar. Usados estrategicamente em passarelas, saguões e pátios internos.",
+        "Telhas de Concreto": "Extremamente duráveis, impermeáveis e com manutenção quase nula. Por serem pesadas, exigem estrutura reforçada.",
+        "Telhas Ecológicas": "Fabricadas a partir de fibras vegetais impermeabilizadas ou materiais reciclados. Opções leves para projetos públicos com foco em sustentabilidade.",
+        "Outros": "Outros tipos de cobertura ou telhado não especificados."
+      }
+    };
+
+    function aoMudarComboInfra(campo, val) {
+      const elDesc = document.getElementById(`desc-entidade-${campo}`);
+      if (!elDesc) return;
+      const mapa = DESCRICOES_MATERIAIS[campo];
+      if (!val || !mapa || !mapa[val]) {
+        elDesc.textContent = 'Selecione uma opção para visualizar a especificação técnica.';
+        elDesc.style.color = '#64748b';
+        elDesc.style.borderColor = 'rgba(255,255,255,0.12)';
+      } else {
+        elDesc.textContent = mapa[val];
+        elDesc.style.color = '#38bdf8';
+        elDesc.style.borderColor = 'rgba(56,189,248,0.35)';
+      }
+    }
+    window.aoMudarComboInfra = aoMudarComboInfra;
+
+    function atualizarTodasDescricoesInfra() {
+      ['tipo-abertura', 'tipo-forro', 'tipo-piso', 'tipo-telhado'].forEach(c => {
+        const sel = document.getElementById(`entidade-${c}`);
+        aoMudarComboInfra(c, sel ? sel.value : '');
+      });
+    }
+    window.atualizarTodasDescricoesInfra = atualizarTodasDescricoesInfra;
 
     // Editar Escola
     function editarEscola(jsonEncoded) {
@@ -2059,6 +2205,8 @@
         setVal('entidade-tipo-abertura', esc.tipoAbertura);
         setVal('entidade-tipo-forro', esc.tipoForro);
         setVal('entidade-tipo-piso', esc.tipoPiso);
+        setVal('entidade-tipo-telhado', esc.tipoTelhado);
+        atualizarTodasDescricoesInfra();
 
         ativarAba(1);
         window.scrollTo({ top: 120, behavior: 'smooth' });
@@ -2111,12 +2259,13 @@
         'entidade-deposito', 'entidade-biblioteca', 'entidade-lab-info', 'entidade-hall',
         'entidade-dml', 'entidade-quadra', 'entidade-quadra-coberta', 'entidade-quadra-piso',
         'entidade-acessibilidade', 'entidade-ppci', 'entidade-fonte-agua', 'entidade-energia-solar',
-        'entidade-murada-gradeada', 'entidade-tipo-abertura', 'entidade-tipo-forro', 'entidade-tipo-piso'
+        'entidade-murada-gradeada', 'entidade-tipo-abertura', 'entidade-tipo-forro', 'entidade-tipo-piso', 'entidade-tipo-telhado'
       ];
       ids.forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
+      atualizarTodasDescricoesInfra();
       if (_municipioAtual.toUpperCase() === 'TODOS') {
         const selMun = document.getElementById('entidade-municipio');
         if (selMun) selMun.value = '';
@@ -2328,7 +2477,8 @@
         muradaGradeada: getVal('entidade-murada-gradeada'),
         tipoAbertura: getVal('entidade-tipo-abertura'),
         tipoForro: getVal('entidade-tipo-forro'),
-        tipoPiso: getVal('entidade-tipo-piso')
+        tipoPiso: getVal('entidade-tipo-piso'),
+        tipoTelhado: getVal('entidade-tipo-telhado')
       };
 
       // Salva localmente
@@ -2362,7 +2512,27 @@
     // Inicialização da Página
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
-      _municipioAtual = (params.get('mun') || "Alta Floresta D'Oeste").trim();
+      const rawMunParam = (params.get('mun') || 'Todos').trim();
+      const isParamTodos = (!rawMunParam || rawMunParam.toUpperCase() === 'TODOS');
+      const munsList = isParamTodos ? [] : rawMunParam.split(',').map(s => s.trim()).filter(Boolean);
+
+      let munsFiltrados = [];
+      if (isParamTodos || munsList.length === 0) {
+        munsFiltrados = [...LISTA_MUNICIPIOS_RO];
+      } else {
+        munsFiltrados = LISTA_MUNICIPIOS_RO.filter(m => {
+          const mNorm = normalizarMunicipioParaSuper(m);
+          return munsList.some(p => normalizarMunicipioParaSuper(p) === mNorm || m.toLowerCase() === p.toLowerCase());
+        });
+        if (munsFiltrados.length === 0) {
+          munsFiltrados = munsList;
+        }
+      }
+
+      window._municipiosPermitidos = munsFiltrados;
+      const isAllSelected = isParamTodos || munsFiltrados.length >= LISTA_MUNICIPIOS_RO.length;
+      _municipioAtual = isAllSelected ? 'Todos' : (munsFiltrados.length === 1 ? munsFiltrados[0] : munsFiltrados.join(', '));
+
       _categoriaAtual = (params.get('cat') || 'Conselho Escolar').trim();
       _competenciaAtual = (params.get('comp') || 'Municipal').trim();
       _superAtual = (params.get('sup') || '').trim();
@@ -2371,36 +2541,42 @@
       // Ajusta SUPER: remove qualquer prefixo legado 'CRE' e assegura 'SUPER'
       _superAtual = _superAtual.replace(/^CRE\s*-\s*/i, 'SUPER - ').replace(/^CRE\s+/i, 'SUPER ');
       if (!_superAtual || _superAtual.toUpperCase().includes('CRE')) {
-        _superAtual = getSuperPorMunicipio(_municipioAtual) || 'SUPER Regional';
+        _superAtual = (munsFiltrados.length === 1 ? getSuperPorMunicipio(munsFiltrados[0]) : '') || 'SUPER Regional';
       }
 
       // Preenche cabeçalho com a categoria da entidade relacionada (EFA, APAE, etc.)
       const topoMun = document.getElementById('municipio-topo');
-      const isTodos = _municipioAtual.toUpperCase() === 'TODOS';
-      const tituloCabecalho = getTituloCabecalhoCategoria(_categoriaAtual, _municipioAtual);
+      let munLabelBadge = 'Todos os Municípios';
+      if (!isAllSelected) {
+        if (munsFiltrados.length === 1) {
+          munLabelBadge = munsFiltrados[0];
+        } else {
+          munLabelBadge = `${munsFiltrados.length} Municípios Vinculados`;
+        }
+      }
+      const tituloCabecalho = getTituloCabecalhoCategoria(_categoriaAtual, isAllSelected ? 'Todos os Municípios' : munLabelBadge);
       if (topoMun) topoMun.textContent = tituloCabecalho;
 
       document.title = `${tituloCabecalho} - Cadastro de Entidades / Escolas`;
 
       // Atualiza Badges dos parâmetros vinculados
-      document.getElementById('param-municipio').textContent = isTodos ? 'Todos os Municípios' : _municipioAtual;
+      document.getElementById('param-municipio').textContent = munLabelBadge;
       document.getElementById('param-categoria').textContent = _categoriaAtual.toUpperCase() === 'TODOS' ? 'Todas as Categorias' : _categoriaAtual;
       document.getElementById('param-competencia').textContent = _competenciaAtual.toUpperCase() === 'TODOS' ? 'Todas as Competências' : _competenciaAtual;
       document.getElementById('param-super').textContent = _superAtual.toUpperCase() === 'TODOS' ? 'Todas as Superintendências (SUPER)' : (_superAtual || 'SUPER Regional');
       document.getElementById('param-parceria').textContent = _parceriaAtual.toUpperCase() === 'TODOS' ? 'Todos os Tipos' : _parceriaAtual.split('(')[0].trim();
 
-      // Inicializa Combo com todos os Municípios de Rondônia com seta padrão
+      // Inicializa Combo com SOMENTE os municípios permitidos pelo link
       const entMun = document.getElementById('entidade-municipio');
       if (entMun) {
         entMun.innerHTML = '<option value="">Selecione o Município da escola / entidade...</option>' +
-          LISTA_MUNICIPIOS_RO.map(m => `<option value="${m}">${m}</option>`).join('');
+          munsFiltrados.map(m => `<option value="${m}">${m}</option>`).join('');
 
-        if (isTodos) {
-          entMun.value = '';
+        if (munsFiltrados.length === 1) {
+          entMun.value = munsFiltrados[0];
+          aoMudarMunicipioNoForm(munsFiltrados[0]);
         } else {
-          const mNorm = normalizarMunicipioParaSuper(_municipioAtual);
-          const match = LISTA_MUNICIPIOS_RO.find(m => normalizarMunicipioParaSuper(m) === mNorm || m.toLowerCase() === _municipioAtual.toLowerCase());
-          entMun.value = match || _municipioAtual;
+          entMun.value = '';
         }
       }
 
@@ -2412,6 +2588,9 @@
       // Aplica legendas dinâmicas e restrições de modalidades com base na categoria
       atualizarLegendasPorCategoria(_categoriaAtual);
 
+      // Atualiza descrições técnicas dos 4 combos de infraestrutura
+      atualizarTodasDescricoesInfra();
+
       // Ativa a primeira aba (1 - IDENTIFICAÇÃO)
       ativarAba(1);
 
@@ -2419,7 +2598,7 @@
       inicializarPrazo(_municipioAtual);
 
       // Atualiza Título da Tabela
-      document.getElementById('titulo-tabela-municipio').textContent = _municipioAtual.toUpperCase();
+      document.getElementById('titulo-tabela-municipio').textContent = isAllSelected ? 'TODOS OS MUNICÍPIOS' : munLabelBadge.toUpperCase();
 
       // Carrega Escolas vinculadas aos parâmetros
       carregarEscolasDoMunicipio();

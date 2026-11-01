@@ -1125,6 +1125,7 @@ function mapRowToEscolaObj(headers, row) {
   const tipoAbertura        = get(['tipo de abertura', 'abertura']);
   const tipoForro           = get(['tipo de forro', 'forro']);
   const tipoPiso            = get(['tipo de piso da escola', 'tipo de piso', 'piso']);
+  const tipoTelhado         = get(['tipo de telhado', 'telhado', 'cobertura']);
   const muradaGradeada      = get(['escola murada ou gradeada', 'escola murado ou gradeado', 'murado ou gradeado', 'murada']);
 
   return {
@@ -1181,6 +1182,7 @@ function mapRowToEscolaObj(headers, row) {
     tipoAbertura: tipoAbertura,
     tipoForro: tipoForro,
     tipoPiso: tipoPiso,
+    tipoTelhado: tipoTelhado,
     muradaGradeada: muradaGradeada,
     diretor: diretor,
     contatoDiretor: contatoDiretor,
@@ -1294,6 +1296,7 @@ app.post("/api/escolas", async (req, res) => {
       data.tipoAbertura || "",
       data.tipoForro || "",
       data.tipoPiso || "",
+      data.tipoTelhado || "",
       data.muradaGradeada || ""
     ];
 
@@ -1511,7 +1514,7 @@ const defaultEntidadesHeaders = [
   "Depósito de Perecíveis (Área Fria)", "Almoxarifado Administrativo", "Depósito Geral",
   "Biblioteca", "DML (Depósito Material Limpeza)", "Quadra Coberta", "Piso da Quadra",
   "Laboratório de Informática", "Hall de Acolhimento", "PPCI", "Fonte de Água",
-  "Energia Solar", "Tipo de Abertura", "Tipo de Forro", "Tipo de Piso da Escola",
+  "Energia Solar", "Tipo de Abertura", "Tipo de Forro", "Tipo de Piso", "Tipo de Telhado",
   "Escola Murada ou Gradeada",
   // Dados do Registrador (Quem prestou as informações):
   "Nome do Registrador", "Telefone Celular do Registrador", "Email do Registrador", "Cargo do Registrador"
@@ -1593,6 +1596,7 @@ app.post("/api/entidades", async (req, res) => {
       data.tipoAbertura || "",
       data.tipoForro || "",
       data.tipoPiso || "",
+      data.tipoTelhado || "",
       data.muradaGradeada || "",
       // Dados do Registrador:
       data.registradorNome || "",

@@ -8069,6 +8069,87 @@ function carregarEscolaNoFormModal(idRefEncoded) {
 }
 window.carregarEscolaNoFormModal = carregarEscolaNoFormModal;
 
+window.DESCRICOES_MATERIAIS = window.DESCRICOES_MATERIAIS || {
+  'tipo-abertura': {
+    "Ferro": "Esquadrias e portões de ferro/aço, alta resistência mecânica e segurança contra arrombamento.",
+    "Alumínio": "Esquadrias leves, resistentes à corrosão e maresia, com alta durabilidade e baixa manutenção.",
+    "Vidro Temperado (Blindex)": "Folhas de vidro de alta resistência a impactos térmicos e mecânicos, permitindo ampla iluminação.",
+    "Madeira": "Folhas e esquadrias de madeira maciça ou compensada, com isolamento acústico e aconchego visual.",
+    "Grade de Proteção": "Estruturas metálicas de proteção fixadas nas janelas e portas para segurança reforçada.",
+    "ACM (Alumínio Composto)": "Chapas de alumínio composto com núcleo termoplástico, moderno, leve e de alta durabilidade.",
+    "PVC": "Esquadrias em cloreto de polivinila com excelente vedação termoacústica e baixa manutenção.",
+    "Misto": "Combinação de diferentes materiais nas esquadrias (ex: ferro com vidro, madeira com grade)."
+  },
+  'tipo-forro': {
+    "Gesso Acartonado (Drywall)": "Chapas de gesso revestidas com papel cartão. Instalação rápida, permite curvas, sancas e projetos de iluminação embutida complexos.",
+    "Gesso em Placas (Plaquinha)": "Placas pequenas de gesso fundido penduradas por arames e chumbadas. Mais barato, porém gera mais sujeira e trincas que o drywall.",
+    "PVC": "Placas de plástico leves, imunes a cupins e umidade, de baixo custo e instalação muito rápida (não exige pintura).",
+    "Madeira (Lambri)": "Réguas de madeira maciça encaixadas. Oferece excelente isolamento térmico e estética aconchegante.",
+    "Isopor (EPS)": "Placas modulares leves, excelente isolante térmico e acústico, comumente texturizadas. Muito usado em galpões e lojas.",
+    "Fibra Mineral": "Placas modulares suportadas por perfis metálicos, usadas em ambientes corporativos devido à sua altíssima absorção acústica.",
+    "Metálico": "Feito de alumínio ou aço (Colmeia ou Réguas), visual contemporâneo ou industrial, permite acesso fácil e constante às instalações elétricas e de ar-condicionado.",
+    "Lã de Vidro / Lã de Rocha": "Forros termoacústicos focados em isolamento extremo (cinemas, estúdios, indústrias).",
+    "Laje Aparente / Cimento": "Sem nenhum revestimento, deixando o concreto estrutural e as tubulações à vista (estilo brutalista/industrial).",
+    "Bambu / Palha": "Fibras naturais trançadas, uso predominante em quiosques, áreas de lazer, bangalôs e projetos rústicos.",
+    "Sem Forro": "Estrutura predial sem forro instalado, com cobertura direta à vista."
+  },
+  'tipo-piso': {
+    "Cerâmica": "Placas de argila cozida com esmalte, muito comuns, de baixo custo e alta variedade de estampas.",
+    "Porcelanato": "Cerâmica de alta tecnologia, baixíssima absorção de água e alta resistência. Encontrado nas versões polido (brilhante), acetinado (fosco) e rústico (antiderrapante).",
+    "Granilite": "Mistura de cimento (branco ou comum) com agregados (mármore, granito, vidro). É monolítico (sem emendas) e extremamente durável.",
+    "Assoalho de Madeira": "Tábuas longas de madeira maciça, tradicionais, nobres e de alta durabilidade (permitem raspagem e novo envernizamento).",
+    "Taco / Parquet": "Pequenas peças de madeira maciça dispostas em padrões geométricos.",
+    "Piso Laminado": "Réguas de HDF (derivado de madeira) com estampa fotográfica na superfície, instalação rápida por sistema de clique ou cola.",
+    "Piso Vinílico (PVC)": "Flexível, com ótimo desempenho acústico (\"não faz toc-toc\"), instalado colado ou clicado. Imita perfeitamente madeira e cimento.",
+    "Cimento Queimado": "Argamassa de cimento, areia e água alisada na própria obra, com visual rústico/industrial.",
+    "Granito": "Rocha natural magmática de altíssima dureza e durabilidade, muito resistente a riscos e desgaste. Encontrado em chapas ou placas com acabamentos polido, levigado, apicoado ou jateado.",
+    "Mármore": "Pedra natural nobre, mais porosa e menos resistente a riscos que o granito, valorizada pela estética sofisticada em áreas internas.",
+    "Chão Batido": "Piso de terra compactada, rústico e tradicional. Comum em construções vernaculares, rurais antigas ou estruturas provisórias, dispensando revestimentos industrializados.",
+    "Epóxi (Porcelanato Líquido)": "Resina autonivelante, sem emendas, de alto brilho e resistência. Muito usado em indústrias, garagens e hospitais.",
+    "Pedras Naturais": "Ardósia, São Tomé, Miracema e Pedra Mineira. Comuns em áreas externas, calçadas e bordas de piscina.",
+    "Piso Intertravado (Pavers)": "Blocos de concreto pré-fabricados assentados sobre areia, ideais para calçadas e tráfego de veículos (permitem drenagem de água).",
+    "Carpete": "Revestimento têxtil (nylon, lã, poliéster), focado em conforto térmico e acústico, geralmente em placas ou rolos corporativos.",
+    "Piso Emborrachado": "Placas ou rolos de borracha, antiderrapantes, comuns em rampas, academias e áreas de alto tráfego. (Pastilhado/Moeda)",
+    "Piso Tátil": "Pisos com relevo (direcional ou de alerta) para acessibilidade e orientação de pessoas com deficiência visual.",
+    "Outros": "Outros tipos de pavimentação ou revestimento de piso não listados."
+  },
+  'tipo-telhado': {
+    "Telhas Termoacústicas": "Compostas por duas telhas metálicas com um núcleo isolante (EPS ou poliuretano). Altamente recomendadas para escolas e edifícios públicos para conforto térmico e redução de ruído.",
+    "Telhas Metálicas": "Chapas de aço de alta resistência e leveza. Escolha padrão para cobrir grandes vãos sem necessidade de muitos pilares (quadras poliesportivas, ginásios, pátios).",
+    "Telhas de Fibrocimento": "Opção tradicional, de baixo custo e instalação rápida, comum em construções públicas populares. Fabricadas sem amianto, utilizando fios sintéticos e cimento.",
+    "Laje Impermeabilizada": "Estrutura sem telhas aparentes, escondida por platibandas. Recebe tratamento rigoroso com manta asfáltica. Padrão em hospitais contemporâneos e universidades.",
+    "Telhas Cerâmicas": "Modelos clássicos (colonial, romana) que oferecem excelente conforto térmico natural. Comuns em escolas tradicionais, porém exigem estrutura de cobertura mais robusta.",
+    "Coberturas Translúcidas": "Materiais (Policarbonato ou Vidro) que permitem a passagem de luz solar. Usados estrategicamente em passarelas, saguões e pátios internos.",
+    "Telhas de Concreto": "Extremamente duráveis, impermeáveis e com manutenção quase nula. Por serem pesadas, exigem estrutura reforçada.",
+    "Telhas Ecológicas": "Fabricadas a partir de fibras vegetais impermeabilizadas ou materiais reciclados. Opções leves para projetos públicos com foco em sustentabilidade.",
+    "Outros": "Outros tipos de cobertura ou telhado não especificados."
+  }
+};
+
+function aoMudarComboInfraModal(campo, val) {
+  const elDesc = document.getElementById(`desc-modal-entidade-${campo}`);
+  if (!elDesc) return;
+  const mapa = window.DESCRICOES_MATERIAIS[campo];
+  if (!val || !mapa || !mapa[val]) {
+    elDesc.textContent = 'Selecione uma opção para visualizar a especificação técnica.';
+    elDesc.style.color = '#64748b';
+    elDesc.style.borderColor = 'rgba(255,255,255,0.12)';
+  } else {
+    elDesc.textContent = mapa[val];
+    elDesc.style.color = '#38bdf8';
+    elDesc.style.borderColor = 'rgba(56,189,248,0.35)';
+  }
+}
+window.aoMudarComboInfraModal = aoMudarComboInfraModal;
+
+function atualizarTodasDescricoesInfraModal() {
+  ['tipo-abertura', 'tipo-forro', 'tipo-piso', 'tipo-telhado'].forEach(c => {
+    const sel = document.getElementById(`entidade-${c}`);
+    aoMudarComboInfraModal(c, sel ? sel.value : '');
+  });
+}
+window.atualizarTodasDescricoesInfraModal = atualizarTodasDescricoesInfraModal;
+
 function abrirModalCadastroEntidade(dadosExistentes = null) {
   const modal = document.getElementById('modal-popup-cadastro-entidade');
   if (!modal) return;
@@ -8121,7 +8202,6 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-secretario', dadosExistentes.secretario || '');
     setVal('entidade-contato-secretario', formatarTelefoneCelular(dadosExistentes.contatoSecretario || ''));
     setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
-    setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
     setVal('entidade-salas-adm', dadosExistentes.salasAdm || '');
     setVal('entidade-sala-aee', dadosExistentes.salaAEE || '');
     setVal('entidade-banheiros', dadosExistentes.banheiros || '');
@@ -8158,6 +8238,8 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-tipo-abertura', dadosExistentes.tipoAbertura || '');
     setVal('entidade-tipo-forro', dadosExistentes.tipoForro || '');
     setVal('entidade-tipo-piso', dadosExistentes.tipoPiso || '');
+    setVal('entidade-tipo-telhado', dadosExistentes.tipoTelhado || '');
+    atualizarTodasDescricoesInfraModal();
 
     setModalidadesModalSelecionadas(dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '');
 
@@ -8176,6 +8258,11 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-categoria', 'Conselho Escolar');
     setVal('entidade-competencia', 'Municipal');
     setVal('entidade-localidade', 'Urbana');
+    setVal('entidade-tipo-abertura', '');
+    setVal('entidade-tipo-forro', '');
+    setVal('entidade-tipo-piso', '');
+    setVal('entidade-tipo-telhado', '');
+    atualizarTodasDescricoesInfraModal();
     setModalidadesModalSelecionadas('');
     aoSelecionarTipoEntidadeForm('Conselho Escolar');
 
@@ -8592,6 +8679,7 @@ function salvarCadastroEntidade(e) {
     tipoAbertura: getV('entidade-tipo-abertura'),
     tipoForro: getV('entidade-tipo-forro'),
     tipoPiso: getV('entidade-tipo-piso'),
+    tipoTelhado: getV('entidade-tipo-telhado'),
     muradaGradeada: getV('entidade-murada-gradeada')
   };
 
@@ -8818,9 +8906,10 @@ window.exportarCadastrosLocaisCSV = exportarCadastrosLocaisCSV;
 // ============================================================
 
 // Base de dados e estado dos 5 Combos do Gerador de Link (Imagem 5)
+// Base de dados e estado dos 5 Combos do Gerador de Link (Imagem 5)
 window._linkGenData = {
   municipio: {
-    selected: 'Alta Floresta D\'Oeste',
+    selected: ["Alta Floresta D'Oeste"],
     todosLabel: 'TODOS OS MUNICÍPIOS',
     options: [
       "Alta Floresta D'Oeste", "Alto Alegre dos Parecis", "Alto Paraíso", "Alvorada D'Oeste", "Ariquemes", "Buritis", "Cabixi", "Cacaulândia", "Cacoal", "Campo Novo de Rondônia", "Candeias do Jamari", "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste", "Corumbiara", "Costa Marques", "Cujubim", "Espigão D'Oeste", "Governador Jorge Teixeira", "Guajará-Mirim", "Itapuã do Oeste", "Jaru", "Ji-Paraná", "Machadinho D'Oeste", "Ministro Andreazza", "Mirante da Serra", "Monte Negro", "Nova Brasilândia D'Oeste", "Nova Mamoré", "Nova União", "Novo Horizonte do Oeste", "Ouro Preto do Oeste", "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente Médici", "Primavera de Rondônia", "Rio Crespo", "Rolim de Moura", "Santa Luzia D'Oeste", "São Felipe D'Oeste", "São Francisco do Guaporé", "São Miguel do Guaporé", "Seringueiras", "Teixeirópolis", "Theobroma", "Urupá", "Vale do Anari", "Vale do Paraíso", "Vilhena"
@@ -8881,6 +8970,52 @@ window.renderizarLinkGenCombo = function(campo, filtroTexto = '') {
   const data = window._linkGenData[campo];
   if (!data) return;
 
+  // CASO ESPECIAL: MUNICÍPIO (MÚLTIPLA SELEÇÃO COM CHECKS - IMAGENS 1 E 3)
+  if (campo === 'municipio') {
+    let selArr = Array.isArray(data.selected) ? data.selected : (data.selected === 'Todos' || !data.selected ? [...data.options] : [data.selected]);
+    data.selected = selArr;
+
+    if (labelEl) {
+      if (selArr.length === 0) {
+        labelEl.textContent = 'Selecione o(s) município(s)...';
+      } else if (selArr.length === data.options.length) {
+        labelEl.textContent = 'TODOS OS MUNICÍPIOS (52)';
+      } else if (selArr.length === 1) {
+        labelEl.textContent = selArr[0];
+      } else {
+        labelEl.textContent = `${selArr.length} Municípios Selecionados`;
+      }
+    }
+    if (hiddenInput) {
+      hiddenInput.value = (selArr.length === data.options.length) ? 'Todos' : (selArr.length === 0 ? '' : selArr.join(','));
+    }
+
+    const normFiltro = (filtroTexto || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    let html = '';
+    data.options.forEach(opt => {
+      const val = typeof opt === 'string' ? opt : opt.value;
+      const lbl = typeof opt === 'string' ? opt : opt.label;
+      const normLbl = lbl.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (normFiltro && !normLbl.includes(normFiltro)) return;
+
+      const isChecked = selArr.includes(val);
+      html += `
+        <div class="link-gen-item" onclick="toggleMunicipioLinkGen('${val.replace(/'/g, "\\'")}', event)"
+          style="display:flex; align-items:center; gap:10px; padding:8px 14px; cursor:pointer; font-size:13px; font-weight:700; color:#f8fafc; border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s; background:${isChecked ? 'rgba(37,99,235,0.35)' : 'transparent'};"
+          onmouseover="this.style.background='${isChecked ? 'rgba(37,99,235,0.5)' : '#1e293b'}'" onmouseout="this.style.background='${isChecked ? 'rgba(37,99,235,0.35)' : 'transparent'}'">
+          <span class="link-gen-check" style="width:18px; height:18px; border:2px solid ${isChecked ? '#10b981' : 'rgba(255,255,255,0.35)'}; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; background:${isChecked ? '#10b981' : 'rgba(0,0,0,0.4)'}; transition:all 0.15s;">
+            ${isChecked ? '<span style="color:#fff; font-size:12px; font-weight:900; line-height:1;">✓</span>' : ''}
+          </span>
+          <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${lbl}</span>
+        </div>
+      `;
+    });
+
+    listEl.innerHTML = html;
+    return;
+  }
+
+  // DEMAIS COMBOS (SELEÇÃO ÚNICA COM OPÇÃO 'TODOS')
   const sel = data.selected || 'Todos';
   if (labelEl) {
     if (sel === 'Todos' || sel === 'TODOS') {
@@ -8901,7 +9036,6 @@ window.renderizarLinkGenCombo = function(campo, filtroTexto = '') {
     <div class="link-gen-item" onclick="selecionarLinkGenItem('${campo}', 'Todos')"
       style="display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; font-size:13px; font-weight:800; color:#fff; border-bottom:2px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.18); transition:background 0.15s;"
       onmouseover="this.style.background='rgba(245,158,11,0.32)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'">
-      <!-- MARCAÇÃO VERMELHA: CHECK PARA SELEÇÃO -->
       <span class="link-gen-check" style="width:18px; height:18px; border:2px solid ${isTodosChecked ? '#10b981' : '#fbbf24'}; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; background:${isTodosChecked ? '#10b981' : 'rgba(0,0,0,0.4)'}; transition:all 0.15s;">
         ${isTodosChecked ? '<span style="color:#fff; font-size:12px; font-weight:900; line-height:1;">✓</span>' : ''}
       </span>
@@ -8922,7 +9056,6 @@ window.renderizarLinkGenCombo = function(campo, filtroTexto = '') {
       <div class="link-gen-item" onclick="selecionarLinkGenItem('${campo}', '${val.replace(/'/g, "\\'")}')"
         style="display:flex; align-items:center; gap:10px; padding:9px 14px; cursor:pointer; font-size:13px; font-weight:700; color:#f8fafc; border-bottom:1px solid rgba(255,255,255,0.06); transition:background 0.15s; background:${isChecked ? 'rgba(37,99,235,0.35)' : 'transparent'};"
         onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='${isChecked ? 'rgba(37,99,235,0.35)' : 'transparent'}'">
-        <!-- MARCAÇÃO VERMELHA: CHECK PARA SELEÇÃO -->
         <span class="link-gen-check" style="width:18px; height:18px; border:2px solid ${isChecked ? '#10b981' : 'rgba(255,255,255,0.35)'}; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; background:${isChecked ? '#10b981' : 'rgba(0,0,0,0.4)'}; transition:all 0.15s;">
           ${isChecked ? '<span style="color:#fff; font-size:12px; font-weight:900; line-height:1;">✓</span>' : ''}
         </span>
@@ -8934,6 +9067,65 @@ window.renderizarLinkGenCombo = function(campo, filtroTexto = '') {
   listEl.innerHTML = html;
 };
 
+window.toggleMunicipioLinkGen = function(munNome, event) {
+  if (event) event.stopPropagation();
+  const data = window._linkGenData ? window._linkGenData.municipio : null;
+  if (!data) return;
+  if (!Array.isArray(data.selected)) {
+    data.selected = (data.selected === 'Todos' || !data.selected) ? [...data.options] : [data.selected];
+  }
+  const idx = data.selected.indexOf(munNome);
+  if (idx >= 0) {
+    data.selected.splice(idx, 1);
+  } else {
+    data.selected.push(munNome);
+  }
+
+  // Se exatamente 1 município for selecionado, sincroniza a Superintendência vinculada
+  if (data.selected.length === 1 && typeof getSuperPorMunicipio === 'function') {
+    const supCalc = getSuperPorMunicipio(data.selected[0]);
+    if (supCalc && window._linkGenData.super) {
+      const cleanSup = supCalc.replace(/^SUPER\s+/i, '').trim().toUpperCase();
+      const found = window._linkGenData.super.options.find(opt => {
+        const s = opt.replace(/^CRE\s*-\s*/i, '').trim().toUpperCase();
+        return s === cleanSup || s.includes(cleanSup) || cleanSup.includes(s);
+      });
+      if (found) {
+        window._linkGenData.super.selected = found;
+        renderizarLinkGenCombo('super');
+      }
+    }
+  } else if (data.selected.length === data.options.length) {
+    if (window._linkGenData.super) {
+      window._linkGenData.super.selected = 'Todos';
+      renderizarLinkGenCombo('super');
+    }
+  }
+
+  const drop = document.getElementById('drop-link-gen-municipio');
+  const searchInput = drop ? drop.querySelector('input[type="text"]') : null;
+  renderizarLinkGenCombo('municipio', searchInput ? searchInput.value : '');
+  gerarLinkCadastroComParametros();
+};
+
+window.marcarTodosMunicipiosLinkGen = function(marcar) {
+  const data = window._linkGenData ? window._linkGenData.municipio : null;
+  if (!data) return;
+  if (marcar) {
+    data.selected = [...data.options];
+    if (window._linkGenData.super) {
+      window._linkGenData.super.selected = 'Todos';
+      renderizarLinkGenCombo('super');
+    }
+  } else {
+    data.selected = [];
+  }
+  const drop = document.getElementById('drop-link-gen-municipio');
+  const searchInput = drop ? drop.querySelector('input[type="text"]') : null;
+  renderizarLinkGenCombo('municipio', searchInput ? searchInput.value : '');
+  gerarLinkCadastroComParametros();
+};
+
 window.selecionarLinkGenItem = function(campo, valor) {
   if (!window._linkGenData || !window._linkGenData[campo]) return;
   window._linkGenData[campo].selected = valor;
@@ -8941,27 +9133,6 @@ window.selecionarLinkGenItem = function(campo, valor) {
   if (hiddenInput) {
     hiddenInput.value = valor;
     hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-
-  // Se for município e não for 'Todos', atualiza a Super vinculada
-  if (campo === 'municipio') {
-    if (valor !== 'Todos' && typeof getSuperPorMunicipio === 'function') {
-      const supCalc = getSuperPorMunicipio(valor);
-      if (supCalc) {
-        const cleanSup = supCalc.replace(/^SUPER\s+/i, '').trim().toUpperCase();
-        const found = window._linkGenData.super.options.find(opt => {
-          const s = opt.replace(/^CRE\s*-\s*/i, '').trim().toUpperCase();
-          return s === cleanSup || s.includes(cleanSup) || cleanSup.includes(s);
-        });
-        if (found) {
-          window._linkGenData.super.selected = found;
-          renderizarLinkGenCombo('super');
-        }
-      }
-    } else if (valor === 'Todos') {
-      window._linkGenData.super.selected = 'Todos';
-      renderizarLinkGenCombo('super');
-    }
   }
 
   renderizarLinkGenCombo(campo);
@@ -9072,7 +9243,16 @@ function popularMunicipiosGeradorLink() {
 window.popularMunicipiosGeradorLink = popularMunicipiosGeradorLink;
 
 function gerarLinkCadastroComParametros() {
-  const mun = (document.getElementById('link-gen-municipio')?.value || '').trim();
+  let mun = (document.getElementById('link-gen-municipio')?.value || '').trim();
+  if (!mun && window._linkGenData && window._linkGenData.municipio) {
+    const sel = window._linkGenData.municipio.selected;
+    if (Array.isArray(sel)) {
+      mun = (sel.length === window._linkGenData.municipio.options.length) ? 'Todos' : (sel.length === 0 ? '' : sel.join(','));
+    } else {
+      mun = sel || 'Todos';
+    }
+  }
+  if (!mun) mun = 'Todos';
   const cat = (document.getElementById('link-gen-categoria')?.value || '').trim();
   const comp = (document.getElementById('link-gen-competencia')?.value || '').trim();
   const sup = (document.getElementById('link-gen-super')?.value || '').trim();

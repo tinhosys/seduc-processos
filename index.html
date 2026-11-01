@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.72">
+  <link rel="stylesheet" href="css/style.css?v=1.3.73">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -726,7 +726,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.72</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.73</div>
 
   </div>
 </div>
@@ -992,7 +992,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.72</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.73</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -2928,7 +2928,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.72</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.73</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3610,7 +3610,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.72
+              GBZ - v1.3.73
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -3883,7 +3883,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.72] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.73] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5625,40 +5625,81 @@
               </div>
             </div>
 
-            <!-- LINHA 7: ESTRUTURA E ACABAMENTO PREDIAL -->
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:16px;">
+            <!-- LINHA 7: ESTRUTURA E ACABAMENTO PREDIAL (COMBOS COM ESPECIFICAÇÃO TÉCNICA) -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px; margin-bottom:16px;">
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE ABERTURA</label>
-                <select id="entidade-tipo-abertura" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE ABERTURA (PORTAS / JANELAS)</label>
+                <select id="entidade-tipo-abertura" onchange="aoMudarComboInfraModal('tipo-abertura', this.value)" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
-                  <option value="Ferro">Ferro</option>
-                  <option value="Grade">Grade</option>
-                  <option value="Vidro Temperado">Vidro Temperado</option>
-                  <option value="Madeira">Madeira</option>
-                  <option value="ACM">ACM</option>
-                  <option value="Misto">Misto</option>
+                  <option value="Ferro" title="Esquadrias e portões de ferro/aço, alta resistência mecânica e segurança contra arrombamento.">Ferro</option>
+                  <option value="Alumínio" title="Esquadrias leves, resistentes à corrosão e maresia, com alta durabilidade e baixa manutenção.">Alumínio</option>
+                  <option value="Vidro Temperado (Blindex)" title="Folhas de vidro de alta resistência a impactos térmicos e mecânicos, permitindo ampla iluminação.">Vidro Temperado (Blindex)</option>
+                  <option value="Madeira" title="Folhas e esquadrias de madeira maciça ou compensada, com isolamento acústico e aconchego visual.">Madeira</option>
+                  <option value="Grade de Proteção" title="Estruturas metálicas de proteção fixadas nas janelas e portas para segurança reforçada.">Grade de Proteção</option>
+                  <option value="ACM (Alumínio Composto)" title="Chapas de alumínio composto com núcleo termoplástico, moderno, leve e de alta durabilidade.">ACM (Alumínio Composto)</option>
+                  <option value="PVC" title="Esquadrias em cloreto de polivinila com excelente vedação termoacústica e baixa manutenção.">PVC</option>
+                  <option value="Misto" title="Combinação de diferentes materiais nas esquadrias (ex: ferro com vidro, madeira com grade).">Misto</option>
                 </select>
+                <div id="desc-modal-entidade-tipo-abertura" class="combo-desc-box">Selecione uma opção para visualizar a especificação técnica.</div>
               </div>
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE FORRO</label>
-                <select id="entidade-tipo-forro" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                <select id="entidade-tipo-forro" onchange="aoMudarComboInfraModal('tipo-forro', this.value)" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
-                  <option value="Madeira">Madeira</option>
-                  <option value="Gesso">Gesso</option>
-                  <option value="PVC">PVC</option>
-                  <option value="Laje">Laje</option>
-                  <option value="Sem Forro">Sem Forro</option>
+                  <option value="Gesso Acartonado (Drywall)" title="Chapas de gesso revestidas com papel cartão. Instalação rápida, permite curvas, sancas e projetos de iluminação embutida complexos.">Gesso Acartonado (Drywall)</option>
+                  <option value="Gesso em Placas (Plaquinha)" title="Placas pequenas de gesso fundido penduradas por arames e chumbadas. Mais barato, porém gera mais sujeira e trincas que o drywall.">Gesso em Placas (Plaquinha)</option>
+                  <option value="PVC" title="Placas de plástico leves, imunes a cupins e umidade, de baixo custo e instalação muito rápida (não exige pintura).">PVC</option>
+                  <option value="Madeira (Lambri)" title="Réguas de madeira maciça encaixadas. Oferece excelente isolamento térmico e estética aconchegante.">Madeira (Lambri)</option>
+                  <option value="Isopor (EPS)" title="Placas modulares leves, excelente isolante térmico e acústico, comumente texturizadas. Muito usado em galpões e lojas.">Isopor (EPS)</option>
+                  <option value="Fibra Mineral" title="Placas modulares suportadas por perfis metálicos, usadas em ambientes corporativos devido à sua altíssima absorção acústica.">Fibra Mineral</option>
+                  <option value="Metálico" title="Feito de alumínio ou aço (Colmeia ou Réguas), visual contemporâneo ou industrial, permite acesso fácil e constante às instalações elétricas e de ar-condicionado.">Metálico</option>
+                  <option value="Lã de Vidro / Lã de Rocha" title="Forros termoacústicos focados em isolamento extremo (cinemas, estúdios, indústrias).">Lã de Vidro / Lã de Rocha</option>
+                  <option value="Laje Aparente / Cimento" title="Sem nenhum revestimento, deixando o concreto estrutural e as tubulações à vista (estilo brutalista/industrial).">Laje Aparente / Cimento</option>
+                  <option value="Bambu / Palha" title="Fibras naturais trançadas, uso predominante em quiosques, áreas de lazer, bangalôs e projetos rústicos.">Bambu / Palha</option>
+                  <option value="Sem Forro" title="Estrutura predial sem forro instalado, com cobertura direta à vista.">Sem Forro</option>
                 </select>
+                <div id="desc-modal-entidade-tipo-forro" class="combo-desc-box">Selecione uma opção para visualizar a especificação técnica.</div>
               </div>
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE PISO DA ESCOLA</label>
-                <select id="entidade-tipo-piso" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE PISO</label>
+                <select id="entidade-tipo-piso" onchange="aoMudarComboInfraModal('tipo-piso', this.value)" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
-                  <option value="Cerâmica">Cerâmica</option>
-                  <option value="Concreto">Concreto</option>
-                  <option value="Granelite">Granelite</option>
-                  <option value="Outros">Outros</option>
+                  <option value="Cerâmica" title="Placas de argila cozida com esmalte, muito comuns, de baixo custo e alta variedade de estampas.">Cerâmica</option>
+                  <option value="Porcelanato" title="Cerâmica de alta tecnologia, baixíssima absorção de água e alta resistência. Encontrado nas versões polido (brilhante), acetinado (fosco) e rústico (antiderrapante).">Porcelanato</option>
+                  <option value="Granilite" title="Mistura de cimento (branco ou comum) com agregados (mármore, granito, vidro). É monolítico (sem emendas) e extremamente durável.">Granilite</option>
+                  <option value="Assoalho de Madeira" title="Tábuas longas de madeira maciça, tradicionais, nobres e de alta durabilidade (permitem raspagem e novo envernizamento).">Assoalho de Madeira</option>
+                  <option value="Taco / Parquet" title="Pequenas peças de madeira maciça dispostas em padrões geométricos.">Taco / Parquet</option>
+                  <option value="Piso Laminado" title="Réguas de HDF (derivado de madeira) com estampa fotográfica na superfície, instalação rápida por sistema de clique ou cola.">Piso Laminado</option>
+                  <option value="Piso Vinílico (PVC)" title="Flexível, com ótimo desempenho acústico (&quot;não faz toc-toc&quot;), instalado colado ou clicado. Imita perfeitamente madeira e cimento.">Piso Vinílico (PVC)</option>
+                  <option value="Cimento Queimado" title="Argamassa de cimento, areia e água alisada na própria obra, com visual rústico/industrial.">Cimento Queimado</option>
+                  <option value="Granito" title="Rocha natural magmática de altíssima dureza e durabilidade, muito resistente a riscos e desgaste. Encontrado em chapas ou placas com acabamentos polido, levigado, apicoado ou jateado.">Granito</option>
+                  <option value="Mármore" title="Pedra natural nobre, mais porosa e menos resistente a riscos que o granito, valorizada pela estética sofisticada em áreas internas.">Mármore</option>
+                  <option value="Chão Batido" title="Piso de terra compactada, rústico e tradicional. Comum em construções vernaculares, rurais antigas ou estruturas provisórias, dispensando revestimentos industrializados.">Chão Batido</option>
+                  <option value="Epóxi (Porcelanato Líquido)" title="Resina autonivelante, sem emendas, de alto brilho e resistência. Muito usado em indústrias, garagens e hospitais.">Epóxi (Porcelanato Líquido)</option>
+                  <option value="Pedras Naturais" title="Ardósia, São Tomé, Miracema e Pedra Mineira. Comuns em áreas externas, calçadas e bordas de piscina.">Pedras Naturais</option>
+                  <option value="Piso Intertravado (Pavers)" title="Blocos de concreto pré-fabricados assentados sobre areia, ideais para calçadas e tráfego de veículos (permitem drenagem de água).">Piso Intertravado (Pavers)</option>
+                  <option value="Carpete" title="Revestimento têxtil (nylon, lã, poliéster), focado em conforto térmico e acústico, geralmente em placas ou rolos corporativos.">Carpete</option>
+                  <option value="Piso Emborrachado" title="Placas ou rolos de borracha, antiderrapantes, comuns em rampas, academias e áreas de alto tráfego. (Pastilhado/Moeda)">Piso Emborrachado</option>
+                  <option value="Piso Tátil" title="Pisos com relevo (direcional ou de alerta) para acessibilidade e orientação de pessoas com deficiência visual.">Piso Tátil</option>
+                  <option value="Outros" title="Outros tipos de pavimentação ou revestimento de piso não listados.">Outros</option>
                 </select>
+                <div id="desc-modal-entidade-tipo-piso" class="combo-desc-box">Selecione uma opção para visualizar a especificação técnica.</div>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE TELHADO</label>
+                <select id="entidade-tipo-telhado" onchange="aoMudarComboInfraModal('tipo-telhado', this.value)" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Telhas Termoacústicas" title="Compostas por duas telhas metálicas com um núcleo isolante (EPS ou poliuretano). Altamente recomendadas para escolas e edifícios públicos para conforto térmico e redução de ruído.">Telhas Termoacústicas</option>
+                  <option value="Telhas Metálicas" title="Chapas de aço de alta resistência e leveza. Escolha padrão para cobrir grandes vãos sem necessidade de muitos pilares (quadras poliesportivas, ginásios, pátios).">Telhas Metálicas</option>
+                  <option value="Telhas de Fibrocimento" title="Opção tradicional, de baixo custo e instalação rápida, comum em construções públicas populares. Fabricadas sem amianto, utilizando fios sintéticos e cimento.">Telhas de Fibrocimento</option>
+                  <option value="Laje Impermeabilizada" title="Estrutura sem telhas aparentes, escondida por platibandas. Recebe tratamento rigoroso com manta asfáltica. Padrão em hospitais contemporâneos e universidades.">Laje Impermeabilizada</option>
+                  <option value="Telhas Cerâmicas" title="Modelos clássicos (colonial, romana) que oferecem excelente conforto térmico natural. Comuns em escolas tradicionais, porém exigem estrutura de cobertura mais robusta.">Telhas Cerâmicas</option>
+                  <option value="Coberturas Translúcidas" title="Materiais (Policarbonato ou Vidro) que permitem a passagem de luz solar. Usados estrategicamente em passarelas, saguões e pátios internos.">Coberturas Translúcidas</option>
+                  <option value="Telhas de Concreto" title="Extremamente duráveis, impermeáveis e com manutenção quase nula. Por serem pesadas, exigem estrutura reforçada.">Telhas de Concreto</option>
+                  <option value="Telhas Ecológicas" title="Fabricadas a partir de fibras vegetais impermeabilizadas ou materiais reciclados. Opções leves para projetos públicos com foco em sustentabilidade.">Telhas Ecológicas</option>
+                  <option value="Outros" title="Outros tipos de cobertura ou telhado não especificados.">Outros</option>
+                </select>
+                <div id="desc-modal-entidade-tipo-telhado" class="combo-desc-box">Selecione uma opção para visualizar a especificação técnica.</div>
               </div>
             </div>
 
@@ -5773,8 +5814,17 @@
             <span style="font-size:12px; color:#fbbf24; margin-left:8px;">▾</span>
           </button>
           <div class="link-gen-combo-dropdown" id="drop-link-gen-municipio" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:2px solid #fbbf24; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
-            <div style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.1); background:#1e293b;">
-              <input type="text" placeholder="🔍 Buscar município..." oninput="filtrarLinkGenOpcoes('municipio', this.value)" style="width:100%; height:32px; padding:4px 8px; background:#0f172a; border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; outline:none; box-sizing:border-box;">
+            <!-- CABEÇALHO DO COMBO: TODOS MUNICÍPIOS / LIMPAR PARÂMETRO (IMAGEM 1) -->
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; background:rgba(30,41,59,0.95); border-bottom:1px solid rgba(255,255,255,0.12);">
+              <button type="button" onclick="marcarTodosMunicipiosLinkGen(true)" style="background:transparent; border:none; color:#38bdf8; font-size:12px; font-weight:800; cursor:pointer; padding:2px 4px; text-decoration:underline; display:flex; align-items:center; gap:4px;" onmouseover="this.style.color='#7dd3fc'" onmouseout="this.style.color='#38bdf8'">
+                <span>✓</span> Todos os Municípios
+              </button>
+              <button type="button" onclick="marcarTodosMunicipiosLinkGen(false)" style="background:transparent; border:none; color:#f87171; font-size:12px; font-weight:800; cursor:pointer; padding:2px 4px; text-decoration:underline; display:flex; align-items:center; gap:4px;" onmouseover="this.style.color='#fca5a5'" onmouseout="this.style.color='#f87171'">
+                <span>✕</span> Limpar Parâmetro
+              </button>
+            </div>
+            <div style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.1); background:#0f172a;">
+              <input type="text" placeholder="🔍 Buscar município..." oninput="filtrarLinkGenOpcoes('municipio', this.value)" style="width:100%; height:32px; padding:4px 8px; background:#1e293b; border:1px solid rgba(255,255,255,0.2); border-radius:6px; color:#fff; font-size:12px; outline:none; box-sizing:border-box;">
             </div>
             <div class="link-gen-combo-list" id="list-link-gen-municipio" style="max-height:210px; overflow-y:auto;"></div>
           </div>
@@ -6094,10 +6144,10 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/dados.js?v=1.3.72"></script>
-  <script src="js/app.js?v=1.3.72"></script>
-  <script src="js/auth-sap.js?v=1.3.72"></script>
-  <script src="js/escolas.js?v=1.3.72" charset="utf-8"></script>
+  <script src="js/dados.js?v=1.3.73"></script>
+  <script src="js/app.js?v=1.3.73"></script>
+  <script src="js/auth-sap.js?v=1.3.73"></script>
+  <script src="js/escolas.js?v=1.3.73" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>
