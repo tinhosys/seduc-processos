@@ -154,57 +154,52 @@
       color: #fca5a5;
     }
 
-    /* LAYOUT PRINCIPAL: LATERAL COM BANNER + ÁREA TOTAL EXPANDIDA */
-    .layout-wrapper {
-      display: flex;
-      gap: 22px;
-      padding: 20px 24px 40px 24px;
+    /* ==================== BANNER INSTITUCIONAL DO TOPO (100% LARGURA, RESPONSIVO, ALTURA PROPORCIONAL) ==================== */
+    .topo-banner-wrapper {
       width: 100%;
-      align-items: flex-start;
-      box-sizing: border-box;
+      background: #000000;
+      line-height: 0;
+      margin: 0;
+      padding: 0;
+      border-bottom: 2px solid #0284c7;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      display: block;
     }
 
-    /* LATERAL: BANNER CADASTRE TODAS AS ESCOLAS (COM LINK WHATSAPP) */
-    .sidebar-banner {
-      width: 250px;
-      max-width: 250px;
-      flex-shrink: 0;
-      position: sticky;
-      top: 100px;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.1);
-      background: #090e17;
-      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    }
-
-    .sidebar-banner:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(37, 211, 102, 0.35);
-      border-color: rgba(37, 211, 102, 0.6);
-    }
-
-    .sidebar-banner a {
+    .topo-banner-wrapper a {
       display: block;
       width: 100%;
-      height: 100%;
+      line-height: 0;
+      margin: 0;
+      padding: 0;
       text-decoration: none;
       cursor: pointer;
     }
 
-    .sidebar-banner img {
+    .topo-banner-img {
       width: 100%;
       height: auto;
-      max-height: 430px;
-      object-fit: contain;
       display: block;
-      cursor: pointer;
+      aspect-ratio: 1024 / 341;
+      object-fit: cover;
+      transition: filter 0.2s ease;
     }
 
-    /* ÁREA DIREITA: EXPANDIDA EM TODA A EXTENSÃO DA PÁGINA */
+    .topo-banner-wrapper a:hover .topo-banner-img {
+      filter: brightness(1.05);
+    }
+
+    /* LAYOUT PRINCIPAL: ÁREA TOTAL EXPANDIDA */
+    .layout-wrapper {
+      display: block;
+      padding: 16px 24px 40px 24px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* ÁREA DO FORMULÁRIO E TABELA EXPANDIDA EM 100% */
     .content-area {
-      flex: 1;
+      width: 100%;
       min-width: 0;
       display: flex;
       flex-direction: column;
@@ -355,8 +350,7 @@
     }
 
     @media (max-width: 1024px) {
-      .layout-wrapper { flex-direction: column; }
-      .sidebar-banner { width: 100%; max-width: 320px; margin: 0 auto 20px auto; position: static; max-height: none; overflow: visible; }
+      .layout-wrapper { padding: 12px 14px 30px 14px; }
       .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
       .municipio-titulo-topo .topo-linha-entidade { font-size: 16pt; }
       .municipio-titulo-topo .topo-linha-municipios { font-size: 12pt; }
@@ -705,6 +699,19 @@
 </head>
 <body>
 
+  <!-- ==================== BANNER INSTITUCIONAL DO TOPO (100% LARGURA, RESPONSIVO, LINK WHATSAPP DINÂMICO) ==================== -->
+  <div class="topo-banner-wrapper">
+    <a id="link-banner-whatsapp"
+       href="https://api.whatsapp.com/send?phone=5569999064881&text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20cadastro%20de%20escolas%20e%20entidades%20da%20SEDUC/CAM/RO."
+       target="_blank" rel="noopener noreferrer"
+       title="Fale conosco no WhatsApp: (69) 99906-4881">
+      <img id="img-banner-topo"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.77"
+           alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
+           class="topo-banner-img">
+    </a>
+  </div>
+
   <!-- ==================== TOPO: MUNICÍPIO (30 PT) E FECHAR ==================== -->
   <header class="top-header">
     <div class="top-header-row">
@@ -740,18 +747,8 @@
     </div>
   </div>
 
-  <!-- ==================== LAYOUT PRINCIPAL: BANNER LATERAL + CONTEÚDO ==================== -->
+  <!-- ==================== LAYOUT PRINCIPAL: ÁREA TOTAL EXPANDIDA ==================== -->
   <div class="layout-wrapper">
-    
-    <!-- LATERAL: BANNER COM LINK PARA WHATSAPP EM TODA A IMAGEM (69 99906-4881) -->
-    <aside class="sidebar-banner">
-      <a href="https://api.whatsapp.com/send?phone=5569999064881&text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20cadastro%20de%20escolas%20e%20entidades%20da%20SEDUC/CAM/RO."
-        target="_blank" rel="noopener noreferrer"
-        title="Fale conosco no WhatsApp: (69) 99906-4881">
-        <img src="img/banner-cadastre-escolas.jpg?v=1.3.76" alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881">
-      </a>
-    </aside>
-
     <!-- ÁREA EXPANDIDA: FORMULÁRIO E TABELA -->
     <main class="content-area">
 
@@ -1539,8 +1536,8 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.76"></script>
-  <script src="js/escolas.js?v=1.3.76"></script>
+  <script src="js/dados.js?v=1.3.77"></script>
+  <script src="js/escolas.js?v=1.3.77"></script>
 
   <script>
     /* ============================================================
@@ -3415,7 +3412,17 @@
         topoMunicipios.textContent = tituloCabecalho.municipios;
       }
 
-      document.title = `${tituloCabecalho} - Cadastro de Entidades / Escolas`;
+      const entNomeWhats = (tituloCabecalho && tituloCabecalho.entidade) ? tituloCabecalho.entidade : (_categoriaAtual || 'Conselho Escolar');
+      const munNomeWhats = (tituloCabecalho && tituloCabecalho.municipios) ? tituloCabecalho.municipios : munLabelBadge;
+      document.title = `${entNomeWhats} • ${munNomeWhats} - Cadastro Oficial SEDUC/RO`;
+
+      // Atualiza link dinâmico do WhatsApp no banner do topo
+      const linkWhats = document.getElementById('link-banner-whatsapp');
+      if (linkWhats) {
+        const msgWhats = `Olá! Estou acessando o formulário oficial de cadastro de ${entNomeWhats} - ${munNomeWhats} (CAM/SEDUC-RO) e gostaria de suporte / tirar dúvidas.`;
+        linkWhats.href = `https://api.whatsapp.com/send?phone=5569999064881&text=${encodeURIComponent(msgWhats)}`;
+        linkWhats.title = `Fale com a CAM SEDUC/RO no WhatsApp: (69) 99906-4881 (${entNomeWhats} - ${munNomeWhats})`;
+      }
 
       // Carrega Informante Padrão se previamente configurado (Imagem 1)
       const infSalvo = carregarInformantePadrao();
