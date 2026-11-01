@@ -2107,6 +2107,36 @@ tbody tr.linha-pago td:first-child,
 tbody tr.linha-pago td.col-prefixo {
   background-color: #0d2624 !important;
 }
+
+/* Prefixo invisível na tela principal (mesmo para admin) - revelado no hover */
+.prefixo-mini-chip .badge-prefixo-sigla,
+.prefixo-mini-chip .badge-prefixo-normal,
+.prefixo-mini-chip .badge-prefixo-alert {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.prefixo-cell-container:hover .badge-prefixo-sigla,
+.prefixo-cell-container:hover .badge-prefixo-normal,
+.prefixo-cell-container:hover .badge-prefixo-alert,
+.table-wrap td.col-prefixo:hover .badge-prefixo-sigla,
+.table-wrap td.col-prefixo:hover .badge-prefixo-normal,
+.table-wrap td.col-prefixo:hover .badge-prefixo-alert {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+.prefixo-cell-container:hover .prefixo-mini-chip,
+.table-wrap td.col-prefixo:hover .prefixo-mini-chip {
+  background: rgba(56,189,248,0.14) !important;
+  border-color: rgba(56,189,248,0.45) !important;
+  box-shadow: 0 0 8px rgba(56,189,248,0.35) !important;
+}
+.prefixo-cell-container:hover .prefixo-hover-card,
+.table-wrap td.col-prefixo:hover .prefixo-cell-container .prefixo-hover-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
 thead th {
   z-index: 20;
 }

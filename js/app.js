@@ -1728,12 +1728,12 @@ function renderProcessos() {
     return `
     <tr onclick="abrirDetalhe('${p.id}')" class="${p.alerta === '1' ? 'linha-alerta' : ''} ${p.marca === '1' || p.marca === 'SIM' ? 'linha-marcada' : ''} ${isPago ? 'linha-pago' : ''} process-row ${p.CAM === '1' && p.GAB === '1' && p.CC === '1' ? 'border-autorizado' : 'border-pendente'}">
       <td onclick="event.stopPropagation()" style="text-align: center;"><input type="checkbox" class="check-processo" value="${p.id}" style="cursor:pointer; transform: scale(1.2);"></td>
-      <td class="col-prefixo" title="${p.prefixo || ''}">
+      <td class="col-prefixo">
         <div class="prefixo-cell-container">
           <!-- Trigger Compacto (Diminuído 50%) -->
           <div class="prefixo-mini-chip">
             <div style="display:flex; align-items:center; gap:3px;">
-              <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'}" style="font-size:9px; padding:1px 4px; font-weight:800; line-height:1;">
+              <span class="badge ${p.alerta === '1' ? 'badge-prefixo-alert' : 'badge-prefixo-normal'} badge-prefixo-sigla" style="font-size:9px; padding:1px 4px; font-weight:800; line-height:1;">
                 ${p.prefixo || '—'}
               </span>
               ${p.ano ? `<span style="font-size:8px; color:#cbd5e1; font-weight:700;">${p.ano}</span>` : ''}
