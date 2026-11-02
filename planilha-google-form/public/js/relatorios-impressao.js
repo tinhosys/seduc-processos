@@ -122,7 +122,7 @@
     const agora = new Date();
     const pad = n => String(n).padStart(2, '0');
     const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.86', window.location.href).href;
+    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.87', window.location.href).href;
 
     const pCodeLink = esc.plusCode
       ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" style="color:#0284c7; text-decoration:underline; font-weight:700;">${esc.plusCode} ↗ (Google Maps)</a>`
@@ -190,7 +190,7 @@
     }
     .btn-fechar:hover { background: #ef4444; color: #fff; }
 
-    /* CABEÇALHO OFICIAL: BANNER 170mm COM PROPORÇÃO REAL (IMAGEM 3) */
+    /* CABEÇALHO OFICIAL: LOGO CAM 10cm COM PROPORÇÃO DE ALTURA (PNG SEM FUNDO PRETO) */
     .report-paper {
       width: 170mm;
       max-width: 100%;
@@ -200,14 +200,13 @@
       box-shadow: 0 3px 15px rgba(0,0,0,0.06);
     }
     .report-banner-wrap {
-      width: 170mm;
-      max-width: 100%;
+      width: 100%;
       margin: 0 auto 6px auto;
       text-align: center;
       background: transparent;
     }
     .report-banner-img {
-      width: 170mm !important;
+      width: 10cm !important;
       max-width: 100% !important;
       height: auto !important;
       display: block !important;
@@ -371,13 +370,14 @@
         border: none !important;
       }
       .report-banner-wrap {
-        width: 170mm !important;
+        width: 100% !important;
         margin: 0 auto 5px auto !important;
+        text-align: center !important;
         background: transparent !important;
       }
       .report-banner-img {
-        width: 170mm !important;
-        max-width: 170mm !important;
+        width: 10cm !important;
+        max-width: 10cm !important;
         height: auto !important;
         object-fit: contain !important;
         background: transparent !important;
@@ -691,7 +691,7 @@
     const agora = new Date();
     const pad = n => String(n).padStart(2, '0');
     const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.86', window.location.href).href;
+    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.87', window.location.href).href;
 
     // Agrupa por Município (ACOMODE E INFORME MUNICÍPIO COMO GRUPO)
     const agrupadoPorMunicipio = {};
@@ -858,7 +858,7 @@
     }
     .btn-fechar:hover { background: #ef4444; color: #fff; }
 
-    /* CABEÇALHO OFICIAL: BANNER 170mm COM PROPORÇÃO REAL (IMAGEM 3) */
+    /* CABEÇALHO OFICIAL: LOGO CAM 10cm COM PROPORÇÃO DE ALTURA (PNG SEM FUNDO PRETO) */
     .report-paper {
       width: 170mm;
       max-width: 100%;
@@ -868,14 +868,13 @@
       box-shadow: 0 3px 15px rgba(0,0,0,0.06);
     }
     .report-banner-wrap {
-      width: 170mm;
-      max-width: 100%;
+      width: 100%;
       margin: 0 auto 6px auto;
       text-align: center;
       background: transparent;
     }
     .report-banner-img {
-      width: 170mm !important;
+      width: 10cm !important;
       max-width: 100% !important;
       height: auto !important;
       display: block !important;
@@ -1083,13 +1082,14 @@
         border: none !important;
       }
       .report-banner-wrap {
-        width: 170mm !important;
+        width: 100% !important;
         margin: 0 auto 5px auto !important;
+        text-align: center !important;
         background: transparent !important;
       }
       .report-banner-img {
-        width: 170mm !important;
-        max-width: 170mm !important;
+        width: 10cm !important;
+        max-width: 10cm !important;
         height: auto !important;
         object-fit: contain !important;
         background: transparent !important;
