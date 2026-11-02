@@ -515,8 +515,36 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
       val = data.localizacao || data.LOCALIZACAO;
     } else if (hLow.includes('observa') || hLow.includes('obs')) {
       val = data.obs !== undefined ? data.obs : (data.OBSERVACAO !== undefined ? data.OBSERVACAO : data.observacao);
-    } else if (hLow === 'data') {
-      val = data.data || data.DATA;
+    } else if (hLow === 'data' || (hLow.startsWith('data') && !hLow.includes('hora') && !hLow.includes('edicao') && !hLow.includes('edição') && !hLow.includes('acesso'))) {
+      let dVal = (data.data !== undefined && data.data !== null) ? data.data : (data.DATA !== undefined ? data.DATA : '');
+      dVal = String(dVal).trim();
+      if (dVal && dVal !== '-') {
+        // Normaliza para formato padrão DD/MM/AAAA com 2 dígitos
+        const isoMatch = dVal.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+        const brMatch = dVal.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        const gvizMatch = dVal.match(/Date\((\d{4}),\s*(\d+),\s*(\d+)/i);
+        if (isoMatch) {
+          val = `${isoMatch[3].padStart(2, '0')}/${isoMatch[2].padStart(2, '0')}/${isoMatch[1]}`;
+        } else if (brMatch) {
+          val = `${brMatch[1].padStart(2, '0')}/${brMatch[2].padStart(2, '0')}/${brMatch[3]}`;
+        } else if (gvizMatch) {
+          const d = String(gvizMatch[3]).padStart(2, '0');
+          const m = String(Number(gvizMatch[2]) + 1).padStart(2, '0');
+          val = `${d}/${m}/${gvizMatch[1]}`;
+        } else {
+          val = dVal;
+        }
+      } else {
+        // Se veio em branco na requisição:
+        // Se a linha existente já tinha data, PRESERVA! Não apaga!
+        if (originalRow && originalRow[i] && String(originalRow[i]).trim() !== '') {
+          val = originalRow[i];
+        } else {
+          // Em novo cadastro sem data informada, grava a data corrente de hoje
+          const now = new Date();
+          val = now.toLocaleDateString('pt-BR');
+        }
+      }
     } else if (hLow.includes('anota')) {
       val = data.anotacao || data.ANOTACAO;
     } else if (hLow.includes('apontamento')) {
@@ -563,9 +591,26 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
     } else if (hLow.includes('cnpj')) {
       val = data.cnpj !== undefined ? data.cnpj : (data.CNPJ !== undefined ? data.CNPJ : '');
     } else if (hLow.includes('executivo')) {
-      val = data.executivo !== undefined ? data.executivo : (data.EXECUTIVO !== undefined ? data.EXECUTIVO : '');
+      const exVal = data.executivo !== undefined ? data.executivo : (data.EXECUTIVO !== undefined ? data.EXECUTIVO : undefined);
+      if (exVal !== undefined && String(exVal).trim() !== '') {
+        val = String(exVal).trim();
+      } else if (exVal !== undefined && String(exVal).trim() === '') {
+        // Se vier vazio: só limpa se admin pedir explicitamente _limparExecutivo.
+        // Se a linha já possuía um executivo (ex: 'TIA L3'), PRESERVA integralmente!
+        if (user && (user.nivel === 'adm' || user.nivel === 'admin') && data._limparExecutivo) {
+          val = "";
+        } else if (originalRow && originalRow[i] && String(originalRow[i]).trim() !== '') {
+          val = String(originalRow[i]).trim();
+        } else {
+          val = "";
+        }
+      } else {
+        val = (originalRow && originalRow[i]) ? String(originalRow[i]).trim() : "";
+      }
     } else if (hLow.includes('analista')) {
       val = data.analista !== undefined ? data.analista : (data.ANALISTA !== undefined ? data.ANALISTA : '');
+    } else if (hLow === 'id' || hLow === 'id_seq' || hLow === 'seq' || hLow === 'chave') {
+      val = (originalRow && originalRow[i]) ? originalRow[i] : (data.id || data.seqId || '');
     }
 
     if (hLow.includes('contato')) {
@@ -620,11 +665,7 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
     }
 
     const safeTitle = tabName.replace(/'/g, "''");
-    const headerRes = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `'${safeTitle}'!A${rowNumber}:ZZ${rowNumber}` // fetch existing row!
-    });
-    const existingRow = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
+    let targetRowNumber = rowNumber;
 
     const headerDefRes = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
@@ -636,10 +677,48 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
       return res.status(400).json({ erro: "A planilha não possui cabeçalho." });
     }
 
+    let headerRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `'${safeTitle}'!A${targetRowNumber}:ZZ${targetRowNumber}` // fetch existing row!
+    });
+    let existingRow = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
+
+    // Verificação de segurança da chave primária (Nº do Processo):
+    // Garante que a linha sendo atualizada corresponde exatamente ao processo pretendido
+    const reqProcNum = (req.body.numero || req.body.PROCESSOS || '').trim();
+    if (reqProcNum && headers.length > 0) {
+      const procColIndex = headers.findIndex(h => {
+        const hl = String(h || '').trim().toLowerCase();
+        return hl === 'processos' || hl === 'processo' || hl === 'nº processo';
+      });
+      if (procColIndex !== -1) {
+        const currentProcOnRow = (existingRow[procColIndex] || '').trim();
+        if (currentProcOnRow && currentProcOnRow !== reqProcNum) {
+          console.warn(`[UPDATE] Divergência de linha: Linha ${targetRowNumber} possui processo '${currentProcOnRow}', mas a requisição é para '${reqProcNum}'. Localizando linha correta...`);
+          const colLetter = columnToLetter(procColIndex + 1);
+          const allProcsRes = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: `'${safeTitle}'!${colLetter}1:${colLetter}`
+          });
+          const allProcsVals = allProcsRes.data.values || [];
+          const foundIdx = allProcsVals.findIndex(r => r && r[0] && String(r[0]).trim() === reqProcNum);
+          if (foundIdx > 0) {
+            targetRowNumber = foundIdx + 1;
+            console.log(`[UPDATE] Linha correta localizada para '${reqProcNum}': Linha ${targetRowNumber}`);
+            const realRowRes = await sheets.spreadsheets.values.get({
+              spreadsheetId: SPREADSHEET_ID,
+              range: `'${safeTitle}'!A${targetRowNumber}:ZZ${targetRowNumber}`
+            });
+            existingRow = (realRowRes.data.values && realRowRes.data.values[0]) ? realRowRes.data.values[0] : [];
+          }
+        }
+      }
+    }
+
     const updatedRow = mapDataToRow(req.body, headers, existingRow, req.sessao);
 
     const lastColumn = columnToLetter(headers.length);
-    const range = `'${safeTitle}'!A${rowNumber}:${lastColumn}${rowNumber}`;
+    const range = `'${safeTitle}'!A${targetRowNumber}:${lastColumn}${targetRowNumber}`;
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
@@ -647,9 +726,15 @@ app.put("/api/registros/:id", editorOnly, async (req, res) => {
       valueInputOption: "USER_ENTERED",
       requestBody: { values: [updatedRow] }
     });
-    console.log(`[UPDATE] Linha ${rowNumber} da aba '${tabName}' atualizada. Range: ${range}`);
+    console.log(`[UPDATE] Linha ${targetRowNumber} da aba '${tabName}' atualizada. Range: ${range}`);
 
-    res.json({ sucesso: true, mensagem: "Atualizado com sucesso." });
+    res.json({
+      sucesso: true,
+      id: `${tabName}__${targetRowNumber}`,
+      _tabName: tabName,
+      _rowNumber: targetRowNumber,
+      mensagem: "Atualizado com sucesso."
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ erro: "Erro ao atualizar registro." });
@@ -806,18 +891,76 @@ app.post("/api/registros", editorOnly, async (req, res) => {
       return res.status(400).json({ erro: `A aba ${tabName} não existe ou não tem cabeçalho.` });
     }
 
+    // Prevenção de duplicações: se o processo já existe na planilha, atualiza a linha em vez de criar duplicata fora de ordem
+    const reqProcNum = (req.body.numero || req.body.PROCESSOS || '').trim();
+    if (reqProcNum && headers.length > 0) {
+      const procColIndex = headers.findIndex(h => {
+        const hl = String(h || '').trim().toLowerCase();
+        return hl === 'processos' || hl === 'processo' || hl === 'nº processo';
+      });
+      if (procColIndex !== -1) {
+        const colLetter = columnToLetter(procColIndex + 1);
+        const allProcsRes = await sheets.spreadsheets.values.get({
+          spreadsheetId: SPREADSHEET_ID,
+          range: `'${safeTitle}'!${colLetter}1:${colLetter}`
+        });
+        const allProcsVals = allProcsRes.data.values || [];
+        const foundIdx = allProcsVals.findIndex(r => r && r[0] && String(r[0]).trim() === reqProcNum);
+        if (foundIdx > 0) {
+          const existingRowNum = foundIdx + 1;
+          console.log(`[INSERT -> UPDATE] Processo '${reqProcNum}' já existe na linha ${existingRowNum}. Atualizando registro existente para evitar duplicação.`);
+          const realRowRes = await sheets.spreadsheets.values.get({
+            spreadsheetId: SPREADSHEET_ID,
+            range: `'${safeTitle}'!A${existingRowNum}:ZZ${existingRowNum}`
+          });
+          const existingRow = (realRowRes.data.values && realRowRes.data.values[0]) ? realRowRes.data.values[0] : [];
+          const updatedRow = mapDataToRow(req.body, headers, existingRow, req.sessao);
+          const lastColumn = columnToLetter(headers.length);
+          const range = `'${safeTitle}'!A${existingRowNum}:${lastColumn}${existingRowNum}`;
+
+          await sheets.spreadsheets.values.update({
+            spreadsheetId: SPREADSHEET_ID,
+            range,
+            valueInputOption: "USER_ENTERED",
+            requestBody: { values: [updatedRow] }
+          });
+
+          return res.json({
+            sucesso: true,
+            id: `${tabName}__${existingRowNum}`,
+            _tabName: tabName,
+            _rowNumber: existingRowNum,
+            mensagem: "Processo já existente atualizado com sucesso."
+          });
+        }
+      }
+    }
+
     const newRow = mapDataToRow(req.body, headers, [], req.sessao);
     const lastColLetter = columnToLetter(headers.length);
-    await sheets.spreadsheets.values.append({
+    const appendRes = await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: `'${safeTitle}'!A:${lastColLetter}`,
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
     });
-    console.log(`[INSERT] Novo registro adicionado na aba '${tabName}'. Range: '${safeTitle}'!A:${lastColLetter}`);
 
-    res.json({ sucesso: true, mensagem: "Novo registro inserido com sucesso." });
+    let newRowNum = null;
+    if (appendRes.data && appendRes.data.updates && appendRes.data.updates.updatedRange) {
+      const match = appendRes.data.updates.updatedRange.match(/!A(\d+):/i) || appendRes.data.updates.updatedRange.match(/(\d+)$/);
+      if (match) newRowNum = Number(match[1]);
+    }
+
+    console.log(`[INSERT] Novo registro adicionado na aba '${tabName}' (Linha ${newRowNum || 'fim'}). Range: '${safeTitle}'!A:${lastColLetter}`);
+
+    res.json({
+      sucesso: true,
+      id: newRowNum ? `${tabName}__${newRowNum}` : undefined,
+      _tabName: tabName,
+      _rowNumber: newRowNum,
+      mensagem: "Novo registro inserido com sucesso."
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ erro: "Erro ao inserir registro." });

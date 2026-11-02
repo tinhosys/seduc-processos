@@ -1,9 +1,133 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.55
+// Versão do Sistema: v1.3.90
 // ============================================================
-window.APP_VERSION = 'v1.3.55';
+window.APP_VERSION = 'v1.3.90';
+
+// ============================================================
+// MODAL PROFISSIONAL PADRONIZADO . : SiSCAM : .
+// ============================================================
+function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
+  return new Promise((resolve) => {
+    const titulo = opcoes.titulo || '. : SiSCAM : .';
+    const subtitulo = opcoes.subtitulo || 'Sistema Integrado SEDUC/CAM • Rondônia';
+    const tipo = opcoes.tipo || 'info'; // 'info', 'sucesso', 'erro', 'aviso', 'requerido'
+    const focoElemento = opcoes.focoElemento || null;
+    const callback = opcoes.callback || null;
+    const btnTexto = opcoes.btnTexto || 'OK';
+
+    const modalExistente = document.getElementById('siscam-modal-root');
+    if (modalExistente) modalExistente.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'siscam-modal-root';
+    overlay.className = 'siscam-modal-overlay';
+
+    let iconeCabecalho = '🏛️';
+    let btnCls = 'siscam-modal-btn-ok';
+    if (tipo === 'sucesso') {
+      iconeCabecalho = '✅';
+      btnCls += ' siscam-modal-btn-sucesso';
+    } else if (tipo === 'erro' || tipo === 'requerido') {
+      iconeCabecalho = '⚠️';
+    }
+
+    let htmlMensagem = '';
+    if (typeof mensagem === 'string') {
+      if (mensagem.includes('<div') || mensagem.includes('<p') || mensagem.includes('<strong') || mensagem.includes('<span')) {
+        htmlMensagem = mensagem;
+      } else {
+        const linhas = mensagem.split('\n');
+        htmlMensagem = linhas.map(l => {
+          const tr = l.trim();
+          if (!tr) return '<div style="height:6px;"></div>';
+          if (tr.startsWith('•')) {
+            return `<div style="margin-left:8px; margin-bottom:4px; display:flex; align-items:flex-start; gap:6px;">
+              <span style="color:#38bdf8; font-weight:800;">•</span>
+              <span>${tr.substring(1).trim()}</span>
+            </div>`;
+          }
+          return `<p style="margin-bottom:6px;">${tr}</p>`;
+        }).join('');
+      }
+    } else {
+      htmlMensagem = String(mensagem);
+    }
+
+    overlay.innerHTML = `
+      <div class="siscam-modal-card" role="dialog" aria-modal="true">
+        <div class="siscam-modal-header">
+          <div class="siscam-modal-title-box">
+            <span style="font-size:18px;">${iconeCabecalho}</span>
+            <div>
+              <div class="siscam-modal-badge-title">${titulo}</div>
+              <div class="siscam-modal-subtag">${subtitulo}</div>
+            </div>
+          </div>
+          <button type="button" class="siscam-modal-close" id="siscam-btn-fechar" title="Fechar (Esc)">✕</button>
+        </div>
+        <div class="siscam-modal-body">
+          ${htmlMensagem}
+        </div>
+        <div class="siscam-modal-footer">
+          <button type="button" class="${btnCls}" id="siscam-btn-ok">${btnTexto}</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    const btnOk = document.getElementById('siscam-btn-ok');
+    const btnFechar = document.getElementById('siscam-btn-fechar');
+
+    let fechado = false;
+    function fechar() {
+      if (fechado) return;
+      fechado = true;
+      overlay.remove();
+      document.removeEventListener('keydown', onKey);
+
+      if (focoElemento) {
+        try {
+          focoElemento.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          setTimeout(() => {
+            focoElemento.focus();
+            focoElemento.classList.add('campo-foco-destaque');
+            setTimeout(() => {
+              focoElemento.classList.remove('campo-foco-destaque');
+            }, 2200);
+          }, 150);
+        } catch(e) {
+          console.error('Erro ao focar elemento:', e);
+        }
+      }
+
+      if (typeof callback === 'function') callback();
+      resolve(true);
+    }
+
+    function onKey(e) {
+      if (e.key === 'Enter' || e.key === 'Escape') {
+        e.preventDefault();
+        fechar();
+      }
+    }
+
+    btnOk.addEventListener('click', fechar);
+    btnFechar.addEventListener('click', fechar);
+    document.addEventListener('keydown', onKey);
+
+    setTimeout(() => { if (btnOk) btnOk.focus(); }, 60);
+  });
+}
+window.exibirMensagemSiSCAM = exibirMensagemSiSCAM;
+if (!window.alertOriginal) {
+  window.alertOriginal = window.alert;
+  window.alert = function(msg) {
+    return exibirMensagemSiSCAM(msg);
+  };
+}
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -230,6 +354,46 @@ window.isUsuarioAdmin = function() {
     if (document.body && document.body.classList.contains('role-adm')) return true;
   } catch(e) {}
   return false;
+};
+
+window.formatarDataParaInputHTML = function(val) {
+  if (!val) return '';
+  const s = String(val).trim();
+  if (!s || s === '-') return '';
+  
+  const gvizMatch = s.match(/Date\((\d{4}),\s*(\d+),\s*(\d+)/i);
+  if (gvizMatch) {
+    const y = gvizMatch[1];
+    const m = String(Number(gvizMatch[2]) + 1).padStart(2, '0');
+    const d = String(Number(gvizMatch[3])).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  const brMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (brMatch) {
+    const d = brMatch[1].padStart(2, '0');
+    const m = brMatch[2].padStart(2, '0');
+    const y = brMatch[3];
+    return `${y}-${m}-${d}`;
+  }
+
+  const isoMatch = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (isoMatch) {
+    const y = isoMatch[1];
+    const m = isoMatch[2].padStart(2, '0');
+    const d = isoMatch[3].padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  const dt = new Date(s);
+  if (!isNaN(dt.getTime())) {
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, '0');
+    const d = String(dt.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  return '';
 };
 
 window.recarregarDadosGlobais = async function() {
@@ -2348,7 +2512,8 @@ function renderFormulario() {
     if (fValOf) fValOf.value = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
     const fValPlan = document.getElementById('form-valorPlan');
     if (fValPlan) fValPlan.value = p.valorPlan ? maskCurrency((p.valorPlan * 100).toFixed(0)) : '';
-    let _dVal = p.data || ''; if (_dVal.includes('/')) { const _parts = _dVal.split('/'); if (_parts.length === 3) _dVal = _parts[2] + '-' + _parts[1] + '-' + _parts[0]; } const fData = document.getElementById('form-data'); if (fData) fData.value = _dVal;
+    const fData = document.getElementById('form-data');
+    if (fData) fData.value = formatarDataParaInputHTML(p.data);
     
     // Set toggles
     const setToggle = (id, val) => {
@@ -2475,7 +2640,15 @@ function renderFormulario() {
     });
     document.getElementById('form-marca').checked = false;
     if (typeof setManifestacaoTipo === 'function') setManifestacaoTipo('favoravel');
-    document.getElementById('form-ano').value = '';
+    document.getElementById('form-ano').value = new Date().getFullYear();
+    const fDataNovo = document.getElementById('form-data');
+    if (fDataNovo) {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      fDataNovo.value = `${yyyy}-${mm}-${dd}`;
+    }
     document.getElementById('form-agrupamento').value = '';
     if (document.getElementById('form-analista')) document.getElementById('form-analista').value = '';
     if (document.getElementById('form-executivo')) document.getElementById('form-executivo').value = '';
@@ -2555,6 +2728,15 @@ function renderFormulario() {
     const tabObjetoVisible = document.getElementById('tab-content-objeto')?.style.display !== 'none';
     containerExcluir.style.display = (processo && tabObjetoVisible) ? 'flex' : 'none';
   }
+
+  setTimeout(() => {
+    if (!processo) {
+      document.getElementById('form-prefixo')?.focus();
+    } else {
+      const fNum = document.querySelector('input[name="numero[]"]') || document.getElementById('form-prefixo');
+      fNum?.focus();
+    }
+  }, 120);
 }
 
 
@@ -2607,14 +2789,38 @@ function salvarFormulario(e) {
     analista:    (document.getElementById('form-analista')?.value || '').trim(),
     cnpj:        (document.getElementById('form-cnpj')?.value || '').trim(),
     cnpjReceitaTexto: window._ultimoResultadoCNPJReceitaTexto || '',
-    objeto:      document.getElementById('form-objeto').value.trim(),
-    executivo:   (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) ? (document.getElementById('form-executivo') ? document.getElementById('form-executivo').value.trim() : '') : (state.editandoId ? (buscarProcessoPorId(state.editandoId)?.executivo || '') : ''),
+    executivo: (() => {
+      const fExec = document.getElementById('form-executivo');
+      const valDigitado = fExec ? fExec.value.trim() : '';
+      if (valDigitado) return valDigitado;
+      if (state.editandoId) {
+        const pExist = buscarProcessoPorId(state.editandoId);
+        if (pExist && pExist.executivo) return pExist.executivo.trim();
+      }
+      return '';
+    })(),
     valorOf:     valOf,
     valorPlan:   valPlan,
     diferenca:   valOf - valPlan,
     status:      document.getElementById('form-status').value,
     localizacao: document.getElementById('form-localizacao').value,
-    data: (document.getElementById('form-data').value && document.getElementById('form-data').value.includes('-')) ? document.getElementById('form-data').value.split('-').reverse().join('/') : document.getElementById('form-data').value,
+    data: (() => {
+      const fData = document.getElementById('form-data');
+      let val = fData ? fData.value.trim() : '';
+      if (val && val.includes('-')) {
+        const p = val.split('-');
+        if (p.length === 3) return `${p[2].padStart(2, '0')}/${p[1].padStart(2, '0')}/${p[0]}`;
+      } else if (val && val.includes('/')) {
+        const p = val.split('/');
+        if (p.length === 3) return `${p[0].padStart(2, '0')}/${p[1].padStart(2, '0')}/${p[2]}`;
+      }
+      if (state.editandoId) {
+        const pExist = buscarProcessoPorId(state.editandoId);
+        if (pExist && pExist.data) return pExist.data;
+      }
+      const now = new Date();
+      return `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()}`;
+    })(),
     obs:         document.getElementById('form-obs').value.trim(),
     anotacao:    document.getElementById('form-anotacao').value.trim(),
 
@@ -2665,8 +2871,37 @@ function salvarFormulario(e) {
     }
   }
 
+  // Validação de Campos Obrigatórios com Foco Padronizado
+  if (!dados.prefixo) {
+    const fPref = document.getElementById('form-prefixo');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, informe o Prefixo do Processo.', { titulo: 'Campo Obrigatório', focoElemento: fPref, tipo: 'requerido' });
+    } else {
+      toast('Por favor, informe o Prefixo do Processo.', 'error');
+      fPref?.focus();
+    }
+    return;
+  }
+
+  if (!dados.municipio) {
+    const fMun = document.getElementById('form-municipio');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, selecione ou informe o Município.', { titulo: 'Campo Obrigatório', focoElemento: fMun, tipo: 'requerido' });
+    } else {
+      toast('Por favor, informe o Município.', 'error');
+      fMun?.focus();
+    }
+    return;
+  }
+
   if (!dados.interessado && !dados.numero) {
-    toast('Informe ao menos o Nº do Processo ou o Interessado.', 'error');
+    const fNum = document.querySelector('input[name="numero[]"]') || document.getElementById('form-interessado');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Informe ao menos o Nº do Processo ou o Interessado / Escola.', { titulo: 'Campos Requeridos', focoElemento: fNum, tipo: 'requerido' });
+    } else {
+      toast('Informe ao menos o Nº do Processo ou o Interessado.', 'error');
+      fNum?.focus();
+    }
     return;
   }
 
@@ -2698,14 +2933,24 @@ function salvarFormulario(e) {
   }
 
   if (state.editandoId) {
-
     atualizarProcesso(state.editandoId, dados);
-    toast('Processo atualizado com sucesso!', 'success');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Processo atualizado com sucesso na Planilha Oficial!', { titulo: 'Gravação Concluída', tipo: 'sucesso' });
+    } else {
+      toast('Processo atualizado com sucesso!', 'success');
+    }
     state.editandoId = null;
   } else {
     adicionarProcesso(dados);
-    toast('Processo cadastrado com sucesso!', 'success');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Novo processo cadastrado e salvo com sucesso na Planilha Oficial!', { titulo: 'Gravação Concluída', tipo: 'sucesso' });
+    } else {
+      toast('Processo cadastrado com sucesso!', 'success');
+    }
     document.getElementById('form-processo').reset();
+    setTimeout(() => {
+      document.getElementById('form-prefixo')?.focus();
+    }, 150);
   }
 
   navegar('processos');
@@ -3000,6 +3245,13 @@ function fecharModal() {
 function editarProcesso(id) {
   state.editandoId = id;
   navegar('novo');
+  setTimeout(() => {
+    const fNum = document.querySelector('input[name="numero[]"]') || document.getElementById('form-prefixo');
+    if (fNum) {
+      fNum.focus();
+      fNum.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 150);
 }
 
 // ---- POPUP: NOVO PROCESSO (POR CIMA DA RELAÇÃO DE PROCESSOS - IMAGEM 1 E 2) ----
@@ -3087,6 +3339,9 @@ function abrirModalNovoProcesso() {
 
   // Exibir popup modal com display flex
   modal.style.display = 'flex';
+  setTimeout(() => {
+    document.getElementById('popup-novo-prefixo')?.focus();
+  }, 120);
 }
 window.abrirModalNovoProcesso = abrirModalNovoProcesso;
 
@@ -4030,45 +4285,85 @@ async function salvarNovoProcessoPopup(e) {
   const objeto = (document.getElementById('popup-novo-objeto')?.value || '').trim();
   const valorOfRaw = (document.getElementById('popup-novo-valorOf')?.value || '').trim();
 
-  // Validação dos Campos Obrigatórios marcados com estrela amarela (*)
+  // Validação dos Campos Obrigatórios marcados com estrela amarela (*) com Foco Padronizado
   if (!prefixo) {
-    toast('Por favor, informe o Prefixo *.', 'error');
-    document.getElementById('popup-novo-prefixo')?.focus();
+    const el = document.getElementById('popup-novo-prefixo');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, informe o Prefixo *.', { titulo: 'Campo Obrigatório', focoElemento: el, tipo: 'requerido' });
+    } else {
+      toast('Por favor, informe o Prefixo *.', 'error');
+      el?.focus();
+    }
     return;
   }
   if (!ano) {
-    toast('Por favor, informe o Ano *.', 'error');
-    document.getElementById('popup-novo-ano')?.focus();
+    const el = document.getElementById('popup-novo-ano');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, informe o Ano *.', { titulo: 'Campo Obrigatório', focoElemento: el, tipo: 'requerido' });
+    } else {
+      toast('Por favor, informe o Ano *.', 'error');
+      el?.focus();
+    }
     return;
   }
   if (!municipio) {
-    toast('Por favor, informe o Município *.', 'error');
-    document.getElementById('popup-novo-municipio')?.focus();
+    const el = document.getElementById('popup-novo-municipio');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, informe o Município *.', { titulo: 'Campo Obrigatório', focoElemento: el, tipo: 'requerido' });
+    } else {
+      toast('Por favor, informe o Município *.', 'error');
+      el?.focus();
+    }
     return;
   }
   if (!categoria) {
-    toast('Por favor, selecione a Categoria *.', 'error');
-    document.getElementById('popup-novo-categoria')?.focus();
+    const el = document.getElementById('popup-novo-categoria');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, selecione a Categoria *.', { titulo: 'Campo Obrigatório', focoElemento: el, tipo: 'requerido' });
+    } else {
+      toast('Por favor, selecione a Categoria *.', 'error');
+      el?.focus();
+    }
     return;
   }
   if (!tipo) {
-    toast('Por favor, selecione o Tipo *.', 'error');
-    document.getElementById('popup-novo-tipo')?.focus();
+    const el = document.getElementById('popup-novo-tipo');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, selecione o Tipo *.', { titulo: 'Campo Obrigatório', focoElemento: el, tipo: 'requerido' });
+    } else {
+      toast('Por favor, selecione o Tipo *.', 'error');
+      el?.focus();
+    }
     return;
   }
   if (!interessado) {
-    toast('Por favor, informe o Interessado / Escola *.', 'error');
-    document.getElementById('popup-novo-interessado')?.focus();
+    const el = document.getElementById('popup-novo-interessado');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, informe o Interessado / Escola *.', { titulo: 'Campo Obrigatório', focoElemento: el, tipo: 'requerido' });
+    } else {
+      toast('Por favor, informe o Interessado / Escola *.', 'error');
+      el?.focus();
+    }
     return;
   }
   if (!objeto) {
-    toast('Por favor, descreva o Objeto *.', 'error');
-    document.getElementById('popup-novo-objeto')?.focus();
+    const el = document.getElementById('popup-novo-objeto');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, descreva o Objeto *.', { titulo: 'Campo Obrigatório', focoElemento: el, tipo: 'requerido' });
+    } else {
+      toast('Por favor, descreva o Objeto *.', 'error');
+      el?.focus();
+    }
     return;
   }
   if (!valorOfRaw) {
-    toast('Por favor, informe o Valor Oficial (R$) *.', 'error');
-    document.getElementById('popup-novo-valorOf')?.focus();
+    const el = document.getElementById('popup-novo-valorOf');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Por favor, informe o Valor Oficial (R$) *.', { titulo: 'Campo Obrigatório', focoElemento: el, tipo: 'requerido' });
+    } else {
+      toast('Por favor, informe o Valor Oficial (R$) *.', 'error');
+      el?.focus();
+    }
     return;
   }
 
@@ -4081,8 +4376,11 @@ async function salvarNovoProcessoPopup(e) {
   let dataFmt = '';
   if (dataInput && dataInput.includes('-')) {
     dataFmt = dataInput.split('-').reverse().join('/');
-  } else {
+  } else if (dataInput) {
     dataFmt = dataInput;
+  } else {
+    const today = new Date();
+    dataFmt = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
   }
 
   const user = typeof getSessaoAtual === 'function' ? getSessaoAtual() : null;
@@ -4115,7 +4413,7 @@ async function salvarNovoProcessoPopup(e) {
     CAM:         '',
     GAB:         '',
     CC:          '',
-    executivo:   '',
+    executivo:   (document.getElementById('popup-novo-executivo')?.value || '').trim(),
     anotacao:    '',
     ultimaEdicao:   user ? (user.nome || user.whatsapp) : 'Sistema',
     dataHoraEdicao: dataHoraStr,
@@ -4136,7 +4434,11 @@ async function salvarNovoProcessoPopup(e) {
     if (typeof adicionarProcesso === 'function') {
       await adicionarProcesso(dados);
     }
-    toast('Processo cadastrado com sucesso!', 'success');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM('Processo cadastrado e salvo com sucesso na Planilha Oficial!', { titulo: 'Gravação Concluída', tipo: 'sucesso' });
+    } else {
+      toast('Processo cadastrado com sucesso!', 'success');
+    }
     fecharModalNovoProcesso();
     
     // REFRESH INSTANTÂNEO na tela de listagem de processos

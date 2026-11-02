@@ -157,10 +157,41 @@ const mapToApp = (row) => {
   let mun = (row['MUNICIPIO'] || row['Município'] || row.municipio || row['Municipio'] || '').trim();
   let agrupamentoCalculado = AGRUPAMENTOS_REGIONAIS[mun] || mun;
   
+function formatarDataParaApp(raw) {
+  if (!raw) return '';
+  const s = String(raw).trim();
+  if (!s || s === '-') return '';
+  
+  const gvizMatch = s.match(/Date\((\d{4}),\s*(\d+),\s*(\d+)/i);
+  if (gvizMatch) {
+    const d = String(gvizMatch[3]).padStart(2, '0');
+    const m = String(Number(gvizMatch[2]) + 1).padStart(2, '0');
+    return `${d}/${m}/${gvizMatch[1]}`;
+  }
+
+  const brMatch = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (brMatch) {
+    const d = brMatch[1].padStart(2, '0');
+    const m = brMatch[2].padStart(2, '0');
+    return `${d}/${m}/${brMatch[3]}`;
+  }
+
+  const isoMatch = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (isoMatch) {
+    const d = isoMatch[3].padStart(2, '0');
+    const m = isoMatch[2].padStart(2, '0');
+    return `${d}/${m}/${isoMatch[1]}`;
+  }
+
+  return s;
+}
+window.formatarDataParaApp = formatarDataParaApp;
+
   return {
     id: `${row._tabName}__${row._rowNumber}`,
     _rowNumber: row._rowNumber,
     _tabName: row._tabName,
+    seqId: row._rowNumber ? (row._rowNumber - 1) : null,
     prefixo: (row['PREFIXO'] || row['Prefixo'] || row['Prefixo (codigo de prioridade)'] || (row._tabName && !row._tabName.toLowerCase().includes('todo') ? row._tabName : '') || '').trim(),
     digito: formatarDigitoInteiro(row['DIGITO'] || row['DÍGITO'] || row.digito || row.Digito || ''),
     DIGITO: formatarDigitoInteiro(row['DIGITO'] || row['DÍGITO'] || row.digito || row.Digito || ''),
@@ -176,7 +207,7 @@ const mapToApp = (row) => {
     status: normalizarStatus(row['STATUS'] || row['Status'] || ''),
     localizacao: normalizarLocalizacao(row['LOCALIZACAO'] || row['Localização'] || ''),
     obs: row['OBSERVACAO'] || row['Observação'] || row['Obs.:'] || row['Obs'] || row.obs || '',
-    data: row['DATA'] || row['Data'] || row.data || '',
+    data: formatarDataParaApp(row['DATA'] || row['Data'] || row.data || ''),
     anotacao: row['ANOTACAO'] || row['Anotação'] || row.anotacao || '',
     categoria: (() => {
       const raw = String(row['CATEGORIA'] || row['categoria'] || '').trim().toUpperCase();
@@ -243,7 +274,15 @@ const mapToSheet = (dados) => {
     'STATUS': dados.status || '',
     'LOCALIZACAO': dados.localizacao || '',
     'OBSERVACAO': dados.obs || '',
-    'DATA': dados.data || '',
+    'DATA': (() => {
+      const d = String(dados.data || '').trim();
+      if (!d) return '';
+      const isoMatch = d.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+      if (isoMatch) return `${isoMatch[3].padStart(2, '0')}/${isoMatch[2].padStart(2, '0')}/${isoMatch[1]}`;
+      const brMatch = d.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (brMatch) return `${brMatch[1].padStart(2, '0')}/${brMatch[2].padStart(2, '0')}/${brMatch[3]}`;
+      return d;
+    })(),
     'ANOTACAO': dados.anotacao || '',
     'CONTATO': Array.isArray(dados.contatos) ? dados.contatos.map(c => (c.detalhes && c.whatsapp) ? `${c.detalhes.trim()} - ${c.whatsapp.trim()}` : (c.detalhes || c.whatsapp || '').trim()).filter(Boolean).join('; ') : (dados.contato || ''),
     'APONTAMENTO': dados.apontamento || '',
@@ -259,7 +298,7 @@ const mapToSheet = (dados) => {
     'CASA CIVIL': (dados.CC === '1' || dados.CC === 1) ? '1' : '0',
     'ANO': dados.ano || '',
     'AGRUPAMENTO': dados.agrupamento || '',
-    'EXECUTIVO': dados.executivo || '',
+    'EXECUTIVO': String(dados.executivo || '').trim(),
     'TIPO AUDITORIO': dados.tipoAuditorio || '',
     'QUADRA': dados.quadra || '',
     'PATIO': dados.patio || '',
@@ -371,7 +410,8 @@ async function adicionarProcesso(dados) {
   const payload = mapToSheet(dados);
   
   // Update locally for instant feedback
-  const novo = { ...dados, _tabName: 'todos', id: 'temp-' + Date.now(), createdAt: new Date().toISOString() };
+  const tempId = 'temp-' + Date.now();
+  const novo = { ...dados, _tabName: 'todos', id: tempId, createdAt: new Date().toISOString() };
   window.processosCache.push(novo);
   
   try {
@@ -389,8 +429,17 @@ async function adicionarProcesso(dados) {
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })
     });
-    if (res.ok && typeof window.renderProcessos === 'function') {
-      window.renderProcessos();
+    if (res.ok) {
+      const respData = await res.json();
+      if (respData && respData.id) {
+        novo.id = respData.id;
+        novo._rowNumber = respData._rowNumber;
+        novo._tabName = respData._tabName || 'todos';
+        novo.seqId = respData._rowNumber ? (respData._rowNumber - 1) : (window.processosCache.length);
+      }
+      if (typeof window.renderProcessos === 'function') {
+        window.renderProcessos();
+      }
     }
   } catch(err) {
     console.error(err);
@@ -406,8 +455,7 @@ async function atualizarProcesso(id, dados) {
   if (idx !== -1) window.processosCache[idx] = { ...window.processosCache[idx], ...dados };
 
   try {
-    if (String(id).startsWith('temp-')) return; // Can't update temp ids yet in backend
-    await fetch(API_BASE + `/api/registros/${id}`, {
+    const res = await fetch(API_BASE + `/api/registros/${id}`, {
       method: 'PUT',
       headers: getHeaders({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ 
@@ -420,6 +468,13 @@ async function atualizarProcesso(id, dados) {
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })
     });
+    if (res.ok) {
+      const respData = await res.json();
+      if (respData && respData.id && idx !== -1) {
+        window.processosCache[idx].id = respData.id;
+        window.processosCache[idx]._rowNumber = respData._rowNumber;
+      }
+    }
   } catch(err) {
     console.error(err);
   }
