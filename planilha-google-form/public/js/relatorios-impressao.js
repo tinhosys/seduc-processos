@@ -107,7 +107,11 @@
       imprimirRelatorioRegistroAtual(esc);
     } catch(e) {
       console.error('Erro ao decodificar dados da escola para impressão:', e);
-      alert('Não foi possível processar os dados desta escola para impressão.');
+      if (typeof window.exibirMensagemSiSCAM === 'function') {
+        window.exibirMensagemSiSCAM('Não foi possível processar os dados desta escola para impressão.', { tipo: 'erro' });
+      } else {
+        alert('Não foi possível processar os dados desta escola para impressão.');
+      }
     }
   }
 
@@ -115,14 +119,19 @@
   function imprimirRelatorioRegistroAtual(escolaObj) {
     const esc = escolaObj || (typeof window.obterDadosEscolaAtual === 'function' ? window.obterDadosEscolaAtual() : null);
     if (!esc || !esc.nome) {
-      alert('Nenhuma escola selecionada ou preenchida no formulário.\nPreencha os dados da escola ou clique em ✏️ Editar na tabela para emitir a Ficha Cadastral Individual.');
+      const msg = 'Nenhuma escola selecionada ou preenchida no formulário.\nPreencha os dados da escola ou clique em ✏️ Editar na tabela para emitir a Ficha Cadastral Individual.';
+      if (typeof window.exibirMensagemSiSCAM === 'function') {
+        window.exibirMensagemSiSCAM(msg, { tipo: 'aviso', subtitulo: 'Ficha Cadastral Individual' });
+      } else {
+        alert(msg);
+      }
       return;
     }
 
     const agora = new Date();
     const pad = n => String(n).padStart(2, '0');
     const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.88', window.location.href).href;
+    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.89', window.location.href).href;
 
     const pCodeLink = esc.plusCode
       ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" style="color:#0284c7; text-decoration:underline; font-weight:700;">${esc.plusCode} ↗ (Google Maps)</a>`
@@ -130,7 +139,12 @@
 
     const win = window.open('', '_blank');
     if (!win) {
-      alert('O navegador bloqueou a abertura da janela de impressão. Por favor, permita pop-ups para este site.');
+      const msgPop = 'O navegador bloqueou a abertura da janela de impressão. Por favor, permita pop-ups para este site.';
+      if (typeof window.exibirMensagemSiSCAM === 'function') {
+        window.exibirMensagemSiSCAM(msgPop, { tipo: 'aviso', subtitulo: 'Bloqueio de Impressão' });
+      } else {
+        alert(msgPop);
+      }
       return;
     }
 
@@ -687,39 +701,88 @@
     }, 400);
   }
 
-  // 4. Relatório Consolidado de Escolas Sincronizadas (A4 Retrato - Agrupado por Município)
+  // 4. Relatório Consolidado de Escolas Sincronizadas (A4 Retrato - Agrupado por Município) (IMAGEM 4 E IMAGEM 5)
   function imprimirRelatorioLista() {
-    let lista = obterEscolasSincronizadasParametros();
+    let lista = [];
 
-    // Filtra somente as escolas marcadas no checklist da tabela (se houver checkboxes na pagina)
+    // 1. Coleta escolas prioritariamente a partir do checklist da tabela exibida (IMAGEM 4 / IMAGEM 5)
     const checkboxesLinha = document.querySelectorAll('#tbody-escolas .chk-escola-linha');
     if (checkboxesLinha && checkboxesLinha.length > 0) {
       const chksMarcados = document.querySelectorAll('#tbody-escolas .chk-escola-linha:checked');
       if (chksMarcados.length === 0) {
-        alert('Nenhuma escola selecionada no checklist.\n\nPor favor, marque pelo menos uma escola na tabela antes de imprimir a lista.');
+        const msgAviso = 'Nenhuma escola selecionada no checklist da tabela.\n\nPor favor, marque pelo menos uma escola na lista antes de imprimir.';
+        if (typeof window.exibirMensagemSiSCAM === 'function') {
+          window.exibirMensagemSiSCAM(msgAviso, { tipo: 'aviso', subtitulo: 'Checklist de Impressão' });
+        } else {
+          alert(msgAviso);
+        }
         return;
       }
-      const chkKeys = new Set(Array.from(chksMarcados).map(cb => decodeURIComponent(cb.dataset.escolaKey || '')));
-      lista = lista.filter(esc => {
-        const k = (esc.id || esc.nome || '') + '_' + (esc.municipio || '') + '_' + (esc.codigoInep || esc.inep || '');
-        return chkKeys.has(k);
+      chksMarcados.forEach(cb => {
+        try {
+          if (cb.dataset.escolaJson) {
+            lista.push(JSON.parse(decodeURIComponent(cb.dataset.escolaJson)));
+          }
+        } catch (e) {
+          console.error('Erro ao ler escola do checkbox:', e);
+        }
       });
     }
 
+    // 2. Se a tabela não tiver checkboxes ou lista vazia, recorre a obterEscolasSincronizadasParametros()
     if (lista.length === 0) {
-      alert('Nenhum registro cadastrado e sincronizado foi localizado para os parâmetros vinculados selecionados:\n\n' +
-            `• Município: ${window._municipioAtual || 'Todos'}\n` +
-            `• Categoria: ${window._categoriaAtual || 'Conselho Escolar'}\n` +
-            `• Competência: ${window._competenciaAtual || 'Municipal'}\n` +
-            `• Superintendência: ${window._superAtual || 'Geral'}\n\n` +
-            'Cadastre as unidades vinculadas ou ajuste os parâmetros antes de emitir o relatório.');
+      lista = obterEscolasSincronizadasParametros();
+    }
+
+    if (lista.length === 0) {
+      const munTxt = window._municipioAtual || 'Todos';
+      const catTxt = window._categoriaAtual || 'Conselho Escolar';
+      const compTxt = window._competenciaAtual || 'Municipal';
+      const superTxt = window._superAtual || 'Geral';
+
+      const msgHtml = `
+        <div style="margin-bottom:12px;">
+          <div style="font-size:14px; font-weight:800; color:#38bdf8; margin-bottom:8px;">
+            📋 Emissão de Relatório de Escolas
+          </div>
+          <div style="color:#cbd5e1; font-size:13px; line-height:1.5;">
+            Nenhum registro cadastrado e sincronizado foi localizado para os parâmetros vinculados selecionados:
+          </div>
+        </div>
+        <div style="background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.3); border-radius:8px; padding:10px 14px; margin-bottom:12px; font-size:12.5px; line-height:1.8;">
+          <div>• <strong style="color:#f8fafc;">Município:</strong> <span style="color:#fef08a; font-weight:700;">${munTxt}</span></div>
+          <div>• <strong style="color:#f8fafc;">Categoria:</strong> <span style="color:#38bdf8; font-weight:700;">${catTxt}</span></div>
+          <div>• <strong style="color:#f8fafc;">Competência:</strong> <span style="color:#34d399; font-weight:700;">${compTxt}</span></div>
+          <div>• <strong style="color:#f8fafc;">Superintendência:</strong> <span style="color:#cbd5e1; font-weight:700;">${superTxt}</span></div>
+        </div>
+        <div style="color:#94a3b8; font-size:12px;">
+          Cadastre as unidades vinculadas ou ajuste os parâmetros antes de emitir o relatório.
+        </div>
+      `;
+
+      if (typeof window.exibirMensagemSiSCAM === 'function') {
+        window.exibirMensagemSiSCAM(msgHtml, {
+          titulo: '. : SiSCAM : .',
+          subtitulo: 'Consulta de Registros Sincronizados',
+          tipo: 'aviso'
+        });
+      } else {
+        alert(
+          'Nenhum registro cadastrado e sincronizado foi localizado para os parâmetros vinculados selecionados:\n\n' +
+          `• Município: ${munTxt}\n` +
+          `• Categoria: ${catTxt}\n` +
+          `• Competência: ${compTxt}\n` +
+          `• Superintendência: ${superTxt}\n\n` +
+          'Cadastre as unidades vinculadas ou ajuste os parâmetros antes de emitir o relatório.'
+        );
+      }
       return;
     }
 
     const agora = new Date();
     const pad = n => String(n).padStart(2, '0');
     const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.88', window.location.href).href;
+    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.89', window.location.href).href;
 
     // Agrupa por Município (ACOMODE E INFORME MUNICÍPIO COMO GRUPO)
     const agrupadoPorMunicipio = {};
@@ -738,7 +801,12 @@
 
     const win = window.open('', '_blank');
     if (!win) {
-      alert('O navegador bloqueou a abertura da janela de impressão. Por favor, permita pop-ups para este site.');
+      const msgPop = 'O navegador bloqueou a abertura da janela de impressão. Por favor, permita pop-ups para este site.';
+      if (typeof window.exibirMensagemSiSCAM === 'function') {
+        window.exibirMensagemSiSCAM(msgPop, { tipo: 'aviso', subtitulo: 'Bloqueio de Impressão' });
+      } else {
+        alert(msgPop);
+      }
       return;
     }
 
