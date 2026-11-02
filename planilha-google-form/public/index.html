@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.90">
+  <link rel="stylesheet" href="css/style.css?v=1.3.91">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -832,7 +832,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.90</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.91</div>
 
   </div>
 </div>
@@ -1133,7 +1133,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.90</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.91</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -2088,25 +2088,24 @@
 
               <!-- CNPJ NO CADASTRO INICIAL (NÃO REQUERIDO) - ORDEM: CNPJ PRIMEIRO (IMAGEM 1) -->
               <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:14px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                  <label for="popup-novo-cnpj" style="margin-bottom:0; font-size:11.5px; font-weight:700; color:#cbd5e1; flex-shrink:0;">CNPJ (Opcional)</label>
-                  
-                  <!-- LINK DE ACESSO OFICIAL À RECEITA FEDERAL -->
-                  <a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/" target="_blank" rel="noopener noreferrer" onclick="copiarCNPJSilenciosoPopup()" style="font-size:11px; color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; flex-shrink:0;" title="Abrir página oficial de Emissão de Comprovante de Inscrição da Receita Federal">
-                    <img src="img/logo-receita-federal.png" alt="RFB" style="height:14px; width:auto; border-radius:2px; background:#fff; padding:1px 3px;">
-                    <span>Consulta Receita Federal</span>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                  </a>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <label for="popup-novo-cnpj" style="margin-bottom:0; font-size:11.5px; font-weight:700; color:#cbd5e1;">CNPJ (Opcional)</label>
+                  <div id="popup-novo-cnpj-status" style="font-size:11px; font-weight:700; min-height:16px;"></div>
                 </div>
 
-                <div style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap;">
-                  <input type="text" id="popup-novo-cnpj" name="popup_cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="flex:1; height:40px; font-family:monospace; font-weight:600; font-size:13px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" oninput="mascaraCNPJInputPopup(this)" onblur="autoPreencherCNPJPopup(this)">
-                  <button type="button" class="btn btn-ghost" onclick="copiarCNPJPopup(this)" style="padding:0 10px; height:40px; border:1px solid rgba(255,255,255,0.18); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:11.5px; font-weight:700;" title="Copiar CNPJ">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    <span>Copiar CNPJ</span>
+                <input type="text" id="popup-novo-cnpj" name="popup_cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="width:100%; height:40px; font-family:monospace; font-weight:600; font-size:13px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.15); border-radius:6px; color:#fff; box-sizing:border-box;" oninput="mascaraCNPJInputPopup(this)" onblur="autoPreencherCNPJPopup(this)">
+
+                <!-- BARRA DE AÇÕES DO CNPJ (POPUP) -->
+                <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
+                  <button type="button" onclick="consultarCNPJPopupManualmente()" style="flex:1.4 1 160px; height:36px; background:#059669; border:1px solid #10b981; color:#fff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; transition:all 0.2s;" title="Consultar dados oficiais desta entidade na Receita Federal">
+                    <span>🔍</span> <span>Consultar na Receita Federal</span>
                   </button>
-                  <button type="button" class="btn btn-ghost" onclick="consultarCNPJPopupManualmente()" style="padding:0 10px; height:40px; border:1px solid rgba(56,189,248,0.4); border-radius:6px; cursor:pointer; color:#38bdf8; font-size:11.5px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0;" title="Consultar situação cadastral na base da Receita Federal sem Captcha">
-                    <span>⚡ Consultar</span>
+                  <button type="button" onclick="abrirSiteReceitaFederalPopup()" style="flex:1.2 1 140px; height:36px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; font-weight:700; font-size:11px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;" title="Abrir página oficial da Receita Federal em nova aba e copiar CNPJ">
+                    <img src="img/logo-receita-federal.png" alt="RFB" style="height:14px; width:auto; border-radius:2px; background:#fff; padding:1px 3px;">
+                    <span>Abrir Receita Federal</span>
+                  </button>
+                  <button type="button" onclick="copiarCNPJPopup(this)" style="flex:1 1 100px; height:36px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; font-size:11px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Copiar CNPJ">
+                    <span>📋</span> <span>Copiar CNPJ</span>
                   </button>
                 </div>
 
@@ -2114,30 +2113,22 @@
                 <div id="popup-novo-sugestao-cnpj" style="display:none; margin-top:4px; font-size:11.5px; color:#38bdf8; background:rgba(14,165,233,0.12); border:1px solid rgba(14,165,233,0.35); padding:6px 10px; border-radius:6px; align-items:center; justify-content:space-between; gap:6px;">
                 </div>
 
-                <!-- CONTAINER DINÂMICO DA RECEITA FEDERAL DO POPUP (EXPANSÍVEL) - MARCAÇÃO VERDE IMAGEM 3 -->
-                <div id="popup-novo-container-receita" style="width:100%; display:flex; flex-direction:column; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.55); border-radius:8px; padding:10px 14px; box-shadow:0 2px 12px rgba(0,0,0,0.4); box-sizing:border-box;">
-                  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;" onclick="togglePainelReceitaPopup()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                      <img src="img/logo-receita-federal.png" alt="Receita Federal" style="height:24px; width:auto; border-radius:4px; background:#ffffff; padding:2px 4px; flex-shrink:0; object-fit:contain;">
-                      <div style="display:flex; flex-direction:column;">
-                        <span style="font-size:12px; font-weight:800; color:#38bdf8; letter-spacing:0.3px; text-transform:uppercase;">DADOS DA RECEITA FEDERAL</span>
-                        <span id="popup-novo-subtitulo-receita" style="font-size:11px; color:#94a3b8; font-weight:500;">Situação Cadastral e Dados Oficiais</span>
-                      </div>
+                <!-- CONTAINER DINÂMICO DA RECEITA FEDERAL DO POPUP (PADRÃO IMAGEM 2 & 4) -->
+                <div id="popup-novo-container-receita" style="width:100%; display:flex; flex-direction:column; background:rgba(15,23,42,0.95); border:1.5px solid #10b981; border-radius:8px; padding:10px 14px; box-shadow:0 4px 15px rgba(0,0,0,0.4); box-sizing:border-box; margin-top:4px;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px; margin-bottom:6px;" onclick="togglePainelReceitaPopup()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <img src="img/logo-receita-federal.png" alt="RFB" style="height:17px; width:auto; border-radius:3px; background:#ffffff; padding:1px 3px; object-fit:contain; box-shadow:0 1px 3px rgba(0,0,0,0.3); vertical-align:middle;">
+                      <span style="color:#6ee7b7; font-size:12px; font-weight:800; letter-spacing:0.3px;">Receita Federal do Brasil</span>
                     </div>
-                    <div style="display:flex; align-items:center; gap:5px;">
-                      <button type="button" onclick="event.stopPropagation(); recarregarCNPJPopup();" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.45); border-radius:6px; height:28px; padding:0 8px; display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; cursor:pointer;" title="Atualizar dados da Receita Federal">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                        <span>Atualizar</span>
-                      </button>
-                      <button type="button" onclick="event.stopPropagation(); limparDadosReceitaPopup();" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.15); border-radius:6px; height:28px; padding:0 6px; display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:600; cursor:pointer;" title="Limpar dados cadastrais da Receita Federal">
-                        <span>✕</span>
-                      </button>
-                      <button type="button" onclick="event.stopPropagation(); togglePainelReceitaPopup();" style="background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.45); border-radius:6px; width:28px; height:28px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer;">
-                        <svg id="popup-novo-seta-receita" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span id="popup-novo-badge-situacao" style="background:rgba(16,185,129,0.25); color:#34d399; border:1px solid #10b981; padding:2px 8px; border-radius:4px; font-weight:800; font-size:10.5px;">🟢 ATIVA</span>
+                      <!-- SETA DE MOSTRA E ESCONDE (IMAGEM 4) -->
+                      <button type="button" onclick="event.stopPropagation(); togglePainelReceitaPopup();" style="background:transparent; border:none; color:#6ee7b7; cursor:pointer; padding:2px 4px; display:inline-flex; align-items:center; justify-content:center;" title="Mostrar / Esconder detalhes">
+                        <svg id="popup-novo-seta-receita" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
                       </button>
                     </div>
                   </div>
-                  <div id="popup-novo-corpo-receita" style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(148,163,184,0.18); display:block;">
+                  <div id="popup-novo-corpo-receita" style="display:block;">
                     <div id="popup-novo-label-receita" style="font-size:12px; color:#cbd5e1; line-height:1.55; user-select:text;">
                       <div style="color:#94a3b8; font-style:italic; display:flex; align-items:center; gap:6px;">
                         <span>⚡</span> <span>Digite ou cole o CNPJ acima para consultar instantaneamente a situação cadastral na Receita Federal.</span>
@@ -2440,65 +2431,55 @@
                 <datalist id="list-interessados"></datalist>
               </div>
 
+              <!-- CNPJ & CONSULTA DA RECEITA FEDERAL (LAYOUT PADRONIZADO IMAGEM 2 & 4) -->
               <div class="form-group full" style="display:flex; flex-direction:column; gap:6px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                  <label for="form-cnpj" style="margin-bottom:0; font-weight:600; flex-shrink:0;">CNPJ</label>
-                  
-                  <!-- LINK DE ACESSO OFICIAL À RECEITA FEDERAL (LOCAL VERDE LIMÃO NA PARTE SUPERIOR DIREITA) -->
-                  <a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/" target="_blank" rel="noopener noreferrer" onclick="copiarCNPJSilencioso()" style="font-size:12px; color:#38bdf8; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:700; flex-shrink:0;" title="Abrir página oficial de Emissão de Comprovante de Inscrição e de Situação Cadastral da Receita Federal (o CNPJ é copiado automaticamente)">
-                    <img src="img/logo-receita-federal.png" alt="RFB" style="height:15px; width:auto; border-radius:2px; background:#fff; padding:1px 3px;">
-                    <span>Consulta Receita Federal</span>
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                  </a>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <label for="form-cnpj" style="margin-bottom:0; font-weight:700; color:#cbd5e1; font-size:12px;">CNPJ</label>
+                  <div id="cnpj-status-box-form" style="font-size:11px; font-weight:700; min-height:16px;"></div>
                 </div>
 
-                <div style="display:flex; gap:6px; align-items:center; flex-wrap:nowrap;">
-                  <input type="text" id="form-cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="flex:1; font-family:monospace; font-weight:600; font-size:13.5px;" oninput="mascaraCNPJInput(this)" onblur="autoPreencherCNPJSeVazio(this)">
-                  <button type="button" class="btn btn-ghost" onclick="copiarCNPJDoFormulario(this)" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; gap:5px; font-size:12px; font-weight:700;" title="Copiar CNPJ">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    <span>Copiar CNPJ</span>
+                <input type="text" id="form-cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="width:100%; height:40px; font-family:monospace; font-weight:600; font-size:13.5px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:6px; color:#fff; box-sizing:border-box;" oninput="mascaraCNPJInput(this)" onblur="autoPreencherCNPJSeVazio(this)">
+
+                <!-- BARRA DE AÇÕES DO CNPJ (IMAGENS 2, 3 E 4) -->
+                <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
+                  <button type="button" id="btn-consultar-cnpj-form" onclick="recarregarDadosReceitaFederal()" style="flex:1.4 1 170px; height:38px; background:#059669; border:1px solid #10b981; color:#ffffff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" title="Consultar dados oficiais desta entidade na Receita Federal">
+                    <span>🔍</span> <span>Consultar na Receita Federal</span>
                   </button>
-                  <button type="button" class="btn btn-ghost" id="btn-extrair-cnpj-plano" onclick="extrairEPreencherCNPJPlano()" style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; font-size:11.5px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0;" title="Localizar nos anexos (Plano de Trabalho e/ou Ofício) o CNPJ da Entidade Proponente e consultar situação cadastral na Receita Federal sem Captcha">
+                  <button type="button" onclick="abrirSiteReceitaFederalProcesso()" style="flex:1.2 1 145px; height:38px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px;" title="Abrir página oficial da Receita Federal em nova aba e copiar CNPJ">
+                    <img src="img/logo-receita-federal.png" alt="RFB" style="height:14px; width:auto; border-radius:2px; background:#fff; padding:1px 3px;">
+                    <span>Abrir Receita Federal</span>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                  </button>
+                  <button type="button" onclick="copiarCNPJDoFormulario(this)" style="flex:1 1 110px; height:38px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;" title="Copiar número do CNPJ para a área de transferência">
+                    <span>📋</span> <span>Copiar CNPJ</span>
+                  </button>
+                  <button type="button" id="btn-extrair-cnpj-plano" onclick="extrairEPreencherCNPJPlano()" style="flex:1 1 125px; height:38px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.4); color:#fbbf24; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;" title="Localizar nos anexos (Plano de Trabalho e/ou Ofício) o CNPJ da Entidade Proponente">
                     <span>⚡ Extrair do Plano</span>
                   </button>
                 </div>
 
-                <!-- CONTAINER DINÂMICO DA RECEITA FEDERAL (EXPANSÍVEL / MOSTRA E ESCONDE) -->
-                <div id="container-resultado-cnpj-receita" style="width:100%; display:flex; flex-direction:column; background:rgba(15,23,42,0.92); border:1px solid rgba(56,189,248,0.45); border-radius:8px; padding:10px 14px; box-shadow:0 2px 10px rgba(0,0,0,0.35); transition:all 0.25s ease;">
-                  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none;" onclick="togglePainelReceitaCNPJ()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                      <!-- LOGO RECEITA FEDERAL NO LOCAL VERDE -->
-                      <img src="img/logo-receita-federal.png" alt="Receita Federal" style="height:26px; width:auto; border-radius:4px; background:#ffffff; padding:2px 5px; flex-shrink:0; object-fit:contain; box-shadow:0 1px 4px rgba(0,0,0,0.4);" title="Receita Federal do Brasil — Dados Cadastrais">
-                      <div style="display:flex; flex-direction:column;">
-                        <span style="font-size:12.5px; font-weight:800; color:#38bdf8; letter-spacing:0.3px; text-transform:uppercase;">DADOS DA RECEITA FEDERAL</span>
-                        <span id="subtitulo-resumo-cnpj-receita" style="font-size:11px; color:#94a3b8; font-weight:500;">Clique para expandir / recolher detalhes</span>
-                      </div>
+                <!-- CARD DE RESULTADOS DA RECEITA FEDERAL (PADRÃO IMAGEM 2 & 4 COM SETA RECOLHÍVEL) -->
+                <div id="container-resultado-cnpj-receita" style="width:100%; display:flex; flex-direction:column; background:rgba(15,23,42,0.95); border:1.5px solid #10b981; border-radius:8px; padding:12px 14px; box-shadow:0 4px 15px rgba(0,0,0,0.45); box-sizing:border-box; margin-top:6px;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; margin-bottom:8px;" onclick="togglePainelReceitaCNPJ()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <!-- LOGO RECEITA FEDERAL MINIMALISTA -->
+                      <img src="img/logo-receita-federal.png" alt="RFB" style="height:17px; width:auto; border-radius:3px; background:#ffffff; padding:1px 3px; object-fit:contain; box-shadow:0 1px 3px rgba(0,0,0,0.3); vertical-align:middle;">
+                      <span style="color:#6ee7b7; font-size:12.5px; font-weight:800; letter-spacing:0.3px;">Receita Federal do Brasil</span>
                     </div>
 
-                    <!-- AÇÕES DA RECEITA FEDERAL: REFRESH (MARCADO DE VERDE NA IMAGEM 1) + CLEAN + TOGGLE EXPANDIR -->
-                    <div style="display:flex; align-items:center; gap:6px;">
-                      <!-- REFRESH MARCADO VERDE (IMAGEM 1) -->
-                      <button type="button" id="btn-refresh-receita" onclick="event.stopPropagation(); recarregarDadosReceitaFederal();" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.45); border-radius:6px; height:30px; padding:0 10px; display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; cursor:pointer; transition:all 0.2s ease;" title="Atualizar / Refrescar consulta na base da Receita Federal (limpa cache da memória e reconsulta)">
-                        <svg id="svg-refresh-receita" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                        <span>Atualizar</span>
-                      </button>
-
-                      <!-- BOTAO CLEAN / LIMPAR MEMÓRIA -->
-                      <button type="button" id="btn-clean-receita" onclick="event.stopPropagation(); limparDadosReceitaFederal();" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.15); border-radius:6px; height:30px; padding:0 8px; display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:600; cursor:pointer; transition:all 0.2s ease;" title="Limpar dados cadastrais da memória e recolher painel">
-                        <span>✕ Limpar</span>
-                      </button>
-
-                      <!-- SETA PARA BAIXO EM VERMELHO (MOSTRA / ESCONDE) -->
-                      <button type="button" id="btn-toggle-detalhes-receita" onclick="event.stopPropagation(); togglePainelReceitaCNPJ();" style="background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.45); border-radius:6px; width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:transform 0.25s ease;" title="Expandir ou recolher dados cadastrais">
-                        <svg id="svg-seta-detalhes-receita" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <span id="badge-situacao-receita-processo" style="background:rgba(16,185,129,0.25); color:#34d399; border:1px solid #10b981; padding:2px 8px; border-radius:4px; font-weight:800; font-size:11px;">🟢 ATIVA</span>
+                      <!-- SETA DE MOSTRA E ESCONDE (IMAGEM 4) -->
+                      <button type="button" id="btn-toggle-detalhes-receita" onclick="event.stopPropagation(); togglePainelReceitaCNPJ();" style="background:transparent; border:none; color:#6ee7b7; cursor:pointer; padding:2px 4px; display:inline-flex; align-items:center; justify-content:center;" title="Mostrar / Esconder detalhes">
+                        <svg id="svg-seta-detalhes-receita" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
                       </button>
                     </div>
                   </div>
 
-                  <!-- ÁREA MARCADA EM AMARELO COM O PADRÃO DE INFORMAÇÕES COLETADAS -->
-                  <div id="corpo-detalhes-receita-cnpj" style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(148,163,184,0.18); display:block; transition:all 0.25s ease;">
+                  <!-- CORPO DO CARD COM OS DADOS COLETADOS (PADRÃO IMAGEM 2) -->
+                  <div id="corpo-detalhes-receita-cnpj" style="display:block;">
                     <div id="label-resultado-cnpj-receita" style="font-size:12px; color:#cbd5e1; line-height:1.55; user-select:text;">
-                      <div style="color:#94a3b8; font-style:italic;">Clique em <strong>"⚡ Extrair do Plano"</strong> ou digite o CNPJ para relacionar os dados da entidade</div>
+                      <div style="color:#94a3b8; font-style:italic;">Clique em <strong>"Consultar na Receita Federal"</strong> ou <strong>"⚡ Extrair do Plano"</strong> para obter dados cadastrais oficiais.</div>
                     </div>
                   </div>
                 </div>
@@ -3122,7 +3103,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.90</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.91</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3804,7 +3785,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.90
+              GBZ - v1.3.91
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4077,7 +4058,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.90] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.91] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6345,11 +6326,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.90"></script>
-  <script src="js/auth-sap.js?v=1.3.90"></script>
-  <script src="js/dados.js?v=1.3.90"></script>
-  <script src="js/app.js?v=1.3.90"></script>
-  <script src="js/escolas.js?v=1.3.90" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.91"></script>
+  <script src="js/auth-sap.js?v=1.3.91"></script>
+  <script src="js/dados.js?v=1.3.91"></script>
+  <script src="js/app.js?v=1.3.91"></script>
+  <script src="js/escolas.js?v=1.3.91" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>

@@ -833,11 +833,22 @@
     }
     .siscam-modal-badge-title {
       color: #38bdf8;
-      font-size: 14.5px;
+      font-size: 15px;
       font-weight: 900;
-      letter-spacing: 2.2px;
+      letter-spacing: 2px;
       text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
       font-family: 'Segoe UI', monospace, sans-serif;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .siscam-delta {
+      font-size: 16px;
+      line-height: 1;
+      color: #38bdf8;
+      display: inline-block;
+      text-shadow: 0 0 8px rgba(56, 189, 248, 0.9);
+      font-weight: 900;
     }
     .siscam-modal-subtag {
       color: #94a3b8;
@@ -928,7 +939,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.90"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.91"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1049,17 +1060,32 @@
 
             <div class="grid-4">
               <div>
-                <label>CNPJ</label>
-                <input type="text" id="entidade-cnpj" maxlength="18" oninput="aoDigitarCNPJ(this)" class="form-control" placeholder="00.000.000/0000-00">
-                <div id="cnpj-status-box" style="margin-top: 4px; font-size: 11px; font-weight: 700; min-height: 16px;"></div>
-                <!-- CENA DA CONSULTA DA RECEITA FEDERAL (MARCAÇÃO VERDE IMAGEM 1) -->
-                <div id="box-consulta-receita" style="margin-top: 4px;">
-                  <button type="button" id="btn-consultar-cnpj" onclick="consultarReceitaFederal()"
-                    style="background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #6ee7b7; font-weight: 700; font-size: 11px; border-radius: 6px; padding: 5px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; width: 100%; justify-content: center; transition: all 0.2s;"
-                    title="Consultar dados oficiais desta entidade na Receita Federal">
-                    🔍 Consultar na Receita Federal
-                  </button>
-                  <div id="resultado-receita-federal" style="display: none; margin-top: 8px; background: rgba(15, 23, 42, 0.95); border: 1px solid #10b981; border-radius: 8px; padding: 10px; font-size: 11.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"></div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <label for="entidade-cnpj" style="margin-bottom:0;">CNPJ</label>
+                  <div id="cnpj-status-box" style="font-size: 11px; font-weight: 700; min-height: 16px;"></div>
+                </div>
+                <input type="text" id="entidade-cnpj" maxlength="18" oninput="aoDigitarCNPJ(this)" class="form-control" placeholder="00.000.000/0000-00" style="margin-top:4px;">
+                <!-- BARRA DE AÇÕES DA RECEITA FEDERAL (CONSULTAR, ABRIR SITE OFICIAL, COPIAR CNPJ) -->
+                <div id="box-consulta-receita" style="margin-top: 6px;">
+                  <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button type="button" id="btn-consultar-cnpj" onclick="consultarReceitaFederal()"
+                      style="flex:1.4 1 150px; background: #059669; border: 1px solid #10b981; color: #ffffff; font-weight: 700; font-size: 11.5px; border-radius: 6px; padding: 7px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; justify-content: center; transition: all 0.2s;"
+                      title="Consultar dados oficiais desta entidade na Receita Federal">
+                      🔍 Consultar na Receita Federal
+                    </button>
+                    <button type="button" onclick="abrirSiteReceitaFederalCadastro()"
+                      style="flex:1.2 1 140px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2); color: #e2e8f0; font-weight: 700; font-size: 11px; border-radius: 6px; padding: 7px 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; justify-content: center;"
+                      title="Abrir página oficial da Receita Federal em nova aba e copiar CNPJ">
+                      <img src="img/logo-receita-federal.png" alt="RFB" style="height:14px; width:auto; border-radius:2px; background:#fff; padding:1px 3px;">
+                      <span>Abrir Receita Federal</span>
+                    </button>
+                    <button type="button" onclick="copiarCNPJCadastro(this)"
+                      style="flex:1 1 100px; background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.4); color: #38bdf8; font-weight: 700; font-size: 11px; border-radius: 6px; padding: 7px 8px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; justify-content: center;"
+                      title="Copiar CNPJ">
+                      <span>📋 Copiar CNPJ</span>
+                    </button>
+                  </div>
+                  <div id="resultado-receita-federal" style="display: none; margin-top: 8px; background: rgba(15, 23, 42, 0.95); border: 1.5px solid #10b981; border-radius: 8px; padding: 10px 14px; font-size: 11.5px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"></div>
                 </div>
               </div>
               <div id="wrap-entidade-inep">
@@ -1776,9 +1802,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.90"></script>
-  <script src="js/escolas.js?v=1.3.90"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.90"></script>
+  <script src="js/dados.js?v=1.3.91"></script>
+  <script src="js/escolas.js?v=1.3.91"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.91"></script>
 
   <script>
     /* ============================================================
@@ -1813,8 +1839,10 @@
     // ============================================================
     function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
       return new Promise((resolve) => {
-        const titulo = opcoes.titulo || '. : SiSCAM : .';
-        const subtitulo = opcoes.subtitulo || 'Sistema Integrado SEDUC/CAM • Rondônia';
+        let subtitulo = opcoes.subtitulo || 'Sistema Integrado SEDUC/CAM • Rondônia';
+        if (opcoes.titulo && !opcoes.titulo.includes('SiSCAM')) {
+          subtitulo = opcoes.titulo;
+        }
         const tipo = opcoes.tipo || 'info'; // 'info', 'sucesso', 'erro', 'aviso', 'requerido'
         const focoElemento = opcoes.focoElemento || null;
         const callback = opcoes.callback || null;
@@ -1865,7 +1893,7 @@
               <div class="siscam-modal-title-box">
                 <span style="font-size:18px;">${iconeCabecalho}</span>
                 <div>
-                  <div class="siscam-modal-badge-title">${titulo}</div>
+                  <div class="siscam-modal-badge-title"><span class="siscam-delta">∴</span> SiSCAM <span class="siscam-delta">∴</span></div>
                   <div class="siscam-modal-subtag">${subtitulo}</div>
                 </div>
               </div>
@@ -2160,22 +2188,33 @@
 
         boxRes.innerHTML = `
           <div style="border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
-            <strong style="color:#6ee7b7; font-size:12px;">🏛️ Receita Federal do Brasil</strong>
-            <div>${badgeSituacao}</div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <img src="img/logo-receita-federal.png" alt="RFB" style="height:17px; width:auto; border-radius:3px; background:#ffffff; padding:1px 3px; object-fit:contain; box-shadow:0 1px 3px rgba(0,0,0,0.3); vertical-align:middle;">
+              <strong style="color:#6ee7b7; font-size:12.5px;">Receita Federal do Brasil</strong>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              ${badgeSituacao}
+              <!-- SETA DE MOSTRA E ESCONDE (IMAGEM 4) -->
+              <button type="button" id="btn-toggle-receita-cadastro" onclick="togglePainelReceitaCadastro()" style="background:transparent; border:none; color:#6ee7b7; cursor:pointer; padding:2px 4px; display:inline-flex; align-items:center; justify-content:center;" title="Mostrar / Esconder detalhes">
+                <svg id="svg-seta-receita-cadastro" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
+            </div>
           </div>
-          <div style="display:grid; grid-template-columns: 1fr; gap:4px; font-size:11.5px; line-height:1.45; color:#cbd5e1;">
-            <div><strong style="color:#ffffff;">Razão Social:</strong> ${razao}</div>
-            <div><strong style="color:#ffffff;">Nome Fantasia:</strong> ${fantasia}</div>
-            <div><strong style="color:#ffffff;">Endereço:</strong> ${logradouro}, nº ${numero} - ${bairro}</div>
-            <div><strong style="color:#ffffff;">Localidade:</strong> ${municipio}/${uf} | <strong>CEP:</strong> ${cep}</div>
-            ${email ? `<div><strong style="color:#ffffff;">E-mail:</strong> ${email}</div>` : ''}
-            ${dddTel ? `<div><strong style="color:#ffffff;">Telefone:</strong> ${dddTel}</div>` : ''}
-          </div>
-          <div style="margin-top:10px; padding-top:8px; border-top:1px dashed rgba(255,255,255,0.1); display:flex; justify-content:flex-end;">
-            <button type="button" onclick="importarDadosReceitaFederal()" class="btn btn-sm"
-              style="background:#059669; color:#ffffff; font-weight:700; font-size:11.5px; border:1px solid #10b981; border-radius:6px; padding:6px 12px; cursor:pointer;">
-              📥 Preencher Dados da Entidade Automaticamente
-            </button>
+          <div id="corpo-receita-cadastro" style="display:block;">
+            <div style="display:grid; grid-template-columns: 1fr; gap:4px; font-size:11.5px; line-height:1.45; color:#cbd5e1;">
+              <div><strong style="color:#ffffff;">Razão Social:</strong> <span style="color:#fef08a; font-weight:700;">${razao}</span></div>
+              <div><strong style="color:#ffffff;">Nome Fantasia:</strong> ${fantasia}</div>
+              <div><strong style="color:#ffffff;">Endereço:</strong> ${logradouro}, nº ${numero} - ${bairro}</div>
+              <div><strong style="color:#ffffff;">Localidade:</strong> ${municipio}/${uf} | <strong>CEP:</strong> ${cep}</div>
+              ${email ? `<div><strong style="color:#ffffff;">E-mail:</strong> ${email}</div>` : ''}
+              ${dddTel ? `<div><strong style="color:#ffffff;">Telefone:</strong> ${dddTel}</div>` : ''}
+            </div>
+            <div style="margin-top:10px; padding-top:8px; border-top:1px dashed rgba(255,255,255,0.1); display:flex; justify-content:flex-end;">
+              <button type="button" onclick="importarDadosReceitaFederal()" class="btn btn-sm"
+                style="background:#059669; color:#ffffff; font-weight:800; font-size:11.5px; border:1px solid #10b981; border-radius:6px; padding:7px 14px; cursor:pointer; width:100%; justify-content:center; display:inline-flex; align-items:center; gap:6px;">
+                <span>📥</span> <span>Preencher Dados da Entidade Automaticamente</span>
+              </button>
+            </div>
           </div>
         `;
         showToast('🏛️ Consulta da Receita Federal concluída!');
@@ -2190,6 +2229,67 @@
     }
     window.consultarReceitaFederal = consultarReceitaFederal;
 
+    function togglePainelReceitaCadastro(forcarAberto) {
+      const corpo = document.getElementById('corpo-receita-cadastro');
+      const seta = document.getElementById('svg-seta-receita-cadastro');
+      if (!corpo) return;
+      const estaFechado = corpo.style.display === 'none';
+      const abrir = forcarAberto !== undefined ? !!forcarAberto : estaFechado;
+      if (abrir) {
+        corpo.style.display = 'block';
+        if (seta) seta.style.transform = 'rotate(180deg)';
+      } else {
+        corpo.style.display = 'none';
+        if (seta) seta.style.transform = 'rotate(0deg)';
+      }
+    }
+    window.togglePainelReceitaCadastro = togglePainelReceitaCadastro;
+
+    function abrirSiteReceitaFederalCadastro() {
+      const cnpjInput = document.getElementById('entidade-cnpj');
+      const val = cnpjInput ? cnpjInput.value.replace(/\D/g, '') : '';
+      if (val && val.length === 14 && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(cnpjInput.value.trim()).catch(() => {});
+      }
+      window.open('https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/', '_blank', 'noopener,noreferrer');
+      if (typeof showToast === 'function') {
+        showToast('CNPJ copiado! Cole no portal da Receita Federal.');
+      }
+    }
+    window.abrirSiteReceitaFederalCadastro = abrirSiteReceitaFederalCadastro;
+
+    function copiarCNPJCadastro(btn) {
+      const cnpjInput = document.getElementById('entidade-cnpj');
+      const val = cnpjInput ? cnpjInput.value.trim() : '';
+      if (!val || val.replace(/\D/g, '').length === 0) {
+        if (typeof showToast === 'function') showToast('Nenhum CNPJ informado para copiar.');
+        return;
+      }
+      const original = btn ? btn.innerHTML : '';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(val).then(() => {
+          if (btn) {
+            btn.innerHTML = '<span>✓ Copiado!</span>';
+            btn.style.borderColor = '#10b981';
+            btn.style.color = '#34d399';
+            setTimeout(() => {
+              btn.innerHTML = original;
+              btn.style.borderColor = 'rgba(56,189,248,0.4)';
+              btn.style.color = '#38bdf8';
+            }, 1500);
+          }
+          if (typeof showToast === 'function') showToast('CNPJ copiado: ' + val);
+        }).catch(() => {
+          cnpjInput.select(); document.execCommand('copy');
+          if (typeof showToast === 'function') showToast('CNPJ copiado: ' + val);
+        });
+      } else {
+        cnpjInput.select(); document.execCommand('copy');
+        if (typeof showToast === 'function') showToast('CNPJ copiado: ' + val);
+      }
+    }
+    window.copiarCNPJCadastro = copiarCNPJCadastro;
+
     function importarDadosReceitaFederal() {
       const d = window._dadosReceitaConsultada;
       if (!d) return;
@@ -2199,7 +2299,8 @@
         if (el && val) el.value = val;
       };
 
-      setVal('entidade-nome', (d.fantasia && d.fantasia !== '(Não informado)') ? d.fantasia : d.razao);
+      // REGRA: "no botao preenche é utilizar a razao social da receita no nome da entidade"
+      setVal('entidade-nome', d.razao || d.razao_social || '');
       
       if (d.cep) {
         let cleanCep = d.cep.replace(/\D/g, '');
@@ -3490,7 +3591,7 @@
 
       if (_linkExpirado) {
         await exibirMensagemSiSCAM('⚠️ Este link está expirado. O prazo de 8 dias para envio de cadastros já foi encerrado.', {
-          titulo: '. : SiSCAM : .',
+          titulo: '∴ SiSCAM ∴',
           subtitulo: 'Prazo Encerrado',
           tipo: 'erro'
         });
@@ -3509,7 +3610,7 @@
             ? `O campo "${rotuloCampo}" é de preenchimento obrigatório!\n\n${mensagemExtra}`
             : `O campo "${rotuloCampo}" é de preenchimento obrigatório!\n\nPor favor, preencha o campo para prosseguir com o salvamento.`;
           await exibirMensagemSiSCAM(txtMsg, {
-            titulo: '. : SiSCAM : .',
+            titulo: '∴ SiSCAM ∴',
             subtitulo: 'Identificação de Campo Obrigatório',
             tipo: 'requerido',
             focoElemento: el
@@ -3562,7 +3663,7 @@
         await exibirMensagemSiSCAM(
           'O campo "Redes Sociais Institucionais *" é de preenchimento obrigatório!\n\nHabilite ao menos uma rede social ou marque a opção "Não possui nenhuma rede social".',
           {
-            titulo: '. : SiSCAM : .',
+            titulo: '∴ SiSCAM ∴',
             subtitulo: 'Informação Institucional Obrigatória',
             tipo: 'requerido',
             focoElemento: document.getElementById('chk-social-nao-possui')
@@ -3628,7 +3729,7 @@
         await exibirMensagemSiSCAM(
           `Na Aba 4 (Infraestrutura & Espaços), todos os 28 campos são obrigatórios!\n\nForam encontrados ${vaziosInfra.length} campo(s) não preenchido(s):\n\n${listaMsg}\n\nPor favor, preencha todos os campos para salvar.`,
           {
-            titulo: '. : SiSCAM : .',
+            titulo: '∴ SiSCAM ∴',
             subtitulo: 'Campos Obrigatórios de Infraestrutura',
             tipo: 'requerido',
             focoElemento: primeiroVazioEl
@@ -3767,7 +3868,7 @@
           ⚡ Os dados desta unidade já estão disponíveis para consulta e inclusão na lista de impressão.
         </div>
       `, {
-        titulo: '. : SiSCAM : .',
+        titulo: '∴ SiSCAM ∴',
         subtitulo: 'Sincronização Concluída',
         tipo: 'sucesso',
         btnTexto: 'OK'
@@ -4005,3 +4106,4 @@
   </script>
 </body>
 </html>
+

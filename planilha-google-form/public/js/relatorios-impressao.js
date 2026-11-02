@@ -1,4 +1,4 @@
-/* ==========================================================================
+﻿/* ==========================================================================
    SEDUC/CAM - MÓDULO EXCLUSIVO DE RELATÓRIOS PARA IMPRESSÃO (A4 RETRATO)
    Totalmente isolado do formulário de cadastro.
    Acionado exclusivamente pelos botões de impressão:
@@ -762,7 +762,7 @@
 
       if (typeof window.exibirMensagemSiSCAM === 'function') {
         window.exibirMensagemSiSCAM(msgHtml, {
-          titulo: '. : SiSCAM : .',
+          titulo: '∴ SiSCAM ∴',
           subtitulo: 'Consulta de Registros Sincronizados',
           tipo: 'aviso'
         });
@@ -1357,3 +1357,4 @@
   window.imprimirRelatorioLista = imprimirRelatorioLista;
 
 })(window);
+
