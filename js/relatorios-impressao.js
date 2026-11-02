@@ -122,7 +122,7 @@
     const agora = new Date();
     const pad = n => String(n).padStart(2, '0');
     const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.87', window.location.href).href;
+    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.88', window.location.href).href;
 
     const pCodeLink = esc.plusCode
       ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(esc.plusCode)}" target="_blank" style="color:#0284c7; text-decoration:underline; font-weight:700;">${esc.plusCode} ↗ (Google Maps)</a>`
@@ -192,12 +192,15 @@
 
     /* CABEÇALHO OFICIAL: LOGO CAM 10cm COM PROPORÇÃO DE ALTURA (PNG SEM FUNDO PRETO) */
     .report-paper {
-      width: 170mm;
-      max-width: 100%;
-      margin: 12px auto 25px auto;
+      width: 210mm;
+      min-height: 297mm;
+      max-width: 96vw;
+      margin: 15px auto 30px auto;
       background: #ffffff;
-      padding: 0;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+      padding: 10mm 12mm 12mm 12mm;
+      box-sizing: border-box;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+      border-radius: 4px;
     }
     .report-banner-wrap {
       width: 100%;
@@ -361,13 +364,23 @@
         font-size: 7.5pt;
         line-height: 1.18;
       }
+      html, body {
+        background: #ffffff !important;
+        font-size: 7.2pt;
+        line-height: 1.15;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
       .report-paper {
-        width: 170mm !important;
-        max-width: 170mm !important;
-        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+        margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;
         border: none !important;
+        border-radius: 0 !important;
       }
       .report-banner-wrap {
         width: 100% !important;
@@ -418,7 +431,7 @@
       }
       @page {
         size: A4 portrait;
-        margin: 10mm 15mm 12mm 15mm;
+        margin: 8mm 10mm 10mm 10mm;
       }
     }
   </style>
@@ -676,7 +689,22 @@
 
   // 4. Relatório Consolidado de Escolas Sincronizadas (A4 Retrato - Agrupado por Município)
   function imprimirRelatorioLista() {
-    const lista = obterEscolasSincronizadasParametros();
+    let lista = obterEscolasSincronizadasParametros();
+
+    // Filtra somente as escolas marcadas no checklist da tabela (se houver checkboxes na pagina)
+    const checkboxesLinha = document.querySelectorAll('#tbody-escolas .chk-escola-linha');
+    if (checkboxesLinha && checkboxesLinha.length > 0) {
+      const chksMarcados = document.querySelectorAll('#tbody-escolas .chk-escola-linha:checked');
+      if (chksMarcados.length === 0) {
+        alert('Nenhuma escola selecionada no checklist.\n\nPor favor, marque pelo menos uma escola na tabela antes de imprimir a lista.');
+        return;
+      }
+      const chkKeys = new Set(Array.from(chksMarcados).map(cb => decodeURIComponent(cb.dataset.escolaKey || '')));
+      lista = lista.filter(esc => {
+        const k = (esc.id || esc.nome || '') + '_' + (esc.municipio || '') + '_' + (esc.codigoInep || esc.inep || '');
+        return chkKeys.has(k);
+      });
+    }
 
     if (lista.length === 0) {
       alert('Nenhum registro cadastrado e sincronizado foi localizado para os parâmetros vinculados selecionados:\n\n' +
@@ -691,7 +719,7 @@
     const agora = new Date();
     const pad = n => String(n).padStart(2, '0');
     const dataHoraStr = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()} às ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
-    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.87', window.location.href).href;
+    const bannerUrl = new URL('img/banner-cam-topo.png?v=1.3.88', window.location.href).href;
 
     // Agrupa por Município (ACOMODE E INFORME MUNICÍPIO COMO GRUPO)
     const agrupadoPorMunicipio = {};
@@ -860,12 +888,15 @@
 
     /* CABEÇALHO OFICIAL: LOGO CAM 10cm COM PROPORÇÃO DE ALTURA (PNG SEM FUNDO PRETO) */
     .report-paper {
-      width: 170mm;
-      max-width: 100%;
-      margin: 12px auto 25px auto;
+      width: 210mm;
+      min-height: 297mm;
+      max-width: 96vw;
+      margin: 15px auto 30px auto;
       background: #ffffff;
-      padding: 0;
-      box-shadow: 0 3px 15px rgba(0,0,0,0.06);
+      padding: 10mm 12mm 12mm 12mm;
+      box-sizing: border-box;
+      box-shadow: 0 4px 25px rgba(0,0,0,0.3);
+      border-radius: 4px;
     }
     .report-banner-wrap {
       width: 100%;
@@ -1073,13 +1104,23 @@
         font-size: 7.5pt;
         line-height: 1.18;
       }
+      html, body {
+        background: #ffffff !important;
+        font-size: 7.2pt;
+        line-height: 1.15;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
       .report-paper {
-        width: 170mm !important;
-        max-width: 170mm !important;
-        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+        margin: 0 !important;
         padding: 0 !important;
         box-shadow: none !important;
         border: none !important;
+        border-radius: 0 !important;
       }
       .report-banner-wrap {
         width: 100% !important;
@@ -1095,8 +1136,28 @@
         background: transparent !important;
       }
       .bloco-municipio {
-        margin-bottom: 6px !important;
+        margin-bottom: 5px !important;
+        page-break-inside: auto !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+      .header-quebra-municipio {
+        padding: 3px 6px !important;
+        page-break-after: avoid !important;
+      }
+      .tabela-escolas-todos thead {
+        display: table-header-group !important;
+      }
+      .tabela-escolas-todos tr {
         page-break-inside: avoid !important;
+      }
+      .tabela-escolas-todos th {
+        padding: 2.2px 4.5px !important;
+        font-size: 6.4pt !important;
+      }
+      .tabela-escolas-todos td {
+        padding: 2px 4.5px !important;
+        font-size: 6.9pt !important;
+        line-height: 1.15 !important;
       }
       .header-quebra-municipio {
         padding: 3px 6px !important;
@@ -1130,7 +1191,7 @@
       }
       @page {
         size: A4 portrait;
-        margin: 10mm 15mm 12mm 15mm;
+        margin: 8mm 10mm 10mm 10mm;
       }
     }
   </style>
@@ -1193,30 +1254,7 @@
     <!-- CORPO: GRUPOS DE MUNICÍPIOS SEQUENCIAIS -->
     ${tabelaCorpoHtml}
 
-    <!-- TERMO & ASSINATURAS EXPANDIDAS (AUMENTO DO LOCAL DE ASSINATURA - IMAGEM 3) -->
-    <div class="signatures-block">
-      <div class="sig-box">
-        <div class="sig-space"></div>
-        <div class="sig-line">
-          <div class="sig-name">Gestor(a) / Diretor(a) Escolar</div>
-          <div class="sig-role">Representante Legal da Unidade / Entidade</div>
-        </div>
-      </div>
-      <div class="sig-box">
-        <div class="sig-space"></div>
-        <div class="sig-line">
-          <div class="sig-name">Coordenadoria de Articulação com os Municípios (CAM)</div>
-          <div class="sig-role">SEDUC / RO • Gestão e Articulação Municipal</div>
-        </div>
-      </div>
-      <div class="sig-box">
-        <div class="sig-space"></div>
-        <div class="sig-line">
-          <div class="sig-name">Superintendência Regional de Educação (SUPER)</div>
-          <div class="sig-role">Validação do Censo e Cadastros Escolares</div>
-        </div>
-      </div>
-    </div>
+
 
     <!-- RODAPÉ OFICIAL -->
     <div class="report-footer">

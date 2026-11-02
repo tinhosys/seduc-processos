@@ -731,7 +731,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.87"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.88"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1531,6 +1531,9 @@
             <thead>
               <tr>
                 <th style="width: 110px;">Competência</th>
+                <th style="width: 44px; text-align: center;" title="Marcar / Desmarcar Todas as Escolas para Impressão">
+                  <input type="checkbox" id="chk-marcar-todos-escolas" checked style="cursor: pointer; width: 17px; height: 17px; accent-color: #0284c7;" onchange="alternarMarcarTodosEscolas(this.checked)">
+                </th>
                 <th>Nome da Escola / Entidade</th>
                 <th style="width: 100px;">INEP</th>
                 <th style="width: 90px; text-align: center;">Alunos</th>
@@ -1542,14 +1545,14 @@
             </thead>
             <tbody id="tbody-escolas">
               <tr>
-                <td colspan="8" style="text-align: center; padding: 30px; color: var(--text-muted);">
+                <td colspan="9" style="text-align: center; padding: 30px; color: var(--text-muted);">
                   Carregando lista de escolas...
                 </td>
               </tr>
             </tbody>
             <tfoot id="tfoot-escolas" style="display: none;">
               <tr style="background: rgba(15, 23, 42, 0.95); font-weight: 800; border-top: 2px solid var(--accent);">
-                <td colspan="3" style="text-align: right; color: #94a3b8; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px;">Total de Alunos:</td>
+                <td colspan="4" style="text-align: right; color: #94a3b8; font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px; padding: 10px 14px;">Total de Alunos:</td>
                 <td style="text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; padding: 10px 8px; background: rgba(56, 189, 248, 0.1);" id="tfoot-total-alunos">0</td>
                 <td colspan="4"></td>
               </tr>
@@ -1564,9 +1567,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.87"></script>
-  <script src="js/escolas.js?v=1.3.87"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.87"></script>
+  <script src="js/dados.js?v=1.3.88"></script>
+  <script src="js/escolas.js?v=1.3.88"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.88"></script>
 
   <script>
     /* ============================================================
@@ -2760,7 +2763,7 @@
       if (!tbody) return;
 
       if (!lista || lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhuma unidade encontrada para estes parâmetros. Cadastre a primeira acima!</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);">Nenhuma unidade encontrada para estes parâmetros. Cadastre a primeira acima!</td></tr>`;
         if (subtitulo) subtitulo.innerHTML = '<span>0 unidades cadastradas com os parâmetros vinculados</span>';
         if (tfoot) tfoot.style.display = 'none';
         return;
@@ -2802,6 +2805,9 @@
         return `
           <tr>
             <td><span class="badge-comp ${compCls}">${comp}</span></td>
+            <td style="text-align:center;">
+              <input type="checkbox" class="chk-escola-linha" checked data-escola-key="${encodeURIComponent((esc.id || esc.nome || '') + '_' + (esc.municipio || '') + '_' + (esc.codigoInep || esc.inep || ''))}" data-inep="${inep}" style="cursor: pointer; width: 17px; height: 17px; accent-color: #0284c7;" onchange="atualizarStatusCheckTodos()">
+            </td>
             <td><strong style="color:#ffffff;">${nome}</strong></td>
             <td style="font-family:monospace; color:#38bdf8;">${inep}</td>
             <td style="text-align:center; font-weight:700;">${alunos}</td>
@@ -2817,7 +2823,37 @@
           </tr>
         `;
       }).join('');
+      atualizarStatusCheckTodos();
     }
+
+    function alternarMarcarTodosEscolas(marcar) {
+      const chks = document.querySelectorAll('#tbody-escolas .chk-escola-linha');
+      chks.forEach(cb => { cb.checked = marcar; });
+      atualizarStatusCheckTodos();
+    }
+    window.alternarMarcarTodosEscolas = alternarMarcarTodosEscolas;
+
+    function atualizarStatusCheckTodos() {
+      const chkTodos = document.getElementById('chk-marcar-todos-escolas');
+      const chks = document.querySelectorAll('#tbody-escolas .chk-escola-linha');
+      const marcados = document.querySelectorAll('#tbody-escolas .chk-escola-linha:checked');
+      if (chkTodos) {
+        if (chks.length === 0) {
+          chkTodos.checked = false;
+          chkTodos.indeterminate = false;
+        } else if (marcados.length === chks.length) {
+          chkTodos.checked = true;
+          chkTodos.indeterminate = false;
+        } else if (marcados.length === 0) {
+          chkTodos.checked = false;
+          chkTodos.indeterminate = false;
+        } else {
+          chkTodos.checked = false;
+          chkTodos.indeterminate = true;
+        }
+      }
+    }
+    window.atualizarStatusCheckTodos = atualizarStatusCheckTodos;
 
     // Filtrar Tabela Localmente
     function filtrarTabelaLocal(termo) {
