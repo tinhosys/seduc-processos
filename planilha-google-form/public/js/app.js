@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.91
+// Versão do Sistema: v1.3.92
 // ============================================================
-window.APP_VERSION = 'v1.3.91';
+window.APP_VERSION = 'v1.3.92';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
