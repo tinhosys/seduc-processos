@@ -1462,6 +1462,18 @@ mark {
   }
 }
 
+@media print {
+  #seduc-news-ticker-container,
+  #btn-restore-news-ticker,
+  .news-ticker-container,
+  #siscam-modal-root,
+  .siscam-modal-overlay {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+  }
+}
+
 /* ==================== NOVO FOOTER FIXO E PAGINACAO ==================== */
 @media print {
 }

@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.99
+// Versão do Sistema: v1.3.100
 // ============================================================
-window.APP_VERSION = 'v1.3.99';
+window.APP_VERSION = 'v1.3.100';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -5925,7 +5925,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
 
 window.imprimirPadraoAdm = imprimirPadraoAdm;
 
-// ============= RELATÓRIO ALFA (COM PREFIXO, STATUS DE AUTORIZAÇÃO E LEGENDA NO RODAPÉ) =============
+// ============= RELATÓRIO ALFA (COM PREFIXO, STATUS DE AUTORIZAÇÃO) =============
 function imprimirAlfa(filtrados = getFiltrados()) {
   if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
     alert('Acesso restrito ao perfil Administrador.');
@@ -5972,7 +5972,7 @@ function imprimirAlfa(filtrados = getFiltrados()) {
   rowsHtml += totalRow;
 
   const html = `
-    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse; margin:0; padding:0;">
       <thead>
         <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
           <td>
@@ -5992,7 +5992,7 @@ function imprimirAlfa(filtrados = getFiltrados()) {
       <tbody>
         <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
           <td>
-            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
+            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:0;">
               <colgroup>
                 <col style="width: 3%;">
                 <col style="width: 7%;">
@@ -6026,24 +6026,6 @@ function imprimirAlfa(filtrados = getFiltrados()) {
           </td>
         </tr>
       </tbody>
-      <tfoot>
-        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
-          <td>
-            <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <div style="display: flex; align-items: center; gap: 4px;">
-                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">LEGENDA:</strong>
-                  <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 4px;">
-                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">AUTORIZAÇÕES:</strong>
-                  <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
-                </div>
-              </div>
-            </div>
-          </td>
-        </tr>
-      </tfoot>
     </table>
   `;
 
@@ -6066,6 +6048,18 @@ function imprimirAlfa(filtrados = getFiltrados()) {
   const pageProcessos = document.getElementById('page-processos');
   if (pageProcessos) pageProcessos.style.display = 'none';
 
+  const appLayout = document.querySelector('.app-layout');
+  const origAppLayoutDisplay = appLayout ? appLayout.style.display : '';
+  if (appLayout) appLayout.style.display = 'none';
+
+  const tickerContainer = document.getElementById('seduc-news-ticker-container');
+  const origTickerDisplay = tickerContainer ? tickerContainer.style.display : '';
+  if (tickerContainer) tickerContainer.style.display = 'none';
+
+  const restoreTickerBtn = document.getElementById('btn-restore-news-ticker');
+  const origRestoreBtnDisplay = restoreTickerBtn ? restoreTickerBtn.style.display : '';
+  if (restoreTickerBtn) restoreTickerBtn.style.display = 'none';
+
   document.body.classList.add('print-mode-alfa');
   document.body.classList.remove('print-mode-padrao', 'print-mode-padrao-adm', 'print-mode-padrao-adm-2', 'print-mode-detalhado', 'print-mode-analise');
 
@@ -6073,7 +6067,54 @@ function imprimirAlfa(filtrados = getFiltrados()) {
   document.title = 'RELATORIO_ALFA_' + getFormattedDateForTitle();
 
   const style = document.createElement('style');
-  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-alfa { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } }';
+  style.innerHTML = `
+    @media print {
+      @page {
+        size: A4 landscape !important;
+        margin: 8mm !important;
+      }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+      }
+      .app-layout, .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination,
+      #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page,
+      #seduc-news-ticker-container, #btn-restore-news-ticker, .siscam-modal-overlay, #siscam-modal-root,
+      .print-footer, .official-print-footer {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+      }
+      #print-layout-alfa {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+      }
+      table.print-table-adm th {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      table.print-table-adm tr:nth-child(even) td {
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      table.print-table-adm td:last-child, table.print-table-adm th:last-child {
+        white-space: nowrap !important;
+      }
+    }
+  `;
   document.head.appendChild(style);
 
   const cleanupPrint = () => {
@@ -6082,6 +6123,9 @@ function imprimirAlfa(filtrados = getFiltrados()) {
     document.body.classList.remove('print-mode-alfa');
     container.style.display = 'none';
     if (pageProcessos) pageProcessos.style.display = '';
+    if (appLayout) appLayout.style.display = origAppLayoutDisplay;
+    if (tickerContainer) tickerContainer.style.display = origTickerDisplay;
+    if (restoreTickerBtn) restoreTickerBtn.style.display = origRestoreBtnDisplay;
     window.removeEventListener('afterprint', cleanupPrint);
   };
 
