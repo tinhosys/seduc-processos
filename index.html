@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.92">
+  <link rel="stylesheet" href="css/style.css?v=1.3.93">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -832,7 +832,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.92</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.93</div>
 
   </div>
 </div>
@@ -1133,7 +1133,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.92</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.93</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -3103,7 +3103,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.92</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.93</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3785,7 +3785,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.92
+              GBZ - v1.3.93
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4058,7 +4058,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.92] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.93] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5347,7 +5347,7 @@
               </div>
               <div id="wrap-entidade-inep-modal">
                 <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Código INEP *</label>
-                <input type="text" id="entidade-inep" placeholder="8 dígitos" maxlength="12" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box; outline:none;">
+                <input type="text" id="entidade-inep" placeholder="8 dígitos" maxlength="8" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '');" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div id="wrap-entidade-alunos-modal">
                 <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nº de Alunos *</label>
@@ -5418,12 +5418,12 @@
             </div>
           </div>
 
-          <!-- GRUPO 2: GESTÃO & CONTATOS INSTITUCIONAIS -->
+          <!-- GRUPO 2: GESTÃO / CONTATOS INSTITUCIONAIS -->
           <div id="sec-grupo-entidade-2" style="margin-bottom:18px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px;">
             <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span style="background:rgba(255,255,255,0.1); color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;">2</span>
-                <span style="font-size:13px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.3px;">GESTÃO & CONTATOS INSTITUCIONAIS</span>
+                <span style="font-size:13px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.3px;">GESTÃO / CONTATOS INSTITUCIONAIS</span>
               </div>
               <span style="font-size:11.5px; color:#94a3b8;">Etapa 2 de 4</span>
             </div>
@@ -5442,7 +5442,7 @@
                 <input type="text" id="entidade-telefone" placeholder="(69) 0000-0000 ou (69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneUnidade(this)" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label id="lbl-entidade-email-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Email da entidade</label>
+                <label id="lbl-entidade-email-modal" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">E-mail Oficial da Entidade (mais utilizado)</label>
                 <input type="email" id="entidade-email" placeholder="entidade@educacao.ro.gov.br" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
             </div>
@@ -5475,12 +5475,12 @@
             </div>
           </div>
 
-          <!-- GRUPO 3: ENDEREÇO & LOGRADOURO -->
+          <!-- GRUPO 3: ENDEREÇO / LOGRADOURO -->
           <div id="sec-grupo-entidade-3" style="margin-bottom:18px; background:#1e293b; border:1px solid rgba(255,255,255,0.08); border-radius:10px; padding:20px;">
             <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:10px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <span style="background:rgba(255,255,255,0.1); color:#fff; width:22px; height:22px; border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-size:12px; font-weight:800;">3</span>
-                <span style="font-size:13px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.3px;">ENDEREÇO & LOGRADOURO</span>
+                <span style="font-size:13px; font-weight:700; color:#f8fafc; text-transform:uppercase; letter-spacing:0.3px;">ENDEREÇO / LOGRADOURO</span>
               </div>
               <span style="font-size:11.5px; color:#94a3b8;">Etapa 3 de 4</span>
             </div>
@@ -5512,7 +5512,7 @@
               <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
                 <span style="font-size:16px;">🌾</span>
                 <span style="font-size:12px; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.4px;">
-                  Detalhes Específicos & Acesso Rural (Linha, BR, Km, Sítio, Rio)
+                  Detalhes Específicos / Acesso Rural (Linha, BR, Km, Sítio, Rio)
                 </span>
               </div>
               <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:0;">
@@ -5521,7 +5521,7 @@
                   <input type="text" id="entidade-linha" placeholder="Ex: Linha 60, Linha C-15..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
                 </div>
                 <div>
-                  <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Rodovia / BR & KM</label>
+                  <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Rodovia / BR / KM</label>
                   <input type="text" id="entidade-rodovia-km" placeholder="Ex: BR-364, Km 14..." style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
                 </div>
                 <div>
@@ -6200,11 +6200,11 @@
           </div>
         </div>
 
-        <!-- SEÇÃO 2: Gestão & Contatos -->
+        <!-- SEÇÃO 2: Gestão / Contatos -->
         <div style="margin-bottom:20px;">
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.06);">
             <span style="background:rgba(16,185,129,0.2);color:#34d399;width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;">2</span>
-            <span style="font-size:13px;font-weight:700;color:#6ee7b7;letter-spacing:0.5px;">GESTÃO & CONTATOS</span>
+            <span style="font-size:13px;font-weight:700;color:#6ee7b7;letter-spacing:0.5px;">GESTÃO / CONTATOS</span>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
             <div>
@@ -6326,11 +6326,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.92"></script>
-  <script src="js/auth-sap.js?v=1.3.92"></script>
-  <script src="js/dados.js?v=1.3.92"></script>
-  <script src="js/app.js?v=1.3.92"></script>
-  <script src="js/escolas.js?v=1.3.92" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.93"></script>
+  <script src="js/auth-sap.js?v=1.3.93"></script>
+  <script src="js/dados.js?v=1.3.93"></script>
+  <script src="js/app.js?v=1.3.93"></script>
+  <script src="js/escolas.js?v=1.3.93" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>

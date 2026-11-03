@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.92
+// Versão do Sistema: v1.3.93
 // ============================================================
-window.APP_VERSION = 'v1.3.92';
+window.APP_VERSION = 'v1.3.93';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -9064,7 +9064,7 @@ function atualizarLegendasModalPorCategoria(categoria) {
     if (lblDir) lblDir.textContent = 'Nome do Diretor | Presidente *';
     if (lblContDir) lblContDir.textContent = 'Contato do Diretor | Presidente *';
     if (lblTel) lblTel.textContent = 'Telefone da Unidade Escolar';
-    if (lblEmail) lblEmail.textContent = 'E-mail da Escola';
+    if (lblEmail) lblEmail.textContent = 'E-mail Oficial da Entidade (mais utilizado)';
     if (lblSec) lblSec.textContent = 'Nome do Secretário(a) *';
     if (lblContSec) lblContSec.textContent = 'Contato do Secretário(a) *';
   }
