@@ -1,9 +1,9 @@
-﻿
+
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.97
+// Versão do Sistema: v1.3.98
 // ============================================================
-window.APP_VERSION = 'v1.3.97';
+window.APP_VERSION = 'v1.3.98';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -9314,6 +9314,39 @@ function aoSelecionarTipoEntidadeForm(tipo) {
 }
 window.aoSelecionarTipoEntidadeForm = aoSelecionarTipoEntidadeForm;
 
+// Gerador de Código Localizador: 3 letras e 3 números aleatórios em caixa alta (não sequenciais)
+function gerarCodigoLocalizador() {
+  const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // sem I e O para não confundir com 1 e 0
+  const numeros = "0123456789";
+  let l = "";
+  let n = "";
+
+  while (l.length < 3) {
+    const char = letras.charAt(Math.floor(Math.random() * letras.length));
+    if (l.length === 0 || l[l.length - 1] !== char) {
+      l += char;
+    }
+  }
+  if ((l.charCodeAt(1) === l.charCodeAt(0) + 1 && l.charCodeAt(2) === l.charCodeAt(1) + 1) ||
+      (l[0] === l[1] && l[1] === l[2])) {
+    return gerarCodigoLocalizador();
+  }
+
+  while (n.length < 3) {
+    const num = numeros.charAt(Math.floor(Math.random() * numeros.length));
+    if (n.length === 0 || n[n.length - 1] !== num) {
+      n += num;
+    }
+  }
+  const d0 = Number(n[0]), d1 = Number(n[1]), d2 = Number(n[2]);
+  if ((d1 === d0 + 1 && d2 === d1 + 1) || (d1 === d0 - 1 && d2 === d1 - 1) || (d0 === d1 && d1 === d2)) {
+    return gerarCodigoLocalizador();
+  }
+
+  return `${l}${n}`;
+}
+window.gerarCodigoLocalizador = gerarCodigoLocalizador;
+
 // Salva o cadastro geral da entidade com reflexo instantâneo no cache e formulários
 function salvarCadastroEntidade(e) {
   if (e && e.preventDefault) e.preventDefault();
@@ -9474,7 +9507,9 @@ function salvarCadastroEntidade(e) {
     tipoForro: getV('entidade-tipo-forro'),
     tipoPiso: getV('entidade-tipo-piso'),
     tipoTelhado: getV('entidade-tipo-telhado'),
-    muradaGradeada: getV('entidade-murada-gradeada')
+    muradaGradeada: getV('entidade-murada-gradeada'),
+    codigoLocalizador: (_escolaAtual && (_escolaAtual.codigoLocalizador || _escolaAtual.localizador)) || gerarCodigoLocalizador(),
+    dataHoraRegistro: new Date().toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) || new Date().toLocaleString('pt-BR')
   };
 
   // 1. Atualizar ou inserir em _teCache (Multi-aba de escolas)
@@ -9550,6 +9585,9 @@ function salvarCadastroEntidade(e) {
     try { res = await r.json(); } catch(e) {}
     if (r.ok && res.sucesso) {
       const aba = res.aba || 'Entidades';
+      if (res.codigoLocalizador) {
+        novaEntidade.codigoLocalizador = res.codigoLocalizador;
+      }
       if (typeof toast === 'function') {
         toast(`✅ Entidade "${nome}" gravada com sucesso na planilha oficial do Google Sheets (Aba: ${aba})!`, 'success', 6000);
       } else {
@@ -9585,7 +9623,20 @@ function salvarCadastroEntidade(e) {
           <p style="color:#f1f5f9; font-size:15px; line-height:1.6; margin:0 0 20px 0;">
             A entidade <strong>${nome}</strong> (${municipio}) foi cadastrada com sucesso e vinculada ao sistema da <strong>SEDUC/RO</strong>.
           </p>
-          <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:16px; margin:0 auto 26px auto; max-width:440px; color:#a7f3d0; font-size:12.5px; line-height:1.5;">
+
+          <div style="background:rgba(30,41,59,0.95); border:1.5px dashed #38bdf8; border-radius:10px; padding:14px; margin:0 auto 20px auto; max-width:440px; text-align:center;">
+            <div style="font-size:10px; text-transform:uppercase; color:#94a3b8; font-weight:800; letter-spacing:1.2px; margin-bottom:4px;">
+              🔑 CÓDIGO LOCALIZADOR DO REGISTRO
+            </div>
+            <div style="font-size:22px; font-weight:900; color:#38bdf8; font-family:monospace; letter-spacing:3px;">
+              ${novaEntidade.codigoLocalizador}
+            </div>
+            <div style="margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.08); font-size:11px; color:#cbd5e1;">
+              🕒 Registrado em: <strong style="color:#f8fafc;">${novaEntidade.dataHoraRegistro}</strong>
+            </div>
+          </div>
+
+          <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:14px; margin:0 auto 26px auto; max-width:440px; color:#a7f3d0; font-size:12.5px; line-height:1.5;">
             Os dados foram registrados e enviados para a base oficial de dados do Estado de Rondônia.
           </div>
           <button type="button" onclick="window.location.reload()" style="background:#10b981; color:#0f172a; font-weight:800; font-size:13px; padding:12px 28px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.4);">

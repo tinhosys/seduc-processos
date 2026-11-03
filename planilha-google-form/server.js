@@ -1650,8 +1650,41 @@ app.post("/api/contatos", editorOnly, async (req, res) => {
   }
 });
 
-// ====== ENDPOINT: CADASTRO GERAL DE ENTIDADES (VERSÃO ESTENDIDA 63 COLUNAS - ABA ENTIDADES) ======
-const official63Headers = [
+// ====== ENDPOINT: CADASTRO GERAL DE ENTIDADES (VERSÃO ESTENDIDA 64 COLUNAS - ABA ENTIDADES) ======
+function gerarCodigoLocalizador() {
+  const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // 24 letras sem I e O para evitar ambiguidade com 1 e 0
+  const numeros = "0123456789";
+  let l = "";
+  let n = "";
+
+  while (l.length < 3) {
+    const char = letras.charAt(Math.floor(Math.random() * letras.length));
+    if (l.length === 0 || l[l.length - 1] !== char) {
+      l += char;
+    }
+  }
+  // Evitar sequências alfabéticas (ex: ABC, BCD) e 3 letras iguais (ex: AAA)
+  if ((l.charCodeAt(1) === l.charCodeAt(0) + 1 && l.charCodeAt(2) === l.charCodeAt(1) + 1) ||
+      (l[0] === l[1] && l[1] === l[2])) {
+    return gerarCodigoLocalizador();
+  }
+
+  while (n.length < 3) {
+    const num = numeros.charAt(Math.floor(Math.random() * numeros.length));
+    if (n.length === 0 || n[n.length - 1] !== num) {
+      n += num;
+    }
+  }
+  // Evitar sequências numéricas (ex: 123, 234) ou regressivas (321) e 3 dígitos iguais (ex: 000)
+  const d0 = Number(n[0]), d1 = Number(n[1]), d2 = Number(n[2]);
+  if ((d1 === d0 + 1 && d2 === d1 + 1) || (d1 === d0 - 1 && d2 === d1 - 1) || (d0 === d1 && d1 === d2)) {
+    return gerarCodigoLocalizador();
+  }
+
+  return `${l}${n}`;
+}
+
+const official64Headers = [
   "Município",
   "Categoria da entidade",
   "Nome da Escola / Conselho Escolar | prefeitura",
@@ -1714,11 +1747,12 @@ const official63Headers = [
   "Nome do registrador",
   "Telefone celular registrador",
   "Email registrador",
-  "Cargo."
+  "Cargo",
+  "codigo localizador"
 ];
 
-function mapDataToOfficial63Row(data, existingRow = []) {
-  const row = new Array(63).fill("");
+function mapDataToOfficial64Row(data, existingRow = []) {
+  const row = new Array(64).fill("");
 
   const getVal = (novo, idx) => {
     if (novo !== undefined && novo !== null && novo !== "") {
@@ -1791,6 +1825,13 @@ function mapDataToOfficial63Row(data, existingRow = []) {
   row[61] = getVal(data.registradorEmail, 61);
   row[62] = getVal(data.registradorCargo || data.cargo, 62);
 
+  // Coluna 63 (64ª coluna): codigo localizador (3 letras e 3 números aleatórios não sequenciais em caixa alta)
+  let codLoc = getVal(data.codigoLocalizador, 63);
+  if (!codLoc || codLoc.trim().length < 4) {
+    codLoc = gerarCodigoLocalizador();
+  }
+  row[63] = codLoc.toUpperCase().trim();
+
   return row;
 }
 
@@ -1816,7 +1857,7 @@ app.get("/api/entidades", async (req, res) => {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: ENTIDADES_SHEET_ID,
-      range: `'${targetSheetTitle}'!A1:BK`
+      range: `'${targetSheetTitle}'!A1:BL`
     });
 
     const values = response.data.values || [];
@@ -1896,7 +1937,8 @@ app.get("/api/entidades", async (req, res) => {
         registradorNome: r[59] || "",
         registradorTelefone: r[60] || "",
         registradorEmail: r[61] || "",
-        registradorCargo: r[62] || ""
+        registradorCargo: r[62] || "",
+        codigoLocalizador: r[63] || ""
       };
     }).filter(e => e.nome && e.nome.trim().length > 0);
 
@@ -1930,22 +1972,31 @@ app.post("/api/entidades", async (req, res) => {
       console.warn("Aviso ao buscar metadados das abas:", errMeta.message);
     }
 
-    // Lê todas as linhas existentes até a coluna BK (coluna 63)
+    // Lê todas as linhas existentes até a coluna BL (coluna 64)
     const existingRes = await sheets.spreadsheets.values.get({
       spreadsheetId: ENTIDADES_SHEET_ID,
-      range: `'${targetSheetTitle}'!A:BK`
+      range: `'${targetSheetTitle}'!A:BL`
     });
     const allRows = existingRes.data.values || [];
 
-    // Se estiver sem cabeçalho, cria o cabeçalho oficial de 63 colunas
+    // Se estiver sem cabeçalho, cria o cabeçalho oficial de 64 colunas
     if (allRows.length === 0 || allRows[0].length === 0) {
       await sheets.spreadsheets.values.update({
         spreadsheetId: ENTIDADES_SHEET_ID,
-        range: `'${targetSheetTitle}'!A1:BK1`,
+        range: `'${targetSheetTitle}'!A1:BL1`,
         valueInputOption: "USER_ENTERED",
-        requestBody: { values: [official63Headers] }
+        requestBody: { values: [official64Headers] }
       });
-      allRows.push(official63Headers);
+      allRows.push(official64Headers);
+    } else if (allRows[0].length < 64) {
+      // Atualiza linha de cabeçalho para garantir todas as 64 colunas até BL1
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: ENTIDADES_SHEET_ID,
+        range: `'${targetSheetTitle}'!A1:BL1`,
+        valueInputOption: "USER_ENTERED",
+        requestBody: { values: [official64Headers] }
+      });
+      allRows[0] = official64Headers;
     }
 
     // Identificação para UPDATE vs INSERT:
@@ -1987,42 +2038,50 @@ app.post("/api/entidades", async (req, res) => {
       }
     }
 
+    const agoraDataHora = new Date().toLocaleString("pt-BR", { timeZone: "America/Porto_Velho" });
+
     if (existingRowIndex >= 1) {
       // É EDIÇÃO! Deve gravar na MESMA LINHA que já está gravada.
       const rowNumber = existingRowIndex + 1; // 1-indexed na planilha
-      const updatedRow = mapDataToOfficial63Row(data, existingRowData);
+      const updatedRow = mapDataToOfficial64Row(data, existingRowData);
+      const codigoLocalizadorFinal = updatedRow[63];
 
       await sheets.spreadsheets.values.update({
         spreadsheetId: ENTIDADES_SHEET_ID,
-        range: `'${targetSheetTitle}'!A${rowNumber}:BK${rowNumber}`,
+        range: `'${targetSheetTitle}'!A${rowNumber}:BL${rowNumber}`,
         valueInputOption: "USER_ENTERED",
         requestBody: { values: [updatedRow] }
       });
 
-      console.log(`✅ Entidade ATUALIZADA com sucesso na linha ${rowNumber} da planilha oficial "${targetSheetTitle}": ${data.nome} (INEP: ${inepInput})`);
+      console.log(`✅ Entidade ATUALIZADA com sucesso na linha ${rowNumber} da planilha oficial "${targetSheetTitle}": ${data.nome} (INEP: ${inepInput}) | Localizador: ${codigoLocalizadorFinal}`);
       return res.json({
         sucesso: true,
         acao: "atualizado",
         linha: rowNumber,
+        codigoLocalizador: codigoLocalizadorFinal,
+        dataHora: agoraDataHora,
         mensagem: `Entidade "${data.nome}" atualizada com sucesso na linha ${rowNumber}!`,
         aba: targetSheetTitle
       });
     } else {
       // É CADASTRO NOVO! Insere nova linha no final.
-      const newRow = mapDataToOfficial63Row(data, []);
+      const newRow = mapDataToOfficial64Row(data, []);
+      const codigoLocalizadorFinal = newRow[63];
 
       await sheets.spreadsheets.values.append({
         spreadsheetId: ENTIDADES_SHEET_ID,
-        range: `'${targetSheetTitle}'!A:BK`,
+        range: `'${targetSheetTitle}'!A:BL`,
         valueInputOption: "USER_ENTERED",
         insertDataOption: "INSERT_ROWS",
         requestBody: { values: [newRow] }
       });
 
-      console.log(`✅ Novo cadastro de entidade inserido na planilha oficial "${targetSheetTitle}": ${data.nome} (${data.municipio})`);
+      console.log(`✅ Novo cadastro de entidade inserido na planilha oficial "${targetSheetTitle}": ${data.nome} (${data.municipio}) | Localizador: ${codigoLocalizadorFinal}`);
       return res.json({
         sucesso: true,
         acao: "inserido",
+        codigoLocalizador: codigoLocalizadorFinal,
+        dataHora: agoraDataHora,
         mensagem: `Nova entidade "${data.nome}" cadastrada com sucesso!`,
         aba: targetSheetTitle
       });

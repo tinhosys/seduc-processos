@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -939,7 +939,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.97"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.98"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1835,9 +1835,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.97"></script>
-  <script src="js/escolas.js?v=1.3.97"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.97"></script>
+  <script src="js/dados.js?v=1.3.98"></script>
+  <script src="js/escolas.js?v=1.3.98"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.98"></script>
 
   <script>
     /* ============================================================
@@ -3743,6 +3743,38 @@
       document.getElementById('entidade-nome')?.focus();
     }
 
+    // Gerador de Código Localizador: 3 letras e 3 números aleatórios em caixa alta (não sequenciais)
+    function gerarCodigoLocalizador() {
+      const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // sem I e O para não confundir com 1 e 0
+      const numeros = "0123456789";
+      let l = "";
+      let n = "";
+
+      while (l.length < 3) {
+        const char = letras.charAt(Math.floor(Math.random() * letras.length));
+        if (l.length === 0 || l[l.length - 1] !== char) {
+          l += char;
+        }
+      }
+      if ((l.charCodeAt(1) === l.charCodeAt(0) + 1 && l.charCodeAt(2) === l.charCodeAt(1) + 1) ||
+          (l[0] === l[1] && l[1] === l[2])) {
+        return gerarCodigoLocalizador();
+      }
+
+      while (n.length < 3) {
+        const num = numeros.charAt(Math.floor(Math.random() * numeros.length));
+        if (n.length === 0 || n[n.length - 1] !== num) {
+          n += num;
+        }
+      }
+      const d0 = Number(n[0]), d1 = Number(n[1]), d2 = Number(n[2]);
+      if ((d1 === d0 + 1 && d2 === d1 + 1) || (d1 === d0 - 1 && d2 === d1 - 1) || (d0 === d1 && d1 === d2)) {
+        return gerarCodigoLocalizador();
+      }
+
+      return `${l}${n}`;
+    }
+
     // Salvar Entidade / Escola (IMAGEM 1 E IMAGEM 5)
     async function salvarEntidade(e) {
       if (e) e.preventDefault();
@@ -4003,8 +4035,13 @@
         tipoForro: getVal('entidade-tipo-forro'),
         tipoPiso: getVal('entidade-tipo-piso'),
         tipoTelhado: getVal('entidade-tipo-telhado'),
-        observacoes: getVal('entidade-observacoes')
+        observacoes: getVal('entidade-observacoes'),
+        codigoLocalizador: (_escolaAtual && (_escolaAtual.codigoLocalizador || _escolaAtual.localizador)) || gerarCodigoLocalizador(),
+        dataHoraRegistro: new Date().toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) || new Date().toLocaleString('pt-BR')
       };
+
+      let codLocalizadorAtual = novaEntidade.codigoLocalizador;
+      let dataHoraFormatada = novaEntidade.dataHoraRegistro;
 
       // Salva localmente
       try {
@@ -4058,6 +4095,14 @@
             if (resJson.aba) abaDestino = resJson.aba;
             if (resJson.acao) acaoRealizada = resJson.acao;
             if (resJson.linha) linhaPlanilhaGravada = resJson.linha;
+            if (resJson.codigoLocalizador) {
+              codLocalizadorAtual = resJson.codigoLocalizador;
+              novaEntidade.codigoLocalizador = resJson.codigoLocalizador;
+            }
+            if (resJson.dataHora) {
+              dataHoraFormatada = resJson.dataHora;
+              novaEntidade.dataHoraRegistro = resJson.dataHora;
+            }
           } else {
             detalheErro = (resJson && resJson.erro) || 'Servidor não confirmou gravação.';
           }
@@ -4079,34 +4124,6 @@
         }
       }
 
-      // EMISSÃO DE MENSAGEM PROFISSIONAL DE SALVO COM SUCESSO
-      const textoStatusGravacao = acaoRealizada === 'atualizado'
-        ? `Edição gravada na <strong>mesma linha (${linhaPlanilhaGravada || 'existente'})</strong> da aba <strong>"${abaDestino}"</strong>, sem duplicar dados.`
-        : `Novo cadastro inserido na aba <strong>"${abaDestino}"</strong> da planilha.`;
-
-      const badgePlanilhaHtml = gravouPlanilha
-        ? `<div style="margin-top:10px; padding:10px 14px; background:rgba(16,185,129,0.16); border:1px solid #10b981; border-radius:8px; text-align:left;">
-             <div style="font-size:12.5px; font-weight:800; color:#34d399; display:flex; align-items:center; gap:6px;">
-               <span>📊</span> Sincronizado na Planilha Oficial do Google Sheets!
-             </div>
-             <div style="font-size:11.5px; color:#cbd5e1; margin-top:4px;">
-               ${textoStatusGravacao}
-             </div>
-             <div style="margin-top:6px;">
-               <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit" target="_blank" rel="noopener noreferrer" style="color:#fef08a; font-weight:700; text-decoration:underline; font-size:11.5px;">
-                 🔗 Abrir Planilha Google Sheets
-               </a>
-             </div>
-           </div>`
-        : `<div style="margin-top:10px; padding:10px 14px; background:rgba(245,158,11,0.15); border:1px solid #f59e0b; border-radius:8px; text-align:left;">
-             <div style="font-size:12px; font-weight:700; color:#fbbf24;">
-               ⚡ Salvo com segurança no cache local deste dispositivo!
-             </div>
-             <div style="font-size:11px; color:#cbd5e1; margin-top:2px;">
-               ${detalheErro ? 'Aviso técnico: ' + detalheErro : 'A sincronização com a planilha Google ocorrerá automaticamente em segundo plano.'}
-             </div>
-           </div>`;
-
       await exibirMensagemSiSCAM(`
         <div style="text-align: center; margin-bottom: 14px;">
           <div style="font-size: 15px; font-weight: 900; color: #34d399; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -4116,13 +4133,25 @@
             Dados registrados e validados com êxito no sistema estadual
           </div>
         </div>
-        <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; padding: 12px 16px; font-size: 12.5px; line-height: 1.8; margin-bottom: 12px;">
+        <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; padding: 14px 16px; font-size: 12.5px; line-height: 1.8; margin-bottom: 12px;">
           <div>• <strong style="color: #f8fafc;">Escola / Entidade:</strong> <span style="color: #fef08a; font-weight: 700;">${nome}</span></div>
           <div>• <strong style="color: #f8fafc;">Município:</strong> <span style="color: #38bdf8; font-weight: 700;">${munEscolhido}</span></div>
           <div>• <strong style="color: #f8fafc;">Código INEP:</strong> <span style="color: #34d399; font-weight: 700; font-family: monospace;">${novaEntidade.inep || 'N/A'}</span></div>
           <div>• <strong style="color: #f8fafc;">Total de Alunos:</strong> <span style="color: #ffffff; font-weight: 700;">${novaEntidade.alunos || '0'}</span></div>
           <div>• <strong style="color: #f8fafc;">Registrador:</strong> <span style="color: #cbd5e1;">${regNome} (${regCargo})</span></div>
-          ${badgePlanilhaHtml}
+
+          <!-- SELO FINAL COM CÓDIGO LOCALIZADOR E DATA/HORA DO REGISTRO -->
+          <div style="margin: 14px 0 4px 0; padding: 12px; background: rgba(30, 41, 59, 0.95); border: 1.5px dashed #38bdf8; border-radius: 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+            <span style="font-size: 10px; text-transform: uppercase; color: #94a3b8; font-weight: 800; letter-spacing: 1.2px; display: block; margin-bottom: 4px;">
+              🔑 CÓDIGO LOCALIZADOR DO REGISTRO
+            </span>
+            <span style="font-size: 22px; font-weight: 900; color: #38bdf8; font-family: monospace; letter-spacing: 3px; display: inline-block;">
+              ${codLocalizadorAtual}
+            </span>
+            <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11px; color: #cbd5e1;">
+              🕒 Registrado em: <strong style="color: #f8fafc;">${dataHoraFormatada}</strong>
+            </div>
+          </div>
         </div>
         <div style="color: #94a3b8; font-size: 12px; text-align: center;">
           ⚡ Os dados desta unidade já estão disponíveis para consulta e relatórios oficiais.
