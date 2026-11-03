@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.93
+// Versão do Sistema: v1.3.94
 // ============================================================
-window.APP_VERSION = 'v1.3.93';
+window.APP_VERSION = 'v1.3.94';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -9404,11 +9404,11 @@ function salvarCadastroEntidade(e) {
   }
 
   // 6. Enviar diretamente para a planilha do Google Sheets via API backend (sem precisar abrir a planilha)
-  const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : 'https://seduc-backend.onrender.com';
+  const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com');
   const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || 'active_dev_token');
   
   if (typeof toast === 'function') {
-    toast(`Salvando "${nome}"...`, 'info', 1800);
+    toast(`⏳ Gravando "${nome}" na planilha oficial do Google Sheets...`, 'info', 2500);
   }
 
   fetch(baseApi + '/api/entidades', {
@@ -9422,10 +9422,14 @@ function salvarCadastroEntidade(e) {
     let res = {};
     try { res = await r.json(); } catch(e) {}
     if (r.ok && res.sucesso) {
+      const aba = res.aba || 'Entidades';
       if (typeof toast === 'function') {
-        toast(`✅ Entidade "${nome}" gravada com sucesso na planilha oficial do Google Sheets!`, 'success');
+        toast(`✅ Entidade "${nome}" gravada com sucesso na planilha oficial do Google Sheets (Aba: ${aba})!`, 'success', 6000);
       } else {
-        alert(`Entidade "${nome}" gravada na planilha oficial!`);
+        alert(`Entidade "${nome}" gravada na planilha oficial (Aba: ${aba})!`);
+      }
+      if (typeof carregarEscolasAPI === 'function') {
+        try { carregarEscolasAPI(true); } catch(e) {}
       }
     } else {
       console.warn('[CadastroEntidade] Falha na gravação remota:', res);
@@ -9480,7 +9484,7 @@ async function sincronizarCadastrosLocaisComPlanilha() {
   }
   
   if (typeof toast === 'function') toast(`⏳ Sincronizando ${salvas.length} cadastros locais com a planilha Google Sheets...`, 'info', 3000);
-  const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : 'https://seduc-backend.onrender.com';
+  const baseApi = (typeof API_BASE !== 'undefined' && API_BASE) ? API_BASE : ((window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? '' : 'https://seduc-backend.onrender.com');
   const token = (typeof getSessionToken === 'function') ? getSessionToken() : (sessionStorage.getItem('sap_session_token') || 'active_dev_token');
 
   let sucessos = 0;

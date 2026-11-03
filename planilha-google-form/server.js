@@ -1668,33 +1668,156 @@ const defaultEntidadesHeaders = [
 
 const DEFAULT_AGENT_EMAIL = "planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com";
 
+// Rota de listagem de entidades da planilha oficial
+app.get("/api/entidades", async (req, res) => {
+  try {
+    const ENTIDADES_SHEET_ID = process.env.ENTIDADES_SHEET_ID || process.env.SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
+    let targetSheetTitle = "Entidades";
+    try {
+      const meta = await sheets.spreadsheets.get({ spreadsheetId: ENTIDADES_SHEET_ID });
+      const sheetList = meta.data.sheets || [];
+      const match = sheetList.find(s => {
+        const title = (s.properties.title || '').trim().toLowerCase();
+        return title === 'entidades' || title === 'escolas';
+      });
+      if (match) targetSheetTitle = match.properties.title;
+      else if (sheetList.length > 0) targetSheetTitle = sheetList[0].properties.title;
+    } catch(e) {}
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: ENTIDADES_SHEET_ID,
+      range: `'${targetSheetTitle}'!A1:AZ`
+    });
+
+    const values = response.data.values || [];
+    if (values.length < 2) {
+      return res.json({ rows: [], total: 0 });
+    }
+
+    const headers = values[0];
+    const rows = values.slice(1).map((r, idx) => {
+      return {
+        id: r[5] || `ent_${idx + 2}`,
+        municipio: r[0] || "",
+        categoria: r[1] || "",
+        nome: r[2] || "",
+        alunos: r[3] || "0",
+        totalMatricula: r[3] || "0",
+        modalidade: r[4] || "",
+        inep: r[5] || "",
+        codigoInep: r[5] || "",
+        cnpj: r[6] || "",
+        endereco: r[7] || "",
+        bairro: r[8] || "",
+        complemento: r[9] || "",
+        cep: r[10] || "",
+        competencia: r[11] || "",
+        super: r[12] || "",
+        redesSociais: r[13] || "",
+        telefone: r[14] || "",
+        email: r[15] || "",
+        diretor: r[16] || "",
+        contatoDiretor: r[17] || "",
+        secretario: r[18] || "",
+        contatoSecretario: r[19] || "",
+        salasAula: r[20] || "",
+        salasAdm: r[21] || "",
+        salaAEE: r[22] || "",
+        banheiros: r[23] || "",
+        patio: r[24] || "",
+        auditorio: r[25] || "",
+        refeitorio: r[26] || "",
+        quadra: r[27] || "",
+        localidade: r[28] || "Urbana",
+        linha: r[29] || "",
+        rodoviaKm: r[30] || "",
+        sitioRio: r[31] || "",
+        plusCode: r[32] || "",
+        acessibilidade: r[33] || "",
+        cozinha: r[34] || "",
+        depositoSeco: r[35] || "",
+        depositoPereciveis: r[36] || "",
+        almoxarifadoAdm: r[37] || "",
+        depositoGeral: r[38] || "",
+        biblioteca: r[39] || "",
+        dml: r[40] || "",
+        quadraCoberta: r[41] || "",
+        quadraPiso: r[42] || "",
+        labInfo: r[43] || "",
+        hall: r[44] || "",
+        ppci: r[45] || "",
+        fonteAgua: r[46] || "",
+        energiaSolar: r[47] || "",
+        tipoAbertura: r[48] || "",
+        tipoForro: r[49] || "",
+        tipoPiso: r[50] || "",
+        tipoTelhado: r[51] || "",
+        muradaGradeada: r[52] || "",
+        observacoes: r[53] || "",
+        registradorNome: r[54] || "",
+        registradorTelefone: r[55] || "",
+        registradorEmail: r[56] || "",
+        registradorCargo: r[57] || ""
+      };
+    }).filter(e => e.nome && e.nome.trim().length > 0);
+
+    res.json({ rows, total: rows.length, planilha: ENTIDADES_SHEET_ID, aba: targetSheetTitle });
+  } catch (error) {
+    console.error("Erro ao listar entidades:", error);
+    res.status(500).json({ erro: error.message });
+  }
+});
+
 app.post("/api/entidades", async (req, res) => {
   try {
     const data = req.body || {};
-    const ENTIDADES_SHEET_ID = process.env.ENTIDADES_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
+    const ENTIDADES_SHEET_ID = process.env.ENTIDADES_SHEET_ID || process.env.SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     
-    // Obter ou criar cabeçalho da aba Entidades
-    let headers = defaultEntidadesHeaders;
+    // Tenta encontrar a aba exata por metadados
+    let targetSheetTitle = "Entidades";
     try {
-      const headerDefRes = await sheets.spreadsheets.values.get({
-        spreadsheetId: ENTIDADES_SHEET_ID,
-        range: "'Entidades'!A1:AZ1"
+      const meta = await sheets.spreadsheets.get({ spreadsheetId: ENTIDADES_SHEET_ID });
+      const sheetList = meta.data.sheets || [];
+      const match = sheetList.find(s => {
+        const title = (s.properties.title || '').trim().toLowerCase();
+        return title === 'entidades' || title === 'escolas';
       });
-      if (headerDefRes.data.values && headerDefRes.data.values[0] && headerDefRes.data.values[0].length > 0) {
-        headers = headerDefRes.data.values[0];
+      if (match) {
+        targetSheetTitle = match.properties.title;
+      } else if (sheetList.length > 0) {
+        targetSheetTitle = sheetList[0].properties.title;
       }
-    } catch(e) {
-      console.warn("Aba Entidades pode não ter cabeçalho ainda ou requer apêndice:", e.message);
+    } catch(errMeta) {
+      console.warn("Aviso ao buscar metadados das abas:", errMeta.message);
     }
 
-    // Mapear dados para as colunas na ordem exata da planilha
+    // Se a aba estiver sem cabeçalho, cria o cabeçalho oficial de 58 colunas na linha 1
+    try {
+      const headerCheck = await sheets.spreadsheets.values.get({
+        spreadsheetId: ENTIDADES_SHEET_ID,
+        range: `'${targetSheetTitle}'!A1:AZ1`
+      });
+      if (!headerCheck.data.values || headerCheck.data.values.length === 0 || headerCheck.data.values[0].length === 0) {
+        await sheets.spreadsheets.values.update({
+          spreadsheetId: ENTIDADES_SHEET_ID,
+          range: `'${targetSheetTitle}'!A1`,
+          valueInputOption: "USER_ENTERED",
+          requestBody: { values: [defaultEntidadesHeaders] }
+        });
+        console.log(`✅ Cabeçalho de 58 colunas inicializado na aba "${targetSheetTitle}"`);
+      }
+    } catch(errH) {
+      console.warn("Aviso ao checar cabeçalho:", errH.message);
+    }
+
+    // Mapear dados para as colunas na ordem exata da planilha (58 colunas)
     const newRow = [
       data.municipio || "",
       data.categoria || "",
       data.nome || "",
-      data.alunos || "",
+      data.alunos || data.totalMatricula || "",
       data.modalidade || "",
-      data.inep || "",
+      data.inep || data.codigoInep || "",
       data.cnpj || "",
       data.endereco || "",
       data.bairro || "",
@@ -1717,7 +1840,7 @@ app.post("/api/entidades", async (req, res) => {
       data.auditorio || "",
       data.refeitorio || "",
       data.quadra || "",
-      data.localidade || "",
+      data.localidade || "Urbana",
       // Endereço adicional:
       data.linha || "",
       data.rodoviaKm || "",
@@ -1754,14 +1877,14 @@ app.post("/api/entidades", async (req, res) => {
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: ENTIDADES_SHEET_ID,
-      range: "'Entidades'!A:AZ",
+      range: `'${targetSheetTitle}'!A:AZ`,
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
     });
 
-    console.log(`✅ Entidade cadastrada na planilha oficial: ${data.nome} (${data.municipio})`);
-    res.json({ sucesso: true, mensagem: `Entidade "${data.nome}" inserida diretamente na planilha com sucesso!` });
+    console.log(`✅ Entidade cadastrada na planilha oficial "${targetSheetTitle}": ${data.nome} (${data.municipio})`);
+    res.json({ sucesso: true, mensagem: `Entidade "${data.nome}" inserida diretamente na planilha oficial com sucesso!`, aba: targetSheetTitle });
   } catch(error) {
     console.error("Erro ao cadastrar entidade na planilha:", error);
     res.status(500).json({ erro: "Erro ao cadastrar na planilha: " + error.message });
