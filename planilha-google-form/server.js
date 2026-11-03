@@ -1650,34 +1650,157 @@ app.post("/api/contatos", editorOnly, async (req, res) => {
   }
 });
 
-// ====== ENDPOINT: CADASTRO GERAL DE ENTIDADES (NOVA VERSÃO ESTENDIDA - ABA ENTIDADES) ======
-const defaultEntidadesHeaders = [
-  "Município", "Categoria da parceria", "Nome da escola | Entidade | Prefeitura", "Nº de alunos", "Modalidade",
-  "INEP", "CNPJ", "Endereço", "Bairro | Distrito | Aldeia", "Complemento", "CEP", "Competência",
-  "Super", "Rede social", "Telefone", "Email da entidade", "Nome do diretor | Presidente | Prefeito",
-  "Contato do diretor", "Nome do secretário", "Contato do secretário", "Quant. salas de aula",
-  "Quant. salas administrativas", "Sala do AEE", "Banheiros", "Pátio Coberto", "Auditório",
-  "Refeitório (s/n)", "Quadra (s/n)", "Localidade (urbana/rural)",
-  // Novos campos Endereço Complementar (Rural & Plus Code):
-  "Linha / Estrada", "Rodovia / BR e KM", "Sítio / Fazenda / Rio", "Plus Code (Google)",
-  // Novos campos Infraestrutura e Espaços (Nova Versão):
-  "Acessibilidade", "Área de Cocção (Cozinha)", "Depósito Seco (Mantimentos)",
-  "Depósito de Perecíveis (Área Fria)", "Almoxarifado Administrativo", "Depósito Geral",
-  "Biblioteca", "DML (Depósito Material Limpeza)", "Quadra Coberta", "Piso da Quadra",
-  "Laboratório de Informática", "Hall de Acolhimento", "PPCI", "Fonte de Água",
-  "Energia Solar", "Tipo de Abertura", "Tipo de Forro", "Tipo de Piso", "Tipo de Telhado",
-  "Escola Murada ou Gradeada", "Observações da Infraestrutura",
-  // Dados do Registrador (Quem prestou as informações):
-  "Nome do Registrador", "Telefone Celular do Registrador", "Email do Registrador", "Cargo do Registrador"
+// ====== ENDPOINT: CADASTRO GERAL DE ENTIDADES (VERSÃO ESTENDIDA 63 COLUNAS - ABA ENTIDADES) ======
+const official63Headers = [
+  "Município",
+  "Categoria da entidade",
+  "Nome da Escola / Conselho Escolar | prefeitura",
+  "Nº de Alunos",
+  "Modalidade",
+  "Código INEP",
+  "CNPJ",
+  "Endereço (Rua / Av / Linha)",
+  "Bairro / Distrito / Linha",
+  "Complemento",
+  "CEP",
+  "Competência",
+  "Linha / Estrada",
+  "Rodovia / BR & KM",
+  "Sítio / Fazenda / Gleba / Rio",
+  "Plus Code (Google Maps)",
+  "Superintendência de Educação",
+  "Rede Social",
+  "Telefone da Unidade",
+  "E-mail da entidade",
+  "Nome do Diretor | Presidente",
+  "Contato do Diretor | Presidente",
+  "Nome do Secretário(a)",
+  "Contato do Secretário(a)",
+  "Localidade",
+  "QUANT. SALA DE AULA",
+  "QUANT. SALA ADM",
+  "SALA DO AEE (S/N)",
+  "BANHEIROS (QTDE)",
+  "PÁTIO COBERTO (S/N)",
+  "AUDITÓRIO (S/N)",
+  "REFEITÓRIO (S/N)",
+  "QUADRA POLIESPORTIVA",
+  "ÁREA DE COCÇÃO (COZINHA)",
+  "DEPÓSITO SECO (MANTIMENTOS)",
+  "DEPÓSITO PERECÍVEIS (ÁREA FRIA)",
+  "ALMOXARIFADO ADM",
+  "DEPÓSITO GERAL",
+  "BIBLIOTECA (S/N)",
+  "LAB. DE INFORMÁTICA",
+  "HALL DE ACOLHIMENTO",
+  "DML (MAT. LIMPEZA)",
+  "QUADRA COBERTA (S/N)",
+  "PISO DA QUADRA",
+  "ACESSIBILIDADE (S/N)",
+  "PPCI (PREV. INCÊNDIO)",
+  "FONTE DE ÁGUA",
+  "ENERGIA SOLAR (S/N)",
+  "ESCOLA MURADA / GRADEADA",
+  "TIPO DE ABERTURA (PORTAS / JANELAS)",
+  "TIPO DE FORRO",
+  "TIPO DE PISO",
+  "TIPO DE TELHADO",
+  "Observações Gerais da Infraestrutura (Opcional)",
+  "Instagram",
+  "Facebook",
+  "YouTube",
+  "Outro / Site",
+  "Não possui nenhuma rede social ou página na internet",
+  "Nome do registrador",
+  "Telefone celular registrador",
+  "Email registrador",
+  "Cargo."
 ];
+
+function mapDataToOfficial63Row(data, existingRow = []) {
+  const row = new Array(63).fill("");
+
+  const getVal = (novo, idx) => {
+    if (novo !== undefined && novo !== null && novo !== "") {
+      return novo.toString().trim();
+    }
+    return (existingRow && existingRow[idx] !== undefined && existingRow[idx] !== null) ? existingRow[idx].toString().trim() : "";
+  };
+
+  row[0] = getVal(data.municipio, 0);
+  row[1] = getVal(data.categoria, 1);
+  row[2] = getVal(data.nome, 2);
+  row[3] = getVal(data.alunos || data.totalMatricula, 3);
+  row[4] = getVal(data.modalidade, 4);
+  row[5] = getVal(data.inep || data.codigoInep, 5);
+  row[6] = getVal(data.cnpj, 6);
+  row[7] = getVal(data.endereco, 7);
+  row[8] = getVal(data.bairro, 8);
+  row[9] = getVal(data.complemento, 9);
+  row[10] = getVal(data.cep, 10);
+  row[11] = getVal(data.competencia, 11);
+  row[12] = getVal(data.linha, 12);
+  row[13] = getVal(data.rodoviaKm, 13);
+  row[14] = getVal(data.sitioRio, 14);
+  row[15] = getVal(data.plusCode, 15);
+  row[16] = getVal(data.super, 16);
+  row[17] = getVal(data.redesSociais, 17);
+  row[18] = getVal(data.telefone, 18);
+  row[19] = getVal(data.email, 19);
+  row[20] = getVal(data.diretor, 20);
+  row[21] = getVal(data.contatoDiretor, 21);
+  row[22] = getVal(data.secretario, 22);
+  row[23] = getVal(data.contatoSecretario, 23);
+  row[24] = getVal(data.localidade || "Urbana", 24);
+  row[25] = getVal(data.salasAula || data.salas, 25);
+  row[26] = getVal(data.salasAdm, 26);
+  row[27] = getVal(data.salaAEE, 27);
+  row[28] = getVal(data.banheiros, 28);
+  row[29] = getVal(data.patioCoberto || data.patio, 29);
+  row[30] = getVal(data.auditorio, 30);
+  row[31] = getVal(data.refeitorio, 31);
+  row[32] = getVal(data.quadra, 32);
+  row[33] = getVal(data.cozinha || data.areaCoccao, 33);
+  row[34] = getVal(data.depositoSeco, 34);
+  row[35] = getVal(data.depositoPereciveis, 35);
+  row[36] = getVal(data.almoxarifadoAdm, 36);
+  row[37] = getVal(data.depositoGeral || data.deposito, 37);
+  row[38] = getVal(data.biblioteca, 38);
+  row[39] = getVal(data.labInfo, 39);
+  row[40] = getVal(data.hall, 40);
+  row[41] = getVal(data.dml, 41);
+  row[42] = getVal(data.quadraCoberta, 42);
+  row[43] = getVal(data.quadraPiso, 43);
+  row[44] = getVal(data.acessibilidade, 44);
+  row[45] = getVal(data.ppci, 45);
+  row[46] = getVal(data.fonteAgua, 46);
+  row[47] = getVal(data.energiaSolar, 47);
+  row[48] = getVal(data.muradaGradeada, 48);
+  row[49] = getVal(data.tipoAbertura, 49);
+  row[50] = getVal(data.tipoForro, 50);
+  row[51] = getVal(data.tipoPiso, 51);
+  row[52] = getVal(data.tipoTelhado, 52);
+  row[53] = getVal(data.observacoes, 53);
+  row[54] = getVal(data.instagram, 54);
+  row[55] = getVal(data.facebook, 55);
+  row[56] = getVal(data.youtube, 56);
+  row[57] = getVal(data.outroSite, 57);
+  row[58] = getVal(data.semRedeSocial, 58);
+  row[59] = getVal(data.registradorNome, 59);
+  row[60] = getVal(data.registradorTelefone, 60);
+  row[61] = getVal(data.registradorEmail, 61);
+  row[62] = getVal(data.registradorCargo || data.cargo, 62);
+
+  return row;
+}
 
 const DEFAULT_AGENT_EMAIL = "planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com";
 
-// Rota de listagem de entidades da planilha oficial
+// Rota de listagem de entidades da planilha oficial (63 colunas)
 app.get("/api/entidades", async (req, res) => {
   try {
     const ENTIDADES_SHEET_ID = "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
-    let targetSheetTitle = "Entidades";
+    let targetSheetTitle = "ENTIDADES";
     try {
       const meta = await sheets.spreadsheets.get({ spreadsheetId: ENTIDADES_SHEET_ID });
       const sheetList = meta.data.sheets || [];
@@ -1693,7 +1816,7 @@ app.get("/api/entidades", async (req, res) => {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: ENTIDADES_SHEET_ID,
-      range: `'${targetSheetTitle}'!A1:AZ`
+      range: `'${targetSheetTitle}'!A1:BK`
     });
 
     const values = response.data.values || [];
@@ -1701,10 +1824,11 @@ app.get("/api/entidades", async (req, res) => {
       return res.json({ rows: [], total: 0, planilhaId: ENTIDADES_SHEET_ID, aba: targetSheetTitle });
     }
 
-    const headers = values[0];
     const rows = values.slice(1).map((r, idx) => {
+      const rowNum = idx + 2;
       return {
-        id: r[5] || `ent_${idx + 2}`,
+        id: r[5] || `ent_${rowNum}`,
+        linhaPlanilha: rowNum,
         municipio: r[0] || "",
         categoria: r[1] || "",
         nome: r[2] || "",
@@ -1719,52 +1843,60 @@ app.get("/api/entidades", async (req, res) => {
         complemento: r[9] || "",
         cep: r[10] || "",
         competencia: r[11] || "",
-        super: r[12] || "",
-        redesSociais: r[13] || "",
-        telefone: r[14] || "",
-        email: r[15] || "",
-        diretor: r[16] || "",
-        contatoDiretor: r[17] || "",
-        secretario: r[18] || "",
-        contatoSecretario: r[19] || "",
-        salasAula: r[20] || "",
-        salasAdm: r[21] || "",
-        salaAEE: r[22] || "",
-        banheiros: r[23] || "",
-        patio: r[24] || "",
-        auditorio: r[25] || "",
-        refeitorio: r[26] || "",
-        quadra: r[27] || "",
-        localidade: r[28] || "Urbana",
-        linha: r[29] || "",
-        rodoviaKm: r[30] || "",
-        sitioRio: r[31] || "",
-        plusCode: r[32] || "",
-        acessibilidade: r[33] || "",
-        cozinha: r[34] || "",
-        depositoSeco: r[35] || "",
-        depositoPereciveis: r[36] || "",
-        almoxarifadoAdm: r[37] || "",
-        depositoGeral: r[38] || "",
-        biblioteca: r[39] || "",
-        dml: r[40] || "",
-        quadraCoberta: r[41] || "",
-        quadraPiso: r[42] || "",
-        labInfo: r[43] || "",
-        hall: r[44] || "",
+        linha: r[12] || "",
+        rodoviaKm: r[13] || "",
+        sitioRio: r[14] || "",
+        plusCode: r[15] || "",
+        super: r[16] || "",
+        redesSociais: r[17] || "",
+        telefone: r[18] || "",
+        email: r[19] || "",
+        diretor: r[20] || "",
+        contatoDiretor: r[21] || "",
+        secretario: r[22] || "",
+        contatoSecretario: r[23] || "",
+        localidade: r[24] || "Urbana",
+        salasAula: r[25] || "",
+        salasAdm: r[26] || "",
+        salaAEE: r[27] || "",
+        banheiros: r[28] || "",
+        patioCoberto: r[29] || "",
+        patio: r[29] || "",
+        auditorio: r[30] || "",
+        refeitorio: r[31] || "",
+        quadra: r[32] || "",
+        cozinha: r[33] || "",
+        areaCoccao: r[33] || "",
+        depositoSeco: r[34] || "",
+        depositoPereciveis: r[35] || "",
+        almoxarifadoAdm: r[36] || "",
+        depositoGeral: r[37] || "",
+        deposito: r[37] || "",
+        biblioteca: r[38] || "",
+        labInfo: r[39] || "",
+        hall: r[40] || "",
+        dml: r[41] || "",
+        quadraCoberta: r[42] || "",
+        quadraPiso: r[43] || "",
+        acessibilidade: r[44] || "",
         ppci: r[45] || "",
         fonteAgua: r[46] || "",
         energiaSolar: r[47] || "",
-        tipoAbertura: r[48] || "",
-        tipoForro: r[49] || "",
-        tipoPiso: r[50] || "",
-        tipoTelhado: r[51] || "",
-        muradaGradeada: r[52] || "",
+        muradaGradeada: r[48] || "",
+        tipoAbertura: r[49] || "",
+        tipoForro: r[50] || "",
+        tipoPiso: r[51] || "",
+        tipoTelhado: r[52] || "",
         observacoes: r[53] || "",
-        registradorNome: r[54] || "",
-        registradorTelefone: r[55] || "",
-        registradorEmail: r[56] || "",
-        registradorCargo: r[57] || ""
+        instagram: r[54] || "",
+        facebook: r[55] || "",
+        youtube: r[56] || "",
+        outroSite: r[57] || "",
+        semRedeSocial: r[58] || "",
+        registradorNome: r[59] || "",
+        registradorTelefone: r[60] || "",
+        registradorEmail: r[61] || "",
+        registradorCargo: r[62] || ""
       };
     }).filter(e => e.nome && e.nome.trim().length > 0);
 
@@ -1782,7 +1914,7 @@ app.post("/api/entidades", async (req, res) => {
     const ENTIDADES_SHEET_ID = "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     
     // Tenta encontrar a aba exata por metadados na planilha oficial
-    let targetSheetTitle = "Entidades";
+    let targetSheetTitle = "ENTIDADES";
     try {
       const meta = await sheets.spreadsheets.get({ spreadsheetId: ENTIDADES_SHEET_ID });
       const sheetList = meta.data.sheets || [];
@@ -1791,114 +1923,113 @@ app.post("/api/entidades", async (req, res) => {
         return title === 'entidades' || title.includes('entidade');
       });
       const gid0 = sheetList.find(s => s.properties && s.properties.sheetId === 0);
-      if (matchEnt) {
-        targetSheetTitle = matchEnt.properties.title;
-      } else if (gid0) {
-        targetSheetTitle = gid0.properties.title;
-      } else if (sheetList.length > 0) {
-        targetSheetTitle = sheetList[0].properties.title;
-      }
+      if (matchEnt) targetSheetTitle = matchEnt.properties.title;
+      else if (gid0) targetSheetTitle = gid0.properties.title;
+      else if (sheetList.length > 0) targetSheetTitle = sheetList[0].properties.title;
     } catch(errMeta) {
       console.warn("Aviso ao buscar metadados das abas:", errMeta.message);
     }
 
-    // Se a aba estiver sem cabeçalho, cria o cabeçalho oficial de 58 colunas na linha 1
-    try {
-      const headerCheck = await sheets.spreadsheets.values.get({
+    // Lê todas as linhas existentes até a coluna BK (coluna 63)
+    const existingRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: ENTIDADES_SHEET_ID,
+      range: `'${targetSheetTitle}'!A:BK`
+    });
+    const allRows = existingRes.data.values || [];
+
+    // Se estiver sem cabeçalho, cria o cabeçalho oficial de 63 colunas
+    if (allRows.length === 0 || allRows[0].length === 0) {
+      await sheets.spreadsheets.values.update({
         spreadsheetId: ENTIDADES_SHEET_ID,
-        range: `'${targetSheetTitle}'!A1:AZ1`
+        range: `'${targetSheetTitle}'!A1:BK1`,
+        valueInputOption: "USER_ENTERED",
+        requestBody: { values: [official63Headers] }
       });
-      if (!headerCheck.data.values || headerCheck.data.values.length === 0 || headerCheck.data.values[0].length === 0) {
-        await sheets.spreadsheets.values.update({
-          spreadsheetId: ENTIDADES_SHEET_ID,
-          range: `'${targetSheetTitle}'!A1`,
-          valueInputOption: "USER_ENTERED",
-          requestBody: { values: [defaultEntidadesHeaders] }
-        });
-        console.log(`✅ Cabeçalho de 58 colunas inicializado na aba "${targetSheetTitle}"`);
-      }
-    } catch(errH) {
-      console.warn("Aviso ao checar cabeçalho:", errH.message);
+      allRows.push(official63Headers);
     }
 
-    // Mapear dados para as colunas na ordem exata da planilha (58 colunas)
-    const newRow = [
-      data.municipio || "",
-      data.categoria || "",
-      data.nome || "",
-      data.alunos || data.totalMatricula || "",
-      data.modalidade || "",
-      data.inep || data.codigoInep || "",
-      data.cnpj || "",
-      data.endereco || "",
-      data.bairro || "",
-      data.complemento || "",
-      data.cep || "",
-      data.competencia || "",
-      data.super || "",
-      data.redesSociais || "",
-      data.telefone || "",
-      data.email || "",
-      data.diretor || "",
-      data.contatoDiretor || "",
-      data.secretario || "",
-      data.contatoSecretario || "",
-      data.salasAula || data.salas || "",
-      data.salasAdm || "",
-      data.salaAEE || "",
-      data.banheiros || "",
-      data.patioCoberto || data.patio || "",
-      data.auditorio || "",
-      data.refeitorio || "",
-      data.quadra || "",
-      data.localidade || "Urbana",
-      // Endereço adicional:
-      data.linha || "",
-      data.rodoviaKm || "",
-      data.sitioRio || "",
-      data.plusCode || "",
-      // Infraestrutura adicional:
-      data.acessibilidade || "",
-      data.cozinha || "",
-      data.depositoSeco || "",
-      data.depositoPereciveis || "",
-      data.almoxarifadoAdm || "",
-      data.depositoGeral || data.deposito || "",
-      data.biblioteca || "",
-      data.dml || "",
-      data.quadraCoberta || "",
-      data.quadraPiso || "",
-      data.labInfo || "",
-      data.hall || "",
-      data.ppci || "",
-      data.fonteAgua || "",
-      data.energiaSolar || "",
-      data.tipoAbertura || "",
-      data.tipoForro || "",
-      data.tipoPiso || "",
-      data.tipoTelhado || "",
-      data.muradaGradeada || "",
-      data.observacoes || "",
-      // Dados do Registrador:
-      data.registradorNome || "",
-      data.registradorTelefone || "",
-      data.registradorEmail || "",
-      data.registradorCargo || ""
-    ];
+    // Identificação para UPDATE vs INSERT:
+    const inepInput = (data.inep || data.codigoInep || "").toString().replace(/\D/g, "");
+    const cnpjInput = (data.cnpj || "").toString().replace(/\D/g, "");
+    const nomeNorm = (data.nome || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const munNorm = (data.municipio || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: ENTIDADES_SHEET_ID,
-      range: `'${targetSheetTitle}'!A:AZ`,
-      valueInputOption: "USER_ENTERED",
-      insertDataOption: "INSERT_ROWS",
-      requestBody: { values: [newRow] }
-    });
+    let existingRowIndex = -1; // 0-based index no array allRows
+    let existingRowData = null;
 
-    console.log(`✅ Entidade cadastrada na planilha oficial "${targetSheetTitle}": ${data.nome} (${data.municipio})`);
-    res.json({ sucesso: true, mensagem: `Entidade "${data.nome}" inserida diretamente na planilha oficial com sucesso!`, aba: targetSheetTitle });
+    // Procura registro existente da linha 2 em diante (índice 1 em diante)
+    for (let i = 1; i < allRows.length; i++) {
+      const r = allRows[i] || [];
+      const rowInep = (r[5] || "").toString().replace(/\D/g, "");
+      const rowCnpj = (r[6] || "").toString().replace(/\D/g, "");
+      const rowNome = (r[2] || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      const rowMun = (r[0] || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+      // 1. Match forte por INEP (se tiver 4 ou mais dígitos)
+      if (inepInput.length >= 4 && rowInep === inepInput) {
+        existingRowIndex = i;
+        existingRowData = r;
+        break;
+      }
+
+      // 2. Match por CNPJ (se tiver 14 dígitos e bater)
+      if (cnpjInput.length === 14 && rowCnpj === cnpjInput) {
+        existingRowIndex = i;
+        existingRowData = r;
+        break;
+      }
+
+      // 3. Match por Nome da Escola + Município
+      if (nomeNorm.length >= 3 && rowNome === nomeNorm && (munNorm.length === 0 || rowMun === munNorm)) {
+        existingRowIndex = i;
+        existingRowData = r;
+        break;
+      }
+    }
+
+    if (existingRowIndex >= 1) {
+      // É EDIÇÃO! Deve gravar na MESMA LINHA que já está gravada.
+      const rowNumber = existingRowIndex + 1; // 1-indexed na planilha
+      const updatedRow = mapDataToOfficial63Row(data, existingRowData);
+
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: ENTIDADES_SHEET_ID,
+        range: `'${targetSheetTitle}'!A${rowNumber}:BK${rowNumber}`,
+        valueInputOption: "USER_ENTERED",
+        requestBody: { values: [updatedRow] }
+      });
+
+      console.log(`✅ Entidade ATUALIZADA com sucesso na linha ${rowNumber} da planilha oficial "${targetSheetTitle}": ${data.nome} (INEP: ${inepInput})`);
+      return res.json({
+        sucesso: true,
+        acao: "atualizado",
+        linha: rowNumber,
+        mensagem: `Entidade "${data.nome}" atualizada com sucesso na linha ${rowNumber}!`,
+        aba: targetSheetTitle
+      });
+    } else {
+      // É CADASTRO NOVO! Insere nova linha no final.
+      const newRow = mapDataToOfficial63Row(data, []);
+
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: ENTIDADES_SHEET_ID,
+        range: `'${targetSheetTitle}'!A:BK`,
+        valueInputOption: "USER_ENTERED",
+        insertDataOption: "INSERT_ROWS",
+        requestBody: { values: [newRow] }
+      });
+
+      console.log(`✅ Novo cadastro de entidade inserido na planilha oficial "${targetSheetTitle}": ${data.nome} (${data.municipio})`);
+      return res.json({
+        sucesso: true,
+        acao: "inserido",
+        mensagem: `Nova entidade "${data.nome}" cadastrada com sucesso!`,
+        aba: targetSheetTitle
+      });
+    }
   } catch(error) {
-    console.error("Erro ao cadastrar entidade na planilha:", error);
-    res.status(500).json({ erro: "Erro ao cadastrar na planilha: " + error.message });
+    console.error("Erro ao salvar/atualizar entidade na planilha:", error);
+    res.status(500).json({ erro: "Erro ao salvar na planilha: " + error.message });
   }
 });
 

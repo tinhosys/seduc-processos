@@ -939,7 +939,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.95"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.96"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1802,9 +1802,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.95"></script>
-  <script src="js/escolas.js?v=1.3.95"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.95"></script>
+  <script src="js/dados.js?v=1.3.96"></script>
+  <script src="js/escolas.js?v=1.3.96"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.96"></script>
 
   <script>
     /* ============================================================
@@ -3760,6 +3760,25 @@
         });
       }
 
+      const igChk = document.getElementById('chk-social-instagram');
+      const igExt = document.getElementById('social-ext-instagram');
+      const igVal = (igChk && igChk.checked && igExt) ? (igExt.value.trim() ? (igExt.value.startsWith('@') || igExt.value.startsWith('http') ? igExt.value.trim() : 'instagram.com/' + igExt.value.trim()) : '') : '';
+
+      const fbChk = document.getElementById('chk-social-facebook');
+      const fbExt = document.getElementById('social-ext-facebook');
+      const fbVal = (fbChk && fbChk.checked && fbExt) ? (fbExt.value.trim() ? (fbExt.value.startsWith('http') ? fbExt.value.trim() : 'facebook.com/' + fbExt.value.trim()) : '') : '';
+
+      const ytChk = document.getElementById('chk-social-youtube');
+      const ytExt = document.getElementById('social-ext-youtube');
+      const ytVal = (ytChk && ytChk.checked && ytExt) ? (ytExt.value.trim() ? (ytExt.value.startsWith('http') ? ytExt.value.trim() : 'youtube.com/@' + ytExt.value.trim().replace(/^@/, '')) : '') : '';
+
+      const outroChk = document.getElementById('chk-social-outro');
+      const outroExt = document.getElementById('social-ext-outro');
+      const outroVal = (outroChk && outroChk.checked && outroExt) ? outroExt.value.trim() : '';
+
+      const nenhumaChk = document.getElementById('chk-social-nenhuma');
+      const semRedeVal = (nenhumaChk && nenhumaChk.checked) ? 'Sim' : 'Não';
+
       const id = getVal('entidade-id') || `ent_${Date.now()}`;
       const novaEntidade = {
         id: id,
@@ -3784,6 +3803,12 @@
         secretario: getVal('entidade-secretario'),
         contatoSecretario: getVal('entidade-contato-secretario'),
         localidade: getVal('entidade-localidade') || 'Urbana',
+        // Redes sociais individuais:
+        instagram: igVal,
+        facebook: fbVal,
+        youtube: ytVal,
+        outroSite: outroVal,
+        semRedeSocial: semRedeVal,
         // Dados de quem fez a informação (Registrador):
         registradorNome: regNome,
         registradorTelefone: regTel,
@@ -3852,7 +3877,9 @@
       }
 
       let gravouPlanilha = false;
-      let abaDestino = 'Entidades';
+      let abaDestino = 'ENTIDADES';
+      let acaoRealizada = 'inserido';
+      let linhaPlanilhaGravada = null;
       let detalheErro = '';
       try {
         const baseApi = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
@@ -3876,6 +3903,8 @@
           if (resJson && resJson.sucesso) {
             gravouPlanilha = true;
             if (resJson.aba) abaDestino = resJson.aba;
+            if (resJson.acao) acaoRealizada = resJson.acao;
+            if (resJson.linha) linhaPlanilhaGravada = resJson.linha;
           } else {
             detalheErro = (resJson && resJson.erro) || 'Servidor não confirmou gravação.';
           }
@@ -3897,14 +3926,18 @@
         }
       }
 
-      // EMISSÃO DE MENSAGEM PROFISSIONAL DE SALVO COM SUCESSO (IMAGEM 1 E 2)
+      // EMISSÃO DE MENSAGEM PROFISSIONAL DE SALVO COM SUCESSO
+      const textoStatusGravacao = acaoRealizada === 'atualizado'
+        ? `Edição gravada na <strong>mesma linha (${linhaPlanilhaGravada || 'existente'})</strong> da aba <strong>"${abaDestino}"</strong>, sem duplicar dados.`
+        : `Novo cadastro inserido na aba <strong>"${abaDestino}"</strong> da planilha.`;
+
       const badgePlanilhaHtml = gravouPlanilha
         ? `<div style="margin-top:10px; padding:10px 14px; background:rgba(16,185,129,0.16); border:1px solid #10b981; border-radius:8px; text-align:left;">
              <div style="font-size:12.5px; font-weight:800; color:#34d399; display:flex; align-items:center; gap:6px;">
                <span>📊</span> Sincronizado na Planilha Oficial do Google Sheets!
              </div>
              <div style="font-size:11.5px; color:#cbd5e1; margin-top:4px;">
-               Os dados foram gravados em tempo real na aba <strong>"${abaDestino}"</strong>.
+               ${textoStatusGravacao}
              </div>
              <div style="margin-top:6px;">
                <a href="https://docs.google.com/spreadsheets/d/1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI/edit" target="_blank" rel="noopener noreferrer" style="color:#fef08a; font-weight:700; text-decoration:underline; font-size:11.5px;">
