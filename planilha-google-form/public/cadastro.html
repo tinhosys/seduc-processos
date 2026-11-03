@@ -939,7 +939,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.96"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.97"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1093,11 +1093,11 @@
                 <input type="text" id="entidade-inep" maxlength="8" class="form-control" placeholder="8 dígitos" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, ''); atualizarBarraInfoEntidade();" style="border-color: rgba(16, 185, 129, 0.4);">
               </div>
               <div id="wrap-entidade-alunos">
-                <label>Nº de Alunos *</label>
-                <input type="number" id="entidade-alunos" min="0" class="form-control" placeholder="0">
+                <label>Nº de Alunos * (Soma Automática)</label>
+                <input type="number" id="entidade-alunos" min="0" readonly class="form-control" placeholder="0" value="0" title="Calculado automaticamente pela soma das quantidades informadas em cada modalidade" style="background:#1e293b; border-color:#38bdf8; color:#38bdf8; font-weight:800; cursor:not-allowed;">
               </div>
               <div style="position:relative;" id="wrap-entidade-modalidade">
-                <label for="entidade-modalidade-trigger">Modalidade</label>
+                <label for="entidade-modalidade-trigger">Modalidade & Quantidades de Alunos</label>
                 <div id="entidade-modalidade-trigger" class="form-control" style="cursor:pointer; display:flex; align-items:center; justify-content:space-between; user-select:none; height:40px; padding:6px 12px;" onclick="toggleDropdownModalidade(event)">
                   <span id="txt-modalidade-trigger" style="color:#94a3b8; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                     Selecione a(s) Modalidade(s)...
@@ -1105,19 +1105,52 @@
                   <span style="font-size:11px; color:#38bdf8; margin-left:6px;">▼</span>
                 </div>
                 
-                <!-- DROPDOWN COM CHECKBOXES -->
-                <div id="drop-modalidade-opcoes" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; min-width:260px; max-height:250px; overflow-y:auto; background:#0f172a; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 12px 35px rgba(0,0,0,0.85); z-index:9999; padding:6px 8px;">
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Ensino Fundamental" onchange="aoMudarModalidadeCheck()"> Ensino Fundamental</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Ensino Médio" onchange="aoMudarModalidadeCheck()"> Ensino Médio</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Infantil" onchange="aoMudarModalidadeCheck()"> Educação Infantil</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Creche" onchange="aoMudarModalidadeCheck()"> Creche</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="EJA (Fund.)" onchange="aoMudarModalidadeCheck()"> EJA (Fund.)</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="EJA (Médio)" onchange="aoMudarModalidadeCheck()"> EJA (Médio)</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Especial / AEE" onchange="aoMudarModalidadeCheck()"> Educação Especial / AEE</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Profissional" onchange="aoMudarModalidadeCheck()"> Educação Profissional</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação do Campo" onchange="aoMudarModalidadeCheck()"> Educação do Campo</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Indígena" onchange="aoMudarModalidadeCheck()"> Educação Indígena</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Outra / Geral" onchange="aoMudarModalidadeCheck()"> Outra / Geral</label>
+                <!-- DROPDOWN COM CHECKBOXES E COLUNA DE ALUNOS (IMAGEM 1) -->
+                <div id="drop-modalidade-opcoes" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; min-width:320px; max-height:260px; overflow-y:auto; background:#0f172a; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 12px 35px rgba(0,0,0,0.85); z-index:9999; padding:6px 8px;">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Ensino Fundamental" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Ensino Fundamental</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Ensino Médio" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Ensino Médio</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Infantil" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Infantil</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Creche" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Creche</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="EJA (Fund.)" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> EJA (Fund.)</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="EJA (Médio)" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> EJA (Médio)</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Especial / AEE" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Especial / AEE</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Profissional" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Profissional</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação do Campo" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação do Campo</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Indígena" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Indígena</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Outra / Geral" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Outra / Geral</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  </div>
                 </div>
                 
                 <input type="hidden" id="entidade-modalidade" value="">
@@ -1802,9 +1835,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.96"></script>
-  <script src="js/escolas.js?v=1.3.96"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.96"></script>
+  <script src="js/dados.js?v=1.3.97"></script>
+  <script src="js/escolas.js?v=1.3.97"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.97"></script>
 
   <script>
     /* ============================================================
@@ -2822,64 +2855,180 @@
       drop.style.display = (drop.style.display === 'block') ? 'none' : 'block';
     }
 
-    function aoMudarModalidadeCheck() {
+    function aoMudarModalidadeCheck(targetCheckbox) {
       const drop = document.getElementById('drop-modalidade-opcoes');
       if (!drop) return;
-      const checks = drop.querySelectorAll('input[type="checkbox"]:checked');
-      const valores = Array.from(checks).map(c => c.value);
-      
-      const hiddenInput = document.getElementById('entidade-modalidade');
-      if (hiddenInput) hiddenInput.value = valores.join(', ');
 
+      if (targetCheckbox) {
+        const row = targetCheckbox.closest('.mod-item-row');
+        const inputQtd = row ? row.querySelector('.mod-qtd-input') : null;
+        if (inputQtd) {
+          if (targetCheckbox.checked) {
+            inputQtd.disabled = false;
+            inputQtd.style.opacity = '1';
+            inputQtd.style.borderColor = '#38bdf8';
+            if (!inputQtd.value || inputQtd.value === '0') inputQtd.value = '';
+            setTimeout(() => inputQtd.focus(), 50);
+          } else {
+            inputQtd.disabled = true;
+            inputQtd.style.opacity = '0.35';
+            inputQtd.style.borderColor = '#334155';
+            inputQtd.value = '';
+          }
+        }
+      }
+
+      calcularTotalAlunosModalidades();
+    }
+
+    function calcularTotalAlunosModalidades() {
+      const drop = document.getElementById('drop-modalidade-opcoes');
+      if (!drop) return;
+
+      const rows = drop.querySelectorAll('.mod-item-row');
+      let totalAlunos = 0;
+      const modalidadesDetalhes = [];
+      const modalidadesNomes = [];
+
+      rows.forEach(row => {
+        const cb = row.querySelector('.mod-checkbox');
+        const inp = row.querySelector('.mod-qtd-input');
+        if (cb && cb.checked) {
+          const qtd = parseInt(inp ? inp.value : '0', 10) || 0;
+          totalAlunos += qtd;
+          modalidadesNomes.push(cb.value);
+          modalidadesDetalhes.push(`${cb.value}: ${qtd}`);
+        }
+      });
+
+      // Atualiza o campo Nº de Alunos (circulado em amarelo na Imagem 1)
+      const inputAlunos = document.getElementById('entidade-alunos');
+      if (inputAlunos) {
+        inputAlunos.value = totalAlunos;
+        inputAlunos.readOnly = true;
+        inputAlunos.title = 'Calculado automaticamente pela soma das quantidades informadas em cada modalidade';
+      }
+
+      // Atualiza o hidden input 'entidade-modalidade' com as modalidades e quantidades separadas por ';'
+      const hiddenInput = document.getElementById('entidade-modalidade');
+      if (hiddenInput) {
+        hiddenInput.value = modalidadesDetalhes.join('; ');
+      }
+
+      // Atualiza o texto do gatilho
       const triggerTxt = document.getElementById('txt-modalidade-trigger');
       if (triggerTxt) {
-        if (valores.length === 0) {
+        if (modalidadesNomes.length === 0) {
           triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
           triggerTxt.style.color = '#94a3b8';
         } else {
-          triggerTxt.textContent = `${valores.length} selecionada(s)`;
+          triggerTxt.textContent = `${modalidadesNomes.length} selecionada(s) (${totalAlunos} alunos)`;
           triggerTxt.style.color = '#38bdf8';
         }
       }
 
-      // Visualização abaixo com cada modalidade separada por vírgula (Imagem 5)
+      // Atualiza a legenda visual abaixo do combo com os alunos de cada categoria
       const box = document.getElementById('box-modalidades-selecionadas');
       if (box) {
-        if (valores.length === 0) {
+        if (modalidadesDetalhes.length === 0) {
           box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
         } else {
           box.innerHTML = `
-            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:4px; margin-top:4px;">
-              ${valores.map((v, idx) => `
-                <span class="badge-modalidade-item">${v}</span>${idx < valores.length - 1 ? '<span class="badge-sep-virgula">,</span>' : ''}
-              `).join('')}
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:4px;">
+              ${modalidadesDetalhes.map(det => {
+                const partes = det.split(':');
+                const nome = partes[0];
+                const qtd = partes[1] || '0';
+                return `<span class="badge-modalidade-item" style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; border-radius:6px; padding:2px 8px; font-size:11.5px; color:#f0f9ff; font-weight:700;">
+                  ${nome}: <strong style="color:#fef08a;">${qtd.trim()}</strong>
+                </span>`;
+              }).join('')}
+              <span style="font-size:11.5px; font-weight:900; color:#34d399; margin-left:4px;">
+                (Total: ${totalAlunos} alunos)
+              </span>
             </div>
           `;
         }
       }
     }
 
-    function setModalidadesSelecionadas(str) {
+    function setModalidadesSelecionadas(str, totalAlunosFallback) {
       limparModalidades();
-      if (!str) return;
-      const partes = str.split(/[,;/]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+      if (!str) {
+        calcularTotalAlunosModalidades();
+        return;
+      }
       const drop = document.getElementById('drop-modalidade-opcoes');
       if (!drop) return;
-      
-      const allChecks = drop.querySelectorAll('input[type="checkbox"]');
-      allChecks.forEach(cb => {
-        const valNorm = cb.value.trim().toLowerCase();
-        if (partes.some(p => p === valNorm || valNorm.includes(p) || p.includes(valNorm))) {
-          cb.checked = true;
+
+      const mapaQtd = {};
+      const partes = String(str).split(';').map(s => s.trim()).filter(Boolean);
+
+      partes.forEach(p => {
+        const matchDoisPontos = p.match(/^(.*?):\s*(\d+)$/);
+        const matchVirgula = p.match(/^(.*?),\s*(\d+)$/);
+        const matchParenteses = p.match(/^(.*?)\s*\((\d+)\)$/);
+        if (matchDoisPontos) {
+          mapaQtd[matchDoisPontos[1].trim().toLowerCase()] = parseInt(matchDoisPontos[2], 10);
+        } else if (matchVirgula) {
+          mapaQtd[matchVirgula[1].trim().toLowerCase()] = parseInt(matchVirgula[2], 10);
+        } else if (matchParenteses) {
+          mapaQtd[matchParenteses[1].trim().toLowerCase()] = parseInt(matchParenteses[2], 10);
+        } else {
+          p.split(',').forEach(sub => {
+            if (sub.trim()) mapaQtd[sub.trim().toLowerCase()] = null;
+          });
         }
       });
-      aoMudarModalidadeCheck();
+
+      const rows = drop.querySelectorAll('.mod-item-row');
+      let marcados = 0;
+      rows.forEach(row => {
+        const cb = row.querySelector('.mod-checkbox');
+        const inp = row.querySelector('.mod-qtd-input');
+        if (!cb) return;
+        const v = cb.value.trim().toLowerCase();
+        const chave = Object.keys(mapaQtd).find(k => k === v || v.includes(k) || k.includes(v));
+        if (chave) {
+          cb.checked = true;
+          if (inp) {
+            inp.disabled = false;
+            inp.style.opacity = '1';
+            inp.style.borderColor = '#38bdf8';
+            inp.value = (mapaQtd[chave] !== null && !isNaN(mapaQtd[chave])) ? mapaQtd[chave] : '';
+          }
+          marcados++;
+        }
+      });
+
+      if (marcados === 1 && totalAlunosFallback) {
+        rows.forEach(row => {
+          const cb = row.querySelector('.mod-checkbox');
+          const inp = row.querySelector('.mod-qtd-input');
+          if (cb && cb.checked && inp && !inp.value) {
+            inp.value = totalAlunosFallback;
+          }
+        });
+      }
+
+      calcularTotalAlunosModalidades();
     }
 
     function limparModalidades() {
       const drop = document.getElementById('drop-modalidade-opcoes');
       if (drop) {
-        drop.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+        const rows = drop.querySelectorAll('.mod-item-row');
+        rows.forEach(r => {
+          const cb = r.querySelector('.mod-checkbox');
+          const inp = r.querySelector('.mod-qtd-input');
+          if (cb) cb.checked = false;
+          if (inp) {
+            inp.disabled = true;
+            inp.style.opacity = '0.35';
+            inp.style.borderColor = '#334155';
+            inp.value = '';
+          }
+        });
       }
       const hiddenInput = document.getElementById('entidade-modalidade');
       if (hiddenInput) hiddenInput.value = '';
@@ -2891,6 +3040,10 @@
       const box = document.getElementById('box-modalidades-selecionadas');
       if (box) {
         box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
+      }
+      const inputAlunos = document.getElementById('entidade-alunos');
+      if (inputAlunos) {
+        inputAlunos.value = 0;
       }
     }
 
@@ -3440,7 +3593,7 @@
         setVal('entidade-registrador-email', esc.registradorEmail || '');
         setVal('entidade-registrador-cargo', esc.registradorCargo || '');
 
-        setModalidadesSelecionadas(esc.modalidade || esc.modalidadeStr || '');
+        setModalidadesSelecionadas(esc.modalidade || esc.modalidadeStr || '', esc.totalMatricula || esc.alunos);
 
         setVal('entidade-diretor', esc.diretor);
         setVal('entidade-contato-diretor', formatarTelefoneCelular(esc.contatoDiretor));

@@ -1,9 +1,9 @@
 ﻿
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.96
+// Versão do Sistema: v1.3.97
 // ============================================================
-window.APP_VERSION = 'v1.3.96';
+window.APP_VERSION = 'v1.3.97';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -8908,7 +8908,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-tipo-telhado', dadosExistentes.tipoTelhado || '');
     atualizarTodasDescricoesInfraModal();
 
-    setModalidadesModalSelecionadas(dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '');
+    setModalidadesModalSelecionadas(dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '', dadosExistentes.alunos || dadosExistentes.totalMatricula);
 
     // Sincronizar radio
     const catUpper = String(dadosExistentes.categoria || '').toUpperCase();
@@ -8969,50 +8969,177 @@ function toggleDropdownModalidadeModal(e) {
 }
 window.toggleDropdownModalidadeModal = toggleDropdownModalidadeModal;
 
-function aoMudarModalidadeModalCheck() {
+function aoMudarModalidadeModalCheck(targetCheckbox) {
   const container = document.getElementById('drop-modalidade-modal-opcoes');
   if (!container) return;
-  const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
-  const selecionadas = Array.from(checkboxes).map(c => c.value);
-  
-  const hiddenInput = document.getElementById('entidade-modalidade');
-  if (hiddenInput) hiddenInput.value = selecionadas.join(', ');
-  
-  const triggerTxt = document.getElementById('txt-modalidade-modal-trigger');
-  if (triggerTxt) {
-    if (selecionadas.length === 0) {
-      triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
-      triggerTxt.style.color = '#94a3b8';
-    } else {
-      triggerTxt.textContent = `${selecionadas.length} selecionada(s)`;
-      triggerTxt.style.color = '#38bdf8';
+
+  if (targetCheckbox) {
+    const row = targetCheckbox.closest('.mod-item-row');
+    const inputQtd = row ? row.querySelector('.mod-qtd-input-modal') : null;
+    if (inputQtd) {
+      if (targetCheckbox.checked) {
+        inputQtd.disabled = false;
+        inputQtd.style.opacity = '1';
+        inputQtd.style.borderColor = '#38bdf8';
+        if (!inputQtd.value || inputQtd.value === '0') inputQtd.value = '';
+        setTimeout(() => inputQtd.focus(), 50);
+      } else {
+        inputQtd.disabled = true;
+        inputQtd.style.opacity = '0.35';
+        inputQtd.style.borderColor = '#334155';
+        inputQtd.value = '';
+      }
     }
   }
-  
-  const box = document.getElementById('box-modalidades-selecionadas-modal');
-  if (box) {
-    if (selecionadas.length === 0) {
-      box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
-    } else {
-      box.innerHTML = selecionadas.map((mod, idx) => {
-        const isUltimo = (idx === selecionadas.length - 1);
-        return `<span class="badge-modalidade-item">${mod}</span>${!isUltimo ? '<span class="badge-sep-virgula">, </span>' : ''}`;
-      }).join('');
-    }
-  }
+
+  calcularTotalAlunosModalidadesModal();
 }
 window.aoMudarModalidadeModalCheck = aoMudarModalidadeModalCheck;
 
-function setModalidadesModalSelecionadas(modStr) {
+function calcularTotalAlunosModalidadesModal() {
   const container = document.getElementById('drop-modalidade-modal-opcoes');
   if (!container) return;
-  const arr = String(modStr || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-  const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-  checkboxes.forEach(cb => {
-    const v = cb.value.trim().toLowerCase();
-    cb.checked = arr.some(a => a === v || v.includes(a) || a.includes(v));
+
+  const rows = container.querySelectorAll('.mod-item-row');
+  let totalAlunos = 0;
+  const modalidadesDetalhes = [];
+  const modalidadesNomes = [];
+
+  rows.forEach(row => {
+    const cb = row.querySelector('.mod-checkbox-modal');
+    const inp = row.querySelector('.mod-qtd-input-modal');
+    if (cb && cb.checked) {
+      const qtd = parseInt(inp ? inp.value : '0', 10) || 0;
+      totalAlunos += qtd;
+      modalidadesNomes.push(cb.value);
+      modalidadesDetalhes.push(`${cb.value}: ${qtd}`);
+    }
   });
-  aoMudarModalidadeModalCheck();
+
+  // Atualiza o campo Nº de Alunos (circulado em amarelo na Imagem 1)
+  const inputAlunos = document.getElementById('entidade-alunos');
+  if (inputAlunos) {
+    inputAlunos.value = totalAlunos;
+    inputAlunos.readOnly = true;
+    inputAlunos.title = 'Calculado automaticamente pela soma das quantidades informadas em cada modalidade';
+  }
+
+  // Atualiza o hidden input 'entidade-modalidade' com as modalidades e quantidades separadas por ';'
+  const hiddenInput = document.getElementById('entidade-modalidade');
+  if (hiddenInput) {
+    hiddenInput.value = modalidadesDetalhes.join('; ');
+  }
+
+  // Atualiza o texto do gatilho
+  const triggerTxt = document.getElementById('txt-modalidade-modal-trigger');
+  if (triggerTxt) {
+    if (modalidadesNomes.length === 0) {
+      triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
+      triggerTxt.style.color = '#94a3b8';
+    } else {
+      triggerTxt.textContent = `${modalidadesNomes.length} selecionada(s) (${totalAlunos} alunos)`;
+      triggerTxt.style.color = '#38bdf8';
+    }
+  }
+
+  // Atualiza a legenda visual abaixo do combo com os alunos de cada categoria
+  const box = document.getElementById('box-modalidades-selecionadas-modal');
+  if (box) {
+    if (modalidadesDetalhes.length === 0) {
+      box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
+    } else {
+      box.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:4px;">
+          ${modalidadesDetalhes.map(det => {
+            const partes = det.split(':');
+            const nome = partes[0];
+            const qtd = partes[1] || '0';
+            return `<span class="badge-modalidade-item" style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; border-radius:6px; padding:2px 8px; font-size:11.5px; color:#f0f9ff; font-weight:700;">
+              ${nome}: <strong style="color:#fef08a;">${qtd.trim()}</strong>
+            </span>`;
+          }).join('')}
+          <span style="font-size:11.5px; font-weight:900; color:#34d399; margin-left:4px;">
+            (Total: ${totalAlunos} alunos)
+          </span>
+        </div>
+      `;
+    }
+  }
+}
+window.calcularTotalAlunosModalidadesModal = calcularTotalAlunosModalidadesModal;
+
+function setModalidadesModalSelecionadas(modStr, totalAlunosFallback) {
+  const container = document.getElementById('drop-modalidade-modal-opcoes');
+  if (!container) return;
+
+  const rows = container.querySelectorAll('.mod-item-row');
+  rows.forEach(r => {
+    const cb = r.querySelector('.mod-checkbox-modal');
+    const inp = r.querySelector('.mod-qtd-input-modal');
+    if (cb) cb.checked = false;
+    if (inp) {
+      inp.disabled = true;
+      inp.style.opacity = '0.35';
+      inp.style.borderColor = '#334155';
+      inp.value = '';
+    }
+  });
+
+  if (!modStr) {
+    calcularTotalAlunosModalidadesModal();
+    return;
+  }
+
+  const mapaQtd = {};
+  const partes = String(modStr).split(';').map(s => s.trim()).filter(Boolean);
+
+  partes.forEach(p => {
+    const matchDoisPontos = p.match(/^(.*?):\s*(\d+)$/);
+    const matchVirgula = p.match(/^(.*?),\s*(\d+)$/);
+    const matchParenteses = p.match(/^(.*?)\s*\((\d+)\)$/);
+    if (matchDoisPontos) {
+      mapaQtd[matchDoisPontos[1].trim().toLowerCase()] = parseInt(matchDoisPontos[2], 10);
+    } else if (matchVirgula) {
+      mapaQtd[matchVirgula[1].trim().toLowerCase()] = parseInt(matchVirgula[2], 10);
+    } else if (matchParenteses) {
+      mapaQtd[matchParenteses[1].trim().toLowerCase()] = parseInt(matchParenteses[2], 10);
+    } else {
+      p.split(',').forEach(sub => {
+        if (sub.trim()) mapaQtd[sub.trim().toLowerCase()] = null;
+      });
+    }
+  });
+
+  let marcados = 0;
+  rows.forEach(row => {
+    const cb = row.querySelector('.mod-checkbox-modal');
+    const inp = row.querySelector('.mod-qtd-input-modal');
+    if (!cb) return;
+    const v = cb.value.trim().toLowerCase();
+    const chave = Object.keys(mapaQtd).find(k => k === v || v.includes(k) || k.includes(v));
+    if (chave) {
+      cb.checked = true;
+      if (inp) {
+        inp.disabled = false;
+        inp.style.opacity = '1';
+        inp.style.borderColor = '#38bdf8';
+        inp.value = (mapaQtd[chave] !== null && !isNaN(mapaQtd[chave])) ? mapaQtd[chave] : '';
+      }
+      marcados++;
+    }
+  });
+
+  if (marcados === 1 && totalAlunosFallback) {
+    rows.forEach(row => {
+      const cb = row.querySelector('.mod-checkbox-modal');
+      const inp = row.querySelector('.mod-qtd-input-modal');
+      if (cb && cb.checked && inp && !inp.value) {
+        inp.value = totalAlunosFallback;
+      }
+    });
+  }
+
+  calcularTotalAlunosModalidadesModal();
 }
 window.setModalidadesModalSelecionadas = setModalidadesModalSelecionadas;
 
@@ -9591,7 +9718,6 @@ window._linkGenData = {
     todosLabel: 'TODAS AS CATEGORIAS',
     options: [
       { value: 'Conselho Escolar', label: 'Conselho Escolar (Executa Fomento - F)' },
-      { value: 'Prefeitura Municipal', label: 'Prefeitura Municipal (Executa Convênio - C)' },
       { value: 'APAE', label: 'APAE (Executa Fomento - F)' },
       { value: 'EFA', label: 'EFA - Família Agrícola (Executa Fomento - F)' }
     ]
@@ -9614,12 +9740,9 @@ window._linkGenData = {
   },
   parceria: {
     selected: 'Fomento (Termo de Fomento - F)',
-    todosLabel: 'TODOS OS TIPOS DE PARCERIA',
+    todosLabel: 'FOMENTO (TERMO DE FOMENTO - F)',
     options: [
-      'Fomento (Termo de Fomento - F)',
-      'Convênio (Termo de Convênio - C)',
-      'Termo de Cooperação (T)',
-      'Acordo de Cooperação'
+      'Fomento (Termo de Fomento - F)'
     ]
   }
 };

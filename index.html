@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.96">
+  <link rel="stylesheet" href="css/style.css?v=1.3.97">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -832,7 +832,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.96</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.97</div>
 
   </div>
 </div>
@@ -1133,7 +1133,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.96</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.97</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -3103,7 +3103,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.96</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.97</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3785,7 +3785,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.96
+              GBZ - v1.3.97
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4058,7 +4058,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.96] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.97] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5350,29 +5350,62 @@
                 <input type="text" id="entidade-inep" placeholder="8 dígitos" maxlength="8" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, '');" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-family:monospace; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div id="wrap-entidade-alunos-modal">
-                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nº de Alunos *</label>
-                <input type="number" id="entidade-alunos" min="0" placeholder="0" style="width:100%; height:40px; padding:8px 14px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
+                <label style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Nº de Alunos * (Soma Automática)</label>
+                <input type="number" id="entidade-alunos" min="0" readonly placeholder="0" value="0" title="Calculado automaticamente pela soma das quantidades informadas em cada modalidade" style="width:100%; height:40px; padding:8px 14px; background:#1e293b; border:1px solid #38bdf8; border-radius:8px; color:#38bdf8; font-size:14px; font-weight:800; box-sizing:border-box; outline:none; cursor:not-allowed;">
               </div>
               <div style="position:relative;" id="wrap-entidade-modalidade-modal">
-                <label for="entidade-modalidade-modal-trigger" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Modalidade</label>
+                <label for="entidade-modalidade-modal-trigger" style="display:block; font-size:11.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Modalidade & Quantidades de Alunos</label>
                 <div id="entidade-modalidade-modal-trigger" style="width:100%; height:40px; padding:6px 12px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between;" onclick="toggleDropdownModalidadeModal(event)">
                   <span id="txt-modalidade-modal-trigger" style="color:#94a3b8; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Selecione a(s) Modalidade(s)...</span>
                   <span style="font-size:11px; color:#38bdf8; margin-left:6px;">▼</span>
                 </div>
                 
-                <!-- DROPDOWN COM CHECKBOXES MODAL -->
-                <div id="drop-modalidade-modal-opcoes" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; min-width:240px; max-height:220px; overflow-y:auto; background:#0f172a; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 12px 35px rgba(0,0,0,0.85); z-index:9999; padding:6px 8px;">
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Ensino Fundamental" onchange="aoMudarModalidadeModalCheck()"> Ensino Fundamental</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Ensino Médio" onchange="aoMudarModalidadeModalCheck()"> Ensino Médio</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Infantil" onchange="aoMudarModalidadeModalCheck()"> Educação Infantil</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Creche" onchange="aoMudarModalidadeModalCheck()"> Creche</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="EJA (Fund.)" onchange="aoMudarModalidadeModalCheck()"> EJA (Fund.)</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="EJA (Médio)" onchange="aoMudarModalidadeModalCheck()"> EJA (Médio)</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Especial / AEE" onchange="aoMudarModalidadeModalCheck()"> Educação Especial / AEE</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Profissional" onchange="aoMudarModalidadeModalCheck()"> Educação Profissional</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação do Campo" onchange="aoMudarModalidadeModalCheck()"> Educação do Campo</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Educação Indígena" onchange="aoMudarModalidadeModalCheck()"> Educação Indígena</label>
-                  <label class="mod-checkbox-item"><input type="checkbox" value="Outra / Geral" onchange="aoMudarModalidadeModalCheck()"> Outra / Geral</label>
+                <!-- DROPDOWN COM CHECKBOXES E COLUNA DE ALUNOS MODAL (IMAGEM 1) -->
+                <div id="drop-modalidade-modal-opcoes" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; min-width:320px; max-height:260px; overflow-y:auto; background:#0f172a; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 12px 35px rgba(0,0,0,0.85); z-index:9999; padding:6px 8px;">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Ensino Fundamental" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Ensino Fundamental</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Ensino Médio" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Ensino Médio</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Educação Infantil" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Infantil</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Creche" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Creche</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="EJA (Fund.)" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> EJA (Fund.)</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="EJA (Médio)" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> EJA (Médio)</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Educação Especial / AEE" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Especial / AEE</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Educação Profissional" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Profissional</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Educação do Campo" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação do Campo</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Educação Indígena" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Indígena</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox-modal" value="Outra / Geral" onchange="aoMudarModalidadeModalCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Outra / Geral</label>
+                    <input type="number" min="0" step="1" class="mod-qtd-input-modal" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidadesModal();" onchange="calcularTotalAlunosModalidadesModal();">
+                  </div>
                 </div>
                 
                 <input type="hidden" id="entidade-modalidade" value="">
@@ -6055,19 +6088,13 @@
           </div>
         </div>
 
-        <!-- Campo 5: Tipo de Parceria (com Acentuação Correta) -->
+        <!-- Campo 5: Tipo de Parceria (Fixo conforme Imagem 3) -->
         <div class="link-gen-combo-wrap" id="wrap-link-gen-parceria" style="position:relative;">
-          <label style="display:block; font-size:12px; font-weight:700; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">Tipo de Parceria *</label>
-          <input type="hidden" id="link-gen-parceria" value="Fomento (Termo de Fomento - F)" onchange="if(typeof gerarLinkCadastroComParametros==='function')gerarLinkCadastroComParametros();">
-          <button type="button" class="link-gen-combo-btn" id="btn-link-gen-parceria" onclick="toggleLinkGenDropdown('parceria')"
-            style="width:100%; height:44px; background:#1e293b; color:#ffffff; font-weight:700; font-size:13.5px; border:1px solid #334155; border-radius:8px; padding:0 14px; outline:none; box-shadow:0 2px 8px rgba(0,0,0,0.3); cursor:pointer; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box; transition:all 0.2s;"
-            onmouseover="this.style.borderColor='#38bdf8'; this.style.background='#0f172a';"
-            onmouseout="this.style.borderColor='#334155'; this.style.background='#1e293b';">
+          <label style="display:block; font-size:12px; font-weight:700; color:#94a3b8; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px;">Tipo de Parceria * (Fixo)</label>
+          <input type="hidden" id="link-gen-parceria" value="Fomento (Termo de Fomento - F)">
+          <div style="width:100%; height:44px; background:#1e293b; color:#38bdf8; font-weight:800; font-size:13.5px; border:1px solid #334155; border-radius:8px; padding:0 14px; display:flex; align-items:center; justify-content:space-between; box-sizing:border-box;">
             <span class="link-gen-combo-label" id="label-link-gen-parceria">Fomento (Termo de Fomento - F)</span>
-            <span style="font-size:12px; color:#38bdf8; margin-left:8px;">▾</span>
-          </button>
-          <div class="link-gen-combo-dropdown" id="drop-link-gen-parceria" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; background:#0f172a; border:1px solid #38bdf8; border-radius:8px; box-shadow:0 14px 35px rgba(0,0,0,0.85); z-index:10000; overflow:hidden;">
-            <div class="link-gen-combo-list" id="list-link-gen-parceria" style="max-height:210px; overflow-y:auto;"></div>
+            <span style="font-size:11px; background:rgba(56,189,248,0.18); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:4px; font-weight:800; letter-spacing:0.4px;">PADRÃO FIXO</span>
           </div>
         </div>
 
@@ -6326,11 +6353,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.96"></script>
-  <script src="js/auth-sap.js?v=1.3.96"></script>
-  <script src="js/dados.js?v=1.3.96"></script>
-  <script src="js/app.js?v=1.3.96"></script>
-  <script src="js/escolas.js?v=1.3.96" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.97"></script>
+  <script src="js/auth-sap.js?v=1.3.97"></script>
+  <script src="js/dados.js?v=1.3.97"></script>
+  <script src="js/app.js?v=1.3.97"></script>
+  <script src="js/escolas.js?v=1.3.97" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>
