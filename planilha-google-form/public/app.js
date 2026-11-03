@@ -1,9 +1,9 @@
-﻿
+
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.95
+// Versão do Sistema: v1.3.99
 // ============================================================
-window.APP_VERSION = 'v1.3.95';
+window.APP_VERSION = 'v1.3.99';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -5925,7 +5925,174 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
 
 window.imprimirPadraoAdm = imprimirPadraoAdm;
 
-window.imprimirPadraoAdm = imprimirPadraoAdm;
+// ============= RELATÓRIO ALFA (COM PREFIXO, STATUS DE AUTORIZAÇÃO E LEGENDA NO RODAPÉ) =============
+function imprimirAlfa(filtrados = getFiltrados()) {
+  if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
+    alert('Acesso restrito ao perfil Administrador.');
+    return;
+  }
+
+  let rowsHtml = filtrados.map((p, index) => {
+    const prefixoFormatado = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.2;">
+        <div style="font-size: 7px; font-weight: normal; margin-bottom: 2px; color: #0f172a;">${p.prefixo || '-'}</div>
+        <div style="display: flex; align-items: center; white-space: nowrap; gap: 2px; font-size: 8px;">
+          <span style="font-weight:normal;">${p.categoria || '-'}</span><span style="color:#94a3b8;">|</span><span style="font-weight:normal;">${p.tipo || '-'}</span><span style="color:#94a3b8;">|</span>
+          <div style="display: flex; font-size: 14px; line-height: 1; color: #0f172a; align-items: center; margin-left: 1px;">
+            <span title="CAM">${p.CAM === '1' ? '&#9679;' : '&#9675;'}</span>
+            <span title="GABINETE" style="margin-left: -2px;">${p.GAB === '1' ? '&#9679;' : '&#9675;'}</span>
+            <span title="CASA CIVIL" style="margin-left: -2px;">${p.CC === '1' ? '&#9679;' : '&#9675;'}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    const zebraBg = index % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
+    return `
+      <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${index + 1}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:15%;">${p.interessado || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${p.localizacao || '-'}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; width:7%;">${formatDate(p.data)}</td>
+        <td style="border: 1px solid #cbd5e1; padding: 3px 4px; text-align:right; font-size:9.5px; font-weight:normal; width:10%; white-space:nowrap;">${formatNumberOnly(p.valorOf)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+  const totalRow = `
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="9" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} PROCESSOS):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
+    </tr>`;
+  rowsHtml += totalRow;
+
+  const html = `
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2.5px solid #0f172a; padding-bottom: 6px; margin-bottom: 10px; font-family: Arial, sans-serif;">
+              <div>
+                <div style="font-size: 13px; font-weight: 800; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSOS</div>
+              </div>
+              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: 600;">
+                <span>Total: <strong style="color:#0f172a;">${filtrados.length} processos</strong></span>
+                <span style="margin: 0 8px; color: #cbd5e1;">|</span>
+                <span>Valor Total: <strong style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</strong></span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
+              <colgroup>
+                <col style="width: 3%;">
+                <col style="width: 7%;">
+                <col style="width: 11%;">
+                <col style="width: 13%;">
+                <col style="width: 15%;">
+                <col style="width: 22%;">
+                <col style="width: 8%;">
+                <col style="width: 7%;">
+                <col style="width: 7%;">
+                <col style="width: 10%;">
+              </colgroup>
+              <thead>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:bold;">Nº</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">PREFIXO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:11%; font-size:10px; font-weight:bold;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:13%; font-size:10px; font-weight:bold;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:15%; font-size:10px; font-weight:bold;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:22%; font-size:10px; font-weight:bold;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:bold;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:7%; font-size:10px; font-weight:bold;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:7%; font-size:10px; font-weight:bold;">DATA</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 3px; text-align:right; width:10%; font-size:10px; font-weight:bold; white-space:nowrap;">VALOR R$</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || '<tr><td colspan="10" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">LEGENDA:</strong>
+                  <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <strong style="color: #0f172a; text-transform: uppercase; font-weight: 700;">AUTORIZAÇÕES:</strong>
+                  <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+
+  let container = document.getElementById('print-layout-alfa');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'print-layout-alfa';
+    container.className = 'print-only-layout';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = html;
+
+  if (document.getElementById('print-layout-padrao')) document.getElementById('print-layout-padrao').style.display = 'none';
+  if (document.getElementById('print-layout-padrao-adm')) document.getElementById('print-layout-padrao-adm').style.display = 'none';
+  if (document.getElementById('print-layout-padrao-adm-2')) document.getElementById('print-layout-padrao-adm-2').style.display = 'none';
+  if (document.getElementById('print-layout-detalhado')) document.getElementById('print-layout-detalhado').style.display = 'none';
+  if (document.getElementById('print-layout-analise')) document.getElementById('print-layout-analise').style.display = 'none';
+  container.style.display = 'block';
+
+  const pageProcessos = document.getElementById('page-processos');
+  if (pageProcessos) pageProcessos.style.display = 'none';
+
+  document.body.classList.add('print-mode-alfa');
+  document.body.classList.remove('print-mode-padrao', 'print-mode-padrao-adm', 'print-mode-padrao-adm-2', 'print-mode-detalhado', 'print-mode-analise');
+
+  const origTitle = document.title;
+  document.title = 'RELATORIO_ALFA_' + getFormattedDateForTitle();
+
+  const style = document.createElement('style');
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-alfa { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } }';
+  document.head.appendChild(style);
+
+  const cleanupPrint = () => {
+    document.title = origTitle;
+    if (document.head.contains(style)) document.head.removeChild(style);
+    document.body.classList.remove('print-mode-alfa');
+    container.style.display = 'none';
+    if (pageProcessos) pageProcessos.style.display = '';
+    window.removeEventListener('afterprint', cleanupPrint);
+  };
+
+  window.addEventListener('afterprint', cleanupPrint);
+
+  window.print();
+
+  setTimeout(cleanupPrint, 1000);
+}
+
+window.imprimirAlfa = imprimirAlfa;
 
 // ============= RELATÓRIO ADM 2 (AGRUPADO POR DÍGITO C/ LINHA MEMORANDO) =============
 function imprimirPadraoAdm2(filtrados = getFiltrados()) {
@@ -8908,7 +9075,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-tipo-telhado', dadosExistentes.tipoTelhado || '');
     atualizarTodasDescricoesInfraModal();
 
-    setModalidadesModalSelecionadas(dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '');
+    setModalidadesModalSelecionadas(dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '', dadosExistentes.alunos || dadosExistentes.totalMatricula);
 
     // Sincronizar radio
     const catUpper = String(dadosExistentes.categoria || '').toUpperCase();
@@ -8969,50 +9136,177 @@ function toggleDropdownModalidadeModal(e) {
 }
 window.toggleDropdownModalidadeModal = toggleDropdownModalidadeModal;
 
-function aoMudarModalidadeModalCheck() {
+function aoMudarModalidadeModalCheck(targetCheckbox) {
   const container = document.getElementById('drop-modalidade-modal-opcoes');
   if (!container) return;
-  const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
-  const selecionadas = Array.from(checkboxes).map(c => c.value);
-  
-  const hiddenInput = document.getElementById('entidade-modalidade');
-  if (hiddenInput) hiddenInput.value = selecionadas.join(', ');
-  
-  const triggerTxt = document.getElementById('txt-modalidade-modal-trigger');
-  if (triggerTxt) {
-    if (selecionadas.length === 0) {
-      triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
-      triggerTxt.style.color = '#94a3b8';
-    } else {
-      triggerTxt.textContent = `${selecionadas.length} selecionada(s)`;
-      triggerTxt.style.color = '#38bdf8';
+
+  if (targetCheckbox) {
+    const row = targetCheckbox.closest('.mod-item-row');
+    const inputQtd = row ? row.querySelector('.mod-qtd-input-modal') : null;
+    if (inputQtd) {
+      if (targetCheckbox.checked) {
+        inputQtd.disabled = false;
+        inputQtd.style.opacity = '1';
+        inputQtd.style.borderColor = '#38bdf8';
+        if (!inputQtd.value || inputQtd.value === '0') inputQtd.value = '';
+        setTimeout(() => inputQtd.focus(), 50);
+      } else {
+        inputQtd.disabled = true;
+        inputQtd.style.opacity = '0.35';
+        inputQtd.style.borderColor = '#334155';
+        inputQtd.value = '';
+      }
     }
   }
-  
-  const box = document.getElementById('box-modalidades-selecionadas-modal');
-  if (box) {
-    if (selecionadas.length === 0) {
-      box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
-    } else {
-      box.innerHTML = selecionadas.map((mod, idx) => {
-        const isUltimo = (idx === selecionadas.length - 1);
-        return `<span class="badge-modalidade-item">${mod}</span>${!isUltimo ? '<span class="badge-sep-virgula">, </span>' : ''}`;
-      }).join('');
-    }
-  }
+
+  calcularTotalAlunosModalidadesModal();
 }
 window.aoMudarModalidadeModalCheck = aoMudarModalidadeModalCheck;
 
-function setModalidadesModalSelecionadas(modStr) {
+function calcularTotalAlunosModalidadesModal() {
   const container = document.getElementById('drop-modalidade-modal-opcoes');
   if (!container) return;
-  const arr = String(modStr || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-  const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-  checkboxes.forEach(cb => {
-    const v = cb.value.trim().toLowerCase();
-    cb.checked = arr.some(a => a === v || v.includes(a) || a.includes(v));
+
+  const rows = container.querySelectorAll('.mod-item-row');
+  let totalAlunos = 0;
+  const modalidadesDetalhes = [];
+  const modalidadesNomes = [];
+
+  rows.forEach(row => {
+    const cb = row.querySelector('.mod-checkbox-modal');
+    const inp = row.querySelector('.mod-qtd-input-modal');
+    if (cb && cb.checked) {
+      const qtd = parseInt(inp ? inp.value : '0', 10) || 0;
+      totalAlunos += qtd;
+      modalidadesNomes.push(cb.value);
+      modalidadesDetalhes.push(`${cb.value}: ${qtd}`);
+    }
   });
-  aoMudarModalidadeModalCheck();
+
+  // Atualiza o campo Nº de Alunos (circulado em amarelo na Imagem 1)
+  const inputAlunos = document.getElementById('entidade-alunos');
+  if (inputAlunos) {
+    inputAlunos.value = totalAlunos;
+    inputAlunos.readOnly = true;
+    inputAlunos.title = 'Calculado automaticamente pela soma das quantidades informadas em cada modalidade';
+  }
+
+  // Atualiza o hidden input 'entidade-modalidade' com as modalidades e quantidades separadas por ';'
+  const hiddenInput = document.getElementById('entidade-modalidade');
+  if (hiddenInput) {
+    hiddenInput.value = modalidadesDetalhes.join('; ');
+  }
+
+  // Atualiza o texto do gatilho
+  const triggerTxt = document.getElementById('txt-modalidade-modal-trigger');
+  if (triggerTxt) {
+    if (modalidadesNomes.length === 0) {
+      triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
+      triggerTxt.style.color = '#94a3b8';
+    } else {
+      triggerTxt.textContent = `${modalidadesNomes.length} selecionada(s) (${totalAlunos} alunos)`;
+      triggerTxt.style.color = '#38bdf8';
+    }
+  }
+
+  // Atualiza a legenda visual abaixo do combo com os alunos de cada categoria
+  const box = document.getElementById('box-modalidades-selecionadas-modal');
+  if (box) {
+    if (modalidadesDetalhes.length === 0) {
+      box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
+    } else {
+      box.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:4px;">
+          ${modalidadesDetalhes.map(det => {
+            const partes = det.split(':');
+            const nome = partes[0];
+            const qtd = partes[1] || '0';
+            return `<span class="badge-modalidade-item" style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; border-radius:6px; padding:2px 8px; font-size:11.5px; color:#f0f9ff; font-weight:700;">
+              ${nome}: <strong style="color:#fef08a;">${qtd.trim()}</strong>
+            </span>`;
+          }).join('')}
+          <span style="font-size:11.5px; font-weight:900; color:#34d399; margin-left:4px;">
+            (Total: ${totalAlunos} alunos)
+          </span>
+        </div>
+      `;
+    }
+  }
+}
+window.calcularTotalAlunosModalidadesModal = calcularTotalAlunosModalidadesModal;
+
+function setModalidadesModalSelecionadas(modStr, totalAlunosFallback) {
+  const container = document.getElementById('drop-modalidade-modal-opcoes');
+  if (!container) return;
+
+  const rows = container.querySelectorAll('.mod-item-row');
+  rows.forEach(r => {
+    const cb = r.querySelector('.mod-checkbox-modal');
+    const inp = r.querySelector('.mod-qtd-input-modal');
+    if (cb) cb.checked = false;
+    if (inp) {
+      inp.disabled = true;
+      inp.style.opacity = '0.35';
+      inp.style.borderColor = '#334155';
+      inp.value = '';
+    }
+  });
+
+  if (!modStr) {
+    calcularTotalAlunosModalidadesModal();
+    return;
+  }
+
+  const mapaQtd = {};
+  const partes = String(modStr).split(';').map(s => s.trim()).filter(Boolean);
+
+  partes.forEach(p => {
+    const matchDoisPontos = p.match(/^(.*?):\s*(\d+)$/);
+    const matchVirgula = p.match(/^(.*?),\s*(\d+)$/);
+    const matchParenteses = p.match(/^(.*?)\s*\((\d+)\)$/);
+    if (matchDoisPontos) {
+      mapaQtd[matchDoisPontos[1].trim().toLowerCase()] = parseInt(matchDoisPontos[2], 10);
+    } else if (matchVirgula) {
+      mapaQtd[matchVirgula[1].trim().toLowerCase()] = parseInt(matchVirgula[2], 10);
+    } else if (matchParenteses) {
+      mapaQtd[matchParenteses[1].trim().toLowerCase()] = parseInt(matchParenteses[2], 10);
+    } else {
+      p.split(',').forEach(sub => {
+        if (sub.trim()) mapaQtd[sub.trim().toLowerCase()] = null;
+      });
+    }
+  });
+
+  let marcados = 0;
+  rows.forEach(row => {
+    const cb = row.querySelector('.mod-checkbox-modal');
+    const inp = row.querySelector('.mod-qtd-input-modal');
+    if (!cb) return;
+    const v = cb.value.trim().toLowerCase();
+    const chave = Object.keys(mapaQtd).find(k => k === v || v.includes(k) || k.includes(v));
+    if (chave) {
+      cb.checked = true;
+      if (inp) {
+        inp.disabled = false;
+        inp.style.opacity = '1';
+        inp.style.borderColor = '#38bdf8';
+        inp.value = (mapaQtd[chave] !== null && !isNaN(mapaQtd[chave])) ? mapaQtd[chave] : '';
+      }
+      marcados++;
+    }
+  });
+
+  if (marcados === 1 && totalAlunosFallback) {
+    rows.forEach(row => {
+      const cb = row.querySelector('.mod-checkbox-modal');
+      const inp = row.querySelector('.mod-qtd-input-modal');
+      if (cb && cb.checked && inp && !inp.value) {
+        inp.value = totalAlunosFallback;
+      }
+    });
+  }
+
+  calcularTotalAlunosModalidadesModal();
 }
 window.setModalidadesModalSelecionadas = setModalidadesModalSelecionadas;
 
@@ -9187,6 +9481,39 @@ function aoSelecionarTipoEntidadeForm(tipo) {
 }
 window.aoSelecionarTipoEntidadeForm = aoSelecionarTipoEntidadeForm;
 
+// Gerador de Código Localizador: 3 letras e 3 números aleatórios em caixa alta (não sequenciais)
+function gerarCodigoLocalizador() {
+  const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // sem I e O para não confundir com 1 e 0
+  const numeros = "0123456789";
+  let l = "";
+  let n = "";
+
+  while (l.length < 3) {
+    const char = letras.charAt(Math.floor(Math.random() * letras.length));
+    if (l.length === 0 || l[l.length - 1] !== char) {
+      l += char;
+    }
+  }
+  if ((l.charCodeAt(1) === l.charCodeAt(0) + 1 && l.charCodeAt(2) === l.charCodeAt(1) + 1) ||
+      (l[0] === l[1] && l[1] === l[2])) {
+    return gerarCodigoLocalizador();
+  }
+
+  while (n.length < 3) {
+    const num = numeros.charAt(Math.floor(Math.random() * numeros.length));
+    if (n.length === 0 || n[n.length - 1] !== num) {
+      n += num;
+    }
+  }
+  const d0 = Number(n[0]), d1 = Number(n[1]), d2 = Number(n[2]);
+  if ((d1 === d0 + 1 && d2 === d1 + 1) || (d1 === d0 - 1 && d2 === d1 - 1) || (d0 === d1 && d1 === d2)) {
+    return gerarCodigoLocalizador();
+  }
+
+  return `${l}${n}`;
+}
+window.gerarCodigoLocalizador = gerarCodigoLocalizador;
+
 // Salva o cadastro geral da entidade com reflexo instantâneo no cache e formulários
 function salvarCadastroEntidade(e) {
   if (e && e.preventDefault) e.preventDefault();
@@ -9347,7 +9674,9 @@ function salvarCadastroEntidade(e) {
     tipoForro: getV('entidade-tipo-forro'),
     tipoPiso: getV('entidade-tipo-piso'),
     tipoTelhado: getV('entidade-tipo-telhado'),
-    muradaGradeada: getV('entidade-murada-gradeada')
+    muradaGradeada: getV('entidade-murada-gradeada'),
+    codigoLocalizador: (_escolaAtual && (_escolaAtual.codigoLocalizador || _escolaAtual.localizador)) || gerarCodigoLocalizador(),
+    dataHoraRegistro: new Date().toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) || new Date().toLocaleString('pt-BR')
   };
 
   // 1. Atualizar ou inserir em _teCache (Multi-aba de escolas)
@@ -9423,6 +9752,9 @@ function salvarCadastroEntidade(e) {
     try { res = await r.json(); } catch(e) {}
     if (r.ok && res.sucesso) {
       const aba = res.aba || 'Entidades';
+      if (res.codigoLocalizador) {
+        novaEntidade.codigoLocalizador = res.codigoLocalizador;
+      }
       if (typeof toast === 'function') {
         toast(`✅ Entidade "${nome}" gravada com sucesso na planilha oficial do Google Sheets (Aba: ${aba})!`, 'success', 6000);
       } else {
@@ -9458,7 +9790,20 @@ function salvarCadastroEntidade(e) {
           <p style="color:#f1f5f9; font-size:15px; line-height:1.6; margin:0 0 20px 0;">
             A entidade <strong>${nome}</strong> (${municipio}) foi cadastrada com sucesso e vinculada ao sistema da <strong>SEDUC/RO</strong>.
           </p>
-          <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:16px; margin:0 auto 26px auto; max-width:440px; color:#a7f3d0; font-size:12.5px; line-height:1.5;">
+
+          <div style="background:rgba(30,41,59,0.95); border:1.5px dashed #38bdf8; border-radius:10px; padding:14px; margin:0 auto 20px auto; max-width:440px; text-align:center;">
+            <div style="font-size:10px; text-transform:uppercase; color:#94a3b8; font-weight:800; letter-spacing:1.2px; margin-bottom:4px;">
+              🔑 CÓDIGO LOCALIZADOR DO REGISTRO
+            </div>
+            <div style="font-size:22px; font-weight:900; color:#38bdf8; font-family:monospace; letter-spacing:3px;">
+              ${novaEntidade.codigoLocalizador}
+            </div>
+            <div style="margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.08); font-size:11px; color:#cbd5e1;">
+              🕒 Registrado em: <strong style="color:#f8fafc;">${novaEntidade.dataHoraRegistro}</strong>
+            </div>
+          </div>
+
+          <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:14px; margin:0 auto 26px auto; max-width:440px; color:#a7f3d0; font-size:12.5px; line-height:1.5;">
             Os dados foram registrados e enviados para a base oficial de dados do Estado de Rondônia.
           </div>
           <button type="button" onclick="window.location.reload()" style="background:#10b981; color:#0f172a; font-weight:800; font-size:13px; padding:12px 28px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.4);">
@@ -9591,7 +9936,6 @@ window._linkGenData = {
     todosLabel: 'TODAS AS CATEGORIAS',
     options: [
       { value: 'Conselho Escolar', label: 'Conselho Escolar (Executa Fomento - F)' },
-      { value: 'Prefeitura Municipal', label: 'Prefeitura Municipal (Executa Convênio - C)' },
       { value: 'APAE', label: 'APAE (Executa Fomento - F)' },
       { value: 'EFA', label: 'EFA - Família Agrícola (Executa Fomento - F)' }
     ]
@@ -9614,12 +9958,9 @@ window._linkGenData = {
   },
   parceria: {
     selected: 'Fomento (Termo de Fomento - F)',
-    todosLabel: 'TODOS OS TIPOS DE PARCERIA',
+    todosLabel: 'FOMENTO (TERMO DE FOMENTO - F)',
     options: [
-      'Fomento (Termo de Fomento - F)',
-      'Convênio (Termo de Convênio - C)',
-      'Termo de Cooperação (T)',
-      'Acordo de Cooperação'
+      'Fomento (Termo de Fomento - F)'
     ]
   }
 };
