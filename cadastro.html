@@ -939,7 +939,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.94"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.95"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1802,19 +1802,24 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.94"></script>
-  <script src="js/escolas.js?v=1.3.94"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.94"></script>
+  <script src="js/dados.js?v=1.3.95"></script>
+  <script src="js/escolas.js?v=1.3.95"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.95"></script>
 
   <script>
     /* ============================================================
        LÓGICA STANDALONE DA PÁGINA CADASTRO.HTML
        ============================================================ */
 
-    // 1. Maximizar janela imediatamente ao carregar
+    // 1. Maximizar janela imediatamente ao carregar e acordar backend
     try {
       window.moveTo(0, 0);
       window.resizeTo(screen.availWidth, screen.availHeight);
+    } catch (e) {}
+
+    // Wake-up proativo do backend no Render para garantir resposta instantânea ao salvar
+    try {
+      fetch('https://seduc-backend.onrender.com/api/logs', { mode: 'cors' }).catch(() => {});
     } catch (e) {}
 
     let _municipioAtual = '';
@@ -3848,18 +3853,20 @@
 
       let gravouPlanilha = false;
       let abaDestino = 'Entidades';
+      let detalheErro = '';
       try {
         const baseApi = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
           ? ''
           : 'https://seduc-backend.onrender.com';
         
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 16000);
+        const timeoutId = setTimeout(() => controller.abort(), 45000);
 
         const resp = await fetch(baseApi + '/api/entidades', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(novaEntidade),
+          mode: 'cors',
           signal: controller.signal
         });
         clearTimeout(timeoutId);
@@ -3869,10 +3876,20 @@
           if (resJson && resJson.sucesso) {
             gravouPlanilha = true;
             if (resJson.aba) abaDestino = resJson.aba;
+          } else {
+            detalheErro = (resJson && resJson.erro) || 'Servidor não confirmou gravação.';
+          }
+        } else {
+          try {
+            const errJson = await resp.json();
+            detalheErro = (errJson && errJson.erro) || `HTTP ${resp.status}`;
+          } catch(e) {
+            detalheErro = `HTTP ${resp.status}`;
           }
         }
       } catch (errApi) {
         console.warn('[CadastroEntidades] Falha na conexão de gravação remota:', errApi);
+        detalheErro = errApi.name === 'AbortError' ? 'Tempo limite de resposta excedido (45s)' : errApi.message;
       } finally {
         if (btnSalvar) {
           btnSalvar.disabled = false;
@@ -3900,7 +3917,7 @@
                ⚡ Salvo com segurança no cache local deste dispositivo!
              </div>
              <div style="font-size:11px; color:#cbd5e1; margin-top:2px;">
-               A sincronização em nuvem ocorrerá automaticamente em segundo plano.
+               ${detalheErro ? 'Aviso técnico: ' + detalheErro : 'A sincronização com a planilha Google ocorrerá automaticamente em segundo plano.'}
              </div>
            </div>`;
 

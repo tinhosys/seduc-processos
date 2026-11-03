@@ -44,7 +44,12 @@ app.get("/api/logs", (req, res) => {
   res.send(logHistory.join("\n"));
 });
 
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+}));
+app.options("*", cors());
 app.use(express.json());
 app.use(express.static("public"));
 
@@ -1671,16 +1676,18 @@ const DEFAULT_AGENT_EMAIL = "planilha-seduc@gen-lang-client-0043658037.iam.gserv
 // Rota de listagem de entidades da planilha oficial
 app.get("/api/entidades", async (req, res) => {
   try {
-    const ENTIDADES_SHEET_ID = process.env.ENTIDADES_SHEET_ID || process.env.SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
+    const ENTIDADES_SHEET_ID = "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     let targetSheetTitle = "Entidades";
     try {
       const meta = await sheets.spreadsheets.get({ spreadsheetId: ENTIDADES_SHEET_ID });
       const sheetList = meta.data.sheets || [];
-      const match = sheetList.find(s => {
+      const matchEnt = sheetList.find(s => {
         const title = (s.properties.title || '').trim().toLowerCase();
-        return title === 'entidades' || title === 'escolas';
+        return title === 'entidades' || title.includes('entidade');
       });
-      if (match) targetSheetTitle = match.properties.title;
+      const gid0 = sheetList.find(s => s.properties && s.properties.sheetId === 0);
+      if (matchEnt) targetSheetTitle = matchEnt.properties.title;
+      else if (gid0) targetSheetTitle = gid0.properties.title;
       else if (sheetList.length > 0) targetSheetTitle = sheetList[0].properties.title;
     } catch(e) {}
 
@@ -1691,7 +1698,7 @@ app.get("/api/entidades", async (req, res) => {
 
     const values = response.data.values || [];
     if (values.length < 2) {
-      return res.json({ rows: [], total: 0 });
+      return res.json({ rows: [], total: 0, planilhaId: ENTIDADES_SHEET_ID, aba: targetSheetTitle });
     }
 
     const headers = values[0];
@@ -1761,7 +1768,7 @@ app.get("/api/entidades", async (req, res) => {
       };
     }).filter(e => e.nome && e.nome.trim().length > 0);
 
-    res.json({ rows, total: rows.length, planilha: ENTIDADES_SHEET_ID, aba: targetSheetTitle });
+    res.json({ rows, total: rows.length, planilhaId: ENTIDADES_SHEET_ID, aba: targetSheetTitle });
   } catch (error) {
     console.error("Erro ao listar entidades:", error);
     res.status(500).json({ erro: error.message });
@@ -1771,19 +1778,23 @@ app.get("/api/entidades", async (req, res) => {
 app.post("/api/entidades", async (req, res) => {
   try {
     const data = req.body || {};
-    const ENTIDADES_SHEET_ID = process.env.ENTIDADES_SHEET_ID || process.env.SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
+    // Planilha Oficial Estrita: 1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI
+    const ENTIDADES_SHEET_ID = "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     
-    // Tenta encontrar a aba exata por metadados
+    // Tenta encontrar a aba exata por metadados na planilha oficial
     let targetSheetTitle = "Entidades";
     try {
       const meta = await sheets.spreadsheets.get({ spreadsheetId: ENTIDADES_SHEET_ID });
       const sheetList = meta.data.sheets || [];
-      const match = sheetList.find(s => {
+      const matchEnt = sheetList.find(s => {
         const title = (s.properties.title || '').trim().toLowerCase();
-        return title === 'entidades' || title === 'escolas';
+        return title === 'entidades' || title.includes('entidade');
       });
-      if (match) {
-        targetSheetTitle = match.properties.title;
+      const gid0 = sheetList.find(s => s.properties && s.properties.sheetId === 0);
+      if (matchEnt) {
+        targetSheetTitle = matchEnt.properties.title;
+      } else if (gid0) {
+        targetSheetTitle = gid0.properties.title;
       } else if (sheetList.length > 0) {
         targetSheetTitle = sheetList[0].properties.title;
       }
