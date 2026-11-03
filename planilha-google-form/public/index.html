@@ -832,7 +832,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.98</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.4.0</div>
 
   </div>
 </div>
@@ -881,48 +881,8 @@
       </div>
 
       
-            <!-- 4 BOTÕES DE MÓDULOS RÁPIDOS (GDSM, GMAC, PROALFA, FINANCEIRO) SEM SETAS -->
-      <div class="sidebar-quick-modules" id="sidebar-quick-modules">
-        <a href="#" class="quick-module-btn btn-mod-gdsm" id="btn-quick-gdsm" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-gdsm'); navegar('processos'); return false;" title="Acessar Módulo GDSM">
-          <span style="display:flex; align-items:center; gap:8px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-            <span>GDSM</span>
-          </span>
-        </a>
-        <a href="#" class="quick-module-btn btn-mod-gmac" id="btn-quick-gmac" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-gmac'); navegar('gmac-aee'); if(typeof carregarGMAC==='function') carregarGMAC('aee'); return false;" title="Acessar Módulo GMAC">
-          <span style="display:flex; align-items:center; gap:8px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line></svg>
-            <span>GMAC</span>
-          </span>
-        </a>
-        <a href="#" class="quick-module-btn btn-mod-proalfa" id="btn-quick-proalfa" onclick="abrirSubmenu('sub-cam'); abrirSubmenu('sub-proalfa'); navegarProalfa('todos'); return false;" title="Acessar Módulo PROALFA">
-          <span style="display:flex; align-items:center; gap:8px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-            <span>PROALFA</span>
-          </span>
-        </a>
-        <a href="#" class="quick-module-btn btn-mod-orcamento action-report" id="btn-quick-orcamento" onclick="abrirSubmenu('sub-orcamento'); navegar('orcamento'); return false;" title="Acessar Módulo Financeiro">
-          <span style="display:flex; align-items:center; gap:8px;">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path></svg>
-            <span>FINANCEIRO</span>
-          </span>
-        </a>
-      </div>
-
-      <!-- LINK DE CADASTRO NO MENU PRINCIPAL - DISPONÍVEL PARA TODOS -->
-      <div style="padding: 0 10px 6px 10px;">
-        <a href="#" class="nav-item" id="nav-sidebar-gerar-link-cadastro" onclick="abrirModalGeradorLink(); fecharSubmenus(); return false;"
-          style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.85)); border: 1px solid rgba(56, 189, 248, 0.5); border-radius: 8px; color: #38bdf8; font-weight: 800; box-shadow: 0 0 14px rgba(2, 132, 199, 0.25); display: flex; align-items: center; gap: 9px; padding: 9px 12px; transition: all 0.2s;"
-          onmouseover="this.style.boxShadow='0 0 20px rgba(56,189,248,0.55)'; this.style.borderColor='#38bdf8'; this.style.background='linear-gradient(135deg, rgba(2, 132, 199, 0.4), rgba(15, 23, 42, 0.95))';"
-          onmouseout="this.style.boxShadow='0 0 14px rgba(2, 132, 199, 0.25)'; this.style.borderColor='rgba(56,189,248,0.5)'; this.style.background='linear-gradient(135deg, rgba(2, 132, 199, 0.25), rgba(15, 23, 42, 0.85))';"
-          title="Link de Cadastro das Escolas / Entidades">
-          <span style="font-size: 15px; line-height: 1;">🔗</span>
-          <span style="font-size: 12.5px; font-weight: 800; letter-spacing: 0.3px; color: #ffffff;">Link de Cadastro das Escolas</span>
-        </a>
-      </div>
-
-      <nav class="sidebar-nav">
-        <div class="nav-section-label">Menu Principal</div>
+            <nav class="sidebar-nav" style="padding-top: 10px;">
+        <div class="nav-section-label">Visão Geral</div>
 
         <a href="#" class="nav-item action-adm dashboard-only-elton" id="nav-item-dashboard" data-page="dashboard" onclick="navegar('dashboard'); fecharSubmenus()">
           <span class="nav-icon" style="color: #38bdf8;">
@@ -938,6 +898,8 @@
           </span>
           <span>Municípios</span>
         </a>
+
+        <div class="nav-section-label" style="margin-top: 14px;">Processos & Demandas</div>
 
         <!-- Menu CAM (Container Principal) -->
         <div class="nav-group action-editor">
@@ -1133,7 +1095,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.98</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.4.0</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -1473,54 +1435,144 @@
 <!-- ============= PAGE: DASHBOARD ============= -->
       <section class="page" id="page-dashboard">
 
-        <div class="stats-grid">
-          <div class="stat-card blue">
-            <div class="stat-icon">📋</div>
-            <div class="stat-label">Total de Processos</div>
-            <div class="stat-value" id="stat-total">0</div>
-          </div>
-          <div class="stat-card yellow">
-            <div class="stat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
-            <div class="stat-label">Pendentes/Aguardando</div>
-            <div class="stat-value" id="stat-pendente">0</div>
-          </div>
-          <div class="stat-card green">
-            <div class="stat-icon">✅</div>
-            <div class="stat-label">Autorizados</div>
-            <div class="stat-value" id="stat-autorizado">0</div>
-          </div>
-          <div class="stat-card red">
-            <div class="stat-icon">🔴</div>
-            <div class="stat-label">Prioridade</div>
-            <div class="stat-value" id="stat-prioridade">0</div>
-          </div>
-          <div class="stat-card blue" style="border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.04); cursor: pointer;" id="card-stat-marcados">
-            <div class="stat-icon">📌</div>
-            <div class="stat-label">Processos Marcados</div>
-            <div class="stat-value" id="stat-marcado" style="color: #60a5fa;">0</div>
-          </div>
-          <div class="stat-card blue">
-            <div class="stat-icon">💳</div>
-            <div class="stat-label">Pagos</div>
-            <div class="stat-value" id="stat-pago">0</div>
-          </div>
-          <div class="stat-card red" style="cursor: pointer;" id="card-stat-cancelados" onclick="if(typeof window.filtrarPorCanceladosDashboard==='function'){window.filtrarPorCanceladosDashboard();}else if(typeof filtrarPorCanceladosDashboard==='function'){filtrarPorCanceladosDashboard();}" title="Clique para ver os Processos Cancelados">
-            <div class="stat-icon">🚫</div>
-            <div class="stat-label">Cancelados</div>
-            <div class="stat-value" id="stat-cancelado" style="color: #f87171;">0</div>
-          </div>
-          <div class="stat-card green super-card" style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">
-            <div class="super-row">
-              <span class="super-label">Valor Total</span>
-              <span class="super-value" id="stat-valor-total-global">R$ 0</span>
+        <!-- INFOGRÁFICO EXECUTIVO SiSCAM -->
+        <div class="infografico-dashboard-topo">
+          <div class="infografico-header">
+            <div class="infografico-title-wrap">
+              <h2>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path></svg>
+                <span>Panorama Estratégico & Indicadores</span>
+              </h2>
+              <div class="infografico-sub">Monitoramento operacional em tempo real • Clique em qualquer indicador para filtrar</div>
             </div>
-            <div class="super-row">
-              <span class="super-label">Valor Pago</span>
-              <span class="super-value green" id="stat-valor-pago">R$ 0</span>
+            <div class="infografico-actions">
+              <span class="infografico-filter-chip active" onclick="filtrarPorStatusDashboard('todos')">Todos os Processos</span>
+              <span class="infografico-filter-chip" onclick="filtrarPorStatusDashboard('pendente')">Pendentes</span>
+              <span class="infografico-filter-chip" onclick="filtrarPorStatusDashboard('autorizado')">Autorizados</span>
+              <span class="infografico-filter-chip" onclick="filtrarPorStatusDashboard('pago')">Pagos</span>
+              <span class="infografico-filter-chip" onclick="filtrarPorStatusDashboard('marcados')">Marcados</span>
             </div>
-            <div class="super-row">
-              <span class="super-label">A Pagar</span>
-              <span class="super-value orange" id="stat-valor-a-pagar">R$ 0</span>
+          </div>
+
+          <div class="infografico-kpi-grid">
+            <!-- 1. Total Geral -->
+            <div class="infografico-card" onclick="filtrarPorStatusDashboard('todos')" title="Clique para listar todos os processos">
+              <div class="infografico-card-top">
+                <span class="infografico-card-tag">Total de Processos</span>
+                <span class="infografico-card-icon-pill" style="color:#38bdf8;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                </span>
+              </div>
+              <div class="infografico-card-val" id="stat-total" style="color:#38bdf8;">0</div>
+              <div class="infografico-card-hint">Base unificada CAM ↗</div>
+            </div>
+
+            <!-- 2. Pendentes -->
+            <div class="infografico-card" onclick="filtrarPorStatusDashboard('pendente')" title="Clique para filtrar processos pendentes">
+              <div class="infografico-card-top">
+                <span class="infografico-card-tag">Pendentes / Análise</span>
+                <span class="infografico-card-icon-pill" style="color:#f59e0b;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </span>
+              </div>
+              <div class="infografico-card-val" id="stat-pendente" style="color:#f59e0b;">0</div>
+              <div class="infografico-card-hint">Aguardando autorização ↗</div>
+            </div>
+
+            <!-- 3. Autorizados -->
+            <div class="infografico-card" onclick="filtrarPorStatusDashboard('autorizado')" title="Clique para filtrar autorizados">
+              <div class="infografico-card-top">
+                <span class="infografico-card-tag">Autorizados</span>
+                <span class="infografico-card-icon-pill" style="color:#10b981;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </span>
+              </div>
+              <div class="infografico-card-val" id="stat-autorizado" style="color:#10b981;">0</div>
+              <div class="infografico-card-hint">Prontos para pagamento ↗</div>
+            </div>
+
+            <!-- 4. Prioridade -->
+            <div class="infografico-card" onclick="filtrarPorStatusDashboard('prioridade')" title="Clique para filtrar prioridades">
+              <div class="infografico-card-top">
+                <span class="infografico-card-tag">Prioridades</span>
+                <span class="infografico-card-icon-pill" style="color:#ef4444;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </span>
+              </div>
+              <div class="infografico-card-val" id="stat-prioridade" style="color:#f87171;">0</div>
+              <div class="infografico-card-hint">Tratamento urgente ↗</div>
+            </div>
+
+            <!-- 5. Marcados -->
+            <div class="infografico-card" id="card-stat-marcados" onclick="filtrarPorStatusDashboard('marcados')" title="Clique para filtrar marcados">
+              <div class="infografico-card-top">
+                <span class="infografico-card-tag">Marcados</span>
+                <span class="infografico-card-icon-pill" style="color:#60a5fa;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="17" x2="12" y2="22"></line><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6a3 3 0 0 0-6 0v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"></path></svg>
+                </span>
+              </div>
+              <div class="infografico-card-val" id="stat-marcado" style="color:#60a5fa;">0</div>
+              <div class="infografico-card-hint">Acompanhamento ativo ↗</div>
+            </div>
+
+            <!-- 6. Pagos -->
+            <div class="infografico-card" onclick="filtrarPorStatusDashboard('pago')" title="Clique para filtrar pagos">
+              <div class="infografico-card-top">
+                <span class="infografico-card-tag">Pagos / Baixados</span>
+                <span class="infografico-card-icon-pill" style="color:#06b6d4;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                </span>
+              </div>
+              <div class="infografico-card-val" id="stat-pago" style="color:#22d3ee;">0</div>
+              <div class="infografico-card-hint">Execução finalizada ↗</div>
+            </div>
+
+            <!-- 7. Cancelados -->
+            <div class="infografico-card" id="card-stat-cancelados" onclick="if(typeof window.filtrarPorCanceladosDashboard==='function'){window.filtrarPorCanceladosDashboard();}else if(typeof filtrarPorCanceladosDashboard==='function'){filtrarPorCanceladosDashboard();}" title="Clique para filtrar cancelados">
+              <div class="infografico-card-top">
+                <span class="infografico-card-tag">Cancelados</span>
+                <span class="infografico-card-icon-pill" style="color:#94a3b8;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+                </span>
+              </div>
+              <div class="infografico-card-val" id="stat-cancelado" style="color:#94a3b8;">0</div>
+              <div class="infografico-card-hint">Descontinuados ↗</div>
+            </div>
+
+            <!-- 8. Card Financeiro Executivo com Barra Infográfica -->
+            <div class="infografico-card infografico-card-financeiro" onclick="navegar('orcamento')" title="Clique para abrir Gestão Orçamentária">
+              <div class="infografico-card-top">
+                <div>
+                  <span class="infografico-card-tag" style="color:#34d399;">Execução Orçamentária CAM</span>
+                  <div style="font-size:11px; color:#94a3b8; margin-top:2px;">Consolidação financeira global</div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span style="font-size:11px; font-weight:800; color:#34d399;" id="stat-progresso-pct">0%</span>
+                  <span class="infografico-card-icon-pill" style="color:#10b981;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Barra de Progresso Infográfica -->
+              <div class="financeiro-progress-bg">
+                <div class="financeiro-progress-bar" id="stat-progresso-bar"></div>
+              </div>
+
+              <div class="financeiro-mini-grid">
+                <div class="financeiro-mini-item">
+                  <span class="financeiro-mini-lbl">Valor Global</span>
+                  <span class="financeiro-mini-val" id="stat-valor-total-global" style="color:#38bdf8;">R$ 0</span>
+                </div>
+                <div class="financeiro-mini-item">
+                  <span class="financeiro-mini-lbl" style="color:#34d399;">Liquidado (Pago)</span>
+                  <span class="financeiro-mini-val" id="stat-valor-pago" style="color:#34d399;">R$ 0</span>
+                </div>
+                <div class="financeiro-mini-item">
+                  <span class="financeiro-mini-lbl" style="color:#fbbf24;">Saldo a Liquidar</span>
+                  <span class="financeiro-mini-val" id="stat-valor-a-pagar" style="color:#fbbf24;">R$ 0</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -3103,7 +3155,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.98</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.4.0</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3785,7 +3837,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.98
+              GBZ - v1.4.0
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4058,7 +4110,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.98] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.4.0] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>

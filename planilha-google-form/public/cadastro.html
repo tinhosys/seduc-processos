@@ -1894,13 +1894,16 @@
         overlay.id = 'siscam-modal-root';
         overlay.className = 'siscam-modal-overlay';
 
-        let iconeCabecalho = '🏛️';
         let btnCls = 'siscam-modal-btn-ok';
+        let iconeSvg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>`;
         if (tipo === 'sucesso') {
-          iconeCabecalho = '✅';
+          iconeSvg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
           btnCls += ' siscam-modal-btn-sucesso';
-        } else if (tipo === 'erro' || tipo === 'requerido') {
-          iconeCabecalho = '⚠️';
+        } else if (tipo === 'erro' || tipo === 'requerido' || tipo === 'perigo') {
+          iconeSvg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+          btnCls += ' siscam-modal-btn-perigo';
+        } else if (tipo === 'aviso' || tipo === 'warning') {
+          iconeSvg = `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
         }
 
         let htmlMensagem = '';
@@ -1929,7 +1932,7 @@
           <div class="siscam-modal-card" role="dialog" aria-modal="true">
             <div class="siscam-modal-header">
               <div class="siscam-modal-title-box">
-                <span style="font-size:18px;">${iconeCabecalho}</span>
+                <span class="siscam-header-icon">${iconeSvg}</span>
                 <div>
                   <div class="siscam-modal-badge-title"><span class="siscam-delta">∴</span> SiSCAM <span class="siscam-delta">∴</span></div>
                   <div class="siscam-modal-subtag">${subtitulo}</div>

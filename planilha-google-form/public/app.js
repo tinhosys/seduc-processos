@@ -1,13 +1,26 @@
-﻿
+
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.95
+// Versão do Sistema: v1.4.0
 // ============================================================
-window.APP_VERSION = 'v1.3.95';
+window.APP_VERSION = 'v1.4.0';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
 // ============================================================
+function getSiscamIconeSvg(tipo) {
+  if (tipo === 'sucesso') {
+    return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+  }
+  if (tipo === 'erro' || tipo === 'requerido' || tipo === 'perigo') {
+    return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+  }
+  if (tipo === 'aviso' || tipo === 'warning') {
+    return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+  }
+  return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>`;
+}
+
 function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
   return new Promise((resolve) => {
     let subtitulo = opcoes.subtitulo || 'Sistema Integrado SEDUC/CAM • Rondônia';
@@ -26,14 +39,14 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
     overlay.id = 'siscam-modal-root';
     overlay.className = 'siscam-modal-overlay';
 
-    let iconeCabecalho = '🏛️';
     let btnCls = 'siscam-modal-btn-ok';
     if (tipo === 'sucesso') {
-      iconeCabecalho = '✅';
       btnCls += ' siscam-modal-btn-sucesso';
-    } else if (tipo === 'erro' || tipo === 'requerido') {
-      iconeCabecalho = '⚠️';
+    } else if (tipo === 'erro' || tipo === 'requerido' || tipo === 'perigo') {
+      btnCls += ' siscam-modal-btn-perigo';
     }
+
+    const iconeCabecalho = getSiscamIconeSvg(tipo);
 
     let htmlMensagem = '';
     if (typeof mensagem === 'string') {
@@ -61,7 +74,7 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
       <div class="siscam-modal-card" role="dialog" aria-modal="true">
         <div class="siscam-modal-header">
           <div class="siscam-modal-title-box">
-            <span style="font-size:18px;">${iconeCabecalho}</span>
+            <span class="siscam-header-icon">${iconeCabecalho}</span>
             <div>
               <div class="siscam-modal-badge-title"><span class="siscam-delta">∴</span> SiSCAM <span class="siscam-delta">∴</span></div>
               <div class="siscam-modal-subtag">${subtitulo}</div>
@@ -130,6 +143,143 @@ if (!window.alertOriginal) {
     return exibirMensagemSiSCAM(msg);
   };
 }
+
+// ============================================================
+// DIÁLOGO DE CONFIRMAÇÃO PADRÃO ∴ SiSCAM ∴
+// ============================================================
+function confirmarSiSCAM(mensagem, opcoes = {}) {
+  return new Promise((resolve) => {
+    let subtitulo = opcoes.subtitulo || 'Confirmação Requerida • Rondônia';
+    if (opcoes.titulo && !opcoes.titulo.includes('SiSCAM')) {
+      subtitulo = opcoes.titulo;
+    }
+    const btnConfirmarTexto = opcoes.btnConfirmarTexto || opcoes.btnTexto || 'Confirmar';
+    const btnCancelarTexto = opcoes.btnCancelarTexto || 'Cancelar';
+    const tipo = opcoes.tipo || 'aviso'; // 'aviso', 'perigo', 'sucesso', 'info'
+
+    const modalExistente = document.getElementById('siscam-modal-root');
+    if (modalExistente) modalExistente.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'siscam-modal-root';
+    overlay.className = 'siscam-modal-overlay';
+
+    let btnConfirmarCls = 'siscam-modal-btn-ok';
+    if (tipo === 'perigo' || tipo === 'erro') {
+      btnConfirmarCls = 'siscam-modal-btn-perigo';
+    } else if (tipo === 'sucesso') {
+      btnConfirmarCls = 'siscam-modal-btn-ok siscam-modal-btn-sucesso';
+    }
+
+    const icone = getSiscamIconeSvg(tipo);
+
+    let htmlMensagem = '';
+    if (typeof mensagem === 'string') {
+      if (mensagem.includes('<div') || mensagem.includes('<p') || mensagem.includes('<strong') || mensagem.includes('<span')) {
+        htmlMensagem = mensagem;
+      } else {
+        const linhas = mensagem.split('\n');
+        htmlMensagem = linhas.map(l => {
+          const tr = l.trim();
+          if (!tr) return '<div style="height:6px;"></div>';
+          return `<p style="margin-bottom:6px;">${tr}</p>`;
+        }).join('');
+      }
+    } else {
+      htmlMensagem = String(mensagem);
+    }
+
+    overlay.innerHTML = `
+      <div class="siscam-modal-card" role="dialog" aria-modal="true">
+        <div class="siscam-modal-header">
+          <div class="siscam-modal-title-box">
+            <span class="siscam-header-icon">${icone}</span>
+            <div>
+              <div class="siscam-modal-badge-title"><span class="siscam-delta">∴</span> SiSCAM <span class="siscam-delta">∴</span></div>
+              <div class="siscam-modal-subtag">${subtitulo}</div>
+            </div>
+          </div>
+          <button type="button" class="siscam-modal-close" id="siscam-btn-fechar" title="Cancelar (Esc)">✕</button>
+        </div>
+        <div class="siscam-modal-body">
+          ${htmlMensagem}
+        </div>
+        <div class="siscam-modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="siscam-modal-btn-cancelar" id="siscam-btn-cancelar">${btnCancelarTexto}</button>
+          <button type="button" class="${btnConfirmarCls}" id="siscam-btn-confirmar">${btnConfirmarTexto}</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    let resolvido = false;
+    function encerrar(resposta) {
+      if (resolvido) return;
+      resolvido = true;
+      overlay.remove();
+      document.removeEventListener('keydown', onKey);
+      resolve(resposta);
+    }
+
+    function onKey(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        encerrar(false);
+      }
+    }
+
+    const btnConfirmar = document.getElementById('siscam-btn-confirmar');
+    const btnCancelar = document.getElementById('siscam-btn-cancelar');
+    const btnFechar = document.getElementById('siscam-btn-fechar');
+
+    if (btnConfirmar) btnConfirmar.addEventListener('click', () => encerrar(true));
+    if (btnCancelar) btnCancelar.addEventListener('click', () => encerrar(false));
+    if (btnFechar) btnFechar.addEventListener('click', () => encerrar(false));
+    document.addEventListener('keydown', onKey);
+
+    setTimeout(() => { if (btnConfirmar) btnConfirmar.focus(); }, 60);
+  });
+}
+window.confirmarSiSCAM = confirmarSiSCAM;
+
+// ============================================================
+// FILTRAGEM INTERATIVA DO INFOGRÁFICO DO DASHBOARD
+// ============================================================
+window.filtrarPorStatusDashboard = function(statusDesejado) {
+  try {
+    if (window.state && window.state.filtros) {
+      if (!statusDesejado || statusDesejado === 'todos') {
+        window.state.filtros.status = '';
+        window.state.filtros.marca = '';
+        const elStatus = document.getElementById('filtro-status');
+        if (elStatus) elStatus.value = '';
+        const elMarca = document.getElementById('filtro-marca');
+        if (elMarca) elMarca.value = '';
+      } else if (statusDesejado === 'marcados') {
+        window.state.filtros.marca = 'sim';
+        const elMarca = document.getElementById('filtro-marca');
+        if (elMarca) elMarca.value = 'sim';
+      } else {
+        window.state.filtros.status = statusDesejado;
+        window.state.filtros.marca = '';
+        const elStatus = document.getElementById('filtro-status');
+        if (elStatus) elStatus.value = statusDesejado;
+        const elMarca = document.getElementById('filtro-marca');
+        if (elMarca) elMarca.value = '';
+      }
+    }
+    if (typeof navegar === 'function') {
+      navegar('processos');
+    }
+    if (typeof renderTabelaProcessos === 'function') {
+      renderTabelaProcessos();
+    }
+  } catch (err) {
+    console.error('Erro em filtrarPorStatusDashboard:', err);
+    if (typeof navegar === 'function') navegar('processos');
+  }
+};
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -754,16 +904,54 @@ function navegar(pagina) {
   }
 }
 
-// ---- TOAST ----
-function toast(msg, tipo = 'info') {
-  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+// ---- TOAST PADRÃO ∴ SiSCAM ∴ ----
+function toast(msg, tipo = 'info', duracao = 4200) {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const iconsSvg = {
+    success: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+    sucesso: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+    error: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+    erro: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+    warning: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+    aviso: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+    info: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+  };
+
+  const tipoNormalizado = (tipo === 'success' || tipo === 'sucesso') ? 'toast-success' :
+                          (tipo === 'error' || tipo === 'erro') ? 'toast-error' :
+                          (tipo === 'warning' || tipo === 'aviso') ? 'toast-warning' : 'toast-info';
+
+  const icone = iconsSvg[tipo] || iconsSvg.info;
+
   const div = document.createElement('div');
-  div.className = `toast ${tipo}`;
-  div.innerHTML = `<span>${icons[tipo]}</span> ${msg}`;
-  document.getElementById('toast-container').appendChild(div);
-  setTimeout(() => div.remove(), 4000);
+  div.className = `siscam-toast ${tipoNormalizado}`;
+  div.innerHTML = `
+    <div class="siscam-toast-icon">${icone}</div>
+    <div class="siscam-toast-content">
+      <div class="siscam-toast-header">∴ SiSCAM ∴</div>
+      <div class="siscam-toast-msg">${msg}</div>
+    </div>
+    <button type="button" class="siscam-toast-close" title="Fechar">✕</button>
+  `;
+
+  const btnClose = div.querySelector('.siscam-toast-close');
+  function fecharToast() {
+    div.classList.add('siscam-toast-fadeout');
+    setTimeout(() => { div.remove(); }, 250);
+  }
+  if (btnClose) btnClose.addEventListener('click', fecharToast);
+
+  container.appendChild(div);
+  setTimeout(fecharToast, duracao);
 }
 window.showToast = toast;
+window.toast = toast;
 
 // ---- DASHBOARD ----
 let chartStatus = null;
@@ -812,6 +1000,13 @@ function renderDashboard() {
   document.getElementById('stat-pago').textContent       = pagos.toLocaleString('pt-BR');
   document.getElementById('stat-pendente').textContent   = pendentes.toLocaleString('pt-BR');
   document.getElementById('stat-prioridade').textContent = prioridade.toLocaleString('pt-BR');
+
+  // Barra e percentual de execução financeira
+  const pctPago = valorTotal > 0 ? Math.min(100, Math.round((valorPago / valorTotal) * 100)) : 0;
+  const elProgressoBar = document.getElementById('stat-progresso-bar');
+  if (elProgressoBar) elProgressoBar.style.width = `${pctPago}%`;
+  const elProgressoPct = document.getElementById('stat-progresso-pct');
+  if (elProgressoPct) elProgressoPct.textContent = `${pctPago}%`;
 
   // --- Alertas de Datas ---
   let processosSemData = 0;
@@ -8908,7 +9103,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-tipo-telhado', dadosExistentes.tipoTelhado || '');
     atualizarTodasDescricoesInfraModal();
 
-    setModalidadesModalSelecionadas(dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '');
+    setModalidadesModalSelecionadas(dadosExistentes.modalidade || dadosExistentes.modalidadeStr || '', dadosExistentes.alunos || dadosExistentes.totalMatricula);
 
     // Sincronizar radio
     const catUpper = String(dadosExistentes.categoria || '').toUpperCase();
@@ -8969,50 +9164,177 @@ function toggleDropdownModalidadeModal(e) {
 }
 window.toggleDropdownModalidadeModal = toggleDropdownModalidadeModal;
 
-function aoMudarModalidadeModalCheck() {
+function aoMudarModalidadeModalCheck(targetCheckbox) {
   const container = document.getElementById('drop-modalidade-modal-opcoes');
   if (!container) return;
-  const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
-  const selecionadas = Array.from(checkboxes).map(c => c.value);
-  
-  const hiddenInput = document.getElementById('entidade-modalidade');
-  if (hiddenInput) hiddenInput.value = selecionadas.join(', ');
-  
-  const triggerTxt = document.getElementById('txt-modalidade-modal-trigger');
-  if (triggerTxt) {
-    if (selecionadas.length === 0) {
-      triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
-      triggerTxt.style.color = '#94a3b8';
-    } else {
-      triggerTxt.textContent = `${selecionadas.length} selecionada(s)`;
-      triggerTxt.style.color = '#38bdf8';
+
+  if (targetCheckbox) {
+    const row = targetCheckbox.closest('.mod-item-row');
+    const inputQtd = row ? row.querySelector('.mod-qtd-input-modal') : null;
+    if (inputQtd) {
+      if (targetCheckbox.checked) {
+        inputQtd.disabled = false;
+        inputQtd.style.opacity = '1';
+        inputQtd.style.borderColor = '#38bdf8';
+        if (!inputQtd.value || inputQtd.value === '0') inputQtd.value = '';
+        setTimeout(() => inputQtd.focus(), 50);
+      } else {
+        inputQtd.disabled = true;
+        inputQtd.style.opacity = '0.35';
+        inputQtd.style.borderColor = '#334155';
+        inputQtd.value = '';
+      }
     }
   }
-  
-  const box = document.getElementById('box-modalidades-selecionadas-modal');
-  if (box) {
-    if (selecionadas.length === 0) {
-      box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
-    } else {
-      box.innerHTML = selecionadas.map((mod, idx) => {
-        const isUltimo = (idx === selecionadas.length - 1);
-        return `<span class="badge-modalidade-item">${mod}</span>${!isUltimo ? '<span class="badge-sep-virgula">, </span>' : ''}`;
-      }).join('');
-    }
-  }
+
+  calcularTotalAlunosModalidadesModal();
 }
 window.aoMudarModalidadeModalCheck = aoMudarModalidadeModalCheck;
 
-function setModalidadesModalSelecionadas(modStr) {
+function calcularTotalAlunosModalidadesModal() {
   const container = document.getElementById('drop-modalidade-modal-opcoes');
   if (!container) return;
-  const arr = String(modStr || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-  const checkboxes = container.querySelectorAll('input[type="checkbox"]');
-  checkboxes.forEach(cb => {
-    const v = cb.value.trim().toLowerCase();
-    cb.checked = arr.some(a => a === v || v.includes(a) || a.includes(v));
+
+  const rows = container.querySelectorAll('.mod-item-row');
+  let totalAlunos = 0;
+  const modalidadesDetalhes = [];
+  const modalidadesNomes = [];
+
+  rows.forEach(row => {
+    const cb = row.querySelector('.mod-checkbox-modal');
+    const inp = row.querySelector('.mod-qtd-input-modal');
+    if (cb && cb.checked) {
+      const qtd = parseInt(inp ? inp.value : '0', 10) || 0;
+      totalAlunos += qtd;
+      modalidadesNomes.push(cb.value);
+      modalidadesDetalhes.push(`${cb.value}: ${qtd}`);
+    }
   });
-  aoMudarModalidadeModalCheck();
+
+  // Atualiza o campo Nº de Alunos (circulado em amarelo na Imagem 1)
+  const inputAlunos = document.getElementById('entidade-alunos');
+  if (inputAlunos) {
+    inputAlunos.value = totalAlunos;
+    inputAlunos.readOnly = true;
+    inputAlunos.title = 'Calculado automaticamente pela soma das quantidades informadas em cada modalidade';
+  }
+
+  // Atualiza o hidden input 'entidade-modalidade' com as modalidades e quantidades separadas por ';'
+  const hiddenInput = document.getElementById('entidade-modalidade');
+  if (hiddenInput) {
+    hiddenInput.value = modalidadesDetalhes.join('; ');
+  }
+
+  // Atualiza o texto do gatilho
+  const triggerTxt = document.getElementById('txt-modalidade-modal-trigger');
+  if (triggerTxt) {
+    if (modalidadesNomes.length === 0) {
+      triggerTxt.textContent = 'Selecione a(s) Modalidade(s)...';
+      triggerTxt.style.color = '#94a3b8';
+    } else {
+      triggerTxt.textContent = `${modalidadesNomes.length} selecionada(s) (${totalAlunos} alunos)`;
+      triggerTxt.style.color = '#38bdf8';
+    }
+  }
+
+  // Atualiza a legenda visual abaixo do combo com os alunos de cada categoria
+  const box = document.getElementById('box-modalidades-selecionadas-modal');
+  if (box) {
+    if (modalidadesDetalhes.length === 0) {
+      box.innerHTML = '<span style="color:#64748b; font-size:11px;">Nenhuma modalidade selecionada</span>';
+    } else {
+      box.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:4px;">
+          ${modalidadesDetalhes.map(det => {
+            const partes = det.split(':');
+            const nome = partes[0];
+            const qtd = partes[1] || '0';
+            return `<span class="badge-modalidade-item" style="background:rgba(56,189,248,0.15); border:1px solid #38bdf8; border-radius:6px; padding:2px 8px; font-size:11.5px; color:#f0f9ff; font-weight:700;">
+              ${nome}: <strong style="color:#fef08a;">${qtd.trim()}</strong>
+            </span>`;
+          }).join('')}
+          <span style="font-size:11.5px; font-weight:900; color:#34d399; margin-left:4px;">
+            (Total: ${totalAlunos} alunos)
+          </span>
+        </div>
+      `;
+    }
+  }
+}
+window.calcularTotalAlunosModalidadesModal = calcularTotalAlunosModalidadesModal;
+
+function setModalidadesModalSelecionadas(modStr, totalAlunosFallback) {
+  const container = document.getElementById('drop-modalidade-modal-opcoes');
+  if (!container) return;
+
+  const rows = container.querySelectorAll('.mod-item-row');
+  rows.forEach(r => {
+    const cb = r.querySelector('.mod-checkbox-modal');
+    const inp = r.querySelector('.mod-qtd-input-modal');
+    if (cb) cb.checked = false;
+    if (inp) {
+      inp.disabled = true;
+      inp.style.opacity = '0.35';
+      inp.style.borderColor = '#334155';
+      inp.value = '';
+    }
+  });
+
+  if (!modStr) {
+    calcularTotalAlunosModalidadesModal();
+    return;
+  }
+
+  const mapaQtd = {};
+  const partes = String(modStr).split(';').map(s => s.trim()).filter(Boolean);
+
+  partes.forEach(p => {
+    const matchDoisPontos = p.match(/^(.*?):\s*(\d+)$/);
+    const matchVirgula = p.match(/^(.*?),\s*(\d+)$/);
+    const matchParenteses = p.match(/^(.*?)\s*\((\d+)\)$/);
+    if (matchDoisPontos) {
+      mapaQtd[matchDoisPontos[1].trim().toLowerCase()] = parseInt(matchDoisPontos[2], 10);
+    } else if (matchVirgula) {
+      mapaQtd[matchVirgula[1].trim().toLowerCase()] = parseInt(matchVirgula[2], 10);
+    } else if (matchParenteses) {
+      mapaQtd[matchParenteses[1].trim().toLowerCase()] = parseInt(matchParenteses[2], 10);
+    } else {
+      p.split(',').forEach(sub => {
+        if (sub.trim()) mapaQtd[sub.trim().toLowerCase()] = null;
+      });
+    }
+  });
+
+  let marcados = 0;
+  rows.forEach(row => {
+    const cb = row.querySelector('.mod-checkbox-modal');
+    const inp = row.querySelector('.mod-qtd-input-modal');
+    if (!cb) return;
+    const v = cb.value.trim().toLowerCase();
+    const chave = Object.keys(mapaQtd).find(k => k === v || v.includes(k) || k.includes(v));
+    if (chave) {
+      cb.checked = true;
+      if (inp) {
+        inp.disabled = false;
+        inp.style.opacity = '1';
+        inp.style.borderColor = '#38bdf8';
+        inp.value = (mapaQtd[chave] !== null && !isNaN(mapaQtd[chave])) ? mapaQtd[chave] : '';
+      }
+      marcados++;
+    }
+  });
+
+  if (marcados === 1 && totalAlunosFallback) {
+    rows.forEach(row => {
+      const cb = row.querySelector('.mod-checkbox-modal');
+      const inp = row.querySelector('.mod-qtd-input-modal');
+      if (cb && cb.checked && inp && !inp.value) {
+        inp.value = totalAlunosFallback;
+      }
+    });
+  }
+
+  calcularTotalAlunosModalidadesModal();
 }
 window.setModalidadesModalSelecionadas = setModalidadesModalSelecionadas;
 
@@ -9187,6 +9509,39 @@ function aoSelecionarTipoEntidadeForm(tipo) {
 }
 window.aoSelecionarTipoEntidadeForm = aoSelecionarTipoEntidadeForm;
 
+// Gerador de Código Localizador: 3 letras e 3 números aleatórios em caixa alta (não sequenciais)
+function gerarCodigoLocalizador() {
+  const letras = "ABCDEFGHJKLMNPQRSTUVWXYZ"; // sem I e O para não confundir com 1 e 0
+  const numeros = "0123456789";
+  let l = "";
+  let n = "";
+
+  while (l.length < 3) {
+    const char = letras.charAt(Math.floor(Math.random() * letras.length));
+    if (l.length === 0 || l[l.length - 1] !== char) {
+      l += char;
+    }
+  }
+  if ((l.charCodeAt(1) === l.charCodeAt(0) + 1 && l.charCodeAt(2) === l.charCodeAt(1) + 1) ||
+      (l[0] === l[1] && l[1] === l[2])) {
+    return gerarCodigoLocalizador();
+  }
+
+  while (n.length < 3) {
+    const num = numeros.charAt(Math.floor(Math.random() * numeros.length));
+    if (n.length === 0 || n[n.length - 1] !== num) {
+      n += num;
+    }
+  }
+  const d0 = Number(n[0]), d1 = Number(n[1]), d2 = Number(n[2]);
+  if ((d1 === d0 + 1 && d2 === d1 + 1) || (d1 === d0 - 1 && d2 === d1 - 1) || (d0 === d1 && d1 === d2)) {
+    return gerarCodigoLocalizador();
+  }
+
+  return `${l}${n}`;
+}
+window.gerarCodigoLocalizador = gerarCodigoLocalizador;
+
 // Salva o cadastro geral da entidade com reflexo instantâneo no cache e formulários
 function salvarCadastroEntidade(e) {
   if (e && e.preventDefault) e.preventDefault();
@@ -9347,7 +9702,9 @@ function salvarCadastroEntidade(e) {
     tipoForro: getV('entidade-tipo-forro'),
     tipoPiso: getV('entidade-tipo-piso'),
     tipoTelhado: getV('entidade-tipo-telhado'),
-    muradaGradeada: getV('entidade-murada-gradeada')
+    muradaGradeada: getV('entidade-murada-gradeada'),
+    codigoLocalizador: (_escolaAtual && (_escolaAtual.codigoLocalizador || _escolaAtual.localizador)) || gerarCodigoLocalizador(),
+    dataHoraRegistro: new Date().toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) || new Date().toLocaleString('pt-BR')
   };
 
   // 1. Atualizar ou inserir em _teCache (Multi-aba de escolas)
@@ -9423,6 +9780,9 @@ function salvarCadastroEntidade(e) {
     try { res = await r.json(); } catch(e) {}
     if (r.ok && res.sucesso) {
       const aba = res.aba || 'Entidades';
+      if (res.codigoLocalizador) {
+        novaEntidade.codigoLocalizador = res.codigoLocalizador;
+      }
       if (typeof toast === 'function') {
         toast(`✅ Entidade "${nome}" gravada com sucesso na planilha oficial do Google Sheets (Aba: ${aba})!`, 'success', 6000);
       } else {
@@ -9458,7 +9818,20 @@ function salvarCadastroEntidade(e) {
           <p style="color:#f1f5f9; font-size:15px; line-height:1.6; margin:0 0 20px 0;">
             A entidade <strong>${nome}</strong> (${municipio}) foi cadastrada com sucesso e vinculada ao sistema da <strong>SEDUC/RO</strong>.
           </p>
-          <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:16px; margin:0 auto 26px auto; max-width:440px; color:#a7f3d0; font-size:12.5px; line-height:1.5;">
+
+          <div style="background:rgba(30,41,59,0.95); border:1.5px dashed #38bdf8; border-radius:10px; padding:14px; margin:0 auto 20px auto; max-width:440px; text-align:center;">
+            <div style="font-size:10px; text-transform:uppercase; color:#94a3b8; font-weight:800; letter-spacing:1.2px; margin-bottom:4px;">
+              🔑 CÓDIGO LOCALIZADOR DO REGISTRO
+            </div>
+            <div style="font-size:22px; font-weight:900; color:#38bdf8; font-family:monospace; letter-spacing:3px;">
+              ${novaEntidade.codigoLocalizador}
+            </div>
+            <div style="margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.08); font-size:11px; color:#cbd5e1;">
+              🕒 Registrado em: <strong style="color:#f8fafc;">${novaEntidade.dataHoraRegistro}</strong>
+            </div>
+          </div>
+
+          <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:10px; padding:14px; margin:0 auto 26px auto; max-width:440px; color:#a7f3d0; font-size:12.5px; line-height:1.5;">
             Os dados foram registrados e enviados para a base oficial de dados do Estado de Rondônia.
           </div>
           <button type="button" onclick="window.location.reload()" style="background:#10b981; color:#0f172a; font-weight:800; font-size:13px; padding:12px 28px; border:none; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.4);">
@@ -9591,7 +9964,6 @@ window._linkGenData = {
     todosLabel: 'TODAS AS CATEGORIAS',
     options: [
       { value: 'Conselho Escolar', label: 'Conselho Escolar (Executa Fomento - F)' },
-      { value: 'Prefeitura Municipal', label: 'Prefeitura Municipal (Executa Convênio - C)' },
       { value: 'APAE', label: 'APAE (Executa Fomento - F)' },
       { value: 'EFA', label: 'EFA - Família Agrícola (Executa Fomento - F)' }
     ]
@@ -9614,12 +9986,9 @@ window._linkGenData = {
   },
   parceria: {
     selected: 'Fomento (Termo de Fomento - F)',
-    todosLabel: 'TODOS OS TIPOS DE PARCERIA',
+    todosLabel: 'FOMENTO (TERMO DE FOMENTO - F)',
     options: [
-      'Fomento (Termo de Fomento - F)',
-      'Convênio (Termo de Convênio - C)',
-      'Termo de Cooperação (T)',
-      'Acordo de Cooperação'
+      'Fomento (Termo de Fomento - F)'
     ]
   }
 };

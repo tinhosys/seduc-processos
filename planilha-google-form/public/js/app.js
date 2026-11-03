@@ -1,13 +1,26 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.98
+// Versão do Sistema: v1.4.0
 // ============================================================
-window.APP_VERSION = 'v1.3.98';
+window.APP_VERSION = 'v1.4.0';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
 // ============================================================
+function getSiscamIconeSvg(tipo) {
+  if (tipo === 'sucesso') {
+    return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+  }
+  if (tipo === 'erro' || tipo === 'requerido' || tipo === 'perigo') {
+    return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+  }
+  if (tipo === 'aviso' || tipo === 'warning') {
+    return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+  }
+  return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>`;
+}
+
 function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
   return new Promise((resolve) => {
     let subtitulo = opcoes.subtitulo || 'Sistema Integrado SEDUC/CAM • Rondônia';
@@ -26,14 +39,14 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
     overlay.id = 'siscam-modal-root';
     overlay.className = 'siscam-modal-overlay';
 
-    let iconeCabecalho = '🏛️';
     let btnCls = 'siscam-modal-btn-ok';
     if (tipo === 'sucesso') {
-      iconeCabecalho = '✅';
       btnCls += ' siscam-modal-btn-sucesso';
-    } else if (tipo === 'erro' || tipo === 'requerido') {
-      iconeCabecalho = '⚠️';
+    } else if (tipo === 'erro' || tipo === 'requerido' || tipo === 'perigo') {
+      btnCls += ' siscam-modal-btn-perigo';
     }
+
+    const iconeCabecalho = getSiscamIconeSvg(tipo);
 
     let htmlMensagem = '';
     if (typeof mensagem === 'string') {
@@ -61,7 +74,7 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
       <div class="siscam-modal-card" role="dialog" aria-modal="true">
         <div class="siscam-modal-header">
           <div class="siscam-modal-title-box">
-            <span style="font-size:18px;">${iconeCabecalho}</span>
+            <span class="siscam-header-icon">${iconeCabecalho}</span>
             <div>
               <div class="siscam-modal-badge-title"><span class="siscam-delta">∴</span> SiSCAM <span class="siscam-delta">∴</span></div>
               <div class="siscam-modal-subtag">${subtitulo}</div>
@@ -130,6 +143,143 @@ if (!window.alertOriginal) {
     return exibirMensagemSiSCAM(msg);
   };
 }
+
+// ============================================================
+// DIÁLOGO DE CONFIRMAÇÃO PADRÃO ∴ SiSCAM ∴
+// ============================================================
+function confirmarSiSCAM(mensagem, opcoes = {}) {
+  return new Promise((resolve) => {
+    let subtitulo = opcoes.subtitulo || 'Confirmação Requerida • Rondônia';
+    if (opcoes.titulo && !opcoes.titulo.includes('SiSCAM')) {
+      subtitulo = opcoes.titulo;
+    }
+    const btnConfirmarTexto = opcoes.btnConfirmarTexto || opcoes.btnTexto || 'Confirmar';
+    const btnCancelarTexto = opcoes.btnCancelarTexto || 'Cancelar';
+    const tipo = opcoes.tipo || 'aviso'; // 'aviso', 'perigo', 'sucesso', 'info'
+
+    const modalExistente = document.getElementById('siscam-modal-root');
+    if (modalExistente) modalExistente.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'siscam-modal-root';
+    overlay.className = 'siscam-modal-overlay';
+
+    let btnConfirmarCls = 'siscam-modal-btn-ok';
+    if (tipo === 'perigo' || tipo === 'erro') {
+      btnConfirmarCls = 'siscam-modal-btn-perigo';
+    } else if (tipo === 'sucesso') {
+      btnConfirmarCls = 'siscam-modal-btn-ok siscam-modal-btn-sucesso';
+    }
+
+    const icone = getSiscamIconeSvg(tipo);
+
+    let htmlMensagem = '';
+    if (typeof mensagem === 'string') {
+      if (mensagem.includes('<div') || mensagem.includes('<p') || mensagem.includes('<strong') || mensagem.includes('<span')) {
+        htmlMensagem = mensagem;
+      } else {
+        const linhas = mensagem.split('\n');
+        htmlMensagem = linhas.map(l => {
+          const tr = l.trim();
+          if (!tr) return '<div style="height:6px;"></div>';
+          return `<p style="margin-bottom:6px;">${tr}</p>`;
+        }).join('');
+      }
+    } else {
+      htmlMensagem = String(mensagem);
+    }
+
+    overlay.innerHTML = `
+      <div class="siscam-modal-card" role="dialog" aria-modal="true">
+        <div class="siscam-modal-header">
+          <div class="siscam-modal-title-box">
+            <span class="siscam-header-icon">${icone}</span>
+            <div>
+              <div class="siscam-modal-badge-title"><span class="siscam-delta">∴</span> SiSCAM <span class="siscam-delta">∴</span></div>
+              <div class="siscam-modal-subtag">${subtitulo}</div>
+            </div>
+          </div>
+          <button type="button" class="siscam-modal-close" id="siscam-btn-fechar" title="Cancelar (Esc)">✕</button>
+        </div>
+        <div class="siscam-modal-body">
+          ${htmlMensagem}
+        </div>
+        <div class="siscam-modal-footer" style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="siscam-modal-btn-cancelar" id="siscam-btn-cancelar">${btnCancelarTexto}</button>
+          <button type="button" class="${btnConfirmarCls}" id="siscam-btn-confirmar">${btnConfirmarTexto}</button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    let resolvido = false;
+    function encerrar(resposta) {
+      if (resolvido) return;
+      resolvido = true;
+      overlay.remove();
+      document.removeEventListener('keydown', onKey);
+      resolve(resposta);
+    }
+
+    function onKey(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        encerrar(false);
+      }
+    }
+
+    const btnConfirmar = document.getElementById('siscam-btn-confirmar');
+    const btnCancelar = document.getElementById('siscam-btn-cancelar');
+    const btnFechar = document.getElementById('siscam-btn-fechar');
+
+    if (btnConfirmar) btnConfirmar.addEventListener('click', () => encerrar(true));
+    if (btnCancelar) btnCancelar.addEventListener('click', () => encerrar(false));
+    if (btnFechar) btnFechar.addEventListener('click', () => encerrar(false));
+    document.addEventListener('keydown', onKey);
+
+    setTimeout(() => { if (btnConfirmar) btnConfirmar.focus(); }, 60);
+  });
+}
+window.confirmarSiSCAM = confirmarSiSCAM;
+
+// ============================================================
+// FILTRAGEM INTERATIVA DO INFOGRÁFICO DO DASHBOARD
+// ============================================================
+window.filtrarPorStatusDashboard = function(statusDesejado) {
+  try {
+    if (window.state && window.state.filtros) {
+      if (!statusDesejado || statusDesejado === 'todos') {
+        window.state.filtros.status = '';
+        window.state.filtros.marca = '';
+        const elStatus = document.getElementById('filtro-status');
+        if (elStatus) elStatus.value = '';
+        const elMarca = document.getElementById('filtro-marca');
+        if (elMarca) elMarca.value = '';
+      } else if (statusDesejado === 'marcados') {
+        window.state.filtros.marca = 'sim';
+        const elMarca = document.getElementById('filtro-marca');
+        if (elMarca) elMarca.value = 'sim';
+      } else {
+        window.state.filtros.status = statusDesejado;
+        window.state.filtros.marca = '';
+        const elStatus = document.getElementById('filtro-status');
+        if (elStatus) elStatus.value = statusDesejado;
+        const elMarca = document.getElementById('filtro-marca');
+        if (elMarca) elMarca.value = '';
+      }
+    }
+    if (typeof navegar === 'function') {
+      navegar('processos');
+    }
+    if (typeof renderTabelaProcessos === 'function') {
+      renderTabelaProcessos();
+    }
+  } catch (err) {
+    console.error('Erro em filtrarPorStatusDashboard:', err);
+    if (typeof navegar === 'function') navegar('processos');
+  }
+};
 
 
 // Early stub/exposure for abrirModalPrestacaoContas to prevent ReferenceError
@@ -754,16 +904,54 @@ function navegar(pagina) {
   }
 }
 
-// ---- TOAST ----
-function toast(msg, tipo = 'info') {
-  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+// ---- TOAST PADRÃO ∴ SiSCAM ∴ ----
+function toast(msg, tipo = 'info', duracao = 4200) {
+  let container = document.getElementById('toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toast-container';
+    document.body.appendChild(container);
+  }
+
+  const iconsSvg = {
+    success: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+    sucesso: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+    error: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+    erro: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+    warning: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+    aviso: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`,
+    info: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`
+  };
+
+  const tipoNormalizado = (tipo === 'success' || tipo === 'sucesso') ? 'toast-success' :
+                          (tipo === 'error' || tipo === 'erro') ? 'toast-error' :
+                          (tipo === 'warning' || tipo === 'aviso') ? 'toast-warning' : 'toast-info';
+
+  const icone = iconsSvg[tipo] || iconsSvg.info;
+
   const div = document.createElement('div');
-  div.className = `toast ${tipo}`;
-  div.innerHTML = `<span>${icons[tipo]}</span> ${msg}`;
-  document.getElementById('toast-container').appendChild(div);
-  setTimeout(() => div.remove(), 4000);
+  div.className = `siscam-toast ${tipoNormalizado}`;
+  div.innerHTML = `
+    <div class="siscam-toast-icon">${icone}</div>
+    <div class="siscam-toast-content">
+      <div class="siscam-toast-header">∴ SiSCAM ∴</div>
+      <div class="siscam-toast-msg">${msg}</div>
+    </div>
+    <button type="button" class="siscam-toast-close" title="Fechar">✕</button>
+  `;
+
+  const btnClose = div.querySelector('.siscam-toast-close');
+  function fecharToast() {
+    div.classList.add('siscam-toast-fadeout');
+    setTimeout(() => { div.remove(); }, 250);
+  }
+  if (btnClose) btnClose.addEventListener('click', fecharToast);
+
+  container.appendChild(div);
+  setTimeout(fecharToast, duracao);
 }
 window.showToast = toast;
+window.toast = toast;
 
 // ---- DASHBOARD ----
 let chartStatus = null;
@@ -812,6 +1000,13 @@ function renderDashboard() {
   document.getElementById('stat-pago').textContent       = pagos.toLocaleString('pt-BR');
   document.getElementById('stat-pendente').textContent   = pendentes.toLocaleString('pt-BR');
   document.getElementById('stat-prioridade').textContent = prioridade.toLocaleString('pt-BR');
+
+  // Barra e percentual de execução financeira
+  const pctPago = valorTotal > 0 ? Math.min(100, Math.round((valorPago / valorTotal) * 100)) : 0;
+  const elProgressoBar = document.getElementById('stat-progresso-bar');
+  if (elProgressoBar) elProgressoBar.style.width = `${pctPago}%`;
+  const elProgressoPct = document.getElementById('stat-progresso-pct');
+  if (elProgressoPct) elProgressoPct.textContent = `${pctPago}%`;
 
   // --- Alertas de Datas ---
   let processosSemData = 0;
