@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================
    TOKENS DE DESIGN
@@ -4022,3 +4022,33 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   100% { transform: scale(1); }
 }
 
+
+.siscam-modal-btn-cancelar {
+  background: rgba(255, 255, 255, 0.06);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 7px;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: all 0.2s;
+  min-width: 90px;
+  text-align: center;
+}
+.siscam-modal-btn-cancelar:hover, .siscam-modal-btn-cancelar:focus {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, 0.3);
+  outline: none;
+}
+.siscam-modal-btn-danger {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4) !important;
+}
+.siscam-modal-btn-danger:hover, .siscam-modal-btn-danger:focus {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%) !important;
+  box-shadow: 0 0 16px rgba(239, 68, 68, 0.75) !important;
+}
