@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.105
+// Versão do Sistema: v1.3.106
 // ============================================================
-window.APP_VERSION = 'v1.3.105';
+window.APP_VERSION = 'v1.3.106';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -2995,9 +2995,7 @@ function salvarFormulario(e) {
       console.error('[GRAVAÇÃO] Erro:', errGravar);
       const msgErro = errGravar && errGravar.message ? errGravar.message : 'Não foi possível gravar na planilha oficial do Google. Verifique sua conexão e tente novamente.';
       if (typeof exibirMensagemSiSCAM === 'function') {
-        exibirMensagemSiSCAM('⚠️ Ocorreu uma inconsistência ao gravar na Planilha Google:
-
-' + msgErro, { titulo: 'Erro de Gravação', tipo: 'erro' });
+        exibirMensagemSiSCAM('⚠️ Ocorreu uma inconsistência ao gravar na Planilha Google:\n\n' + msgErro, { titulo: 'Erro de Gravação', tipo: 'erro' });
       } else {
         toast('Erro ao gravar na planilha: ' + msgErro, 'error');
       }
