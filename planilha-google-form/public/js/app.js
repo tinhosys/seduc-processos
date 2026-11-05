@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.107
+// Versão do Sistema: v1.3.108
 // ============================================================
-window.APP_VERSION = 'v1.3.107';
+window.APP_VERSION = 'v1.3.108';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -1518,6 +1518,7 @@ function getFiltrados() {
       normalizar(p.status).includes(q) ||
       normalizar(p.localizacao).includes(q) ||
       normalizar(p.agrupamento).includes(q) ||
+      normalizar(p.digito || p.DIGITO || '').includes(q) ||
       String(p.ano || '').includes(q)
     );
   }
@@ -2060,6 +2061,7 @@ function renderProcessos() {
           normalizar(p.status).includes(q) ||
           normalizar(p.localizacao).includes(q) ||
           normalizar(p.agrupamento).includes(q) ||
+          normalizar(p.digito || p.DIGITO || '').includes(q) ||
           String(p.ano || '').includes(q)
         );
       }

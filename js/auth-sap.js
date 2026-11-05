@@ -167,11 +167,7 @@ function aplicarPermissoes(nivel) {
       el.style.setProperty('display', 'none', 'important');
       return;
     }
-    if (el.classList.contains('filtro-digito-container')) {
-      el.style.setProperty('display', isAdminUser ? 'inline-flex' : 'none', 'important');
-    } else {
-      el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
-    }
+    el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
   });
 
   // Controle estrito do filtro e campo EXECUTIVO (exclusivo ADMIN)
