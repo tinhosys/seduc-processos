@@ -2808,6 +2808,7 @@ function salvarFormulario(e) {
     municipio:   document.getElementById('form-municipio').value.trim(),
     numero:      numerosJoined,
     interessado: document.getElementById('form-interessado').value.trim(),
+    objeto:      (document.getElementById('form-objeto')?.value || '').trim(),
     analista:    (document.getElementById('form-analista')?.value || '').trim(),
     cnpj:        (document.getElementById('form-cnpj')?.value || '').trim(),
     cnpjReceitaTexto: window._ultimoResultadoCNPJReceitaTexto || '',
@@ -2954,26 +2955,60 @@ function salvarFormulario(e) {
     window._motivoTravaDemanda = '';
   }
 
-  if (state.editandoId) {
-    atualizarProcesso(state.editandoId, dados);
-    if (typeof exibirMensagemSiSCAM === 'function') {
-      exibirMensagemSiSCAM('Processo atualizado com sucesso na Planilha Oficial!', { titulo: 'Gravação Concluída', tipo: 'sucesso' });
-    } else {
-      toast('Processo atualizado com sucesso!', 'success');
-    }
-    state.editandoId = null;
-  } else {
-    adicionarProcesso(dados);
-    if (typeof exibirMensagemSiSCAM === 'function') {
-      exibirMensagemSiSCAM('Novo processo cadastrado e salvo com sucesso na Planilha Oficial!', { titulo: 'Gravação Concluída', tipo: 'sucesso' });
-    } else {
-      toast('Processo cadastrado com sucesso!', 'success');
-    }
-    document.getElementById('form-processo').reset();
-    setTimeout(() => {
-      document.getElementById('form-prefixo')?.focus();
-    }, 150);
+  const btnSalvar = document.querySelector('#form-processo button[type="submit"]');
+  const btnSalvarTextoOriginal = btnSalvar ? btnSalvar.innerHTML : '💾 Salvar Processo';
+  if (btnSalvar) {
+    btnSalvar.disabled = true;
+    btnSalvar.innerHTML = '⏳ Salvando na Planilha...';
   }
+
+  (async () => {
+    try {
+      if (state.editandoId) {
+        const res = await atualizarProcesso(state.editandoId, dados);
+        if (res && res.sucesso === false) {
+          throw new Error(res.erro || 'Falha ao gravar na planilha.');
+        }
+        if (typeof exibirMensagemSiSCAM === 'function') {
+          exibirMensagemSiSCAM('Processo atualizado e sincronizado com sucesso na Planilha Oficial!', { titulo: 'Gravação Concluída', tipo: 'sucesso' });
+        } else {
+          toast('Processo atualizado com sucesso!', 'success');
+        }
+        state.editandoId = null;
+      } else {
+        const res = await adicionarProcesso(dados);
+        if (res && res.sucesso === false) {
+          throw new Error(res.erro || 'Falha ao gravar na planilha.');
+        }
+        if (typeof exibirMensagemSiSCAM === 'function') {
+          exibirMensagemSiSCAM('Novo processo cadastrado e salvo com sucesso na Planilha Oficial!', { titulo: 'Gravação Concluída', tipo: 'sucesso' });
+        } else {
+          toast('Processo cadastrado com sucesso!', 'success');
+        }
+        document.getElementById('form-processo').reset();
+        setTimeout(() => {
+          document.getElementById('form-prefixo')?.focus();
+        }, 150);
+      }
+      navegar('processos');
+    } catch(errGravar) {
+      console.error('[GRAVAÇÃO] Erro:', errGravar);
+      const msgErro = errGravar && errGravar.message ? errGravar.message : 'Não foi possível gravar na planilha oficial do Google. Verifique sua conexão e tente novamente.';
+      if (typeof exibirMensagemSiSCAM === 'function') {
+        exibirMensagemSiSCAM('⚠️ Ocorreu uma inconsistência ao gravar na Planilha Google:
+
+' + msgErro, { titulo: 'Erro de Gravação', tipo: 'erro' });
+      } else {
+        toast('Erro ao gravar na planilha: ' + msgErro, 'error');
+      }
+    } finally {
+      if (btnSalvar) {
+        btnSalvar.disabled = false;
+        btnSalvar.innerHTML = btnSalvarTextoOriginal;
+      }
+    }
+  })();
+  return;
 
   navegar('processos');
 }

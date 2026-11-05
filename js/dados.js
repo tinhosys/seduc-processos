@@ -468,15 +468,22 @@ async function atualizarProcesso(id, dados) {
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })
     });
-    if (res.ok) {
-      const respData = await res.json();
-      if (respData && respData.id && idx !== -1) {
-        window.processosCache[idx].id = respData.id;
-        window.processosCache[idx]._rowNumber = respData._rowNumber;
-      }
+    if (!res.ok) {
+      const errJson = await res.json().catch(() => ({}));
+      throw new Error(errJson.erro || ('HTTP ' + res.status));
     }
+    const respData = await res.json();
+    if (respData && respData.id && idx !== -1) {
+      window.processosCache[idx].id = respData.id;
+      window.processosCache[idx]._rowNumber = respData._rowNumber;
+    }
+    if (typeof window.renderProcessos === 'function') {
+      window.renderProcessos();
+    }
+    return { sucesso: true, ...respData };
   } catch(err) {
-    console.error(err);
+    console.error('[atualizarProcesso] Erro:', err);
+    throw err;
   }
 }
 
