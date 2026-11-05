@@ -939,7 +939,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.102"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.103"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1047,7 +1047,7 @@
 
             <div class="grid-2">
               <div>
-                <label id="lbl-entidade-nome" style="color: #fef08a; font-weight: 800;">Nome Completo da Escola / Entidade *</label>
+                <label id="lbl-entidade-nome" style="color: #fef08a; font-weight: 800;">1.1 - Nome da Escola / Conselho Escolar *</label>
                 <input type="text" id="entidade-nome" required class="form-control" placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar..." oninput="atualizarBarraInfoEntidade()" style="border-color: rgba(234, 179, 8, 0.4);">
               </div>
               <div>
@@ -1061,7 +1061,7 @@
             <div class="grid-4">
               <div>
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <label for="entidade-cnpj" style="margin-bottom:0;">CNPJ</label>
+                  <label for="entidade-cnpj" style="margin-bottom:0;">1.3 - CNPJ</label>
                   <div id="cnpj-status-box" style="font-size: 11px; font-weight: 700; min-height: 16px;"></div>
                 </div>
                 <input type="text" id="entidade-cnpj" maxlength="18" oninput="aoDigitarCNPJ(this)" class="form-control" placeholder="00.000.000/0000-00" style="margin-top:4px;">
@@ -1097,7 +1097,7 @@
                 <input type="number" id="entidade-alunos" min="0" readonly class="form-control" placeholder="0" value="0" title="Calculado automaticamente pela soma das quantidades informadas em cada modalidade" style="background:#1e293b; border-color:#38bdf8; color:#38bdf8; font-weight:800; cursor:not-allowed;">
               </div>
               <div style="position:relative;" id="wrap-entidade-modalidade">
-                <label for="entidade-modalidade-trigger">Modalidade & Quantidades de Alunos</label>
+                <label for="entidade-modalidade-trigger">1.6 - Modalidade & Quantidades de Alunos</label>
                 <div id="entidade-modalidade-trigger" class="form-control" style="cursor:pointer; display:flex; align-items:center; justify-content:space-between; user-select:none; height:40px; padding:6px 12px;" onclick="toggleDropdownModalidade(event)">
                   <span id="txt-modalidade-trigger" style="color:#94a3b8; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                     Selecione a(s) Modalidade(s)...
@@ -1193,19 +1193,19 @@
               </div>
               <div class="grid-4" style="margin-bottom: 0;">
                 <div>
-                  <label>Nome de registrador *</label>
+                  <label>1.9 - Nome do Registrador *</label>
                   <input type="text" id="entidade-registrador-nome" required class="form-control" placeholder="Nome completo do registrador">
                 </div>
                 <div>
-                  <label>Telefone celular *</label>
+                  <label>1.10 - Telefone Celular do Registrador *</label>
                   <input type="text" id="entidade-registrador-telefone" required class="form-control" placeholder="(69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneCelular(this)">
                 </div>
                 <div>
-                  <label>Email *</label>
+                  <label>1.11 - Email do Registrador *</label>
                   <input type="email" id="entidade-registrador-email" required class="form-control" placeholder="email@exemplo.com">
                 </div>
                 <div>
-                  <label>Cargo *</label>
+                  <label>1.12 - Cargo do Registrador *</label>
                   <input type="text" id="entidade-registrador-cargo" required class="form-control" placeholder="Ex: Diretor, Secretário, etc.">
                 </div>
               </div>
@@ -1221,11 +1221,11 @@
 
             <div class="grid-4">
               <div>
-                <label id="lbl-entidade-diretor">Nome do Diretor | Presidente *</label>
+                <label id="lbl-entidade-diretor">2.1 - Nome do Diretor | Presidente *</label>
                 <input type="text" id="entidade-diretor" required class="form-control" placeholder="Nome completo">
               </div>
               <div>
-                <label id="lbl-entidade-contato-diretor">Contato do Diretor | Presidente *</label>
+                <label id="lbl-entidade-contato-diretor">2.2 - Contato do Diretor | Presidente *</label>
                 <div style="display:flex; gap:6px; align-items:center;">
                   <input type="text" id="entidade-contato-diretor" required class="form-control" placeholder="(69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneCelular(this)">
                   <button type="button" onclick="abrirWhatsAppCampo('entidade-contato-diretor')" class="btn-wa-action" title="Abrir conversa no WhatsApp com o Diretor / Presidente">
@@ -1234,7 +1234,7 @@
                 </div>
               </div>
               <div>
-                <label id="lbl-entidade-telefone">Telefone da Unidade</label>
+                <label id="lbl-entidade-telefone">2.3 - Telefone da Unidade</label>
                 <div style="display:flex; gap:6px; align-items:center;">
                   <input type="text" id="entidade-telefone" class="form-control" placeholder="(69) 0000-0000 ou (69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneUnidade(this)">
                   <button type="button" onclick="abrirWhatsAppCampo('entidade-telefone')" class="btn-wa-action" title="Abrir conversa no WhatsApp com a Unidade">
@@ -1243,7 +1243,7 @@
                 </div>
               </div>
               <div>
-                <label id="lbl-entidade-email">E-mail Oficial da Entidade (mais utilizado)</label>
+                <label id="lbl-entidade-email">2.4 - E-mail Oficial da Entidade (mais utilizado)</label>
                 <input type="email" id="entidade-email" class="form-control" placeholder="escola@educacao.ro.gov.br">
               </div>
             </div>
@@ -1268,7 +1268,7 @@
             <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 8px; padding: 14px; margin-bottom: 10px;">
               <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:6px;">
                 <label style="margin-bottom:0; font-size:12px; font-weight:800; color:#38bdf8; text-transform:uppercase; display:flex; align-items:center; gap:6px;">
-                  <span>🌐</span> Redes Sociais Institucionais (Instagram, Facebook, YouTube) *
+                  <span>🌐</span> 2.7 - Redes Sociais Institucionais (Instagram, Facebook, YouTube) *
                 </label>
                 <span style="font-size:11px; color:#94a3b8;">Habilite com o check para digitar a extensão ou arroba</span>
               </div>
@@ -1353,7 +1353,7 @@
 
             <!-- LOCALIDADE RECEBIDA DA ABA 1 (TRANSFERÊNCIA MARCAÇÃO AMARELA IMAGEM 1 -> IMAGEM 3) -->
             <div style="margin-bottom: 14px; max-width: 320px;">
-              <label for="entidade-localidade" style="color: #fef08a; font-weight: 700; font-size: 12.5px;">Localidade *</label>
+              <label for="entidade-localidade" style="color: #fef08a; font-weight: 700; font-size: 12.5px;">3.1 - Localidade *</label>
               <select id="entidade-localidade" class="form-control" required style="font-weight: 700; color: #38bdf8; background: #0f172a; border: 1.5px solid #38bdf8;">
                 <option value="Urbana">Urbana</option>
                 <option value="Rural">Rural</option>
@@ -1368,18 +1368,18 @@
                 <input type="text" id="entidade-endereco" required class="form-control" placeholder="Ex: Av. Principal, nº 123 ou Linha 14...">
               </div>
               <div>
-                <label>Bairro / Distrito / Linha *</label>
+                <label>3.3 - Bairro / Distrito / Linha *</label>
                 <input type="text" id="entidade-bairro" required class="form-control" placeholder="Ex: Centro / Zona Rural">
               </div>
             </div>
 
             <div class="grid-2">
               <div>
-                <label>Complemento</label>
+                <label>3.4 - Complemento</label>
                 <input type="text" id="entidade-complemento" class="form-control" placeholder="Próximo à igreja / praça">
               </div>
               <div>
-                <label>CEP</label>
+                <label>3.5 - CEP</label>
                 <input type="text" id="entidade-cep" class="form-control" placeholder="76.000-000">
               </div>
             </div>
@@ -1394,11 +1394,11 @@
               </div>
               <div class="grid-3" style="margin-bottom:0;">
                 <div>
-                  <label>Linha / Estrada</label>
+                  <label>3.6 - Linha / Estrada</label>
                   <input type="text" id="entidade-linha" class="form-control" placeholder="Ex: Linha 60, Linha C-15...">
                 </div>
                 <div>
-                  <label>Rodovia / BR / KM</label>
+                  <label>3.7 - Rodovia / BR / KM</label>
                   <input type="text" id="entidade-rodovia-km" class="form-control" placeholder="Ex: BR-364, Km 14...">
                 </div>
                 <div>
@@ -1412,7 +1412,7 @@
             <div style="background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(16, 185, 129, 0.5); border-radius: 8px; padding: 14px; margin-bottom: 8px;">
               <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
                 <label style="margin-bottom:0; display:flex; align-items:center; gap:6px; color:#6ee7b7; font-weight:800; font-size:12px;">
-                  <span>📍</span> Plus Code (Google Maps)
+                  <span>📍</span> 3.9 - Plus Code (Google Maps)
                 </label>
                 <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
                   <a href="https://maps.google.com/pluscodes/" target="_blank" rel="noopener noreferrer"
@@ -1457,15 +1457,15 @@
             <!-- LINHA 1: SALAS, SANITÁRIOS & ACESSIBILIDADE (1 A 4) -->
             <div class="grid-4">
               <div>
-                <label>Salas de Aula (Qtde) *</label>
-                <input type="number" id="entidade-salas-aula" min="0" class="form-control" placeholder="0">
+                <label>4.1 - Salas de Aula (Qtde) *</label>
+                <input type="number" id="entidade-salas-aula" min="1" max="99" maxlength="2" class="form-control" placeholder="0" oninput="if(this.value.length>2) this.value=this.value.slice(0,2); if(parseInt(this.value)>99) this.value='99';">
               </div>
               <div>
-                <label>Salas Administrativas (Qtde) *</label>
-                <input type="number" id="entidade-salas-adm" min="0" class="form-control" placeholder="0">
+                <label>4.2 - Salas Administrativas (Qtde) *</label>
+                <input type="number" id="entidade-salas-adm" min="0" max="99" maxlength="2" class="form-control" placeholder="0" oninput="if(this.value.length>2) this.value=this.value.slice(0,2); if(parseInt(this.value)>99) this.value='99';">
               </div>
               <div>
-                <label>Banheiros (Qtde) *</label>
+                <label>4.3 - Banheiros (Qtde) *</label>
                 <input type="text" id="entidade-banheiros" class="form-control" placeholder="Ex: 4 sanitários">
               </div>
               <div>
@@ -1569,7 +1569,7 @@
                 </select>
               </div>
               <div>
-                <label>Almoxarifado Administrativo *</label>
+                <label>4.15 - Almoxarifado Administrativo *</label>
                 <select id="entidade-almoxarifado-adm" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1589,7 +1589,7 @@
             <!-- LINHA 5: COMPLEXO ESPORTIVO & FECHAMENTO PERÍMETRO (17 A 21) -->
             <div class="grid-4">
               <div>
-                <label>DML (Dept. Material de Limpeza) *</label>
+                <label>4.17 - DML (Dept. Material de Limpeza) *</label>
                 <select id="entidade-dml" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1599,16 +1599,16 @@
               <div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                   <div>
-                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Quadra Poliesportiva (Sim / Não)">Quadra Poliesp. *</label>
-                    <select id="entidade-quadra" class="form-control">
+                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Quadra Poliesportiva (Sim / Não)">4.18 - Quadra Poliesp. *</label>
+                    <select id="entidade-quadra" class="form-control" onchange="aoMudarQuadraPoliesportiva(this.value)">
                       <option value="">-</option>
                       <option value="Sim">Sim</option>
                       <option value="Não">Não</option>
                     </select>
                   </div>
                   <div>
-                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Quadra Coberta? (Sim / Não)">Quadra Coberta *</label>
-                    <select id="entidade-quadra-coberta" class="form-control">
+                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Quadra Coberta? (Sim / Não)">4.19 - Quadra Coberta *</label>
+                    <select id="entidade-quadra-coberta" class="form-control" disabled style="opacity:0.6; cursor:not-allowed;">
                       <option value="">-</option>
                       <option value="Sim">Sim</option>
                       <option value="Não">Não</option>
@@ -1618,7 +1618,7 @@
                 </div>
               </div>
               <div>
-                <label>Piso da Quadra *</label>
+                <label>4.20 - Piso da Quadra *</label>
                 <select id="entidade-quadra-piso" class="form-control">
                   <option value="">-</option>
                   <option value="Granelite">Granelite</option>
@@ -1689,7 +1689,7 @@
             <!-- LINHA 7: ESTRUTURA E ACABAMENTO PREDIAL (COMBOS COM ESPECIFICAÇÃO TÉCNICA) -->
             <div class="grid-4">
               <div>
-                <label>Tipo de Abertura (Portas / Janelas) *</label>
+                <label>4.26 - Tipo de Abertura (Portas / Janelas) *</label>
                 <select id="entidade-tipo-abertura" class="form-control" onchange="aoMudarComboInfra('tipo-abertura', this.value)">
                   <option value="">-</option>
                   <option value="Ferro" title="Esquadrias e portões de ferro/aço, alta resistência mecânica e segurança contra arrombamento.">Ferro</option>
@@ -1704,7 +1704,7 @@
                 <div id="desc-entidade-tipo-abertura" class="combo-desc-box">Selecione para ver a especificação técnica...</div>
               </div>
               <div>
-                <label>Tipo de Forro *</label>
+                <label>4.27 - Tipo de Forro *</label>
                 <select id="entidade-tipo-forro" class="form-control" onchange="aoMudarComboInfra('tipo-forro', this.value)">
                   <option value="">-</option>
                   <option value="Gesso Acartonado (Drywall)" title="Chapas de gesso revestidas com papel cartão. Instalação rápida, permite curvas, sancas e projetos de iluminação embutida complexos.">Gesso Acartonado (Drywall)</option>
@@ -1722,7 +1722,7 @@
                 <div id="desc-entidade-tipo-forro" class="combo-desc-box">Selecione para ver a especificação técnica...</div>
               </div>
               <div>
-                <label>Tipo de Piso *</label>
+                <label>4.28 - Tipo de Piso *</label>
                 <select id="entidade-tipo-piso" class="form-control" onchange="aoMudarComboInfra('tipo-piso', this.value)">
                   <option value="">-</option>
                   <option value="Cerâmica" title="Placas de argila cozida com esmalte, muito comuns, de baixo custo e alta variedade de estampas.">Cerâmica</option>
@@ -1747,7 +1747,7 @@
                 <div id="desc-entidade-tipo-piso" class="combo-desc-box">Selecione para ver a especificação técnica...</div>
               </div>
               <div>
-                <label>Tipo de Telhado (Cobertura) *</label>
+                <label>4.29 - Tipo de Telhado (Cobertura) *</label>
                 <select id="entidade-tipo-telhado" class="form-control" onchange="aoMudarComboInfra('tipo-telhado', this.value)">
                   <option value="">-</option>
                   <option value="Telhas Termoacústicas" title="Compostas por duas telhas metálicas com um núcleo isolante (EPS ou poliuretano). Altamente recomendadas para escolas e edifícios públicos para conforto térmico e redução de ruído.">Telhas Termoacústicas</option>
@@ -1858,9 +1858,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.102"></script>
-  <script src="js/escolas.js?v=1.3.102"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.102"></script>
+  <script src="js/dados.js?v=1.3.103"></script>
+  <script src="js/escolas.js?v=1.3.103"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.103"></script>
 
   <script>
     /* ============================================================
@@ -3584,6 +3584,24 @@
       }
     }
     window.aoMudarComboInfra = aoMudarComboInfra;
+    function aoMudarQuadraPoliesportiva(val) {
+      const elCob = document.getElementById('entidade-quadra-coberta');
+      if (!elCob) return;
+      if (val === 'Sim') {
+        elCob.disabled = false;
+        elCob.style.opacity = '1';
+        elCob.style.cursor = 'default';
+        if (elCob.value === 'Não se aplica') {
+          elCob.value = '';
+        }
+      } else {
+        elCob.value = 'Não se aplica';
+        elCob.disabled = true;
+        elCob.style.opacity = '0.6';
+        elCob.style.cursor = 'not-allowed';
+      }
+    }
+    window.aoMudarQuadraPoliesportiva = aoMudarQuadraPoliesportiva;
 
     function atualizarTodasDescricoesInfra() {
       ['tipo-abertura', 'tipo-forro', 'tipo-piso', 'tipo-telhado'].forEach(c => {
@@ -3655,7 +3673,8 @@
         setVal('entidade-deposito', esc.depositoGeral || esc.deposito);
         setVal('entidade-dml', esc.dml);
         setVal('entidade-quadra', esc.quadra);
-        setVal('entidade-quadra-coberta', esc.quadraCoberta);
+        aoMudarQuadraPoliesportiva(esc.quadra || '');
+        if (esc.quadra === 'Sim') { setVal('entidade-quadra-coberta', esc.quadraCoberta); }
         setVal('entidade-quadra-piso', esc.quadraPiso);
         setVal('entidade-murada-gradeada', esc.fechamentoPerimetro || esc.muradaGradeada);
         setVal('entidade-ppci', esc.ppci);
@@ -3887,9 +3906,9 @@
       }
 
       // Validação da Aba 3 (Endereço & Localização)
-      if (!await validarObrigatorio('entidade-localidade', 'Localidade *', 3, 'Selecione se a escola é Urbana, Rural, Indígena ou Quilombola.')) return;
+      if (!await validarObrigatorio('entidade-localidade', '3.1 - Localidade *', 3, 'Selecione se a escola é Urbana, Rural, Indígena ou Quilombola.')) return;
       if (!await validarObrigatorio('entidade-endereco', 'Endereço (Rua / Av / Linha) *', 3)) return;
-      if (!await validarObrigatorio('entidade-bairro', 'Bairro / Distrito / Linha *', 3)) return;
+      if (!await validarObrigatorio('entidade-bairro', '3.3 - Bairro / Distrito / Linha *', 3)) return;
 
       // Validação da Aba 4 (Infraestrutura & Espaços - 29 campos obrigatórios)
       const camposInfra29 = [

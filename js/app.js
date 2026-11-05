@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.102
+// Versão do Sistema: v1.3.103
 // ============================================================
-window.APP_VERSION = 'v1.3.102';
+window.APP_VERSION = 'v1.3.103';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -9029,7 +9029,8 @@ function carregarEscolaNoFormModal(idRefEncoded) {
   }
 
   abrirModalCadastroEntidade(escola);
-  ativarGrupoFormEntidade(1); // abre no grupo 1 (Identificação) para conferência direta
+  aoMudarQuadraPoliesportivaModal('');
+    ativarGrupoFormEntidade(1); // abre no grupo 1 (Identificação) para conferência direta
   const container = document.getElementById('container-corpo-modal-entidade');
   if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
   if (typeof toast === 'function') toast(`Carregados dados de: ${escola.nome}`, 'info', 2000);
@@ -9117,6 +9118,24 @@ function atualizarTodasDescricoesInfraModal() {
 }
 window.atualizarTodasDescricoesInfraModal = atualizarTodasDescricoesInfraModal;
 
+function aoMudarQuadraPoliesportivaModal(val) {
+  const elCob = document.getElementById('entidade-quadra-coberta');
+  if (!elCob) return;
+  if (val === 'Sim') {
+    elCob.disabled = false;
+    elCob.style.opacity = '1';
+    elCob.style.cursor = 'default';
+    if (elCob.value === 'N?o se aplica') {
+      elCob.value = '';
+    }
+  } else {
+    elCob.value = 'N?o se aplica';
+    elCob.disabled = true;
+    elCob.style.opacity = '0.6';
+    elCob.style.cursor = 'not-allowed';
+  }
+}
+window.aoMudarQuadraPoliesportivaModal = aoMudarQuadraPoliesportivaModal;
 function abrirModalCadastroEntidade(dadosExistentes = null) {
   const modal = document.getElementById('modal-popup-cadastro-entidade');
   if (!modal) return;
@@ -9203,7 +9222,10 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-deposito', dadosExistentes.depositoGeral || dadosExistentes.deposito || '');
     setVal('entidade-dml', dadosExistentes.dml || '');
     setVal('entidade-quadra', dadosExistentes.quadra || '');
-    setVal('entidade-quadra-coberta', dadosExistentes.quadraCoberta || '');
+    aoMudarQuadraPoliesportivaModal(dadosExistentes.quadra || '');
+    if (dadosExistentes.quadra === 'Sim') {
+      setVal('entidade-quadra-coberta', dadosExistentes.quadraCoberta || '');
+    }
     setVal('entidade-quadra-piso', dadosExistentes.quadraPiso || '');
     setVal('entidade-murada-gradeada', dadosExistentes.fechamentoPerimetro || dadosExistentes.muradaGradeada || '');
     setVal('entidade-ppci', dadosExistentes.ppci || '');
@@ -9226,6 +9248,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
 
     aoSelecionarTipoEntidadeForm(tipoRadio);
+    aoMudarQuadraPoliesportivaModal('');
     ativarGrupoFormEntidade(1);
   } else {
     if (tituloEl) tituloEl.textContent = 'Cadastro Geral de Entidade / Escola';
@@ -9251,6 +9274,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
       setVal('entidade-municipio', '');
       setVal('entidade-municipio-ancorado', '');
     }
+    aoMudarQuadraPoliesportivaModal('');
     ativarGrupoFormEntidade(1);
   }
 
@@ -9668,13 +9692,15 @@ function salvarCadastroEntidade(e) {
 
   if (!nome) {
     if (typeof toast === 'function') toast('Informe o Nome da Escola / Entidade *', 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(1);
+    if (typeof ativarGrupoFormEntidade === 'function') aoMudarQuadraPoliesportivaModal('');
+    ativarGrupoFormEntidade(1);
     document.getElementById('entidade-nome')?.focus();
     return;
   }
   if (!municipio) {
     if (typeof toast === 'function') toast('Informe o Município / Distrito *', 'error');
-    if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(1);
+    if (typeof ativarGrupoFormEntidade === 'function') aoMudarQuadraPoliesportivaModal('');
+    ativarGrupoFormEntidade(1);
     document.getElementById('entidade-municipio')?.focus();
     return;
   }
@@ -9684,14 +9710,16 @@ function salvarCadastroEntidade(e) {
     const inep = getV('entidade-inep');
     if (!inep) {
       if (typeof toast === 'function') toast('Informe o Código INEP * (Requerido)', 'error');
-      if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(1);
+      if (typeof ativarGrupoFormEntidade === 'function') aoMudarQuadraPoliesportivaModal('');
+    ativarGrupoFormEntidade(1);
       document.getElementById('entidade-inep')?.focus();
       return;
     }
     const alunos = getV('entidade-alunos');
     if (alunos === '' || alunos === null) {
       if (typeof toast === 'function') toast('Informe o Nº de Alunos * (Requerido)', 'error');
-      if (typeof ativarGrupoFormEntidade === 'function') ativarGrupoFormEntidade(1);
+      if (typeof ativarGrupoFormEntidade === 'function') aoMudarQuadraPoliesportivaModal('');
+    ativarGrupoFormEntidade(1);
       document.getElementById('entidade-alunos')?.focus();
       return;
     }
@@ -9815,7 +9843,7 @@ function salvarCadastroEntidade(e) {
     depositoGeral: getV('entidade-deposito'),
     dml: getV('entidade-dml'),
     quadra: getV('entidade-quadra'),
-    quadraCoberta: getV('entidade-quadra-coberta'),
+    quadraCoberta: (getV('entidade-quadra') === 'Sim' ? getV('entidade-quadra-coberta') : 'N?o se aplica'),
     quadraPiso: getV('entidade-quadra-piso'),
     fechamentoPerimetro: getV('entidade-murada-gradeada'),
     muradaGradeada: getV('entidade-murada-gradeada'),
@@ -10619,6 +10647,7 @@ function iniciarModoCadastroExterno(urlParams) {
 
   // Abre na Aba 1 (Identificação) e foca no nome da escola/entidade para digitação imediata
   if (typeof ativarGrupoFormEntidade === 'function') {
+    aoMudarQuadraPoliesportivaModal('');
     ativarGrupoFormEntidade(1);
   }
   setTimeout(() => {
