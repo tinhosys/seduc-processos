@@ -939,7 +939,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.103"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.104"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1051,7 +1051,7 @@
                 <input type="text" id="entidade-nome" required class="form-control" placeholder="Ex: EMEF Marechal Rondon ou Conselho Escolar..." oninput="atualizarBarraInfoEntidade()" style="border-color: rgba(234, 179, 8, 0.4);">
               </div>
               <div>
-                <label id="lbl-entidade-municipio">Município / Distrito *</label>
+                <label id="lbl-entidade-municipio">1.2 - Município / Distrito *</label>
                 <select id="entidade-municipio" required class="form-control" onchange="aoMudarMunicipioNoForm(this.value)" style="font-weight: 700; color: #fef08a;">
                   <option value="">Selecione o Município da escola / entidade...</option>
                 </select>
@@ -1089,11 +1089,11 @@
                 </div>
               </div>
               <div id="wrap-entidade-inep">
-                <label id="lbl-entidade-inep" style="color: #4ade80; font-weight: 800;">Código INEP *</label>
+                <label id="lbl-entidade-inep" style="color: #4ade80; font-weight: 800;">1.4 - Código INEP *</label>
                 <input type="text" id="entidade-inep" maxlength="8" class="form-control" placeholder="8 dígitos" inputmode="numeric" pattern="[0-9]*" oninput="this.value = this.value.replace(/\D/g, ''); atualizarBarraInfoEntidade();" style="border-color: rgba(16, 185, 129, 0.4);">
               </div>
               <div id="wrap-entidade-alunos">
-                <label>Nº de Alunos * (Soma Automática)</label>
+                <label>1.5 - Nº de Alunos * (Soma Automática)</label>
                 <input type="number" id="entidade-alunos" min="0" readonly class="form-control" placeholder="0" value="0" title="Calculado automaticamente pela soma das quantidades informadas em cada modalidade" style="background:#1e293b; border-color:#38bdf8; color:#38bdf8; font-weight:800; cursor:not-allowed;">
               </div>
               <div style="position:relative;" id="wrap-entidade-modalidade">
@@ -1164,11 +1164,11 @@
 
             <div class="grid-2" style="grid-template-columns: 1fr 1fr;">
               <div>
-                <label>Competência * (Fixada)</label>
+                <label>1.7 - Competência * (Fixada)</label>
                 <input type="text" id="entidade-competencia" readonly class="form-control" value="Municipal">
               </div>
               <div>
-                <label>Superintendência de Educação * (Fixada)</label>
+                <label>1.8 - Superintendência de Educação * (SUPER) (Fixada)</label>
                 <input type="text" id="entidade-super" readonly class="form-control" placeholder="Superintendência de Educação">
               </div>
             </div>
@@ -1250,11 +1250,11 @@
 
             <div class="grid-2" style="grid-template-columns: 1fr 1fr; margin-bottom: 14px;">
               <div>
-                <label id="lbl-entidade-secretario">Nome do Secretário(a) *</label>
+                <label id="lbl-entidade-secretario">2.5 - Nome do Secretário(a) *</label>
                 <input type="text" id="entidade-secretario" required class="form-control" placeholder="Nome completo (se não houver, digite Não tem)">
               </div>
               <div>
-                <label id="lbl-entidade-contato-secretario">Contato do Secretário(a) *</label>
+                <label id="lbl-entidade-contato-secretario">2.6 - Contato do Secretário(a) *</label>
                 <div style="display:flex; gap:6px; align-items:center;">
                   <input type="text" id="entidade-contato-secretario" required class="form-control" placeholder="(69) 9 0000-0000" maxlength="17" oninput="mascaraTelefoneCelular(this)">
                   <button type="button" onclick="abrirWhatsAppCampo('entidade-contato-secretario')" class="btn-wa-action" title="Abrir conversa no WhatsApp com o Secretário(a)">
@@ -1364,7 +1364,7 @@
 
             <div class="grid-2">
               <div>
-                <label>Endereço (Rua / Av / Linha) *</label>
+                <label>3.2 - Endereço (Rua / Av / Linha) *</label>
                 <input type="text" id="entidade-endereco" required class="form-control" placeholder="Ex: Av. Principal, nº 123 ou Linha 14...">
               </div>
               <div>
@@ -1402,7 +1402,7 @@
                   <input type="text" id="entidade-rodovia-km" class="form-control" placeholder="Ex: BR-364, Km 14...">
                 </div>
                 <div>
-                  <label>Sítio / Fazenda / Gleba / Rio</label>
+                  <label>3.8 - Sítio / Fazenda / Gleba / Rio</label>
                   <input type="text" id="entidade-sitio-rio" class="form-control" placeholder="Ex: Sítio Três Meninas / Rio Machado...">
                 </div>
               </div>
@@ -1458,18 +1458,18 @@
             <div class="grid-4">
               <div>
                 <label>4.1 - Salas de Aula (Qtde) *</label>
-                <input type="number" id="entidade-salas-aula" min="1" max="99" maxlength="2" class="form-control" placeholder="0" oninput="if(this.value.length>2) this.value=this.value.slice(0,2); if(parseInt(this.value)>99) this.value='99';">
+                <input type="text" id="entidade-salas-aula" inputmode="numeric" maxlength="2" class="form-control" placeholder="00" oninput="somenteNumeros2Digitos(this)" style="text-align:center;">
               </div>
               <div>
                 <label>4.2 - Salas Administrativas (Qtde) *</label>
-                <input type="number" id="entidade-salas-adm" min="0" max="99" maxlength="2" class="form-control" placeholder="0" oninput="if(this.value.length>2) this.value=this.value.slice(0,2); if(parseInt(this.value)>99) this.value='99';">
+                <input type="text" id="entidade-salas-adm" inputmode="numeric" maxlength="2" class="form-control" placeholder="00" oninput="somenteNumeros2Digitos(this)" style="text-align:center;">
               </div>
               <div>
                 <label>4.3 - Banheiros (Qtde) *</label>
-                <input type="text" id="entidade-banheiros" class="form-control" placeholder="Ex: 4 sanitários">
+                <input type="text" id="entidade-banheiros" inputmode="numeric" maxlength="2" class="form-control" placeholder="00" oninput="somenteNumeros2Digitos(this)" style="text-align:center;">
               </div>
               <div>
-                <label>Acessibilidade (Sim / Não) *</label>
+                <label>4.4 - Acessibilidade (Sim / Não) *</label>
                 <select id="entidade-acessibilidade" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1481,7 +1481,7 @@
             <!-- LINHA 2: APOIO PEDAGÓGICO & CONVIVÊNCIA (5 A 8) -->
             <div class="grid-4">
               <div>
-                <label>Sala do AEE (Sim / Não) *</label>
+                <label>4.5 - Sala do AEE (Sim / Não) *</label>
                 <select id="entidade-sala-aee" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1489,7 +1489,7 @@
                 </select>
               </div>
               <div>
-                <label>Auditório (Sim / Não) *</label>
+                <label>4.6 - Auditório (Sim / Não) *</label>
                 <select id="entidade-auditorio" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1497,7 +1497,7 @@
                 </select>
               </div>
               <div>
-                <label>Biblioteca (Sim / Não) *</label>
+                <label>4.7 - Biblioteca (Sim / Não) *</label>
                 <select id="entidade-biblioteca" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1505,7 +1505,7 @@
                 </select>
               </div>
               <div>
-                <label>Laboratório de Informática *</label>
+                <label>4.8 - Laboratório de Informática (Sim / Não) *</label>
                 <select id="entidade-lab-info" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1517,7 +1517,7 @@
             <!-- LINHA 3: CONVIVÊNCIA, ALIMENTAÇÃO & ESPERA (9 A 12) -->
             <div class="grid-4">
               <div>
-                <label>Hall de Acolhimento (área de espera) *</label>
+                <label>4.9 - Hall de Acolhimento (área de espera) (Sim / Não) *</label>
                 <select id="entidade-hall" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1525,7 +1525,7 @@
                 </select>
               </div>
               <div>
-                <label>Pátio Coberto (Sim / Não) *</label>
+                <label>4.10 - Pátio Coberto (Sim / Não) *</label>
                 <select id="entidade-patio-coberto" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1533,7 +1533,7 @@
                 </select>
               </div>
               <div>
-                <label>Refeitório (Sim / Não) *</label>
+                <label>4.11 - Refeitório (Sim / Não) *</label>
                 <select id="entidade-refeitorio" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1541,7 +1541,7 @@
                 </select>
               </div>
               <div>
-                <label>Área de Cocção (Cozinha) *</label>
+                <label>4.12 - Área de Cocção (Cozinha) (Sim / Não) *</label>
                 <select id="entidade-cozinha" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1553,7 +1553,7 @@
             <!-- LINHA 4: ARMAZENAMENTO & ALMOXARIFADO (13 A 16) -->
             <div class="grid-4">
               <div>
-                <label>Depósito Seco (Mantimentos) *</label>
+                <label>4.13 - Depósito Seco (Mantimentos) (Sim / Não) *</label>
                 <select id="entidade-deposito-seco" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1561,7 +1561,7 @@
                 </select>
               </div>
               <div>
-                <label>Depósito Perecíveis (Área Fria) *</label>
+                <label>4.14 - Depósito Perecíveis (Área Fria) (Sim / Não) *</label>
                 <select id="entidade-deposito-pereciveis" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1569,7 +1569,7 @@
                 </select>
               </div>
               <div>
-                <label>4.15 - Almoxarifado Administrativo *</label>
+                <label>4.15 - Almoxarifado Administrativo (Sim / Não) *</label>
                 <select id="entidade-almoxarifado-adm" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1577,7 +1577,7 @@
                 </select>
               </div>
               <div>
-                <label>Depósito Geral *</label>
+                <label>4.16 - Depósito Geral (Sim / Não) *</label>
                 <select id="entidade-deposito" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1589,7 +1589,7 @@
             <!-- LINHA 5: COMPLEXO ESPORTIVO & FECHAMENTO PERÍMETRO (17 A 21) -->
             <div class="grid-4">
               <div>
-                <label>4.17 - DML (Dept. Material de Limpeza) *</label>
+                <label>4.17 - DML (Dept. Material de Limpeza) (Sim / Não) *</label>
                 <select id="entidade-dml" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1599,7 +1599,7 @@
               <div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                   <div>
-                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Quadra Poliesportiva (Sim / Não)">4.18 - Quadra Poliesp. *</label>
+                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="4.18 - Quadra Poliesportiva (Sim / Não)">4.18 - Quadra Poliesp. (Sim / Não) *</label>
                     <select id="entidade-quadra" class="form-control" onchange="aoMudarQuadraPoliesportiva(this.value)">
                       <option value="">-</option>
                       <option value="Sim">Sim</option>
@@ -1607,7 +1607,7 @@
                     </select>
                   </div>
                   <div>
-                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Quadra Coberta? (Sim / Não)">4.19 - Quadra Coberta *</label>
+                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="4.19 - Quadra Coberta (Sim / Não)">4.19 - Quadra Coberta (Sim / Não) *</label>
                     <select id="entidade-quadra-coberta" class="form-control" disabled style="opacity:0.6; cursor:not-allowed;">
                       <option value="">-</option>
                       <option value="Sim">Sim</option>
@@ -1628,7 +1628,7 @@
                 </select>
               </div>
               <div>
-                <label>Fechamentos do Perímetro *</label>
+                <label>4.21 - Fechamentos do Perímetro *</label>
                 <select id="entidade-murada-gradeada" class="form-control">
                   <option value="">-</option>
                   <option value="Muro">Muro</option>
@@ -1641,8 +1641,8 @@
                   <option value="Pedra">Pedra</option>
                   <option value="Cerca Viva">Cerca Viva</option>
                   <option value="Sem Limite">Sem Limite</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
+
+
                   <option value="Outro">Outro</option>
                 </select>
               </div>
@@ -1651,7 +1651,7 @@
             <!-- LINHA 6: SEGURANÇA, PROTEÇÃO & UTILIDADES (22 A 25) -->
             <div class="grid-4">
               <div>
-                <label>PPCI (Prev. Incêndio) *</label>
+                <label>4.22 - PPCI (Prev. Incêndio) (Sim / Não) *</label>
                 <select id="entidade-ppci" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1659,7 +1659,7 @@
                 </select>
               </div>
               <div>
-                <label title="SPDA (Sistema de Proteção contra Descargas Atmosféricas) [para-raios]">SPDA (Para-raios) *</label>
+                <label title="SPDA (Sistema de Proteção contra Descargas Atmosféricas) [para-raios]">4.23 - SPDA (Para-raios) (Sim / Não) *</label>
                 <select id="entidade-spda" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1667,7 +1667,7 @@
                 </select>
               </div>
               <div>
-                <label>Energia Solar (Sim / Não) *</label>
+                <label>4.24 - Energia Solar (Sim / Não) *</label>
                 <select id="entidade-energia-solar" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
@@ -1675,7 +1675,7 @@
                 </select>
               </div>
               <div>
-                <label>Fonte de Água *</label>
+                <label>4.25 - Fonte de Água *</label>
                 <select id="entidade-fonte-agua" class="form-control">
                   <option value="">-</option>
                   <option value="Poço Simples">Poço Simples</option>
@@ -1858,9 +1858,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.103"></script>
-  <script src="js/escolas.js?v=1.3.103"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.103"></script>
+  <script src="js/dados.js?v=1.3.104"></script>
+  <script src="js/escolas.js?v=1.3.104"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.104"></script>
 
   <script>
     /* ============================================================
@@ -3583,6 +3583,12 @@
         elDesc.style.borderColor = 'rgba(56,189,248,0.35)';
       }
     }
+    function somenteNumeros2Digitos(el) {
+      if (!el) return;
+      el.value = el.value.replace(/\D/g, '').slice(0, 2);
+    }
+    window.somenteNumeros2Digitos = somenteNumeros2Digitos;
+
     window.aoMudarComboInfra = aoMudarComboInfra;
     function aoMudarQuadraPoliesportiva(val) {
       const elCob = document.getElementById('entidade-quadra-coberta');

@@ -481,15 +481,21 @@ async function atualizarProcesso(id, dados) {
 }
 
 async function excluirProcesso(id) {
-  window.processosCache = window.processosCache.filter(p => p.id !== id);
+  window.processosCache = (window.processosCache || []).filter(p => String(p.id) !== String(id));
+  if (String(id).startsWith('temp-')) return { sucesso: true };
   try {
-    if (String(id).startsWith('temp-')) return;
-    await fetch(API_BASE + `/api/registros/${id}`, {
+    const res = await fetch(API_BASE + `/api/registros/${id}`, {
       method: 'DELETE',
       headers: getHeaders()
     });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.erro || `HTTP ${res.status} ao excluir da planilha`);
+    }
+    return await res.json().catch(() => ({ sucesso: true }));
   } catch(err) {
-    console.error(err);
+    console.error('Falha ao excluir processo no backend:', err);
+    throw err;
   }
 }
 

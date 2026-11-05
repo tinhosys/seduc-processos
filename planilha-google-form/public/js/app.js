@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.103
+// Versão do Sistema: v1.3.104
 // ============================================================
-window.APP_VERSION = 'v1.3.103';
+window.APP_VERSION = 'v1.3.104';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -9118,6 +9118,12 @@ function atualizarTodasDescricoesInfraModal() {
 }
 window.atualizarTodasDescricoesInfraModal = atualizarTodasDescricoesInfraModal;
 
+function somenteNumeros2Digitos(el) {
+  if (!el) return;
+  el.value = el.value.replace(/\D/g, '').slice(0, 2);
+}
+window.somenteNumeros2Digitos = somenteNumeros2Digitos;
+
 function aoMudarQuadraPoliesportivaModal(val) {
   const elCob = document.getElementById('entidade-quadra-coberta');
   if (!elCob) return;
@@ -9125,11 +9131,11 @@ function aoMudarQuadraPoliesportivaModal(val) {
     elCob.disabled = false;
     elCob.style.opacity = '1';
     elCob.style.cursor = 'default';
-    if (elCob.value === 'N?o se aplica') {
+    if (elCob.value === 'Não se aplica' || elCob.value === 'N?o se aplica') {
       elCob.value = '';
     }
   } else {
-    elCob.value = 'N?o se aplica';
+    elCob.value = 'Não se aplica';
     elCob.disabled = true;
     elCob.style.opacity = '0.6';
     elCob.style.cursor = 'not-allowed';
@@ -9843,7 +9849,7 @@ function salvarCadastroEntidade(e) {
     depositoGeral: getV('entidade-deposito'),
     dml: getV('entidade-dml'),
     quadra: getV('entidade-quadra'),
-    quadraCoberta: (getV('entidade-quadra') === 'Sim' ? getV('entidade-quadra-coberta') : 'N?o se aplica'),
+    quadraCoberta: (getV('entidade-quadra') === 'Sim' ? getV('entidade-quadra-coberta') : 'Não se aplica'),
     quadraPiso: getV('entidade-quadra-piso'),
     fechamentoPerimetro: getV('entidade-murada-gradeada'),
     muradaGradeada: getV('entidade-murada-gradeada'),
