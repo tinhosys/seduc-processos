@@ -1277,7 +1277,8 @@ function mapRowToEscolaObj(headers, row) {
   const tipoForro           = get(['tipo de forro', 'forro']);
   const tipoPiso            = get(['tipo de piso da escola', 'tipo de piso', 'piso']);
   const tipoTelhado         = get(['tipo de telhado', 'telhado', 'cobertura']);
-  const muradaGradeada      = get(['escola murada ou gradeada', 'escola murado ou gradeado', 'murado ou gradeado', 'murada']);
+  const muradaGradeada      = get(['fechamentos do perímetro', 'fechamentos do perimetro', 'fechamento do perímetro', 'fechamento do perimetro', 'escola murada ou gradeada', 'escola murado ou gradeado', 'murado ou gradeado', 'murada']);
+  const spda                = get(['spda', 'para-raios', 'para raios', 'descargas atmosféricas']);
 
   return {
     codigoSuper: get(['codigo super', 'cod super', 'cd super']) || superV,
@@ -1335,6 +1336,8 @@ function mapRowToEscolaObj(headers, row) {
     tipoPiso: tipoPiso,
     tipoTelhado: tipoTelhado,
     muradaGradeada: muradaGradeada,
+    fechamentoPerimetro: muradaGradeada,
+    spda: spda,
     diretor: diretor,
     contatoDiretor: contatoDiretor,
     secretario: secretario,
@@ -1809,7 +1812,7 @@ function mapDataToOfficial64Row(data, existingRow = []) {
   row[45] = getVal(data.ppci, 45);
   row[46] = getVal(data.fonteAgua, 46);
   row[47] = getVal(data.energiaSolar, 47);
-  row[48] = getVal(data.muradaGradeada, 48);
+  row[48] = getVal(data.fechamentoPerimetro || data.muradaGradeada, 48);
   row[49] = getVal(data.tipoAbertura, 49);
   row[50] = getVal(data.tipoForro, 50);
   row[51] = getVal(data.tipoPiso, 51);

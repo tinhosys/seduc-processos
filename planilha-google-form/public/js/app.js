@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.100
+// Versão do Sistema: v1.3.102
 // ============================================================
-window.APP_VERSION = 'v1.3.100';
+window.APP_VERSION = 'v1.3.102';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -14,10 +14,12 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
     if (opcoes.titulo && !opcoes.titulo.includes('SiSCAM')) {
       subtitulo = opcoes.titulo;
     }
-    const tipo = opcoes.tipo || 'info'; // 'info', 'sucesso', 'erro', 'aviso', 'requerido'
+    const tipo = opcoes.tipo || 'info'; // 'info', 'sucesso', 'erro', 'aviso', 'requerido', 'confirm'
     const focoElemento = opcoes.focoElemento || null;
     const callback = opcoes.callback || null;
-    const btnTexto = opcoes.btnTexto || 'OK';
+    const btnTexto = opcoes.btnTexto || (tipo === 'confirm' ? 'Confirmar' : 'OK');
+    const mostrarCancelar = opcoes.confirmacao === true || tipo === 'confirm';
+    const btnCancelarTexto = opcoes.btnCancelarTexto || 'Cancelar';
 
     const modalExistente = document.getElementById('siscam-modal-root');
     if (modalExistente) modalExistente.remove();
@@ -33,6 +35,9 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
       btnCls += ' siscam-modal-btn-sucesso';
     } else if (tipo === 'erro' || tipo === 'requerido') {
       iconeCabecalho = '⚠️';
+    } else if (tipo === 'confirm') {
+      iconeCabecalho = '⚠️';
+      btnCls += ' siscam-modal-btn-danger';
     }
 
     let htmlMensagem = '';
@@ -57,6 +62,11 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
       htmlMensagem = String(mensagem);
     }
 
+    const botoesFooter = mostrarCancelar
+      ? `<button type="button" class="siscam-modal-btn-cancelar" id="siscam-btn-cancelar">${btnCancelarTexto}</button>
+         <button type="button" class="${btnCls}" id="siscam-btn-ok">${btnTexto}</button>`
+      : `<button type="button" class="${btnCls}" id="siscam-btn-ok">${btnTexto}</button>`;
+
     overlay.innerHTML = `
       <div class="siscam-modal-card" role="dialog" aria-modal="true">
         <div class="siscam-modal-header">
@@ -73,7 +83,7 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
           ${htmlMensagem}
         </div>
         <div class="siscam-modal-footer">
-          <button type="button" class="${btnCls}" id="siscam-btn-ok">${btnTexto}</button>
+          ${botoesFooter}
         </div>
       </div>
     `;
@@ -82,15 +92,16 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
 
     const btnOk = document.getElementById('siscam-btn-ok');
     const btnFechar = document.getElementById('siscam-btn-fechar');
+    const btnCancelar = document.getElementById('siscam-btn-cancelar');
 
     let fechado = false;
-    function fechar() {
+    function fechar(resultado = true) {
       if (fechado) return;
       fechado = true;
       overlay.remove();
       document.removeEventListener('keydown', onKey);
 
-      if (focoElemento) {
+      if (focoElemento && resultado) {
         try {
           focoElemento.scrollIntoView({ behavior: 'smooth', block: 'center' });
           setTimeout(() => {
@@ -105,24 +116,33 @@ function exibirMensagemSiSCAM(mensagem, opcoes = {}) {
         }
       }
 
-      if (typeof callback === 'function') callback();
-      resolve(true);
+      if (typeof callback === 'function') callback(resultado);
+      resolve(resultado);
     }
 
     function onKey(e) {
-      if (e.key === 'Enter' || e.key === 'Escape') {
+      if (e.key === 'Enter') {
         e.preventDefault();
-        fechar();
+        fechar(true);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        fechar(false);
       }
     }
 
-    btnOk.addEventListener('click', fechar);
-    btnFechar.addEventListener('click', fechar);
+    btnOk.addEventListener('click', () => fechar(true));
+    btnFechar.addEventListener('click', () => fechar(false));
+    if (btnCancelar) {
+      btnCancelar.addEventListener('click', () => fechar(false));
+    }
     document.addEventListener('keydown', onKey);
 
     setTimeout(() => { if (btnOk) btnOk.focus(); }, 60);
   });
 }
+window.confirmarSiSCAM = function(mensagem, opcoes = {}) {
+  return exibirMensagemSiSCAM(mensagem, { ...opcoes, confirmacao: true, tipo: opcoes.tipo || 'confirm' });
+};
 window.exibirMensagemSiSCAM = exibirMensagemSiSCAM;
 if (!window.alertOriginal) {
   window.alertOriginal = window.alert;
@@ -4932,16 +4952,76 @@ function novoProcesso() {
   abrirModalNovoProcesso();
 }
 
-function confirmarExcluir(id) {
+async function confirmarExcluir(id) {
   const p = buscarProcessoPorId(id);
   if (!p) return;
   const ident = p.numero || p.interessado || 'Sem Identificação';
-  if (confirm(`DESEJA EXCLUIR REGISTRO "${ident}"?`)) {
-    if (confirm(`⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!\n\nEste registro será excludo permanentemente da planilha do Google e não poderá ser recuperado. Deseja realmente prosseguir?`)) {
-      excluirProcesso(id);
-      toast('Processo excludo com sucesso.', 'info');
-      navegar('processos');
+  const descItem = [
+    p.numero ? `Nº Processo: ${p.numero}` : null,
+    p.prefixo ? `Prefixo: ${p.prefixo}` : null,
+    p.interessado ? `Interessado: ${p.interessado}` : null
+  ].filter(Boolean).join('<br>• ');
+
+  const confirma1 = await exibirMensagemSiSCAM(
+    `<div style="font-weight:700; color:#f87171; margin-bottom:10px; font-size:14px;">DESEJA EXCLUIR O REGISTRO ABAIXO?</div>
+     <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:12px; margin-bottom:12px; font-size:13px; color:#e2e8f0; line-height:1.6;">
+       • ${descItem}
+     </div>
+     <div style="color:#94a3b8; font-size:12.5px;">Esta operação irá preparar a exclusão definitiva deste registro na Planilha Oficial do Google.</div>`,
+    {
+      titulo: 'Confirmação de Exclusão',
+      subtitulo: 'CONFIRMAÇÃO DE EXCLUSÃO DE REGISTRO',
+      tipo: 'confirm',
+      confirmacao: true,
+      btnTexto: 'Sim, Excluir',
+      btnCancelarTexto: 'Cancelar'
     }
+  );
+
+  if (!confirma1) return;
+
+  const confirma2 = await exibirMensagemSiSCAM(
+    `<div style="font-weight:800; color:#ef4444; margin-bottom:10px; font-size:14px; text-transform:uppercase; letter-spacing:0.5px;">⚠️ ATENÇÃO: ISSO É IRREVERSÍVEL!</div>
+     <p style="margin-bottom:8px; color:#f1f5f9; font-size:13.5px; line-height:1.5;">Este registro será <strong>excluído permanentemente da planilha do Google</strong> e não poderá ser recuperado.</p>
+     <p style="color:#cbd5e1; font-size:13px;">Deseja realmente prosseguir com a remoção definitiva?</p>`,
+    {
+      titulo: 'Atenção Irreversível',
+      subtitulo: 'EXCLUSÃO DEFINITIVA NA PLANILHA',
+      tipo: 'confirm',
+      confirmacao: true,
+      btnTexto: 'Confirmar Exclusão Definitiva',
+      btnCancelarTexto: 'Voltar'
+    }
+  );
+
+  if (!confirma2) return;
+
+  try {
+    if (typeof toast === 'function') toast('Excluindo registro da planilha do Google...', 'info');
+    await excluirProcesso(id);
+    await exibirMensagemSiSCAM(
+      `<div style="font-weight:700; color:#34d399; margin-bottom:6px; font-size:14px;">REGISTRO EXCLUÍDO COM SUCESSO!</div>
+       <div style="color:#e2e8f0; font-size:13px;">O processo foi removido com êxito da planilha do Google e do sistema.</div>`,
+      {
+        titulo: 'Exclusão Concluída',
+        subtitulo: 'SINCRONIZAÇÃO COM A PLANILHA',
+        tipo: 'sucesso',
+        btnTexto: 'OK'
+      }
+    );
+    navegar('processos');
+  } catch(e) {
+    console.error('Erro na exclusao:', e);
+    await exibirMensagemSiSCAM(
+      `<div style="font-weight:700; color:#ef4444; margin-bottom:6px; font-size:14px;">ERRO AO EXCLUIR REGISTRO</div>
+       <div style="color:#e2e8f0; font-size:13px;">Ocorreu uma falha ao tentar excluir o registro na planilha: ${e.message || e}</div>`,
+      {
+        titulo: 'Falha na Exclusão',
+        subtitulo: 'COMUNICAÇÃO COM O SERVIDOR',
+        tipo: 'erro',
+        btnTexto: 'Fechar'
+      }
+    );
   }
 }
 
@@ -7228,7 +7308,7 @@ function enviarLinkWhatsApp() {
   }
 
   const phoneFormatted = digits.startsWith('55') ? digits : '55' + digits;
-  const textMsg = encodeURIComponent("Olá! Segue o link de acesso ao sistema de Acompanhamento de Processos da SEDUC-RO:\n\nhttps://tinhosys.github.io/seduc-processos/");
+  const textMsg = encodeURIComponent("*SiSCAM* - Sistema Integrado SEDUC/CAM • Rondônia\n\nSegue o link de acesso:\nhttps://tinhosys.github.io/seduc-processos/");
 
   const url = `https://web.whatsapp.com/send?phone=${phoneFormatted}&text=${textMsg}`;
   window.open(url, 'whatsapp_tab');
@@ -7421,13 +7501,22 @@ async function excluirProcessoRepetidoDireto(event, id, numero, prefixo, interes
     numero ? `Nº Processo: ${numero}` : null,
     prefixo ? `Prefixo: ${prefixo}` : null,
     interessado ? `Interessado: ${interessado}` : null
-  ].filter(Boolean).join('\n• ');
+  ].filter(Boolean).join('<br>• ');
 
-  const confirma = confirm(
-    `⚠️ CONFIRMAÇÃO DE EXCLUSÃO DE REGISTRO\n\n` +
-    `Deseja realmente EXCLUIR este registro da planilha?\n\n` +
-    `• ${descItem}\n\n` +
-    `Esta ação removerá permanentemente esta ocorrência duplicada da planilha e atualizará a tela instantaneamente.`
+  const confirma = await exibirMensagemSiSCAM(
+    `<div style="font-weight:700; color:#f87171; margin-bottom:10px; font-size:14px;">DESEJA EXCLUIR ESTE REGISTRO DUPLICADO?</div>
+     <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(239,68,68,0.3); border-radius:8px; padding:12px; margin-bottom:12px; font-size:13px; color:#e2e8f0; line-height:1.6;">
+       • ${descItem}
+     </div>
+     <p style="color:#f1f5f9; font-size:13px; margin-bottom:6px;">Esta ação removerá permanentemente esta ocorrência duplicada da planilha do Google.</p>`,
+    {
+      titulo: 'Exclusão de Duplicata',
+      subtitulo: 'CONFIRMAÇÃO DE EXCLUSÃO DE REGISTRO',
+      tipo: 'confirm',
+      confirmacao: true,
+      btnTexto: 'Sim, Excluir',
+      btnCancelarTexto: 'Cancelar'
+    }
   );
 
   if (!confirma) return;
@@ -9095,24 +9184,32 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-sitio-rio', dadosExistentes.sitioRio || '');
     setVal('entidade-plus-code', dadosExistentes.plusCode || '');
 
-    // Novos campos de infraestrutura (27 itens)
+    // Novos campos de infraestrutura (29 itens)
+    setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
+    setVal('entidade-salas-adm', dadosExistentes.salasAdm || '');
+    setVal('entidade-banheiros', dadosExistentes.banheiros || '');
+    setVal('entidade-acessibilidade', dadosExistentes.acessibilidade || '');
+    setVal('entidade-sala-aee', dadosExistentes.salaAEE || '');
+    setVal('entidade-auditorio', dadosExistentes.auditorio || '');
+    setVal('entidade-biblioteca', dadosExistentes.biblioteca || '');
+    setVal('entidade-lab-info', dadosExistentes.labInfo || '');
+    setVal('entidade-hall', dadosExistentes.hall || '');
     setVal('entidade-patio-coberto', dadosExistentes.patioCoberto || dadosExistentes.patio || '');
+    setVal('entidade-refeitorio', dadosExistentes.refeitorio || '');
     setVal('entidade-cozinha', dadosExistentes.cozinha || '');
     setVal('entidade-deposito-seco', dadosExistentes.depositoSeco || '');
     setVal('entidade-deposito-pereciveis', dadosExistentes.depositoPereciveis || '');
     setVal('entidade-almoxarifado-adm', dadosExistentes.almoxarifadoAdm || '');
     setVal('entidade-deposito', dadosExistentes.depositoGeral || dadosExistentes.deposito || '');
-    setVal('entidade-biblioteca', dadosExistentes.biblioteca || '');
-    setVal('entidade-lab-info', dadosExistentes.labInfo || '');
-    setVal('entidade-hall', dadosExistentes.hall || '');
     setVal('entidade-dml', dadosExistentes.dml || '');
+    setVal('entidade-quadra', dadosExistentes.quadra || '');
     setVal('entidade-quadra-coberta', dadosExistentes.quadraCoberta || '');
     setVal('entidade-quadra-piso', dadosExistentes.quadraPiso || '');
-    setVal('entidade-acessibilidade', dadosExistentes.acessibilidade || '');
+    setVal('entidade-murada-gradeada', dadosExistentes.fechamentoPerimetro || dadosExistentes.muradaGradeada || '');
     setVal('entidade-ppci', dadosExistentes.ppci || '');
-    setVal('entidade-fonte-agua', dadosExistentes.fonteAgua || '');
+    setVal('entidade-spda', dadosExistentes.spda || '');
     setVal('entidade-energia-solar', dadosExistentes.energiaSolar || '');
-    setVal('entidade-murada-gradeada', dadosExistentes.muradaGradeada || '');
+    setVal('entidade-fonte-agua', dadosExistentes.fonteAgua || '');
     setVal('entidade-tipo-abertura', dadosExistentes.tipoAbertura || '');
     setVal('entidade-tipo-forro', dadosExistentes.tipoForro || '');
     setVal('entidade-tipo-piso', dadosExistentes.tipoPiso || '');
@@ -9697,28 +9794,39 @@ function salvarCadastroEntidade(e) {
     rodoviaKm: getV('entidade-rodovia-km'),
     sitioRio: getV('entidade-sitio-rio'),
     plusCode: getV('entidade-plus-code'),
-    // Novos campos de infraestrutura:
+    // Campos de infraestrutura (1 a 29):
+    salasAula: getV('entidade-salas-aula'),
+    salasAdm: getV('entidade-salas-adm'),
+    banheiros: getV('entidade-banheiros'),
     acessibilidade: getV('entidade-acessibilidade'),
+    salaAEE: getV('entidade-sala-aee'),
+    auditorio: getV('entidade-auditorio'),
+    biblioteca: getV('entidade-biblioteca'),
+    labInfo: getV('entidade-lab-info'),
+    hall: getV('entidade-hall'),
+    patio: getV('entidade-patio-coberto') || getV('entidade-patio'),
+    patioCoberto: getV('entidade-patio-coberto') || getV('entidade-patio'),
+    refeitorio: getV('entidade-refeitorio'),
     cozinha: getV('entidade-cozinha'),
     depositoSeco: getV('entidade-deposito-seco'),
     depositoPereciveis: getV('entidade-deposito-pereciveis'),
     almoxarifadoAdm: getV('entidade-almoxarifado-adm'),
     deposito: getV('entidade-deposito'),
     depositoGeral: getV('entidade-deposito'),
-    biblioteca: getV('entidade-biblioteca'),
     dml: getV('entidade-dml'),
+    quadra: getV('entidade-quadra'),
     quadraCoberta: getV('entidade-quadra-coberta'),
     quadraPiso: getV('entidade-quadra-piso'),
-    labInfo: getV('entidade-lab-info'),
-    hall: getV('entidade-hall'),
+    fechamentoPerimetro: getV('entidade-murada-gradeada'),
+    muradaGradeada: getV('entidade-murada-gradeada'),
     ppci: getV('entidade-ppci'),
-    fonteAgua: getV('entidade-fonte-agua'),
+    spda: getV('entidade-spda'),
     energiaSolar: getV('entidade-energia-solar'),
+    fonteAgua: getV('entidade-fonte-agua'),
     tipoAbertura: getV('entidade-tipo-abertura'),
     tipoForro: getV('entidade-tipo-forro'),
     tipoPiso: getV('entidade-tipo-piso'),
     tipoTelhado: getV('entidade-tipo-telhado'),
-    muradaGradeada: getV('entidade-murada-gradeada'),
     codigoLocalizador: (_escolaAtual && (_escolaAtual.codigoLocalizador || _escolaAtual.localizador)) || gerarCodigoLocalizador(),
     dataHoraRegistro: new Date().toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) || new Date().toLocaleString('pt-BR')
   };

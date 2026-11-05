@@ -1,9 +1,9 @@
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.101
+// Versão do Sistema: v1.3.102
 // ============================================================
-window.APP_VERSION = 'v1.3.101';
+window.APP_VERSION = 'v1.3.102';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -9184,24 +9184,32 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     setVal('entidade-sitio-rio', dadosExistentes.sitioRio || '');
     setVal('entidade-plus-code', dadosExistentes.plusCode || '');
 
-    // Novos campos de infraestrutura (27 itens)
+    // Novos campos de infraestrutura (29 itens)
+    setVal('entidade-salas-aula', dadosExistentes.salasAula || dadosExistentes.salas || '');
+    setVal('entidade-salas-adm', dadosExistentes.salasAdm || '');
+    setVal('entidade-banheiros', dadosExistentes.banheiros || '');
+    setVal('entidade-acessibilidade', dadosExistentes.acessibilidade || '');
+    setVal('entidade-sala-aee', dadosExistentes.salaAEE || '');
+    setVal('entidade-auditorio', dadosExistentes.auditorio || '');
+    setVal('entidade-biblioteca', dadosExistentes.biblioteca || '');
+    setVal('entidade-lab-info', dadosExistentes.labInfo || '');
+    setVal('entidade-hall', dadosExistentes.hall || '');
     setVal('entidade-patio-coberto', dadosExistentes.patioCoberto || dadosExistentes.patio || '');
+    setVal('entidade-refeitorio', dadosExistentes.refeitorio || '');
     setVal('entidade-cozinha', dadosExistentes.cozinha || '');
     setVal('entidade-deposito-seco', dadosExistentes.depositoSeco || '');
     setVal('entidade-deposito-pereciveis', dadosExistentes.depositoPereciveis || '');
     setVal('entidade-almoxarifado-adm', dadosExistentes.almoxarifadoAdm || '');
     setVal('entidade-deposito', dadosExistentes.depositoGeral || dadosExistentes.deposito || '');
-    setVal('entidade-biblioteca', dadosExistentes.biblioteca || '');
-    setVal('entidade-lab-info', dadosExistentes.labInfo || '');
-    setVal('entidade-hall', dadosExistentes.hall || '');
     setVal('entidade-dml', dadosExistentes.dml || '');
+    setVal('entidade-quadra', dadosExistentes.quadra || '');
     setVal('entidade-quadra-coberta', dadosExistentes.quadraCoberta || '');
     setVal('entidade-quadra-piso', dadosExistentes.quadraPiso || '');
-    setVal('entidade-acessibilidade', dadosExistentes.acessibilidade || '');
+    setVal('entidade-murada-gradeada', dadosExistentes.fechamentoPerimetro || dadosExistentes.muradaGradeada || '');
     setVal('entidade-ppci', dadosExistentes.ppci || '');
-    setVal('entidade-fonte-agua', dadosExistentes.fonteAgua || '');
+    setVal('entidade-spda', dadosExistentes.spda || '');
     setVal('entidade-energia-solar', dadosExistentes.energiaSolar || '');
-    setVal('entidade-murada-gradeada', dadosExistentes.muradaGradeada || '');
+    setVal('entidade-fonte-agua', dadosExistentes.fonteAgua || '');
     setVal('entidade-tipo-abertura', dadosExistentes.tipoAbertura || '');
     setVal('entidade-tipo-forro', dadosExistentes.tipoForro || '');
     setVal('entidade-tipo-piso', dadosExistentes.tipoPiso || '');
@@ -9786,28 +9794,39 @@ function salvarCadastroEntidade(e) {
     rodoviaKm: getV('entidade-rodovia-km'),
     sitioRio: getV('entidade-sitio-rio'),
     plusCode: getV('entidade-plus-code'),
-    // Novos campos de infraestrutura:
+    // Campos de infraestrutura (1 a 29):
+    salasAula: getV('entidade-salas-aula'),
+    salasAdm: getV('entidade-salas-adm'),
+    banheiros: getV('entidade-banheiros'),
     acessibilidade: getV('entidade-acessibilidade'),
+    salaAEE: getV('entidade-sala-aee'),
+    auditorio: getV('entidade-auditorio'),
+    biblioteca: getV('entidade-biblioteca'),
+    labInfo: getV('entidade-lab-info'),
+    hall: getV('entidade-hall'),
+    patio: getV('entidade-patio-coberto') || getV('entidade-patio'),
+    patioCoberto: getV('entidade-patio-coberto') || getV('entidade-patio'),
+    refeitorio: getV('entidade-refeitorio'),
     cozinha: getV('entidade-cozinha'),
     depositoSeco: getV('entidade-deposito-seco'),
     depositoPereciveis: getV('entidade-deposito-pereciveis'),
     almoxarifadoAdm: getV('entidade-almoxarifado-adm'),
     deposito: getV('entidade-deposito'),
     depositoGeral: getV('entidade-deposito'),
-    biblioteca: getV('entidade-biblioteca'),
     dml: getV('entidade-dml'),
+    quadra: getV('entidade-quadra'),
     quadraCoberta: getV('entidade-quadra-coberta'),
     quadraPiso: getV('entidade-quadra-piso'),
-    labInfo: getV('entidade-lab-info'),
-    hall: getV('entidade-hall'),
+    fechamentoPerimetro: getV('entidade-murada-gradeada'),
+    muradaGradeada: getV('entidade-murada-gradeada'),
     ppci: getV('entidade-ppci'),
-    fonteAgua: getV('entidade-fonte-agua'),
+    spda: getV('entidade-spda'),
     energiaSolar: getV('entidade-energia-solar'),
+    fonteAgua: getV('entidade-fonte-agua'),
     tipoAbertura: getV('entidade-tipo-abertura'),
     tipoForro: getV('entidade-tipo-forro'),
     tipoPiso: getV('entidade-tipo-piso'),
     tipoTelhado: getV('entidade-tipo-telhado'),
-    muradaGradeada: getV('entidade-murada-gradeada'),
     codigoLocalizador: (_escolaAtual && (_escolaAtual.codigoLocalizador || _escolaAtual.localizador)) || gerarCodigoLocalizador(),
     dataHoraRegistro: new Date().toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) || new Date().toLocaleString('pt-BR')
   };

@@ -939,7 +939,7 @@
        target="_blank" rel="noopener noreferrer"
        title="Fale conosco no WhatsApp: (69) 99906-4881">
       <img id="img-banner-topo"
-           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.98"
+           src="img/banner-cadastre-escolas-horizontal.png?v=1.3.102"
            alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
            class="topo-banner-img">
     </a>
@@ -1454,7 +1454,7 @@
               <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 4 de 4</span>
             </div>
 
-            <!-- LINHA 1: SALAS & SANITÁRIOS -->
+            <!-- LINHA 1: SALAS, SANITÁRIOS & ACESSIBILIDADE (1 A 4) -->
             <div class="grid-4">
               <div>
                 <label>Salas de Aula (Qtde) *</label>
@@ -1469,8 +1469,8 @@
                 <input type="text" id="entidade-banheiros" class="form-control" placeholder="Ex: 4 sanitários">
               </div>
               <div>
-                <label>Sala do AEE (Sim / Não) *</label>
-                <select id="entidade-sala-aee" class="form-control">
+                <label>Acessibilidade (Sim / Não) *</label>
+                <select id="entidade-acessibilidade" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -1478,11 +1478,47 @@
               </div>
             </div>
 
-            <!-- LINHA 2: CONVIVÊNCIA & ALIMENTAÇÃO -->
+            <!-- LINHA 2: APOIO PEDAGÓGICO & CONVIVÊNCIA (5 A 8) -->
             <div class="grid-4">
+              <div>
+                <label>Sala do AEE (Sim / Não) *</label>
+                <select id="entidade-sala-aee" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
               <div>
                 <label>Auditório (Sim / Não) *</label>
                 <select id="entidade-auditorio" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Biblioteca (Sim / Não) *</label>
+                <select id="entidade-biblioteca" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Laboratório de Informática *</label>
+                <select id="entidade-lab-info" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 3: CONVIVÊNCIA, ALIMENTAÇÃO & ESPERA (9 A 12) -->
+            <div class="grid-4">
+              <div>
+                <label>Hall de Acolhimento (área de espera) *</label>
+                <select id="entidade-hall" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -1514,7 +1550,7 @@
               </div>
             </div>
 
-            <!-- LINHA 3: ARMAZENAMENTO & ALMOXARIFADO -->
+            <!-- LINHA 4: ARMAZENAMENTO & ALMOXARIFADO (13 A 16) -->
             <div class="grid-4">
               <div>
                 <label>Depósito Seco (Mantimentos) *</label>
@@ -1550,60 +1586,36 @@
               </div>
             </div>
 
-            <!-- LINHA 4: PEDAGÓGICO, APOIO & SERVIÇOS -->
+            <!-- LINHA 5: COMPLEXO ESPORTIVO & FECHAMENTO PERÍMETRO (17 A 21) -->
             <div class="grid-4">
               <div>
-                <label>Biblioteca (Sim / Não) *</label>
-                <select id="entidade-biblioteca" class="form-control">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label>Laboratório de Informática *</label>
-                <select id="entidade-lab-info" class="form-control">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label>Hall de Acolhimento *</label>
-                <select id="entidade-hall" class="form-control">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label>DML (Material de Limpeza) *</label>
+                <label>DML (Dept. Material de Limpeza) *</label>
                 <select id="entidade-dml" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
                 </select>
               </div>
-            </div>
-
-            <!-- LINHA 5: COMPLEXO ESPORTIVO & ACESSIBILIDADE -->
-            <div class="grid-4">
               <div>
-                <label>Quadra Poliesportiva *</label>
-                <select id="entidade-quadra" class="form-control">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label>Quadra Coberta? (Sim / Não) *</label>
-                <select id="entidade-quadra-coberta" class="form-control">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                  <option value="Não se aplica">Não se aplica</option>
-                </select>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                  <div>
+                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Quadra Poliesportiva (Sim / Não)">Quadra Poliesp. *</label>
+                    <select id="entidade-quadra" class="form-control">
+                      <option value="">-</option>
+                      <option value="Sim">Sim</option>
+                      <option value="Não">Não</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="Quadra Coberta? (Sim / Não)">Quadra Coberta *</label>
+                    <select id="entidade-quadra-coberta" class="form-control">
+                      <option value="">-</option>
+                      <option value="Sim">Sim</option>
+                      <option value="Não">Não</option>
+                      <option value="Não se aplica">Não se aplica</option>
+                    </select>
+                  </div>
+                </div>
               </div>
               <div>
                 <label>Piso da Quadra *</label>
@@ -1616,20 +1628,47 @@
                 </select>
               </div>
               <div>
-                <label>Acessibilidade (Sim / Não) *</label>
-                <select id="entidade-acessibilidade" class="form-control">
+                <label>Fechamentos do Perímetro *</label>
+                <select id="entidade-murada-gradeada" class="form-control">
+                  <option value="">-</option>
+                  <option value="Muro">Muro</option>
+                  <option value="Cerca de Arame">Cerca de Arame</option>
+                  <option value="Grade de Ferro">Grade de Ferro</option>
+                  <option value="Tapume">Tapume</option>
+                  <option value="Telado">Telado</option>
+                  <option value="Madeira">Madeira</option>
+                  <option value="Balaústre">Balaústre</option>
+                  <option value="Pedra">Pedra</option>
+                  <option value="Cerca Viva">Cerca Viva</option>
+                  <option value="Sem Limite">Sem Limite</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 6: SEGURANÇA, PROTEÇÃO & UTILIDADES (22 A 25) -->
+            <div class="grid-4">
+              <div>
+                <label>PPCI (Prev. Incêndio) *</label>
+                <select id="entidade-ppci" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
                 </select>
               </div>
-            </div>
-
-            <!-- LINHA 6: SEGURANÇA, UTILIDADES & ENERGIA -->
-            <div class="grid-4">
               <div>
-                <label>PPCI (Prev. Incêndio) *</label>
-                <select id="entidade-ppci" class="form-control">
+                <label title="SPDA (Sistema de Proteção contra Descargas Atmosféricas) [para-raios]">SPDA (Para-raios) *</label>
+                <select id="entidade-spda" class="form-control">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label>Energia Solar (Sim / Não) *</label>
+                <select id="entidade-energia-solar" class="form-control">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -1643,22 +1682,6 @@
                   <option value="Poço Artesiano">Poço Artesiano</option>
                   <option value="Serviço de Água e Esgoto">Serviço de Água e Esgoto</option>
                   <option value="Outra">Outra</option>
-                </select>
-              </div>
-              <div>
-                <label>Energia Solar (Sim / Não) *</label>
-                <select id="entidade-energia-solar" class="form-control">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label>Escola Murada / Gradeada *</label>
-                <select id="entidade-murada-gradeada" class="form-control">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
                 </select>
               </div>
             </div>
@@ -1724,7 +1747,7 @@
                 <div id="desc-entidade-tipo-piso" class="combo-desc-box">Selecione para ver a especificação técnica...</div>
               </div>
               <div>
-                <label>Tipo de Telhado *</label>
+                <label>Tipo de Telhado (Cobertura) *</label>
                 <select id="entidade-tipo-telhado" class="form-control" onchange="aoMudarComboInfra('tipo-telhado', this.value)">
                   <option value="">-</option>
                   <option value="Telhas Termoacústicas" title="Compostas por duas telhas metálicas com um núcleo isolante (EPS ou poliuretano). Altamente recomendadas para escolas e edifícios públicos para conforto térmico e redução de ruído.">Telhas Termoacústicas</option>
@@ -1835,9 +1858,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.3.98"></script>
-  <script src="js/escolas.js?v=1.3.98"></script>
-  <script src="js/relatorios-impressao.js?v=1.3.98"></script>
+  <script src="js/dados.js?v=1.3.102"></script>
+  <script src="js/escolas.js?v=1.3.102"></script>
+  <script src="js/relatorios-impressao.js?v=1.3.102"></script>
 
   <script>
     /* ============================================================
@@ -3617,8 +3640,12 @@
         setVal('entidade-salas-aula', esc.salasAula || esc.salas);
         setVal('entidade-salas-adm', esc.salasAdm);
         setVal('entidade-banheiros', esc.banheiros);
+        setVal('entidade-acessibilidade', esc.acessibilidade);
         setVal('entidade-sala-aee', esc.salaAEE);
         setVal('entidade-auditorio', esc.auditorio);
+        setVal('entidade-biblioteca', esc.biblioteca);
+        setVal('entidade-lab-info', esc.labInfo);
+        setVal('entidade-hall', esc.hall);
         setVal('entidade-patio-coberto', esc.patioCoberto || esc.patio);
         setVal('entidade-refeitorio', esc.refeitorio);
         setVal('entidade-cozinha', esc.cozinha);
@@ -3626,18 +3653,15 @@
         setVal('entidade-deposito-pereciveis', esc.depositoPereciveis);
         setVal('entidade-almoxarifado-adm', esc.almoxarifadoAdm);
         setVal('entidade-deposito', esc.depositoGeral || esc.deposito);
-        setVal('entidade-biblioteca', esc.biblioteca);
-        setVal('entidade-lab-info', esc.labInfo);
-        setVal('entidade-hall', esc.hall);
         setVal('entidade-dml', esc.dml);
         setVal('entidade-quadra', esc.quadra);
         setVal('entidade-quadra-coberta', esc.quadraCoberta);
         setVal('entidade-quadra-piso', esc.quadraPiso);
-        setVal('entidade-acessibilidade', esc.acessibilidade);
+        setVal('entidade-murada-gradeada', esc.fechamentoPerimetro || esc.muradaGradeada);
         setVal('entidade-ppci', esc.ppci);
-        setVal('entidade-fonte-agua', esc.fonteAgua);
+        setVal('entidade-spda', esc.spda);
         setVal('entidade-energia-solar', esc.energiaSolar);
-        setVal('entidade-murada-gradeada', esc.muradaGradeada);
+        setVal('entidade-fonte-agua', esc.fonteAgua);
         setVal('entidade-tipo-abertura', esc.tipoAbertura);
         setVal('entidade-tipo-forro', esc.tipoForro);
         setVal('entidade-tipo-piso', esc.tipoPiso);
@@ -3695,13 +3719,13 @@
         'entidade-secretario', 'entidade-contato-secretario', 'entidade-redes',
         'entidade-endereco', 'entidade-bairro', 'entidade-complemento', 'entidade-cep',
         'entidade-linha', 'entidade-rodovia-km', 'entidade-sitio-rio', 'entidade-plus-code',
-        'entidade-salas-aula', 'entidade-salas-adm', 'entidade-banheiros', 'entidade-sala-aee',
-        'entidade-auditorio', 'entidade-patio-coberto', 'entidade-refeitorio', 'entidade-cozinha',
+        'entidade-salas-aula', 'entidade-salas-adm', 'entidade-banheiros', 'entidade-acessibilidade',
+        'entidade-sala-aee', 'entidade-auditorio', 'entidade-biblioteca', 'entidade-lab-info',
+        'entidade-hall', 'entidade-patio-coberto', 'entidade-refeitorio', 'entidade-cozinha',
         'entidade-deposito-seco', 'entidade-deposito-pereciveis', 'entidade-almoxarifado-adm',
-        'entidade-deposito', 'entidade-biblioteca', 'entidade-lab-info', 'entidade-hall',
-        'entidade-dml', 'entidade-quadra', 'entidade-quadra-coberta', 'entidade-quadra-piso',
-        'entidade-acessibilidade', 'entidade-ppci', 'entidade-fonte-agua', 'entidade-energia-solar',
-        'entidade-murada-gradeada', 'entidade-tipo-abertura', 'entidade-tipo-forro', 'entidade-tipo-piso', 'entidade-tipo-telhado',
+        'entidade-deposito', 'entidade-dml', 'entidade-quadra', 'entidade-quadra-coberta', 'entidade-quadra-piso',
+        'entidade-murada-gradeada', 'entidade-ppci', 'entidade-spda', 'entidade-energia-solar', 'entidade-fonte-agua',
+        'entidade-tipo-abertura', 'entidade-tipo-forro', 'entidade-tipo-piso', 'entidade-tipo-telhado',
         'entidade-observacoes'
       ];
       ids.forEach(id => {
@@ -3867,13 +3891,17 @@
       if (!await validarObrigatorio('entidade-endereco', 'Endereço (Rua / Av / Linha) *', 3)) return;
       if (!await validarObrigatorio('entidade-bairro', 'Bairro / Distrito / Linha *', 3)) return;
 
-      // Validação da Aba 4 (Infraestrutura & Espaços - 28 campos obrigatórios)
-      const camposInfra28 = [
+      // Validação da Aba 4 (Infraestrutura & Espaços - 29 campos obrigatórios)
+      const camposInfra29 = [
         { id: 'entidade-salas-aula', nome: 'Salas de Aula (Qtde)' },
         { id: 'entidade-salas-adm', nome: 'Salas Administrativas (Qtde)' },
         { id: 'entidade-banheiros', nome: 'Banheiros (Qtde)' },
+        { id: 'entidade-acessibilidade', nome: 'Acessibilidade (Sim / Não)' },
         { id: 'entidade-sala-aee', nome: 'Sala do AEE (Sim / Não)' },
         { id: 'entidade-auditorio', nome: 'Auditório (Sim / Não)' },
+        { id: 'entidade-biblioteca', nome: 'Biblioteca (Sim / Não)' },
+        { id: 'entidade-lab-info', nome: 'Laboratório de Informática (Sim / Não)' },
+        { id: 'entidade-hall', nome: 'Hall de Acolhimento (área de espera) (Sim / Não)' },
         { id: 'entidade-patio-coberto', nome: 'Pátio Coberto (Sim / Não)' },
         { id: 'entidade-refeitorio', nome: 'Refeitório (Sim / Não)' },
         { id: 'entidade-cozinha', nome: 'Área de Cocção - Cozinha (Sim / Não)' },
@@ -3881,27 +3909,24 @@
         { id: 'entidade-deposito-pereciveis', nome: 'Depósito Perecíveis - Área Fria (Sim / Não)' },
         { id: 'entidade-almoxarifado-adm', nome: 'Almoxarifado Administrativo (Sim / Não)' },
         { id: 'entidade-deposito', nome: 'Depósito Geral (Sim / Não)' },
-        { id: 'entidade-biblioteca', nome: 'Biblioteca (Sim / Não)' },
-        { id: 'entidade-lab-info', nome: 'Laboratório de Informática (Sim / Não)' },
-        { id: 'entidade-hall', nome: 'Hall de Acolhimento (Sim / Não)' },
-        { id: 'entidade-dml', nome: 'DML - Material de Limpeza (Sim / Não)' },
+        { id: 'entidade-dml', nome: 'DML - Dept. Material de Limpeza (Sim / Não)' },
         { id: 'entidade-quadra', nome: 'Quadra Poliesportiva (Sim / Não)' },
         { id: 'entidade-quadra-coberta', nome: 'Quadra Coberta? (Sim / Não / Não se aplica)' },
         { id: 'entidade-quadra-piso', nome: 'Piso da Quadra' },
-        { id: 'entidade-acessibilidade', nome: 'Acessibilidade (Sim / Não)' },
+        { id: 'entidade-murada-gradeada', nome: 'Fechamentos do Perímetro' },
         { id: 'entidade-ppci', nome: 'PPCI - Prevenção Incêndio (Sim / Não)' },
-        { id: 'entidade-fonte-agua', nome: 'Fonte de Água' },
+        { id: 'entidade-spda', nome: 'SPDA - Para-raios / Descargas Atmosféricas (Sim / Não)' },
         { id: 'entidade-energia-solar', nome: 'Energia Solar (Sim / Não)' },
-        { id: 'entidade-murada-gradeada', nome: 'Escola Murada / Gradeada (Sim / Não)' },
+        { id: 'entidade-fonte-agua', nome: 'Fonte de Água' },
         { id: 'entidade-tipo-abertura', nome: 'Tipo de Abertura (Portas / Janelas)' },
         { id: 'entidade-tipo-forro', nome: 'Tipo de Forro' },
         { id: 'entidade-tipo-piso', nome: 'Tipo de Piso' },
-        { id: 'entidade-tipo-telhado', nome: 'Tipo de Telhado' }
+        { id: 'entidade-tipo-telhado', nome: 'Tipo de Telhado (Cobertura)' }
       ];
 
       const vaziosInfra = [];
       let primeiroVazioEl = null;
-      camposInfra28.forEach(item => {
+      camposInfra29.forEach(item => {
         const el = document.getElementById(item.id);
         const v = (el?.value || '').trim();
         if (v === '' || v === '-') {
@@ -3917,7 +3942,7 @@
         ativarAba(4);
         const listaMsg = vaziosInfra.map(c => `• ${c}`).join('\n');
         await exibirMensagemSiSCAM(
-          `Na Aba 4 (Infraestrutura & Espaços), todos os 28 campos são obrigatórios!\n\nForam encontrados ${vaziosInfra.length} campo(s) não preenchido(s):\n\n${listaMsg}\n\nPor favor, preencha todos os campos para salvar.`,
+          `Na Aba 4 (Infraestrutura & Espaços), todos os 29 campos são obrigatórios!\n\nForam encontrados ${vaziosInfra.length} campo(s) não preenchido(s):\n\n${listaMsg}\n\nPor favor, preencha todos os campos para salvar.`,
           {
             titulo: '∴ SiSCAM ∴',
             subtitulo: 'Campos Obrigatórios de Infraestrutura',
@@ -4004,12 +4029,16 @@
         rodoviaKm: getVal('entidade-rodovia-km'),
         sitioRio: getVal('entidade-sitio-rio'),
         plusCode: getVal('entidade-plus-code'),
-        // Campos de Infraestrutura & Espaços (28 Campos + Observações):
+        // Campos de Infraestrutura & Espaços (29 Campos + Observações):
         salasAula: getVal('entidade-salas-aula'),
         salasAdm: getVal('entidade-salas-adm'),
         banheiros: getVal('entidade-banheiros'),
+        acessibilidade: getVal('entidade-acessibilidade'),
         salaAEE: getVal('entidade-sala-aee'),
         auditorio: getVal('entidade-auditorio'),
+        biblioteca: getVal('entidade-biblioteca'),
+        labInfo: getVal('entidade-lab-info'),
+        hall: getVal('entidade-hall'),
         patio: getVal('entidade-patio-coberto'),
         patioCoberto: getVal('entidade-patio-coberto'),
         refeitorio: getVal('entidade-refeitorio'),
@@ -4019,18 +4048,16 @@
         almoxarifadoAdm: getVal('entidade-almoxarifado-adm'),
         deposito: getVal('entidade-deposito'),
         depositoGeral: getVal('entidade-deposito'),
-        biblioteca: getVal('entidade-biblioteca'),
-        labInfo: getVal('entidade-lab-info'),
-        hall: getVal('entidade-hall'),
         dml: getVal('entidade-dml'),
         quadra: getVal('entidade-quadra'),
         quadraCoberta: getVal('entidade-quadra-coberta'),
         quadraPiso: getVal('entidade-quadra-piso'),
-        acessibilidade: getVal('entidade-acessibilidade'),
-        ppci: getVal('entidade-ppci'),
-        fonteAgua: getVal('entidade-fonte-agua'),
-        energiaSolar: getVal('entidade-energia-solar'),
+        fechamentoPerimetro: getVal('entidade-murada-gradeada'),
         muradaGradeada: getVal('entidade-murada-gradeada'),
+        ppci: getVal('entidade-ppci'),
+        spda: getVal('entidade-spda'),
+        energiaSolar: getVal('entidade-energia-solar'),
+        fonteAgua: getVal('entidade-fonte-agua'),
         tipoAbertura: getVal('entidade-tipo-abertura'),
         tipoForro: getVal('entidade-tipo-forro'),
         tipoPiso: getVal('entidade-tipo-piso'),
@@ -4218,12 +4245,16 @@
           sitioRio: getVal('entidade-sitio-rio'),
           plusCode: getVal('entidade-plus-code'),
 
-          // Infraestrutura
+          // Infraestrutura (1 a 29)
           salasAula: getVal('entidade-salas-aula'),
           salasAdm: getVal('entidade-salas-adm'),
           banheiros: getVal('entidade-banheiros'),
+          acessibilidade: getVal('entidade-acessibilidade'),
           salaAEE: getVal('entidade-sala-aee'),
           auditorio: getVal('entidade-auditorio'),
+          biblioteca: getVal('entidade-biblioteca'),
+          labInfo: getVal('entidade-lab-info'),
+          hall: getVal('entidade-hall'),
           patioCoberto: getVal('entidade-patio-coberto'),
           refeitorio: getVal('entidade-refeitorio'),
           cozinha: getVal('entidade-cozinha'),
@@ -4231,18 +4262,16 @@
           depositoPereciveis: getVal('entidade-deposito-pereciveis'),
           almoxarifadoAdm: getVal('entidade-almoxarifado-adm'),
           depositoGeral: getVal('entidade-deposito'),
-          biblioteca: getVal('entidade-biblioteca'),
-          labInfo: getVal('entidade-lab-info'),
-          hall: getVal('entidade-hall'),
           dml: getVal('entidade-dml'),
           quadra: getVal('entidade-quadra'),
           quadraCoberta: getVal('entidade-quadra-coberta'),
           quadraPiso: getVal('entidade-quadra-piso'),
-          acessibilidade: getVal('entidade-acessibilidade'),
-          ppci: getVal('entidade-ppci'),
-          fonteAgua: getVal('entidade-fonte-agua'),
-          energiaSolar: getVal('entidade-energia-solar'),
+          fechamentoPerimetro: getVal('entidade-murada-gradeada'),
           muradaGradeada: getVal('entidade-murada-gradeada'),
+          ppci: getVal('entidade-ppci'),
+          spda: getVal('entidade-spda'),
+          energiaSolar: getVal('entidade-energia-solar'),
+          fonteAgua: getVal('entidade-fonte-agua'),
           tipoAbertura: getVal('entidade-tipo-abertura'),
           tipoForro: getVal('entidade-tipo-forro'),
           tipoPiso: getVal('entidade-tipo-piso'),

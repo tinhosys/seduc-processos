@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.99">
+  <link rel="stylesheet" href="css/style.css?v=1.3.102">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -833,7 +833,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.100</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.102</div>
 
   </div>
 </div>
@@ -1134,7 +1134,7 @@
             <div style="font-size:12px; font-weight:800; color:#f8fafc; line-height:1.2;">(69) 99922-1336</div>
           </div>
         </a>
-        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.100</div>
+        <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 15px; margin-bottom: 8px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.102</div>
 
         <span id="sidebar-total-count" style="display:none; color:var(--blue);font-weight:600"></span>
       </div>
@@ -3108,7 +3108,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.100</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.102</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3790,7 +3790,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.100
+              GBZ - v1.3.102
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4063,7 +4063,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.100] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.102] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -5629,7 +5629,7 @@
               <span style="font-size:11.5px; color:#94a3b8;">Etapa 4 de 4</span>
             </div>
 
-            <!-- LINHA 1: SALAS & SANITÁRIOS -->
+            <!-- LINHA 1: SALAS, SANITÁRIOS & ACESSIBILIDADE (1 A 4) -->
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUANT. SALA DE AULA</label>
@@ -5644,8 +5644,8 @@
                 <input type="text" id="entidade-banheiros" placeholder="Qtd / Desc" style="width:100%; height:38px; padding:6px; text-align:center; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:13px; box-sizing:border-box; outline:none;">
               </div>
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">SALA DO AEE (S/N)</label>
-                <select id="entidade-sala-aee" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ACESSIBILIDADE (S/N)</label>
+                <select id="entidade-acessibilidade" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -5653,11 +5653,47 @@
               </div>
             </div>
 
-            <!-- LINHA 2: CONVIVÊNCIA & ALIMENTAÇÃO -->
+            <!-- LINHA 2: APOIO PEDAGÓGICO & CONVIVÊNCIA (5 A 8) -->
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">SALA DO AEE (S/N)</label>
+                <select id="entidade-sala-aee" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">AUDITÓRIO (S/N)</label>
                 <select id="entidade-auditorio" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">BIBLIOTECA (S/N)</label>
+                <select id="entidade-biblioteca" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">LAB. DE INFORMÁTICA</label>
+                <select id="entidade-lab-info" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 3: CONVIVÊNCIA, ALIMENTAÇÃO & ESPERA (9 A 12) -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">HALL DE ACOLHIMENTO (ESPERA)</label>
+                <select id="entidade-hall" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -5689,7 +5725,7 @@
               </div>
             </div>
 
-            <!-- LINHA 3: ARMAZENAMENTO & ALMOXARIFADO -->
+            <!-- LINHA 4: ARMAZENAMENTO & ALMOXARIFADO (13 A 16) -->
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">DEPÓSITO SECO (MANTIMENTOS)</label>
@@ -5725,32 +5761,8 @@
               </div>
             </div>
 
-            <!-- LINHA 4: PEDAGÓGICO, APOIO & SERVIÇOS -->
+            <!-- LINHA 5: COMPLEXO ESPORTIVO & FECHAMENTO PERÍMETRO (17 A 21) -->
             <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
-              <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">BIBLIOTECA (S/N)</label>
-                <select id="entidade-biblioteca" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">LAB. DE INFORMÁTICA</label>
-                <select id="entidade-lab-info" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">HALL DE ACOLHIMENTO</label>
-                <select id="entidade-hall" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">DML (MAT. LIMPEZA)</label>
                 <select id="entidade-dml" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
@@ -5759,26 +5771,26 @@
                   <option value="Não">Não</option>
                 </select>
               </div>
-            </div>
-
-            <!-- LINHA 5: COMPLEXO ESPORTIVO & ACESSIBILIDADE -->
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUADRA POLIESPORTIVA</label>
-                <select id="entidade-quadra" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">QUADRA COBERTA (S/N)</label>
-                <select id="entidade-quadra-coberta" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                  <option value="Não se aplica">Não se aplica</option>
-                </select>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                  <div>
+                    <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="Quadra Poliesportiva (Sim / Não)">QUADRA POLIESP.</label>
+                    <select id="entidade-quadra" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12px; padding:4px 4px; box-sizing:border-box; outline:none;">
+                      <option value="">-</option>
+                      <option value="Sim">Sim</option>
+                      <option value="Não">Não</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="Quadra Coberta? (Sim / Não)">QUADRA COBERTA</label>
+                    <select id="entidade-quadra-coberta" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12px; padding:4px 4px; box-sizing:border-box; outline:none;">
+                      <option value="">-</option>
+                      <option value="Sim">Sim</option>
+                      <option value="Não">Não</option>
+                      <option value="Não se aplica">Não se aplica</option>
+                    </select>
+                  </div>
+                </div>
               </div>
               <div>
                 <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">PISO DA QUADRA</label>
@@ -5791,20 +5803,47 @@
                 </select>
               </div>
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ACESSIBILIDADE (S/N)</label>
-                <select id="entidade-acessibilidade" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">FECHAMENTOS DO PERÍMETRO</label>
+                <select id="entidade-murada-gradeada" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Muro">Muro</option>
+                  <option value="Cerca de Arame">Cerca de Arame</option>
+                  <option value="Grade de Ferro">Grade de Ferro</option>
+                  <option value="Tapume">Tapume</option>
+                  <option value="Telado">Telado</option>
+                  <option value="Madeira">Madeira</option>
+                  <option value="Balaústre">Balaústre</option>
+                  <option value="Pedra">Pedra</option>
+                  <option value="Cerca Viva">Cerca Viva</option>
+                  <option value="Sem Limite">Sem Limite</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                  <option value="Outro">Outro</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- LINHA 6: SEGURANÇA, PROTEÇÃO & UTILIDADES (22 A 25) -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">PPCI (PREV. INCÊNDIO)</label>
+                <select id="entidade-ppci" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
                 </select>
               </div>
-            </div>
-
-            <!-- LINHA 6: SEGURANÇA, UTILIDADES & ENERGIA -->
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:12px; margin-bottom:14px;">
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">PPCI (PREV. INCÊNDIO)</label>
-                <select id="entidade-ppci" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">SPDA (PARA-RAIOS)</label>
+                <select id="entidade-spda" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
+                  <option value="">-</option>
+                  <option value="Sim">Sim</option>
+                  <option value="Não">Não</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ENERGIA SOLAR (S/N)</label>
+                <select id="entidade-energia-solar" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
@@ -5818,22 +5857,6 @@
                   <option value="Poço Artesiano">Poço Artesiano</option>
                   <option value="Serviço de Água e Esgoto">Serviço de Água e Esgoto</option>
                   <option value="Outra">Outra</option>
-                </select>
-              </div>
-              <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ENERGIA SOLAR (S/N)</label>
-                <select id="entidade-energia-solar" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
-              </div>
-              <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">ESCOLA MURADA / GRADEADA</label>
-                <select id="entidade-murada-gradeada" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
-                  <option value="">-</option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
                 </select>
               </div>
             </div>
@@ -5899,7 +5922,7 @@
                 <div id="desc-modal-entidade-tipo-piso" class="combo-desc-box">Selecione uma opção para visualizar a especificação técnica.</div>
               </div>
               <div>
-                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE TELHADO</label>
+                <label style="display:block; font-size:11px; color:#94a3b8; font-weight:700; margin-bottom:6px;">TIPO DE TELHADO (COBERTURA)</label>
                 <select id="entidade-tipo-telhado" onchange="aoMudarComboInfraModal('tipo-telhado', this.value)" style="width:100%; height:38px; background:#0f172a; border:1px solid rgba(255,255,255,0.14); border-radius:8px; color:#fff; font-size:12.5px; padding:4px 8px; box-sizing:border-box; outline:none;">
                   <option value="">-</option>
                   <option value="Telhas Termoacústicas" title="Compostas por duas telhas metálicas com um núcleo isolante (EPS ou poliuretano). Altamente recomendadas para escolas e edifícios públicos para conforto térmico e redução de ruído.">Telhas Termoacústicas</option>
@@ -6358,11 +6381,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.99"></script>
-  <script src="js/auth-sap.js?v=1.3.99"></script>
-  <script src="js/dados.js?v=1.3.99"></script>
-  <script src="js/app.js?v=1.3.99"></script>
-  <script src="js/escolas.js?v=1.3.99" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.102"></script>
+  <script src="js/auth-sap.js?v=1.3.102"></script>
+  <script src="js/dados.js?v=1.3.102"></script>
+  <script src="js/app.js?v=1.3.102"></script>
+  <script src="js/escolas.js?v=1.3.102" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>
