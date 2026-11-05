@@ -229,41 +229,75 @@ async function carregarGDSM(tabKey, forcar = false) {
   `;
 
   try {
-    const url = `https://docs.google.com/spreadsheets/d/${GDSM_SPREADSHEET_ID}/export?format=csv&gid=${tab.gid}`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Falha ao carregar CSV (HTTP ${res.status})`);
+    let rows = [];
+    let headers = [];
+    
+    // Tenta primeiro via GViz Query API (CORS friendly e rápido no Google Sheets)
+    try {
+      const gvizUrl = `https://docs.google.com/spreadsheets/d/${GDSM_SPREADSHEET_ID}/gviz/tq?tqx=out:json&gid=${tab.gid}&nocache=${Date.now()}`;
+      const gvizRes = await fetch(gvizUrl);
+      if (gvizRes.ok) {
+        const gvizText = await gvizRes.text();
+        const jsonStr = gvizText.replace(/^\/\*O_o\*\/\s*google\.visualization\.Query\.setResponse\(/, '').replace(/\);?\s*$/, '');
+        const gvizData = JSON.parse(jsonStr);
+        if (gvizData && gvizData.table && gvizData.table.cols && gvizData.table.rows) {
+          headers = gvizData.table.cols.map((c, i) => {
+            const lbl = (c && c.label) ? String(c.label).replace(/\r?\n/g, ' ').trim() : '';
+            return lbl !== '' ? lbl : `Coluna_${i + 1}`;
+          });
+          rows = gvizData.table.rows.map((r, rIdx) => {
+            const item = { _rawRow: rIdx + 1 };
+            headers.forEach((h, colIdx) => {
+              const cell = r.c ? r.c[colIdx] : null;
+              item[h] = (cell && cell.f) ? String(cell.f).trim() : ((cell && cell.v !== null && cell.v !== undefined) ? String(cell.v).trim() : '');
+            });
+            return item;
+          });
+        }
+      }
+    } catch(eGviz) {
+      console.warn('GDSM GViz falhou, tentando fallback CSV:', eGviz);
+    }
 
-    const text = await res.text();
-    const rows = parseCSVGDSM(text);
+    // Se GViz não retornou dados, usa fallback CSV
+    if (rows.length === 0) {
+      const url = `https://docs.google.com/spreadsheets/d/${GDSM_SPREADSHEET_ID}/export?format=csv&gid=${tab.gid}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error(`Falha ao carregar CSV (HTTP ${res.status})`);
+
+      const text = await res.text();
+      const parsedRows = parseCSVGDSM(text);
+      if (parsedRows.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8;">Nenhum registro encontrado na planilha.</div>`;
+        return;
+      }
+
+      const rawHeaders = parsedRows[0];
+      headers = rawHeaders.map((h, i) => {
+        const clean = h.replace(/\r?\n/g, ' ').trim();
+        return clean !== '' ? clean : `Coluna_${i + 1}`;
+      });
+
+      for (let r = 1; r < parsedRows.length; r++) {
+        const row = parsedRows[r];
+        if (row.length === 0 || !row.some(c => c !== '')) continue;
+        const item = { _rawRow: r };
+        headers.forEach((h, colIdx) => {
+          item[h] = row[colIdx] || '';
+        });
+        rows.push(item);
+      }
+    }
+
     if (rows.length === 0) {
       container.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8;">Nenhum registro encontrado na planilha.</div>`;
       return;
     }
 
-    // Identificar e limpar cabeçalhos
-    const rawHeaders = rows[0];
-    const headers = rawHeaders.map((h, i) => {
-      const clean = h.replace(/\r?\n/g, ' ').trim();
-      return clean !== '' ? clean : `Coluna_${i + 1}`;
-    });
-
     // Reorganiza cabeçalhos: Município sempre em primeiro
     const headersOrdenados = reordenarColunasMunicipioPrimeiro(headers);
     window.gdsmHeaders[tabKey] = headersOrdenados;
-
-    // Processar registros em objetos
-    const dados = [];
-    for (let r = 1; r < rows.length; r++) {
-      const row = rows[r];
-      if (row.length === 0 || !row.some(c => c !== '')) continue;
-      const item = { _rawRow: r };
-      headers.forEach((h, colIdx) => {
-        item[h] = row[colIdx] || '';
-      });
-      dados.push(item);
-    }
-
-    window.gdsmData[tabKey] = dados;
+    window.gdsmData[tabKey] = rows;
 
     // Popula selects de filtros
     popularFiltrosSelectsGDSM(tabKey);
