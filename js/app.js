@@ -2,13 +2,13 @@
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 function getEscalaInfo(val) {
   const n = parseInt(val, 10);
-  if (isNaN(n)) return { nivel: 0, label: '0 - CRÍTICO', cor: '#dc2626' };
+  if (isNaN(n)) return { nivel: 0, label: '0 - CRÍTICO', cor: '#dc2626', bgBar: '#dc2626' };
   const safeN = Math.max(0, Math.min(10, n));
-  if (safeN <= 2) return { nivel: safeN, label: safeN + ' - CRÍTICO', cor: '#dc2626' };
-  if (safeN <= 4) return { nivel: safeN, label: safeN + ' - BAIXO', cor: '#ea580c' };
-  if (safeN <= 6) return { nivel: safeN, label: safeN + ' - REGULAR', cor: '#eab308' };
-  if (safeN <= 8) return { nivel: safeN, label: safeN + ' - BOM', cor: '#84cc16' };
-  return { nivel: safeN, label: safeN + ' - ÓTIMO', cor: '#10b981' };
+  if (safeN <= 2) return { nivel: safeN, label: safeN + ' - CRÍTICO', cor: '#dc2626', bgBar: '#dc2626' };
+  if (safeN <= 4) return { nivel: safeN, label: safeN + ' - BAIXO', cor: '#ea580c', bgBar: '#ea580c' };
+  if (safeN <= 6) return { nivel: safeN, label: safeN + ' - REGULAR', cor: '#eab308', bgBar: '#eab308' };
+  if (safeN <= 8) return { nivel: safeN, label: safeN + ' - BOM', cor: '#84cc16', bgBar: '#84cc16' };
+  return { nivel: safeN, label: safeN + ' - ÓTIMO', cor: '#10b981', bgBar: '#10b981' };
 }
 
 function atualizarDisplayEscala(val) {
@@ -18,6 +18,10 @@ function atualizarDisplayEscala(val) {
     badge.textContent = info.label;
     badge.style.background = info.cor;
     badge.style.boxShadow = '0 0 10px ' + info.cor + '80';
+  }
+  const slider = document.getElementById('form-escala');
+  if (slider) {
+    slider.style.background = info.cor;
   }
 }
 window.atualizarDisplayEscala = atualizarDisplayEscala;
@@ -29,8 +33,8 @@ function renderMiniEscalaBar(val) {
   const pct = (safeN / 10) * 100;
   return `
     <div class="mini-escala-container" title="Escala de Nível: ${info.label}" style="margin-top:6px;display:flex;align-items:center;gap:6px;user-select:none;">
-      <div style="position:relative;width:105px;height:8px;border-radius:999px;background:linear-gradient(to right, #dc2626 0%, #ea580c 20%, #eab308 45%, #84cc16 75%, #10b981 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);overflow:visible;">
-        <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:12px;height:12px;border-radius:50%;background:#ffffff;border:2.5px solid ${info.cor};box-shadow:0 0 6px rgba(0,0,0,0.9);cursor:default;"></div>
+      <div style="position:relative;width:105px;height:8px;border-radius:999px;background:${info.cor};box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);overflow:visible;">
+        <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:12px;height:12px;border-radius:50%;background:#ffffff;border:2.5px solid ${info.cor};box-shadow:0 0 6px rgba(0,0,0,0.8);cursor:default;"></div>
       </div>
       <span style="font-size:10px;font-weight:900;color:${info.cor};font-family:monospace;line-height:1;">${safeN}/10</span>
     </div>
@@ -42,9 +46,9 @@ window.renderMiniEscalaBar = renderMiniEscalaBar;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.111
+// Versão do Sistema: v1.3.112
 // ============================================================
-window.APP_VERSION = 'v1.3.111';
+window.APP_VERSION = 'v1.3.112';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
