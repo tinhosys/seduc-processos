@@ -278,6 +278,7 @@ window.formatarDataParaApp = formatarDataParaApp;
     cnpj: row['CNPJ'] || row['cnpj'] || row['Cnpj'] || '',
     detalhamentoItens: row['DETALHAMENTO ITENS'] || row['detalhamento itens'] || row.detalhamentoItens || '',
     demaisObservacoes: row['DEMAIS OBSERVACOES'] || row['demais observacoes'] || row.demaisObservacoes || '',
+    escala: row['ESCALA'] !== undefined && row['ESCALA'] !== null ? String(row['ESCALA']).trim() : (row.escala !== undefined ? String(row.escala).trim() : ''),
     analista: String(row['ANALISTA'] || row['Analista'] || row.analista || '').trim(),
     ultimaEdicao: row['ULTIMA EDICAO LOGIN'] || row['ULTIMA EDICAO'] || row['ultima edicao'] || row['Última edição'] || '',
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || '',
@@ -339,7 +340,8 @@ const mapToSheet = (dados) => {
     'OFICIO': dados.oficio || '',
     'METRAGEM (M²)': dados.metragem || '',
     'DETALHAMENTO ITENS': dados.detalhamentoItens || '',
-    'DEMAIS OBSERVACOES': dados.demaisObservacoes || ''
+    'DEMAIS OBSERVACOES': dados.demaisObservacoes || '',
+    'ESCALA': dados.escala !== undefined && dados.escala !== null ? String(dados.escala).trim() : ''
   };
 };
 
@@ -400,6 +402,7 @@ async function sincronizarAnalistasDaPlanilha() {
     data.table.cols.forEach((col, idx) => {
       const lbl = String(col.label || '').toUpperCase().trim();
       if (lbl === 'ANALISTA') idxAnalista = idx;
+      if (lbl === 'ESCALA') idxEscala = idx;
       if (lbl === 'PROCESSOS' || lbl === 'PROCESSO' || lbl === 'Nº PROCESSO') idxProcesso = idx;
     });
 
@@ -407,7 +410,8 @@ async function sincronizarAnalistasDaPlanilha() {
 
     let houveAtualizacao = false;
     data.table.rows.forEach((r, rowIdx) => {
-      const valAnalista = (r.c && r.c[idxAnalista] && r.c[idxAnalista].v) ? String(r.c[idxAnalista].v).trim() : '';
+      const valAnalista = (idxAnalista !== -1 && r.c && r.c[idxAnalista] && r.c[idxAnalista].v) ? String(r.c[idxAnalista].v).trim() : '';
+      const valEscala = (idxEscala !== -1 && r.c && r.c[idxEscala] && r.c[idxEscala].v !== undefined) ? String(r.c[idxEscala].v).trim() : '';
       const valProc = (idxProcesso !== -1 && r.c && r.c[idxProcesso] && r.c[idxProcesso].v) ? String(r.c[idxProcesso].v).trim() : '';
       const rowNum = rowIdx + 2;
 
@@ -457,6 +461,8 @@ async function adicionarProcesso(dados) {
         CNPJ: dados.cnpj || '',
         analista: dados.analista || '',
         ANALISTA: dados.analista || '',
+        escala: dados.escala !== undefined ? String(dados.escala).trim() : '',
+        ESCALA: dados.escala !== undefined ? String(dados.escala).trim() : '',
         DIGITO: dados.digito || dados.DIGITO || '', 
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })

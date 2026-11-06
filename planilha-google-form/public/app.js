@@ -1,4 +1,45 @@
 
+// ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
+function getEscalaInfo(val) {
+  const n = parseInt(val, 10);
+  if (isNaN(n)) return { nivel: 0, label: '0 - CRÍTICO', cor: '#dc2626' };
+  const safeN = Math.max(0, Math.min(10, n));
+  if (safeN <= 2) return { nivel: safeN, label: safeN + ' - CRÍTICO', cor: '#dc2626' };
+  if (safeN <= 4) return { nivel: safeN, label: safeN + ' - BAIXO', cor: '#ea580c' };
+  if (safeN <= 6) return { nivel: safeN, label: safeN + ' - REGULAR', cor: '#eab308' };
+  if (safeN <= 8) return { nivel: safeN, label: safeN + ' - BOM', cor: '#84cc16' };
+  return { nivel: safeN, label: safeN + ' - ÓTIMO', cor: '#10b981' };
+}
+
+function atualizarDisplayEscala(val) {
+  const info = getEscalaInfo(val);
+  const badge = document.getElementById('header-escala-badge');
+  if (badge) {
+    badge.textContent = info.label;
+    badge.style.background = info.cor;
+    badge.style.boxShadow = '0 0 10px ' + info.cor + '80';
+  }
+}
+window.atualizarDisplayEscala = atualizarDisplayEscala;
+
+function renderMiniEscalaBar(val) {
+  const n = parseInt(val, 10);
+  const info = getEscalaInfo(val);
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+  const pct = (safeN / 10) * 100;
+  return `
+    <div class="mini-escala-container" title="Escala de Prioridade/Nível: ${info.label}" style="margin-top:5px;display:flex;align-items:center;gap:6px;">
+      <div style="position:relative;width:95px;height:7px;border-radius:999px;background:linear-gradient(to right, #dc2626 0%, #ea580c 20%, #eab308 45%, #84cc16 75%, #10b981 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);overflow:visible;">
+        <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:11px;height:11px;border-radius:50%;background:#ffffff;border:2px solid ${info.cor};box-shadow:0 0 5px rgba(0,0,0,0.8);"></div>
+      </div>
+      <span style="font-size:10px;font-weight:800;color:${info.cor};font-family:monospace;line-height:1;">${safeN}/10</span>
+    </div>
+  `;
+}
+window.renderMiniEscalaBar = renderMiniEscalaBar;
+// ===================================================
+
+
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.3.108
@@ -2518,6 +2559,7 @@ function renderFormulario() {
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
           </div>
+            ${renderMiniEscalaBar(p.escala)}
         `;
       } else {
         adicionarCampoNumero(num);
@@ -4570,40 +4612,7 @@ function autoPreencherCNPJPopup(el) {
 }
 window.autoPreencherCNPJPopup = autoPreencherCNPJPopup;
 
-function copiarCNPJPopup(btn) {
-  const input = document.getElementById('popup-novo-cnpj');
-  if (!input || !input.value.trim() || input.value.trim() === '00.000.000/0000-00') {
-    if (typeof toast === 'function') toast('Nenhum CNPJ preenchido para copiar', 'warning');
-    return;
-  }
-  const val = input.value.trim();
-  const salvarOriginal = btn.innerHTML;
-
-  const feedbackSucesso = () => {
-    btn.innerHTML = '<span style="font-size:12px;font-weight:bold;color:#10b981;">✓ Copiado</span>';
-    btn.style.borderColor = '#10b981';
-    btn.style.color = '#10b981';
-    if (typeof toast === 'function') toast('CNPJ copiado: ' + val, 'success');
-    setTimeout(() => {
-      btn.innerHTML = salvarOriginal;
-      btn.style.borderColor = 'rgba(56,189,248,0.4)';
-      btn.style.color = '#38bdf8';
-    }, 1500);
-  };
-
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(val).then(feedbackSucesso).catch(() => {
-      input.select();
-      document.execCommand('copy');
-      feedbackSucesso();
-    });
-  } else {
-    input.select();
-    document.execCommand('copy');
-    feedbackSucesso();
-  }
-}
-window.copiarCNPJPopup = copiarCNPJPopup;
+/* duplicata consolidada */
 
 function copiarCNPJSilenciosoPopup() {
   const input = document.getElementById('popup-novo-cnpj');

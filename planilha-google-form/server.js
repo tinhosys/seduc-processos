@@ -376,7 +376,8 @@ const defaultHeaders = [
   "DETALHAMENTO ITENS",
   "DEMAIS OBSERVACOES",
   "EXECUTIVO",
-  "ANALISTA"
+  "ANALISTA",
+  "ESCALA"
 ];
 
 async function getAllRows() {
@@ -2163,7 +2164,7 @@ async function garantirColunasAdicionais() {
       });
       let headers = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
       if (headers.length > 0) {
-        const colunasParaGarantir = ["PREFIXO", "Marca", "CATEGORIA", "TIPO", "CAM", "GAB", "CC", "EXECUTIVO", "CNPJ"];
+        const colunasParaGarantir = ["PREFIXO", "Marca", "CATEGORIA", "TIPO", "CAM", "GAB", "CC", "EXECUTIVO", "CNPJ", "ESCALA"];
         const toAdd = [];
         for (const col of colunasParaGarantir) {
           const hasCol = headers.some(h => (h || "").toLowerCase().trim() === col.toLowerCase());
