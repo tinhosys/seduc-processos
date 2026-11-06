@@ -28,11 +28,11 @@ function renderMiniEscalaBar(val) {
   const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
   const pct = (safeN / 10) * 100;
   return `
-    <div class="mini-escala-container" title="Escala de Prioridade/Nível: ${info.label}" style="margin-top:5px;display:flex;align-items:center;gap:6px;">
-      <div style="position:relative;width:95px;height:7px;border-radius:999px;background:linear-gradient(to right, #dc2626 0%, #ea580c 20%, #eab308 45%, #84cc16 75%, #10b981 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);overflow:visible;">
-        <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:11px;height:11px;border-radius:50%;background:#ffffff;border:2px solid ${info.cor};box-shadow:0 0 5px rgba(0,0,0,0.8);"></div>
+    <div class="mini-escala-container" title="Escala de Nível: ${info.label}" style="margin-top:6px;display:flex;align-items:center;gap:6px;user-select:none;">
+      <div style="position:relative;width:105px;height:8px;border-radius:999px;background:linear-gradient(to right, #dc2626 0%, #ea580c 20%, #eab308 45%, #84cc16 75%, #10b981 100%);box-shadow:inset 0 1px 2px rgba(0,0,0,0.6);overflow:visible;">
+        <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:12px;height:12px;border-radius:50%;background:#ffffff;border:2.5px solid ${info.cor};box-shadow:0 0 6px rgba(0,0,0,0.9);cursor:default;"></div>
       </div>
-      <span style="font-size:10px;font-weight:800;color:${info.cor};font-family:monospace;line-height:1;">${safeN}/10</span>
+      <span style="font-size:10px;font-weight:900;color:${info.cor};font-family:monospace;line-height:1;">${safeN}/10</span>
     </div>
   `;
 }
@@ -2025,6 +2025,7 @@ function renderProcessos() {
       <td class="col-numero">
         <span class="desktop-cell-view">${p.numero ? p.numero.split(/\s+/).map(n => hl(n, busca)).join('<br>') : '—'}</span>
         <span class="mobile-cell-view">${renderMobileCell('Nº Processo', p.numero, 9)}</span>
+        ${renderMiniEscalaBar(p.escala)}
       </td>
       <td class="col-interessado" title="${p.interessado}">
         <span class="desktop-cell-view">${hl(p.interessado, busca) || '—'}</span>
@@ -2515,6 +2516,12 @@ function renderFormulario() {
   if (processo) {
     document.getElementById('form-ano').value         = p.ano          || '';
     document.getElementById('form-agrupamento').value = p.agrupamento  || '';
+    const inputEscalaForm = document.getElementById('form-escala');
+    if (inputEscalaForm) {
+      const valEscala = (p && p.escala !== undefined && p.escala !== null && p.escala !== '') ? p.escala : 0;
+      inputEscalaForm.value = valEscala;
+      atualizarDisplayEscala(valEscala);
+    }
     if (inputFormExec) inputFormExec.value = isAdminForm ? (p.executivo || '') : '';
     document.getElementById('form-digito').value = window.limparDigitoValor(p.digito || p.DIGITO || '');
     document.getElementById('form-prefixo').value     = p.prefixo      || '';
@@ -2559,7 +2566,7 @@ function renderFormulario() {
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
           </div>
-            ${renderMiniEscalaBar(p.escala)}
+            
         `;
       } else {
         adicionarCampoNumero(num);
@@ -2912,6 +2919,8 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
+    escala: document.getElementById('form-escala') ? String(document.getElementById('form-escala').value).trim() : '0',
+    ESCALA: document.getElementById('form-escala') ? String(document.getElementById('form-escala').value).trim() : '0',
     digito: window.limparDigitoValor(document.getElementById('form-digito')?.value || ''),
     DIGITO: window.limparDigitoValor(document.getElementById('form-digito')?.value || ''),
     categoria:   document.getElementById('form-categoria').value,
