@@ -1,20 +1,16 @@
-# Workflow simples para deploy de conteúdo estático para o GitHub Pages
+# Workflow para deploy de conteúdo estático para o GitHub Pages
 name: Deploy static content to Pages
 
 on:
-  # Dispara em pushes para a branch main
   push:
     branches: ["main"]
-  # Permite rodar este workflow manualmente na aba Actions
   workflow_dispatch:
 
-# Define as permissões do GITHUB_TOKEN para permitir o deploy
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Permite apenas um deploy por vez
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -28,12 +24,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Preparar site estático (ignorar binários pesados)
+        run: |
+          mkdir -p _site
+          # Copiar apenas os arquivos necessários para o frontend estático do GitHub Pages
+          cp -r index.html cadastro.html css js img proalfa.json _site/ 2>/dev/null || true
+          # Se houver outros arquivos estáticos leves na raiz necessários
+          cp favicon.ico _site/ 2>/dev/null || true
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '_site'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
