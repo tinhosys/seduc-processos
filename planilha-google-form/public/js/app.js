@@ -1,4 +1,4 @@
-
+﻿
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 function getEscalaInfo(val) {
   const n = parseInt(val, 10);
@@ -23,6 +23,13 @@ function atualizarDisplayEscala(val) {
   if (slider) {
     slider.style.background = info.cor;
   }
+  const ball = document.getElementById('escala-thumb-ball');
+  if (ball) {
+    const n = parseInt(val, 10);
+    const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+    ball.textContent = String(safeN);
+    ball.style.left = `calc(13px + (100% - 26px) * ${safeN} / 10)`;
+  }
 }
 window.atualizarDisplayEscala = atualizarDisplayEscala;
 
@@ -46,9 +53,9 @@ window.renderMiniEscalaBar = renderMiniEscalaBar;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.112
+// Versão do Sistema: v1.3.113
 // ============================================================
-window.APP_VERSION = 'v1.3.112';
+window.APP_VERSION = 'v1.3.113';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴

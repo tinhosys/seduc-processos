@@ -1,4 +1,4 @@
-
+﻿
 function formatarDigitoInteiro(val) {
   if (val === null || val === undefined) return '';
   let s = String(val).trim();
@@ -278,7 +278,7 @@ window.formatarDataParaApp = formatarDataParaApp;
     cnpj: row['CNPJ'] || row['cnpj'] || row['Cnpj'] || '',
     detalhamentoItens: row['DETALHAMENTO ITENS'] || row['detalhamento itens'] || row.detalhamentoItens || '',
     demaisObservacoes: row['DEMAIS OBSERVACOES'] || row['demais observacoes'] || row.demaisObservacoes || '',
-    escala: row['ESCALA'] !== undefined && row['ESCALA'] !== null ? String(row['ESCALA']).trim() : (row.escala !== undefined ? String(row.escala).trim() : ''),
+    escala: row['ESCALA'] !== undefined && row['ESCALA'] !== null ? String(row['ESCALA']).trim() : (row.escala !== undefined ? String(row.escala).trim() : (row['escola'] !== undefined && row['escola'] !== null ? String(row['escola']).trim() : (row.ESCOLA !== undefined ? String(row.ESCOLA).trim() : ''))),
     analista: String(row['ANALISTA'] || row['Analista'] || row.analista || '').trim(),
     ultimaEdicao: row['ULTIMA EDICAO LOGIN'] || row['ULTIMA EDICAO'] || row['ultima edicao'] || row['Última edição'] || '',
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || '',
@@ -341,7 +341,7 @@ const mapToSheet = (dados) => {
     'METRAGEM (M²)': dados.metragem || '',
     'DETALHAMENTO ITENS': dados.detalhamentoItens || '',
     'DEMAIS OBSERVACOES': dados.demaisObservacoes || '',
-    'ESCALA': dados.escala !== undefined && dados.escala !== null ? String(dados.escala).trim() : ''
+    'ESCALA': (dados.escala !== undefined && dados.escala !== null && dados.escala !== '') ? String(dados.escala).trim() : ((dados.ESCALA !== undefined && dados.ESCALA !== null && dados.ESCALA !== '') ? String(dados.ESCALA).trim() : '0')
   };
 };
 
@@ -398,11 +398,12 @@ async function sincronizarAnalistasDaPlanilha() {
     if (!data.table || !data.table.cols || !data.table.rows) return;
 
     let idxAnalista = -1;
+    let idxEscala = -1;
     let idxProcesso = -1;
     data.table.cols.forEach((col, idx) => {
       const lbl = String(col.label || '').toUpperCase().trim();
       if (lbl === 'ANALISTA') idxAnalista = idx;
-      if (lbl === 'ESCALA') idxEscala = idx;
+      if (lbl === 'ESCALA' || lbl === 'ESCOLA') idxEscala = idx;
       if (lbl === 'PROCESSOS' || lbl === 'PROCESSO' || lbl === 'Nº PROCESSO') idxProcesso = idx;
     });
 
@@ -417,9 +418,15 @@ async function sincronizarAnalistasDaPlanilha() {
 
       if (window.processosCache && window.processosCache.length > 0) {
         const proc = window.processosCache.find(p => (valProc && p.numero === valProc) || p._rowNumber === rowNum);
-        if (proc && valAnalista && proc.analista !== valAnalista) {
-          proc.analista = valAnalista;
-          houveAtualizacao = true;
+        if (proc) {
+          if (valAnalista && proc.analista !== valAnalista) {
+            proc.analista = valAnalista;
+            houveAtualizacao = true;
+          }
+          if (valEscala !== '' && proc.escala !== valEscala) {
+            proc.escala = valEscala;
+            houveAtualizacao = true;
+          }
         }
       }
     });
@@ -502,6 +509,8 @@ async function atualizarProcesso(id, dados) {
         CNPJ: dados.cnpj || '',
         analista: dados.analista || '',
         ANALISTA: dados.analista || '',
+        escala: dados.escala !== undefined ? String(dados.escala).trim() : '',
+        ESCALA: dados.escala !== undefined ? String(dados.escala).trim() : '',
         DIGITO: dados.digito || dados.DIGITO || '', 
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })

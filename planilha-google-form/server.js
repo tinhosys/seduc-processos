@@ -615,6 +615,8 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
       }
     } else if (hLow.includes('analista')) {
       val = data.analista !== undefined ? data.analista : (data.ANALISTA !== undefined ? data.ANALISTA : '');
+    } else if (hLow === 'escala' || hLow.includes('escala') || hLow === 'escola') {
+      val = (data.escala !== undefined && data.escala !== null && data.escala !== '') ? String(data.escala).trim() : ((data.ESCALA !== undefined && data.ESCALA !== null && data.ESCALA !== '') ? String(data.ESCALA).trim() : '0');
     } else if (hLow === 'id' || hLow === 'id_seq' || hLow === 'seq' || hLow === 'chave') {
       val = (originalRow && originalRow[i]) ? originalRow[i] : (data.id || data.seqId || '');
     }

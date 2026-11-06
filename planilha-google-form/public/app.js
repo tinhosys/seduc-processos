@@ -1,4 +1,4 @@
-
+﻿
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 function getEscalaInfo(val) {
   const n = parseInt(val, 10);
@@ -22,6 +22,13 @@ function atualizarDisplayEscala(val) {
   const slider = document.getElementById('form-escala');
   if (slider) {
     slider.style.background = info.cor;
+  }
+  const ball = document.getElementById('escala-thumb-ball');
+  if (ball) {
+    const n = parseInt(val, 10);
+    const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+    ball.textContent = String(safeN);
+    ball.style.left = `calc(13px + (100% - 26px) * ${safeN} / 10)`;
   }
 }
 window.atualizarDisplayEscala = atualizarDisplayEscala;

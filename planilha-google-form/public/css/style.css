@@ -4022,3 +4022,68 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   100% { transform: scale(1); }
 }
 
+/* Escala de Processo (0 a 10) Slider Customizado com Número dentro da Bola */
+.escala-slider-track-wrap {
+  position: relative;
+  width: 220px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+}
+#form-escala {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  transition: background 0.2s ease;
+}
+#form-escala::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+#form-escala::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+#escala-thumb-ball {
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 900;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.7);
+  border: 2px solid #ffffff;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+  font-family: inherit;
+  transition: left 0.05s ease-out;
+}
+
+

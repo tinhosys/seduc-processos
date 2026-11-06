@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.112">
+  <link rel="stylesheet" href="css/style.css?v=1.3.113">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -833,7 +833,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.112</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.113</div>
 
   </div>
 </div>
@@ -1149,7 +1149,7 @@
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
           <div style="text-align: center; color: #38bdf8; font-size: 12px; font-weight: 900; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.6px; background: rgba(56,189,248,0.1); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.3); display: inline-flex; align-items: center; user-select: none;">
-            GBZ - v1.3.112
+            GBZ - v1.3.113
           </div>
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
@@ -2288,40 +2288,41 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <button type="button" id="btn-toggle-form-processo" onclick="toggleFormProcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 8px 12px; height: 38px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
-              &#128065; <span class="btn-text">Ocultar Formulário</span>
-            </button>
+        <!-- Barra de Ações Rápidas: Ocultar Formulário e Escala de Processo (conforme indicado na imagem2) -->
+        <div style="display:flex; justify-content:flex-start; align-items:center; gap:16px; margin: 10px 0 16px 0; flex-wrap:wrap;">
+          <button type="button" id="btn-toggle-form-processo" onclick="toggleFormProcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 8px 14px; height: 38px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
+            &#128065; <span class="btn-text">Ocultar Formulário</span>
+          </button>
+
+          <!-- Barra de Escala Visual de Nível (0 a 10) -->
+          <div id="header-escala-wrapper" style="display:inline-flex;align-items:center;background:rgba(15,23,42,0.95);border:1px solid #334155;border-radius:10px;padding:4px 14px;gap:12px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);user-select:none;height:38px;">
+            <div style="display:flex;flex-direction:column;align-items:flex-start;">
+              <span style="font-size:9.5px;font-weight:800;letter-spacing:0.8px;color:#94a3b8;text-transform:uppercase;">ESCALA</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span id="header-escala-badge" style="display:inline-block;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:900;color:#ffffff;background:#dc2626;box-shadow:0 0 8px rgba(220,38,38,0.5);">0 - CRÍTICO</span>
+              </div>
+            </div>
+            <div class="escala-slider-track-wrap">
+              <input type="range" id="form-escala" min="0" max="10" step="1" value="0" style="background:#dc2626;" oninput="atualizarDisplayEscala(this.value)" />
+              <div id="escala-thumb-ball">0</div>
+            </div>
+          </div>
         </div>
 
         <div class="card" id="card-form-processo">
           <form id="form-processo">
             
-            <!-- GUIAS DE NAVEGAÇÃO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; width:100%;">
-              <div style="display:flex; gap:12px; align-items:center;">
+            <!-- GUIAS DE NAVEGAÇÃO DO FORMULÁRIO (MARCADO EM VERDE: OBJETO / OBJETIVO) -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:2px solid rgba(255,255,255,0.08); padding-bottom:14px; width:100%; flex-wrap:wrap; gap:12px;">
+              <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
                 <button id="btn-guia-objeto" type="button" onclick="alternarGuiaFormulario('objeto')" style="background:linear-gradient(135deg,#10b981,#059669); color:#ffffff; border:1px solid #34d399; font-weight:800; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; box-shadow:0 4px 14px rgba(16,185,129,0.35); display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📋 OBJETO</button>
                 <button id="btn-guia-objetivo" type="button" onclick="alternarGuiaFormulario('objetivo')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;">📜 Manifestação Técnica</button>
                 <button id="btn-guia-repositorio" type="button" onclick="alternarGuiaFormulario('repositorio')" style="background:none; color:var(--text-secondary); border:1px solid transparent; font-weight:700; height: 42px; font-size:14px; padding:0 24px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;" title="Repositório de Documentos, Análise do Plano de Trabalho e Google Drive">📁 Repositório Análise CAM</button>
               </div>
 
-                            <!-- Barra de Escala Visual de Nível (0 a 10) -->
-              <div id="header-escala-wrapper" style="display:flex;align-items:center;background:rgba(15,23,42,0.95);border:1px solid #334155;border-radius:10px;padding:4px 12px;gap:12px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);user-select:none;">
-                <div style="display:flex;flex-direction:column;align-items:flex-start;">
-                  <span style="font-size:9.5px;font-weight:800;letter-spacing:0.8px;color:#94a3b8;text-transform:uppercase;">ESCALA</span>
-                  <div style="display:flex;align-items:center;gap:6px;">
-                    <span id="header-escala-badge" style="display:inline-block;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:900;color:#ffffff;background:#dc2626;box-shadow:0 0 8px rgba(220,38,38,0.5);">0 - CRÍTICO</span>
-                  </div>
-                </div>
-                <div style="display:flex;flex-direction:column;align-items:center;width:200px;">
-                  <input type="range" id="form-escala" min="0" max="10" step="1" value="0" style="width:100%;height:12px;border-radius:999px;outline:none;-webkit-appearance:none;cursor:pointer;background:linear-gradient(to right, #dc2626 0%, #ea580c 20%, #eab308 45%, #84cc16 75%, #10b981 100%);box-shadow:inset 0 1px 3px rgba(0,0,0,0.5);margin:0;" oninput="atualizarDisplayEscala(this.value)" />
-                  <div style="display:flex;justify-content:space-between;width:100%;margin-top:2px;padding:0 2px;font-size:8.5px;font-weight:700;color:#94a3b8;font-family:monospace;">
-                    <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-actions-top" style="display:flex; gap:8px; align-items:center;">
+              <div class="form-actions-top" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
                 <button type="button" id="btn-prestacao-contas" onclick="abrirModalPrestacaoContas()" class="btn" style="background:linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; border:1px solid #818cf8; box-shadow:0 3px 10px rgba(99,102,241,0.35); height: 42px; padding: 0 20px; font-size: 13.5px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center; gap:6px;" title="Gerar despacho para verificação de regularidade e prestação de contas da entidade">📋 Prestação de Contas</button>
                 <button type="button" id="btn-gerar-manifestacao" onclick="gerarManifestacaoJPG()" class="btn action-report" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; border:none; box-shadow:0 3px 10px rgba(59,130,246,0.35); height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:none; align-items:center; justify-content:center; gap:6px;">📄 Gerar Manifestação</button>
                 <button type="button" class="btn btn-ghost" id="btn-cancelar-form" style="height: 42px; padding: 0 24px; font-size: 14px; font-weight: 700; border-radius: 8px; display:inline-flex; align-items:center; justify-content:center;">Cancelar</button>
@@ -3127,7 +3128,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.112</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.113</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3809,7 +3810,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.112
+              GBZ - v1.3.113
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4082,7 +4083,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.112] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.113] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6398,11 +6399,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.112"></script>
-  <script src="js/auth-sap.js?v=1.3.112"></script>
-  <script src="js/dados.js?v=1.3.112"></script>
-  <script src="js/app.js?v=1.3.112"></script>
-  <script src="js/escolas.js?v=1.3.112" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.113"></script>
+  <script src="js/auth-sap.js?v=1.3.113"></script>
+  <script src="js/dados.js?v=1.3.113"></script>
+  <script src="js/app.js?v=1.3.113"></script>
+  <script src="js/escolas.js?v=1.3.113" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>
@@ -6598,12 +6599,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=1.3.112"></script>
-  <script src="js/gmac.js?v=1.3.112"></script>
-  <script src="js/orcamento.js?v=1.3.112"></script>
-  <script src="js/gdsm.js?v=1.3.112"></script>
-  <script src="js/print-proalfa.js?v=1.3.112"></script>
-  <script src="js/proalfa.js?v=1.3.112"></script>
+  <script src="js/diarias.js?v=1.3.113"></script>
+  <script src="js/gmac.js?v=1.3.113"></script>
+  <script src="js/orcamento.js?v=1.3.113"></script>
+  <script src="js/gdsm.js?v=1.3.113"></script>
+  <script src="js/print-proalfa.js?v=1.3.113"></script>
+  <script src="js/proalfa.js?v=1.3.113"></script>
 
 
 
