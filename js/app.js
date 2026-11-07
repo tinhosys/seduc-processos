@@ -6,7 +6,7 @@ const ESCALA_ETAPAS = [
   { nivel: 2, label: '2 - NOTIFICADO', nome: 'NOTIFICADO', cor: '#ea580c' },
   { nivel: 3, label: '3 - AUTORIZO SEDUC', nome: 'AUTORIZO SEDUC', cor: '#f97316' },
   { nivel: 4, label: '4 - AUTORIZO CASA CIVIL', nome: 'AUTORIZO CASA CIVIL', cor: '#d97706' },
-  { nivel: 5, label: '5 - CONVENIO', nome: 'CONVENIO', cor: '#eab308' },
+  { nivel: 5, label: '5 - RECEBIDO GCF', nome: 'RECEBIDO GCF', cor: '#eab308' },
   { nivel: 6, label: '6 - PRE EMPENHO', nome: 'PRE EMPENHO', cor: '#a3e635' },
   { nivel: 7, label: '7 - EMPENHO', nome: 'EMPENHO', cor: '#84cc16' },
   { nivel: 8, label: '8 - PGE', nome: 'PGE', cor: '#22c55e' },
@@ -103,9 +103,9 @@ window.renderMiniEscalaBar = renderMiniEscalaBar;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.115
+// Versão do Sistema: v1.3.116
 // ============================================================
-window.APP_VERSION = 'v1.3.115';
+window.APP_VERSION = 'v1.3.116';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
