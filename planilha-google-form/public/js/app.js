@@ -10642,27 +10642,18 @@ function fecharModalGeradorLink() {
 window.fecharModalGeradorLink = fecharModalGeradorLink;
 
 function toggleTemaClaroSuave() {
-  const isLight = document.body.classList.toggle('tema-claro');
-  localStorage.setItem('seduc_tema_suave_imagem2', isLight ? '1' : '0');
-  const btnText = document.getElementById('btn-toggle-tema-text');
-  const btnIcon = document.getElementById('btn-toggle-tema-icon');
-  if (btnText) btnText.textContent = isLight ? 'Tema Escuro' : 'Tema Suave';
-  if (btnIcon) btnIcon.textContent = isLight ? '🌙' : '☀️';
+  document.documentElement.setAttribute('data-theme', 'graphite');
+  document.body.classList.remove('tema-claro');
+  localStorage.setItem('seduc_tema_suave_imagem2', '0');
   if (typeof toast === 'function') {
-    toast(isLight ? 'Tema Suave (Padrão Imagem 2) ativado' : 'Tema Escuro ativado', 'info');
+    toast('O sistema opera exclusivamente no padrão Graphite Minimal.', 'info');
   }
 }
 window.toggleTemaClaroSuave = toggleTemaClaroSuave;
 
 function aplicarTemaSalvo() {
-  const salvo = localStorage.getItem('seduc_tema_suave_imagem2');
-  if (salvo === '1') {
-    document.body.classList.add('tema-claro');
-    const btnText = document.getElementById('btn-toggle-tema-text');
-    const btnIcon = document.getElementById('btn-toggle-tema-icon');
-    if (btnText) btnText.textContent = 'Tema Escuro';
-    if (btnIcon) btnIcon.textContent = '🌙';
-  }
+  document.documentElement.setAttribute('data-theme', 'graphite');
+  document.body.classList.remove('tema-claro');
 }
 window.aplicarTemaSalvo = aplicarTemaSalvo;
 
