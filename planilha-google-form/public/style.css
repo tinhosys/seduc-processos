@@ -4028,7 +4028,7 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   width: 100%;
   flex: 1;
   min-width: 180px;
-  height: 28px;
+  height: 36px;
   display: flex;
   align-items: center;
 }
@@ -4086,6 +4086,18 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   line-height: 1;
   font-family: inherit;
   transition: left 0.05s ease-out;
+  z-index: 10;
 }
+.escala-tick {
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.escala-tick:hover {
+  transform: translateX(-50%) scaleY(1.3) !important;
+  background: #38bdf8 !important;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.8) !important;
+}
+
 
 

@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.114">
+  <link rel="stylesheet" href="css/style.css?v=1.3.115">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -833,7 +833,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.114</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.115</div>
 
   </div>
 </div>
@@ -1149,7 +1149,7 @@
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
           <div style="text-align: center; color: #38bdf8; font-size: 12px; font-weight: 900; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.6px; background: rgba(56,189,248,0.1); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.3); display: inline-flex; align-items: center; user-select: none;">
-            GBZ - v1.3.114
+            GBZ - v1.3.115
           </div>
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
@@ -2297,9 +2297,23 @@
           </button>
 
           <!-- Barra de Escala Visual de Nível (0 a 10) -->
-          <div id="header-escala-wrapper" style="display:inline-flex;align-items:center;background:rgba(15,23,42,0.95);border:1px solid #334155;border-radius:10px;padding:4px 16px;gap:16px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);user-select:none;height:42px;flex:1;max-width:680px;min-width:320px;">
+          <div id="header-escala-wrapper" style="display:inline-flex;align-items:center;background:rgba(15,23,42,0.95);border:1px solid #334155;border-radius:10px;padding:6px 18px;gap:16px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);user-select:none;height:48px;flex:1;max-width:680px;min-width:320px;">
             <span id="header-escala-badge" style="display:inline-block;padding:4px 12px;border-radius:6px;font-size:11.5px;font-weight:900;color:#ffffff;background:#dc2626;box-shadow:0 0 8px rgba(220,38,38,0.5);white-space:nowrap;letter-spacing:0.4px;">0 - PROCESSO ABERTO</span>
-            <div class="escala-slider-track-wrap">
+            <div class="escala-slider-track-wrap" style="position:relative;width:100%;flex:1;min-width:180px;height:36px;display:flex;align-items:center;">
+              <!-- Linhas cinza de marcação (ticks 0 a 10) dividindo com precisão matemática em cada valor -->
+              <div class="escala-ticks-container" style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;">
+                <div class="escala-tick" data-val="0" title="0 - PROCESSO ABERTO" onclick="selecionarEtapaEscala(0)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 0 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="1" title="1 - RECEBIDO CAM" onclick="selecionarEtapaEscala(1)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 1 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="2" title="2 - NOTIFICADO" onclick="selecionarEtapaEscala(2)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 2 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="3" title="3 - AUTORIZO SEDUC" onclick="selecionarEtapaEscala(3)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 3 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="4" title="4 - AUTORIZO CASA CIVIL" onclick="selecionarEtapaEscala(4)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 4 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="5" title="5 - CONVENIO" onclick="selecionarEtapaEscala(5)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 5 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="6" title="6 - PRE EMPENHO" onclick="selecionarEtapaEscala(6)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 6 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="7" title="7 - EMPENHO" onclick="selecionarEtapaEscala(7)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 7 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="8" title="8 - PGE" onclick="selecionarEtapaEscala(8)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 8 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="9" title="9 - CONVENIADO" onclick="selecionarEtapaEscala(9)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 9 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="10" title="10 - PAGO" onclick="selecionarEtapaEscala(10)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 10 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+              </div>
               <input type="range" id="form-escala" min="0" max="10" step="1" value="0" style="background:#dc2626;" oninput="atualizarDisplayEscala(this.value)" />
               <div id="escala-thumb-ball">0</div>
             </div>
@@ -3123,7 +3137,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.114</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.115</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3805,7 +3819,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.114
+              GBZ - v1.3.115
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4078,7 +4092,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.114] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.115] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6394,11 +6408,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.114"></script>
-  <script src="js/auth-sap.js?v=1.3.114"></script>
-  <script src="js/dados.js?v=1.3.114"></script>
-  <script src="js/app.js?v=1.3.114"></script>
-  <script src="js/escolas.js?v=1.3.114" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.115"></script>
+  <script src="js/auth-sap.js?v=1.3.115"></script>
+  <script src="js/dados.js?v=1.3.115"></script>
+  <script src="js/app.js?v=1.3.115"></script>
+  <script src="js/escolas.js?v=1.3.115" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>
@@ -6594,12 +6608,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=1.3.114"></script>
-  <script src="js/gmac.js?v=1.3.114"></script>
-  <script src="js/orcamento.js?v=1.3.114"></script>
-  <script src="js/gdsm.js?v=1.3.114"></script>
-  <script src="js/print-proalfa.js?v=1.3.114"></script>
-  <script src="js/proalfa.js?v=1.3.114"></script>
+  <script src="js/diarias.js?v=1.3.115"></script>
+  <script src="js/gmac.js?v=1.3.115"></script>
+  <script src="js/orcamento.js?v=1.3.115"></script>
+  <script src="js/gdsm.js?v=1.3.115"></script>
+  <script src="js/print-proalfa.js?v=1.3.115"></script>
+  <script src="js/proalfa.js?v=1.3.115"></script>
 
 
 

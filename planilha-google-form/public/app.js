@@ -41,15 +41,47 @@ function atualizarDisplayEscala(val) {
   if (slider) {
     slider.style.background = info.cor;
   }
+  const n = parseInt(val, 10);
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
   const ball = document.getElementById('escala-thumb-ball');
   if (ball) {
-    const n = parseInt(val, 10);
-    const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
     ball.textContent = String(safeN);
     ball.style.left = `calc(13px + (100% - 26px) * ${safeN} / 10)`;
   }
+  // Sincronizar estado visual top das linhas cinza (ticks)
+  const ticks = document.querySelectorAll('.escala-tick');
+  ticks.forEach(t => {
+    const tVal = parseInt(t.getAttribute('data-val'), 10);
+    if (tVal === safeN) {
+      t.style.background = '#ffffff';
+      t.style.height = '14px';
+      t.style.opacity = '1';
+      t.style.boxShadow = '0 0 8px rgba(255,255,255,0.95)';
+    } else if (tVal < safeN) {
+      t.style.background = '#94a3b8';
+      t.style.height = '10px';
+      t.style.opacity = '0.85';
+      t.style.boxShadow = 'none';
+    } else {
+      t.style.background = '#64748b';
+      t.style.height = '9px';
+      t.style.opacity = '0.55';
+      t.style.boxShadow = 'none';
+    }
+  });
 }
 window.atualizarDisplayEscala = atualizarDisplayEscala;
+
+function selecionarEtapaEscala(val) {
+  const slider = document.getElementById('form-escala');
+  if (slider) {
+    slider.value = val;
+    atualizarDisplayEscala(val);
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
+window.selecionarEtapaEscala = selecionarEtapaEscala;
 
 function renderMiniEscalaBar(val) {
   const n = parseInt(val, 10);
@@ -71,9 +103,9 @@ window.renderMiniEscalaBar = renderMiniEscalaBar;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.114
+// Versão do Sistema: v1.3.115
 // ============================================================
-window.APP_VERSION = 'v1.3.114';
+window.APP_VERSION = 'v1.3.115';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
