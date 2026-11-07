@@ -1,4 +1,4 @@
-﻿
+
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 const ESCALA_ETAPAS = [
   { nivel: 0, label: '0 - PROCESSO ABERTO', nome: 'PROCESSO ABERTO', cor: '#dc2626' },
@@ -98,14 +98,146 @@ function renderMiniEscalaBar(val) {
   `;
 }
 window.renderMiniEscalaBar = renderMiniEscalaBar;
+
+function renderRelatorioEscalaBar(val) {
+  const n = parseInt(val, 10);
+  const info = getEscalaInfo(val);
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+  const pct = (safeN / 10) * 100;
+  return `
+    <div class="relatorio-escala-container" title="Escala de Nível: ${info.label}" style="margin-top:3px;display:flex;align-items:center;gap:5px;user-select:none;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
+      <div class="relatorio-escala-track" style="position:relative;width:75px;height:6px;border-radius:999px;background:${info.cor} !important;box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);overflow:visible;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
+        <div class="relatorio-escala-thumb" style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:9px;height:9px;border-radius:50%;background:#ffffff !important;border:2px solid ${info.cor} !important;box-shadow:0 0 3px rgba(0,0,0,0.5);-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;"></div>
+      </div>
+      <span class="relatorio-escala-text" style="font-size:8.5px;font-weight:900;color:${info.cor} !important;font-family:monospace;line-height:1;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">${safeN}/10</span>
+    </div>
+  `;
+}
+window.renderRelatorioEscalaBar = renderRelatorioEscalaBar;
+
+function atualizarDisplayFiltroEscala(val, ativo) {
+  const info = getEscalaInfo(val);
+  const chk = document.getElementById('filtro-escala-ativo');
+  const badge = document.getElementById('filtro-escala-badge');
+  const slider = document.getElementById('filtro-escala-range');
+  const ball = document.getElementById('filtro-escala-thumb-ball');
+  const trackWrap = document.getElementById('filtro-escala-track-wrap');
+  const ticks = document.querySelectorAll('.escala-tick-filtro');
+  const n = parseInt(val, 10);
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+
+  if (chk) chk.checked = !!ativo;
+
+  if (trackWrap) {
+    trackWrap.style.opacity = ativo ? '1' : '0.55';
+  }
+
+  if (badge) {
+    if (ativo) {
+      badge.textContent = info.label;
+      badge.style.background = info.cor;
+      badge.style.color = '#ffffff';
+      badge.style.borderColor = info.cor;
+      badge.style.boxShadow = '0 0 8px ' + info.cor + '80';
+    } else {
+      badge.textContent = 'TODAS AS ESCALAS';
+      badge.style.background = '#1e293b';
+      badge.style.color = '#94a3b8';
+      badge.style.borderColor = '#334155';
+      badge.style.boxShadow = 'none';
+    }
+  }
+
+  if (slider) {
+    slider.value = safeN;
+    slider.style.background = ativo ? info.cor : '#475569';
+  }
+
+  if (ball) {
+    ball.textContent = String(safeN);
+    ball.style.left = `calc(10px + (100% - 20px) * ${safeN} / 10)`;
+    ball.style.borderColor = ativo ? info.cor : '#ffffff';
+    ball.style.boxShadow = ativo ? '0 0 8px ' + info.cor : '0 1px 5px rgba(0,0,0,0.6)';
+  }
+
+  ticks.forEach(t => {
+    const tVal = parseInt(t.getAttribute('data-val'), 10);
+    if (!ativo) {
+      t.style.background = '#64748b';
+      t.style.height = '7px';
+      t.style.opacity = '0.5';
+      t.style.boxShadow = 'none';
+    } else if (tVal === safeN) {
+      t.style.background = '#ffffff';
+      t.style.height = '12px';
+      t.style.opacity = '1';
+      t.style.boxShadow = '0 0 6px rgba(255,255,255,0.95)';
+    } else if (tVal < safeN) {
+      t.style.background = '#94a3b8';
+      t.style.height = '8px';
+      t.style.opacity = '0.8';
+      t.style.boxShadow = 'none';
+    } else {
+      t.style.background = '#64748b';
+      t.style.height = '7px';
+      t.style.opacity = '0.5';
+      t.style.boxShadow = 'none';
+    }
+  });
+}
+window.atualizarDisplayFiltroEscala = atualizarDisplayFiltroEscala;
+
+function toggleFiltroEscalaAtivo(ativo) {
+  if (typeof state !== 'undefined' && state && state.filtros) {
+    state.filtros.escalaAtivo = !!ativo;
+    const slider = document.getElementById('filtro-escala-range');
+    const val = slider ? slider.value : (state.filtros.escala || 0);
+    state.filtros.escala = parseInt(val, 10);
+    atualizarDisplayFiltroEscala(val, state.filtros.escalaAtivo);
+    state.paginaAtual = 1;
+    if (typeof renderProcessos === 'function') renderProcessos();
+  }
+}
+window.toggleFiltroEscalaAtivo = toggleFiltroEscalaAtivo;
+
+function onInputFiltroEscala(val) {
+  if (typeof state !== 'undefined' && state && state.filtros) {
+    state.filtros.escalaAtivo = true;
+    state.filtros.escala = parseInt(val, 10);
+    atualizarDisplayFiltroEscala(val, true);
+    state.paginaAtual = 1;
+    if (typeof renderProcessos === 'function') renderProcessos();
+  }
+}
+window.onInputFiltroEscala = onInputFiltroEscala;
+
+function selecionarFiltroEscala(val) {
+  const slider = document.getElementById('filtro-escala-range');
+  if (slider) slider.value = val;
+  onInputFiltroEscala(val);
+}
+window.selecionarFiltroEscala = selecionarFiltroEscala;
+
+function limparFiltroEscala() {
+  if (typeof state !== 'undefined' && state && state.filtros) {
+    state.filtros.escalaAtivo = false;
+    state.filtros.escala = null;
+    const slider = document.getElementById('filtro-escala-range');
+    const val = slider ? slider.value : 0;
+    atualizarDisplayFiltroEscala(val, false);
+    state.paginaAtual = 1;
+    if (typeof renderProcessos === 'function') renderProcessos();
+  }
+}
+window.limparFiltroEscala = limparFiltroEscala;
 // ===================================================
 
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.116
+// Versão do Sistema: v1.3.117
 // ============================================================
-window.APP_VERSION = 'v1.3.116';
+window.APP_VERSION = 'v1.3.117';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -312,7 +444,8 @@ window.formatarDigitoInteiro = window.limparDigitoValor;
 // Função global para limpar todos os filtros de processos
 window.limparFiltros = function() {
   if (typeof state !== 'undefined' && state && state.filtros) {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaAtivo: false };
+    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, false);
     state.paginaAtual = 1;
   }
   const fb = document.getElementById('filtro-busca');
@@ -729,7 +862,9 @@ let state = {
     agrupamento: [],
     cam: false,
     gab: false,
-    cc: false
+    cc: false,
+    escala: null,
+    escalaAtivo: false
   },
   paginaAtual: 1,
   itensPorPagina: 50,
@@ -1711,6 +1846,17 @@ function getFiltrados() {
     }
   }
   filterIncludesMultiple('prefixo', state.filtros.prefixo);
+
+  // Filtro por Escala (Buscador instantâneo - Imagem 5)
+  if (state.filtros.escalaAtivo && state.filtros.escala !== null && state.filtros.escala !== undefined && state.filtros.escala !== '') {
+    const escalaAlvo = parseInt(state.filtros.escala, 10);
+    lista = lista.filter(p => {
+      const pEscala = (p.escala !== undefined && p.escala !== null && String(p.escala).trim() !== '')
+        ? parseInt(p.escala, 10)
+        : 0;
+      return !isNaN(pEscala) && pEscala === escalaAlvo;
+    });
+  }
 
   // Filtros individuais de autorização
   if (state.filtros.cam) lista = lista.filter(p => p.CAM === '1');
@@ -5231,6 +5377,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof aplicarTemaSalvo === 'function') {
     aplicarTemaSalvo();
   }
+  if (typeof atualizarDisplayFiltroEscala === 'function') {
+    atualizarDisplayFiltroEscala(0, false);
+  }
   // Navegação
   document.querySelectorAll('[data-page]').forEach(el => {
     el.addEventListener('click', () => {
@@ -5425,7 +5574,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.limparFiltros = function() {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos' };
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaAtivo: false };
+    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, false);
     state.paginaAtual = 1;
     const fb = document.getElementById('filtro-busca');
     if (fb) fb.value = '';
@@ -5981,7 +6131,7 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
       <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${index + 1}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:12%;">${p.municipio || '-'}</td>
-        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; width:13%;"><div style="white-space:nowrap !important; font-weight:600; color:#0f172a; margin-bottom:2px;">${p.numero || '-'}</div>${renderRelatorioEscalaBar(p.escala)}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:16%;">${p.interessado || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
@@ -6098,7 +6248,8 @@ function imprimirPadraoAdm(filtrados = getFiltrados()) {
   document.title = 'RELATORIO_PROCESSOS_' + getFormattedDateForTitle();
 
   const style = document.createElement('style');
-  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } table.print-table-adm tr.group-header-digito, table.print-table-adm tr.group-header-digito td { background-color: #008080 !important; color: #ffffff !important; border-color: #005f5f !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .relatorio-escala-container, .relatorio-escala-track, .relatorio-escala-thumb, .relatorio-escala-text { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } table.print-table-adm tr.group-header-digito, table.print-table-adm tr.group-header-digito td { background-color: #008080 !important; color: #ffffff !important; border-color: #005f5f !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }';
   document.head.appendChild(style);
 
   const cleanupPrint = () => {
@@ -6146,7 +6297,7 @@ function imprimirAlfa(filtrados = getFiltrados()) {
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${index + 1}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:7%;">${prefixoFormatado}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:11%;">${p.municipio || '-'}</td>
-        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+        <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; width:13%;"><div style="white-space:nowrap !important; font-weight:600; color:#0f172a; margin-bottom:2px;">${p.numero || '-'}</div>${renderRelatorioEscalaBar(p.escala)}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:15%;">${p.interessado || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
         <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
@@ -6299,6 +6450,7 @@ function imprimirAlfa(filtrados = getFiltrados()) {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
       }
+      .relatorio-escala-container, .relatorio-escala-track, .relatorio-escala-thumb, .relatorio-escala-text { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       table.print-table-adm tr:nth-child(even) td {
         background-color: #f8fafc !important;
         -webkit-print-color-adjust: exact;
@@ -6385,7 +6537,7 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
         <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:12%;">${p.municipio || '-'}</td>
-          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; width:13%;"><div style="white-space:nowrap !important; font-weight:600; color:#0f172a; margin-bottom:2px;">${p.numero || '-'}</div>${renderRelatorioEscalaBar(p.escala)}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:16%;">${p.interessado || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>
@@ -6525,7 +6677,8 @@ function imprimirPadraoAdm2(filtrados = getFiltrados()) {
   document.title = 'RELATORIO_ADM2_' + getFormattedDateForTitle();
 
   const style = document.createElement('style');
-  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm-2 { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } }';
+  style.innerHTML = '@media print { @page { size: A4 landscape !important; margin: 8mm !important; } .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination, #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page { display: none !important; } #print-layout-padrao-adm-2 { display: block !important; position: static !important; width: 100% !important; background: white !important; } table.print-table-adm th { background-color: #0f172a !important; color: #ffffff !important; border: 1px solid #334155 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .relatorio-escala-container, .relatorio-escala-track, .relatorio-escala-thumb, .relatorio-escala-text { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      table.print-table-adm tr:nth-child(even) td { background-color: #f8fafc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; } table.print-table-adm td:last-child, table.print-table-adm th:last-child { white-space: nowrap !important; } }';
   document.head.appendChild(style);
 
   const cleanupPrint = () => {
@@ -12438,7 +12591,7 @@ window.renderizarCanvasRelatorioAdm2 = async function(lista) {
         <tr style="${zebraBg}">
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-align:center; font-size:9.5px; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:12%;">${p.municipio || '-'}</td>
-          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; white-space:nowrap !important; word-break:normal !important; overflow-wrap:normal !important; width:13%;">${p.numero || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9px; font-weight:normal; width:13%;"><div style="white-space:nowrap !important; font-weight:600; color:#0f172a; margin-bottom:2px;">${p.numero || '-'}</div>${renderRelatorioEscalaBar(p.escala)}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; width:16%;">${p.interessado || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; font-size:9.5px; font-weight:normal; white-space:normal; word-wrap:break-word; width:22%;">${p.objeto || '-'}</td>
           <td style="border: 1px solid #cbd5e1; padding: 3px 2px; text-transform: uppercase; font-size:9.5px; font-weight:normal; width:8%;">${p.status || '-'}</td>

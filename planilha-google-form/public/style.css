@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================
    TOKENS DE DESIGN
@@ -4101,3 +4101,65 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 
 
 
+
+/* Buscador InstantÃ¢neo por Escala (v1.3.117 - Imagem 5) */
+#filtro-escala-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+  transition: background 0.2s ease;
+}
+#filtro-escala-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+#filtro-escala-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+.escala-tick-filtro {
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.escala-tick-filtro:hover {
+  transform: translateX(-50%) scaleY(1.3) !important;
+  background: #38bdf8 !important;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important;
+}
+
+/* Barra de Escala para RelatÃ³rios de ImpressÃ£o (v1.3.117 - Imagem 1 e 3) */
+.relatorio-escala-container {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.relatorio-escala-track {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.relatorio-escala-thumb {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+.relatorio-escala-text {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
