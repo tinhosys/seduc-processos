@@ -1,15 +1,33 @@
 ﻿
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
+const ESCALA_ETAPAS = [
+  { nivel: 0, label: '0 - PROCESSO ABERTO', nome: 'PROCESSO ABERTO', cor: '#dc2626' },
+  { nivel: 1, label: '1 - RECEBIDO CAM', nome: 'RECEBIDO CAM', cor: '#e11d48' },
+  { nivel: 2, label: '2 - NOTIFICADO', nome: 'NOTIFICADO', cor: '#ea580c' },
+  { nivel: 3, label: '3 - AUTORIZO SEDUC', nome: 'AUTORIZO SEDUC', cor: '#f97316' },
+  { nivel: 4, label: '4 - AUTORIZO CASA CIVIL', nome: 'AUTORIZO CASA CIVIL', cor: '#d97706' },
+  { nivel: 5, label: '5 - CONVENIO', nome: 'CONVENIO', cor: '#eab308' },
+  { nivel: 6, label: '6 - PRE EMPENHO', nome: 'PRE EMPENHO', cor: '#a3e635' },
+  { nivel: 7, label: '7 - EMPENHO', nome: 'EMPENHO', cor: '#84cc16' },
+  { nivel: 8, label: '8 - PGE', nome: 'PGE', cor: '#22c55e' },
+  { nivel: 9, label: '9 - CONVENIADO', nome: 'CONVENIADO', cor: '#10b981' },
+  { nivel: 10, label: '10 - PAGO', nome: 'PAGO', cor: '#059669' }
+];
+window.ESCALA_ETAPAS = ESCALA_ETAPAS;
+
 function getEscalaInfo(val) {
   const n = parseInt(val, 10);
-  if (isNaN(n)) return { nivel: 0, label: '0 - CRÍTICO', cor: '#dc2626', bgBar: '#dc2626' };
-  const safeN = Math.max(0, Math.min(10, n));
-  if (safeN <= 2) return { nivel: safeN, label: safeN + ' - CRÍTICO', cor: '#dc2626', bgBar: '#dc2626' };
-  if (safeN <= 4) return { nivel: safeN, label: safeN + ' - BAIXO', cor: '#ea580c', bgBar: '#ea580c' };
-  if (safeN <= 6) return { nivel: safeN, label: safeN + ' - REGULAR', cor: '#eab308', bgBar: '#eab308' };
-  if (safeN <= 8) return { nivel: safeN, label: safeN + ' - BOM', cor: '#84cc16', bgBar: '#84cc16' };
-  return { nivel: safeN, label: safeN + ' - ÓTIMO', cor: '#10b981', bgBar: '#10b981' };
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+  const etapa = ESCALA_ETAPAS[safeN] || ESCALA_ETAPAS[0];
+  return {
+    nivel: safeN,
+    label: etapa.label,
+    nome: etapa.nome,
+    cor: etapa.cor,
+    bgBar: etapa.cor
+  };
 }
+window.getEscalaInfo = getEscalaInfo;
 
 function atualizarDisplayEscala(val) {
   const info = getEscalaInfo(val);
@@ -53,9 +71,9 @@ window.renderMiniEscalaBar = renderMiniEscalaBar;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.108
+// Versão do Sistema: v1.3.114
 // ============================================================
-window.APP_VERSION = 'v1.3.108';
+window.APP_VERSION = 'v1.3.114';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴

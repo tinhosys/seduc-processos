@@ -4025,7 +4025,9 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 /* Escala de Processo (0 a 10) Slider Customizado com Número dentro da Bola */
 .escala-slider-track-wrap {
   position: relative;
-  width: 220px;
+  width: 100%;
+  flex: 1;
+  min-width: 180px;
   height: 28px;
   display: flex;
   align-items: center;
