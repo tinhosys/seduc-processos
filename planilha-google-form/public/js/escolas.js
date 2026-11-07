@@ -1298,7 +1298,7 @@ window.abrirModalEditarEscola    = abrirModalEscola;
 window.abrirFormEscolaById = abrirFormEscolaById;
 window.fecharModalFormEscola     = fecharModalFormEscola;
 window.salvarEscola              = salvarEscola;
-window.abrirProcessoFormEscola = abrirProcessoFormEscola;
+window.abrirProcessoFormEscola = function(n, m) { if (typeof abrirModalNovoProcesso === 'function') abrirModalNovoProcesso(); else if (typeof novoProcesso === 'function') novoProcesso(); };
 window.excluirEscola             = excluirEscola;
 
 window.abrirModalEditarEscolaById = abrirFormEscolaById;

@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 /* ============================================
    TOKENS DE DESIGN
@@ -2369,11 +2369,11 @@ thead th {
 }
 
 /* ============================================================
-   GRID DE FILTROS COM 6 COLUNAS PADRONIZADAS (100% LARGURA)
+   GRID DE FILTROS COM 6 E 5 COLUNAS PADRONIZADAS (100% LARGURA)
    ============================================================ */
-.filter-row-grid-6 {
+.filter-row-grid-6,
+.filter-row-grid-5 {
   display: grid !important;
-  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
   gap: 10px !important;
   width: 100% !important;
   box-sizing: border-box !important;
@@ -2381,7 +2381,16 @@ thead th {
   margin-top: 6px !important;
 }
 
-.filter-row-grid-6 > * {
+.filter-row-grid-6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+}
+
+.filter-row-grid-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.filter-row-grid-6 > *,
+.filter-row-grid-5 > * {
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
@@ -2389,7 +2398,8 @@ thead th {
 }
 
 .filter-row select,
-.filter-row-grid-6 select {
+.filter-row-grid-6 select,
+.filter-row-grid-5 select {
   height: 38px !important;
   min-height: 38px !important;
   line-height: 20px !important;
@@ -2404,7 +2414,8 @@ thead th {
 }
 
 .filter-row .custom-multiselect,
-.filter-row-grid-6 .custom-multiselect {
+.filter-row-grid-6 .custom-multiselect,
+.filter-row-grid-5 .custom-multiselect {
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
@@ -2412,7 +2423,8 @@ thead th {
 }
 
 .filter-row .custom-multiselect-btn,
-.filter-row-grid-6 .custom-multiselect-btn {
+.filter-row-grid-6 .custom-multiselect-btn,
+.filter-row-grid-5 .custom-multiselect-btn {
   height: 38px !important;
   min-height: 38px !important;
   max-height: 38px !important;
@@ -2429,7 +2441,8 @@ thead th {
 }
 
 .filter-row .custom-multiselect-text,
-.filter-row-grid-6 .custom-multiselect-text {
+.filter-row-grid-6 .custom-multiselect-text,
+.filter-row-grid-5 .custom-multiselect-text {
   font-size: 12px !important;
   font-weight: 700 !important;
   overflow: hidden !important;
@@ -2437,7 +2450,8 @@ thead th {
   white-space: nowrap !important;
 }
 
-.filter-row-grid-6 .btn-limpar-grid {
+.filter-row-grid-6 .btn-limpar-grid,
+.btn-limpar-grid {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -2445,7 +2459,7 @@ thead th {
   height: 38px !important;
   min-height: 38px !important;
   max-height: 38px !important;
-  padding: 8px 10px !important;
+  padding: 8px 14px !important;
   border-radius: 8px !important;
   background: linear-gradient(135deg, #f59e0b, #d97706) !important;
   border: 1px solid rgba(245, 158, 11, 0.4) !important;
@@ -2459,10 +2473,10 @@ thead th {
   transition: all 0.2s ease !important;
   box-sizing: border-box !important;
   white-space: nowrap !important;
-  width: 100% !important;
 }
 
-.filter-row-grid-6 .btn-limpar-grid:hover {
+.filter-row-grid-6 .btn-limpar-grid:hover,
+.btn-limpar-grid:hover {
   background: linear-gradient(135deg, #d97706, #b45309) !important;
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.45) !important;
   transform: translateY(-1px) !important;
@@ -2472,16 +2486,21 @@ thead th {
   .filter-row-grid-6 {
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
   }
+  .filter-row-grid-5 {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
 }
 
 @media (max-width: 768px) {
-  .filter-row-grid-6 {
+  .filter-row-grid-6,
+  .filter-row-grid-5 {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 }
 
 @media (max-width: 480px) {
-  .filter-row-grid-6 {
+  .filter-row-grid-6,
+  .filter-row-grid-5 {
     grid-template-columns: 1fr !important;
   }
 }

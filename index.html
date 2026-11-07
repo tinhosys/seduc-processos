@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.118">
+  <link rel="stylesheet" href="css/style.css?v=1.3.119">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -833,7 +833,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.118</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.119</div>
 
   </div>
 </div>
@@ -1149,7 +1149,7 @@
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
           <div style="text-align: center; color: #38bdf8; font-size: 12px; font-weight: 900; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.6px; background: rgba(56,189,248,0.1); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.3); display: inline-flex; align-items: center; user-select: none;">
-            GBZ - v1.3.118
+            GBZ - v1.3.119
           </div>
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
@@ -1706,6 +1706,11 @@
               <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:38px; min-width:38px; height:38px; min-height:38px; max-height:38px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
               </button>
+              <!-- BOTÃO LIMPAR PARÂMETROS NO TOPO (INDICADO NA IMAGEM) -->
+              <button type="button" id="btn-limpar-filtros" class="btn btn-limpar-grid" onclick="if(typeof window.limparFiltros==='function'){window.limparFiltros();}else if(typeof limparFiltros==='function'){limparFiltros();}" title="Limpar todos os parâmetros e filtros" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:38px; min-height:38px; max-height:38px; padding:0 14px; border-radius:8px; background:linear-gradient(135deg, #f59e0b, #d97706); border:1px solid #d97706; color:white; font-weight:800; font-size:11.5px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 2px 8px rgba(245,158,11,0.3); transition:all 0.2s; white-space:nowrap; box-sizing:border-box;" onmouseover="this.style.background='linear-gradient(135deg, #d97706, #b45309)';this.style.boxShadow='0 4px 12px rgba(245,158,11,0.45)'" onmouseout="this.style.background='linear-gradient(135deg, #f59e0b, #d97706)';this.style.boxShadow='0 2px 8px rgba(245,158,11,0.3)'">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>LIMPAR PARÂMETROS</span>
+              </button>
             </div>
 
             <!-- Indicador Visual Animado de Processamento do Compartilhar (GIF / Engrenagens / Setas em Círculo) -->
@@ -1940,8 +1945,8 @@
             </select>
           </div>
 
-          <!-- LINHA 2 (GRID 6 COLUNAS 100%): CATEGORIA | TIPO | AGRUPAMENTO | ALERTA | MARCAÇÃO | LIMPAR PARÂMETROS -->
-          <div class="filter-row filter-row-grid-6">
+          <!-- LINHA 2 (GRID 5 COLUNAS 100%): CATEGORIA | TIPO | AGRUPAMENTO | ALERTA | MARCAÇÃO -->
+          <div class="filter-row filter-row-grid-5">
             <select id="filtro-categoria" multiple>
               <option value="">CATEGORIA</option>
             </select>
@@ -1961,10 +1966,6 @@
               <option value="sim">&#11088; Apenas Marcados</option>
               <option value="nao">&#9898; Não Marcados</option>
             </select>
-            <button type="button" id="btn-limpar-filtros" class="btn btn-limpar-grid" onclick="if(typeof window.limparFiltros==='function'){window.limparFiltros();}else if(typeof limparFiltros==='function'){limparFiltros();}" title="Limpar todos os parâmetros e filtros">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              <span>LIMPAR PARÂMETROS</span>
-            </button>
           </div>
         </div>
 
@@ -3173,7 +3174,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.118</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.119</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3855,7 +3856,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.118
+              GBZ - v1.3.119
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4128,7 +4129,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.118] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.119] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6444,11 +6445,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.118"></script>
-  <script src="js/auth-sap.js?v=1.3.118"></script>
-  <script src="js/dados.js?v=1.3.118"></script>
-  <script src="js/app.js?v=1.3.118"></script>
-  <script src="js/escolas.js?v=1.3.118" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.119"></script>
+  <script src="js/auth-sap.js?v=1.3.119"></script>
+  <script src="js/dados.js?v=1.3.119"></script>
+  <script src="js/app.js?v=1.3.119"></script>
+  <script src="js/escolas.js?v=1.3.119" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>
@@ -6644,12 +6645,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=1.3.118"></script>
-  <script src="js/gmac.js?v=1.3.118"></script>
-  <script src="js/orcamento.js?v=1.3.118"></script>
-  <script src="js/gdsm.js?v=1.3.118"></script>
-  <script src="js/print-proalfa.js?v=1.3.118"></script>
-  <script src="js/proalfa.js?v=1.3.118"></script>
+  <script src="js/diarias.js?v=1.3.119"></script>
+  <script src="js/gmac.js?v=1.3.119"></script>
+  <script src="js/orcamento.js?v=1.3.119"></script>
+  <script src="js/gdsm.js?v=1.3.119"></script>
+  <script src="js/print-proalfa.js?v=1.3.119"></script>
+  <script src="js/proalfa.js?v=1.3.119"></script>
 
 
 
