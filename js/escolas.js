@@ -1189,6 +1189,11 @@ function _preencherFormEscola(escola) {
   overlay.style.display = 'flex';
 }
 
+function fecharModalEscola() {
+  const overlay = document.getElementById('modal-escola-overlay') || document.getElementById('modal-form-escola');
+  if (overlay) overlay.style.display = 'none';
+}
+
 function fecharModalFormEscola() {
   const overlay = document.getElementById('modal-form-escola');
   if (overlay) overlay.style.display = 'none';
@@ -1289,7 +1294,7 @@ window.navegarEscolas            = navegarEscolas;
 window.abrirModalEscola          = abrirModalEscola;
 window.fecharModalEscola         = fecharModalEscola;
 window.abrirModalFormEscola      = novaEscolaForm;
-window.abrirModalEditarEscola    = abrirModalEditarEscola;
+window.abrirModalEditarEscola    = abrirModalEscola;
 window.abrirFormEscolaById = abrirFormEscolaById;
 window.fecharModalFormEscola     = fecharModalFormEscola;
 window.salvarEscola              = salvarEscola;
