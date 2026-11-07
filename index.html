@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR" data-theme="graphite">
 
 <head>
@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.120">
+  <link rel="stylesheet" href="css/style.css?v=1.3.121">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -833,7 +833,7 @@
     
     <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
     <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.120</div>
+    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.121</div>
 
   </div>
 </div>
@@ -933,6 +933,14 @@
         </a>
 
         <!-- Municípios logo abaixo do Dashboard -->
+                <!-- Galeria Graphite (Template & Forms) -->
+        <a href="#" class="nav-item action-adm" data-page="galeria" onclick="navegar('galeria'); fecharSubmenus()" title="Galeria de Telas & FormulÃ¡rios Graphite">
+          <span class="nav-icon" style="color: #7795FF;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+          </span>
+          <span>Galeria Template</span>
+        </a>
+
         <a href="#" class="nav-item" data-page="contatos" onclick="navegar('contatos'); fecharSubmenus()">
           <span class="nav-icon" style="color: #34d399;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
@@ -1149,7 +1157,7 @@
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
           <div style="text-align: center; color: #7795FF; font-size: 12px; font-weight: 900; letter-spacing: 0.6px; background: rgba(119,149,255,0.12); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(119,149,255,0.3); display: inline-flex; align-items: center; user-select: none;">
-            GBZ - v1.3.120
+            GBZ - v1.3.121
           </div>
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
@@ -3174,7 +3182,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.120</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.121</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3856,7 +3864,7 @@
               🟢 Sistema Online
             </span>
             <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.120
+              GBZ - v1.3.121
             </span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
@@ -4129,7 +4137,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.120] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.3.121] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6445,11 +6453,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.120"></script>
-  <script src="js/auth-sap.js?v=1.3.120"></script>
-  <script src="js/dados.js?v=1.3.120"></script>
-  <script src="js/app.js?v=1.3.120"></script>
-  <script src="js/escolas.js?v=1.3.120" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.3.121"></script>
+  <script src="js/auth-sap.js?v=1.3.121"></script>
+  <script src="js/dados.js?v=1.3.121"></script>
+  <script src="js/app.js?v=1.3.121"></script>
+  <script src="js/escolas.js?v=1.3.121" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>
@@ -6645,12 +6653,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=1.3.120"></script>
-  <script src="js/gmac.js?v=1.3.120"></script>
-  <script src="js/orcamento.js?v=1.3.120"></script>
-  <script src="js/gdsm.js?v=1.3.120"></script>
-  <script src="js/print-proalfa.js?v=1.3.120"></script>
-  <script src="js/proalfa.js?v=1.3.120"></script>
+  <script src="js/diarias.js?v=1.3.121"></script>
+  <script src="js/gmac.js?v=1.3.121"></script>
+  <script src="js/orcamento.js?v=1.3.121"></script>
+  <script src="js/gdsm.js?v=1.3.121"></script>
+  <script src="js/print-proalfa.js?v=1.3.121"></script>
+  <script src="js/proalfa.js?v=1.3.121"></script>
 
 
 
@@ -7440,6 +7448,410 @@
           </div>
         </div>
       </section>
+
+      <!-- ============= PAGE: GALERIA TEMPLATE GRAPHITE ============= -->
+      <section class="page" id="page-galeria" style="padding-bottom: 50px;">
+        <div class="pagehead" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <div class="eyebrow" style="color: var(--blue, #7795FF); font-size: 11px; text-transform: uppercase; letter-spacing: .16em; font-weight: 800;">GBZ CAM Â· DESIGN SYSTEM GRAPHITE</div>
+            <h1 style="font-size: 25px; letter-spacing: -.03em; margin: 6px 0 7px; font-weight: 760; color: var(--text, #F2F5FA);">Galeria de Telas & FormulÃ¡rios Graphite</h1>
+            <p style="margin: 0; color: var(--muted, #91A0B5); line-height: 1.6;">PadrÃ£o visual unificado e moderno para telas, formulÃ¡rios, tabelas e relatÃ³rios A4.</p>
+          </div>
+          <div class="pageactions" style="display: flex; gap: 9px; flex-wrap: wrap;">
+            <button class="btn" onclick="navegar('processos')">â† Ir para Processos</button>
+            <button class="btn primary" onclick="galeriaOpenDetails()">Abrir Modal Exemplo</button>
+          </div>
+        </div>
+
+        <!-- Sub-navegaÃ§Ã£o interna da Galeria -->
+        <div class="tabs" style="border-bottom: 1px solid var(--line, #30394A); margin-bottom: 22px; display: flex; gap: 6px; overflow-x: auto;">
+          <button class="tab selected" id="tab-gal-dash" onclick="trocarAbaGaleria('gal-dashboard', this)">â—« Dashboard</button>
+          <button class="tab" id="tab-gal-proc" onclick="trocarAbaGaleria('gal-processos', this)">â–¤ Processos</button>
+          <button class="tab" id="tab-gal-form" onclick="trocarAbaGaleria('gal-formulario', this)">â–£ FormulÃ¡rio / EdiÃ§Ã£o</button>
+          <button class="tab" id="tab-gal-det" onclick="trocarAbaGaleria('gal-detalhes', this)">â—ˆ Detalhes / Modal</button>
+          <button class="tab" id="tab-gal-fin" onclick="trocarAbaGaleria('gal-financeiro', this)">â—‰ Financeiro</button>
+          <button class="tab" id="tab-gal-cad" onclick="trocarAbaGaleria('gal-cadastro', this)">â–§ Cadastro de Escolas</button>
+          <button class="tab" id="tab-gal-rel" onclick="trocarAbaGaleria('gal-relatorio', this)">â–¥ RelatÃ³rios / A4</button>
+        </div>
+
+        <!-- 1. DASHBOARD -->
+        <div class="galeria-subpage" id="gal-dashboard" style="display: block;">
+          <div class="grid kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 17px;">
+            <div class="card kpi">
+              <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Total de processos</div>
+              <div class="num" style="font-size:25px; letter-spacing:-.04em; font-weight:780; margin:9px 0;">248</div>
+              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="good" style="color:var(--green);">â— +12%</span> no perÃ­odo</div>
+            </div>
+            <div class="card kpi">
+              <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Em tramitaÃ§Ã£o</div>
+              <div class="num" style="font-size:25px; letter-spacing:-.04em; font-weight:780; margin:9px 0;">124</div>
+              <div class="hint" style="font-size:11px; color:var(--muted);">Acompanhamento em andamento</div>
+            </div>
+            <div class="card kpi">
+              <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">PrÃ©-empenho</div>
+              <div class="num" style="font-size:25px; letter-spacing:-.04em; font-weight:780; margin:9px 0;">68</div>
+              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="blue" style="color:var(--blue);">â—</span> Requer acompanhamento</div>
+            </div>
+            <div class="card kpi">
+              <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Processos com alerta</div>
+              <div class="num" style="font-size:25px; letter-spacing:-.04em; font-weight:780; margin:9px 0;">16</div>
+              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="warn" style="color:var(--amber);">â—</span> Verificar pendÃªncias</div>
+            </div>
+          </div>
+
+          <div class="chartgrid" style="display: grid; grid-template-columns: minmax(0,1.65fr) minmax(280px,1fr); gap: 15px;">
+            <div class="card">
+              <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+                <h2 style="font-size:15px; margin:0;">EvoluÃ§Ã£o por mÃªs</h2>
+                <div class="legend" style="display:flex; align-items:center; gap:13px; color:var(--dim); font-size:11px;">
+                  <span><i class="dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; background:var(--blue);"></i>ConcluÃ­dos</span>
+                  <span><i class="dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; background:#44506a;"></i>Iniciados</span>
+                </div>
+              </div>
+              <div class="bars" style="height:205px; display:flex; align-items:end; gap:17px; padding:18px 5px 0; border-bottom:1px solid var(--line);">
+                <div class="barwrap" style="flex:1; display:flex; gap:4px; height:100%; align-items:end; justify-content:center; position:relative;"><div class="bar" style="height:54%; width:35%; background:#44506a; border-radius:5px 5px 0 0;"></div><div class="bar accent" style="height:66%; width:35%; background:var(--blue); border-radius:5px 5px 0 0;"></div><span style="position:absolute; bottom:-22px; left:0; right:0; text-align:center; color:var(--muted); font-size:10px;">Jan</span></div>
+                <div class="barwrap" style="flex:1; display:flex; gap:4px; height:100%; align-items:end; justify-content:center; position:relative;"><div class="bar" style="height:63%; width:35%; background:#44506a; border-radius:5px 5px 0 0;"></div><div class="bar accent" style="height:81%; width:35%; background:var(--blue); border-radius:5px 5px 0 0;"></div><span style="position:absolute; bottom:-22px; left:0; right:0; text-align:center; color:var(--muted); font-size:10px;">Fev</span></div>
+                <div class="barwrap" style="flex:1; display:flex; gap:4px; height:100%; align-items:end; justify-content:center; position:relative;"><div class="bar" style="height:47%; width:35%; background:#44506a; border-radius:5px 5px 0 0;"></div><div class="bar accent" style="height:72%; width:35%; background:var(--blue); border-radius:5px 5px 0 0;"></div><span style="position:absolute; bottom:-22px; left:0; right:0; text-align:center; color:var(--muted); font-size:10px;">Mar</span></div>
+                <div class="barwrap" style="flex:1; display:flex; gap:4px; height:100%; align-items:end; justify-content:center; position:relative;"><div class="bar" style="height:76%; width:35%; background:#44506a; border-radius:5px 5px 0 0;"></div><div class="bar accent" style="height:87%; width:35%; background:var(--blue); border-radius:5px 5px 0 0;"></div><span style="position:absolute; bottom:-22px; left:0; right:0; text-align:center; color:var(--muted); font-size:10px;">Abr</span></div>
+                <div class="barwrap" style="flex:1; display:flex; gap:4px; height:100%; align-items:end; justify-content:center; position:relative;"><div class="bar" style="height:68%; width:35%; background:#44506a; border-radius:5px 5px 0 0;"></div><div class="bar accent" style="height:64%; width:35%; background:var(--blue); border-radius:5px 5px 0 0;"></div><span style="position:absolute; bottom:-22px; left:0; right:0; text-align:center; color:var(--muted); font-size:10px;">Mai</span></div>
+                <div class="barwrap" style="flex:1; display:flex; gap:4px; height:100%; align-items:end; justify-content:center; position:relative;"><div class="bar" style="height:72%; width:35%; background:#44506a; border-radius:5px 5px 0 0;"></div><div class="bar accent" style="height:92%; width:35%; background:var(--blue); border-radius:5px 5px 0 0;"></div><span style="position:absolute; bottom:-22px; left:0; right:0; text-align:center; color:var(--muted); font-size:10px;">Jun</span></div>
+              </div>
+              <div style="height:28px"></div>
+            </div>
+
+            <div class="card">
+              <h2 style="font-size:15px; margin:0;">DistribuiÃ§Ã£o por situaÃ§Ã£o</h2>
+              <p style="margin:6px 0 13px; color:var(--muted); font-size:11px;">ProporÃ§Ã£o ilustrativa dos registros</p>
+              <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);">
+                <div>Tramitando<small style="display:block; color:var(--muted); margin-top:4px;">124 processos</small></div><b>50%</b>
+              </div>
+              <div class="progress" style="height:7px; border-radius:10px; background:#353f50; overflow:hidden;"><span style="display:block; height:100%; width:50%; background:var(--blue);"></span></div>
+              <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);">
+                <div>PrÃ©-empenho<small style="display:block; color:var(--muted); margin-top:4px;">68 processos</small></div><b>27%</b>
+              </div>
+              <div class="progress" style="height:7px; border-radius:10px; background:#353f50; overflow:hidden;"><span style="display:block; height:100%; width:27%; background:var(--green);"></span></div>
+              <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);">
+                <div>Aguardando documentos<small style="display:block; color:var(--muted); margin-top:4px;">40 processos</small></div><b>16%</b>
+              </div>
+              <div class="progress" style="height:7px; border-radius:10px; background:#353f50; overflow:hidden;"><span style="display:block; height:100%; width:16%; background:var(--amber);"></span></div>
+              <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);">
+                <div>Com alerta<small style="display:block; color:var(--muted); margin-top:4px;">16 processos</small></div><b>7%</b>
+              </div>
+              <div class="progress" style="height:7px; border-radius:10px; background:#353f50; overflow:hidden;"><span style="display:block; height:100%; width:7%; background:var(--red);"></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. PROCESSOS -->
+        <div class="galeria-subpage" id="gal-processos" style="display: none;">
+          <div class="card">
+            <div class="filterbar" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap:10px; margin-bottom:15px;">
+              <div class="field"><label>Pesquisar</label><input class="control" id="galSearchProcess" oninput="galeriaFilterRows()" placeholder="Processo, interessado ou municÃ­pio"></div>
+              <div class="field"><label>MunicÃ­pio</label><select class="control" id="galCityFilter" onchange="galeriaFilterRows()"><option value="">Todos</option><option>Porto Velho</option><option>Ariquemes</option><option>Ji-ParanÃ¡</option></select></div>
+              <div class="field"><label>Status</label><select class="control" id="galStatusFilter" onchange="galeriaFilterRows()"><option value="">Todos</option><option>Tramitando</option><option>PrÃ©-empenho</option><option>Aguardando</option></select></div>
+              <div class="field"><label>Ano</label><select class="control"><option>2026</option><option>2025</option></select></div>
+              <div class="field" style="align-self:end"><button class="btn" onclick="galeriaResetFilter()">Limpar</button></div>
+            </div>
+            <div class="tablewrap" style="overflow:auto;">
+              <table style="width:100%; border-collapse:collapse; min-width:810px;">
+                <thead>
+                  <tr><th>NÂº Processo SEI</th><th>MunicÃ­pio</th><th>Interessado</th><th>Objeto</th><th>SituaÃ§Ã£o</th><th>Valor</th><th>AÃ§Ã£o</th></tr>
+                </thead>
+                <tbody id="galProcessRows">
+                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028135/2026-69</td><td>Porto Velho</td><td>Conselho Escolar TarumÃ£</td><td>Material permanente</td><td><span class="badge blue">Tramitando</span></td><td>R$ 319.831,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
+                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028326/2026-21</td><td>Porto Velho</td><td>Conselho Escolar Rio Branco</td><td>Material permanente</td><td><span class="badge amber">Aguardando</span></td><td>R$ 222.902,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
+                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028131/2026-81</td><td>Ariquemes</td><td>Conselho Escolar Modelo</td><td>Equipamentos</td><td><span class="badge green">PrÃ©-empenho</span></td><td>R$ 285.424,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
+                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028809/2026-25</td><td>Ji-ParanÃ¡</td><td>Escola Exemplo</td><td>AquisiÃ§Ã£o de mobiliÃ¡rio</td><td><span class="badge blue">Tramitando</span></td><td>R$ 356.085,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tablefooter" style="display:flex; justify-content:space-between; gap:10px; align-items:center; color:var(--muted); font-size:11px; margin-top:13px;">
+              <span id="galResultsCount">4 processos de demonstraÃ§Ã£o</span>
+              <span>Exemplo: tabela compacta com design Graphite</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. FORMULÃRIO / EDIÃ‡ÃƒO -->
+        <div class="galeria-subpage" id="gal-formulario" style="display: none;">
+          <div class="tabs" style="margin-bottom: 18px;">
+            <button class="tab selected" data-tab="objeto" onclick="galeriaSwitchTab(this)">01 Â· Objeto</button>
+            <button class="tab" data-tab="manifestacao" onclick="galeriaSwitchTab(this)">02 Â· ManifestaÃ§Ã£o tÃ©cnica</button>
+            <button class="tab" data-tab="repositorio" onclick="galeriaSwitchTab(this)">03 Â· RepositÃ³rio CAM</button>
+            <button class="tab" data-tab="contas" onclick="galeriaSwitchTab(this)">04 Â· PrestaÃ§Ã£o de contas</button>
+          </div>
+          <div class="stack" style="display:grid; gap:15px;">
+            <div class="card">
+              <div class="sectionhead"><h2>IdentificaÃ§Ã£o do processo</h2><span class="badge blue">2026</span></div>
+              <div class="formgrid">
+                <div class="field span4"><label>NÃºmero do processo SEI *</label><input class="control" value="0029.028135/2026-69"></div>
+                <div class="field span4"><label>MunicÃ­pio *</label><select class="control"><option>Porto Velho</option><option>Ariquemes</option><option>Ji-ParanÃ¡</option></select></div>
+                <div class="field span4"><label>Categoria *</label><select class="control"><option>Fomento</option><option>ConvÃªnio</option><option>Termo de CooperaÃ§Ã£o</option></select></div>
+                <div class="field span8"><label>Interessado / escola *</label><input class="control" value="CONSELHO ESCOLAR EMEIEF TARUMÃƒ"></div>
+                <div class="field span4"><label>CNPJ</label><input class="control" placeholder="00.000.000/0000-00"></div>
+                <div class="field span6"><label>Tipo</label><select class="control"><option>Material permanente</option><option>Obras</option><option>Material de consumo</option></select></div>
+                <div class="field span6"><label>Status</label><select class="control"><option>Tramitando</option><option>PrÃ©-empenho</option><option>Aguardando documentos</option></select></div>
+                <div class="field span12"><label>DescriÃ§Ã£o do objeto</label><textarea class="control textarea">AquisiÃ§Ã£o de materiais permanentes para atendimento das necessidades da unidade escolar.</textarea></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="sectionhead"><h2>Valores e acompanhamento</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Layout de referÃªncia Graphite</span></div>
+              <div class="formgrid">
+                <div class="field span4"><label>Valor oficial (R$)</label><input class="control" value="319.831,00"></div>
+                <div class="field span4"><label>Valor planilha (R$)</label><input class="control" value="319.831,00"></div>
+                <div class="field span4"><label>DiferenÃ§a</label><input class="control" value="0,00" readonly></div>
+                <div class="field span6"><label>LocalizaÃ§Ã£o</label><select class="control"><option>CCTE</option><option>GCP</option><option>GCF</option></select></div>
+                <div class="field span6"><label>Agrupamento</label><input class="control" value="AGUARDANDO DOCUMENTAÃ‡ÃƒO"></div>
+                <div class="field span12"><label>ObservaÃ§Ãµes</label><textarea class="control textarea" placeholder="Registre informaÃ§Ãµes relevantes sem alterar o histÃ³rico original."></textarea></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                <div><h2 style="font-size:15px; margin:0;">AutorizaÃ§Ãµes</h2><p style="margin:4px 0 0; color:var(--muted); font-size:12px;">Controles discretos com rÃ³tulos sempre visÃ­veis.</p></div>
+                <div style="display:flex; gap:19px; flex-wrap:wrap;">
+                  <label class="toggle"><input type="checkbox" checked> CAM</label>
+                  <label class="toggle"><input type="checkbox"> Gabinete SEDUC</label>
+                  <label class="toggle"><input type="checkbox"> Casa Civil</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. DETALHES / MODAL -->
+        <div class="galeria-subpage" id="gal-detalhes" style="display: none;">
+          <div class="chartgrid" style="display:grid; grid-template-columns: minmax(0,1.65fr) minmax(280px,1fr); gap:15px;">
+            <div class="stack" style="display:grid; gap:15px;">
+              <div class="card">
+                <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                  <div>
+                    <span class="badge blue">TRAMITANDO</span>
+                    <h2 style="font-size:20px; margin:12px 0 5px;">Conselho Escolar EMEIEF TarumÃ£</h2>
+                    <p style="margin:0; color:var(--muted);">0029.028135/2026-69 Â· Porto Velho</p>
+                  </div>
+                  <div class="steps"><span class="done"></span><span class="done"></span><span class="done"></span><span class="done"></span><span class="done"></span><span class="current"></span><span></span><span></span></div>
+                </div>
+                <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);"><div>Objeto</div><b>Material permanente</b></div>
+                <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);"><div>LocalizaÃ§Ã£o</div><b>CCTE</b></div>
+                <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0;"><div>Categoria</div><b>Fomento</b></div>
+              </div>
+
+              <div class="card">
+                <div class="sectionhead"><h2>ExecuÃ§Ã£o financeira</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Valores demonstrativos</span></div>
+                <div class="minirows">
+                  <div class="mini"><small>Valor oficial</small><b class="blue" style="color:var(--blue);">R$ 319.831,00</b></div>
+                  <div class="mini"><small>Valor planilha</small><b class="good" style="color:var(--green);">R$ 319.831,00</b></div>
+                  <div class="mini"><small>DiferenÃ§a</small><b>R$ 0,00</b></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2 style="font-size:15px; margin:0;">HistÃ³rico do processo</h2>
+              <p style="margin:7px 0 23px; color:var(--muted); font-size:11px;">Linha do tempo resumida</p>
+              <div class="timeline">
+                <div class="event"><b>Cadastro do processo</b><small>Registro inicial Â· exemplo</small></div>
+                <div class="event"><b>Encaminhamento tÃ©cnico</b><small>ConferÃªncia documental</small></div>
+                <div class="event"><b>AtualizaÃ§Ã£o de status</b><small>Tramitando</small></div>
+              </div>
+              <div class="notice">As permissÃµes, eventos de auditoria e datas vÃªm da base oficial existente.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. FINANCEIRO -->
+        <div class="galeria-subpage" id="gal-financeiro" style="display: none;">
+          <div class="grid kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 17px;">
+            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">DotaÃ§Ã£o inicial (LOA)</div><div class="num" style="font-size:21px; font-weight:780; margin:9px 0;">R$ 29,23 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Base orÃ§amentÃ¡ria</div></div>
+            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Total empenhado</div><div class="num" style="font-size:21px; font-weight:780; margin:9px 0;">R$ 9,64 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Compromissos emitidos</div></div>
+            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Total executado</div><div class="num good" style="font-size:21px; font-weight:780; margin:9px 0; color:var(--green);">R$ 8,08 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">ExecuÃ§Ã£o registrada</div></div>
+            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Saldo lÃ­quido</div><div class="num blue" style="font-size:21px; font-weight:780; margin:9px 0; color:var(--blue);">R$ 21,54 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Disponibilidade</div></div>
+          </div>
+
+          <div class="card" style="margin-bottom:16px;">
+            <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between;">
+              <div><h2 style="font-size:15px; margin:0;">Taxa de execuÃ§Ã£o</h2><p style="margin:4px 0 0; color:var(--muted); font-size:11px;">Indicador orÃ§amentÃ¡rio ilustrativo</p></div>
+              <b style="font-size:24px;">28%</b>
+            </div>
+            <div class="progress" style="margin-top:14px; height:10px;"><span style="width:28%;"></span></div>
+          </div>
+
+          <div class="card">
+            <div class="filterbar" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap:10px; margin-bottom:15px;">
+              <div class="field"><label>Programa de aÃ§Ã£o</label><select class="control"><option>Todos os programas</option></select></div>
+              <div class="field"><label>Fonte de recurso</label><select class="control"><option>Todas as fontes</option></select></div>
+              <div class="field"><label>Natureza da despesa</label><select class="control"><option>Todas as naturezas</option></select></div>
+              <div class="field" style="align-self:end"><button class="btn" onclick="galeriaShowToast('Filtros demonstrativos')">Filtrar</button></div>
+            </div>
+            <div class="tablewrap" style="overflow:auto;">
+              <table style="width:100%; border-collapse:collapse; min-width:810px;">
+                <thead><tr><th>PA</th><th>Natureza</th><th>DotaÃ§Ã£o</th><th>Empenhado</th><th>Executado</th><th>Saldo</th><th>%</th></tr></thead>
+                <tbody>
+                  <tr><td>4096</td><td>DiÃ¡rias â€” Pessoal Civil</td><td>R$ 800.000,00</td><td>R$ 700.000,00</td><td>R$ 700.000,00</td><td>R$ 100.000,00</td><td><span class="badge green">88%</span></td></tr>
+                  <tr><td>4096</td><td>Material de consumo</td><td>R$ 522.055,00</td><td>R$ 358.563,24</td><td>R$ 318.238,37</td><td>R$ 203.816,63</td><td><span class="badge amber">61%</span></td></tr>
+                  <tr><td>4096</td><td>Material de distribuiÃ§Ã£o</td><td>R$ 80.000,00</td><td>R$ 69.825,56</td><td>R$ 69.825,56</td><td>R$ 10.174,44</td><td><span class="badge green">87%</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. CADASTRO DE ESCOLAS -->
+        <div class="galeria-subpage" id="gal-cadastro" style="display: none;">
+          <div class="tabs" style="margin-bottom: 18px;">
+            <button class="tab selected">1 Â· IdentificaÃ§Ã£o</button>
+            <button class="tab">2 Â· GestÃ£o e contatos</button>
+            <button class="tab">3 Â· EndereÃ§o</button>
+            <button class="tab">4 Â· Infraestrutura</button>
+          </div>
+          <div class="stack" style="display:grid; gap:15px;">
+            <div class="card">
+              <div class="sectionhead"><h2>IdentificaÃ§Ã£o da escola / entidade</h2><span class="badge green">ETAPA 1 DE 4</span></div>
+              <div class="formgrid">
+                <div class="field span8"><label>Nome da escola / conselho / entidade *</label><input class="control" placeholder="Nome completo da unidade"></div>
+                <div class="field span4"><label>MunicÃ­pio *</label><select class="control"><option>Porto Velho</option><option>Ariquemes</option><option>Ji-ParanÃ¡</option></select></div>
+                <div class="field span4"><label>CNPJ</label><input class="control" placeholder="00.000.000/0000-00"></div>
+                <div class="field span4"><label>CÃ³digo INEP *</label><input class="control" placeholder="8 dÃ­gitos"></div>
+                <div class="field span4"><label>NÃºmero de alunos</label><input class="control" placeholder="0" type="number" min="0"></div>
+                <div class="field span6"><label>Tipo de unidade</label><select class="control"><option>Escola municipal</option><option>APAE</option><option>EFA</option><option>Prefeitura</option></select></div>
+                <div class="field span6"><label>SuperintendÃªncia</label><select class="control"><option>Selecione a SUPER</option><option>Porto Velho</option><option>Ariquemes</option></select></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <h2>InformaÃ§Ãµes complementares</h2>
+              <p style="margin:8px 0 18px; color:var(--muted); font-size:12px;">Campos organizados em grupos de 8 a 10 para mÃ¡xima clareza e agilidade no preenchimento.</p>
+              <div class="formgrid">
+                <div class="field span6"><label>Modalidade de ensino</label><select class="control"><option>Selecione a modalidade</option><option>EducaÃ§Ã£o infantil</option><option>Ensino fundamental</option></select></div>
+                <div class="field span6"><label>CompetÃªncia</label><input class="control" value="Municipal" readonly></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. RELATÃ“RIOS / A4 -->
+        <div class="galeria-subpage" id="gal-relatorio" style="display: none;">
+          <div class="report-layout" style="display:grid; grid-template-columns: 255px minmax(0,1fr); gap: 15px;">
+            <aside class="card report-settings">
+              <h2 style="font-size:15px; margin:0 0 12px;">ConfiguraÃ§Ã£o</h2>
+              <div class="field"><label>Modelo</label><select class="control" id="galReportType" onchange="galeriaChangeReport()"><option value="lista">RelaÃ§Ã£o de processos</option><option value="manifestacao">ManifestaÃ§Ã£o tÃ©cnica</option><option value="orcamento">Resumo orÃ§amentÃ¡rio</option></select></div>
+              <div class="field" style="margin-top:14px;"><label>Formato</label><select class="control"><option>A4 retrato</option></select></div>
+              <div class="field" style="margin-top:14px;"><label>Ano</label><select class="control"><option>2026</option></select></div>
+              <div class="notice" style="margin-top:20px;">PrÃ©via ilustrativa Graphite. No sistema oficial, modelos R1â€“R8 e layouts homologados sÃ£o rigorosamente preservados.</div>
+            </aside>
+            <div class="card" style="padding:12px;">
+              <article class="reportpaper" id="galPaper">
+                <div class="printhead" style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
+                  <div class="printlogo" style="font-size:14px; letter-spacing:.05em; font-weight:850; color:#18385e;">GOVERNO DE RONDÃ”NIA<br><span style="font-size:11px;">SEDUC Â· CAM</span></div>
+                  <div class="docmeta" style="color:#5b6576; font-size:11px; text-align:right;">DOCUMENTO DEMONSTRATIVO<br>PADRÃƒO GRAPHITE</div>
+                </div>
+                <div class="line" style="height:1px; background:#d6dce5; margin:17px 0;"></div>
+                <div id="galReportContent"></div>
+                <div class="line" style="height:1px; background:#d6dce5; margin:17px 0;"></div>
+                <div class="docmeta" style="color:#5b6576; font-size:11px;">Modelo de apresentaÃ§Ã£o Graphite Â· A4 Â· Dados ilustrativos</div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MODAL DEMONSTRATIVO DA GALERIA GRAPHITE -->
+      <div class="modaloverlay" id="galeriaModal" role="dialog" aria-modal="true" style="position:fixed; inset:0; background:#050812cb; display:none; align-items:center; justify-content:center; padding:18px; z-index:99999;">
+        <div class="modal" style="width:min(720px,100%); max-height:90vh; overflow:auto; border-radius:16px; background:var(--surface, #1B2230); border:1px solid var(--line, #30394A); box-shadow:0 26px 90px #0007;">
+          <div class="modalheader rowbetween" style="padding:20px 22px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div class="eyebrow" style="color:var(--blue); font-size:11px; font-weight:800; text-transform:uppercase;">Resumo do registro</div>
+              <h2 style="font-size:17px; margin:5px 0 0;">Detalhes do processo (Modelo Graphite)</h2>
+            </div>
+            <button class="btn small" onclick="galeriaCloseDetails()" aria-label="Fechar">âœ•</button>
+          </div>
+          <div class="modalbody" style="padding:23px;">
+            <div class="rowbetween" style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div class="subtle" style="font-size:11px; color:var(--muted);">0029.028135/2026-69</div>
+                <h2 style="font-size:18px; margin:7px 0 4px;">Conselho Escolar EMEIEF TarumÃ£</h2>
+                <p style="margin:0; color:var(--muted);">Porto Velho Â· Material permanente</p>
+              </div>
+              <span class="badge blue">TRAMITANDO</span>
+            </div>
+            <div class="minirows" style="margin-top:22px;">
+              <div class="mini"><small>Valor oficial</small><b class="blue" style="color:var(--blue);">R$ 319.831,00</b></div>
+              <div class="mini"><small>Planilha</small><b>R$ 319.831,00</b></div>
+              <div class="mini"><small>DiferenÃ§a</small><b>R$ 0,00</b></div>
+            </div>
+            <div class="lineitem" style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);"><span>LocalizaÃ§Ã£o</span><b>CCTE</b></div>
+            <div class="lineitem" style="display:flex; justify-content:space-between; padding:12px 0;"><span>Agrupamento</span><b>AGUARDANDO DOC</b></div>
+          </div>
+          <div class="modalfoot" style="padding:17px 22px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:8px;">
+            <button class="btn" onclick="galeriaCloseDetails()">Fechar</button>
+            <button class="btn primary" onclick="galeriaCloseDetails(); trocarAbaGaleria('gal-formulario', document.getElementById('tab-gal-form'))">Editar processo</button>
+          </div>
+        </div>
+      </div>
+      <div class="toast" id="galeriaToast" style="position:fixed; right:20px; bottom:20px; background:#293857; border:1px solid var(--blue, #7795FF); color:var(--text, #F2F5FA); border-radius:10px; padding:12px 15px; display:none; z-index:999999;"></div>
+
+      <script>
+        function trocarAbaGaleria(subId, btn) {
+          document.querySelectorAll('#page-galeria .galeria-subpage').forEach(function(el) { el.style.display = 'none'; });
+          document.querySelectorAll('#page-galeria .tabs .tab').forEach(function(b) { b.classList.remove('selected'); });
+          var target = document.getElementById(subId);
+          if (target) target.style.display = 'block';
+          if (btn) btn.classList.add('selected');
+          if (subId === 'gal-relatorio') galeriaChangeReport();
+          window.scrollTo(0, 0);
+        }
+        function galeriaOpenDetails() { var m = document.getElementById('galeriaModal'); if (m) m.style.display = 'flex'; }
+        function galeriaCloseDetails() { var m = document.getElementById('galeriaModal'); if (m) m.style.display = 'none'; }
+        function galeriaShowToast(msg) {
+          var t = document.getElementById('galeriaToast');
+          if (t) {
+            t.textContent = msg;
+            t.style.display = 'block';
+            setTimeout(function() { t.style.display = 'none'; }, 2800);
+          }
+        }
+        function galeriaSwitchTab(btn) {
+          document.querySelectorAll('#gal-formulario .tab').forEach(function(n) { n.classList.remove('selected'); });
+          btn.classList.add('selected');
+          if (btn.getAttribute('data-tab') !== 'objeto') galeriaShowToast('Aba ilustrativa: campos e fluxos oficiais mantidos intactos');
+        }
+        function galeriaFilterRows() {
+          var q = (document.getElementById('galSearchProcess') ? document.getElementById('galSearchProcess').value.toLowerCase() : '');
+          var c = (document.getElementById('galCityFilter') ? document.getElementById('galCityFilter').value.toLowerCase() : '');
+          var s = (document.getElementById('galStatusFilter') ? document.getElementById('galStatusFilter').value.toLowerCase() : '');
+          var count = 0;
+          document.querySelectorAll('#galProcessRows tr').forEach(function(row) {
+            var text = row.innerText.toLowerCase();
+            var visible = text.includes(q) && (!c || row.cells[1].innerText.toLowerCase() === c) && (!s || row.cells[4].innerText.toLowerCase().includes(s));
+            row.style.display = visible ? '' : 'none';
+            if (visible) count++;
+          });
+          var countEl = document.getElementById('galResultsCount');
+          if (countEl) countEl.textContent = count + ' processos de demonstraÃ§Ã£o';
+        }
+        function galeriaResetFilter() {
+          if (document.getElementById('galSearchProcess')) document.getElementById('galSearchProcess').value = '';
+          if (document.getElementById('galCityFilter')) document.getElementById('galCityFilter').value = '';
+          if (document.getElementById('galStatusFilter')) document.getElementById('galStatusFilter').value = '';
+          galeriaFilterRows();
+        }
+        function galeriaChangeReport() {
+          var sel = document.getElementById('galReportType');
+          var v = sel ? sel.value : 'lista';
+          var t = '';
+          if (v === 'lista') {
+            t = '<h3 style="text-align:center;margin:22px 0 7px;font-size:18px;color:#1c2737;">RELAÃ‡ÃƒO DE PROCESSOS</h3><p style="text-align:center;margin-bottom:20px;font-size:11px;color:#5b6576;">Demonstrativo de processos Â· 2026</p><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#edf1f7;"><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">NÂº</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">MunicÃ­pio</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Processo SEI</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Interessado</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Valor</th></tr></thead><tbody><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">1</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Porto Velho</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028135/2026-69</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar TarumÃ£</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 319.831,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">2</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Porto Velho</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028326/2026-21</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar Rio Branco</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 222.902,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">3</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Ariquemes</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028131/2026-81</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar Modelo</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 285.424,00</td></tr><tr style="background:#f1f4f8;font-weight:750;"><td colspan="4" style="padding:10px;font-size:10px;color:#293242;">TOTAL</td><td style="padding:10px;font-size:10px;color:#293242;">R$ 828.157,00</td></tr></tbody></table>';
+          } else if (v === 'manifestacao') {
+            t = '<h3 style="text-align:center;margin:24px 0;font-size:18px;color:#1c2737;">MANIFESTAÃ‡ÃƒO TÃ‰CNICA â€” MODELO</h3><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Processo:</b> 0029.028135/2026-69</p><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Interessado:</b> Conselho Escolar EMEIEF TarumÃ£</p><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Objeto:</b> AquisiÃ§Ã£o de material permanente</p><div style="height:1px;background:#d6dce5;margin:17px 0;"></div><p style="margin:16px 0;text-align:justify;font-size:11px;line-height:1.6;color:#293242;">Trata-se de processo administrativo submetido Ã  anÃ¡lise da unidade competente. A presente Ã¡rea demonstra exclusivamente a organizaÃ§Ã£o tipogrÃ¡fica, os espaÃ§amentos e a apresentaÃ§Ã£o de informaÃ§Ãµes do modelo Graphite.</p><p style="margin:16px 0;text-align:justify;font-size:11px;line-height:1.6;color:#293242;">A manifestaÃ§Ã£o conclusiva depende da conferÃªncia dos documentos, da cronologia, dos valores e das demais exigÃªncias prÃ³prias do procedimento.</p><p style="margin-top:45px;text-align:center;font-size:11px;color:#293242;">_________________________________<br>ResponsÃ¡vel pela anÃ¡lise</p>';
+          } else {
+            t = '<h3 style="text-align:center;margin:23px 0;font-size:18px;color:#1c2737;">RESUMO DE EXECUÃ‡ÃƒO ORÃ‡AMENTÃRIA</h3><p style="text-align:center;margin-bottom:19px;font-size:11px;color:#5b6576;">Demonstrativo Â· exercÃ­cio 2026</p><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#edf1f7;"><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Indicador</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Valor demonstrativo</th></tr></thead><tbody><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">DotaÃ§Ã£o inicial</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 29.232.721,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Empenhado</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 9.635.023,44</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Executado</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 8.077.617,01</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Saldo lÃ­quido</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 21.543.646,80</td></tr><tr style="background:#f1f4f8;font-weight:750;"><td style="padding:10px;font-size:10px;color:#293242;">Taxa de execuÃ§Ã£o</td><td style="padding:10px;font-size:10px;color:#293242;">28%</td></tr></tbody></table>';
+          }
+          var repEl = document.getElementById('galReportContent');
+          if (repEl) repEl.innerHTML = t;
+        }
+      </script>
 
   <!-- ============= MODAL: LOGADOS ============= -->
 <div class="modal-overlay" id="modal-logados" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:9999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">

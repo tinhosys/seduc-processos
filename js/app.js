@@ -930,6 +930,7 @@ function navegar(pagina) {
   });
 
   const titles = {
+    galeria: '🎨 Galeria Graphite (Template & Forms)',
     financeiro: '💳 Gestão Financeira & Lançamentos',
     dashboard: 'Dashboard',
     processos: 'Processos',
