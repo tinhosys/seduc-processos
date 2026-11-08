@@ -1,7 +1,7 @@
 # bump_version.ps1 — Regra de versão SiSCAM
 # Padrão: .: SiSCAM v1.XXX :. (incrementa +1 delta a cada mudança)
 param(
-    [string]$CurrentNum = "122",
+    [string]$CurrentNum = "123",
     [string]$NextNum = ""
 )
 
@@ -9,8 +9,8 @@ if (-not $NextNum) {
     $NextNum = [string]([int]$CurrentNum + 1)
 }
 
-$oldTag = ".: SiSCAM v1.$CurrentNum :."
-$newTag = ".: SiSCAM v1.$NextNum :."
+$oldTag = "∴ SiSCAM v1.$CurrentNum ∴"
+$newTag = "∴ SiSCAM v1.$NextNum ∴"
 $oldV = "v1.$CurrentNum"
 $newV = "v1.$NextNum"
 
