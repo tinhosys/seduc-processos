@@ -13,6 +13,9 @@ const files = [
   { src: 'js/mapa.js',        dst: 'js/mapa.js' },
   { src: 'style.css',         dst: 'style.css' },
   { src: 'style.css',         dst: 'css/style.css' },
+  { src: 'GRAPHITE_TOKENS.css', dst: 'GRAPHITE_TOKENS.css' },
+  { src: 'GRAPHITE_TOKENS.css', dst: 'css/GRAPHITE_TOKENS.css' },
+  { src: 'img/banner_suporte_cam.jpg', dst: 'img/banner_suporte_cam.jpg' },
 ];
 let changes = 0;
 files.forEach(({ src, dst }) => {

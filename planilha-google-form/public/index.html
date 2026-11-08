@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO</title>
+  <title>SiSCAM - SEDUC/RO | Coordenadoria de Articulação com os Municípios</title>
   <meta name="description" content="Acompanhamento de processos">
   
   <!-- OpenGraph Meta Tags para redes sociais e WhatsApp -->
-  <meta property="og:title" content="CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS | SEDUC - RO">
-  <meta property="og:description" content="Acompanhamento de processos">
+  <meta property="og:title" content="SiSCAM - SEDUC/RO | Coordenadoria de Articulação com os Municípios">
+  <meta property="og:description" content="SiSCAM - Sistema Integrado da Coordenadoria de Articulação com os Municípios (SEDUC/RO)">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tinhosys.github.io/seduc-processos/">
 
@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.3.121">
+  <link rel="stylesheet" href="css/style.css?v=1.122">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -778,63 +778,89 @@
   position:fixed; top:0; left:0; width:100%; height:100%; z-index:99999;
   background: linear-gradient(135deg, #0a0f1e 0%, #0d1530 50%, #091025 100%);
   display:flex; align-items:center; justify-content:center;
+  padding: 20px; box-sizing: border-box; overflow-y: auto;
 ">
-  <div style="
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px; padding: 48px 40px; width: 100%; max-width: 420px;
-    backdrop-filter: blur(20px); box-shadow: 0 25px 60px rgba(0,0,0,0.5);
-    text-align: center;
+  <div class="login-wrapper" style="
+    display: flex; align-items: stretch; justify-content: center; gap: 32px;
+    max-width: 920px; width: 100%; margin: auto;
   ">
-    <h2 style="color:#f0f4ff; font-size:15px; font-weight:800; margin-bottom:40px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">
-      CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS<br>
-      <span style="font-size: 22px;">SEDUC - RO</span>
-    </h2>
-    
-    <div style="text-align:left; margin-bottom:16px;">
-      <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">WHATSAPP DE ACESSO</label>
-      <input type="text" id="login-whatsapp" placeholder="(00) 0 0000-0000" autocomplete="new-password"
+    <!-- COLUNA ESQUERDA: FLYER SUPORTE CAM (IMAGEM 4 / MARCAÇÃO VERDE IMAGEM 3) COM LINK DIRETO PARA WHATSAPP -->
+    <a href="https://wa.me/5569999064881?text=Ol%C3%A1%2C%20equipe%20da%20CAM!%20Preciso%20de%20suporte%20no%20SiSCAM." 
+       target="_blank" rel="noopener noreferrer" 
+       title="Precisa de ajuda? Clique para solicitar suporte da equipe da CAM pelo WhatsApp: (69) 99906-4881"
+       class="login-banner-link"
+       style="
+         display: flex; align-items: center; justify-content: center;
+         flex: 1; max-width: 420px; min-width: 280px; text-decoration: none;
+         border-radius: 20px; overflow: hidden;
+         border: 1px solid rgba(255,255,255,0.15);
+         box-shadow: 0 25px 60px rgba(0,0,0,0.65), 0 0 25px rgba(56,189,248,0.22);
+         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+         background: rgba(15,23,42,0.6);
+         cursor: pointer;
+       "
+       onmouseover="this.style.transform='translateY(-3px) scale(1.015)'; this.style.boxShadow='0 30px 70px rgba(0,0,0,0.85), 0 0 35px rgba(56,189,248,0.45)';"
+       onmouseout="this.style.transform='none'; this.style.boxShadow='0 25px 60px rgba(0,0,0,0.65), 0 0 25px rgba(56,189,248,0.22)';"
+    >
+      <img src="img/banner_suporte_cam.jpg" alt="Suporte da equipe da CAM - WhatsApp (69) 99906-4881" 
+           style="width: 100%; height: 100%; max-height: 540px; object-fit: contain; display: block; border-radius: 19px;">
+    </a>
+
+    <!-- COLUNA DIREITA: CARD DE LOGIN -->
+    <div style="
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px; padding: 44px 36px; width: 100%; max-width: 420px;
+      backdrop-filter: blur(20px); box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+      text-align: center; display: flex; flex-direction: column; justify-content: center;
+    ">
+      <h2 style="color:#f0f4ff; font-size:15px; font-weight:800; margin-bottom:34px; line-height: 1.6; text-transform: uppercase; letter-spacing: 0.5px;">
+        CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS<br>
+        <span style="font-size: 22px;">SEDUC - RO</span>
+      </h2>
+      
+      <div style="text-align:left; margin-bottom:16px;">
+        <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">WHATSAPP DE ACESSO</label>
+        <input type="text" id="login-whatsapp" placeholder="(00) 0 0000-0000" autocomplete="new-password"
+          style="
+            width:100%; padding:12px 16px; border-radius:10px;
+            background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+            color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;
+          "
+          oninput="this.value = maskCelular(this.value)"
+          onblur="this.value = maskCelular(this.value)"
+          onfocus="this.value = maskCelular(this.value)"
+          onchange="this.value = maskCelular(this.value)"
+          onkeydown="if(event.key==='Enter') realizarLogin()"
+        >
+      </div>
+
+      <div style="text-align:left; margin-bottom:16px;">
+        <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">SENHA (4 DÍGITOS)</label>
+        <input type="password" id="login-senha" placeholder="****" maxlength="4" pattern="[0-9]*" inputmode="numeric" autocomplete="new-password"
+          style="
+            width:100%; padding:12px 16px; border-radius:10px;
+            background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
+            color:#f0f4ff; font-size:16px; text-align:center; letter-spacing:6px; outline:none; box-sizing:border-box;
+          "
+          oninput="this.value = this.value.replace(/\D/g, '')"
+          onkeydown="if(event.key==='Enter') realizarLogin()"
+        >
+      </div>
+      
+      <button onclick="realizarLogin()" id="btn-login"
         style="
-          width:100%; padding:12px 16px; border-radius:10px;
-          background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
-          color:#f0f4ff; font-size:14px; outline:none; box-sizing:border-box;
+          width:100%; padding:14px; border-radius:10px; border:none; cursor:pointer;
+          background: linear-gradient(135deg, #3b82f6, #1d4ed8); color:white;
+          font-size:15px; font-weight:700; letter-spacing:0.3px;
+          transition: all 0.2s ease;
         "
-        oninput="this.value = maskCelular(this.value)"
-        onblur="this.value = maskCelular(this.value)"
-        onfocus="this.value = maskCelular(this.value)"
-        onchange="this.value = maskCelular(this.value)"
-        onkeydown="if(event.key==='Enter') realizarLogin()"
-      >
+        onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'"
+      >Entrar no Sistema</button>
+      
+      <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
+      <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
+      <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.8px;'>.: SiSCAM v1.122 :.</div>
     </div>
-
-    <div style="text-align:left; margin-bottom:16px;">
-      <label style="color:#94a3b8; font-size:12px; font-weight:600; display:block; margin-bottom:8px; letter-spacing: 0.5px;">SENHA (4 DÍGITOS)</label>
-      <input type="password" id="login-senha" placeholder="****" maxlength="4" pattern="[0-9]*" inputmode="numeric" autocomplete="new-password"
-        style="
-          width:100%; padding:12px 16px; border-radius:10px;
-          background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15);
-          color:#f0f4ff; font-size:16px; text-align:center; letter-spacing:6px; outline:none; box-sizing:border-box;
-        "
-        oninput="this.value = this.value.replace(/\D/g, '')"
-        onkeydown="if(event.key==='Enter') realizarLogin()"
-      >
-    </div>
-
-
-    
-    <button onclick="realizarLogin()" id="btn-login"
-      style="
-        width:100%; padding:14px; border-radius:10px; border:none; cursor:pointer;
-        background: linear-gradient(135deg, #3b82f6, #1d4ed8); color:white;
-        font-size:15px; font-weight:700; letter-spacing:0.3px;
-        transition: all 0.2s ease;
-      "
-      onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'"
-    >Entrar no Sistema</button>
-    
-    <div id="login-error" style="color:#ef4444; font-size:13px; margin-top:16px; min-height:20px;"></div>
-    <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:12px; display:none;">Verificando acesso...</div>
-    <div style='text-align: center; color: #38bdf8; font-size: 13.5px; font-weight: 900; margin-top: 25px; text-shadow: 0 0 8px rgba(56,189,248,0.7); letter-spacing: 0.5px;'>GBZ - v1.3.121</div>
-
   </div>
 </div>
 
@@ -856,11 +882,8 @@
     setTimeout(aplicarMascaraLogin, 800);
   })();
 </script>
-  
 
-  <div class="app-layout">
-
-    <!-- ===================== SIDEBAR ===================== -->
+  <!-- ===================== SIDEBAR ===================== -->
     <aside class="sidebar" id="app-sidebar">
 
       <div style="position: absolute; top: 20px; right: -12px; z-index: 100;">
@@ -934,7 +957,7 @@
 
         <!-- Municípios logo abaixo do Dashboard -->
                 <!-- Galeria Graphite (Template & Forms) -->
-        <a href="#" class="nav-item action-adm" data-page="galeria" onclick="navegar('galeria'); fecharSubmenus()" title="Galeria de Telas & FormulÃ¡rios Graphite">
+        <a href="#" class="nav-item action-adm" data-page="galeria" onclick="navegar('galeria'); fecharSubmenus()" title="Galeria de Telas & Formulários Graphite">
           <span class="nav-icon" style="color: #7795FF;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
           </span>
@@ -1156,9 +1179,7 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
-          <div style="text-align: center; color: #7795FF; font-size: 12px; font-weight: 900; letter-spacing: 0.6px; background: rgba(119,149,255,0.12); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(119,149,255,0.3); display: inline-flex; align-items: center; user-select: none;">
-            GBZ - v1.3.121
-          </div>
+          <div id="badge-versao-topbar" style="text-align: center; color: #7795FF; font-size: 12.5px; font-weight: 900; letter-spacing: 0.8px; background: rgba(119,149,255,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(119,149,255,0.4); display: inline-flex; align-items: center; user-select: none; white-space: nowrap; box-shadow: 0 0 10px rgba(119,149,255,0.25);">.: SiSCAM v1.122 :.</div>
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
           <!-- Botão Modo mobile Global no Topo da Aplicação (Visível em todos os forms) -->
@@ -3182,7 +3203,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.3.121</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.122</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3863,9 +3884,7 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.5px;">
-              GBZ - v1.3.121
-            </span>
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">.: SiSCAM v1.122 :.</span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
@@ -4137,7 +4156,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.3.121] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.122] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6453,11 +6472,11 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.3.121"></script>
-  <script src="js/auth-sap.js?v=1.3.121"></script>
-  <script src="js/dados.js?v=1.3.121"></script>
-  <script src="js/app.js?v=1.3.121"></script>
-  <script src="js/escolas.js?v=1.3.121" charset="utf-8"></script>
+  <script src="js/multi-select.js?v=1.122"></script>
+  <script src="js/auth-sap.js?v=1.122"></script>
+  <script src="js/dados.js?v=1.122"></script>
+  <script src="js/app.js?v=1.122"></script>
+  <script src="js/escolas.js?v=1.122" charset="utf-8"></script>
   <script src="js/open-location-code.js?v=1.3.55"></script>
   <script src="js/mapa.js?v=1.3.55"></script>
   <script src="js/contatos.js?v=1.3.55"></script>
@@ -6653,12 +6672,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=1.3.121"></script>
-  <script src="js/gmac.js?v=1.3.121"></script>
-  <script src="js/orcamento.js?v=1.3.121"></script>
-  <script src="js/gdsm.js?v=1.3.121"></script>
-  <script src="js/print-proalfa.js?v=1.3.121"></script>
-  <script src="js/proalfa.js?v=1.3.121"></script>
+  <script src="js/diarias.js?v=1.122"></script>
+  <script src="js/gmac.js?v=1.122"></script>
+  <script src="js/orcamento.js?v=1.122"></script>
+  <script src="js/gdsm.js?v=1.122"></script>
+  <script src="js/print-proalfa.js?v=1.122"></script>
+  <script src="js/proalfa.js?v=1.122"></script>
 
 
 
@@ -7453,25 +7472,25 @@
       <section class="page" id="page-galeria" style="padding-bottom: 50px;">
         <div class="pagehead" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
           <div>
-            <div class="eyebrow" style="color: var(--blue, #7795FF); font-size: 11px; text-transform: uppercase; letter-spacing: .16em; font-weight: 800;">GBZ CAM Â· DESIGN SYSTEM GRAPHITE</div>
-            <h1 style="font-size: 25px; letter-spacing: -.03em; margin: 6px 0 7px; font-weight: 760; color: var(--text, #F2F5FA);">Galeria de Telas & FormulÃ¡rios Graphite</h1>
-            <p style="margin: 0; color: var(--muted, #91A0B5); line-height: 1.6;">PadrÃ£o visual unificado e moderno para telas, formulÃ¡rios, tabelas e relatÃ³rios A4.</p>
+            <div class="eyebrow" style="color: var(--blue, #7795FF); font-size: 11px; text-transform: uppercase; letter-spacing: .16em; font-weight: 800;">SiSCAM CAM · DESIGN SYSTEM GRAPHITE</div>
+            <h1 style="font-size: 25px; letter-spacing: -.03em; margin: 6px 0 7px; font-weight: 760; color: var(--text, #F2F5FA);">Galeria de Telas & Formulários Graphite</h1>
+            <p style="margin: 0; color: var(--muted, #91A0B5); line-height: 1.6;">Padrão visual unificado e moderno para telas, formulários, tabelas e relatórios A4.</p>
           </div>
           <div class="pageactions" style="display: flex; gap: 9px; flex-wrap: wrap;">
-            <button class="btn" onclick="navegar('processos')">â† Ir para Processos</button>
+            <button class="btn" onclick="navegar('processos')">←  Ir para Processos</button>
             <button class="btn primary" onclick="galeriaOpenDetails()">Abrir Modal Exemplo</button>
           </div>
         </div>
 
-        <!-- Sub-navegaÃ§Ã£o interna da Galeria -->
+        <!-- Sub-navegação interna da Galeria -->
         <div class="tabs" style="border-bottom: 1px solid var(--line, #30394A); margin-bottom: 22px; display: flex; gap: 6px; overflow-x: auto;">
-          <button class="tab selected" id="tab-gal-dash" onclick="trocarAbaGaleria('gal-dashboard', this)">â—« Dashboard</button>
-          <button class="tab" id="tab-gal-proc" onclick="trocarAbaGaleria('gal-processos', this)">â–¤ Processos</button>
-          <button class="tab" id="tab-gal-form" onclick="trocarAbaGaleria('gal-formulario', this)">â–£ FormulÃ¡rio / EdiÃ§Ã£o</button>
-          <button class="tab" id="tab-gal-det" onclick="trocarAbaGaleria('gal-detalhes', this)">â—ˆ Detalhes / Modal</button>
-          <button class="tab" id="tab-gal-fin" onclick="trocarAbaGaleria('gal-financeiro', this)">â—‰ Financeiro</button>
-          <button class="tab" id="tab-gal-cad" onclick="trocarAbaGaleria('gal-cadastro', this)">â–§ Cadastro de Escolas</button>
-          <button class="tab" id="tab-gal-rel" onclick="trocarAbaGaleria('gal-relatorio', this)">â–¥ RelatÃ³rios / A4</button>
+          <button class="tab selected" id="tab-gal-dash" onclick="trocarAbaGaleria('gal-dashboard', this)">◫ Dashboard</button>
+          <button class="tab" id="tab-gal-proc" onclick="trocarAbaGaleria('gal-processos', this)">▤ Processos</button>
+          <button class="tab" id="tab-gal-form" onclick="trocarAbaGaleria('gal-formulario', this)">▣ Formulário / Edição</button>
+          <button class="tab" id="tab-gal-det" onclick="trocarAbaGaleria('gal-detalhes', this)">◈ Detalhes / Modal</button>
+          <button class="tab" id="tab-gal-fin" onclick="trocarAbaGaleria('gal-financeiro', this)">◉ Financeiro</button>
+          <button class="tab" id="tab-gal-cad" onclick="trocarAbaGaleria('gal-cadastro', this)">▧ Cadastro de Escolas</button>
+          <button class="tab" id="tab-gal-rel" onclick="trocarAbaGaleria('gal-relatorio', this)">▥ Relatórios / A4</button>
         </div>
 
         <!-- 1. DASHBOARD -->
@@ -7480,31 +7499,31 @@
             <div class="card kpi">
               <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Total de processos</div>
               <div class="num" style="font-size:25px; letter-spacing:-.04em; font-weight:780; margin:9px 0;">248</div>
-              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="good" style="color:var(--green);">â— +12%</span> no perÃ­odo</div>
+              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="good" style="color:var(--green);">●  +12%</span> no período</div>
             </div>
             <div class="card kpi">
-              <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Em tramitaÃ§Ã£o</div>
+              <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Em tramitação</div>
               <div class="num" style="font-size:25px; letter-spacing:-.04em; font-weight:780; margin:9px 0;">124</div>
               <div class="hint" style="font-size:11px; color:var(--muted);">Acompanhamento em andamento</div>
             </div>
             <div class="card kpi">
-              <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">PrÃ©-empenho</div>
+              <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Pré-empenho</div>
               <div class="num" style="font-size:25px; letter-spacing:-.04em; font-weight:780; margin:9px 0;">68</div>
-              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="blue" style="color:var(--blue);">â—</span> Requer acompanhamento</div>
+              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="blue" style="color:var(--blue);">● </span> Requer acompanhamento</div>
             </div>
             <div class="card kpi">
               <div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Processos com alerta</div>
               <div class="num" style="font-size:25px; letter-spacing:-.04em; font-weight:780; margin:9px 0;">16</div>
-              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="warn" style="color:var(--amber);">â—</span> Verificar pendÃªncias</div>
+              <div class="hint" style="font-size:11px; color:var(--muted);"><span class="warn" style="color:var(--amber);">● </span> Verificar pendências</div>
             </div>
           </div>
 
           <div class="chartgrid" style="display: grid; grid-template-columns: minmax(0,1.65fr) minmax(280px,1fr); gap: 15px;">
             <div class="card">
               <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
-                <h2 style="font-size:15px; margin:0;">EvoluÃ§Ã£o por mÃªs</h2>
+                <h2 style="font-size:15px; margin:0;">Evolução por mês</h2>
                 <div class="legend" style="display:flex; align-items:center; gap:13px; color:var(--dim); font-size:11px;">
-                  <span><i class="dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; background:var(--blue);"></i>ConcluÃ­dos</span>
+                  <span><i class="dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; background:var(--blue);"></i>Concluídos</span>
                   <span><i class="dot" style="display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; background:#44506a;"></i>Iniciados</span>
                 </div>
               </div>
@@ -7520,14 +7539,14 @@
             </div>
 
             <div class="card">
-              <h2 style="font-size:15px; margin:0;">DistribuiÃ§Ã£o por situaÃ§Ã£o</h2>
-              <p style="margin:6px 0 13px; color:var(--muted); font-size:11px;">ProporÃ§Ã£o ilustrativa dos registros</p>
+              <h2 style="font-size:15px; margin:0;">Distribuição por situação</h2>
+              <p style="margin:6px 0 13px; color:var(--muted); font-size:11px;">Proporção ilustrativa dos registros</p>
               <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);">
                 <div>Tramitando<small style="display:block; color:var(--muted); margin-top:4px;">124 processos</small></div><b>50%</b>
               </div>
               <div class="progress" style="height:7px; border-radius:10px; background:#353f50; overflow:hidden;"><span style="display:block; height:100%; width:50%; background:var(--blue);"></span></div>
               <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);">
-                <div>PrÃ©-empenho<small style="display:block; color:var(--muted); margin-top:4px;">68 processos</small></div><b>27%</b>
+                <div>Pré-empenho<small style="display:block; color:var(--muted); margin-top:4px;">68 processos</small></div><b>27%</b>
               </div>
               <div class="progress" style="height:7px; border-radius:10px; background:#353f50; overflow:hidden;"><span style="display:block; height:100%; width:27%; background:var(--green);"></span></div>
               <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);">
@@ -7546,70 +7565,70 @@
         <div class="galeria-subpage" id="gal-processos" style="display: none;">
           <div class="card">
             <div class="filterbar" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap:10px; margin-bottom:15px;">
-              <div class="field"><label>Pesquisar</label><input class="control" id="galSearchProcess" oninput="galeriaFilterRows()" placeholder="Processo, interessado ou municÃ­pio"></div>
-              <div class="field"><label>MunicÃ­pio</label><select class="control" id="galCityFilter" onchange="galeriaFilterRows()"><option value="">Todos</option><option>Porto Velho</option><option>Ariquemes</option><option>Ji-ParanÃ¡</option></select></div>
-              <div class="field"><label>Status</label><select class="control" id="galStatusFilter" onchange="galeriaFilterRows()"><option value="">Todos</option><option>Tramitando</option><option>PrÃ©-empenho</option><option>Aguardando</option></select></div>
+              <div class="field"><label>Pesquisar</label><input class="control" id="galSearchProcess" oninput="galeriaFilterRows()" placeholder="Processo, interessado ou município"></div>
+              <div class="field"><label>Município</label><select class="control" id="galCityFilter" onchange="galeriaFilterRows()"><option value="">Todos</option><option>Porto Velho</option><option>Ariquemes</option><option>Ji-Paraná</option></select></div>
+              <div class="field"><label>Status</label><select class="control" id="galStatusFilter" onchange="galeriaFilterRows()"><option value="">Todos</option><option>Tramitando</option><option>Pré-empenho</option><option>Aguardando</option></select></div>
               <div class="field"><label>Ano</label><select class="control"><option>2026</option><option>2025</option></select></div>
               <div class="field" style="align-self:end"><button class="btn" onclick="galeriaResetFilter()">Limpar</button></div>
             </div>
             <div class="tablewrap" style="overflow:auto;">
               <table style="width:100%; border-collapse:collapse; min-width:810px;">
                 <thead>
-                  <tr><th>NÂº Processo SEI</th><th>MunicÃ­pio</th><th>Interessado</th><th>Objeto</th><th>SituaÃ§Ã£o</th><th>Valor</th><th>AÃ§Ã£o</th></tr>
+                  <tr><th>Nº Processo SEI</th><th>Município</th><th>Interessado</th><th>Objeto</th><th>Situação</th><th>Valor</th><th>Ação</th></tr>
                 </thead>
                 <tbody id="galProcessRows">
-                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028135/2026-69</td><td>Porto Velho</td><td>Conselho Escolar TarumÃ£</td><td>Material permanente</td><td><span class="badge blue">Tramitando</span></td><td>R$ 319.831,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
+                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028135/2026-69</td><td>Porto Velho</td><td>Conselho Escolar Tarumã</td><td>Material permanente</td><td><span class="badge blue">Tramitando</span></td><td>R$ 319.831,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
                   <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028326/2026-21</td><td>Porto Velho</td><td>Conselho Escolar Rio Branco</td><td>Material permanente</td><td><span class="badge amber">Aguardando</span></td><td>R$ 222.902,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
-                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028131/2026-81</td><td>Ariquemes</td><td>Conselho Escolar Modelo</td><td>Equipamentos</td><td><span class="badge green">PrÃ©-empenho</span></td><td>R$ 285.424,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
-                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028809/2026-25</td><td>Ji-ParanÃ¡</td><td>Escola Exemplo</td><td>AquisiÃ§Ã£o de mobiliÃ¡rio</td><td><span class="badge blue">Tramitando</span></td><td>R$ 356.085,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
+                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028131/2026-81</td><td>Ariquemes</td><td>Conselho Escolar Modelo</td><td>Equipamentos</td><td><span class="badge green">Pré-empenho</span></td><td>R$ 285.424,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
+                  <tr><td class="blue" style="color:var(--blue); font-weight:600;">0029.028809/2026-25</td><td>Ji-Paraná</td><td>Escola Exemplo</td><td>Aquisição de mobiliário</td><td><span class="badge blue">Tramitando</span></td><td>R$ 356.085,00</td><td><button class="btn small" onclick="galeriaOpenDetails()">Detalhes</button></td></tr>
                 </tbody>
               </table>
             </div>
             <div class="tablefooter" style="display:flex; justify-content:space-between; gap:10px; align-items:center; color:var(--muted); font-size:11px; margin-top:13px;">
-              <span id="galResultsCount">4 processos de demonstraÃ§Ã£o</span>
+              <span id="galResultsCount">4 processos de demonstração</span>
               <span>Exemplo: tabela compacta com design Graphite</span>
             </div>
           </div>
         </div>
 
-        <!-- 3. FORMULÃRIO / EDIÃ‡ÃƒO -->
+        <!-- 3. FORMULÁRIO / EDIÇÃO -->
         <div class="galeria-subpage" id="gal-formulario" style="display: none;">
           <div class="tabs" style="margin-bottom: 18px;">
-            <button class="tab selected" data-tab="objeto" onclick="galeriaSwitchTab(this)">01 Â· Objeto</button>
-            <button class="tab" data-tab="manifestacao" onclick="galeriaSwitchTab(this)">02 Â· ManifestaÃ§Ã£o tÃ©cnica</button>
-            <button class="tab" data-tab="repositorio" onclick="galeriaSwitchTab(this)">03 Â· RepositÃ³rio CAM</button>
-            <button class="tab" data-tab="contas" onclick="galeriaSwitchTab(this)">04 Â· PrestaÃ§Ã£o de contas</button>
+            <button class="tab selected" data-tab="objeto" onclick="galeriaSwitchTab(this)">01 · Objeto</button>
+            <button class="tab" data-tab="manifestacao" onclick="galeriaSwitchTab(this)">02 · Manifestação técnica</button>
+            <button class="tab" data-tab="repositorio" onclick="galeriaSwitchTab(this)">03 · Repositório CAM</button>
+            <button class="tab" data-tab="contas" onclick="galeriaSwitchTab(this)">04 · Prestação de contas</button>
           </div>
           <div class="stack" style="display:grid; gap:15px;">
             <div class="card">
-              <div class="sectionhead"><h2>IdentificaÃ§Ã£o do processo</h2><span class="badge blue">2026</span></div>
+              <div class="sectionhead"><h2>Identificação do processo</h2><span class="badge blue">2026</span></div>
               <div class="formgrid">
-                <div class="field span4"><label>NÃºmero do processo SEI *</label><input class="control" value="0029.028135/2026-69"></div>
-                <div class="field span4"><label>MunicÃ­pio *</label><select class="control"><option>Porto Velho</option><option>Ariquemes</option><option>Ji-ParanÃ¡</option></select></div>
-                <div class="field span4"><label>Categoria *</label><select class="control"><option>Fomento</option><option>ConvÃªnio</option><option>Termo de CooperaÃ§Ã£o</option></select></div>
-                <div class="field span8"><label>Interessado / escola *</label><input class="control" value="CONSELHO ESCOLAR EMEIEF TARUMÃƒ"></div>
+                <div class="field span4"><label>Número do processo SEI *</label><input class="control" value="0029.028135/2026-69"></div>
+                <div class="field span4"><label>Município *</label><select class="control"><option>Porto Velho</option><option>Ariquemes</option><option>Ji-Paraná</option></select></div>
+                <div class="field span4"><label>Categoria *</label><select class="control"><option>Fomento</option><option>Convênio</option><option>Termo de Cooperação</option></select></div>
+                <div class="field span8"><label>Interessado / escola *</label><input class="control" value="CONSELHO ESCOLAR EMEIEF TARUMÃ"></div>
                 <div class="field span4"><label>CNPJ</label><input class="control" placeholder="00.000.000/0000-00"></div>
                 <div class="field span6"><label>Tipo</label><select class="control"><option>Material permanente</option><option>Obras</option><option>Material de consumo</option></select></div>
-                <div class="field span6"><label>Status</label><select class="control"><option>Tramitando</option><option>PrÃ©-empenho</option><option>Aguardando documentos</option></select></div>
-                <div class="field span12"><label>DescriÃ§Ã£o do objeto</label><textarea class="control textarea">AquisiÃ§Ã£o de materiais permanentes para atendimento das necessidades da unidade escolar.</textarea></div>
+                <div class="field span6"><label>Status</label><select class="control"><option>Tramitando</option><option>Pré-empenho</option><option>Aguardando documentos</option></select></div>
+                <div class="field span12"><label>Descrição do objeto</label><textarea class="control textarea">Aquisição de materiais permanentes para atendimento das necessidades da unidade escolar.</textarea></div>
               </div>
             </div>
 
             <div class="card">
-              <div class="sectionhead"><h2>Valores e acompanhamento</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Layout de referÃªncia Graphite</span></div>
+              <div class="sectionhead"><h2>Valores e acompanhamento</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Layout de referência Graphite</span></div>
               <div class="formgrid">
                 <div class="field span4"><label>Valor oficial (R$)</label><input class="control" value="319.831,00"></div>
                 <div class="field span4"><label>Valor planilha (R$)</label><input class="control" value="319.831,00"></div>
-                <div class="field span4"><label>DiferenÃ§a</label><input class="control" value="0,00" readonly></div>
-                <div class="field span6"><label>LocalizaÃ§Ã£o</label><select class="control"><option>CCTE</option><option>GCP</option><option>GCF</option></select></div>
-                <div class="field span6"><label>Agrupamento</label><input class="control" value="AGUARDANDO DOCUMENTAÃ‡ÃƒO"></div>
-                <div class="field span12"><label>ObservaÃ§Ãµes</label><textarea class="control textarea" placeholder="Registre informaÃ§Ãµes relevantes sem alterar o histÃ³rico original."></textarea></div>
+                <div class="field span4"><label>Diferença</label><input class="control" value="0,00" readonly></div>
+                <div class="field span6"><label>Localização</label><select class="control"><option>CCTE</option><option>GCP</option><option>GCF</option></select></div>
+                <div class="field span6"><label>Agrupamento</label><input class="control" value="AGUARDANDO DOCUMENTAÇÃO"></div>
+                <div class="field span12"><label>Observações</label><textarea class="control textarea" placeholder="Registre informações relevantes sem alterar o histórico original."></textarea></div>
               </div>
             </div>
 
             <div class="card">
               <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-                <div><h2 style="font-size:15px; margin:0;">AutorizaÃ§Ãµes</h2><p style="margin:4px 0 0; color:var(--muted); font-size:12px;">Controles discretos com rÃ³tulos sempre visÃ­veis.</p></div>
+                <div><h2 style="font-size:15px; margin:0;">Autorizações</h2><p style="margin:4px 0 0; color:var(--muted); font-size:12px;">Controles discretos com rótulos sempre visíveis.</p></div>
                 <div style="display:flex; gap:19px; flex-wrap:wrap;">
                   <label class="toggle"><input type="checkbox" checked> CAM</label>
                   <label class="toggle"><input type="checkbox"> Gabinete SEDUC</label>
@@ -7628,35 +7647,35 @@
                 <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
                   <div>
                     <span class="badge blue">TRAMITANDO</span>
-                    <h2 style="font-size:20px; margin:12px 0 5px;">Conselho Escolar EMEIEF TarumÃ£</h2>
-                    <p style="margin:0; color:var(--muted);">0029.028135/2026-69 Â· Porto Velho</p>
+                    <h2 style="font-size:20px; margin:12px 0 5px;">Conselho Escolar EMEIEF Tarumã</h2>
+                    <p style="margin:0; color:var(--muted);">0029.028135/2026-69 · Porto Velho</p>
                   </div>
                   <div class="steps"><span class="done"></span><span class="done"></span><span class="done"></span><span class="done"></span><span class="done"></span><span class="current"></span><span></span><span></span></div>
                 </div>
                 <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);"><div>Objeto</div><b>Material permanente</b></div>
-                <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);"><div>LocalizaÃ§Ã£o</div><b>CCTE</b></div>
+                <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--line);"><div>Localização</div><b>CCTE</b></div>
                 <div class="lineitem" style="display:flex; justify-content:space-between; align-items:center; padding:12px 0;"><div>Categoria</div><b>Fomento</b></div>
               </div>
 
               <div class="card">
-                <div class="sectionhead"><h2>ExecuÃ§Ã£o financeira</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Valores demonstrativos</span></div>
+                <div class="sectionhead"><h2>Execução financeira</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Valores demonstrativos</span></div>
                 <div class="minirows">
                   <div class="mini"><small>Valor oficial</small><b class="blue" style="color:var(--blue);">R$ 319.831,00</b></div>
                   <div class="mini"><small>Valor planilha</small><b class="good" style="color:var(--green);">R$ 319.831,00</b></div>
-                  <div class="mini"><small>DiferenÃ§a</small><b>R$ 0,00</b></div>
+                  <div class="mini"><small>Diferença</small><b>R$ 0,00</b></div>
                 </div>
               </div>
             </div>
 
             <div class="card">
-              <h2 style="font-size:15px; margin:0;">HistÃ³rico do processo</h2>
+              <h2 style="font-size:15px; margin:0;">Histórico do processo</h2>
               <p style="margin:7px 0 23px; color:var(--muted); font-size:11px;">Linha do tempo resumida</p>
               <div class="timeline">
-                <div class="event"><b>Cadastro do processo</b><small>Registro inicial Â· exemplo</small></div>
-                <div class="event"><b>Encaminhamento tÃ©cnico</b><small>ConferÃªncia documental</small></div>
-                <div class="event"><b>AtualizaÃ§Ã£o de status</b><small>Tramitando</small></div>
+                <div class="event"><b>Cadastro do processo</b><small>Registro inicial · exemplo</small></div>
+                <div class="event"><b>Encaminhamento técnico</b><small>Conferência documental</small></div>
+                <div class="event"><b>Atualização de status</b><small>Tramitando</small></div>
               </div>
-              <div class="notice">As permissÃµes, eventos de auditoria e datas vÃªm da base oficial existente.</div>
+              <div class="notice">As permissões, eventos de auditoria e datas vêm da base oficial existente.</div>
             </div>
           </div>
         </div>
@@ -7664,15 +7683,15 @@
         <!-- 5. FINANCEIRO -->
         <div class="galeria-subpage" id="gal-financeiro" style="display: none;">
           <div class="grid kpis" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 17px;">
-            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">DotaÃ§Ã£o inicial (LOA)</div><div class="num" style="font-size:21px; font-weight:780; margin:9px 0;">R$ 29,23 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Base orÃ§amentÃ¡ria</div></div>
+            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Dotação inicial (LOA)</div><div class="num" style="font-size:21px; font-weight:780; margin:9px 0;">R$ 29,23 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Base orçamentária</div></div>
             <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Total empenhado</div><div class="num" style="font-size:21px; font-weight:780; margin:9px 0;">R$ 9,64 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Compromissos emitidos</div></div>
-            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Total executado</div><div class="num good" style="font-size:21px; font-weight:780; margin:9px 0; color:var(--green);">R$ 8,08 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">ExecuÃ§Ã£o registrada</div></div>
-            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Saldo lÃ­quido</div><div class="num blue" style="font-size:21px; font-weight:780; margin:9px 0; color:var(--blue);">R$ 21,54 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Disponibilidade</div></div>
+            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Total executado</div><div class="num good" style="font-size:21px; font-weight:780; margin:9px 0; color:var(--green);">R$ 8,08 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Execução registrada</div></div>
+            <div class="card kpi"><div class="label" style="color:var(--dim); font-size:11px; font-weight:600;">Saldo líquido</div><div class="num blue" style="font-size:21px; font-weight:780; margin:9px 0; color:var(--blue);">R$ 21,54 mi</div><div class="hint" style="color:var(--muted); font-size:11px;">Disponibilidade</div></div>
           </div>
 
           <div class="card" style="margin-bottom:16px;">
             <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between;">
-              <div><h2 style="font-size:15px; margin:0;">Taxa de execuÃ§Ã£o</h2><p style="margin:4px 0 0; color:var(--muted); font-size:11px;">Indicador orÃ§amentÃ¡rio ilustrativo</p></div>
+              <div><h2 style="font-size:15px; margin:0;">Taxa de execução</h2><p style="margin:4px 0 0; color:var(--muted); font-size:11px;">Indicador orçamentário ilustrativo</p></div>
               <b style="font-size:24px;">28%</b>
             </div>
             <div class="progress" style="margin-top:14px; height:10px;"><span style="width:28%;"></span></div>
@@ -7680,18 +7699,18 @@
 
           <div class="card">
             <div class="filterbar" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap:10px; margin-bottom:15px;">
-              <div class="field"><label>Programa de aÃ§Ã£o</label><select class="control"><option>Todos os programas</option></select></div>
+              <div class="field"><label>Programa de ação</label><select class="control"><option>Todos os programas</option></select></div>
               <div class="field"><label>Fonte de recurso</label><select class="control"><option>Todas as fontes</option></select></div>
               <div class="field"><label>Natureza da despesa</label><select class="control"><option>Todas as naturezas</option></select></div>
               <div class="field" style="align-self:end"><button class="btn" onclick="galeriaShowToast('Filtros demonstrativos')">Filtrar</button></div>
             </div>
             <div class="tablewrap" style="overflow:auto;">
               <table style="width:100%; border-collapse:collapse; min-width:810px;">
-                <thead><tr><th>PA</th><th>Natureza</th><th>DotaÃ§Ã£o</th><th>Empenhado</th><th>Executado</th><th>Saldo</th><th>%</th></tr></thead>
+                <thead><tr><th>PA</th><th>Natureza</th><th>Dotação</th><th>Empenhado</th><th>Executado</th><th>Saldo</th><th>%</th></tr></thead>
                 <tbody>
-                  <tr><td>4096</td><td>DiÃ¡rias â€” Pessoal Civil</td><td>R$ 800.000,00</td><td>R$ 700.000,00</td><td>R$ 700.000,00</td><td>R$ 100.000,00</td><td><span class="badge green">88%</span></td></tr>
+                  <tr><td>4096</td><td>Diárias — Pessoal Civil</td><td>R$ 800.000,00</td><td>R$ 700.000,00</td><td>R$ 700.000,00</td><td>R$ 100.000,00</td><td><span class="badge green">88%</span></td></tr>
                   <tr><td>4096</td><td>Material de consumo</td><td>R$ 522.055,00</td><td>R$ 358.563,24</td><td>R$ 318.238,37</td><td>R$ 203.816,63</td><td><span class="badge amber">61%</span></td></tr>
-                  <tr><td>4096</td><td>Material de distribuiÃ§Ã£o</td><td>R$ 80.000,00</td><td>R$ 69.825,56</td><td>R$ 69.825,56</td><td>R$ 10.174,44</td><td><span class="badge green">87%</span></td></tr>
+                  <tr><td>4096</td><td>Material de distribuição</td><td>R$ 80.000,00</td><td>R$ 69.825,56</td><td>R$ 69.825,56</td><td>R$ 10.174,44</td><td><span class="badge green">87%</span></td></tr>
                 </tbody>
               </table>
             </div>
@@ -7701,56 +7720,56 @@
         <!-- 6. CADASTRO DE ESCOLAS -->
         <div class="galeria-subpage" id="gal-cadastro" style="display: none;">
           <div class="tabs" style="margin-bottom: 18px;">
-            <button class="tab selected">1 Â· IdentificaÃ§Ã£o</button>
-            <button class="tab">2 Â· GestÃ£o e contatos</button>
-            <button class="tab">3 Â· EndereÃ§o</button>
-            <button class="tab">4 Â· Infraestrutura</button>
+            <button class="tab selected">1 · Identificação</button>
+            <button class="tab">2 · Gestão e contatos</button>
+            <button class="tab">3 · Endereço</button>
+            <button class="tab">4 · Infraestrutura</button>
           </div>
           <div class="stack" style="display:grid; gap:15px;">
             <div class="card">
-              <div class="sectionhead"><h2>IdentificaÃ§Ã£o da escola / entidade</h2><span class="badge green">ETAPA 1 DE 4</span></div>
+              <div class="sectionhead"><h2>Identificação da escola / entidade</h2><span class="badge green">ETAPA 1 DE 4</span></div>
               <div class="formgrid">
                 <div class="field span8"><label>Nome da escola / conselho / entidade *</label><input class="control" placeholder="Nome completo da unidade"></div>
-                <div class="field span4"><label>MunicÃ­pio *</label><select class="control"><option>Porto Velho</option><option>Ariquemes</option><option>Ji-ParanÃ¡</option></select></div>
+                <div class="field span4"><label>Município *</label><select class="control"><option>Porto Velho</option><option>Ariquemes</option><option>Ji-Paraná</option></select></div>
                 <div class="field span4"><label>CNPJ</label><input class="control" placeholder="00.000.000/0000-00"></div>
-                <div class="field span4"><label>CÃ³digo INEP *</label><input class="control" placeholder="8 dÃ­gitos"></div>
-                <div class="field span4"><label>NÃºmero de alunos</label><input class="control" placeholder="0" type="number" min="0"></div>
+                <div class="field span4"><label>Código INEP *</label><input class="control" placeholder="8 dígitos"></div>
+                <div class="field span4"><label>Número de alunos</label><input class="control" placeholder="0" type="number" min="0"></div>
                 <div class="field span6"><label>Tipo de unidade</label><select class="control"><option>Escola municipal</option><option>APAE</option><option>EFA</option><option>Prefeitura</option></select></div>
-                <div class="field span6"><label>SuperintendÃªncia</label><select class="control"><option>Selecione a SUPER</option><option>Porto Velho</option><option>Ariquemes</option></select></div>
+                <div class="field span6"><label>Superintendência</label><select class="control"><option>Selecione a SUPER</option><option>Porto Velho</option><option>Ariquemes</option></select></div>
               </div>
             </div>
 
             <div class="card">
-              <h2>InformaÃ§Ãµes complementares</h2>
-              <p style="margin:8px 0 18px; color:var(--muted); font-size:12px;">Campos organizados em grupos de 8 a 10 para mÃ¡xima clareza e agilidade no preenchimento.</p>
+              <h2>Informações complementares</h2>
+              <p style="margin:8px 0 18px; color:var(--muted); font-size:12px;">Campos organizados em grupos de 8 a 10 para máxima clareza e agilidade no preenchimento.</p>
               <div class="formgrid">
-                <div class="field span6"><label>Modalidade de ensino</label><select class="control"><option>Selecione a modalidade</option><option>EducaÃ§Ã£o infantil</option><option>Ensino fundamental</option></select></div>
-                <div class="field span6"><label>CompetÃªncia</label><input class="control" value="Municipal" readonly></div>
+                <div class="field span6"><label>Modalidade de ensino</label><select class="control"><option>Selecione a modalidade</option><option>Educação infantil</option><option>Ensino fundamental</option></select></div>
+                <div class="field span6"><label>Competência</label><input class="control" value="Municipal" readonly></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 7. RELATÃ“RIOS / A4 -->
+        <!-- 7. RELATÓRIOS / A4 -->
         <div class="galeria-subpage" id="gal-relatorio" style="display: none;">
           <div class="report-layout" style="display:grid; grid-template-columns: 255px minmax(0,1fr); gap: 15px;">
             <aside class="card report-settings">
-              <h2 style="font-size:15px; margin:0 0 12px;">ConfiguraÃ§Ã£o</h2>
-              <div class="field"><label>Modelo</label><select class="control" id="galReportType" onchange="galeriaChangeReport()"><option value="lista">RelaÃ§Ã£o de processos</option><option value="manifestacao">ManifestaÃ§Ã£o tÃ©cnica</option><option value="orcamento">Resumo orÃ§amentÃ¡rio</option></select></div>
+              <h2 style="font-size:15px; margin:0 0 12px;">Configuração</h2>
+              <div class="field"><label>Modelo</label><select class="control" id="galReportType" onchange="galeriaChangeReport()"><option value="lista">Relação de processos</option><option value="manifestacao">Manifestação técnica</option><option value="orcamento">Resumo orçamentário</option></select></div>
               <div class="field" style="margin-top:14px;"><label>Formato</label><select class="control"><option>A4 retrato</option></select></div>
               <div class="field" style="margin-top:14px;"><label>Ano</label><select class="control"><option>2026</option></select></div>
-              <div class="notice" style="margin-top:20px;">PrÃ©via ilustrativa Graphite. No sistema oficial, modelos R1â€“R8 e layouts homologados sÃ£o rigorosamente preservados.</div>
+              <div class="notice" style="margin-top:20px;">Prévia ilustrativa Graphite. No sistema oficial, modelos R1–R8 e layouts homologados são rigorosamente preservados.</div>
             </aside>
             <div class="card" style="padding:12px;">
               <article class="reportpaper" id="galPaper">
                 <div class="printhead" style="display:flex; justify-content:space-between; gap:10px; align-items:center;">
-                  <div class="printlogo" style="font-size:14px; letter-spacing:.05em; font-weight:850; color:#18385e;">GOVERNO DE RONDÃ”NIA<br><span style="font-size:11px;">SEDUC Â· CAM</span></div>
-                  <div class="docmeta" style="color:#5b6576; font-size:11px; text-align:right;">DOCUMENTO DEMONSTRATIVO<br>PADRÃƒO GRAPHITE</div>
+                  <div class="printlogo" style="font-size:14px; letter-spacing:.05em; font-weight:850; color:#18385e;">GOVERNO DE RONDÔNIA<br><span style="font-size:11px;">SEDUC · CAM</span></div>
+                  <div class="docmeta" style="color:#5b6576; font-size:11px; text-align:right;">DOCUMENTO DEMONSTRATIVO<br>PADRÃO GRAPHITE</div>
                 </div>
                 <div class="line" style="height:1px; background:#d6dce5; margin:17px 0;"></div>
                 <div id="galReportContent"></div>
                 <div class="line" style="height:1px; background:#d6dce5; margin:17px 0;"></div>
-                <div class="docmeta" style="color:#5b6576; font-size:11px;">Modelo de apresentaÃ§Ã£o Graphite Â· A4 Â· Dados ilustrativos</div>
+                <div class="docmeta" style="color:#5b6576; font-size:11px;">Modelo de apresentação Graphite · A4 · Dados ilustrativos</div>
               </article>
             </div>
           </div>
@@ -7765,23 +7784,23 @@
               <div class="eyebrow" style="color:var(--blue); font-size:11px; font-weight:800; text-transform:uppercase;">Resumo do registro</div>
               <h2 style="font-size:17px; margin:5px 0 0;">Detalhes do processo (Modelo Graphite)</h2>
             </div>
-            <button class="btn small" onclick="galeriaCloseDetails()" aria-label="Fechar">âœ•</button>
+            <button class="btn small" onclick="galeriaCloseDetails()" aria-label="Fechar">✕</button>
           </div>
           <div class="modalbody" style="padding:23px;">
             <div class="rowbetween" style="display:flex; justify-content:space-between; align-items:flex-start;">
               <div>
                 <div class="subtle" style="font-size:11px; color:var(--muted);">0029.028135/2026-69</div>
-                <h2 style="font-size:18px; margin:7px 0 4px;">Conselho Escolar EMEIEF TarumÃ£</h2>
-                <p style="margin:0; color:var(--muted);">Porto Velho Â· Material permanente</p>
+                <h2 style="font-size:18px; margin:7px 0 4px;">Conselho Escolar EMEIEF Tarumã</h2>
+                <p style="margin:0; color:var(--muted);">Porto Velho · Material permanente</p>
               </div>
               <span class="badge blue">TRAMITANDO</span>
             </div>
             <div class="minirows" style="margin-top:22px;">
               <div class="mini"><small>Valor oficial</small><b class="blue" style="color:var(--blue);">R$ 319.831,00</b></div>
               <div class="mini"><small>Planilha</small><b>R$ 319.831,00</b></div>
-              <div class="mini"><small>DiferenÃ§a</small><b>R$ 0,00</b></div>
+              <div class="mini"><small>Diferença</small><b>R$ 0,00</b></div>
             </div>
-            <div class="lineitem" style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);"><span>LocalizaÃ§Ã£o</span><b>CCTE</b></div>
+            <div class="lineitem" style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);"><span>Localização</span><b>CCTE</b></div>
             <div class="lineitem" style="display:flex; justify-content:space-between; padding:12px 0;"><span>Agrupamento</span><b>AGUARDANDO DOC</b></div>
           </div>
           <div class="modalfoot" style="padding:17px 22px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:8px;">
@@ -7829,7 +7848,7 @@
             if (visible) count++;
           });
           var countEl = document.getElementById('galResultsCount');
-          if (countEl) countEl.textContent = count + ' processos de demonstraÃ§Ã£o';
+          if (countEl) countEl.textContent = count + ' processos de demonstração';
         }
         function galeriaResetFilter() {
           if (document.getElementById('galSearchProcess')) document.getElementById('galSearchProcess').value = '';
@@ -7842,11 +7861,11 @@
           var v = sel ? sel.value : 'lista';
           var t = '';
           if (v === 'lista') {
-            t = '<h3 style="text-align:center;margin:22px 0 7px;font-size:18px;color:#1c2737;">RELAÃ‡ÃƒO DE PROCESSOS</h3><p style="text-align:center;margin-bottom:20px;font-size:11px;color:#5b6576;">Demonstrativo de processos Â· 2026</p><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#edf1f7;"><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">NÂº</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">MunicÃ­pio</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Processo SEI</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Interessado</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Valor</th></tr></thead><tbody><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">1</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Porto Velho</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028135/2026-69</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar TarumÃ£</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 319.831,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">2</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Porto Velho</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028326/2026-21</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar Rio Branco</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 222.902,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">3</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Ariquemes</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028131/2026-81</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar Modelo</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 285.424,00</td></tr><tr style="background:#f1f4f8;font-weight:750;"><td colspan="4" style="padding:10px;font-size:10px;color:#293242;">TOTAL</td><td style="padding:10px;font-size:10px;color:#293242;">R$ 828.157,00</td></tr></tbody></table>';
+            t = '<h3 style="text-align:center;margin:22px 0 7px;font-size:18px;color:#1c2737;">RELAÇÃO DE PROCESSOS</h3><p style="text-align:center;margin-bottom:20px;font-size:11px;color:#5b6576;">Demonstrativo de processos · 2026</p><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#edf1f7;"><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Nº</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Município</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Processo SEI</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Interessado</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Valor</th></tr></thead><tbody><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">1</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Porto Velho</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028135/2026-69</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar Tarumã</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 319.831,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">2</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Porto Velho</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028326/2026-21</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar Rio Branco</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 222.902,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">3</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Ariquemes</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">0029.028131/2026-81</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Conselho Escolar Modelo</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 285.424,00</td></tr><tr style="background:#f1f4f8;font-weight:750;"><td colspan="4" style="padding:10px;font-size:10px;color:#293242;">TOTAL</td><td style="padding:10px;font-size:10px;color:#293242;">R$ 828.157,00</td></tr></tbody></table>';
           } else if (v === 'manifestacao') {
-            t = '<h3 style="text-align:center;margin:24px 0;font-size:18px;color:#1c2737;">MANIFESTAÃ‡ÃƒO TÃ‰CNICA â€” MODELO</h3><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Processo:</b> 0029.028135/2026-69</p><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Interessado:</b> Conselho Escolar EMEIEF TarumÃ£</p><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Objeto:</b> AquisiÃ§Ã£o de material permanente</p><div style="height:1px;background:#d6dce5;margin:17px 0;"></div><p style="margin:16px 0;text-align:justify;font-size:11px;line-height:1.6;color:#293242;">Trata-se de processo administrativo submetido Ã  anÃ¡lise da unidade competente. A presente Ã¡rea demonstra exclusivamente a organizaÃ§Ã£o tipogrÃ¡fica, os espaÃ§amentos e a apresentaÃ§Ã£o de informaÃ§Ãµes do modelo Graphite.</p><p style="margin:16px 0;text-align:justify;font-size:11px;line-height:1.6;color:#293242;">A manifestaÃ§Ã£o conclusiva depende da conferÃªncia dos documentos, da cronologia, dos valores e das demais exigÃªncias prÃ³prias do procedimento.</p><p style="margin-top:45px;text-align:center;font-size:11px;color:#293242;">_________________________________<br>ResponsÃ¡vel pela anÃ¡lise</p>';
+            t = '<h3 style="text-align:center;margin:24px 0;font-size:18px;color:#1c2737;">MANIFESTAÇÃO TÉCNICA — MODELO</h3><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Processo:</b> 0029.028135/2026-69</p><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Interessado:</b> Conselho Escolar EMEIEF Tarumã</p><p style="margin:5px 0;font-size:11px;color:#293242;"><b>Objeto:</b> Aquisição de material permanente</p><div style="height:1px;background:#d6dce5;margin:17px 0;"></div><p style="margin:16px 0;text-align:justify;font-size:11px;line-height:1.6;color:#293242;">Trata-se de processo administrativo submetido à análise da unidade competente. A presente área demonstra exclusivamente a organização tipográfica, os espaçamentos e a apresentação de informações do modelo Graphite.</p><p style="margin:16px 0;text-align:justify;font-size:11px;line-height:1.6;color:#293242;">A manifestação conclusiva depende da conferência dos documentos, da cronologia, dos valores e das demais exigências próprias do procedimento.</p><p style="margin-top:45px;text-align:center;font-size:11px;color:#293242;">_________________________________<br>Responsável pela análise</p>';
           } else {
-            t = '<h3 style="text-align:center;margin:23px 0;font-size:18px;color:#1c2737;">RESUMO DE EXECUÃ‡ÃƒO ORÃ‡AMENTÃRIA</h3><p style="text-align:center;margin-bottom:19px;font-size:11px;color:#5b6576;">Demonstrativo Â· exercÃ­cio 2026</p><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#edf1f7;"><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Indicador</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Valor demonstrativo</th></tr></thead><tbody><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">DotaÃ§Ã£o inicial</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 29.232.721,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Empenhado</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 9.635.023,44</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Executado</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 8.077.617,01</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Saldo lÃ­quido</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 21.543.646,80</td></tr><tr style="background:#f1f4f8;font-weight:750;"><td style="padding:10px;font-size:10px;color:#293242;">Taxa de execuÃ§Ã£o</td><td style="padding:10px;font-size:10px;color:#293242;">28%</td></tr></tbody></table>';
+            t = '<h3 style="text-align:center;margin:23px 0;font-size:18px;color:#1c2737;">RESUMO DE EXECUÇÃO ORÇAMENTÁRIA</h3><p style="text-align:center;margin-bottom:19px;font-size:11px;color:#5b6576;">Demonstrativo · exercício 2026</p><table style="width:100%;border-collapse:collapse;"><thead><tr style="background:#edf1f7;"><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Indicador</th><th style="padding:10px;text-align:left;color:#384354;font-size:10px;">Valor demonstrativo</th></tr></thead><tbody><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Dotação inicial</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 29.232.721,00</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Empenhado</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 9.635.023,44</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Executado</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 8.077.617,01</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">Saldo líquido</td><td style="padding:10px;border-bottom:1px solid #e2e6ed;font-size:10px;color:#293242;">R$ 21.543.646,80</td></tr><tr style="background:#f1f4f8;font-weight:750;"><td style="padding:10px;font-size:10px;color:#293242;">Taxa de execução</td><td style="padding:10px;font-size:10px;color:#293242;">28%</td></tr></tbody></table>';
           }
           var repEl = document.getElementById('galReportContent');
           if (repEl) repEl.innerHTML = t;

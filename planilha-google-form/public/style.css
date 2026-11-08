@@ -2,7 +2,7 @@
 @import url('GRAPHITE_TOKENS.css');
 
 /* ==========================================================================
-   GBZ CAM / SEDUC-RO — MODELO 3: GRAPHITE MINIMAL (DESIGN SYSTEM v1.0)
+   SiSCAM CAM / SEDUC-RO — MODELO 3: GRAPHITE MINIMAL (DESIGN SYSTEM v1.0)
    100% Visual Modernization — Dark Matte (#10141D, #151B26, #1B2230, #222B3B)
    ========================================================================== */
 :root, [data-theme="graphite"] {
@@ -25,7 +25,7 @@
   --radius:  14px;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* GBZ CAM | Graphite Design System Tokens */
+  /* SiSCAM CAM | Graphite Design System Tokens */
   --gbz-bg:             #10141D;
   --gbz-sidebar:        #151B26;
   --gbz-surface:        #1B2230;
@@ -810,7 +810,7 @@ select option { background: var(--gbz-surface-raised, #222B3B); color: var(--gbz
 .btn-sm { padding: 6px 12px; font-size: 12px; }
 
 /* ============================================
-   FORMULÁRIO (GBZ CAM - GRAPHITE TEMPLATE)
+   FORMULÁRIO (SiSCAM CAM - GRAPHITE TEMPLATE)
    ============================================ */
 .form-grid {
   display: grid;
@@ -2361,7 +2361,7 @@ input:checked ~ .toggle-text {
   width: 40px !important;
   min-width: 40px !important;
   max-width: 40px !important;
-  background-color: #0b132b !important;
+  background-color: var(--surface, #1B2230) !important;
 }
 
 .table-wrap th[data-sort="prefixo"],
@@ -2372,7 +2372,7 @@ input:checked ~ .toggle-text {
   width: 75px !important;
   min-width: 75px !important;
   max-width: 75px !important;
-  background-color: #0b132b !important;
+  background-color: var(--surface, #1B2230) !important;
   border-right: 2px solid rgba(56, 189, 248, 0.35) !important;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5) !important;
   padding: 4px 2px !important;
@@ -2382,17 +2382,17 @@ input:checked ~ .toggle-text {
 
 .table-wrap thead th:first-child {
   z-index: 35 !important;
-  background-color: #0d1530 !important;
+  background-color: var(--surface-raised, #222B3B) !important;
 }
 
 .table-wrap thead th[data-sort="prefixo"] {
   z-index: 35 !important;
-  background-color: #0d1530 !important;
+  background-color: var(--surface-raised, #222B3B) !important;
 }
 
 tbody tr:hover td:first-child,
 tbody tr:hover td.col-prefixo {
-  background-color: #172347 !important;
+  background-color: var(--hover, #293346) !important;
 }
 
 tbody tr.linha-alerta td:first-child,
@@ -4290,7 +4290,7 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 
 
 
-/* Buscador InstantÃ¢neo por Escala (v1.3.117 - Imagem 5) */
+/* Buscador Instantâneo por Escala (v1.3.117 - Imagem 5) */
 #filtro-escala-range {
   -webkit-appearance: none;
   appearance: none;
@@ -4334,7 +4334,7 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important;
 }
 
-/* Barra de Escala para RelatÃ³rios de ImpressÃ£o (v1.3.117 - Imagem 1 e 3) */
+/* Barra de Escala para Relatórios de Impressão (v1.3.117 - Imagem 1 e 3) */
 .relatorio-escala-container {
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
@@ -4350,4 +4350,28 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 .relatorio-escala-text {
   -webkit-print-color-adjust: exact !important;
   print-color-adjust: exact !important;
+}
+/* ============================================================
+   RESPONSIVIDADE TELA DE LOGIN & BANNER WHATSAPP SUPORTE (SiSCAM)
+   ============================================================ */
+@media (max-width: 820px) {
+  .login-wrapper {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+  .login-banner-link {
+    max-width: 320px !important;
+    max-height: 400px !important;
+  }
+  .login-banner-link img {
+    max-height: 380px !important;
+  }
+}
+
+/* Badge Versão Topbar Sempre Visível */
+#badge-versao-topbar {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
