@@ -1,7 +1,7 @@
 # bump_version.ps1 — Regra de versão SiSCAM
 # Padrão: .: SiSCAM v1.XXX :. (incrementa +1 delta a cada mudança)
 param(
-    [string]$CurrentNum = "123",
+    [string]$CurrentNum = "124",
     [string]$NextNum = ""
 )
 

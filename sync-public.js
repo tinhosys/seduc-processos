@@ -14,8 +14,8 @@ const files = [
   { src: 'style.css',         dst: 'style.css' },
   { src: 'style.css',         dst: 'css/style.css' },
   { src: 'GRAPHITE_TOKENS.css', dst: 'GRAPHITE_TOKENS.css' },
-  { src: 'GRAPHITE_TOKENS.css', dst: 'css/GRAPHITE_TOKENS.css' },
   { src: 'img/banner_suporte_cam.jpg', dst: 'img/banner_suporte_cam.jpg' },
+  { src: 'img/banner-cadastre-escolas-vertical.jpg', dst: 'img/banner-cadastre-escolas-vertical.jpg' },
 ];
 let changes = 0;
 files.forEach(({ src, dst }) => {
