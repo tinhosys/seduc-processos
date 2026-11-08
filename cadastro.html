@@ -973,7 +973,7 @@
     <div class="top-header-row">
       <div style="min-width: 130px; display:flex; align-items:center;">
         <div class="siscam-badge-delta" style="display:inline-flex; align-items:center; gap:6px; color:#38bdf8; font-size:12.5px; font-weight:900; letter-spacing:1.2px; background:rgba(56,189,248,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.35); text-shadow:0 0 8px rgba(56,189,248,0.7); font-family:'Segoe UI',monospace,sans-serif;" title="Sistema Integrado CAM - SEDUC/RO">
-          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.124 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
+          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.125 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
         </div>
       </div>
       <!-- NOME DA ENTIDADE E MUNICÍPIOS VINCULADOS: 2 LINHAS (IMAGEM 5) -->
@@ -994,11 +994,11 @@
     <!-- BANNER LATERAL VERTICAL (SUPORTE WHATSAPP) -->
     <aside class="sidebar-banner-wrapper">
       <a id="link-banner-whatsapp"
-         href="https://api.whatsapp.com/send?phone=5569999064881&text=Ol%C3%A1!%20Gostaria%20de%20tirar%20d%C3%BAvidas%20sobre%20o%20cadastro%20de%20escolas%20e%20entidades%20da%20SEDUC/CAM/RO."
+         href="https://api.whatsapp.com/send?phone=5569999064881&text=Ol%C3%A1%20CAM!%20Estou%20acessando%20o%20formul%C3%A1rio%20oficial%20de%20cadastro%20de%20CONSELHO%20ESCOLAR%20-%20ALTA%20FLORESTA%20DO%20OESTE%20(CAM%2FSEDUC-RO)%20e%20gostaria%20de%20suporte%20%2F%20tirar%20d%C3%BAvidas."
          target="_blank" rel="noopener noreferrer"
          title="Fale conosco no WhatsApp: (69) 99906-4881">
         <img id="img-banner-lateral"
-             src="img/banner-cadastre-escolas-vertical.jpg?v=1.124"
+             src="img/banner-cadastre-escolas-vertical.jpg?v=1.125"
              alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
              class="sidebar-banner-img">
       </a>
@@ -1905,9 +1905,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.124"></script>
-  <script src="js/escolas.js?v=1.124"></script>
-  <script src="js/relatorios-impressao.js?v=1.124"></script>
+  <script src="js/dados.js?v=1.125"></script>
+  <script src="js/escolas.js?v=1.125"></script>
+  <script src="js/relatorios-impressao.js?v=1.125"></script>
 
   <script>
     /* ============================================================
@@ -4422,7 +4422,7 @@
       // Atualiza link dinâmico do WhatsApp no banner do topo
       const linkWhats = document.getElementById('link-banner-whatsapp');
       if (linkWhats) {
-        const msgWhats = `Olá! Estou acessando o formulário oficial de cadastro de ${entNomeWhats} - ${munNomeWhats} (CAM/SEDUC-RO) e gostaria de suporte / tirar dúvidas.`;
+        const msgWhats = `Olá CAM! Estou acessando o formulário oficial de cadastro de ${entNomeWhats} - ${munNomeWhats} (CAM/SEDUC-RO) e gostaria de suporte / tirar dúvidas.`;
         linkWhats.href = `https://api.whatsapp.com/send?phone=5569999064881&text=${encodeURIComponent(msgWhats)}`;
         linkWhats.title = `Fale com a CAM SEDUC/RO no WhatsApp: (69) 99906-4881 (${entNomeWhats} - ${munNomeWhats})`;
       }
