@@ -115,16 +115,29 @@ function renderRelatorioEscalaBar(val) {
 }
 window.renderRelatorioEscalaBar = renderRelatorioEscalaBar;
 
-function atualizarDisplayFiltroEscala(val, ativo) {
-  const info = getEscalaInfo(val);
+function atualizarDisplayFiltroEscala(minVal, maxVal, ativo) {
   const chk = document.getElementById('filtro-escala-ativo');
   const badge = document.getElementById('filtro-escala-badge');
-  const slider = document.getElementById('filtro-escala-range');
-  const ball = document.getElementById('filtro-escala-thumb-ball');
+  const rangeMin = document.getElementById('filtro-escala-range-min');
+  const rangeMax = document.getElementById('filtro-escala-range-max');
+  const ballMin = document.getElementById('filtro-escala-ball-min');
+  const ballMax = document.getElementById('filtro-escala-ball-max');
+  const activeBar = document.getElementById('filtro-escala-active-bar');
   const trackWrap = document.getElementById('filtro-escala-track-wrap');
   const ticks = document.querySelectorAll('.escala-tick-filtro');
-  const n = parseInt(val, 10);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+
+  let nMin = parseInt(minVal !== undefined && minVal !== null ? minVal : (rangeMin ? rangeMin.value : 0), 10);
+  let nMax = parseInt(maxVal !== undefined && maxVal !== null ? maxVal : (rangeMax ? rangeMax.value : 10), 10);
+  if (isNaN(nMin)) nMin = 0;
+  if (isNaN(nMax)) nMax = 10;
+  nMin = Math.max(0, Math.min(10, nMin));
+  nMax = Math.max(0, Math.min(10, nMax));
+
+  const startVal = Math.min(nMin, nMax);
+  const endVal = Math.max(nMin, nMax);
+
+  const infoMin = getEscalaInfo(startVal);
+  const infoMax = getEscalaInfo(endVal);
 
   if (chk) chk.checked = !!ativo;
 
@@ -134,11 +147,15 @@ function atualizarDisplayFiltroEscala(val, ativo) {
 
   if (badge) {
     if (ativo) {
-      badge.textContent = info.label;
-      badge.style.background = info.cor;
+      if (startVal === endVal) {
+        badge.textContent = infoMin.label;
+      } else {
+        badge.textContent = `${startVal} a ${endVal} (${infoMin.label.split(' - ')[1] || startVal} ➔ ${infoMax.label.split(' - ')[1] || endVal})`;
+      }
+      badge.style.background = infoMax.cor;
       badge.style.color = '#ffffff';
-      badge.style.borderColor = info.cor;
-      badge.style.boxShadow = '0 0 8px ' + info.cor + '80';
+      badge.style.borderColor = infoMax.cor;
+      badge.style.boxShadow = '0 0 8px ' + infoMax.cor + '80';
     } else {
       badge.textContent = 'TODAS AS ESCALAS';
       badge.style.background = '#1e293b';
@@ -148,16 +165,39 @@ function atualizarDisplayFiltroEscala(val, ativo) {
     }
   }
 
-  if (slider) {
-    slider.value = safeN;
-    slider.style.background = ativo ? info.cor : '#475569';
+  if (rangeMin) rangeMin.value = startVal;
+  if (rangeMax) rangeMax.value = endVal;
+
+  if (ballMin) {
+    ballMin.textContent = String(startVal);
+    ballMin.style.left = `calc(10px + (100% - 20px) * ${startVal} / 10)`;
+    ballMin.style.borderColor = ativo ? infoMin.cor : '#ffffff';
+    ballMin.style.boxShadow = ativo ? '0 0 8px ' + infoMin.cor : '0 1px 5px rgba(0,0,0,0.6)';
   }
 
-  if (ball) {
-    ball.textContent = String(safeN);
-    ball.style.left = `calc(10px + (100% - 20px) * ${safeN} / 10)`;
-    ball.style.borderColor = ativo ? info.cor : '#ffffff';
-    ball.style.boxShadow = ativo ? '0 0 8px ' + info.cor : '0 1px 5px rgba(0,0,0,0.6)';
+  if (ballMax) {
+    ballMax.textContent = String(endVal);
+    ballMax.style.left = `calc(10px + (100% - 20px) * ${endVal} / 10)`;
+    ballMax.style.borderColor = ativo ? infoMax.cor : '#ffffff';
+    ballMax.style.boxShadow = ativo ? '0 0 8px ' + infoMax.cor : '0 1px 5px rgba(0,0,0,0.6)';
+  }
+
+  if (activeBar) {
+    if (ativo) {
+      activeBar.style.left = `calc(10px + (100% - 20px) * ${startVal} / 10)`;
+      activeBar.style.right = `calc(100% - (10px + (100% - 20px) * ${endVal} / 10))`;
+      if (startVal === endVal) {
+        activeBar.style.background = infoMin.cor;
+      } else {
+        activeBar.style.background = `linear-gradient(90deg, ${infoMin.cor} 0%, ${infoMax.cor} 100%)`;
+      }
+      activeBar.style.boxShadow = '0 0 8px ' + infoMax.cor + '80';
+    } else {
+      activeBar.style.left = '10px';
+      activeBar.style.right = 'calc(100% - 10px)';
+      activeBar.style.background = '#475569';
+      activeBar.style.boxShadow = 'none';
+    }
   }
 
   ticks.forEach(t => {
@@ -167,20 +207,20 @@ function atualizarDisplayFiltroEscala(val, ativo) {
       t.style.height = '7px';
       t.style.opacity = '0.5';
       t.style.boxShadow = 'none';
-    } else if (tVal === safeN) {
+    } else if (tVal === startVal || tVal === endVal) {
       t.style.background = '#ffffff';
       t.style.height = '12px';
       t.style.opacity = '1';
       t.style.boxShadow = '0 0 6px rgba(255,255,255,0.95)';
-    } else if (tVal < safeN) {
-      t.style.background = '#94a3b8';
-      t.style.height = '8px';
-      t.style.opacity = '0.8';
+    } else if (tVal > startVal && tVal < endVal) {
+      t.style.background = '#e2e8f0';
+      t.style.height = '9px';
+      t.style.opacity = '0.9';
       t.style.boxShadow = 'none';
     } else {
       t.style.background = '#64748b';
       t.style.height = '7px';
-      t.style.opacity = '0.5';
+      t.style.opacity = '0.4';
       t.style.boxShadow = 'none';
     }
   });
@@ -190,41 +230,99 @@ window.atualizarDisplayFiltroEscala = atualizarDisplayFiltroEscala;
 function toggleFiltroEscalaAtivo(ativo) {
   if (typeof state !== 'undefined' && state && state.filtros) {
     state.filtros.escalaAtivo = !!ativo;
-    const slider = document.getElementById('filtro-escala-range');
-    const val = slider ? slider.value : (state.filtros.escala || 0);
-    state.filtros.escala = parseInt(val, 10);
-    atualizarDisplayFiltroEscala(val, state.filtros.escalaAtivo);
+    const rMin = document.getElementById('filtro-escala-range-min');
+    const rMax = document.getElementById('filtro-escala-range-max');
+    let vMin = rMin ? parseInt(rMin.value, 10) : (state.filtros.escalaMin !== null ? state.filtros.escalaMin : 0);
+    let vMax = rMax ? parseInt(rMax.value, 10) : (state.filtros.escalaMax !== null ? state.filtros.escalaMax : 10);
+    if (isNaN(vMin)) vMin = 0;
+    if (isNaN(vMax)) vMax = 10;
+    const sMin = Math.min(vMin, vMax);
+    const sMax = Math.max(vMin, vMax);
+    state.filtros.escalaMin = sMin;
+    state.filtros.escalaMax = sMax;
+    state.filtros.escala = sMin;
+    atualizarDisplayFiltroEscala(sMin, sMax, state.filtros.escalaAtivo);
     state.paginaAtual = 1;
     if (typeof renderProcessos === 'function') renderProcessos();
   }
 }
 window.toggleFiltroEscalaAtivo = toggleFiltroEscalaAtivo;
 
-function onInputFiltroEscala(val) {
+function onInputFiltroEscalaMin(val) {
   if (typeof state !== 'undefined' && state && state.filtros) {
+    const rMax = document.getElementById('filtro-escala-range-max');
+    let vMin = parseInt(val, 10);
+    let vMax = rMax ? parseInt(rMax.value, 10) : 10;
+    if (isNaN(vMin)) vMin = 0;
+    if (isNaN(vMax)) vMax = 10;
+    if (vMin > vMax) {
+      vMax = vMin;
+      if (rMax) rMax.value = vMax;
+    }
     state.filtros.escalaAtivo = true;
-    state.filtros.escala = parseInt(val, 10);
-    atualizarDisplayFiltroEscala(val, true);
+    state.filtros.escalaMin = vMin;
+    state.filtros.escalaMax = vMax;
+    state.filtros.escala = vMin;
+    atualizarDisplayFiltroEscala(vMin, vMax, true);
     state.paginaAtual = 1;
     if (typeof renderProcessos === 'function') renderProcessos();
   }
 }
-window.onInputFiltroEscala = onInputFiltroEscala;
+window.onInputFiltroEscalaMin = onInputFiltroEscalaMin;
 
-function selecionarFiltroEscala(val) {
-  const slider = document.getElementById('filtro-escala-range');
-  if (slider) slider.value = val;
-  onInputFiltroEscala(val);
+function onInputFiltroEscalaMax(val) {
+  if (typeof state !== 'undefined' && state && state.filtros) {
+    const rMin = document.getElementById('filtro-escala-range-min');
+    let vMax = parseInt(val, 10);
+    let vMin = rMin ? parseInt(rMin.value, 10) : 0;
+    if (isNaN(vMax)) vMax = 10;
+    if (isNaN(vMin)) vMin = 0;
+    if (vMax < vMin) {
+      vMin = vMax;
+      if (rMin) rMin.value = vMin;
+    }
+    state.filtros.escalaAtivo = true;
+    state.filtros.escalaMin = vMin;
+    state.filtros.escalaMax = vMax;
+    state.filtros.escala = vMin;
+    atualizarDisplayFiltroEscala(vMin, vMax, true);
+    state.paginaAtual = 1;
+    if (typeof renderProcessos === 'function') renderProcessos();
+  }
 }
-window.selecionarFiltroEscala = selecionarFiltroEscala;
+window.onInputFiltroEscalaMax = onInputFiltroEscalaMax;
+
+function selecionarFiltroEscalaPonto(val) {
+  if (typeof state !== 'undefined' && state && state.filtros) {
+    const p = parseInt(val, 10);
+    const safeP = isNaN(p) ? 0 : Math.max(0, Math.min(10, p));
+    state.filtros.escalaAtivo = true;
+    state.filtros.escalaMin = safeP;
+    state.filtros.escalaMax = safeP;
+    state.filtros.escala = safeP;
+    const rMin = document.getElementById('filtro-escala-range-min');
+    const rMax = document.getElementById('filtro-escala-range-max');
+    if (rMin) rMin.value = safeP;
+    if (rMax) rMax.value = safeP;
+    atualizarDisplayFiltroEscala(safeP, safeP, true);
+    state.paginaAtual = 1;
+    if (typeof renderProcessos === 'function') renderProcessos();
+  }
+}
+window.selecionarFiltroEscalaPonto = selecionarFiltroEscalaPonto;
+window.selecionarFiltroEscala = selecionarFiltroEscalaPonto;
 
 function limparFiltroEscala() {
   if (typeof state !== 'undefined' && state && state.filtros) {
     state.filtros.escalaAtivo = false;
     state.filtros.escala = null;
-    const slider = document.getElementById('filtro-escala-range');
-    const val = slider ? slider.value : 0;
-    atualizarDisplayFiltroEscala(val, false);
+    state.filtros.escalaMin = 0;
+    state.filtros.escalaMax = 10;
+    const rMin = document.getElementById('filtro-escala-range-min');
+    const rMax = document.getElementById('filtro-escala-range-max');
+    if (rMin) rMin.value = 0;
+    if (rMax) rMax.value = 10;
+    atualizarDisplayFiltroEscala(0, 10, false);
     state.paginaAtual = 1;
     if (typeof renderProcessos === 'function') renderProcessos();
   }
@@ -444,7 +542,7 @@ window.formatarDigitoInteiro = window.limparDigitoValor;
 // Função global para limpar todos os filtros de processos
 window.limparFiltros = function() {
   if (typeof state !== 'undefined' && state && state.filtros) {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaAtivo: false };
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaMin: 0, escalaMax: 10, escalaAtivo: false };
     if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, false);
     state.paginaAtual = 1;
   }
@@ -864,6 +962,8 @@ let state = {
     gab: false,
     cc: false,
     escala: null,
+    escalaMin: 0,
+    escalaMax: 10,
     escalaAtivo: false
   },
   paginaAtual: 1,
@@ -1848,14 +1948,21 @@ function getFiltrados() {
   }
   filterIncludesMultiple('prefixo', state.filtros.prefixo);
 
-  // Filtro por Escala (Buscador instantâneo - Imagem 5)
-  if (state.filtros.escalaAtivo && state.filtros.escala !== null && state.filtros.escala !== undefined && state.filtros.escala !== '') {
-    const escalaAlvo = parseInt(state.filtros.escala, 10);
+  // Filtro por Escala Intervalo (Buscador instantâneo de X a Y - v1.133)
+  if (state.filtros.escalaAtivo) {
+    const minE = (state.filtros.escalaMin !== null && state.filtros.escalaMin !== undefined)
+      ? parseInt(state.filtros.escalaMin, 10)
+      : (state.filtros.escala !== null && state.filtros.escala !== undefined ? parseInt(state.filtros.escala, 10) : 0);
+    const maxE = (state.filtros.escalaMax !== null && state.filtros.escalaMax !== undefined)
+      ? parseInt(state.filtros.escalaMax, 10)
+      : (state.filtros.escala !== null && state.filtros.escala !== undefined ? parseInt(state.filtros.escala, 10) : 10);
+    const sMin = Math.min(isNaN(minE) ? 0 : minE, isNaN(maxE) ? 10 : maxE);
+    const sMax = Math.max(isNaN(minE) ? 0 : minE, isNaN(maxE) ? 10 : maxE);
     lista = lista.filter(p => {
       const pEscala = (p.escala !== undefined && p.escala !== null && String(p.escala).trim() !== '')
         ? parseInt(p.escala, 10)
         : 0;
-      return !isNaN(pEscala) && pEscala === escalaAlvo;
+      return !isNaN(pEscala) && pEscala >= sMin && pEscala <= sMax;
     });
   }
 
@@ -5564,8 +5671,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.limparFiltros = function() {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaAtivo: false };
-    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, false);
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaMin: 0, escalaMax: 10, escalaAtivo: false };
+    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, 10, false);
     state.paginaAtual = 1;
     const fb = document.getElementById('filtro-busca');
     if (fb) fb.value = '';

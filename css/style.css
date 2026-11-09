@@ -4290,38 +4290,60 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 
 
 
-/* Buscador Instantâneo por Escala (v1.3.117 - Imagem 5) */
-#filtro-escala-range {
-  -webkit-appearance: none;
-  appearance: none;
+/* Buscador Instantâneo por Escala Dupla (v1.133 - Imagem de X a Y) */
+.filtro-escala-range-input {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
-  height: 8px;
-  border-radius: 999px;
-  outline: none;
-  cursor: pointer;
+  height: 100%;
   margin: 0;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
-  transition: background 0.2s ease;
-}
-#filtro-escala-range::-webkit-slider-thumb {
+  padding: 0;
+  background: transparent !important;
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  box-shadow: none;
+  outline: none;
+  pointer-events: none;
+  z-index: 20;
 }
-#filtro-escala-range::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
+.filtro-escala-range-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: transparent;
   border: none;
   cursor: pointer;
-  box-shadow: none;
+  pointer-events: auto;
+}
+.filtro-escala-range-input::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  pointer-events: auto;
+}
+#filtro-escala-ball-min, #filtro-escala-ball-max {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0f172a;
+  font-weight: 900;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.6);
+  pointer-events: none;
+  border: 2px solid #ffffff;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 .escala-tick-filtro {
   cursor: pointer;
