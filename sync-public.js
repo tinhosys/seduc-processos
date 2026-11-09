@@ -15,6 +15,8 @@ const files = [
   { src: 'style.css',         dst: 'css/style.css' },
   { src: 'GRAPHITE_TOKENS.css', dst: 'GRAPHITE_TOKENS.css' },
   { src: 'img/banner_suporte_cam.jpg', dst: 'img/banner_suporte_cam.jpg' },
+  { src: 'img/banner_suporte_cam.png', dst: 'img/banner_suporte_cam.png' },
+  { src: 'img/logo-cam-login.png', dst: 'img/logo-cam-login.png' },
   { src: 'img/banner-cadastre-escolas-vertical.jpg', dst: 'img/banner-cadastre-escolas-vertical.jpg' },
   { src: 'img/banner-cadastre-escolas-vertical.png', dst: 'img/banner-cadastre-escolas-vertical.png' },
 ];

@@ -269,7 +269,7 @@
       .sidebar-banner-img {
         width: 100% !important;
         height: auto !important;
-        aspect-ratio: 287 / 1024;
+        aspect-ratio: 409 / 1024;
         object-fit: contain !important;
       }
       .form-section-wrapper {
@@ -1941,7 +1941,7 @@
     
     /* ============================================================
        SINCRONIZAÇÃO DINÂMICA DO BANNER LATERAL COM A ALTURA DO FORMULÁRIO
-       Regra: Banner na altura do formulário, largura proporcional (287 / 1024)
+       Regra: Banner na altura do formulário, largura proporcional (409 / 1024)
        ============================================================ */
     function sincronizarBannerComFormulario() {
       const formSection = document.getElementById('form-section-wrapper');
@@ -1960,7 +1960,7 @@
 
       const formHeight = Math.round(formSection.getBoundingClientRect().height || formSection.offsetHeight);
       if (formHeight > 150) {
-        const aspect = 287 / 1024;
+        const aspect = 409 / 1024;
         const bannerWidth = Math.round(formHeight * aspect);
 
         bannerWrapper.style.height = formHeight + 'px';
