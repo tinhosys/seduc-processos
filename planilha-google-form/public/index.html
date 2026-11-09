@@ -780,96 +780,130 @@
   display:flex; align-items:center; justify-content:center;
   padding: 20px; box-sizing: border-box; overflow-y: auto;
 ">
-  <div class="login-wrapper" style="
-    display: flex; align-items: stretch; justify-content: center; gap: 16px;
-    max-width: 900px; width: 100%; margin: auto;
-    background: #00a859 url('img/bg-login-frame.png?v=1.130') center / cover no-repeat; padding: 18px; border-radius: 28px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.7), 0 0 30px rgba(0, 168, 89, 0.3);
-    box-sizing: border-box;
+  <div class="login-screen-card" style="
+    position: relative;
+    width: 100%;
+    max-width: 901px;
+    aspect-ratio: 901 / 665;
+    background: transparent;
+    border-radius: 28px;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.8), 0 0 35px rgba(0, 168, 89, 0.45);
+    overflow: hidden;
+    margin: auto;
   ">
-    <!-- COLUNA ESQUERDA: FLYER SUPORTE CAM (IMAGEM 1) COM LINK DIRETO PARA WHATSAPP -->
+    <!-- ARTE OFICIAL COMPLETA DA TELA INICIAL (IMAGEM 100% FIEL) -->
+    <img src="img/tela-inicial-siscam.png?v=1.131"
+         alt="SiSCAM - Sistema Integrado CAM / SEDUC-RO"
+         style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none;">
+
+    <!-- LINK CLICÁVEL DO WHATSAPP DE SUPORTE NO FLYER DA ESQUERDA -->
     <a href="https://wa.me/5569999064881?text=Ol%C3%A1%2C%20equipe%20da%20CAM!%20Preciso%20de%20suporte%20no%20SiSCAM." 
        target="_blank" rel="noopener noreferrer" 
-       title="Precisa de ajuda? Clique para solicitar suporte da equipe da CAM pelo WhatsApp: (69) 99906-4881"
-       class="login-banner-link"
+       title="Precisa de ajuda? Clique para suporte da equipe da CAM pelo WhatsApp: (69) 99906-4881"
        style="
-         display: flex; align-items: stretch; justify-content: center;
-         flex: 1 1 0; max-width: 440px; min-width: 280px; text-decoration: none;
-         border-radius: 18px; overflow: hidden;
-         border: none;
-         box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-         background: transparent;
-         cursor: pointer;
+         position: absolute; left: 3.11%; top: 4.36%; width: 44.84%; height: 91.28%;
+         z-index: 10; cursor: pointer; border-radius: 20px; text-decoration: none;
+         transition: all 0.25s ease;
        "
-       onmouseover="this.style.transform='translateY(-2px) scale(1.01)';"
-       onmouseout="this.style.transform='none';"
+       onmouseover="this.style.boxShadow='inset 0 0 0 3px rgba(255,255,255,0.4), 0 0 20px rgba(56,189,248,0.5)';"
+       onmouseout="this.style.boxShadow='none';"
+    ></a>
+
+    <!-- CAMPO INTERATIVO: WHATSAPP DE ACESSO -->
+    <input type="text" id="login-whatsapp" placeholder="(00) 0 0000-0000" autocomplete="new-password"
+      style="
+        position: absolute;
+        left: 56.60%; top: 40.15%; width: 36.74%; height: 9.02%;
+        z-index: 20;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #0f172a;
+        font-size: clamp(14px, 1.9vw, 18px);
+        font-weight: 700;
+        padding: 0 16px;
+        box-sizing: border-box;
+      "
+      onfocus="this.style.background='rgba(2, 132, 199, 0.06)'; this.style.borderRadius='12px';"
+      onblur="this.style.background='transparent';"
+      oninput="this.value = maskCelular(this.value)"
+      onkeydown="if(event.key==='Enter') realizarLogin()"
     >
-      <img src="img/banner_suporte_cam.png?v=1.129" alt="Suporte da equipe da CAM - WhatsApp (69) 99906-4881" 
-           style="width: 100%; height: 100%; object-fit: fill; display: block; border-radius: 18px; border: none;">
-    </a>
 
-    <!-- COLUNA DIREITA: CARD DE LOGIN BRANCO COM LOGO OFICIAL (IMAGEM 1) -->
+    <!-- CAMPO INTERATIVO: SENHA (4 DÍGITOS) -->
+    <input type="password" id="login-senha" placeholder="****" maxlength="4" pattern="[0-9]*" inputmode="numeric" autocomplete="new-password"
+      style="
+        position: absolute;
+        left: 56.60%; top: 53.53%; width: 36.74%; height: 9.17%;
+        z-index: 20;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #0f172a;
+        font-size: clamp(16px, 2.2vw, 22px);
+        font-weight: 900;
+        text-align: center;
+        letter-spacing: 8px;
+        padding: 0 16px;
+        box-sizing: border-box;
+      "
+      onfocus="this.style.background='rgba(2, 132, 199, 0.06)'; this.style.borderRadius='12px';"
+      onblur="this.style.background='transparent';"
+      oninput="this.value = this.value.replace(/\D/g, '')"
+      onkeydown="if(event.key==='Enter') realizarLogin()"
+    >
+
+    <!-- BOTÃO INTERATIVO: ENTRAR NO SISTEMA -->
+    <button onclick="realizarLogin()" id="btn-login"
+      title="Clique para entrar no SiSCAM"
+      style="
+        position: absolute;
+        left: 56.60%; top: 71.58%; width: 36.63%; height: 8.72%;
+        z-index: 20;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        border-radius: 12px;
+        transition: background 0.2s;
+      "
+      onmouseover="this.style.background='rgba(255,255,255,0.18)'"
+      onmouseout="this.style.background='transparent'"
+    ></button>
+
+    <!-- MENSAGEM DE FEEDBACK E ERRO -->
+    <div id="login-error" style="
+      position: absolute;
+      left: 56.60%; top: 81.20%; width: 36.63%;
+      z-index: 20;
+      color: #dc2626;
+      font-size: clamp(10px, 1.3vw, 13px);
+      font-weight: 800;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.9);
+      pointer-events: none;
+    "></div>
+    <div id="login-loading" style="
+      position: absolute;
+      left: 56.60%; top: 81.20%; width: 36.63%;
+      z-index: 20;
+      color: #0284c7;
+      font-size: clamp(10px, 1.3vw, 13px);
+      font-weight: 800;
+      text-align: center;
+      display: none;
+      pointer-events: none;
+    ">Verificando acesso...</div>
+
+    <!-- BADGE OFICIAL DE VERSÃO DINÂMICA (SUBSTITUINDO O v1.127 PELO DELTA ATUALIZADO) -->
     <div style="
-      background: #ffffff; border: none;
-      border-radius: 22px; padding: 32px 30px; width: 100%; max-width: 400px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-      text-align: center; display: flex; flex-direction: column; justify-content: center;
-      box-sizing: border-box;
-    ">
-      <!-- LOGO CAM - COORDENADORIA DE ARTICULAÇÃO COM OS MUNICÍPIOS / SEDUC RO -->
-      <div style="text-align: center; margin-bottom: 22px;">
-        <img src="img/logo-cam-login.png?v=1.129" alt="CAM - Coordenadoria de Articulação com os Municípios - SEDUC / RO"
-             style="width: 100%; max-width: 270px; height: auto; object-fit: contain; display: inline-block;">
-      </div>
-      
-      <div style="text-align:left; margin-bottom:16px;">
-        <label style="color:#1e293b; font-size:12.5px; font-weight:800; display:block; margin-bottom:7px; letter-spacing: 0.3px; text-transform: uppercase;">WHATSAPP DE ACESSO</label>
-        <input type="text" id="login-whatsapp" placeholder="(00) 0 0000-0000" autocomplete="new-password"
-          style="
-            width:100%; padding:13px 16px; border-radius:12px;
-            background:#ffffff; border:2.5px solid #0284c7;
-            color:#0f172a; font-size:15px; font-weight:600; outline:none; box-sizing:border-box;
-            transition: all 0.2s ease;
-          "
-          onfocus="this.style.borderColor='#0369a1'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.2)';"
-          onblur="this.style.borderColor='#0284c7'; this.style.boxShadow='none';"
-          oninput="this.value = maskCelular(this.value)"
-          onkeydown="if(event.key==='Enter') realizarLogin()"
-        >
-      </div>
-
-      <div style="text-align:left; margin-bottom:20px;">
-        <label style="color:#1e293b; font-size:12.5px; font-weight:800; display:block; margin-bottom:7px; letter-spacing: 0.3px; text-transform: uppercase;">SENHA (4 DÍGITOS)</label>
-        <input type="password" id="login-senha" placeholder="****" maxlength="4" pattern="[0-9]*" inputmode="numeric" autocomplete="new-password"
-          style="
-            width:100%; padding:13px 16px; border-radius:12px;
-            background:#ffffff; border:2.5px solid #0284c7;
-            color:#0f172a; font-size:18px; font-weight:800; text-align:center; letter-spacing:6px; outline:none; box-sizing:border-box;
-            transition: all 0.2s ease;
-          "
-          onfocus="this.style.borderColor='#0369a1'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.2)';"
-          onblur="this.style.borderColor='#0284c7'; this.style.boxShadow='none';"
-          oninput="this.value = this.value.replace(/\D/g, '')"
-          onkeydown="if(event.key==='Enter') realizarLogin()"
-        >
-      </div>
-      
-      <button onclick="realizarLogin()" id="btn-login"
-        style="
-          width:100%; padding:15px; border-radius:10px; border:none; cursor:pointer;
-          background: #176585; color:#ffffff;
-          font-size:16.5px; font-weight:700; letter-spacing:0.3px;
-          transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(23, 101, 133, 0.4);
-        "
-        onmouseover="this.style.background='#104c66'; this.style.boxShadow='0 6px 18px rgba(16, 76, 102, 0.5)';"
-        onmouseout="this.style.background='#176585'; this.style.boxShadow='0 4px 14px rgba(23, 101, 133, 0.4)';"
-      >Entrar no Sistema</button>
-      
-      <div id="login-error" style="color:#dc2626; font-size:13px; font-weight:700; margin-top:14px; min-height:20px;"></div>
-      <div id="login-loading" style="color:#64748b; font-size:13px; margin-top:10px; display:none;">Verificando acesso...</div>
-      <div style='text-align: center; color: #0284c7; font-size: 13.5px; font-weight: 800; margin-top: 22px; letter-spacing: 0.8px;'>∴ SiSCAM v1.129 ∴</div>
-    </div>
+      position: absolute;
+      left: 56.60%; top: 89.62%; width: 36.63%; height: 4.51%;
+      z-index: 25;
+      background: #ffffff;
+      display: flex; align-items: center; justify-content: center;
+      color: #0284c7; font-size: clamp(11px, 1.4vw, 13.5px); font-weight: 800; letter-spacing: 0.8px;
+      pointer-events: none;
+    ">∴ SiSCAM v1.131 ∴</div>
   </div>
 </div>
 
@@ -3218,7 +3252,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.130</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.131</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -4171,7 +4205,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.130] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.131] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>

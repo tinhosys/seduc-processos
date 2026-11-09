@@ -18,6 +18,7 @@ const files = [
   { src: 'img/banner_suporte_cam.png', dst: 'img/banner_suporte_cam.png' },
   { src: 'img/logo-cam-login.png', dst: 'img/logo-cam-login.png' },
   { src: 'img/bg-login-frame.png', dst: 'img/bg-login-frame.png' },
+  { src: 'img/tela-inicial-siscam.png', dst: 'img/tela-inicial-siscam.png' },
   { src: 'img/banner-cadastre-escolas-vertical.jpg', dst: 'img/banner-cadastre-escolas-vertical.jpg' },
   { src: 'img/banner-cadastre-escolas-vertical.png', dst: 'img/banner-cadastre-escolas-vertical.png' },
 ];
