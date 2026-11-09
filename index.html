@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=1.128">
+  <link rel="stylesheet" href="css/style.css?v=v1.132">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -792,7 +792,7 @@
     margin: auto;
   ">
     <!-- ARTE OFICIAL COMPLETA DA TELA INICIAL (IMAGEM 100% FIEL) -->
-    <img src="img/tela-inicial-siscam.png?v=1.131"
+    <img src="img/tela-inicial-siscam.png?v=v1.132"
          alt="SiSCAM - Sistema Integrado CAM / SEDUC-RO"
          style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none;">
 
@@ -903,7 +903,7 @@
       display: flex; align-items: center; justify-content: center;
       color: #0284c7; font-size: clamp(11px, 1.4vw, 13.5px); font-weight: 800; letter-spacing: 0.8px;
       pointer-events: none;
-    ">∴ SiSCAM v1.131 ∴</div>
+    ">∴ SiSCAM v1.132 ∴</div>
   </div>
 </div>
 
@@ -1222,7 +1222,7 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
-          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.127 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
+          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.132 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
         </div>
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
           <!-- Botão Modo mobile Global no Topo da Aplicação (Visível em todos os forms) -->
@@ -1871,6 +1871,12 @@
               </div>
             </div>
 
+            <!-- BOTAO NOVO RELATORIO EXECUTIVO (IMAGEM 1) -->
+            <button type="button" class="btn action-report" id="btn-relatorio-executivo" style="padding:0 12px; height:38px; min-height:38px; max-height:38px; min-width:130px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1.5px solid #10b981; border-radius:8px; background:linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(5,150,105,0.3) 100%); color:#34d399; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box; box-shadow:0 0 10px rgba(16,185,129,0.25); flex-shrink:0;" onmouseover="this.style.background='rgba(16,185,129,0.45)'; this.style.color='#ffffff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(5,150,105,0.3) 100%)'; this.style.color='#34d399';" title="Novo Relatório Agrupado por Executivo (Somando e Contando)" onclick="if(typeof window.imprimirRelatorioExecutivo==='function'){window.imprimirRelatorioExecutivo();}else if(typeof imprimirRelatorioExecutivo==='function'){imprimirRelatorioExecutivo();}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              <span class="btn-text">Executivo</span>
+            </button>
+
             <!-- BOTÕES DE AÇÃO: PLANILHA, COMPARTILHAR, ALFA, ADM 1, ADM 2, EXCEL -->
             <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px;">
             <button type="button" id="btn-planilha-topo" class="btn action-report action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=168431103#gid=168431103', '_blank')" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha Principal Google Sheets (Exclusivo Admin)">
@@ -1950,8 +1956,8 @@
               </select>
             </div>
 
-            <div class="action-adm" id="container-filtro-executivo" style="display: none; flex: 0 0 220px; width: 220px; min-width: 180px;">
-              <select id="filtro-executivo" class="action-adm" multiple style="width:100%;">
+            <div id="container-filtro-executivo" style="flex: 0 0 170px; width: 170px; min-width: 150px; max-width: 190px;">
+              <select id="filtro-executivo" multiple style="width:100%; height:38px !important; min-height:38px !important; max-height:38px !important;">
                 <option value="">EXECUTIVO</option>
               </select>
             </div>
@@ -3252,7 +3258,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.131</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.132</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3933,7 +3939,7 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.127 ∴</span>
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.132 ∴</span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
@@ -4205,7 +4211,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.131] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.132] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6521,14 +6527,14 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=1.128"></script>
-  <script src="js/auth-sap.js?v=1.128"></script>
-  <script src="js/dados.js?v=1.128"></script>
-  <script src="js/app.js?v=1.128"></script>
-  <script src="js/escolas.js?v=1.128" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=1.3.55"></script>
-  <script src="js/mapa.js?v=1.3.55"></script>
-  <script src="js/contatos.js?v=1.3.55"></script>
+  <script src="js/multi-select.js?v=v1.132"></script>
+  <script src="js/auth-sap.js?v=v1.132"></script>
+  <script src="js/dados.js?v=v1.132"></script>
+  <script src="js/app.js?v=v1.132"></script>
+  <script src="js/escolas.js?v=v1.132" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=v1.132.55"></script>
+  <script src="js/mapa.js?v=v1.132.55"></script>
+  <script src="js/contatos.js?v=v1.132.55"></script>
 
 
   <script>
@@ -6721,12 +6727,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=1.128"></script>
-  <script src="js/gmac.js?v=1.128"></script>
-  <script src="js/orcamento.js?v=1.128"></script>
-  <script src="js/gdsm.js?v=1.128"></script>
-  <script src="js/print-proalfa.js?v=1.128"></script>
-  <script src="js/proalfa.js?v=1.128"></script>
+  <script src="js/diarias.js?v=v1.132"></script>
+  <script src="js/gmac.js?v=v1.132"></script>
+  <script src="js/orcamento.js?v=v1.132"></script>
+  <script src="js/gdsm.js?v=v1.132"></script>
+  <script src="js/print-proalfa.js?v=v1.132"></script>
+  <script src="js/proalfa.js?v=v1.132"></script>
 
 
 

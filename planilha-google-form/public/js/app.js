@@ -1749,7 +1749,7 @@ function getFiltrados() {
       normalizar(p.municipio).includes(q) ||
       normalizar(p.objeto).includes(q) ||
       normalizar(p.analista).includes(q) ||
-      ((typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) && normalizar(p.executivo).includes(q)) ||
+      normalizar(p.executivo).includes(q) ||
       normalizar(p.obs).includes(q) ||
       normalizar(p.anotacao).includes(q) ||
       normalizar(p.prefixo).includes(q) ||
@@ -1795,7 +1795,7 @@ function getFiltrados() {
   filterByMultiple('municipio', municipio);
   filterByMultiple('objeto', objeto);
   filterByMultiple('analista', analista);
-  if (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) { filterByMultiple('executivo', executivo); }
+  filterByMultiple('executivo', executivo);
   filterByMultiple('categoria', categoria);
   filterByMultiple('tipo', tipo);
   filterByMultiple('ano', ano);
@@ -2101,19 +2101,8 @@ function renderProcessos() {
   }
   const _isAdmRender = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
   const _contFiltroExec = document.getElementById('container-filtro-executivo');
-  if (_contFiltroExec) _contFiltroExec.style.setProperty('display', _isAdmRender ? 'block' : 'none', 'important');
-  if (_isAdmRender) {
-    preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
-  } else {
-    state.filtros.executivo = [];
-    const _selExec = document.getElementById('filtro-executivo');
-    if (_selExec) {
-      _selExec.innerHTML = '<option value="">EXECUTIVO</option>';
-      if (_selExec._multiSelectInstance && _selExec._multiSelectInstance.wrapper) {
-        _selExec._multiSelectInstance.wrapper.style.setProperty('display', 'none', 'important');
-      }
-    }
-  }
+  if (_contFiltroExec) _contFiltroExec.style.setProperty('display', 'block', 'important');
+  preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')));
   preencherSelectFiltro('filtro-ano',         [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
   // Mapeamento de categorias e tipos para exibição amigável
@@ -2329,7 +2318,7 @@ function renderProcessos() {
       fByMulti('localizacao', localizacao);
       fByMulti('municipio', municipio);
       fByMulti('objeto', objeto);
-      if (_isAdmRender) { fByMulti('executivo', executivo); }
+      fByMulti('executivo', executivo);
       fByMulti('categoria', categoria);
       fByMulti('tipo', tipo);
       fByMulti('ano', ano);
@@ -5682,19 +5671,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       const _contExecPop = document.getElementById('container-filtro-executivo');
-      if (_contExecPop) _contExecPop.style.setProperty('display', _isAdmPop ? 'block' : 'none', 'important');
-      if (_isAdmPop) {
-        preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
-      } else {
-        state.filtros.executivo = [];
-        const _selExecPop = document.getElementById('filtro-executivo');
-        if (_selExecPop) {
-          _selExecPop.innerHTML = '<option value="">EXECUTIVO</option>';
-          if (_selExecPop._multiSelectInstance && _selExecPop._multiSelectInstance.wrapper) {
-            _selExecPop._multiSelectInstance.wrapper.style.setProperty('display', 'none', 'important');
-          }
-        }
-      }
+      if (_contExecPop) _contExecPop.style.setProperty('display', 'block', 'important');
+      preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')));
       preencherSelectFiltro('filtro-ano', [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b) => b - a));
       preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
 
@@ -6485,6 +6463,289 @@ function imprimirAlfa(filtrados = getFiltrados()) {
 window.imprimirAlfa = imprimirAlfa;
 
 // ============= RELATÓRIO ADM 2 (AGRUPADO POR DÍGITO C/ LINHA MEMORANDO) =============
+
+// ============= NOVO RELATÓRIO EXECUTIVO (AGRUPADO POR EXECUTIVO, SOMANDO E CONTANDO) =============
+function imprimirRelatorioExecutivo(filtrados = getFiltrados()) {
+  // Question antes de abrir: mostrar ou esconder anotações internas / agrupamentos (detalhamentos na impressão)
+  let incluirDetalhes = true;
+  try {
+    incluirDetalhes = window.confirm("Deseja exibir as linhas de detalhamento (Comentários de Agrupamento e Anotação Interna) na impressão do Relatório Executivo?\n\n[OK] = SIM (Mostrar detalhamentos)\n[Cancelar] = NÃO (Ocultar apontamentos e compactar linhas)");
+  } catch (e) {
+    incluirDetalhes = true;
+  }
+
+  // Agrupamento por campo 'Executivo'
+  const grupos = {};
+  filtrados.forEach(p => {
+    const execRaw = String(p.executivo || '').trim();
+    const chave = execRaw || 'SEM EXECUTIVO DEFINIDO';
+    if (!grupos[chave]) grupos[chave] = [];
+    grupos[chave].push(p);
+  });
+
+  const chavesOrdenadas = Object.keys(grupos).sort((a, b) => {
+    if (a === 'SEM EXECUTIVO DEFINIDO') return 1;
+    if (b === 'SEM EXECUTIVO DEFINIDO') return -1;
+    return a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' });
+  });
+
+  let globalIndex = 0;
+  let rowsHtml = '';
+
+  // Distância / padding entre as linhas: mais compacto quando sem detalhes
+  const paddingLinha = incluirDetalhes ? '3px 2px' : '2px 2px';
+  const paddingValor = incluirDetalhes ? '3px 4px' : '2px 4px';
+  const fontSizeCorpo = incluirDetalhes ? '9.5px' : '9px';
+
+  chavesOrdenadas.forEach(chave => {
+    const procs = grupos[chave];
+    const totalGrupo = procs.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+
+    // Linha de Cabeçalho do Grupo do Executivo (Somando e Contando)
+    rowsHtml += `
+      <tr class="no-page-break group-header-digito" style="page-break-inside: avoid; break-inside: avoid; background-color: #008080 !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <td colspan="8" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <span style="color: #ffffff !important; font-weight: normal; letter-spacing: 0.5px;">${chave}</span>
+          <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #ffffff !important;">(${procs.length} processos &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
+        </td>
+      </tr>
+    `;
+
+    procs.forEach(p => {
+      globalIndex++;
+      const zebraBg = globalIndex % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
+
+      // Linha Principal do Processo (Excluída a coluna DATA)
+      rowsHtml += `
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; text-align:center; font-size:${fontSizeCorpo}; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:${fontSizeCorpo}; font-weight:normal; width:13%;">${p.municipio || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:9px; font-weight:normal; width:14%;"><div style="white-space:nowrap !important; font-weight:600; color:#0f172a; margin-bottom:2px;">${p.numero || '-'}</div>${typeof renderRelatorioEscalaBar === 'function' ? renderRelatorioEscalaBar(p.escala) : ''}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:${fontSizeCorpo}; font-weight:normal; width:18%;">${p.interessado || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:${fontSizeCorpo}; font-weight:normal; white-space:normal; word-wrap:break-word; width:26%;">${p.objeto || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; text-transform: uppercase; font-size:${fontSizeCorpo}; font-weight:normal; width:9%;">${p.status || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:${fontSizeCorpo}; font-weight:normal; width:8%;">${p.localizacao || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingValor}; text-align:right; font-size:${fontSizeCorpo}; font-weight:normal; width:13%; white-space:nowrap;">${formatNumberOnly(p.valorOf)}</td>
+        </tr>
+      `;
+
+      // Linhas com apontamento de 'agrupamento' e 'Anotação Interna' (mostra se sim, oculta se nao)
+      if (incluirDetalhes) {
+        const partesMemo = [];
+        if (p.agrupamento && String(p.agrupamento).trim()) {
+          partesMemo.push(String(p.agrupamento).trim());
+        }
+        if (p.anotacao && String(p.anotacao).trim()) {
+          partesMemo.push(String(p.anotacao).trim());
+        }
+
+        if (partesMemo.length > 0) {
+          const memoTexto = partesMemo.join(' - ');
+          rowsHtml += `
+            <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color: #fff9f9;">
+              <td colspan="8" style="border: 1px solid #cbd5e1; border-top: none; padding: 2px 8px 3px 12px; font-size: 8.5px; font-style: italic; color: #dc2626; line-height: 1.3;">
+                ${memoTexto}
+              </td>
+            </tr>
+          `;
+        }
+      }
+    });
+  });
+
+  const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+  const totalRow = `
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="7" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
+    </tr>`;
+  rowsHtml += totalRow;
+
+  const html = `
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2.5px solid #0f172a; padding-bottom: 6px; margin-bottom: 10px; font-family: Arial, sans-serif;">
+              <div>
+                <div style="font-size: 13px; font-weight: normal; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSO | EXECUTIVO</div>
+              </div>
+              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: normal;">
+                <span>Total: <span style="color:#0f172a;">${filtrados.length} processos</span></span>
+                <span style="margin: 0 8px; color: #cbd5e1;">|</span>
+                <span>Valor Total: <span style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</span></span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
+              <colgroup>
+                <col style="width: 3%;">
+                <col style="width: 13%;">
+                <col style="width: 14%;">
+                <col style="width: 18%;">
+                <col style="width: 26%;">
+                <col style="width: 9%;">
+                <col style="width: 8%;">
+                <col style="width: 13%;">
+              </colgroup>
+              <thead>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:normal;">Nº</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:13%; font-size:10px; font-weight:normal;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:14%; font-size:10px; font-weight:normal;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:18%; font-size:10px; font-weight:normal;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:26%; font-size:10px; font-weight:normal;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:9%; font-size:10px; font-weight:normal;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:normal;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 3px; text-align:right; width:13%; font-size:10px; font-weight:normal; white-space:nowrap;">VALOR R$</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || '<tr><td colspan="8" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span style="color: #0f172a; text-transform: uppercase; font-weight: normal;">LEGENDA:</span>
+                  <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span style="color: #0f172a; text-transform: uppercase; font-weight: normal;">AUTORIZAÇÕES:</span>
+                  <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+
+  let container = document.getElementById('print-layout-relatorio-executivo');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'print-layout-relatorio-executivo';
+    container.className = 'print-only-layout';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = html;
+
+  // Oculta os outros layouts
+  ['print-layout-padrao', 'print-layout-padrao-adm', 'print-layout-padrao-adm-2', 'print-layout-alfa', 'print-layout-detalhado', 'print-layout-analise'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  container.style.display = 'block';
+
+  const pageProcessos = document.getElementById('page-processos');
+  if (pageProcessos) pageProcessos.style.display = 'none';
+
+  const appLayout = document.querySelector('.app-layout');
+  const origAppLayoutDisplay = appLayout ? appLayout.style.display : '';
+  if (appLayout) appLayout.style.display = 'none';
+
+  const tickerContainer = document.getElementById('seduc-news-ticker-container');
+  const origTickerDisplay = tickerContainer ? tickerContainer.style.display : '';
+  if (tickerContainer) tickerContainer.style.display = 'none';
+
+  const restoreTickerBtn = document.getElementById('btn-restore-news-ticker');
+  const origRestoreBtnDisplay = restoreTickerBtn ? restoreTickerBtn.style.display : '';
+  if (restoreTickerBtn) restoreTickerBtn.style.display = 'none';
+
+  document.body.classList.add('print-mode-relatorio-executivo');
+  document.body.classList.remove('print-mode-padrao', 'print-mode-padrao-adm', 'print-mode-padrao-adm-2', 'print-mode-alfa', 'print-mode-detalhado', 'print-mode-analise');
+
+  const origTitle = document.title;
+  document.title = 'RELATORIO_EXECUTIVO_' + getFormattedDateForTitle();
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @media print {
+      @page {
+        size: A4 landscape !important;
+        margin: 8mm !important;
+      }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+      }
+      .app-layout, .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination,
+      #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page,
+      #seduc-news-ticker-container, #btn-restore-news-ticker, .siscam-modal-overlay, #siscam-modal-root,
+      .print-footer, .official-print-footer {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+      }
+      #print-layout-relatorio-executivo {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      table.print-table-adm th {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .relatorio-escala-container, .relatorio-escala-track, .relatorio-escala-thumb, .relatorio-escala-text {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      table.print-table-adm tr:nth-child(even) td {
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      table.print-table-adm td:last-child, table.print-table-adm th:last-child {
+        white-space: nowrap !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const cleanupPrint = () => {
+    document.title = origTitle;
+    if (document.head.contains(style)) document.head.removeChild(style);
+    document.body.classList.remove('print-mode-relatorio-executivo');
+    container.style.display = 'none';
+    if (pageProcessos) pageProcessos.style.display = '';
+    if (appLayout) appLayout.style.display = origAppLayoutDisplay;
+    if (tickerContainer) tickerContainer.style.display = origTickerDisplay;
+    if (restoreTickerBtn) restoreTickerBtn.style.display = origRestoreBtnDisplay;
+    window.removeEventListener('afterprint', cleanupPrint);
+  };
+
+  window.addEventListener('afterprint', cleanupPrint);
+
+  window.print();
+
+  setTimeout(cleanupPrint, 1000);
+}
+
+window.imprimirRelatorioExecutivo = imprimirRelatorioExecutivo;
+
 function imprimirPadraoAdm2(filtrados = getFiltrados()) {
   if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
     alert('Acesso restrito ao perfil Administrador.');
