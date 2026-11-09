@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -118,7 +118,9 @@
       border: 1px solid rgba(56, 189, 248, 0.3);
       border-radius: 8px;
       padding: 10px 18px;
-      margin: 12px 24px 0 24px;
+      margin: 0;
+      width: 100%;
+      box-sizing: border-box;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -165,34 +167,38 @@
       min-height: calc(100vh - 72px);
       box-sizing: border-box;
       padding: 16px 24px 40px 24px;
+      gap: 24px;
     }
 
-    /* Linha dividida entre Banner CAM e Formulário com alinhamento simétrico stretch */
+    /* Linha superior: Banner CAM Dinâmico + Formulário (ocupa toda a largura restante) */
     .cadastro-split-row {
       display: flex;
       flex-direction: row;
       align-items: stretch;
-      gap: 18px;
+      gap: 16px;
       width: 100%;
       box-sizing: border-box;
-      margin-bottom: 22px;
+      margin: 0;
     }
 
-    /* Barra lateral do Banner: acomoda na altura do formulário e largura na proporção */
+    /* Barra lateral do Banner: acomoda 100% da altura do formulário com largura estritamente proporcional */
     .sidebar-banner-wrapper {
       flex: 0 0 auto;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       justify-content: stretch;
       box-sizing: border-box;
       padding: 0;
       margin: 0;
+      overflow: hidden;
+      border-radius: 14px;
+      background: transparent;
     }
 
     .sidebar-banner-wrapper a {
       display: flex;
-      align-items: center;
+      align-items: stretch;
       justify-content: center;
       height: 100%;
       width: 100%;
@@ -200,7 +206,7 @@
       border-radius: 14px;
       overflow: hidden;
       border: none;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
       transition: transform 0.25s ease, box-shadow 0.25s ease;
       background: transparent;
       cursor: pointer;
@@ -208,16 +214,13 @@
 
     .sidebar-banner-wrapper a:hover {
       transform: translateY(-2px);
-      box-shadow: 0 16px 42px rgba(56, 189, 248, 0.4);
+      box-shadow: 0 14px 36px rgba(56, 189, 248, 0.4);
     }
 
     .sidebar-banner-img {
       height: 100%;
-      width: auto;
-      max-width: 100%;
-      aspect-ratio: 287 / 1024;
-      object-fit: contain;
-      object-position: center top;
+      width: 100%;
+      object-fit: fill;
       display: block;
       border-radius: 14px;
       image-rendering: -webkit-optimize-contrast;
@@ -225,62 +228,53 @@
     }
 
     .sidebar-banner-wrapper a:hover .sidebar-banner-img {
-      filter: brightness(1.05);
+      filter: brightness(1.06);
     }
 
-    /* Coluna principal do Formulário */
+    /* Coluna principal do Formulário: ocupa a sobra de 100% da tela */
     .form-section-wrapper {
-      flex: 1 1 auto;
+      flex: 1 1 0;
       min-width: 0;
+      width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
+      box-sizing: border-box;
     }
 
-    /* Seção da Tabela de Escolas (100% de largura horizontal) */
+    /* Seção da Tabela de Escolas (100% de largura horizontal, abaixo do formulário, altura livre) */
     .cadastro-table-wrapper {
       width: 100%;
+      display: block;
+      clear: both;
       box-sizing: border-box;
     }
 
     @media (max-width: 992px) {
       .page-container-cadastro {
         padding: 12px 14px 30px 14px;
+        gap: 16px;
       }
       .cadastro-split-row {
         flex-direction: column;
         align-items: center;
-        gap: 16px;
+        gap: 14px;
       }
       .sidebar-banner-wrapper {
         width: 100% !important;
-        max-width: 300px;
+        max-width: 320px !important;
         height: auto !important;
+        flex: none !important;
       }
       .sidebar-banner-img {
         width: 100% !important;
         height: auto !important;
+        aspect-ratio: 287 / 1024;
+        object-fit: contain !important;
       }
       .form-section-wrapper {
         width: 100%;
       }
-    }
-
-    /* LAYOUT PRINCIPAL: ÁREA TOTAL EXPANDIDA */
-    .layout-wrapper {
-      display: block;
-      padding: 16px 24px 40px 24px;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    /* ÁREA DO FORMULÁRIO E TABELA EXPANDIDA EM 100% */
-    .content-area {
-      width: 100%;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
     }
 
     /* BADGE INSTITUCIONAL DOS PARÂMETROS FIXADOS */
@@ -1004,7 +998,7 @@
     <div class="top-header-row">
       <div style="min-width: 130px; display:flex; align-items:center;">
         <div class="siscam-badge-delta" style="display:inline-flex; align-items:center; gap:6px; color:#38bdf8; font-size:12.5px; font-weight:900; letter-spacing:1.2px; background:rgba(56,189,248,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.35); text-shadow:0 0 8px rgba(56,189,248,0.7); font-family:'Segoe UI',monospace,sans-serif;" title="Sistema Integrado CAM - SEDUC/RO">
-          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.126 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
+          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.128 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
         </div>
       </div>
       <!-- NOME DA ENTIDADE E MUNICÍPIOS VINCULADOS: 2 LINHAS (IMAGEM 5) -->
@@ -1031,7 +1025,7 @@
            target="_blank" rel="noopener noreferrer"
            title="Fale conosco no WhatsApp: (69) 99906-4881">
           <img id="img-banner-lateral"
-               src="img/banner-cadastre-escolas-vertical.png?v=1.127"
+               src="img/banner-cadastre-escolas-vertical.png?v=1.128"
                alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
                class="sidebar-banner-img">
         </a>
@@ -1057,10 +1051,7 @@
     </div>
   </div>
 
-  <!-- ==================== LAYOUT PRINCIPAL: ÁREA TOTAL EXPANDIDA ==================== -->
-  <div class="layout-wrapper">
-    <!-- ÁREA EXPANDIDA: FORMULÁRIO E TABELA -->
-    <main class="content-area">
+  
 
       <!-- BADGE DOS PARÂMETROS FIXADOS DA ADMINISTRAÇÃO -->
       <div class="params-badge-card">
@@ -1873,8 +1864,8 @@
             </div>
           </div>
         </form>
-      </div>
-      </div>
+        </div><!-- /.form-card -->
+      </div><!-- /.form-section-wrapper -->
     </div><!-- /.cadastro-split-row -->
 
     <!-- SEÇÃO DA TABELA (LARGURA TOTAL 100%, CONFORTÁVEL E ESPAÇOSA) -->
@@ -1938,14 +1929,72 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=1.127"></script>
-  <script src="js/escolas.js?v=1.127"></script>
-  <script src="js/relatorios-impressao.js?v=1.127"></script>
+  <script src="js/dados.js?v=1.128"></script>
+  <script src="js/escolas.js?v=1.128"></script>
+  <script src="js/relatorios-impressao.js?v=1.128"></script>
 
   <script>
     /* ============================================================
        LÓGICA STANDALONE DA PÁGINA CADASTRO.HTML
        ============================================================ */
+
+    
+    /* ============================================================
+       SINCRONIZAÇÃO DINÂMICA DO BANNER LATERAL COM A ALTURA DO FORMULÁRIO
+       Regra: Banner na altura do formulário, largura proporcional (287 / 1024)
+       ============================================================ */
+    function sincronizarBannerComFormulario() {
+      const formSection = document.getElementById('form-section-wrapper');
+      const bannerWrapper = document.getElementById('sidebar-banner-wrapper');
+      const bannerImg = document.getElementById('img-banner-lateral');
+      if (!formSection || !bannerWrapper || !bannerImg) return;
+
+      if (window.innerWidth <= 992) {
+        bannerWrapper.style.width = '';
+        bannerWrapper.style.height = '';
+        bannerWrapper.style.flex = '';
+        bannerImg.style.width = '';
+        bannerImg.style.height = '';
+        return;
+      }
+
+      const formHeight = Math.round(formSection.getBoundingClientRect().height || formSection.offsetHeight);
+      if (formHeight > 150) {
+        const aspect = 287 / 1024;
+        const bannerWidth = Math.round(formHeight * aspect);
+
+        bannerWrapper.style.height = formHeight + 'px';
+        bannerWrapper.style.width = bannerWidth + 'px';
+        bannerWrapper.style.flex = '0 0 ' + bannerWidth + 'px';
+
+        bannerImg.style.height = formHeight + 'px';
+        bannerImg.style.width = bannerWidth + 'px';
+      }
+    }
+
+    function ajustarSimetriaBannerForm() {
+      sincronizarBannerComFormulario();
+    }
+
+    let _bannerResizeObserver = null;
+    function iniciarObservadorBanner() {
+      const formSection = document.getElementById('form-section-wrapper');
+      if (!formSection) return;
+
+      if (window.ResizeObserver) {
+        if (_bannerResizeObserver) _bannerResizeObserver.disconnect();
+        _bannerResizeObserver = new ResizeObserver(() => {
+          sincronizarBannerComFormulario();
+        });
+        _bannerResizeObserver.observe(formSection);
+      }
+      sincronizarBannerComFormulario();
+    }
+    window.addEventListener('resize', sincronizarBannerComFormulario);
+    window.addEventListener('load', () => {
+      setTimeout(iniciarObservadorBanner, 100);
+      setTimeout(sincronizarBannerComFormulario, 500);
+    });
 
     // 1. Maximizar janela imediatamente ao carregar e acordar backend
     try {
@@ -2540,6 +2589,7 @@
       ativarAba(1);
       window.scrollTo({ top: 100, behavior: 'smooth' });
       document.getElementById('entidade-nome')?.focus();
+      iniciarObservadorBanner();
       showToast('✨ Pronto para cadastrar um novo registro!');
     }
     window.novoRegistro = novoRegistro;
@@ -2800,7 +2850,7 @@
 
     // Alternar Abas do Formulário
     function ativarAba(abaNum) {
-      setTimeout(ajustarSimetriaBannerForm, 50);
+      requestAnimationFrame(ajustarSimetriaBannerForm); setTimeout(ajustarSimetriaBannerForm, 60);
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       const btnAlvo = document.getElementById(`tab-btn-${abaNum}`);
       if (btnAlvo) btnAlvo.classList.add('active');
