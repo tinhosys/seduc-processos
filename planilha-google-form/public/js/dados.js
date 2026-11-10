@@ -376,6 +376,10 @@ async function inicializarDados() {
          checkAlertasADM(window.processosCache);
       }
 
+      if (typeof window.renderProcessos === 'function') {
+         window.renderProcessos();
+      }
+
       // Sincronização direta de ANALISTA com a planilha Google Oficial
       sincronizarAnalistasDaPlanilha();
     }
@@ -495,8 +499,11 @@ async function adicionarProcesso(dados) {
 async function atualizarProcesso(id, dados) {
   const payload = mapToSheet(dados);
 
-  // Update locally for instant feedback
+  // Backup do estado anterior para reverter caso o envio à planilha falhe
   const idx = window.processosCache.findIndex(p => p.id === id);
+  const backupAnterior = idx !== -1 ? { ...window.processosCache[idx] } : null;
+
+  // Atualização otimista na memória para feedback instantâneo
   if (idx !== -1) window.processosCache[idx] = { ...window.processosCache[idx], ...dados };
 
   try {
@@ -516,6 +523,9 @@ async function atualizarProcesso(id, dados) {
       })
     });
     if (!res.ok) {
+      // Reverte estado na memória para não desincronizar com a planilha
+      if (idx !== -1 && backupAnterior) window.processosCache[idx] = backupAnterior;
+      if (typeof window.renderProcessos === 'function') window.renderProcessos();
       const errJson = await res.json().catch(() => ({}));
       throw new Error(errJson.erro || ('HTTP ' + res.status));
     }
@@ -529,6 +539,9 @@ async function atualizarProcesso(id, dados) {
     }
     return { sucesso: true, ...respData };
   } catch(err) {
+    // Reverte em caso de falha de conexão/timeout
+    if (idx !== -1 && backupAnterior) window.processosCache[idx] = backupAnterior;
+    if (typeof window.renderProcessos === 'function') window.renderProcessos();
     console.error('[atualizarProcesso] Erro:', err);
     throw err;
   }
@@ -795,6 +808,8 @@ window.recarregarDadosGlobais = async function() {
     if (typeof recarregarEscolas === 'function') recarregarEscolas();
     if (typeof carregarOrcamentoData === 'function') carregarOrcamentoData();
     if (typeof carregarDiariasData === 'function') carregarDiariasData();
+    if (typeof window.renderProcessos === 'function') window.renderProcessos();
+    if (typeof window.popularFiltrosProcessos === 'function') window.popularFiltrosProcessos();
     if (typeof toast === 'function') toast('Dados atualizados com sucesso!', 'success');
   } catch(e) {
     console.error('Erro ao recarregar dados globais:', e);

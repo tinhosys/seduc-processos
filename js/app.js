@@ -1,4 +1,4 @@
-
+﻿
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 const ESCALA_ETAPAS = [
   { nivel: 0, label: '0 - PROCESSO ABERTO', nome: 'PROCESSO ABERTO', cor: '#dc2626' },
@@ -766,6 +766,8 @@ window.recarregarDadosGlobais = async function() {
     if (typeof recarregarEscolas === 'function') recarregarEscolas();
     if (typeof carregarOrcamentoData === 'function') carregarOrcamentoData();
     if (typeof carregarDiariasData === 'function') carregarDiariasData();
+    if (typeof window.renderProcessos === 'function') window.renderProcessos();
+    if (typeof window.popularFiltrosProcessos === 'function') window.popularFiltrosProcessos();
     if (typeof toast === 'function') toast('Dados atualizados com sucesso!', 'success');
   } catch(e) {
     console.error('Erro ao recarregar dados globais:', e);
