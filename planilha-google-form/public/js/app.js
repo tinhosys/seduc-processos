@@ -729,17 +729,63 @@ function aoAlternarCheckInadimplente(checked) {
 window.aoAlternarCheckInadimplente = aoAlternarCheckInadimplente;
 
 let _timerAvisoInadimplente = null;
+let _intervalAvisoInadimplente = null;
+
+function fecharAvisoEnormeInadimplente() {
+  const overlay = document.getElementById('aviso-enorme-inadimplente');
+  if (overlay) overlay.style.display = 'none';
+  if (_timerAvisoInadimplente) {
+    clearTimeout(_timerAvisoInadimplente);
+    _timerAvisoInadimplente = null;
+  }
+  if (_intervalAvisoInadimplente) {
+    clearInterval(_intervalAvisoInadimplente);
+    _intervalAvisoInadimplente = null;
+  }
+}
+window.fecharAvisoEnormeInadimplente = fecharAvisoEnormeInadimplente;
+
+// Fecha ao pressionar a tecla Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' || e.key === 'Esc') {
+    const overlay = document.getElementById('aviso-enorme-inadimplente');
+    if (overlay && overlay.style.display !== 'none') {
+      fecharAvisoEnormeInadimplente();
+    }
+  }
+});
+
 function mostrarAvisoEnormeInadimplente() {
   const overlay = document.getElementById('aviso-enorme-inadimplente');
   if (!overlay) return;
   overlay.style.display = 'flex';
+  
   if (_timerAvisoInadimplente) clearTimeout(_timerAvisoInadimplente);
-  _timerAvisoInadimplente = setTimeout(() => {
-    overlay.style.display = 'none';
-    const chk = document.getElementById('form-check-inadimplente');
-    if (chk) chk.checked = true;
+  if (_intervalAvisoInadimplente) clearInterval(_intervalAvisoInadimplente);
+
+  const chk = document.getElementById('form-check-inadimplente');
+  if (chk) chk.checked = true;
+  if (typeof atualizarVisualAdimplencia === 'function') {
     atualizarVisualAdimplencia(true);
-  }, 4000);
+  }
+
+  let segundosRestantes = 15;
+  const contEl = document.getElementById('aviso-inadimplente-contagem');
+  if (contEl) contEl.textContent = String(segundosRestantes);
+
+  _intervalAvisoInadimplente = setInterval(() => {
+    segundosRestantes--;
+    if (contEl) contEl.textContent = String(segundosRestantes);
+    if (segundosRestantes <= 0) {
+      clearInterval(_intervalAvisoInadimplente);
+      _intervalAvisoInadimplente = null;
+    }
+  }, 1000);
+
+  // Alerta aumentado para 15 segundos conforme solicitado
+  _timerAvisoInadimplente = setTimeout(() => {
+    fecharAvisoEnormeInadimplente();
+  }, 15000);
 }
 window.mostrarAvisoEnormeInadimplente = mostrarAvisoEnormeInadimplente;
 
@@ -751,11 +797,9 @@ function verificarCNPJInadimplenteHistorico(cnpjDigitado) {
   const procs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []);
   if (!Array.isArray(procs)) return false;
 
-  const currentId = (typeof state !== 'undefined' && state) ? state.editandoId : null;
   return procs.some(p => {
-    if (currentId && p.id === currentId) return false;
     const pCnpj = String(p.cnpj || '').replace(/\D/g, '');
-    const pInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1');
+    const pInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1' || p.CONTAS === 1);
     return pCnpj === limpo && pInad;
   });
 }
@@ -784,11 +828,34 @@ function aoSairCNPJFormulario(val) {
 }
 window.aoSairCNPJFormulario = aoSairCNPJFormulario;
 
+let _ultimoCNPJChecadoPopup = '';
+function aoDigitarCNPJPopup(val) {
+  const limpo = String(val || '').replace(/\D/g, '');
+  if (limpo.length === 14 && limpo !== _ultimoCNPJChecadoPopup) {
+    if (verificarCNPJInadimplenteHistorico(limpo)) {
+      _ultimoCNPJChecadoPopup = limpo;
+      mostrarAvisoEnormeInadimplente();
+    }
+  }
+}
+window.aoDigitarCNPJPopup = aoDigitarCNPJPopup;
+
+function aoSairCNPJPopup(val) {
+  const limpo = String(val || '').replace(/\D/g, '');
+  if (limpo.length === 14 && limpo !== _ultimoCNPJChecadoPopup) {
+    if (verificarCNPJInadimplenteHistorico(limpo)) {
+      _ultimoCNPJChecadoPopup = limpo;
+      mostrarAvisoEnormeInadimplente();
+    }
+  }
+}
+window.aoSairCNPJPopup = aoSairCNPJPopup;
+
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.138
+// Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.138';
+window.APP_VERSION = 'v1.139';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -3348,8 +3415,11 @@ function renderFormulario() {
       cnpjEl.required = false;
       cnpjEl.value = p.cnpj || '';
     }
-    const isInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1');
+    const isInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1' || p.CONTAS === 1);
     atualizarVisualAdimplencia(isInad);
+    if (isInad || (p.cnpj && verificarCNPJInadimplenteHistorico(p.cnpj))) {
+      mostrarAvisoEnormeInadimplente();
+    }
     document.getElementById('form-objeto').value      = p.objeto      || '';
     const fValOf = document.getElementById('form-valorOf');
     if (fValOf) fValOf.value = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
@@ -3870,6 +3940,11 @@ function abrirDetalhe(id) {
   const p = buscarProcessoPorId(id);
   if (!p) return;
 
+  const isInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1' || p.CONTAS === 1);
+  if (isInad || (p.cnpj && verificarCNPJInadimplenteHistorico(p.cnpj))) {
+    mostrarAvisoEnormeInadimplente();
+  }
+
   let contatosHtml = '';
   if (p.contatos && p.contatos.length > 0) {
     contatosHtml = `
@@ -4203,11 +4278,16 @@ function abrirModalNovoProcesso() {
     anoEl.value = new Date().getFullYear();
   }
 
-  // Reset do campo CNPJ e Analista e container Receita Federal do popup
+  // Reset do campo CNPJ, Analista, Executivo, Dígito e container Receita Federal do popup
   const analistaPopupEl = document.getElementById('popup-novo-analista');
   if (analistaPopupEl) analistaPopupEl.value = '';
+  const executivoPopupEl = document.getElementById('popup-novo-executivo');
+  if (executivoPopupEl) executivoPopupEl.value = '';
+  const digitoPopupEl = document.getElementById('popup-novo-digito');
+  if (digitoPopupEl) digitoPopupEl.value = '';
   const cnpjPopupEl = document.getElementById('popup-novo-cnpj');
   if (cnpjPopupEl) cnpjPopupEl.value = '';
+  _ultimoCNPJChecadoPopup = '';
   const containerReceitaPopup = document.getElementById('popup-novo-container-receita');
   if (containerReceitaPopup) containerReceitaPopup.style.display = 'none';
   const labelReceitaPopup = document.getElementById('popup-novo-label-receita');
@@ -4488,6 +4568,11 @@ function aplicarSugestaoCNPJPopup(cnpjFormatado) {
   const inputCnpj = document.getElementById('popup-novo-cnpj');
   if (inputCnpj && cnpjFormatado) {
     inputCnpj.value = cnpjFormatado;
+    const cLimpo = String(cnpjFormatado).replace(/\D/g, '');
+    if (verificarCNPJInadimplenteHistorico(cLimpo)) {
+      _ultimoCNPJChecadoPopup = cLimpo;
+      mostrarAvisoEnormeInadimplente();
+    }
     if (typeof consultarCNPJPopup === 'function') {
       consultarCNPJPopup(cnpjFormatado, false);
     }
@@ -4970,6 +5055,11 @@ function onSelecionarSelectEntidadePopup(selEl) {
   if (inputCnpj) {
     if (cnpjAplicado) {
       inputCnpj.value = cnpjAplicado;
+      const cLimpo = String(cnpjAplicado).replace(/\D/g, '');
+      if (verificarCNPJInadimplenteHistorico(cLimpo)) {
+        _ultimoCNPJChecadoPopup = cLimpo;
+        mostrarAvisoEnormeInadimplente();
+      }
       if (typeof consultarCNPJPopup === 'function') {
         consultarCNPJPopup(cnpjAplicado, true);
       }
@@ -5389,6 +5479,10 @@ function mascaraCNPJInputPopup(el) {
   }
 
   if (rawDigits.length === 14) {
+    if (verificarCNPJInadimplenteHistorico(rawDigits)) {
+      _ultimoCNPJChecadoPopup = rawDigits;
+      mostrarAvisoEnormeInadimplente();
+    }
     consultarCNPJPopup(el.value, true);
   }
 }
@@ -5402,6 +5496,10 @@ function autoPreencherCNPJPopup(el) {
   const digits = raw.replace(/\D/g, '');
 
   if (digits.length === 14 && !/^0+$/.test(digits)) {
+    if (verificarCNPJInadimplenteHistorico(digits)) {
+      _ultimoCNPJChecadoPopup = digits;
+      mostrarAvisoEnormeInadimplente();
+    }
     consultarCNPJPopup(el.value.trim(), true);
     return;
   }
@@ -5609,6 +5707,11 @@ async function consultarCNPJPopup(cnpjInput, silencioso) {
       toast('Informe um CNPJ válido de 14 dígitos para consultar.', 'warning');
     }
     return null;
+  }
+
+  if (verificarCNPJInadimplenteHistorico(cnpjLimpo)) {
+    _ultimoCNPJChecadoPopup = cnpjLimpo;
+    mostrarAvisoEnormeInadimplente();
   }
 
   const cnpjFmt = typeof formatarCNPJ === 'function' ? formatarCNPJ(cnpjLimpo) : cnpjLimpo;
