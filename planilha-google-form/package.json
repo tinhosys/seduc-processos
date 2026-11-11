@@ -1,6 +1,6 @@
-﻿{
+{
   "name": "planilha-google-form",
-  "version": "1.133",
+  "version": "1.134",
   "type": "module",
   "scripts": {
     "dev": "nodemon server.js",

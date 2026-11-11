@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR" data-theme="graphite">
 
 <head>
@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=v1.133">
+  <link rel="stylesheet" href="css/style.css?v=v1.134">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -792,7 +792,7 @@
     margin: auto;
   ">
     <!-- ARTE OFICIAL COMPLETA DA TELA INICIAL (IMAGEM 100% FIEL) -->
-    <img src="img/tela-inicial-siscam.png?v=v1.133"
+    <img src="img/tela-inicial-siscam.png?v=v1.134"
          alt="SiSCAM - Sistema Integrado CAM / SEDUC-RO"
          style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none;">
 
@@ -903,7 +903,7 @@
       display: flex; align-items: center; justify-content: center;
       color: #0284c7; font-size: clamp(11px, 1.4vw, 13.5px); font-weight: 800; letter-spacing: 0.8px;
       pointer-events: none;
-    ">∴ SiSCAM v1.133 ∴</div>
+    ">∴ SiSCAM v1.134 ∴</div>
   </div>
 </div>
 
@@ -1222,8 +1222,23 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
-          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.133 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
+          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.134 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
         </div>
+
+        <!-- PAINÉIS DE INFORMAÇÃO DE VALORES E CONTAGEM NA TOPBAR (IMAGEM 3) -->
+        <div id="topbar-valores-container" style="display:inline-flex; align-items:center; gap:8px; margin-left:14px; flex-wrap:nowrap;">
+          <span id="valor-filtrado" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:8px; font-size:12.5px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.35); white-space:nowrap; font-family:monospace; letter-spacing:0.5px; height:36px; min-height:36px; max-height:36px; min-width:160px; box-sizing:border-box;" title="Valor Total Oficial dos Processos Filtrados">
+            <span>R$</span> <span>Carregando...</span>
+          </span>
+          <span id="qtd-registros-filtrados" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:8px; font-size:12.5px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.35); white-space:nowrap; font-family:monospace; height:36px; min-height:36px; max-height:36px; min-width:140px; box-sizing:border-box;" title="Quantidade de Processos Filtrados">
+            0 Processos
+          </span>
+          <button id="balao-aviso-cancelados" type="button" onclick="if(typeof window.filtrarPorCancelados==='function'){window.filtrarPorCancelados();}else if(typeof filtrarPorCancelados==='function'){filtrarPorCancelados();}" title="Clique para mostrar processos cancelados na lista" class="balao-aviso-cancelados" style="display:none; height:36px; min-height:36px; max-height:36px; padding:0 10px;">
+            <span class="balao-icon">⚠️</span>
+            <span id="balao-qtd-cancelados" class="balao-num">0</span>
+          </button>
+        </div>
+
         <div class="topbar-actions" style="display:flex;align-items:center;gap:12px;margin-left:auto;">
           <!-- Botão Modo mobile Global no Topo da Aplicação (Visível em todos os forms) -->
           <button type="button" id="btn-toggle-mobile" class="btn action-report btn-toggle-mobile" onclick="toggleFuncaoMobile()" style="padding:0 12px; height:38px; min-height:38px; max-height:38px; min-width:145px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(2,132,199,0.3) 0%, rgba(14,165,233,0.2) 100%)'" title="Alternar Modo Mobile (Células Compactas com Balão Pop-up em todas as tabelas)">
@@ -1758,45 +1773,40 @@
       <!-- ============= PAGE: PROCESSOS ============= -->
       <section class="page" id="page-processos">
 
-                <div class="section-header" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px; width:100%; flex-shrink:0;">
+        <div class="section-header" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px; width:100%; flex-shrink:0;">
           <!-- LINHA 1 DE BOTÕES E BADGES (SUPERIOR) -->
           <div class="action-buttons-grid" style="display:flex; flex-direction:column; gap:8px; margin-bottom:10px; width:100%;">
-          <!-- LINHA 1 DE BOTÕES: REGISTROS/FILTROS + PLANILHA À ESQUERDA | RELATÓRIOS À DIREITA -->
+          
+          <!-- LINHA 1: AÇÕES PRINCIPAIS (ESQUERDA) | RELATÓRIOS GERAIS UNIFICADOS (DIREITA) -->
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; width:100%;">
-            <!-- Esquerda: Informações e Acesso à Planilha (Planilha no lugar de Modo mobile - Imagem 3) -->
+            <!-- Esquerda: Toggle de Parâmetros, Limpar Parâmetros e Novo Processo -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
-              <span id="valor-filtrado" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(16, 185, 129, 0.3); white-space:nowrap; font-family:monospace; letter-spacing:0.5px; height:38px; min-height:38px; max-height:38px; min-width:170px; width:170px; box-sizing:border-box;">
-                <span>R$</span> <span>Carregando...</span>
-              </span>
-              <span id="qtd-registros-filtrados" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:0 12px; border-radius:8px; font-size:13px; font-weight:700; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3); white-space:nowrap; font-family:monospace; height:38px; min-height:38px; max-height:38px; min-width:170px; width:170px; box-sizing:border-box;">
-                0 Processos
-              </span>
-              <button id="balao-aviso-cancelados" type="button" onclick="if(typeof window.filtrarPorCancelados==='function'){window.filtrarPorCancelados();}else if(typeof filtrarPorCancelados==='function'){filtrarPorCancelados();}" title="Clique para mostrar processos cancelados na lista" class="balao-aviso-cancelados" style="display:none;">
-                <span class="balao-icon">⚠️</span>
-                <span id="balao-qtd-cancelados" class="balao-num">0</span>
-              </button>
               <button id="btn-toggle-filtros" type="button" onclick="toggleFiltros()" title="Mostrar/Ocultar Parâmetros" style="background:#1e293b; border:1px solid #334155; color:#94a3b8; border-radius:8px; width:38px; min-width:38px; height:38px; min-height:38px; max-height:38px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155';this.style.color='#f8fafc'" onmouseout="this.style.background='#1e293b';this.style.color='#94a3b8'">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="4 14 12 22 20 14"></polyline><polyline points="4 4 12 12 20 4"></polyline></svg>
               </button>
-              <!-- BOTÃO LIMPAR PARÂMETROS NO TOPO (INDICADO NA IMAGEM) -->
+              
+              <!-- BOTÃO LIMPAR PARÂMETROS NO TOPO -->
               <button type="button" id="btn-limpar-filtros" class="btn btn-limpar-grid" onclick="if(typeof window.limparFiltros==='function'){window.limparFiltros();}else if(typeof limparFiltros==='function'){limparFiltros();}" title="Limpar todos os parâmetros e filtros" style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:38px; min-height:38px; max-height:38px; padding:0 14px; border-radius:8px; background:linear-gradient(135deg, #f59e0b, #d97706); border:1px solid #d97706; color:white; font-weight:800; font-size:11.5px; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 2px 8px rgba(245,158,11,0.3); transition:all 0.2s; white-space:nowrap; box-sizing:border-box;" onmouseover="this.style.background='linear-gradient(135deg, #d97706, #b45309)';this.style.boxShadow='0 4px 12px rgba(245,158,11,0.45)'" onmouseout="this.style.background='linear-gradient(135deg, #f59e0b, #d97706)';this.style.boxShadow='0 2px 8px rgba(245,158,11,0.3)'">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 <span>LIMPAR PARÂMETROS</span>
               </button>
+
+              <!-- BOTAO NOVO PROCESSO DESTACADO -->
+              <button id="btn-novo-processo-topo" type="button" class="btn" onclick="abrirModalNovoProcesso()" style="height:38px; min-height:38px; max-height:38px; padding:0 16px; font-size:12px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1.5px solid #10b981; border-radius:8px; background:linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%); color:#34d399; cursor:pointer; font-weight:800; letter-spacing:0.6px; transition:all 0.25s; box-sizing:border-box; box-shadow:0 0 14px rgba(16,185,129,0.25); text-transform:uppercase;" onmouseover="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.5) 0%, rgba(5,150,105,0.6) 100%)'; this.style.boxShadow='0 0 20px rgba(16,185,129,0.5)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%)'; this.style.boxShadow='0 0 14px rgba(16,185,129,0.25)'; this.style.color='#34d399';" title="Cadastrar Novo Processo">
+                <span style="font-size:16px; font-weight:900; line-height:1; display:inline-block; margin-right:2px;">+</span>
+                <span class="btn-text">Novo Processo</span>
+              </button>
             </div>
 
-            <!-- Indicador Visual Animado de Processamento do Compartilhar (GIF / Engrenagens / Setas em Círculo) -->
+            <!-- Indicador Visual Animado de Processamento do Compartilhar -->
             <div id="indicador-compartilhar-processando" style="display:none; align-items:center; justify-content:center; gap:8px; padding:0 14px; height:38px; min-height:38px; max-height:38px; border-radius:8px; background:linear-gradient(135deg, rgba(2,132,199,0.2) 0%, rgba(15,23,42,0.85) 100%); border:1px solid rgba(56,189,248,0.6); box-shadow:0 0 14px rgba(56,189,248,0.35); box-sizing:border-box; pointer-events:none; transition:opacity 0.2s;" title="Gerando imagem e dados do relatório para compartilhamento...">
-              <!-- Setas circulares girando + Engrenagem interna -->
               <svg class="anim-pulsar-brilho" width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;">
-                <!-- Setas circulares em rotação horária -->
                 <g class="anim-girar-horario">
                   <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M3 3v5h5" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" stroke="#0284c7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                   <path d="M21 21v-5h-5" stroke="#0284c7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
                 </g>
-                <!-- Engrenagem central girando em sentido anti-horário -->
                 <g class="anim-girar-antihorario">
                   <circle cx="12" cy="12" r="2.2" stroke="#34d399" stroke-width="2"/>
                   <path d="M12 7.5v1.5M12 15v1.5M7.5 12h1.5M15 12h1.5" stroke="#34d399" stroke-width="1.8" stroke-linecap="round"/>
@@ -1805,45 +1815,39 @@
               <span style="font-size:11.5px; font-weight:800; color:#38bdf8; letter-spacing:0.5px; font-family:'Inter', sans-serif; white-space:nowrap; text-transform:uppercase;">Processando...</span>
             </div>
 
-            <!-- BOTAO NOVO PROCESSO GRANDE E DESTACADO (IMAGEM 1) -->
-            <button id="btn-novo-processo-topo" type="button" class="btn" onclick="abrirModalNovoProcesso()" style="flex:1 1 260px; max-width:440px; height:42px; min-height:42px; max-height:42px; font-size:13px; display:inline-flex; align-items:center; justify-content:center; gap:8px; border:1.5px solid #10b981; border-radius:10px; background:linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%); color:#34d399; cursor:pointer; font-weight:800; letter-spacing:0.8px; transition:all 0.25s; box-sizing:border-box; box-shadow:0 0 16px rgba(16,185,129,0.3); text-transform:uppercase;" onmouseover="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.5) 0%, rgba(5,150,105,0.6) 100%)'; this.style.boxShadow='0 0 22px rgba(16,185,129,0.55)'; this.style.color='#fff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.35) 0%, rgba(5,150,105,0.45) 100%)'; this.style.boxShadow='0 0 16px rgba(16,185,129,0.3)'; this.style.color='#34d399';" title="Cadastrar Novo Processo">
-              <span style="font-size:18px; font-weight:900; line-height:1; display:inline-block; margin-right:2px;">+</span>
-              <span class="btn-text">Novo Processo</span>
-            </button>
-
-            <!-- Direita Linha 1: Relatórios Principais -->
+            <!-- Direita Linha 1: GRUPO RELATÓRIOS PRINCIPAIS COM CORES UNIFICADAS -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirAnaliseSintetica==='function'){window.imprimirAnaliseSintetica();}else if(typeof imprimirAnaliseSintetica==='function'){imprimirAnaliseSintetica();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(20,184,166,0.6); border-radius:8px; background:rgba(20,184,166,0.25); color:#2dd4bf; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(20,184,166,0.4)'" onmouseout="this.style.background='rgba(20,184,166,0.25)'" title="Relatório Sintético (Pago e Status por Prefixo)">
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirAnaliseSintetica==='function'){window.imprimirAnaliseSintetica();}else if(typeof imprimirAnaliseSintetica==='function'){imprimirAnaliseSintetica();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:rgba(56,189,248,0.18); color:#38bdf8; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.35)'" onmouseout="this.style.background='rgba(56,189,248,0.18)'" title="Relatório Sintético (Pago e Status por Prefixo)">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
                 <span class="btn-text">Sintético</span>
               </button>
-              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(99,102,241,0.5); border-radius:8px; background:rgba(99,102,241,0.25); color:#a5b4fc; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(99,102,241,0.4)'" onmouseout="this.style.background='rgba(99,102,241,0.25)'" title="Análise Gerencial">
+              <button class="btn action-report" onclick="if(typeof window.imprimirAnalise==='function'){window.imprimirAnalise();}else if(typeof imprimirAnalise==='function'){imprimirAnalise();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:rgba(56,189,248,0.18); color:#38bdf8; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.35)'" onmouseout="this.style.background='rgba(56,189,248,0.18)'" title="Análise Gerencial">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
                 <span class="btn-text">Análise</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(59,130,246,0.5); border-radius:8px; background:rgba(59,130,246,0.25); color:#93c5fd; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(59,130,246,0.4)'" onmouseout="this.style.background='rgba(59,130,246,0.25)'" title="Relatório Detalhado">
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirDetalhado==='function'){window.imprimirDetalhado();}else if(typeof imprimirDetalhado==='function'){imprimirDetalhado();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:rgba(56,189,248,0.18); color:#38bdf8; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.35)'" onmouseout="this.style.background='rgba(56,189,248,0.18)'" title="Relatório Detalhado">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
                 <span class="btn-text">Detalhado</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Lista Atual">
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadrao==='function'){window.imprimirPadrao();}else if(typeof imprimirPadrao==='function'){imprimirPadrao();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:rgba(56,189,248,0.18); color:#38bdf8; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.35)'" onmouseout="this.style.background='rgba(56,189,248,0.18)'" title="Imprimir Lista Atual">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 <span class="btn-text">Padrão</span>
               </button>
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(148,163,184,0.3); border-radius:8px; background:rgba(30,41,59,0.7); color:#cbd5e1; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='rgba(30,41,59,0.7)'" title="Imprimir Selecionados">
+              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirPadraoSelecionado==='function'){window.imprimirPadraoSelecionado();}else if(typeof imprimirPadraoSelecionado==='function'){imprimirPadraoSelecionado();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:rgba(56,189,248,0.18); color:#38bdf8; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.35)'" onmouseout="this.style.background='rgba(56,189,248,0.18)'" title="Imprimir Selecionados">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 <span class="btn-text">Selecionado</span>
               </button>
             </div>
           </div>
 
-          <!-- LINHA 2 DE BOTÕES: BUSCADOR POR ESCALA (ESQUERDA) + PLANILHA, COMPARTILHAR, ALFA, ADM 1, ADM 2, EXCEL (DIREITA) (IMAGEM 5) -->
+          <!-- LINHA 2 DE BOTÕES: BUSCADOR POR ESCALA AMPLIADO (ESQUERDA) + GRUPOS DE RELATÓRIOS ADMIN E AÇÕES (DIREITA) -->
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; width:100%; margin-top:2px;">
-            <!-- BUSCADOR INSTANTÂNEO POR ESCALA (IMAGEM 5) -->
-            <div id="filtro-escala-buscador-container" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.95); border:1px solid #334155; border-radius:10px; padding:0 12px; gap:10px; height:38px; min-height:38px; max-height:38px; box-sizing:border-box; box-shadow:inset 0 1px 3px rgba(0,0,0,0.4); user-select:none; flex:1 1 360px; max-width:600px;">
+            <!-- BUSCADOR INSTANTÂNEO POR ESCALA (CONTAINER VERDE AMPLIADO - IMAGEM 3) -->
+            <div id="filtro-escala-buscador-container" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.95); border:1.5px solid rgba(16,185,129,0.5); border-radius:10px; padding:0 14px; gap:10px; height:38px; min-height:38px; max-height:38px; box-sizing:border-box; box-shadow:0 0 12px rgba(16,185,129,0.15), inset 0 1px 3px rgba(0,0,0,0.5); user-select:none; flex:1.8 1 540px; max-width:720px;">
               <!-- Checkbox / Toggle para ativar/desativar -->
-              <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0; flex-shrink:0;" title="Ativar ou desativar o filtro instantâneo por Escala">
+              <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0; flex-shrink:0;" title="Ativar ou desativar o filtro instantâneo por Escala (%)">
                 <input type="checkbox" id="filtro-escala-ativo" onchange="toggleFiltroEscalaAtivo(this.checked)" style="cursor:pointer; accent-color:#38bdf8; width:15px; height:15px;">
-                <span style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:0.5px;">ESCALA</span>
+                <span style="font-size:10.5px; font-weight:800; color:#cbd5e1; letter-spacing:0.5px;">ESCALA</span>
               </label>
 
               <!-- Botão / Badge Indicador da Etapa Atual ou 'TODAS AS ESCALAS' -->
@@ -1851,71 +1855,82 @@
                 TODAS AS ESCALAS
               </button>
 
-              <!-- Slider e Marcadores da Escala do Buscador (Régua com 2 Bolas: de X a Y) -->
-              <div class="escala-slider-track-wrap" id="filtro-escala-track-wrap" style="position:relative; flex:1; min-width:140px; height:28px; display:flex; align-items:center; opacity:0.6; transition:opacity 0.2s;">
+              <!-- Slider e Marcadores da Escala do Buscador (Régua com 2 Bolas: de X% a Y%) -->
+              <div class="escala-slider-track-wrap" id="filtro-escala-track-wrap" style="position:relative; flex:1; min-width:160px; height:28px; display:flex; align-items:center; opacity:0.6; transition:opacity 0.2s;">
                 <!-- Trilha base de fundo cinza escuro -->
                 <div id="filtro-escala-base-bar" style="position:absolute; left:0; right:0; height:8px; background:#334155; border-radius:999px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.6); pointer-events:none;"></div>
                 <!-- Trilha ativa colorida entre Bola Min e Bola Max -->
                 <div id="filtro-escala-active-bar" style="position:absolute; left:10px; right:calc(100% - 10px); height:8px; background:#475569; border-radius:999px; box-shadow:0 0 8px rgba(0,0,0,0.4); pointer-events:none; transition:background 0.2s;"></div>
 
-                <!-- Ticks graduados de 0 a 10 -->
+                <!-- Ticks graduados de 0% a 100% (21 etapas: 0 a 20) -->
                 <div class="escala-ticks-container" style="position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none;">
-                  <div class="escala-tick-filtro" data-val="0" title="0 - PROCESSO ABERTO" onclick="selecionarFiltroEscalaPonto(0)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 0 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="1" title="1 - RECEBIDO CAM" onclick="selecionarFiltroEscalaPonto(1)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 1 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="2" title="2 - NOTIFICADO" onclick="selecionarFiltroEscalaPonto(2)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 2 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="3" title="3 - AUTORIZO SEDUC" onclick="selecionarFiltroEscalaPonto(3)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 3 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="4" title="4 - AUTORIZO CASA CIVIL" onclick="selecionarFiltroEscalaPonto(4)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 4 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="5" title="5 - RECEBIDO GCF" onclick="selecionarFiltroEscalaPonto(5)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 5 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="6" title="6 - PRE EMPENHO" onclick="selecionarFiltroEscalaPonto(6)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 6 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="7" title="7 - EMPENHO" onclick="selecionarFiltroEscalaPonto(7)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 7 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="8" title="8 - PGE" onclick="selecionarFiltroEscalaPonto(8)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 8 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="9" title="9 - CONVENIADO" onclick="selecionarFiltroEscalaPonto(9)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 9 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick-filtro" data-val="10" title="10 - PAGO" onclick="selecionarFiltroEscalaPonto(10)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 10 / 10); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="0" title="0% - Processo aberto" onclick="selecionarFiltroEscalaPonto(0)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 0 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="1" title="5% - Recebido na CAM" onclick="selecionarFiltroEscalaPonto(1)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 1 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="2" title="10% - Prosseguimento GDSM" onclick="selecionarFiltroEscalaPonto(2)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 2 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="3" title="15% - Prestação de Contas - CPC" onclick="selecionarFiltroEscalaPonto(3)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 3 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="4" title="20% - Notificação GDSM" onclick="selecionarFiltroEscalaPonto(4)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 4 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="5" title="25% - Manifestação CAM" onclick="selecionarFiltroEscalaPonto(5)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 5 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="6" title="30% - Autorizo Gabinete SEDUC" onclick="selecionarFiltroEscalaPonto(6)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 6 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="7" title="35% - Autorizo Casa Civil" onclick="selecionarFiltroEscalaPonto(7)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 7 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="8" title="40% - CCTE / GMAC" onclick="selecionarFiltroEscalaPonto(8)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 8 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="9" title="45% - GCF (1º Fase)" onclick="selecionarFiltroEscalaPonto(9)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 9 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="10" title="50% - Especialidade" onclick="selecionarFiltroEscalaPonto(10)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 10 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="11" title="55% - Pré empenho" onclick="selecionarFiltroEscalaPonto(11)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 11 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="12" title="60% - Empenho CFIN" onclick="selecionarFiltroEscalaPonto(12)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 12 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="13" title="65% - GCF (2º Fase)" onclick="selecionarFiltroEscalaPonto(13)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 13 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="14" title="70% - PGE (emissão de parecer)" onclick="selecionarFiltroEscalaPonto(14)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 14 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="15" title="75% - Autorizo convênio - SEDUC" onclick="selecionarFiltroEscalaPonto(15)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 15 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="16" title="80% - GCF (3º Fase)" onclick="selecionarFiltroEscalaPonto(16)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 16 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="17" title="85% - PGE - Termo de Convênio" onclick="selecionarFiltroEscalaPonto(17)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 17 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="18" title="90% - Controle Interno" onclick="selecionarFiltroEscalaPonto(18)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 18 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="19" title="95% - Emissão da NL" onclick="selecionarFiltroEscalaPonto(19)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 19 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick-filtro" data-val="20" title="100% - Emissão da OB" onclick="selecionarFiltroEscalaPonto(20)" style="position:absolute; bottom:calc(50% + 5px); left:calc(10px + (100% - 20px) * 20 / 20); transform:translateX(-50%); width:2px; height:8px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
                 </div>
 
-                <!-- Range Min e Range Max Transparentes Sobrepostos -->
-                <input type="range" id="filtro-escala-range-min" class="filtro-escala-range-input" min="0" max="10" step="1" value="0" oninput="onInputFiltroEscalaMin(this.value)" />
-                <input type="range" id="filtro-escala-range-max" class="filtro-escala-range-input" min="0" max="10" step="1" value="10" oninput="onInputFiltroEscalaMax(this.value)" />
+                <!-- Range Min e Range Max Transparentes Sobrepostos (0 a 20) -->
+                <input type="range" id="filtro-escala-range-min" class="filtro-escala-range-input" min="0" max="20" step="1" value="0" oninput="onInputFiltroEscalaMin(this.value)" />
+                <input type="range" id="filtro-escala-range-max" class="filtro-escala-range-input" min="0" max="20" step="1" value="20" oninput="onInputFiltroEscalaMax(this.value)" />
 
                 <!-- Bola 1 (Marcador De / Min) -->
-                <div id="filtro-escala-ball-min" style="left:10px; z-index:22;" title="Escala Inicial (De)">0</div>
+                <div id="filtro-escala-ball-min" style="left:10px; z-index:22;" title="Escala Inicial (De)">0%</div>
                 <!-- Bola 2 (Marcador Até / Max) -->
-                <div id="filtro-escala-ball-max" style="left:calc(100% - 10px); z-index:23;" title="Escala Final (Até)">10</div>
+                <div id="filtro-escala-ball-max" style="left:calc(100% - 10px); z-index:23;" title="Escala Final (Até)">100%</div>
               </div>
             </div>
 
-            <!-- BOTAO NOVO RELATORIO EXECUTIVO (IMAGEM 1) -->
-            <button type="button" class="btn action-report action-adm" id="btn-relatorio-executivo" style="padding:0 12px; height:38px; min-height:38px; max-height:38px; min-width:130px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1.5px solid #10b981; border-radius:8px; background:linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(5,150,105,0.3) 100%); color:#34d399; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box; box-shadow:0 0 10px rgba(16,185,129,0.25); flex-shrink:0;" onmouseover="this.style.background='rgba(16,185,129,0.45)'; this.style.color='#ffffff';" onmouseout="this.style.background='linear-gradient(135deg, rgba(16,185,129,0.25) 0%, rgba(5,150,105,0.3) 100%)'; this.style.color='#34d399';" title="Novo Relatório Agrupado por Executivo (Somando e Contando)" onclick="if(typeof window.imprimirRelatorioExecutivo==='function'){window.imprimirRelatorioExecutivo();}else if(typeof imprimirRelatorioExecutivo==='function'){imprimirRelatorioExecutivo();}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-              <span class="btn-text">Executivo</span>
-            </button>
-
-            <!-- BOTÕES DE AÇÃO: PLANILHA, COMPARTILHAR, ALFA, ADM 1, ADM 2, EXCEL -->
+            <!-- BOTÕES DE AÇÃO E RELATÓRIOS ADMIN (CORES UNIFICADAS POR GRUPO) -->
             <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px;">
-            <button type="button" id="btn-planilha-topo" class="btn action-report action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=168431103#gid=168431103', '_blank')" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.25); color:#34d399; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(16,185,129,0.4)'" onmouseout="this.style.background='rgba(16,185,129,0.25)'" title="Acessar Planilha Principal Google Sheets (Exclusivo Admin)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-              <span class="btn-text">Planilha</span>
-            </button>
-            <button id="btn-compartilhar-topo" class="btn" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(2,132,199,0.5); border-radius:8px; background:rgba(2,132,199,0.25); color:#38bdf8; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(2,132,199,0.4)'" onmouseout="this.style.background='rgba(2,132,199,0.25)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-              <span class="btn-text">Compartilhar</span>
-            </button>
-            <button type="button" class="btn action-report action-adm" id="btn-relatorio-alfa" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(239,68,68,0.6); border-radius:8px; background:linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(185,28,28,0.25) 100%); color:#f87171; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(239,68,68,0.45)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(239,68,68,0.25) 0%, rgba(185,28,28,0.25) 100%)'" title="Relatório Alfa / Lista de Processos com Parâmetros de Tela (Exclusivo Admin)" onclick="if(typeof window.imprimirAlfa==='function'){window.imprimirAlfa();}else if(typeof imprimirAlfa==='function'){imprimirAlfa();}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-              <span class="btn-text">Alfa</span>
-            </button>
-            <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%); color:#fbbf24; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.4)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.25) 100%)'" title="Relatório Padrão sem Origem (Exclusivo Admin)" onclick="if(typeof window.imprimirPadraoAdm==='function'){window.imprimirPadraoAdm();}else if(typeof imprimirPadraoAdm==='function'){imprimirPadraoAdm();}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-              <span class="btn-text">Adm 1</span>
-            </button>
-            <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm-2" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(13,148,136,0.6); border-radius:8px; background:linear-gradient(135deg, rgba(13,148,136,0.3) 0%, rgba(15,118,110,0.3) 100%); color:#2dd4bf; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(13,148,136,0.45)'" onmouseout="this.style.background='linear-gradient(135deg, rgba(13,148,136,0.3) 0%, rgba(15,118,110,0.3) 100%)'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-              <span class="btn-text">Adm 2</span>
-            </button>
-            <button type="button" class="btn action-report" onclick="exportarExcel()" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:125px; width:125px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(22,163,74,0.5); border-radius:8px; background:rgba(22,163,74,0.25); color:#4ade80; cursor:pointer; font-weight:600; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(22,163,74,0.4)'" onmouseout="this.style.background='rgba(22,163,74,0.25)'" title="Exportar para Excel">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
-              <span class="btn-text">Excel</span>
-            </button>
+              <!-- GRUPO ADMIN (Executivo, Alfa, Adm 1, Adm 2) -->
+              <button type="button" class="btn action-report action-adm" id="btn-relatorio-executivo" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:rgba(245,158,11,0.18); color:#fbbf24; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.35)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'" title="Novo Relatório Agrupado por Executivo (Somando e Contando)" onclick="if(typeof window.imprimirRelatorioExecutivo==='function'){window.imprimirRelatorioExecutivo();}else if(typeof imprimirRelatorioExecutivo==='function'){imprimirRelatorioExecutivo();}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span class="btn-text">Executivo</span>
+              </button>
+              <button type="button" class="btn action-report action-adm" id="btn-relatorio-alfa" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:rgba(245,158,11,0.18); color:#fbbf24; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.35)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'" title="Relatório Alfa / Lista de Processos com Parâmetros de Tela (Exclusivo Admin)" onclick="if(typeof window.imprimirAlfa==='function'){window.imprimirAlfa();}else if(typeof imprimirAlfa==='function'){imprimirAlfa();}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span class="btn-text">Alfa</span>
+              </button>
+              <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:rgba(245,158,11,0.18); color:#fbbf24; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.35)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'" title="Relatório Padrão sem Origem (Exclusivo Admin)" onclick="if(typeof window.imprimirPadraoAdm==='function'){window.imprimirPadraoAdm();}else if(typeof imprimirPadraoAdm==='function'){imprimirPadraoAdm();}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span class="btn-text">Adm 1</span>
+              </button>
+              <button type="button" class="btn action-report action-adm" id="btn-relatorio-padrao-adm-2" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:rgba(245,158,11,0.18); color:#fbbf24; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.35)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'" title="Relatório ADM 2 (Agrupado por Dígito com Memorando)" onclick="if(typeof window.imprimirPadraoAdm2==='function'){window.imprimirPadraoAdm2();}else if(typeof imprimirPadraoAdm2==='function'){imprimirPadraoAdm2();}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span class="btn-text">Adm 2</span>
+              </button>
+
+              <!-- GRUPO AÇÕES E EXPORTAÇÃO (Planilha, Compartilhar, Excel) -->
+              <button type="button" id="btn-planilha-topo" class="btn action-report action-adm" onclick="window.open('https://docs.google.com/spreadsheets/d/1m5ft9l56LbdkBuIJp44H1YWKSevuZsP2ucIG7RQxz2E/edit?gid=168431103#gid=168431103', '_blank')" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.18); color:#34d399; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(16,185,129,0.35)'" onmouseout="this.style.background='rgba(16,185,129,0.18)'" title="Acessar Planilha Principal Google Sheets (Exclusivo Admin)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                <span class="btn-text">Planilha</span>
+              </button>
+              <button id="btn-compartilhar-topo" class="btn" onmousedown="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}" onclick="const el=document.getElementById('indicador-compartilhar-processando');if(el){el.style.display='inline-flex';el.style.opacity='1';}compartilharWhatsAppRelatorio(true)" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.18); color:#34d399; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(16,185,129,0.35)'" onmouseout="this.style.background='rgba(16,185,129,0.18)'" title="Compartilhar Processos Marcados (Gera Imagem para WhatsApp)">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                <span class="btn-text">Compartilhar</span>
+              </button>
+              <button type="button" class="btn action-report" onclick="exportarExcel()" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(16,185,129,0.5); border-radius:8px; background:rgba(16,185,129,0.18); color:#34d399; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(16,185,129,0.35)'" onmouseout="this.style.background='rgba(16,185,129,0.18)'" title="Exportar para Excel">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M8 13l4 4M12 17l4-4M12 11v6"/></svg>
+                <span class="btn-text">Excel</span>
+              </button>
             </div>
           </div>
         </div>
@@ -2392,9 +2407,6 @@
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px; width: 100%;">
           <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <h2 id="form-title" style="margin:0; font-size:18px; line-height:1.15;">Novo Processo</h2>
-            <div class="siscam-badge-delta" title="Sistema Integrado CAM - SEDUC/RO">
-              <span class="siscam-delta">∴</span> SiSCAM <span class="siscam-delta">∴</span>
-            </div>
           </div>
 
           <!-- Seletores de Categoria e Tipo -->
@@ -2430,26 +2442,42 @@
             &#128065; <span class="btn-text">Ocultar Formulário</span>
           </button>
 
-          <!-- Barra de Escala Visual de Nível (0 a 10) -->
-          <div id="header-escala-wrapper" style="display:inline-flex;align-items:center;background:rgba(15,23,42,0.95);border:1px solid #334155;border-radius:10px;padding:6px 18px;gap:16px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);user-select:none;height:48px;flex:1;max-width:680px;min-width:320px;">
-            <span id="header-escala-badge" style="display:inline-block;padding:4px 12px;border-radius:6px;font-size:11.5px;font-weight:900;color:#ffffff;background:#dc2626;box-shadow:0 0 8px rgba(220,38,38,0.5);white-space:nowrap;letter-spacing:0.4px;">0 - PROCESSO ABERTO</span>
-            <div class="escala-slider-track-wrap" style="position:relative;width:100%;flex:1;min-width:180px;height:36px;display:flex;align-items:center;">
-              <!-- Linhas cinza de marcação (ticks 0 a 10) dividindo com precisão matemática em cada valor -->
+          <!-- Barra de Escala Visual de Nível (0% a 100%, 21 etapas com setores CAM e CCTE/GMAC) -->
+          <div id="header-escala-wrapper" style="display:inline-flex;align-items:center;background:rgba(15,23,42,0.95);border:1px solid #334155;border-radius:10px;padding:6px 18px;gap:12px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.4);user-select:none;height:48px;flex:1;max-width:760px;min-width:320px;">
+            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+              <span id="header-escala-setor" style="font-size:10px;font-weight:900;padding:3px 7px;border-radius:4px;background:#1e3a5f;color:#60a5fa;border:1px solid #2563eb;letter-spacing:0.5px;">CAM</span>
+              <span id="header-escala-badge" style="display:inline-block;padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:900;color:#ffffff;background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,0.5);white-space:nowrap;letter-spacing:0.4px;">0% - Processo aberto</span>
+              <button type="button" id="btn-editar-etapa10" onclick="abrirModalEtapa10Opcoes()" style="display:none;background:#2563eb;color:#fff;border:none;border-radius:6px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;display:none;align-items:center;gap:4px;" title="Editar especialidade da Fase 10">✏️ <span id="label-opcao-etapa10">CAD</span></button>
+            </div>
+            <div class="escala-slider-track-wrap" style="position:relative;width:100%;flex:1;min-width:200px;height:36px;display:flex;align-items:center;">
+              <!-- Linha divisória de transição de setor CAM -> CCTE / GMAC (entre etapa 7 e 8) -->
+              <div style="position:absolute;top:2px;bottom:2px;left:calc(13px + (100% - 26px) * 7.5 / 20);width:2px;background:rgba(239,68,68,0.6);border-left:1px dashed #fbbf24;z-index:2;pointer-events:none;" title="Transição de Setor: CAM ➔ CCTE / GMAC"></div>
+              <!-- Linhas de marcação (ticks 0 a 20) com percentuais -->
               <div class="escala-ticks-container" style="position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;">
-                <div class="escala-tick" data-val="0" title="0 - PROCESSO ABERTO" onclick="selecionarEtapaEscala(0)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 0 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="1" title="1 - RECEBIDO CAM" onclick="selecionarEtapaEscala(1)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 1 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="2" title="2 - NOTIFICADO" onclick="selecionarEtapaEscala(2)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 2 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="3" title="3 - AUTORIZO SEDUC" onclick="selecionarEtapaEscala(3)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 3 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="4" title="4 - AUTORIZO CASA CIVIL" onclick="selecionarEtapaEscala(4)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 4 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="5" title="5 - RECEBIDO GCF" onclick="selecionarEtapaEscala(5)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 5 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="6" title="6 - PRE EMPENHO" onclick="selecionarEtapaEscala(6)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 6 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="7" title="7 - EMPENHO" onclick="selecionarEtapaEscala(7)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 7 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="8" title="8 - PGE" onclick="selecionarEtapaEscala(8)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 8 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="9" title="9 - CONVENIADO" onclick="selecionarEtapaEscala(9)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 9 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
-                <div class="escala-tick" data-val="10" title="10 - PAGO" onclick="selecionarEtapaEscala(10)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 10 / 10);transform:translateX(-50%);width:2.5px;height:10px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="0" title="0% - Processo aberto (CAM)" onclick="selecionarEtapaEscala(0)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 0 / 20);transform:translateX(-50%);width:2px;height:9px;background:#ef4444;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="1" title="5% - Recebido na CAM" onclick="selecionarEtapaEscala(1)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 1 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="2" title="10% - Prosseguimento GDSM" onclick="selecionarEtapaEscala(2)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 2 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="3" title="15% - Prestação de Contas - CPC" onclick="selecionarEtapaEscala(3)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 3 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="4" title="20% - Notificação GDSM" onclick="selecionarEtapaEscala(4)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 4 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="5" title="25% - Manifestação CAM" onclick="selecionarEtapaEscala(5)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 5 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="6" title="30% - Autorizo Gabinete SEDUC" onclick="selecionarEtapaEscala(6)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 6 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="7" title="35% - Autorizo Casa Civil" onclick="selecionarEtapaEscala(7)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 7 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="8" title="40% - CCTE / GMAC" onclick="selecionarEtapaEscala(8)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 8 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="9" title="45% - GCF (1º Fase)" onclick="selecionarEtapaEscala(9)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 9 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="10" title="50% - Especialidade (Compras/Obras/CAD/Cotic/Outro)" onclick="selecionarEtapaEscala(10)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 10 / 20);transform:translateX(-50%);width:2px;height:9px;background:#eab308;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="11" title="55% - Pré empenho" onclick="selecionarEtapaEscala(11)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 11 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="12" title="60% - Empenho CFIN" onclick="selecionarEtapaEscala(12)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 12 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="13" title="65% - GCF (2º Fase)" onclick="selecionarEtapaEscala(13)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 13 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="14" title="70% - PGE (emissão de parecer)" onclick="selecionarEtapaEscala(14)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 14 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="15" title="75% - Autorizo convênio - SEDUC" onclick="selecionarEtapaEscala(15)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 15 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="16" title="80% - GCF (3º Fase)" onclick="selecionarEtapaEscala(16)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 16 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="17" title="85% - PGE - Termo de Convênio" onclick="selecionarEtapaEscala(17)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 17 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="18" title="90% - Controle Interno" onclick="selecionarEtapaEscala(18)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 18 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="19" title="95% - Emissão da NL" onclick="selecionarEtapaEscala(19)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 19 / 20);transform:translateX(-50%);width:2px;height:9px;background:#64748b;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
+                <div class="escala-tick" data-val="20" title="100% - Emissão da OB" onclick="selecionarEtapaEscala(20)" style="position:absolute;bottom:calc(50% + 7px);left:calc(13px + (100% - 26px) * 20 / 20);transform:translateX(-50%);width:2px;height:9px;background:#059669;border-radius:999px;pointer-events:auto;cursor:pointer;transition:all 0.2s;"></div>
               </div>
-              <input type="range" id="form-escala" min="0" max="10" step="1" value="0" style="background:#dc2626;" oninput="atualizarDisplayEscala(this.value)" />
-              <div id="escala-thumb-ball">0</div>
+              <input type="range" id="form-escala" min="0" max="20" step="1" value="0" style="background:#ef4444;" oninput="atualizarDisplayEscala(this.value)" />
+              <div id="escala-thumb-ball">0%</div>
             </div>
           </div>
         </div>
@@ -2606,7 +2634,23 @@
                   <div id="cnpj-status-box-form" style="font-size:11px; font-weight:700; min-height:16px;"></div>
                 </div>
 
-                <input type="text" id="form-cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="width:100%; height:40px; font-family:monospace; font-weight:600; font-size:13.5px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1px solid var(--border); border-radius:6px; color:#fff; box-sizing:border-box;" oninput="mascaraCNPJInput(this)" onblur="autoPreencherCNPJSeVazio(this)">
+                <div style="display:flex; align-items:center; gap:10px; width:100%; flex-wrap:wrap;">
+                  <!-- CNPJ input (marcação azul) -->
+                  <div style="flex:1 1 240px; min-width:200px;">
+                    <input type="text" id="form-cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="width:100%; height:40px; font-family:monospace; font-weight:600; font-size:13.5px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1.5px solid #38bdf8; border-radius:6px; color:#fff; box-sizing:border-box;" oninput="mascaraCNPJInput(this); aoDigitarCNPJFormulario(this.value);" onblur="autoPreencherCNPJSeVazio(this); aoSairCNPJFormulario(this.value);">
+                  </div>
+
+                  <!-- Lilás / Roxo Checkbox Inadimplente -->
+                  <label id="label-check-inadimplente" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 14px; background:rgba(168,85,247,0.15); border:1.5px solid #a855f7; border-radius:6px; color:#f3e8ff; font-weight:700; font-size:12.5px; cursor:pointer; user-select:none; white-space:nowrap; transition:all 0.2s;" title="Marcar entidade como inadimplente">
+                    <input type="checkbox" id="form-check-inadimplente" style="width:18px; height:18px; cursor:pointer; accent-color:#9333ea;" onchange="aoAlternarCheckInadimplente(this.checked)">
+                    <span>Inadimplente</span>
+                  </label>
+
+                  <!-- Caixa de Texto Amarela Readonly (Adimplente / INADIMPLENTE) -->
+                  <div style="flex:0 0 170px; min-width:150px;">
+                    <input type="text" id="form-status-adimplencia" readonly value="Adimplente" style="width:100%; height:40px; text-align:center; font-weight:900; font-size:13px; letter-spacing:0.5px; border-radius:6px; border:2px solid #eab308; background:#fef08a; color:#15803d; cursor:not-allowed; box-sizing:border-box; box-shadow:0 2px 8px rgba(234,179,8,0.25);" title="Status de Adimplência da Entidade">
+                  </div>
+                </div>
 
                 <!-- BARRA DE AÇÕES DO CNPJ (IMAGENS 2, 3 E 4) -->
                 <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
@@ -3271,7 +3315,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.133</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.134</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -3952,7 +3996,7 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.133 ∴</span>
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.134 ∴</span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
@@ -4224,7 +4268,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.133] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.134] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6540,14 +6584,14 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=v1.133"></script>
-  <script src="js/auth-sap.js?v=v1.133"></script>
-  <script src="js/dados.js?v=v1.133"></script>
-  <script src="js/app.js?v=v1.133"></script>
-  <script src="js/escolas.js?v=v1.133" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=v1.133.55"></script>
-  <script src="js/mapa.js?v=v1.133.55"></script>
-  <script src="js/contatos.js?v=v1.133.55"></script>
+  <script src="js/multi-select.js?v=v1.134"></script>
+  <script src="js/auth-sap.js?v=v1.134"></script>
+  <script src="js/dados.js?v=v1.134"></script>
+  <script src="js/app.js?v=v1.134"></script>
+  <script src="js/escolas.js?v=v1.134" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=v1.134"></script>
+  <script src="js/mapa.js?v=v1.134"></script>
+  <script src="js/contatos.js?v=v1.134"></script>
 
 
   <script>
@@ -6740,12 +6784,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=v1.133"></script>
-  <script src="js/gmac.js?v=v1.133"></script>
-  <script src="js/orcamento.js?v=v1.133"></script>
-  <script src="js/gdsm.js?v=v1.133"></script>
-  <script src="js/print-proalfa.js?v=v1.133"></script>
-  <script src="js/proalfa.js?v=v1.133"></script>
+  <script src="js/diarias.js?v=v1.134"></script>
+  <script src="js/gmac.js?v=v1.134"></script>
+  <script src="js/orcamento.js?v=v1.134"></script>
+  <script src="js/gdsm.js?v=v1.134"></script>
+  <script src="js/print-proalfa.js?v=v1.134"></script>
+  <script src="js/proalfa.js?v=v1.134"></script>
 
 
 
@@ -8371,6 +8415,44 @@ function mudarAbaDiarias(aba, el) {
           </div>
         </div>
       </div>
+
+  <!-- Modal de Seleção de Especialidade para a Fase 10 da Régua de Escala -->
+  <div id="modal-escala-etapa10" class="modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.82); z-index:100000; align-items:center; justify-content:center; backdrop-filter:blur(6px);">
+    <div style="background:#1e293b; border:1px solid #475569; border-radius:14px; padding:24px; max-width:440px; width:92%; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); animation:modalFadeIn 0.2s ease-out;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+        <h3 style="margin:0; color:#f8fafc; font-size:16.5px; font-weight:800; display:flex; align-items:center; gap:8px;">
+          <span>🏷️</span> Fase 10 - Especialidade
+        </h3>
+        <button type="button" onclick="fecharModalEtapa10Opcoes()" style="background:none; border:none; color:#94a3b8; font-size:20px; cursor:pointer; line-height:1;">&times;</button>
+      </div>
+      <p style="color:#cbd5e1; font-size:13px; line-height:1.45; margin-bottom:18px;">
+        Ao atingir a <strong>Fase 10 (50%)</strong>, selecione qual especialidade está conduzindo o processo:
+      </p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;">
+        <button type="button" class="btn" style="background:linear-gradient(135deg,#3b82f6,#2563eb); color:#fff; font-weight:800; font-size:13px; padding:12px 10px; border-radius:8px; border:none; cursor:pointer; box-shadow:0 3px 10px rgba(59,130,246,0.3);" onclick="selecionarOpcaoEtapa10('Compras')">🛍️ Compras</button>
+        <button type="button" class="btn" style="background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-weight:800; font-size:13px; padding:12px 10px; border-radius:8px; border:none; cursor:pointer; box-shadow:0 3px 10px rgba(245,158,11,0.3);" onclick="selecionarOpcaoEtapa10('Obras')">🏗️ Obras</button>
+        <button type="button" class="btn" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; font-weight:800; font-size:13px; padding:12px 10px; border-radius:8px; border:none; cursor:pointer; box-shadow:0 3px 10px rgba(16,185,129,0.3);" onclick="selecionarOpcaoEtapa10('CAD')">📐 CAD</button>
+        <button type="button" class="btn" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed); color:#fff; font-weight:800; font-size:13px; padding:12px 10px; border-radius:8px; border:none; cursor:pointer; box-shadow:0 3px 10px rgba(139,92,246,0.3);" onclick="selecionarOpcaoEtapa10('Cotic')">💻 Cotic</button>
+        <button type="button" class="btn" style="background:linear-gradient(135deg,#64748b,#475569); color:#fff; font-weight:800; font-size:13px; padding:12px 10px; border-radius:8px; border:none; cursor:pointer; grid-column:1 / -1;" onclick="selecionarOpcaoEtapa10('Outro')">📦 Outro</button>
+      </div>
+      <div style="display:flex; justify-content:flex-end;">
+        <button type="button" class="btn btn-ghost" onclick="fecharModalEtapa10Opcoes()" style="border:1px solid #475569; padding:8px 16px; border-radius:6px; font-weight:600; font-size:12px; color:#cbd5e1;">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AVISO ENORME NA TELA: INADIMPLENTE (Piscando em vermelho por 4 segundos) -->
+  <div id="aviso-enorme-inadimplente" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:999999; align-items:center; justify-content:center; flex-direction:column; backdrop-filter:blur(8px); text-align:center; padding:24px;">
+    <div style="display:inline-block; font-size:72px; font-weight:900; color:#ef4444; letter-spacing:6px; line-height:1.1; text-transform:uppercase; text-shadow:0 0 35px rgba(239,68,68,0.95);" class="texto-inadimplente-piscando">
+      ⚠️ INADIMPLENTE ⚠️
+    </div>
+    <div style="margin-top:24px; font-size:22px; font-weight:700; color:#fca5a5; max-width:680px; text-shadow:0 2px 8px rgba(0,0,0,0.7);">
+      Atenção: Este CNPJ já consta registrado com pendência/inadimplência no sistema!
+    </div>
+    <div style="margin-top:14px; font-size:14px; color:#cbd5e1; font-family:monospace; background:rgba(239,68,68,0.18); border:1px solid rgba(239,68,68,0.4); border-radius:8px; padding:8px 18px;">
+      O status de adimplência do processo será atualizado automaticamente.
+    </div>
+  </div>
 
   <script src="js/newsticker.js"></script>
 </body>

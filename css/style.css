@@ -4257,13 +4257,13 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   top: 50%;
   left: 13px;
   transform: translate(-50%, -50%);
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #ffffff;
   color: #0f172a;
   font-weight: 900;
-  font-size: 13px;
+  font-size: 10.5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4272,7 +4272,7 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   pointer-events: none;
   user-select: none;
   line-height: 1;
-  font-family: inherit;
+  font-family: monospace;
   transition: left 0.05s ease-out;
   z-index: 10;
 }
@@ -4290,7 +4290,7 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 
 
 
-/* Buscador Instantâneo por Escala Dupla (v1.133 - Imagem de X a Y) */
+/* Buscador Instantâneo por Escala Dupla (v1.134 - Imagem de X a Y) */
 .filtro-escala-range-input {
   position: absolute;
   left: 0;
@@ -4309,8 +4309,8 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 .filtro-escala-range-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -4318,8 +4318,8 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   pointer-events: auto;
 }
 .filtro-escala-range-input::-moz-range-thumb {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   background: transparent;
   border: none;
@@ -4330,13 +4330,13 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: #ffffff;
   color: #0f172a;
   font-weight: 900;
-  font-size: 11px;
+  font-size: 9.5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4344,6 +4344,7 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   pointer-events: none;
   border: 2px solid #ffffff;
   transition: border-color 0.15s, box-shadow 0.15s;
+  font-family: monospace;
 }
 .escala-tick-filtro {
   cursor: pointer;
@@ -4354,6 +4355,28 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   transform: translateX(-50%) scaleY(1.3) !important;
   background: #38bdf8 !important;
   box-shadow: 0 0 6px rgba(56, 189, 248, 0.8) !important;
+}
+
+/* Animação de Alerta Enorme Piscando - Inadimplente */
+@keyframes animPiscarInadimplente {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.95));
+  }
+  50% {
+    opacity: 0.15;
+    transform: scale(0.97);
+    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.2));
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.95));
+  }
+}
+.texto-inadimplente-piscando {
+  animation: animPiscarInadimplente 0.6s infinite alternate ease-in-out !important;
 }
 
 /* Barra de Escala para Relatórios de Impressão (v1.3.117 - Imagem 1 e 3) */

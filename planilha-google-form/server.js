@@ -377,7 +377,8 @@ const defaultHeaders = [
   "DEMAIS OBSERVACOES",
   "EXECUTIVO",
   "ANALISTA",
-  "ESCALA"
+  "ESCALA",
+  "CONTAS"
 ];
 
 async function getAllRows() {
@@ -617,6 +618,13 @@ function mapDataToRow(data, headers, originalRow = [], user = null) {
       val = data.analista !== undefined ? data.analista : (data.ANALISTA !== undefined ? data.ANALISTA : '');
     } else if (hLow === 'escala' || hLow.includes('escala') || hLow === 'escola') {
       val = (data.escala !== undefined && data.escala !== null && data.escala !== '') ? String(data.escala).trim() : ((data.ESCALA !== undefined && data.ESCALA !== null && data.ESCALA !== '') ? String(data.ESCALA).trim() : '0');
+    } else if (hLow === 'contas' || hLow.includes('inadimpl')) {
+      const inad = data.inadimplente !== undefined ? data.inadimplente : (data.CONTAS !== undefined ? data.CONTAS : (data.INADIMPLENTE !== undefined ? data.INADIMPLENTE : undefined));
+      if (inad !== undefined && inad !== null) {
+        val = (inad === '1' || inad === 1 || inad === true || String(inad).trim() === '1') ? '1' : '0';
+      } else {
+        val = (originalRow && originalRow[i] !== undefined && originalRow[i] !== null && String(originalRow[i]).trim() !== '') ? String(originalRow[i]).trim() : '0';
+      }
     } else if (hLow === 'id' || hLow === 'id_seq' || hLow === 'seq' || hLow === 'chave') {
       val = (originalRow && originalRow[i]) ? originalRow[i] : (data.id || data.seqId || '');
     }

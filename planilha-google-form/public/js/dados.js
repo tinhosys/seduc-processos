@@ -1,4 +1,4 @@
-﻿
+
 function formatarDigitoInteiro(val) {
   if (val === null || val === undefined) return '';
   let s = String(val).trim();
@@ -280,6 +280,7 @@ window.formatarDataParaApp = formatarDataParaApp;
     demaisObservacoes: row['DEMAIS OBSERVACOES'] || row['demais observacoes'] || row.demaisObservacoes || '',
     escala: row['ESCALA'] !== undefined && row['ESCALA'] !== null ? String(row['ESCALA']).trim() : (row.escala !== undefined ? String(row.escala).trim() : (row['escola'] !== undefined && row['escola'] !== null ? String(row['escola']).trim() : (row.ESCOLA !== undefined ? String(row.ESCOLA).trim() : ''))),
     analista: String(row['ANALISTA'] || row['Analista'] || row.analista || '').trim(),
+    inadimplente: (row['CONTAS'] === '1' || row['CONTAS'] === 1 || String(row['CONTAS']).trim() === '1' || row['INADIMPLENTE'] === '1' || row['INADIMPLENTE'] === 1 || row.inadimplente === '1' || row.inadimplente === 1) ? '1' : '0',
     ultimaEdicao: row['ULTIMA EDICAO LOGIN'] || row['ULTIMA EDICAO'] || row['ultima edicao'] || row['Última edição'] || '',
     dataHoraEdicao: row['DATA/HORA EDICAO'] || row['data/hora edicao'] || row['data/hora edição'] || '',
     alerta: String(alertaStr || '').trim(),
@@ -341,7 +342,9 @@ const mapToSheet = (dados) => {
     'METRAGEM (M²)': dados.metragem || '',
     'DETALHAMENTO ITENS': dados.detalhamentoItens || '',
     'DEMAIS OBSERVACOES': dados.demaisObservacoes || '',
-    'ESCALA': (dados.escala !== undefined && dados.escala !== null && dados.escala !== '') ? String(dados.escala).trim() : ((dados.ESCALA !== undefined && dados.ESCALA !== null && dados.ESCALA !== '') ? String(dados.ESCALA).trim() : '0')
+    'ESCALA': (dados.escala !== undefined && dados.escala !== null && dados.escala !== '') ? String(dados.escala).trim() : ((dados.ESCALA !== undefined && dados.ESCALA !== null && dados.ESCALA !== '') ? String(dados.ESCALA).trim() : '0'),
+    'CONTAS': (dados.inadimplente === '1' || dados.inadimplente === 1 || dados.inadimplente === true || dados.CONTAS === '1') ? '1' : '0',
+    'INADIMPLENTE': (dados.inadimplente === '1' || dados.inadimplente === 1 || dados.inadimplente === true || dados.CONTAS === '1') ? '1' : '0'
   };
 };
 
@@ -474,6 +477,8 @@ async function adicionarProcesso(dados) {
         ANALISTA: dados.analista || '',
         escala: dados.escala !== undefined ? String(dados.escala).trim() : '',
         ESCALA: dados.escala !== undefined ? String(dados.escala).trim() : '',
+        inadimplente: (dados.inadimplente === '1' || dados.inadimplente === 1 || dados.inadimplente === true || dados.CONTAS === '1') ? '1' : '0',
+        CONTAS: (dados.inadimplente === '1' || dados.inadimplente === 1 || dados.inadimplente === true || dados.CONTAS === '1') ? '1' : '0',
         DIGITO: dados.digito || dados.DIGITO || '', 
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })
@@ -518,6 +523,8 @@ async function atualizarProcesso(id, dados) {
         ANALISTA: dados.analista || '',
         escala: dados.escala !== undefined ? String(dados.escala).trim() : '',
         ESCALA: dados.escala !== undefined ? String(dados.escala).trim() : '',
+        inadimplente: (dados.inadimplente === '1' || dados.inadimplente === 1 || dados.inadimplente === true || dados.CONTAS === '1') ? '1' : '0',
+        CONTAS: (dados.inadimplente === '1' || dados.inadimplente === 1 || dados.inadimplente === true || dados.CONTAS === '1') ? '1' : '0',
         DIGITO: dados.digito || dados.DIGITO || '', 
         'DÍGITO': dados.digito || dados.DIGITO || '' 
       })

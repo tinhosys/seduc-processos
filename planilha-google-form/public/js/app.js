@@ -1,55 +1,122 @@
-﻿
+
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
+// ===== HELPER DA ESCALA DE PROCESSO (0% a 100%, 21 ETAPAS E SETORES CAM / CCTE-GMAC) =====
 const ESCALA_ETAPAS = [
-  { nivel: 0, label: '0 - PROCESSO ABERTO', nome: 'PROCESSO ABERTO', cor: '#dc2626' },
-  { nivel: 1, label: '1 - RECEBIDO CAM', nome: 'RECEBIDO CAM', cor: '#e11d48' },
-  { nivel: 2, label: '2 - NOTIFICADO', nome: 'NOTIFICADO', cor: '#ea580c' },
-  { nivel: 3, label: '3 - AUTORIZO SEDUC', nome: 'AUTORIZO SEDUC', cor: '#f97316' },
-  { nivel: 4, label: '4 - AUTORIZO CASA CIVIL', nome: 'AUTORIZO CASA CIVIL', cor: '#d97706' },
-  { nivel: 5, label: '5 - RECEBIDO GCF', nome: 'RECEBIDO GCF', cor: '#eab308' },
-  { nivel: 6, label: '6 - PRE EMPENHO', nome: 'PRE EMPENHO', cor: '#a3e635' },
-  { nivel: 7, label: '7 - EMPENHO', nome: 'EMPENHO', cor: '#84cc16' },
-  { nivel: 8, label: '8 - PGE', nome: 'PGE', cor: '#22c55e' },
-  { nivel: 9, label: '9 - CONVENIADO', nome: 'CONVENIADO', cor: '#10b981' },
-  { nivel: 10, label: '10 - PAGO', nome: 'PAGO', cor: '#059669' }
+  { nivel: 0, pct: '0%', label: '0% - Processo aberto', nome: 'Processo aberto', setor: 'CAM', cor: '#ef4444' },
+  { nivel: 1, pct: '5%', label: '5% - Recebido na CAM', nome: 'Recebido na CAM', setor: 'CAM', cor: '#f87171' },
+  { nivel: 2, pct: '10%', label: '10% - Prosseguimento GDSM', nome: 'Prosseguimento GDSM', setor: 'CAM', cor: '#fb923c' },
+  { nivel: 3, pct: '15%', label: '15% - Prestação de Contas - CPC', nome: 'Prestação de Contas - CPC', setor: 'CAM', cor: '#f97316' },
+  { nivel: 4, pct: '20%', label: '20% - Notificação GDSM', nome: 'Notificação GDSM', setor: 'CAM', cor: '#ea580c' },
+  { nivel: 5, pct: '25%', label: '25% - Manifestação CAM', nome: 'Manifestação CAM', setor: 'CAM', cor: '#f59e0b' },
+  { nivel: 6, pct: '30%', label: '30% - Autorizo Gabinete SEDUC', nome: 'Autorizo Gabinete SEDUC', setor: 'CAM', cor: '#eab308' },
+  { nivel: 7, pct: '35%', label: '35% - Autorizo Casa Civil', nome: 'Autorizo Casa Civil', setor: 'CAM', cor: '#ca8a04' },
+  { nivel: 8, pct: '40%', label: '40% - CCTE / GMAC', nome: 'CCTE / GMAC', setor: 'CCTE / GMAC', cor: '#3b82f6' },
+  { nivel: 9, pct: '45%', label: '45% - GCF (1º Fase)', nome: 'GCF (1º Fase)', setor: 'CCTE / GMAC', cor: '#60a5fa' },
+  { nivel: 10, pct: '50%', label: '50% - Especialidade', nome: 'Especialidade', setor: 'CCTE / GMAC', cor: '#eab308' },
+  { nivel: 11, pct: '55%', label: '55% - Pré empenho', nome: 'Pré empenho', setor: 'CCTE / GMAC', cor: '#a855f7' },
+  { nivel: 12, pct: '60%', label: '60% - Empenho CFIN', nome: 'Empenho CFIN', setor: 'CCTE / GMAC', cor: '#8b5cf6' },
+  { nivel: 13, pct: '65%', label: '65% - GCF (2º Fase)', nome: 'GCF (2º Fase)', setor: 'CCTE / GMAC', cor: '#6366f1' },
+  { nivel: 14, pct: '70%', label: '70% - PGE (emissão de parecer)', nome: 'PGE (emissão de parecer)', setor: 'CCTE / GMAC', cor: '#0ea5e9' },
+  { nivel: 15, pct: '75%', label: '75% - Autorizo convênio - SEDUC', nome: 'Autorizo convênio - SEDUC', setor: 'CCTE / GMAC', cor: '#14b8a6' },
+  { nivel: 16, pct: '80%', label: '80% - GCF (3º Fase)', nome: 'GCF (3º Fase)', setor: 'CCTE / GMAC', cor: '#10b981' },
+  { nivel: 17, pct: '85%', label: '85% - PGE - Termo de Convênio', nome: 'PGE - Termo de Convênio', setor: 'CCTE / GMAC', cor: '#059669' },
+  { nivel: 18, pct: '90%', label: '90% - Controle Interno', nome: 'Controle Interno', setor: 'CCTE / GMAC', cor: '#047857' },
+  { nivel: 19, pct: '95%', label: '95% - Emissão da NL', nome: 'Emissão da NL', setor: 'CCTE / GMAC', cor: '#065f46' },
+  { nivel: 20, pct: '100%', label: '100% - Emissão da OB', nome: 'Emissão da OB', setor: 'CCTE / GMAC', cor: '#047857' }
 ];
 window.ESCALA_ETAPAS = ESCALA_ETAPAS;
 
 function getEscalaInfo(val) {
-  const n = parseInt(val, 10);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+  const parts = String(val !== undefined && val !== null ? val : '').split(';');
+  const n = parseInt(parts[0], 10);
+  const subOpcao = (parts[1] || '').trim();
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(20, n));
   const etapa = ESCALA_ETAPAS[safeN] || ESCALA_ETAPAS[0];
+  let label = etapa.label;
+  let nome = etapa.nome;
+  if (safeN === 10 && subOpcao) {
+    label = `50% - ${subOpcao}`;
+    nome = subOpcao;
+  }
   return {
     nivel: safeN,
-    label: etapa.label,
-    nome: etapa.nome,
+    pct: etapa.pct,
+    label: label,
+    nome: nome,
+    setor: etapa.setor,
+    subOpcao: subOpcao,
     cor: etapa.cor,
     bgBar: etapa.cor
   };
 }
 window.getEscalaInfo = getEscalaInfo;
 
-function atualizarDisplayEscala(val) {
-  const info = getEscalaInfo(val);
+function atualizarDisplayEscala(val, triggerModalSeVazio = true) {
+  const parts = String(val !== undefined && val !== null ? val : '').split(';');
+  const n = parseInt(parts[0], 10);
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(20, n));
+  const slider = document.getElementById('form-escala');
+  
+  let subOpcao = (parts[1] || '').trim();
+  if (!subOpcao && slider && slider.dataset.subOpcao) {
+    subOpcao = slider.dataset.subOpcao;
+  }
+
+  if (slider) {
+    slider.value = safeN;
+    if (safeN === 10) {
+      if (subOpcao) slider.dataset.subOpcao = subOpcao;
+    } else {
+      slider.dataset.subOpcao = '';
+    }
+  }
+
+  const info = getEscalaInfo(safeN === 10 && subOpcao ? `10;${subOpcao}` : safeN);
+  
+  const setorBadge = document.getElementById('header-escala-setor');
+  if (setorBadge) {
+    setorBadge.textContent = info.setor;
+    if (info.setor === 'CAM') {
+      setorBadge.style.background = '#1e3a5f';
+      setorBadge.style.color = '#60a5fa';
+      setorBadge.style.borderColor = '#2563eb';
+    } else {
+      setorBadge.style.background = 'rgba(168,85,247,0.2)';
+      setorBadge.style.color = '#d8b4fe';
+      setorBadge.style.borderColor = '#9333ea';
+    }
+  }
+
   const badge = document.getElementById('header-escala-badge');
   if (badge) {
     badge.textContent = info.label;
     badge.style.background = info.cor;
     badge.style.boxShadow = '0 0 10px ' + info.cor + '80';
   }
-  const slider = document.getElementById('form-escala');
+
   if (slider) {
     slider.style.background = info.cor;
   }
-  const n = parseInt(val, 10);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+
+  const btnEdit10 = document.getElementById('btn-editar-etapa10');
+  const labelEdit10 = document.getElementById('label-opcao-etapa10');
+  if (btnEdit10) {
+    if (safeN === 10) {
+      btnEdit10.style.display = 'inline-flex';
+      if (labelEdit10) labelEdit10.textContent = info.subOpcao || 'Opção';
+    } else {
+      btnEdit10.style.display = 'none';
+    }
+  }
+
   const ball = document.getElementById('escala-thumb-ball');
   if (ball) {
-    ball.textContent = String(safeN);
-    ball.style.left = `calc(13px + (100% - 26px) * ${safeN} / 10)`;
+    ball.textContent = info.pct;
+    ball.style.left = `calc(13px + (100% - 26px) * ${safeN} / 20)`;
   }
-  // Sincronizar estado visual top das linhas cinza (ticks)
-  const ticks = document.querySelectorAll('.escala-tick');
+
+  // Sincronizar estado visual das marcações (ticks)
+  const ticks = document.querySelectorAll('#header-escala-wrapper .escala-tick');
   ticks.forEach(t => {
     const tVal = parseInt(t.getAttribute('data-val'), 10);
     if (tVal === safeN) {
@@ -69,14 +136,49 @@ function atualizarDisplayEscala(val) {
       t.style.boxShadow = 'none';
     }
   });
+
+  // Se chegou na etapa 10 e ainda não tem opção escolhida, abre o modal de opções
+  if (safeN === 10 && !info.subOpcao && triggerModalSeVazio) {
+    abrirModalEtapa10Opcoes();
+  }
 }
 window.atualizarDisplayEscala = atualizarDisplayEscala;
+
+function abrirModalEtapa10Opcoes() {
+  const modal = document.getElementById('modal-escala-etapa10');
+  if (modal) modal.style.display = 'flex';
+}
+window.abrirModalEtapa10Opcoes = abrirModalEtapa10Opcoes;
+
+function fecharModalEtapa10Opcoes() {
+  const modal = document.getElementById('modal-escala-etapa10');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalEtapa10Opcoes = fecharModalEtapa10Opcoes;
+
+function selecionarOpcaoEtapa10(opcao) {
+  const slider = document.getElementById('form-escala');
+  if (slider) {
+    slider.value = 10;
+    slider.dataset.subOpcao = opcao;
+  }
+  fecharModalEtapa10Opcoes();
+  atualizarDisplayEscala(`10;${opcao}`, false);
+  if (slider) {
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  if (typeof toast === 'function') {
+    toast(`Fase 10 definida como: 10;${opcao}`, 'success');
+  }
+}
+window.selecionarOpcaoEtapa10 = selecionarOpcaoEtapa10;
 
 function selecionarEtapaEscala(val) {
   const slider = document.getElementById('form-escala');
   if (slider) {
     slider.value = val;
-    atualizarDisplayEscala(val);
+    atualizarDisplayEscala(val, true);
     slider.dispatchEvent(new Event('input', { bubbles: true }));
     slider.dispatchEvent(new Event('change', { bubbles: true }));
   }
@@ -84,32 +186,28 @@ function selecionarEtapaEscala(val) {
 window.selecionarEtapaEscala = selecionarEtapaEscala;
 
 function renderMiniEscalaBar(val) {
-  const n = parseInt(val, 10);
   const info = getEscalaInfo(val);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
-  const pct = (safeN / 10) * 100;
+  const pctNum = (info.nivel / 20) * 100;
   return `
-    <div class="mini-escala-container" title="Escala de Nível: ${info.label}" style="margin-top:6px;display:flex;align-items:center;gap:6px;user-select:none;">
+    <div class="mini-escala-container" title="Escala: ${info.label}" style="margin-top:6px;display:flex;align-items:center;gap:6px;user-select:none;">
       <div style="position:relative;width:105px;height:8px;border-radius:999px;background:${info.cor};box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);overflow:visible;">
-        <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:12px;height:12px;border-radius:50%;background:#ffffff;border:2.5px solid ${info.cor};box-shadow:0 0 6px rgba(0,0,0,0.8);cursor:default;"></div>
+        <div style="position:absolute;top:50%;left:${pctNum}%;transform:translate(-50%, -50%);width:12px;height:12px;border-radius:50%;background:#ffffff;border:2.5px solid ${info.cor};box-shadow:0 0 6px rgba(0,0,0,0.8);cursor:default;"></div>
       </div>
-      <span style="font-size:10px;font-weight:900;color:${info.cor};font-family:monospace;line-height:1;">${safeN}/10</span>
+      <span style="font-size:10px;font-weight:900;color:${info.cor};font-family:monospace;line-height:1;">${info.pct}</span>
     </div>
   `;
 }
 window.renderMiniEscalaBar = renderMiniEscalaBar;
 
 function renderRelatorioEscalaBar(val) {
-  const n = parseInt(val, 10);
   const info = getEscalaInfo(val);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
-  const pct = (safeN / 10) * 100;
+  const pctNum = (info.nivel / 20) * 100;
   return `
-    <div class="relatorio-escala-container" title="Escala de Nível: ${info.label}" style="margin-top:3px;display:flex;align-items:center;gap:5px;user-select:none;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
+    <div class="relatorio-escala-container" title="Escala: ${info.label}" style="margin-top:3px;display:flex;align-items:center;gap:5px;user-select:none;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
       <div class="relatorio-escala-track" style="position:relative;width:75px;height:6px;border-radius:999px;background:${info.cor} !important;box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);overflow:visible;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
-        <div class="relatorio-escala-thumb" style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:9px;height:9px;border-radius:50%;background:#ffffff !important;border:2px solid ${info.cor} !important;box-shadow:0 0 3px rgba(0,0,0,0.5);-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;"></div>
+        <div class="relatorio-escala-thumb" style="position:absolute;top:50%;left:${pctNum}%;transform:translate(-50%, -50%);width:9px;height:9px;border-radius:50%;background:#ffffff !important;border:2px solid ${info.cor} !important;box-shadow:0 0 3px rgba(0,0,0,0.5);-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;"></div>
       </div>
-      <span class="relatorio-escala-text" style="font-size:8.5px;font-weight:900;color:${info.cor} !important;font-family:monospace;line-height:1;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">${safeN}/10</span>
+      <span class="relatorio-escala-text" style="font-size:8.5px;font-weight:900;color:${info.cor} !important;font-family:monospace;line-height:1;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">${info.pct}</span>
     </div>
   `;
 }
@@ -127,11 +225,11 @@ function atualizarDisplayFiltroEscala(minVal, maxVal, ativo) {
   const ticks = document.querySelectorAll('.escala-tick-filtro');
 
   let nMin = parseInt(minVal !== undefined && minVal !== null ? minVal : (rangeMin ? rangeMin.value : 0), 10);
-  let nMax = parseInt(maxVal !== undefined && maxVal !== null ? maxVal : (rangeMax ? rangeMax.value : 10), 10);
+  let nMax = parseInt(maxVal !== undefined && maxVal !== null ? maxVal : (rangeMax ? rangeMax.value : 20), 10);
   if (isNaN(nMin)) nMin = 0;
-  if (isNaN(nMax)) nMax = 10;
-  nMin = Math.max(0, Math.min(10, nMin));
-  nMax = Math.max(0, Math.min(10, nMax));
+  if (isNaN(nMax)) nMax = 20;
+  nMin = Math.max(0, Math.min(20, nMin));
+  nMax = Math.max(0, Math.min(20, nMax));
 
   const startVal = Math.min(nMin, nMax);
   const endVal = Math.max(nMin, nMax);
@@ -148,16 +246,16 @@ function atualizarDisplayFiltroEscala(minVal, maxVal, ativo) {
   if (badge) {
     if (ativo) {
       if (startVal === endVal) {
-        badge.textContent = infoMin.label;
+        badge.textContent = `${infoMin.pct} - ${infoMin.nome}`;
       } else {
-        badge.textContent = `${startVal} a ${endVal} (${infoMin.label.split(' - ')[1] || startVal} ➔ ${infoMax.label.split(' - ')[1] || endVal})`;
+        badge.textContent = `${infoMin.pct} a ${infoMax.pct} (${infoMin.nome} ➔ ${infoMax.nome})`;
       }
       badge.style.background = infoMax.cor;
       badge.style.color = '#ffffff';
       badge.style.borderColor = infoMax.cor;
       badge.style.boxShadow = '0 0 8px ' + infoMax.cor + '80';
     } else {
-      badge.textContent = 'TODAS AS ESCALAS';
+      badge.textContent = 'TODAS AS ESCALAS (0% - 100%)';
       badge.style.background = '#1e293b';
       badge.style.color = '#94a3b8';
       badge.style.borderColor = '#334155';
@@ -169,23 +267,23 @@ function atualizarDisplayFiltroEscala(minVal, maxVal, ativo) {
   if (rangeMax) rangeMax.value = endVal;
 
   if (ballMin) {
-    ballMin.textContent = String(startVal);
-    ballMin.style.left = `calc(10px + (100% - 20px) * ${startVal} / 10)`;
+    ballMin.textContent = infoMin.pct;
+    ballMin.style.left = `calc(10px + (100% - 20px) * ${startVal} / 20)`;
     ballMin.style.borderColor = ativo ? infoMin.cor : '#ffffff';
     ballMin.style.boxShadow = ativo ? '0 0 8px ' + infoMin.cor : '0 1px 5px rgba(0,0,0,0.6)';
   }
 
   if (ballMax) {
-    ballMax.textContent = String(endVal);
-    ballMax.style.left = `calc(10px + (100% - 20px) * ${endVal} / 10)`;
+    ballMax.textContent = infoMax.pct;
+    ballMax.style.left = `calc(10px + (100% - 20px) * ${endVal} / 20)`;
     ballMax.style.borderColor = ativo ? infoMax.cor : '#ffffff';
     ballMax.style.boxShadow = ativo ? '0 0 8px ' + infoMax.cor : '0 1px 5px rgba(0,0,0,0.6)';
   }
 
   if (activeBar) {
     if (ativo) {
-      activeBar.style.left = `calc(10px + (100% - 20px) * ${startVal} / 10)`;
-      activeBar.style.right = `calc(100% - (10px + (100% - 20px) * ${endVal} / 10))`;
+      activeBar.style.left = `calc(10px + (100% - 20px) * ${startVal} / 20)`;
+      activeBar.style.right = `calc(100% - (10px + (100% - 20px) * ${endVal} / 20))`;
       if (startVal === endVal) {
         activeBar.style.background = infoMin.cor;
       } else {
@@ -233,9 +331,9 @@ function toggleFiltroEscalaAtivo(ativo) {
     const rMin = document.getElementById('filtro-escala-range-min');
     const rMax = document.getElementById('filtro-escala-range-max');
     let vMin = rMin ? parseInt(rMin.value, 10) : (state.filtros.escalaMin !== null ? state.filtros.escalaMin : 0);
-    let vMax = rMax ? parseInt(rMax.value, 10) : (state.filtros.escalaMax !== null ? state.filtros.escalaMax : 10);
+    let vMax = rMax ? parseInt(rMax.value, 10) : (state.filtros.escalaMax !== null ? state.filtros.escalaMax : 20);
     if (isNaN(vMin)) vMin = 0;
-    if (isNaN(vMax)) vMax = 10;
+    if (isNaN(vMax)) vMax = 20;
     const sMin = Math.min(vMin, vMax);
     const sMax = Math.max(vMin, vMax);
     state.filtros.escalaMin = sMin;
@@ -252,9 +350,9 @@ function onInputFiltroEscalaMin(val) {
   if (typeof state !== 'undefined' && state && state.filtros) {
     const rMax = document.getElementById('filtro-escala-range-max');
     let vMin = parseInt(val, 10);
-    let vMax = rMax ? parseInt(rMax.value, 10) : 10;
+    let vMax = rMax ? parseInt(rMax.value, 10) : 20;
     if (isNaN(vMin)) vMin = 0;
-    if (isNaN(vMax)) vMax = 10;
+    if (isNaN(vMax)) vMax = 20;
     if (vMin > vMax) {
       vMax = vMin;
       if (rMax) rMax.value = vMax;
@@ -275,7 +373,7 @@ function onInputFiltroEscalaMax(val) {
     const rMin = document.getElementById('filtro-escala-range-min');
     let vMax = parseInt(val, 10);
     let vMin = rMin ? parseInt(rMin.value, 10) : 0;
-    if (isNaN(vMax)) vMax = 10;
+    if (isNaN(vMax)) vMax = 20;
     if (isNaN(vMin)) vMin = 0;
     if (vMax < vMin) {
       vMin = vMax;
@@ -295,7 +393,7 @@ window.onInputFiltroEscalaMax = onInputFiltroEscalaMax;
 function selecionarFiltroEscalaPonto(val) {
   if (typeof state !== 'undefined' && state && state.filtros) {
     const p = parseInt(val, 10);
-    const safeP = isNaN(p) ? 0 : Math.max(0, Math.min(10, p));
+    const safeP = isNaN(p) ? 0 : Math.max(0, Math.min(20, p));
     state.filtros.escalaAtivo = true;
     state.filtros.escalaMin = safeP;
     state.filtros.escalaMax = safeP;
@@ -317,25 +415,108 @@ function limparFiltroEscala() {
     state.filtros.escalaAtivo = false;
     state.filtros.escala = null;
     state.filtros.escalaMin = 0;
-    state.filtros.escalaMax = 10;
+    state.filtros.escalaMax = 20;
     const rMin = document.getElementById('filtro-escala-range-min');
     const rMax = document.getElementById('filtro-escala-range-max');
     if (rMin) rMin.value = 0;
-    if (rMax) rMax.value = 10;
-    atualizarDisplayFiltroEscala(0, 10, false);
+    if (rMax) rMax.value = 20;
+    atualizarDisplayFiltroEscala(0, 20, false);
     state.paginaAtual = 1;
     if (typeof renderProcessos === 'function') renderProcessos();
   }
 }
 window.limparFiltroEscala = limparFiltroEscala;
-// ===================================================
 
+// ===== LÓGICA DE ADIMPLÊNCIA / INADIMPLÊNCIA (COLUNA AG) =====
+function atualizarVisualAdimplencia(inadimplente) {
+  const box = document.getElementById('form-status-adimplencia');
+  const chk = document.getElementById('form-check-inadimplente');
+  const isTrue = (inadimplente === '1' || inadimplente === 1 || inadimplente === true);
+  if (chk) chk.checked = isTrue;
+  if (box) {
+    if (isTrue) {
+      box.value = 'INADIMPLENTE';
+      box.style.background = '#fef08a';
+      box.style.border = '2px solid #ef4444';
+      box.style.color = '#dc2626';
+      box.style.boxShadow = '0 0 10px rgba(239,68,68,0.35)';
+    } else {
+      box.value = 'Adimplente';
+      box.style.background = '#fef08a';
+      box.style.border = '2px solid #eab308';
+      box.style.color = '#15803d';
+      box.style.boxShadow = '0 2px 8px rgba(234,179,8,0.25)';
+    }
+  }
+}
+window.atualizarVisualAdimplencia = atualizarVisualAdimplencia;
+
+function aoAlternarCheckInadimplente(checked) {
+  atualizarVisualAdimplencia(checked);
+}
+window.aoAlternarCheckInadimplente = aoAlternarCheckInadimplente;
+
+let _timerAvisoInadimplente = null;
+function mostrarAvisoEnormeInadimplente() {
+  const overlay = document.getElementById('aviso-enorme-inadimplente');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  if (_timerAvisoInadimplente) clearTimeout(_timerAvisoInadimplente);
+  _timerAvisoInadimplente = setTimeout(() => {
+    overlay.style.display = 'none';
+    const chk = document.getElementById('form-check-inadimplente');
+    if (chk) chk.checked = true;
+    atualizarVisualAdimplencia(true);
+  }, 4000);
+}
+window.mostrarAvisoEnormeInadimplente = mostrarAvisoEnormeInadimplente;
+
+function verificarCNPJInadimplenteHistorico(cnpjDigitado) {
+  if (!cnpjDigitado) return false;
+  const limpo = String(cnpjDigitado).replace(/\D/g, '');
+  if (limpo.length !== 14 || /^0+$/.test(limpo)) return false;
+  
+  const procs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []);
+  if (!Array.isArray(procs)) return false;
+
+  const currentId = (typeof state !== 'undefined' && state) ? state.editandoId : null;
+  return procs.some(p => {
+    if (currentId && p.id === currentId) return false;
+    const pCnpj = String(p.cnpj || '').replace(/\D/g, '');
+    const pInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1');
+    return pCnpj === limpo && pInad;
+  });
+}
+window.verificarCNPJInadimplenteHistorico = verificarCNPJInadimplenteHistorico;
+
+let _ultimoCNPJChecadoAviso = '';
+function aoDigitarCNPJFormulario(val) {
+  const limpo = String(val || '').replace(/\D/g, '');
+  if (limpo.length === 14 && limpo !== _ultimoCNPJChecadoAviso) {
+    if (verificarCNPJInadimplenteHistorico(limpo)) {
+      _ultimoCNPJChecadoAviso = limpo;
+      mostrarAvisoEnormeInadimplente();
+    }
+  }
+}
+window.aoDigitarCNPJFormulario = aoDigitarCNPJFormulario;
+
+function aoSairCNPJFormulario(val) {
+  const limpo = String(val || '').replace(/\D/g, '');
+  if (limpo.length === 14 && limpo !== _ultimoCNPJChecadoAviso) {
+    if (verificarCNPJInadimplenteHistorico(limpo)) {
+      _ultimoCNPJChecadoAviso = limpo;
+      mostrarAvisoEnormeInadimplente();
+    }
+  }
+}
+window.aoSairCNPJFormulario = aoSairCNPJFormulario;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.117
+// Versão do Sistema: v1.134
 // ============================================================
-window.APP_VERSION = 'v1.3.117';
+window.APP_VERSION = 'v1.134';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -542,8 +723,8 @@ window.formatarDigitoInteiro = window.limparDigitoValor;
 // Função global para limpar todos os filtros de processos
 window.limparFiltros = function() {
   if (typeof state !== 'undefined' && state && state.filtros) {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaMin: 0, escalaMax: 10, escalaAtivo: false };
-    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, false);
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaMin: 0, escalaMax: 20, escalaAtivo: false };
+    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, 20, false);
     state.paginaAtual = 1;
   }
   const fb = document.getElementById('filtro-busca');
@@ -965,7 +1146,7 @@ let state = {
     cc: false,
     escala: null,
     escalaMin: 0,
-    escalaMax: 10,
+    escalaMax: 20,
     escalaAtivo: false
   },
   paginaAtual: 1,
@@ -1950,19 +2131,19 @@ function getFiltrados() {
   }
   filterIncludesMultiple('prefixo', state.filtros.prefixo);
 
-  // Filtro por Escala Intervalo (Buscador instantâneo de X a Y - v1.133)
+  // Filtro por Escala Intervalo (Buscador instantâneo de 0% a 100%, 0 a 20)
   if (state.filtros.escalaAtivo) {
     const minE = (state.filtros.escalaMin !== null && state.filtros.escalaMin !== undefined)
       ? parseInt(state.filtros.escalaMin, 10)
       : (state.filtros.escala !== null && state.filtros.escala !== undefined ? parseInt(state.filtros.escala, 10) : 0);
     const maxE = (state.filtros.escalaMax !== null && state.filtros.escalaMax !== undefined)
       ? parseInt(state.filtros.escalaMax, 10)
-      : (state.filtros.escala !== null && state.filtros.escala !== undefined ? parseInt(state.filtros.escala, 10) : 10);
-    const sMin = Math.min(isNaN(minE) ? 0 : minE, isNaN(maxE) ? 10 : maxE);
-    const sMax = Math.max(isNaN(minE) ? 0 : minE, isNaN(maxE) ? 10 : maxE);
+      : (state.filtros.escala !== null && state.filtros.escala !== undefined ? parseInt(state.filtros.escala, 10) : 20);
+    const sMin = Math.min(isNaN(minE) ? 0 : minE, isNaN(maxE) ? 20 : maxE);
+    const sMax = Math.max(isNaN(minE) ? 0 : minE, isNaN(maxE) ? 20 : maxE);
     lista = lista.filter(p => {
       const pEscala = (p.escala !== undefined && p.escala !== null && String(p.escala).trim() !== '')
-        ? parseInt(p.escala, 10)
+        ? parseInt(String(p.escala).split(';')[0], 10)
         : 0;
       return !isNaN(pEscala) && pEscala >= sMin && pEscala <= sMax;
     });
@@ -2334,8 +2515,15 @@ function renderProcessos() {
         ${renderMiniEscalaBar(p.escala)}
       </td>
       <td class="col-interessado" title="${p.interessado}">
-        <span class="desktop-cell-view">${hl(p.interessado, busca) || '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado, 9)}</span>
+        <div style="display:flex; flex-direction:column; gap:3px;">
+          <span class="desktop-cell-view">${hl(p.interessado, busca) || '—'}</span>
+          <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado, 9)}</span>
+          ${(p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1') ? `
+            <span style="display:inline-flex; align-items:center; gap:3px; background:rgba(239,68,68,0.18); border:1px solid #ef4444; color:#ef4444; font-size:9.5px; font-weight:800; padding:1px 6px; border-radius:4px; width:fit-content; text-transform:uppercase; letter-spacing:0.4px;" title="Entidade Inadimplente">
+              ⚠️ Inadimplente
+            </span>
+          ` : ''}
+        </div>
       </td>
       <td class="col-objeto" title="${p.objeto}">
         <span class="desktop-cell-view">${p.objeto || '—'}</span>
@@ -2825,8 +3013,10 @@ function renderFormulario() {
     const inputEscalaForm = document.getElementById('form-escala');
     if (inputEscalaForm) {
       const valEscala = (p && p.escala !== undefined && p.escala !== null && p.escala !== '') ? p.escala : 0;
-      inputEscalaForm.value = valEscala;
-      atualizarDisplayEscala(valEscala);
+      const parts = String(valEscala).split(';');
+      inputEscalaForm.value = parseInt(parts[0], 10) || 0;
+      inputEscalaForm.dataset.subOpcao = parts[1] || '';
+      atualizarDisplayEscala(valEscala, false);
     }
     if (inputFormExec) inputFormExec.value = isAdminForm ? (p.executivo || '') : '';
     document.getElementById('form-digito').value = window.limparDigitoValor(p.digito || p.DIGITO || '');
@@ -2886,6 +3076,8 @@ function renderFormulario() {
       cnpjEl.required = false;
       cnpjEl.value = p.cnpj || '';
     }
+    const isInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1');
+    atualizarVisualAdimplencia(isInad);
     document.getElementById('form-objeto').value      = p.objeto      || '';
     const fValOf = document.getElementById('form-valorOf');
     if (fValOf) fValOf.value = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
@@ -3035,6 +3227,13 @@ function renderFormulario() {
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
     if (document.getElementById('form-cnpj')) document.getElementById('form-cnpj').value = '';
+    const inputEscalaForm = document.getElementById('form-escala');
+    if (inputEscalaForm) {
+      inputEscalaForm.value = 0;
+      inputEscalaForm.dataset.subOpcao = '';
+      atualizarDisplayEscala(0, false);
+    }
+    atualizarVisualAdimplencia(false);
     if (typeof limparDadosReceitaFederal === 'function') {
       limparDadosReceitaFederal(true);
     } else if (typeof atualizarLabelResultadoCNPJReceita === 'function') {
@@ -3225,8 +3424,26 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
-    escala: document.getElementById('form-escala') ? String(document.getElementById('form-escala').value).trim() : '0',
-    ESCALA: document.getElementById('form-escala') ? String(document.getElementById('form-escala').value).trim() : '0',
+    escala: (() => {
+      const slider = document.getElementById('form-escala');
+      const n = slider ? parseInt(slider.value, 10) || 0 : 0;
+      if (n === 10) {
+        const sub = (slider && slider.dataset.subOpcao) ? slider.dataset.subOpcao : '';
+        return sub ? `10;${sub}` : '10';
+      }
+      return String(n);
+    })(),
+    ESCALA: (() => {
+      const slider = document.getElementById('form-escala');
+      const n = slider ? parseInt(slider.value, 10) || 0 : 0;
+      if (n === 10) {
+        const sub = (slider && slider.dataset.subOpcao) ? slider.dataset.subOpcao : '';
+        return sub ? `10;${sub}` : '10';
+      }
+      return String(n);
+    })(),
+    inadimplente: document.getElementById('form-check-inadimplente')?.checked ? '1' : '0',
+    CONTAS: document.getElementById('form-check-inadimplente')?.checked ? '1' : '0',
     digito: window.limparDigitoValor(document.getElementById('form-digito')?.value || ''),
     DIGITO: window.limparDigitoValor(document.getElementById('form-digito')?.value || ''),
     categoria:   document.getElementById('form-categoria').value,
@@ -5673,8 +5890,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.limparFiltros = function() {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaMin: 0, escalaMax: 10, escalaAtivo: false };
-    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, 10, false);
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaMin: 0, escalaMax: 20, escalaAtivo: false };
+    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, 20, false);
     state.paginaAtual = 1;
     const fb = document.getElementById('filtro-busca');
     if (fb) fb.value = '';
