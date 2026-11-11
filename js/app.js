@@ -51,11 +51,53 @@ function getEscalaInfo(val) {
 }
 window.getEscalaInfo = getEscalaInfo;
 
-function atualizarDisplayEscala(val, triggerModalSeVazio = true) {
-  const parts = String(val !== undefined && val !== null ? val : '').split(';');
+function toggleFormProcesso() {
+  const card = document.getElementById('card-form-processo');
+  const btn = document.getElementById('btn-toggle-form-processo');
+  if (!card) return;
+  const isHidden = (card.style.display === 'none');
+  if (isHidden) {
+    card.style.display = 'block';
+    if (btn) btn.innerHTML = '&#128065; <span class="btn-text">Ocultar Formulário</span>';
+  } else {
+    card.style.display = 'none';
+    if (btn) btn.innerHTML = '&#128065; <span class="btn-text">Mostrar Formulário</span>';
+  }
+}
+window.toggleFormProcesso = toggleFormProcesso;
+
+function passarFaseEscala(direcao) {
+  const slider = document.getElementById('form-escala');
+  let currentVal = slider ? parseInt(slider.value, 10) : 0;
+  if (isNaN(currentVal)) currentVal = 0;
+  let nextVal = currentVal + direcao;
+  if (nextVal < 0) nextVal = 0;
+  if (nextVal > 20) nextVal = 20;
+  selecionarEtapaEscala(nextVal);
+}
+window.passarFaseEscala = passarFaseEscala;
+
+function onCardCAMTrackClick(event) {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+  const step = Math.round(ratio * 7);
+  selecionarEtapaEscala(step);
+}
+window.onCardCAMTrackClick = onCardCAMTrackClick;
+
+function onCardGCFTrackClick(event) {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+  const step = 8 + Math.round(ratio * 12);
+  selecionarEtapaEscala(step);
+}
+window.onCardGCFTrackClick = onCardGCFTrackClick;
+
+function atualizarDisplayEscala(val, triggerModalSeVazio = false) {
+  const slider = document.getElementById('form-escala');
+  const parts = String(val !== undefined && val !== null ? val : (slider ? slider.value : 0)).split(';');
   const n = parseInt(parts[0], 10);
   const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(20, n));
-  const slider = document.getElementById('form-escala');
   
   let subOpcao = (parts[1] || '').trim();
   if (!subOpcao && slider && slider.dataset.subOpcao) {
@@ -98,21 +140,137 @@ function atualizarDisplayEscala(val, triggerModalSeVazio = true) {
     slider.style.background = info.cor;
   }
 
+  // Botão de Opção da Fase 10 (Fixo e Ancorado - Abre popup apenas quando clicado)
   const btnEdit10 = document.getElementById('btn-editar-etapa10');
   const labelEdit10 = document.getElementById('label-opcao-etapa10');
   if (btnEdit10) {
     if (safeN === 10) {
-      btnEdit10.style.display = 'inline-flex';
-      if (labelEdit10) labelEdit10.textContent = info.subOpcao || 'Opção';
+      btnEdit10.style.visibility = 'visible';
+      btnEdit10.style.opacity = '1';
+      btnEdit10.style.pointerEvents = 'auto';
+      if (labelEdit10) labelEdit10.textContent = info.subOpcao ? info.subOpcao : 'Opção';
     } else {
-      btnEdit10.style.display = 'none';
+      btnEdit10.style.visibility = 'hidden';
+      btnEdit10.style.opacity = '0';
+      btnEdit10.style.pointerEvents = 'none';
     }
   }
 
-  const ball = document.getElementById('escala-thumb-ball');
-  if (ball) {
-    ball.textContent = info.pct;
-    ball.style.left = `calc(13px + (100% - 26px) * ${safeN} / 20)`;
+  // Card 1: Fase CAM (etapas 0 a 7 -> 0% a 35%)
+  const cardCAM = document.getElementById('card-escala-cam');
+  const cardCAMTitle = document.getElementById('card-cam-title');
+  const cardCAMStatus = document.getElementById('card-cam-status');
+  const cardCAMFill = document.getElementById('card-cam-fill');
+  const cardCAMBall = document.getElementById('card-cam-ball');
+
+  // Card 2: Fase GCF / CCTE (etapas 8 a 20 -> 40% a 100%)
+  const cardGCF = document.getElementById('card-escala-gcf');
+  const cardGCFTitle = document.getElementById('card-gcf-title');
+  const cardGCFStatus = document.getElementById('card-gcf-status');
+  const cardGCFFill = document.getElementById('card-gcf-fill');
+  const cardGCFBall = document.getElementById('card-gcf-ball');
+
+  if (safeN <= 7) {
+    // CAM em andamento
+    if (cardCAM) {
+      cardCAM.style.background = 'rgba(30,41,59,0.7)';
+      cardCAM.style.borderColor = '#334155';
+      cardCAM.style.boxShadow = 'none';
+      if (cardCAMTitle) {
+        cardCAMTitle.style.color = '#60a5fa';
+        cardCAMTitle.textContent = 'FASE CAM (0% - 35%)';
+      }
+      if (cardCAMStatus) {
+        cardCAMStatus.style.color = '#94a3b8';
+        cardCAMStatus.textContent = 'Em andamento';
+      }
+      if (cardCAMFill) {
+        cardCAMFill.style.width = `${(safeN / 7) * 100}%`;
+        cardCAMFill.style.background = info.cor;
+      }
+      if (cardCAMBall) {
+        cardCAMBall.style.display = 'flex';
+        cardCAMBall.style.left = `calc(6px + (100% - 12px) * ${safeN} / 7)`;
+        cardCAMBall.style.borderColor = info.cor;
+        cardCAMBall.textContent = info.pct;
+      }
+    }
+    // GCF aguardando CAM
+    if (cardGCF) {
+      cardGCF.style.background = 'rgba(30,41,59,0.4)';
+      cardGCF.style.borderColor = '#1e293b';
+      cardGCF.style.opacity = '0.7';
+      cardGCF.style.boxShadow = 'none';
+      if (cardGCFTitle) {
+        cardGCFTitle.style.color = '#64748b';
+        cardGCFTitle.textContent = 'FASE GCF / CCTE (40% - 100%)';
+      }
+      if (cardGCFStatus) {
+        cardGCFStatus.style.color = '#475569';
+        cardGCFStatus.textContent = 'Aguardando CAM';
+      }
+      if (cardGCFFill) {
+        cardGCFFill.style.width = '0%';
+      }
+      if (cardGCFBall) {
+        cardGCFBall.style.display = 'none';
+      }
+    }
+  } else {
+    // safeN >= 8: CAM Concluída (Fica verde!)
+    if (cardCAM) {
+      cardCAM.style.background = 'rgba(16,185,129,0.18)';
+      cardCAM.style.borderColor = '#10b981';
+      cardCAM.style.boxShadow = '0 0 12px rgba(16,185,129,0.3)';
+      if (cardCAMTitle) {
+        cardCAMTitle.style.color = '#34d399';
+        cardCAMTitle.textContent = 'FASE CAM';
+      }
+      if (cardCAMStatus) {
+        cardCAMStatus.style.color = '#10b981';
+        cardCAMStatus.innerHTML = '&#10004; Concluída';
+      }
+      if (cardCAMFill) {
+        cardCAMFill.style.width = '100%';
+        cardCAMFill.style.background = '#10b981';
+      }
+      if (cardCAMBall) {
+        cardCAMBall.style.display = 'none';
+      }
+    }
+    // GCF em andamento (ou concluído no 20)
+    if (cardGCF) {
+      cardGCF.style.background = (safeN === 20) ? 'rgba(16,185,129,0.18)' : 'rgba(30,41,59,0.85)';
+      cardGCF.style.borderColor = (safeN === 20) ? '#10b981' : '#475569';
+      cardGCF.style.opacity = '1';
+      cardGCF.style.boxShadow = (safeN === 20) ? '0 0 12px rgba(16,185,129,0.3)' : 'none';
+      if (cardGCFTitle) {
+        cardGCFTitle.style.color = (safeN === 20) ? '#34d399' : '#c084fc';
+        cardGCFTitle.textContent = 'FASE GCF / CCTE (40% - 100%)';
+      }
+      if (cardGCFStatus) {
+        cardGCFStatus.style.color = (safeN === 20) ? '#10b981' : '#c084fc';
+        cardGCFStatus.innerHTML = (safeN === 20) ? '&#10004; Concluído' : 'Em andamento';
+      }
+      const gcfStep = safeN - 8; // 0 a 12
+      if (cardGCFFill) {
+        cardGCFFill.style.width = `${(gcfStep / 12) * 100}%`;
+        cardGCFFill.style.background = info.cor;
+      }
+      if (cardGCFBall) {
+        cardGCFBall.style.display = 'flex';
+        cardGCFBall.style.left = `calc(6px + (100% - 12px) * ${gcfStep} / 12)`;
+        cardGCFBall.style.borderColor = info.cor;
+        cardGCFBall.textContent = info.pct;
+      }
+    }
+  }
+
+  // Compatibilidade com escala-thumb-ball legado (se existir na página)
+  const legacyBall = document.getElementById('escala-thumb-ball');
+  if (legacyBall) {
+    legacyBall.textContent = info.pct;
+    legacyBall.style.left = `calc(13px + (100% - 26px) * ${safeN} / 20)`;
   }
 
   // Sincronizar estado visual das marcações (ticks)
@@ -121,26 +279,23 @@ function atualizarDisplayEscala(val, triggerModalSeVazio = true) {
     const tVal = parseInt(t.getAttribute('data-val'), 10);
     if (tVal === safeN) {
       t.style.background = '#ffffff';
-      t.style.height = '14px';
+      t.style.height = '11px';
       t.style.opacity = '1';
       t.style.boxShadow = '0 0 8px rgba(255,255,255,0.95)';
     } else if (tVal < safeN) {
-      t.style.background = '#94a3b8';
-      t.style.height = '10px';
+      t.style.background = (tVal <= 7 && safeN >= 8) ? '#10b981' : '#94a3b8';
+      t.style.height = '7px';
       t.style.opacity = '0.85';
       t.style.boxShadow = 'none';
     } else {
       t.style.background = '#64748b';
-      t.style.height = '9px';
-      t.style.opacity = '0.55';
+      t.style.height = '6px';
+      t.style.opacity = '0.5';
       t.style.boxShadow = 'none';
     }
   });
 
-  // Se chegou na etapa 10 e ainda não tem opção escolhida, abre o modal de opções
-  if (safeN === 10 && !info.subOpcao && triggerModalSeVazio) {
-    abrirModalEtapa10Opcoes();
-  }
+  // Observação: NÃO abre o modal automaticamente. O usuário deve clicar no botão "Opção".
 }
 window.atualizarDisplayEscala = atualizarDisplayEscala;
 
@@ -427,6 +582,51 @@ function limparFiltroEscala() {
 }
 window.limparFiltroEscala = limparFiltroEscala;
 
+function navegarFiltroEscala(direcao) {
+  if (typeof state === 'undefined' || !state || !state.filtros) return;
+  const rMin = document.getElementById('filtro-escala-range-min');
+  const rMax = document.getElementById('filtro-escala-range-max');
+  let vMin = rMin ? parseInt(rMin.value, 10) : 0;
+  let vMax = rMax ? parseInt(rMax.value, 10) : 20;
+  if (isNaN(vMin)) vMin = 0;
+  if (isNaN(vMax)) vMax = 20;
+
+  // Se o filtro estiver inativo ou com range total (0 a 20), define um passo inicial
+  if (!state.filtros.escalaAtivo || (vMin === 0 && vMax === 20)) {
+    if (direcao > 0) {
+      vMin = 0;
+      vMax = 1;
+    } else {
+      vMin = 19;
+      vMax = 20;
+    }
+  } else {
+    // Deslocar o intervalo
+    if (direcao > 0) {
+      if (vMax < 20) {
+        vMax += 1;
+        vMin = Math.min(vMax, vMin + 1);
+      }
+    } else {
+      if (vMin > 0) {
+        vMin -= 1;
+        vMax = Math.max(vMin, vMax - 1);
+      }
+    }
+  }
+
+  if (rMin) rMin.value = vMin;
+  if (rMax) rMax.value = vMax;
+  state.filtros.escalaAtivo = true;
+  state.filtros.escalaMin = vMin;
+  state.filtros.escalaMax = vMax;
+  state.filtros.escala = vMin;
+  atualizarDisplayFiltroEscala(vMin, vMax, true);
+  state.paginaAtual = 1;
+  if (typeof renderProcessos === 'function') renderProcessos();
+}
+window.navegarFiltroEscala = navegarFiltroEscala;
+
 // ===== LÓGICA DE ADIMPLÊNCIA / INADIMPLÊNCIA (COLUNA AG) =====
 function atualizarVisualAdimplencia(inadimplente) {
   const box = document.getElementById('form-status-adimplencia');
@@ -514,9 +714,9 @@ window.aoSairCNPJFormulario = aoSairCNPJFormulario;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.134
+// Versão do Sistema: v1.135
 // ============================================================
-window.APP_VERSION = 'v1.134';
+window.APP_VERSION = 'v1.135';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
