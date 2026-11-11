@@ -495,16 +495,36 @@ function atualizarDisplayFiltroEscala(minVal, maxVal, ativo) {
 }
 window.atualizarDisplayFiltroEscala = atualizarDisplayFiltroEscala;
 
-let filtroEscalaAlvoAtivo = 'max';
+let filtroEscalaAlvoAtivo = null; // Inicia sem foco para que ambas as bolas fiquem exatamente do mesmo tamanho
 window.filtroEscalaAlvoAtivo = filtroEscalaAlvoAtivo;
 
-function ativarAlvoFiltroEscala(alvo) {
+function ativarAlvoFiltroEscala(alvo, event) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
+  }
   if (alvo !== 'min' && alvo !== 'max') alvo = 'max';
   filtroEscalaAlvoAtivo = alvo;
   window.filtroEscalaAlvoAtivo = alvo;
   atualizarEstiloBolasFiltroEscala();
 }
 window.ativarAlvoFiltroEscala = ativarAlvoFiltroEscala;
+
+function desativarFocoBolasFiltroEscala() {
+  filtroEscalaAlvoAtivo = null;
+  window.filtroEscalaAlvoAtivo = null;
+  atualizarEstiloBolasFiltroEscala();
+}
+window.desativarFocoBolasFiltroEscala = desativarFocoBolasFiltroEscala;
+
+// Ao clicar em qualquer outro elemento fora da régua, remove o foco e ambas voltam ao tamanho normal idêntico
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', (e) => {
+    const container = document.getElementById('filtro-escala-buscador-container');
+    if (container && !container.contains(e.target)) {
+      desativarFocoBolasFiltroEscala();
+    }
+  });
+}
 
 function atualizarEstiloBolasFiltroEscala() {
   const ballMin = document.getElementById('filtro-escala-ball-min');
@@ -514,11 +534,17 @@ function atualizarEstiloBolasFiltroEscala() {
   if (filtroEscalaAlvoAtivo === 'min') {
     if (ballMin) ballMin.classList.add('filtro-escala-ball-active');
     if (ballMax) ballMax.classList.remove('filtro-escala-ball-active');
-    if (rMin) rMin.style.zIndex = '25';
+    if (rMin) rMin.style.zIndex = '26';
     if (rMax) rMax.style.zIndex = '24';
-  } else {
+  } else if (filtroEscalaAlvoAtivo === 'max') {
     if (ballMax) ballMax.classList.add('filtro-escala-ball-active');
     if (ballMin) ballMin.classList.remove('filtro-escala-ball-active');
+    if (rMax) rMax.style.zIndex = '26';
+    if (rMin) rMin.style.zIndex = '24';
+  } else {
+    // Sem foco ativo: ambas as bolas voltam ao tamanho normal exatamente idênticas
+    if (ballMin) ballMin.classList.remove('filtro-escala-ball-active');
+    if (ballMax) ballMax.classList.remove('filtro-escala-ball-active');
     if (rMax) rMax.style.zIndex = '25';
     if (rMin) rMin.style.zIndex = '24';
   }
@@ -638,6 +664,13 @@ function navegarFiltroEscala(direcao) {
   if (isNaN(vMin)) vMin = 0;
   if (isNaN(vMax)) vMax = 20;
 
+  // Se nenhuma bola estiver explicitamente focada, ativa o Máximo (Y) por padrão e o destaca
+  if (!filtroEscalaAlvoAtivo) {
+    filtroEscalaAlvoAtivo = 'max';
+    window.filtroEscalaAlvoAtivo = 'max';
+    atualizarEstiloBolasFiltroEscala();
+  }
+
   // Movimenta o parâmetro atualmente ativado: 'min' (X) ou 'max' (Y)
   if (filtroEscalaAlvoAtivo === 'min') {
     if (direcao > 0) {
@@ -753,9 +786,9 @@ window.aoSairCNPJFormulario = aoSairCNPJFormulario;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.137
+// Versão do Sistema: v1.138
 // ============================================================
-window.APP_VERSION = 'v1.137';
+window.APP_VERSION = 'v1.138';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴

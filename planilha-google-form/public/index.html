@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=v1.137">
+  <link rel="stylesheet" href="css/style.css?v=v1.138">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -792,7 +792,7 @@
     margin: auto;
   ">
     <!-- ARTE OFICIAL COMPLETA DA TELA INICIAL (IMAGEM 100% FIEL) -->
-    <img src="img/tela-inicial-siscam.png?v=v1.137"
+    <img src="img/tela-inicial-siscam.png?v=v1.138"
          alt="SiSCAM - Sistema Integrado CAM / SEDUC-RO"
          style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none;">
 
@@ -903,7 +903,7 @@
       display: flex; align-items: center; justify-content: center;
       color: #0284c7; font-size: clamp(11px, 1.4vw, 13.5px); font-weight: 800; letter-spacing: 0.8px;
       pointer-events: none;
-    ">∴ SiSCAM v1.137 ∴</div>
+    ">∴ SiSCAM v1.138 ∴</div>
   </div>
 </div>
 
@@ -1222,7 +1222,7 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
-          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.137 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
+          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.138 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
         </div>
 
         <!-- PAINÉIS DE INFORMAÇÃO DE VALORES E CONTAGEM NA TOPBAR (IMAGEM 3) -->
@@ -1888,16 +1888,16 @@
         <div class="filters-bar" style="margin-bottom:6px; flex-shrink:0;">
           <!-- LINHA 1: BUSCADOR POR ESCALA AMPLIADO + TOGGLES DE AUTORIZAÇÃO -->
           <div class="filter-row" style="display:flex; flex-wrap:wrap; gap:10px; width:100%; align-items:center; justify-content:space-between;">
-            <!-- BUSCADOR INSTANTÂNEO POR ESCALA (AMPLIADO COM BOTÕES < > NOS EXTREMOS - ANCORADO NA LINHA INFERIOR) -->
-            <div id="filtro-escala-buscador-container" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.95); border:1.5px solid rgba(16,185,129,0.5); border-radius:10px; padding:0 12px; gap:8px; height:38px; min-height:38px; max-height:38px; box-sizing:border-box; box-shadow:0 0 12px rgba(16,185,129,0.15), inset 0 1px 3px rgba(0,0,0,0.5); user-select:none; flex:2.8 1 650px; max-width:960px;">
+            <!-- BUSCADOR INSTANTÂNEO POR ESCALA (AMPLIADO COM BOTÕES < > NOS EXTREMOS - ANCORADO E ESTÁVEL) -->
+            <div id="filtro-escala-buscador-container" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.95); border:1.5px solid rgba(16,185,129,0.5); border-radius:10px; padding:0 12px; gap:8px; height:38px; min-height:38px; max-height:38px; box-sizing:border-box; box-shadow:0 0 12px rgba(16,185,129,0.15), inset 0 1px 3px rgba(0,0,0,0.5); user-select:none; flex:1 1 760px; min-width:680px; max-width:1050px;">
               <!-- Checkbox / Toggle para ativar/desativar -->
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0; flex-shrink:0;" title="Ativar ou desativar o filtro instantâneo por Escala (%)">
                 <input type="checkbox" id="filtro-escala-ativo" onchange="toggleFiltroEscalaAtivo(this.checked)" style="cursor:pointer; accent-color:#38bdf8; width:15px; height:15px;">
                 <span style="font-size:10.5px; font-weight:800; color:#cbd5e1; letter-spacing:0.5px;">ESCALA</span>
               </label>
 
-              <!-- Botão / Badge Indicador da Etapa Atual ou 'TODAS AS ESCALAS' (LARGURA AMPLIADA) -->
-              <button type="button" id="filtro-escala-badge" onclick="limparFiltroEscala()" title="Clique para mostrar Todas as Escalas" style="display:inline-flex; align-items:center; justify-content:center; gap:4px; padding:4px 14px; border-radius:6px; font-size:11px; font-weight:900; color:#94a3b8; background:#1e293b; border:1px solid #334155; cursor:pointer; white-space:nowrap; letter-spacing:0.4px; transition:all 0.2s; flex-shrink:0; min-width:320px; text-align:center; box-sizing:border-box;">
+              <!-- Botão / Badge Indicador da Etapa Atual ou 'TODAS AS ESCALAS' (LARGURA FIXA PARA ANCORAGEM PERFEITA) -->
+              <button type="button" id="filtro-escala-badge" onclick="limparFiltroEscala()" title="Clique para mostrar Todas as Escalas" style="display:inline-flex; align-items:center; justify-content:center; gap:4px; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:900; color:#94a3b8; background:#1e293b; border:1px solid #334155; cursor:pointer; white-space:nowrap; letter-spacing:0.4px; transition:all 0.2s; flex:0 0 320px; width:320px; min-width:320px; max-width:320px; text-align:center; box-sizing:border-box; overflow:hidden; text-overflow:ellipsis;">
                 TODAS AS ESCALAS
               </button>
 
@@ -1905,7 +1905,7 @@
               <button type="button" id="btn-filtro-escala-prev" onclick="navegarFiltroEscala(-1)" title="Diminuir parâmetro ativo (X ou Y)" style="width:22px; height:22px; border-radius:5px; background:#1e293b; border:1px solid #334155; color:#cbd5e1; font-weight:900; font-size:11px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#1e293b'">&lt;</button>
 
               <!-- Slider e Marcadores da Escala do Buscador (Régua com 2 Bolas: de X% a Y%) -->
-              <div class="escala-slider-track-wrap" id="filtro-escala-track-wrap" style="position:relative; flex:1; min-width:160px; height:28px; display:flex; align-items:center; opacity:0.6; transition:opacity 0.2s;">
+              <div class="escala-slider-track-wrap" id="filtro-escala-track-wrap" style="position:relative; flex:1 1 auto; min-width:200px; height:28px; display:flex; align-items:center; opacity:0.6; transition:opacity 0.2s;">
                 <!-- Trilha base de fundo cinza escuro -->
                 <div id="filtro-escala-base-bar" style="position:absolute; left:0; right:0; height:8px; background:#334155; border-radius:999px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.6); pointer-events:none;"></div>
                 <!-- Trilha ativa colorida entre Bola Min e Bola Max -->
@@ -1940,16 +1940,16 @@
                 <input type="range" id="filtro-escala-range-min" class="filtro-escala-range-input" min="0" max="20" step="1" value="0" oninput="onInputFiltroEscalaMin(this.value)" />
                 <input type="range" id="filtro-escala-range-max" class="filtro-escala-range-input" min="0" max="20" step="1" value="20" oninput="onInputFiltroEscalaMax(this.value)" />
 
-                <!-- Bola 1 (Marcador De / Min - Parâmetro X) -->
-                <div id="filtro-escala-ball-min" onclick="ativarAlvoFiltroEscala('min')" style="left:10px; z-index:22; cursor:pointer; pointer-events:auto;" title="Clique para ativar e mover parâmetro X (&lt; &gt;)">0%</div>
-                <!-- Bola 2 (Marcador Até / Max - Parâmetro Y) -->
-                <div id="filtro-escala-ball-max" onclick="ativarAlvoFiltroEscala('max')" style="left:calc(100% - 10px); z-index:23; cursor:pointer; pointer-events:auto;" title="Clique para ativar e mover parâmetro Y (&lt; &gt;)">100%</div>
+                <!-- Bola 1 (Marcador De / Min - Base / Mínimo - Parâmetro X) -->
+                <div id="filtro-escala-ball-min" tabindex="0" onclick="ativarAlvoFiltroEscala('min', event)" ondblclick="ativarAlvoFiltroEscala('min', event)" onfocus="ativarAlvoFiltroEscala('min', event)" style="left:10px; z-index:23; cursor:pointer; pointer-events:auto;" title="Base / Mínimo (X): Duplo-clique para focar e aumentar tamanho. Use &lt; e &gt; para mover.">0%</div>
+                <!-- Bola 2 (Marcador Até / Max - Máximo - Parâmetro Y) -->
+                <div id="filtro-escala-ball-max" tabindex="0" onclick="ativarAlvoFiltroEscala('max', event)" ondblclick="ativarAlvoFiltroEscala('max', event)" onfocus="ativarAlvoFiltroEscala('max', event)" style="left:calc(100% - 10px); z-index:24; cursor:pointer; pointer-events:auto;" title="Máximo (Y): Duplo-clique para focar e aumentar tamanho. Use &lt; e &gt; para mover.">100%</div>
               </div>
 
               <!-- Botão Extremidade Direita: Próxima Fase (>) -->
               <button type="button" id="btn-filtro-escala-next" onclick="navegarFiltroEscala(1)" title="Aumentar parâmetro ativo (X ou Y)" style="width:22px; height:22px; border-radius:5px; background:#1e293b; border:1px solid #334155; color:#cbd5e1; font-weight:900; font-size:11px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.2s;" onmouseover="this.style.background='#334155'" onmouseout="this.style.background='#1e293b'">&gt;</button>
             </div>
-            <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container">
+            <div class="autorizacao-toggles filtro-toggles" id="filtro-autorizacoes-container" style="flex-shrink:0;">
               <span style="font-size:11px;font-weight:bold;color:#94a3b8;margin-right:6px;">AUTORIZAÇÃO:</span>
               <div class="toggle-item">
                 <label class="toggle-switch">
@@ -3356,7 +3356,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.137</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.138</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -4037,7 +4037,7 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.137 ∴</span>
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.138 ∴</span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
@@ -4309,7 +4309,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.137] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.138] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6625,14 +6625,14 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=v1.137"></script>
-  <script src="js/auth-sap.js?v=v1.137"></script>
-  <script src="js/dados.js?v=v1.137"></script>
-  <script src="js/app.js?v=v1.137"></script>
-  <script src="js/escolas.js?v=v1.137" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=v1.137"></script>
-  <script src="js/mapa.js?v=v1.137"></script>
-  <script src="js/contatos.js?v=v1.137"></script>
+  <script src="js/multi-select.js?v=v1.138"></script>
+  <script src="js/auth-sap.js?v=v1.138"></script>
+  <script src="js/dados.js?v=v1.138"></script>
+  <script src="js/app.js?v=v1.138"></script>
+  <script src="js/escolas.js?v=v1.138" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=v1.138"></script>
+  <script src="js/mapa.js?v=v1.138"></script>
+  <script src="js/contatos.js?v=v1.138"></script>
 
 
   <script>
@@ -6825,12 +6825,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=v1.137"></script>
-  <script src="js/gmac.js?v=v1.137"></script>
-  <script src="js/orcamento.js?v=v1.137"></script>
-  <script src="js/gdsm.js?v=v1.137"></script>
-  <script src="js/print-proalfa.js?v=v1.137"></script>
-  <script src="js/proalfa.js?v=v1.137"></script>
+  <script src="js/diarias.js?v=v1.138"></script>
+  <script src="js/gmac.js?v=v1.138"></script>
+  <script src="js/orcamento.js?v=v1.138"></script>
+  <script src="js/gdsm.js?v=v1.138"></script>
+  <script src="js/print-proalfa.js?v=v1.138"></script>
+  <script src="js/proalfa.js?v=v1.138"></script>
 
 
 
@@ -8498,6 +8498,7 @@ function mudarAbaDiarias(aba, el) {
   <script src="js/newsticker.js"></script>
 </body>
 </html>
+
 
 
 
