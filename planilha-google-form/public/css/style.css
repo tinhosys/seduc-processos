@@ -4341,10 +4341,20 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   align-items: center;
   justify-content: center;
   box-shadow: 0 1px 5px rgba(0,0,0,0.6);
-  pointer-events: none;
+  pointer-events: auto !important;
+  cursor: pointer;
   border: 2px solid #ffffff;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s, outline 0.15s;
   font-family: monospace;
+  user-select: none;
+}
+.filtro-escala-ball-active {
+  outline: 3px solid #38bdf8 !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.95), 0 0 5px #38bdf8 !important;
+  transform: translate(-50%, -50%) scale(1.18) !important;
+  z-index: 35 !important;
+  border-color: #38bdf8 !important;
 }
 .escala-tick-filtro {
   cursor: pointer;

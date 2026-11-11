@@ -488,8 +488,42 @@ function atualizarDisplayFiltroEscala(minVal, maxVal, ativo) {
       t.style.boxShadow = 'none';
     }
   });
+
+  if (typeof atualizarEstiloBolasFiltroEscala === 'function') {
+    atualizarEstiloBolasFiltroEscala();
+  }
 }
 window.atualizarDisplayFiltroEscala = atualizarDisplayFiltroEscala;
+
+let filtroEscalaAlvoAtivo = 'max';
+window.filtroEscalaAlvoAtivo = filtroEscalaAlvoAtivo;
+
+function ativarAlvoFiltroEscala(alvo) {
+  if (alvo !== 'min' && alvo !== 'max') alvo = 'max';
+  filtroEscalaAlvoAtivo = alvo;
+  window.filtroEscalaAlvoAtivo = alvo;
+  atualizarEstiloBolasFiltroEscala();
+}
+window.ativarAlvoFiltroEscala = ativarAlvoFiltroEscala;
+
+function atualizarEstiloBolasFiltroEscala() {
+  const ballMin = document.getElementById('filtro-escala-ball-min');
+  const ballMax = document.getElementById('filtro-escala-ball-max');
+  const rMin = document.getElementById('filtro-escala-range-min');
+  const rMax = document.getElementById('filtro-escala-range-max');
+  if (filtroEscalaAlvoAtivo === 'min') {
+    if (ballMin) ballMin.classList.add('filtro-escala-ball-active');
+    if (ballMax) ballMax.classList.remove('filtro-escala-ball-active');
+    if (rMin) rMin.style.zIndex = '25';
+    if (rMax) rMax.style.zIndex = '24';
+  } else {
+    if (ballMax) ballMax.classList.add('filtro-escala-ball-active');
+    if (ballMin) ballMin.classList.remove('filtro-escala-ball-active');
+    if (rMax) rMax.style.zIndex = '25';
+    if (rMin) rMin.style.zIndex = '24';
+  }
+}
+window.atualizarEstiloBolasFiltroEscala = atualizarEstiloBolasFiltroEscala;
 
 function toggleFiltroEscalaAtivo(ativo) {
   if (typeof state !== 'undefined' && state && state.filtros) {
@@ -514,6 +548,7 @@ window.toggleFiltroEscalaAtivo = toggleFiltroEscalaAtivo;
 
 function onInputFiltroEscalaMin(val) {
   if (typeof state !== 'undefined' && state && state.filtros) {
+    ativarAlvoFiltroEscala('min');
     const rMax = document.getElementById('filtro-escala-range-max');
     let vMin = parseInt(val, 10);
     let vMax = rMax ? parseInt(rMax.value, 10) : 20;
@@ -536,6 +571,7 @@ window.onInputFiltroEscalaMin = onInputFiltroEscalaMin;
 
 function onInputFiltroEscalaMax(val) {
   if (typeof state !== 'undefined' && state && state.filtros) {
+    ativarAlvoFiltroEscala('max');
     const rMin = document.getElementById('filtro-escala-range-min');
     let vMax = parseInt(val, 10);
     let vMin = rMin ? parseInt(rMin.value, 10) : 0;
@@ -602,27 +638,19 @@ function navegarFiltroEscala(direcao) {
   if (isNaN(vMin)) vMin = 0;
   if (isNaN(vMax)) vMax = 20;
 
-  // Se o filtro estiver inativo ou com range total (0 a 20), define um passo inicial
-  if (!state.filtros.escalaAtivo || (vMin === 0 && vMax === 20)) {
+  // Movimenta o parâmetro atualmente ativado: 'min' (X) ou 'max' (Y)
+  if (filtroEscalaAlvoAtivo === 'min') {
     if (direcao > 0) {
-      vMin = 0;
-      vMax = 1;
+      vMin = Math.min(vMax, vMin + 1);
     } else {
-      vMin = 19;
-      vMax = 20;
+      vMin = Math.max(0, vMin - 1);
     }
   } else {
-    // Deslocar o intervalo
+    // Alvo 'max' (Parâmetro Y)
     if (direcao > 0) {
-      if (vMax < 20) {
-        vMax += 1;
-        vMin = Math.min(vMax, vMin + 1);
-      }
+      vMax = Math.min(20, vMax + 1);
     } else {
-      if (vMin > 0) {
-        vMin -= 1;
-        vMax = Math.max(vMin, vMax - 1);
-      }
+      vMax = Math.max(vMin, vMax - 1);
     }
   }
 
@@ -725,9 +753,9 @@ window.aoSairCNPJFormulario = aoSairCNPJFormulario;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.136
+// Versão do Sistema: v1.137
 // ============================================================
-window.APP_VERSION = 'v1.136';
+window.APP_VERSION = 'v1.137';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
