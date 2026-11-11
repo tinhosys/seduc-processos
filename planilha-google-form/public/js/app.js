@@ -22,7 +22,7 @@ const ESCALA_ETAPAS = [
   { nivel: 17, pct: '85%', label: '85% - PGE - Termo de Convênio', nome: 'PGE - Termo de Convênio', setor: 'CCTE / GMAC', cor: '#059669' },
   { nivel: 18, pct: '90%', label: '90% - Controle Interno', nome: 'Controle Interno', setor: 'CCTE / GMAC', cor: '#047857' },
   { nivel: 19, pct: '95%', label: '95% - Emissão da NL', nome: 'Emissão da NL', setor: 'CCTE / GMAC', cor: '#065f46' },
-  { nivel: 20, pct: '100%', label: '100% - Emissão da OB', nome: 'Emissão da OB', setor: 'CCTE / GMAC', cor: '#047857' }
+  { nivel: 20, pct: '100%', label: '100% - Emissão da OB', nome: 'Emissão da OB', setor: 'CCTE / GMAC', cor: '#10b981' }
 ];
 window.ESCALA_ETAPAS = ESCALA_ETAPAS;
 
@@ -273,25 +273,36 @@ function atualizarDisplayEscala(val, triggerModalSeVazio = false) {
     legacyBall.style.left = `calc(13px + (100% - 26px) * ${safeN} / 20)`;
   }
 
-  // Sincronizar estado visual das marcações (ticks)
+  // Sincronizar estado visual das marcações (ticks) mantendo as 21 cores individuais
   const ticks = document.querySelectorAll('#header-escala-wrapper .escala-tick');
   ticks.forEach(t => {
     const tVal = parseInt(t.getAttribute('data-val'), 10);
+    const stepInfo = ESCALA_ETAPAS[tVal] || ESCALA_ETAPAS[0];
+    const stepCor = stepInfo.cor;
     if (tVal === safeN) {
       t.style.background = '#ffffff';
-      t.style.height = '11px';
+      t.style.height = '14px';
+      t.style.width = '4px';
+      t.style.borderRadius = '999px';
+      t.style.border = '2px solid ' + stepCor;
       t.style.opacity = '1';
-      t.style.boxShadow = '0 0 8px rgba(255,255,255,0.95)';
-    } else if (tVal < safeN) {
-      t.style.background = (tVal <= 7 && safeN >= 8) ? '#10b981' : '#94a3b8';
-      t.style.height = '7px';
-      t.style.opacity = '0.85';
-      t.style.boxShadow = 'none';
+      t.style.boxShadow = '0 0 10px ' + stepCor;
+      t.style.zIndex = '4';
     } else {
-      t.style.background = '#64748b';
-      t.style.height = '6px';
-      t.style.opacity = '0.5';
-      t.style.boxShadow = 'none';
+      t.style.background = stepCor;
+      t.style.border = 'none';
+      t.style.width = '3px';
+      t.style.borderRadius = '999px';
+      t.style.zIndex = '1';
+      if (tVal < safeN) {
+        t.style.height = '9px';
+        t.style.opacity = '1';
+        t.style.boxShadow = '0 0 5px ' + stepCor + '90';
+      } else {
+        t.style.height = '7px';
+        t.style.opacity = '0.65';
+        t.style.boxShadow = 'none';
+      }
     }
   });
 
@@ -714,9 +725,9 @@ window.aoSairCNPJFormulario = aoSairCNPJFormulario;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.135
+// Versão do Sistema: v1.136
 // ============================================================
-window.APP_VERSION = 'v1.135';
+window.APP_VERSION = 'v1.136';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴

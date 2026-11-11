@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=v1.135">
+  <link rel="stylesheet" href="css/style.css?v=v1.136">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -792,7 +792,7 @@
     margin: auto;
   ">
     <!-- ARTE OFICIAL COMPLETA DA TELA INICIAL (IMAGEM 100% FIEL) -->
-    <img src="img/tela-inicial-siscam.png?v=v1.135"
+    <img src="img/tela-inicial-siscam.png?v=v1.136"
          alt="SiSCAM - Sistema Integrado CAM / SEDUC-RO"
          style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none;">
 
@@ -903,7 +903,7 @@
       display: flex; align-items: center; justify-content: center;
       color: #0284c7; font-size: clamp(11px, 1.4vw, 13.5px); font-weight: 800; letter-spacing: 0.8px;
       pointer-events: none;
-    ">∴ SiSCAM v1.135 ∴</div>
+    ">∴ SiSCAM v1.136 ∴</div>
   </div>
 </div>
 
@@ -1222,7 +1222,7 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
-          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.135 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
+          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.136 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
         </div>
 
         <!-- PAINÉIS DE INFORMAÇÃO DE VALORES E CONTAGEM NA TOPBAR (IMAGEM 3) -->
@@ -1815,9 +1815,13 @@
               <span style="font-size:11.5px; font-weight:800; color:#38bdf8; letter-spacing:0.5px; font-family:'Inter', sans-serif; white-space:nowrap; text-transform:uppercase;">Processando...</span>
             </div>
 
-            <!-- Direita Linha 1: GRUPO RELATÓRIOS PRINCIPAIS COM CORES UNIFICADAS -->
+            <!-- Direita Linha 1: GRUPO RELATÓRIOS PRINCIPAIS COM CORES UNIFICADAS (Com Executivo) -->
             <div style="display:flex; align-items:center; flex-wrap:wrap; gap:6px;">
-              <button type="button" class="btn action-report" onclick="if(typeof window.imprimirAnaliseSintetica==='function'){window.imprimirAnaliseSintetica();}else if(typeof imprimirAnaliseSintetica==='function'){imprimirAnaliseSintetica();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:rgba(56,189,248,0.18); color:#38bdf8; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.35)'" onmouseout="this.style.background='rgba(56,189,248,0.18)'" title="Relatório Sintético (Pago e Status por Prefixo)">
+              <button type="button" class="btn action-report action-adm" id="btn-relatorio-executivo" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:rgba(245,158,11,0.18); color:#fbbf24; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.35)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'" title="Novo Relatório Agrupado por Executivo (Somando e Contando)" onclick="if(typeof window.imprimirRelatorioExecutivo==='function'){window.imprimirRelatorioExecutivo();}else if(typeof imprimirRelatorioExecutivo==='function'){imprimirRelatorioExecutivo();}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                <span class="btn-text">Executivo</span>
+              </button>
+              <button type="button" class="btn action-report" id="btn-relatorio-sintetico" onclick="if(typeof window.imprimirAnaliseSintetica==='function'){window.imprimirAnaliseSintetica();}else if(typeof imprimirAnaliseSintetica==='function'){imprimirAnaliseSintetica();}" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(56,189,248,0.5); border-radius:8px; background:rgba(56,189,248,0.18); color:#38bdf8; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(56,189,248,0.35)'" onmouseout="this.style.background='rgba(56,189,248,0.18)'" title="Relatório Sintético (Pago e Status por Prefixo)">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>
                 <span class="btn-text">Sintético</span>
               </button>
@@ -1843,7 +1847,7 @@
           <!-- LINHA 2 DE BOTÕES: BUSCADOR POR ESCALA AMPLIADO (ESQUERDA) + GRUPOS DE RELATÓRIOS ADMIN E AÇÕES (DIREITA) -->
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; width:100%; margin-top:2px;">
             <!-- BUSCADOR INSTANTÂNEO POR ESCALA (AMPLIADO COM BOTÕES < > NOS EXTREMOS - IMAGEM 7) -->
-            <div id="filtro-escala-buscador-container" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.95); border:1.5px solid rgba(16,185,129,0.5); border-radius:10px; padding:0 12px; gap:8px; height:38px; min-height:38px; max-height:38px; box-sizing:border-box; box-shadow:0 0 12px rgba(16,185,129,0.15), inset 0 1px 3px rgba(0,0,0,0.5); user-select:none; flex:2.4 1 650px; max-width:920px;">
+            <div id="filtro-escala-buscador-container" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.95); border:1.5px solid rgba(16,185,129,0.5); border-radius:10px; padding:0 12px; gap:8px; height:38px; min-height:38px; max-height:38px; box-sizing:border-box; box-shadow:0 0 12px rgba(16,185,129,0.15), inset 0 1px 3px rgba(0,0,0,0.5); user-select:none; flex:2.8 1 700px; max-width:960px;">
               <!-- Checkbox / Toggle para ativar/desativar -->
               <label style="display:flex; align-items:center; gap:6px; cursor:pointer; margin:0; flex-shrink:0;" title="Ativar ou desativar o filtro instantâneo por Escala (%)">
                 <input type="checkbox" id="filtro-escala-ativo" onchange="toggleFiltroEscalaAtivo(this.checked)" style="cursor:pointer; accent-color:#38bdf8; width:15px; height:15px;">
@@ -1906,11 +1910,7 @@
 
             <!-- BOTÕES DE AÇÃO E RELATÓRIOS ADMIN (CORES UNIFICADAS POR GRUPO) -->
             <div style="display:flex; justify-content:flex-end; align-items:center; flex-wrap:wrap; gap:6px;">
-              <!-- GRUPO ADMIN (Executivo, Alfa, Adm 1, Adm 2) -->
-              <button type="button" class="btn action-report action-adm" id="btn-relatorio-executivo" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:rgba(245,158,11,0.18); color:#fbbf24; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.35)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'" title="Novo Relatório Agrupado por Executivo (Somando e Contando)" onclick="if(typeof window.imprimirRelatorioExecutivo==='function'){window.imprimirRelatorioExecutivo();}else if(typeof imprimirRelatorioExecutivo==='function'){imprimirRelatorioExecutivo();}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                <span class="btn-text">Executivo</span>
-              </button>
+              <!-- GRUPO ADMIN (Alfa, Adm 1, Adm 2) -->
               <button type="button" class="btn action-report action-adm" id="btn-relatorio-alfa" style="padding:0 10px; height:38px; min-height:38px; max-height:38px; min-width:115px; font-size:11px; display:inline-flex; align-items:center; justify-content:center; gap:6px; border:1px solid rgba(245,158,11,0.5); border-radius:8px; background:rgba(245,158,11,0.18); color:#fbbf24; cursor:pointer; font-weight:700; letter-spacing:0.5px; transition:all 0.2s; box-sizing:border-box;" onmouseover="this.style.background='rgba(245,158,11,0.35)'" onmouseout="this.style.background='rgba(245,158,11,0.18)'" title="Relatório Alfa / Lista de Processos com Parâmetros de Tela (Exclusivo Admin)" onclick="if(typeof window.imprimirAlfa==='function'){window.imprimirAlfa();}else if(typeof imprimirAlfa==='function'){imprimirAlfa();}">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 <span class="btn-text">Alfa</span>
@@ -2413,6 +2413,9 @@
         <div class="section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap: 12px; width: 100%;">
           <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
             <h2 id="form-title" style="margin:0; font-size:18px; line-height:1.15;">Novo Processo</h2>
+            <button type="button" id="btn-toggle-form-processo" onclick="toggleFormProcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 5px 12px; height: 32px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0;" title="Ocultar ou Mostrar o Formulário do Processo">
+              &#128065; <span class="btn-text">Ocultar Formulário</span>
+            </button>
           </div>
 
           <!-- Seletores de Categoria e Tipo -->
@@ -2442,21 +2445,17 @@
           </div>
         </div>
 
-        <!-- Barra de Ações Rápidas: Ocultar Formulário e Escala de Processo (Régua Dividida CAM e GCF com Extremidades < >) -->
-        <div style="display:flex; justify-content:flex-start; align-items:center; gap:12px; margin: 10px 0 16px 0; width:100%;">
-          <button type="button" id="btn-toggle-form-processo" onclick="toggleFormProcesso()" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); padding: 8px 14px; height: 44px; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; flex-shrink: 0;" title="Ocultar ou Mostrar o Formulário do Processo">
-            &#128065; <span class="btn-text">Ocultar Formulário</span>
-          </button>
-
+        <!-- Barra de Escala de Processo (Régua Dividida CAM e GCF com Extremidades < > - Ancorada desde a Esquerda) -->
+        <div style="display:flex; justify-content:flex-start; align-items:center; margin: 10px 0 16px 0; width:100%;">
           <!-- Barra de Escala Visual de Nível Ancorada e Ampliada (Dividida em Card CAM e Card GCF / CCTE) -->
-          <div id="header-escala-wrapper" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.95); border:1px solid #334155; border-radius:10px; padding:4px 12px; gap:8px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.4); user-select:none; min-height:44px; flex:1 1 auto; box-sizing:border-box;">
+          <div id="header-escala-wrapper" style="display:inline-flex; align-items:center; background:rgba(15,23,42,0.95); border:1px solid #334155; border-radius:10px; padding:4px 12px; gap:8px; box-shadow:inset 0 1px 3px rgba(0,0,0,0.4); user-select:none; min-height:44px; width:100%; box-sizing:border-box;">
             
-            <!-- Box Ancorado de Informações e Botão Opção (Tamanho Fixo e Estável - Sem pular a régua) -->
-            <div id="header-escala-info-box" style="display:flex; align-items:center; gap:6px; flex-shrink:0; width:290px; min-width:290px; max-width:290px;">
-              <span id="header-escala-setor" style="font-size:10px; font-weight:900; padding:4px 6px; border-radius:5px; background:#1e3a5f; color:#60a5fa; border:1px solid #2563eb; letter-spacing:0.5px; width:72px; min-width:72px; text-align:center; box-sizing:border-box; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">CAM</span>
-              <span id="header-escala-badge" style="display:inline-block; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:900; color:#ffffff; background:#ef4444; box-shadow:0 0 8px rgba(239,68,68,0.5); width:135px; min-width:135px; text-align:center; box-sizing:border-box; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:0.3px;">0% - Aberto</span>
-              <div style="width:68px; min-width:68px; display:flex; align-items:center; justify-content:center;">
-                <button type="button" id="btn-editar-etapa10" onclick="abrirModalEtapa10Opcoes()" style="display:inline-flex; align-items:center; justify-content:center; gap:3px; background:#2563eb; color:#fff; border:none; border-radius:6px; padding:3px 6px; font-size:10.5px; font-weight:700; cursor:pointer; width:68px; height:26px; box-sizing:border-box; opacity:0; pointer-events:none; visibility:hidden; transition:opacity 0.2s;" title="Clique para escolher a Especialidade da Fase 10 (50%)">
+            <!-- Box Ancorado de Informações e Botão Opção (Tamanho Fixo e Ampliado - Sem cortar letras) -->
+            <div id="header-escala-info-box" style="display:flex; align-items:center; gap:8px; flex-shrink:0; min-width:445px;">
+              <span id="header-escala-setor" style="font-size:10.5px; font-weight:900; padding:4px 8px; border-radius:6px; background:#1e3a5f; color:#60a5fa; border:1px solid #2563eb; letter-spacing:0.5px; min-width:105px; text-align:center; box-sizing:border-box; white-space:nowrap;">CAM</span>
+              <span id="header-escala-badge" style="display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:900; color:#ffffff; background:#ef4444; box-shadow:0 0 8px rgba(239,68,68,0.5); min-width:255px; text-align:center; box-sizing:border-box; white-space:nowrap; letter-spacing:0.3px;">0% - Aberto</span>
+              <div style="width:72px; min-width:72px; display:flex; align-items:center; justify-content:center;">
+                <button type="button" id="btn-editar-etapa10" onclick="abrirModalEtapa10Opcoes()" style="display:inline-flex; align-items:center; justify-content:center; gap:3px; background:#2563eb; color:#fff; border:none; border-radius:6px; padding:3px 6px; font-size:10.5px; font-weight:700; cursor:pointer; width:72px; height:26px; box-sizing:border-box; opacity:0; pointer-events:none; visibility:hidden; transition:opacity 0.2s;" title="Clique para escolher a Especialidade da Fase 10 (50%)">
                   ✏️ <span id="label-opcao-etapa10">Opção</span>
                 </button>
               </div>
@@ -2465,7 +2464,7 @@
             <!-- Botão Extremidade Esquerda: Fase Anterior (<) -->
             <button type="button" id="btn-escala-prev" onclick="passarFaseEscala(-1)" title="Fase Anterior (&lt;)" style="width:26px; height:26px; border-radius:6px; background:#1e293b; border:1px solid #475569; color:#cbd5e1; font-weight:900; font-size:12px; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; transition:all 0.2s;" onmouseover="this.style.background='#334155'; this.style.borderColor='#94a3b8';" onmouseout="this.style.background='#1e293b'; this.style.borderColor='#475569';">&lt;</button>
 
-            <!-- CARD 1: FASE CAM (0% a 35% - Etapas 0 a 7) -->
+            <!-- CARD 1: FASE CAM (0% a 35% - Etapas 0 a 7 com cores preservadas) -->
             <div id="card-escala-cam" style="flex:7 1 180px; min-width:150px; height:36px; background:rgba(30,41,59,0.7); border:1px solid #334155; border-radius:8px; padding:2px 8px; display:flex; flex-direction:column; justify-content:center; position:relative; transition:all 0.3s; cursor:pointer;" onclick="onCardCAMTrackClick(event)" title="Fase CAM (0% a 35%)">
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:9.5px; font-weight:800; line-height:1; margin-bottom:2px; pointer-events:none;">
                 <span id="card-cam-title" style="color:#60a5fa; letter-spacing:0.4px;">FASE CAM (0% - 35%)</span>
@@ -2475,20 +2474,20 @@
                 <div style="position:absolute; left:0; right:0; height:5px; background:#1e293b; border-radius:999px; box-shadow:inset 0 1px 2px rgba(0,0,0,0.5);"></div>
                 <div id="card-cam-fill" style="position:absolute; left:0; width:0%; height:5px; background:#ef4444; border-radius:999px; transition:width 0.2s, background 0.3s;"></div>
                 <div style="position:absolute; inset:0; pointer-events:none;">
-                  <div class="escala-tick" data-val="0" title="0% - Processo aberto (CAM)" onclick="event.stopPropagation(); selecionarEtapaEscala(0)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 0 / 7); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="1" title="5% - Recebido na CAM" onclick="event.stopPropagation(); selecionarEtapaEscala(1)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 1 / 7); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="2" title="10% - Prosseguimento GDSM" onclick="event.stopPropagation(); selecionarEtapaEscala(2)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 2 / 7); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="3" title="15% - Prestação de Contas - CPC" onclick="event.stopPropagation(); selecionarEtapaEscala(3)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 3 / 7); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="4" title="20% - Notificação GDSM" onclick="event.stopPropagation(); selecionarEtapaEscala(4)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 4 / 7); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="5" title="25% - Manifestação CAM" onclick="event.stopPropagation(); selecionarEtapaEscala(5)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 5 / 7); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="6" title="30% - Autorizo Gabinete SEDUC" onclick="event.stopPropagation(); selecionarEtapaEscala(6)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 6 / 7); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="7" title="35% - Autorizo Casa Civil" onclick="event.stopPropagation(); selecionarEtapaEscala(7)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 7 / 7); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="0" title="0% - Processo aberto (CAM)" onclick="event.stopPropagation(); selecionarEtapaEscala(0)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 0 / 7); transform:translateX(-50%); width:3px; height:7px; background:#ef4444; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="1" title="5% - Recebido na CAM" onclick="event.stopPropagation(); selecionarEtapaEscala(1)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 1 / 7); transform:translateX(-50%); width:3px; height:7px; background:#f87171; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="2" title="10% - Prosseguimento GDSM" onclick="event.stopPropagation(); selecionarEtapaEscala(2)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 2 / 7); transform:translateX(-50%); width:3px; height:7px; background:#fb923c; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="3" title="15% - Prestação de Contas - CPC" onclick="event.stopPropagation(); selecionarEtapaEscala(3)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 3 / 7); transform:translateX(-50%); width:3px; height:7px; background:#f97316; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="4" title="20% - Notificação GDSM" onclick="event.stopPropagation(); selecionarEtapaEscala(4)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 4 / 7); transform:translateX(-50%); width:3px; height:7px; background:#ea580c; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="5" title="25% - Manifestação CAM" onclick="event.stopPropagation(); selecionarEtapaEscala(5)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 5 / 7); transform:translateX(-50%); width:3px; height:7px; background:#f59e0b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="6" title="30% - Autorizo Gabinete SEDUC" onclick="event.stopPropagation(); selecionarEtapaEscala(6)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 6 / 7); transform:translateX(-50%); width:3px; height:7px; background:#eab308; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="7" title="35% - Autorizo Casa Civil" onclick="event.stopPropagation(); selecionarEtapaEscala(7)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 7 / 7); transform:translateX(-50%); width:3px; height:7px; background:#ca8a04; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
                 </div>
                 <div id="card-cam-ball" style="position:absolute; top:50%; left:6px; transform:translate(-50%, -50%); width:17px; height:17px; border-radius:50%; background:#ffffff; border:2px solid #ef4444; color:#0f172a; font-size:7.5px; font-weight:900; display:flex; align-items:center; justify-content:center; box-shadow:0 0 6px rgba(0,0,0,0.6); pointer-events:none; z-index:5; transition:left 0.15s ease-out;">0%</div>
               </div>
             </div>
 
-            <!-- CARD 2: FASE GCF / CCTE / GMAC (40% a 100% - Etapas 8 a 20) -->
+            <!-- CARD 2: FASE GCF / CCTE / GMAC (40% a 100% - Etapas 8 a 20 com cores preservadas) -->
             <div id="card-escala-gcf" style="flex:13 1 290px; min-width:220px; height:36px; background:rgba(30,41,59,0.7); border:1px solid #334155; border-radius:8px; padding:2px 8px; display:flex; flex-direction:column; justify-content:center; position:relative; transition:all 0.3s; cursor:pointer;" onclick="onCardGCFTrackClick(event)" title="Fase GCF / CCTE / GMAC (40% a 100%)">
               <div style="display:flex; justify-content:space-between; align-items:center; font-size:9.5px; font-weight:800; line-height:1; margin-bottom:2px; pointer-events:none;">
                 <span id="card-gcf-title" style="color:#c084fc; letter-spacing:0.4px;">FASE GCF / CCTE / GMAC (40% - 100%)</span>
@@ -2498,19 +2497,19 @@
                 <div style="position:absolute; left:0; right:0; height:5px; background:#1e293b; border-radius:999px; box-shadow:inset 0 1px 2px rgba(0,0,0,0.5);"></div>
                 <div id="card-gcf-fill" style="position:absolute; left:0; width:0%; height:5px; background:#a855f7; border-radius:999px; transition:width 0.2s, background 0.3s;"></div>
                 <div style="position:absolute; inset:0; pointer-events:none;">
-                  <div class="escala-tick" data-val="8" title="40% - CCTE / GMAC" onclick="event.stopPropagation(); selecionarEtapaEscala(8)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 0 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="9" title="45% - GCF (1º Fase)" onclick="event.stopPropagation(); selecionarEtapaEscala(9)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 1 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="10" title="50% - Especialidade" onclick="event.stopPropagation(); selecionarEtapaEscala(10)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 2 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="11" title="55% - Pré empenho" onclick="event.stopPropagation(); selecionarEtapaEscala(11)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 3 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="12" title="60% - Empenho CFIN" onclick="event.stopPropagation(); selecionarEtapaEscala(12)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 4 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="13" title="65% - GCF (2º Fase)" onclick="event.stopPropagation(); selecionarEtapaEscala(13)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 5 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="14" title="70% - PGE (emissão de parecer)" onclick="event.stopPropagation(); selecionarEtapaEscala(14)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 6 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="15" title="75% - Autorizo convênio - SEDUC" onclick="event.stopPropagation(); selecionarEtapaEscala(15)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 7 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="16" title="80% - GCF (3º Fase)" onclick="event.stopPropagation(); selecionarEtapaEscala(16)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 8 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="17" title="85% - PGE - Termo de Convênio" onclick="event.stopPropagation(); selecionarEtapaEscala(17)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 9 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="18" title="90% - Controle Interno" onclick="event.stopPropagation(); selecionarEtapaEscala(18)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 10 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="19" title="95% - Emissão da NL" onclick="event.stopPropagation(); selecionarEtapaEscala(19)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 11 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
-                  <div class="escala-tick" data-val="20" title="100% - Emissão da OB" onclick="event.stopPropagation(); selecionarEtapaEscala(20)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 12 / 12); transform:translateX(-50%); width:2px; height:6px; background:#64748b; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="8" title="40% - CCTE / GMAC" onclick="event.stopPropagation(); selecionarEtapaEscala(8)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 0 / 12); transform:translateX(-50%); width:3px; height:7px; background:#3b82f6; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="9" title="45% - GCF (1º Fase)" onclick="event.stopPropagation(); selecionarEtapaEscala(9)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 1 / 12); transform:translateX(-50%); width:3px; height:7px; background:#60a5fa; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="10" title="50% - Especialidade" onclick="event.stopPropagation(); selecionarEtapaEscala(10)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 2 / 12); transform:translateX(-50%); width:3px; height:7px; background:#eab308; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="11" title="55% - Pré empenho" onclick="event.stopPropagation(); selecionarEtapaEscala(11)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 3 / 12); transform:translateX(-50%); width:3px; height:7px; background:#a855f7; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="12" title="60% - Empenho CFIN" onclick="event.stopPropagation(); selecionarEtapaEscala(12)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 4 / 12); transform:translateX(-50%); width:3px; height:7px; background:#8b5cf6; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="13" title="65% - GCF (2º Fase)" onclick="event.stopPropagation(); selecionarEtapaEscala(13)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 5 / 12); transform:translateX(-50%); width:3px; height:7px; background:#6366f1; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="14" title="70% - PGE (emissão de parecer)" onclick="event.stopPropagation(); selecionarEtapaEscala(14)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 6 / 12); transform:translateX(-50%); width:3px; height:7px; background:#0ea5e9; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="15" title="75% - Autorizo convênio - SEDUC" onclick="event.stopPropagation(); selecionarEtapaEscala(15)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 7 / 12); transform:translateX(-50%); width:3px; height:7px; background:#14b8a6; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="16" title="80% - GCF (3º Fase)" onclick="event.stopPropagation(); selecionarEtapaEscala(16)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 8 / 12); transform:translateX(-50%); width:3px; height:7px; background:#10b981; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="17" title="85% - PGE - Termo de Convênio" onclick="event.stopPropagation(); selecionarEtapaEscala(17)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 9 / 12); transform:translateX(-50%); width:3px; height:7px; background:#059669; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="18" title="90% - Controle Interno" onclick="event.stopPropagation(); selecionarEtapaEscala(18)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 10 / 12); transform:translateX(-50%); width:3px; height:7px; background:#047857; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="19" title="95% - Emissão da NL" onclick="event.stopPropagation(); selecionarEtapaEscala(19)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 11 / 12); transform:translateX(-50%); width:3px; height:7px; background:#065f46; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
+                  <div class="escala-tick" data-val="20" title="100% - Emissão da OB" onclick="event.stopPropagation(); selecionarEtapaEscala(20)" style="position:absolute; top:1px; left:calc(6px + (100% - 12px) * 12 / 12); transform:translateX(-50%); width:3px; height:7px; background:#10b981; border-radius:999px; pointer-events:auto; cursor:pointer;"></div>
                 </div>
                 <div id="card-gcf-ball" style="position:absolute; top:50%; left:6px; transform:translate(-50%, -50%); width:17px; height:17px; border-radius:50%; background:#ffffff; border:2px solid #a855f7; color:#0f172a; font-size:7.5px; font-weight:900; display:none; align-items:center; justify-content:center; box-shadow:0 0 6px rgba(0,0,0,0.6); pointer-events:none; z-index:5; transition:left 0.15s ease-out;">40%</div>
               </div>
@@ -3357,7 +3356,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.135</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.136</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -4038,7 +4037,7 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.135 ∴</span>
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.136 ∴</span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
@@ -4310,7 +4309,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.135] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.136] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6626,14 +6625,14 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/multi-select.js?v=v1.135"></script>
-  <script src="js/auth-sap.js?v=v1.135"></script>
-  <script src="js/dados.js?v=v1.135"></script>
-  <script src="js/app.js?v=v1.135"></script>
-  <script src="js/escolas.js?v=v1.135" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=v1.135"></script>
-  <script src="js/mapa.js?v=v1.135"></script>
-  <script src="js/contatos.js?v=v1.135"></script>
+  <script src="js/multi-select.js?v=v1.136"></script>
+  <script src="js/auth-sap.js?v=v1.136"></script>
+  <script src="js/dados.js?v=v1.136"></script>
+  <script src="js/app.js?v=v1.136"></script>
+  <script src="js/escolas.js?v=v1.136" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=v1.136"></script>
+  <script src="js/mapa.js?v=v1.136"></script>
+  <script src="js/contatos.js?v=v1.136"></script>
 
 
   <script>
@@ -6826,12 +6825,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=v1.135"></script>
-  <script src="js/gmac.js?v=v1.135"></script>
-  <script src="js/orcamento.js?v=v1.135"></script>
-  <script src="js/gdsm.js?v=v1.135"></script>
-  <script src="js/print-proalfa.js?v=v1.135"></script>
-  <script src="js/proalfa.js?v=v1.135"></script>
+  <script src="js/diarias.js?v=v1.136"></script>
+  <script src="js/gmac.js?v=v1.136"></script>
+  <script src="js/orcamento.js?v=v1.136"></script>
+  <script src="js/gdsm.js?v=v1.136"></script>
+  <script src="js/print-proalfa.js?v=v1.136"></script>
+  <script src="js/proalfa.js?v=v1.136"></script>
 
 
 
