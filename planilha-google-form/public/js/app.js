@@ -784,7 +784,14 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+let _ultimoAvisoEnormeTimestamp = 0;
 function mostrarAvisoEnormeInadimplente() {
+  const agora = Date.now();
+  if (agora - _ultimoAvisoEnormeTimestamp < 2500) {
+    return; // Evita disparos duplicados ou em sequência rápida
+  }
+  _ultimoAvisoEnormeTimestamp = agora;
+
   const overlay = document.getElementById('aviso-enorme-inadimplente');
   if (!overlay) return;
   overlay.style.display = 'flex';
@@ -884,7 +891,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.140';
+window.APP_VERSION = 'v1.141';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -3444,11 +3451,14 @@ function renderFormulario() {
       cnpjEl.required = false;
       cnpjEl.value = p.cnpj || '';
     }
+    // Ao abrir para edição, vai direto e fecha aviso prévio (evita gerar o aviso duas vezes)
+    if (typeof fecharAvisoEnormeInadimplente === 'function') {
+      fecharAvisoEnormeInadimplente();
+    }
     const isInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1' || p.CONTAS === 1);
     atualizarVisualAdimplencia(isInad);
-    if (isInad || (p.cnpj && verificarCNPJInadimplenteHistorico(p.cnpj))) {
-      mostrarAvisoEnormeInadimplente();
-    }
+    const _cLimpo = String(p.cnpj || '').replace(/\D/g, '');
+    _ultimoCNPJChecadoAviso = _cLimpo;
     document.getElementById('form-objeto').value      = p.objeto      || '';
     const fValOf = document.getElementById('form-valorOf');
     if (fValOf) fValOf.value = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
@@ -4658,7 +4668,7 @@ window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
 function aoMudarTipoEntidadeNovoProcesso(tipo) {
   const catSel = document.getElementById('popup-novo-categoria');
   const tipoVal = (tipo || '').trim();
-  if (tipoVal === 'Conselho' || tipoVal === 'APAE' || tipoVal === 'EFA') {
+  if (tipoVal === 'Conselho' || tipoVal === 'APAE' || tipoVal === 'EFA' || tipoVal === 'Associação Educacional' || tipoVal === 'Associacao' || tipoVal.toLowerCase().includes('associa')) {
     if (catSel) catSel.value = 'F';
   } else if (tipoVal === 'Prefeitura') {
     if (catSel) catSel.value = 'C';
@@ -4807,6 +4817,7 @@ function atualizarEntidadesMunicipioPopup() {
     const nomeUpper = nomeOriginal.toUpperCase();
     const isApae = nomeUpper.includes('APAE');
     const isEfa = nomeUpper.includes('EFA') || nomeUpper.includes('FAMILIA AGRICOLA') || nomeUpper.includes('AGRÍCOLA');
+    const isAssoc = nomeUpper.includes('ASSOCIAÇÃO') || nomeUpper.includes('ASSOCIACAO');
 
     let nomeFormatado = nomeOriginal;
     if (!isApae && !isEfa && !nomeUpper.includes('CONSELHO')) {
@@ -4817,7 +4828,7 @@ function atualizarEntidadesMunicipioPopup() {
       nome: nomeFormatado,
       cnpj: e.cnpj || '',
       grupo: 'Fomento',
-      tipoLabel: isApae ? 'APAE' : (isEfa ? 'EFA' : 'Conselho Escolar Municipal'),
+      tipoLabel: isApae ? 'APAE' : (isEfa ? 'EFA' : (isAssoc ? 'Associação Educacional' : 'Conselho Escolar Municipal')),
       diretor: e.diretor || '',
       telefone: e.telefone || e.contatoDiretor || ''
     };
@@ -5519,7 +5530,7 @@ function mascaraCNPJInputPopup(el) {
   }
 
   if (rawDigits.length === 14) {
-    if (verificarCNPJInadimplenteHistorico(rawDigits)) {
+    if (rawDigits !== _ultimoCNPJChecadoPopup && verificarCNPJInadimplenteHistorico(rawDigits)) {
       _ultimoCNPJChecadoPopup = rawDigits;
       mostrarAvisoEnormeInadimplente();
     }
@@ -5536,7 +5547,7 @@ function autoPreencherCNPJPopup(el) {
   const digits = raw.replace(/\D/g, '');
 
   if (digits.length === 14 && !/^0+$/.test(digits)) {
-    if (verificarCNPJInadimplenteHistorico(digits)) {
+    if (digits !== _ultimoCNPJChecadoPopup && verificarCNPJInadimplenteHistorico(digits)) {
       _ultimoCNPJChecadoPopup = digits;
       mostrarAvisoEnormeInadimplente();
     }
