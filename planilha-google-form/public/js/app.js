@@ -728,6 +728,35 @@ function aoAlternarCheckInadimplente(checked) {
 }
 window.aoAlternarCheckInadimplente = aoAlternarCheckInadimplente;
 
+function atualizarVisualAdimplenciaPopup(inadimplente) {
+  const box = document.getElementById('popup-novo-status-adimplencia');
+  const chk = document.getElementById('popup-novo-check-inadimplente');
+  const isTrue = (inadimplente === '1' || inadimplente === 1 || inadimplente === true);
+  if (chk) chk.checked = isTrue;
+  if (box) {
+    if (isTrue) {
+      box.value = 'INADIMPLENTE';
+      box.style.background = '#fef08a';
+      box.style.border = '2px solid #ef4444';
+      box.style.color = '#dc2626';
+      box.style.boxShadow = '0 0 10px rgba(239,68,68,0.35)';
+    } else {
+      box.value = 'Adimplente';
+      box.style.background = '#fef08a';
+      box.style.border = '2px solid #eab308';
+      box.style.color = '#15803d';
+      box.style.boxShadow = '0 2px 8px rgba(234,179,8,0.25)';
+    }
+  }
+}
+window.atualizarVisualAdimplenciaPopup = atualizarVisualAdimplenciaPopup;
+
+function aoAlternarCheckInadimplentePopup(checked) {
+  atualizarVisualAdimplenciaPopup(checked);
+}
+window.aoAlternarCheckInadimplentePopup = aoAlternarCheckInadimplentePopup;
+
+
 let _timerAvisoInadimplente = null;
 let _intervalAvisoInadimplente = null;
 
@@ -855,7 +884,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.139';
+window.APP_VERSION = 'v1.140';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -3295,7 +3324,7 @@ function adicionarCampoNumero(val = '') {
   div.style.alignItems = 'center';
   div.innerHTML = `
     <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0 12px;height:42px;border-radius:6px;font-weight:700;font-size:16px;flex-shrink:0;" title="Remover processo">-</button>
-    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${val}">
+    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${val}" onblur="verificarProcessoExistentePrincipal(this)" onchange="verificarProcessoExistentePrincipal(this)">
     <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
     </button>
@@ -3396,7 +3425,7 @@ function renderFormulario() {
         containerNum.innerHTML = `
           <div style="display:flex;gap:6px;align-items:center;">
             <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 12px;height:42px;border:1px solid var(--border);border-radius:6px;font-weight:700;font-size:16px;color:#10b981;flex-shrink:0;" title="Adicionar número">+</button>
-            <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${num}">
+            <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${num}" onblur="verificarProcessoExistentePrincipal(this)" onchange="verificarProcessoExistentePrincipal(this)">
             <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
@@ -3586,7 +3615,7 @@ function renderFormulario() {
     document.getElementById('container-numeros').innerHTML = `
       <div style="display:flex;gap:6px;align-items:center;">
         <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 12px;height:42px;border:1px solid var(--border);border-radius:6px;font-weight:700;font-size:16px;color:#10b981;flex-shrink:0;" title="Adicionar número">+</button>
-        <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;">
+        <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" onblur="verificarProcessoExistentePrincipal(this)" onchange="verificarProcessoExistentePrincipal(this)">
         <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         </button>
@@ -4256,6 +4285,12 @@ function abrirModalNovoProcesso() {
   }
 
   // Preencher campos INATIVOS com dados padrão da tela (Status, Localização, Data de Hoje)
+  const escalaPopupEl = document.getElementById('popup-novo-escala');
+  if (escalaPopupEl) escalaPopupEl.value = '1';
+  const chkInadPopup = document.getElementById('popup-novo-check-inadimplente');
+  if (chkInadPopup) chkInadPopup.checked = false;
+  if (typeof atualizarVisualAdimplenciaPopup === 'function') atualizarVisualAdimplenciaPopup(false);
+
   const statusEl = document.getElementById('popup-novo-status');
   if (statusEl) {
     statusEl.value = 'REG. DEMANDA';
@@ -5407,6 +5442,11 @@ async function salvarNovoProcessoPopup(e) {
     GAB:         '',
     CC:          '',
     executivo:   (document.getElementById('popup-novo-executivo')?.value || '').trim(),
+    escala:      document.getElementById('popup-novo-escala')?.value || '1',
+    ESCALA:      document.getElementById('popup-novo-escala')?.value || '1',
+    inadimplente: document.getElementById('popup-novo-check-inadimplente')?.checked ? '1' : '0',
+    CONTAS:      document.getElementById('popup-novo-check-inadimplente')?.checked ? '1' : '0',
+    INADIMPLENTE: document.getElementById('popup-novo-check-inadimplente')?.checked ? '1' : '0',
     anotacao:    '',
     ultimaEdicao:   user ? (user.nome || user.whatsapp) : 'Sistema',
     dataHoraEdicao: dataHoraStr,
@@ -19879,3 +19919,59 @@ window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNa
 
 
 
+
+
+function verificarProcessoExistentePrincipal(inputEl) {
+  if (!inputEl) return;
+  const valRaw = String(inputEl.value || '').trim();
+  const digits = valRaw.replace(/\D/g, '');
+  if (digits.length < 5) return;
+
+  const currentId = (typeof state !== 'undefined' && state) ? state.editandoId : null;
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  const encontrado = procs.find(p => {
+    if (currentId && String(p.id) === String(currentId)) return false;
+    if (!p.numero) return false;
+    const nums = String(p.numero).split(/[,;\/]/);
+    return nums.some(n => {
+      const d = n.replace(/\D/g, '');
+      return d && (d === digits || (digits.length >= 10 && d.includes(digits)));
+    });
+  });
+
+  if (encontrado) {
+    const valFmt = typeof formatCurrency === 'function' ? formatCurrency(encontrado.valorOf || 0) : (encontrado.valorOf || '0,00');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM(
+        `<div style="text-align:center; padding:5px 0 14px 0;">
+           <div style="display:inline-flex; align-items:center; justify-content:center; width:72px; height:72px; border-radius:50%; background:rgba(239,68,68,0.2); border:2.5px solid #ef4444; box-shadow:0 0 25px rgba(239,68,68,0.5); margin-bottom:10px;">
+             <span style="font-size:36px;">⚠️</span>
+           </div>
+           <div style="font-size:16px; font-weight:900; color:#ef4444; text-transform:uppercase; letter-spacing:0.5px;">
+             PROCESSO JÁ EXISTE NO SISTEMA
+           </div>
+           <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">Chave Primária não requerida já cadastrada</div>
+         </div>
+         <div style="background:rgba(0,0,0,0.35); border:1.5px solid rgba(239,68,68,0.4); border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:13px; line-height:1.6; color:#f1f5f9;">
+           <strong>Atenção:</strong> O número do processo <strong>${valRaw}</strong> já se encontra cadastrado em outro registro:<br>
+           • <strong>ID:</strong> #${encontrado.id || '-'}<br>
+           • <strong>PREFIXO:</strong> ${encontrado.prefixo || '-'}<br>
+           • <strong>INTERESSADO / ESCOLA:</strong> ${encontrado.interessado || '-'}<br>
+           • <strong>VALOR OFICIAL:</strong> ${valFmt}<br>
+           • <strong>STATUS:</strong> ${encontrado.status || '-'}<br>
+           • <strong>LOCALIZAÇÃO:</strong> ${encontrado.localizacao || '-'}
+         </div>
+         <div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; font-size:12px; color:#94a3b8;">
+           ℹ️ O número do processo funciona como uma chave primária opcional. Se desejar acessar o processo já existente, utilize a busca do sistema.
+         </div>`,
+        {
+          titulo: 'Processo Já Existe',
+          subtitulo: 'Chave Primária Duplicada',
+          tipo: 'aviso',
+          focoElemento: inputEl
+        }
+      );
+    }
+  }
+}
+window.verificarProcessoExistentePrincipal = verificarProcessoExistentePrincipal;
