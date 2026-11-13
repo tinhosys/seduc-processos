@@ -1038,7 +1038,7 @@
     <div class="top-header-row">
       <div style="min-width: 130px; display:flex; align-items:center;">
         <div class="siscam-badge-delta" style="display:inline-flex; align-items:center; gap:6px; color:#38bdf8; font-size:12.5px; font-weight:900; letter-spacing:1.2px; background:rgba(56,189,248,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.35); text-shadow:0 0 8px rgba(56,189,248,0.7); font-family:'Segoe UI',monospace,sans-serif;" title="Sistema Integrado CAM - SEDUC/RO">
-          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.142 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
+          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.143 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
         </div>
       </div>
       <!-- NOME DA ENTIDADE E MUNICÍPIOS VINCULADOS: 2 LINHAS (IMAGEM 5) -->
@@ -1065,7 +1065,7 @@
            target="_blank" rel="noopener noreferrer"
            title="Fale conosco no WhatsApp: (69) 99906-4881">
           <img id="img-banner-lateral"
-               src="img/banner-cadastre-escolas-vertical.png?v=v1.142"
+               src="img/banner-cadastre-escolas-vertical.png?v=v1.143"
                alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
                class="sidebar-banner-img">
         </a>
@@ -1084,6 +1084,14 @@
         <div style="color: #94a3b8; font-size: 12px;" id="prazo-datas-detalhe">
           Início: <span id="data-primeiro-clique">--/--/----</span> | Limite (+8 dias): <span id="data-limite">--/--/----</span>
         </div>
+      </div>
+    </div>
+    <!-- MARCAÃ‡ÃƒO VERDE IMAGEM 3: CHAVE ÃšNICA DO LINK (20 DÃGITOS) -->
+    <div id="bloco-chave-link-topbar" style="display:inline-flex; align-items:center; gap:8px; background:rgba(15,23,42,0.85); border:1.5px solid rgba(56,189,248,0.5); border-radius:8px; padding:6px 14px; box-shadow:0 0 14px rgba(56,189,248,0.25);" title="Chave Ãºnica de validaÃ§Ã£o e controle temporal de 20 dÃ­gitos (sem repetiÃ§Ã£o)">
+      <span style="font-size:16px;">ðŸ”‘</span>
+      <div style="display:flex; flex-direction:column; align-items:flex-start;">
+        <span style="font-size:9.5px; text-transform:uppercase; color:#94a3b8; font-weight:800; letter-spacing:0.8px;">Chave do Link (20 DÃ­gitos)</span>
+        <span id="txt-chave-link-topbar" style="font-family:monospace; font-size:12.5px; font-weight:900; color:#38bdf8; letter-spacing:1.2px;">--</span>
       </div>
     </div>
     <div>
@@ -1979,9 +1987,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=v1.142"></script>
-  <script src="js/escolas.js?v=v1.142"></script>
-  <script src="js/relatorios-impressao.js?v=v1.142"></script>
+  <script src="js/dados.js?v=v1.143"></script>
+  <script src="js/escolas.js?v=v1.143"></script>
+  <script src="js/relatorios-impressao.js?v=v1.143"></script>
 
   <script>
     /* ============================================================
@@ -2240,8 +2248,45 @@
     }
 
     // Inicialização do Prazo (Grava 1º clique e soma +8 dias)
+        // Gerador de Chave de 20 DÃ­gitos sem RepetiÃ§Ã£o
+    function gerarChaveLink20Digitos() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
+      for (let i = chars.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [chars[i], chars[j]] = [chars[j], chars[i]];
+      }
+      return chars.slice(0, 20).join('');
+    }
+    window.gerarChaveLink20Digitos = gerarChaveLink20Digitos;
+
+    function formatarChave20(chave) {
+      if (!chave || typeof chave !== 'string') return '';
+      const limpa = chave.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+      return limpa.match(/.{1,4}/g)?.join('-') || limpa;
+    }
+    window.formatarChave20 = formatarChave20;
     function inicializarPrazo(municipio) {
-      const chaveStorage = 'seduc_prazo_cadastro_' + (municipio || 'GERAL').trim().toUpperCase();
+      const params = new URLSearchParams(window.location.search);
+      let chaveRaw = (params.get('chave') || params.get('token') || '').trim();
+
+      // Se nao veio chave na URL (link legado), gera chave exclusiva para a sessao atual
+      if (!chaveRaw) {
+        chaveRaw = (typeof gerarChaveLink20Digitos === 'function')
+          ? gerarChaveLink20Digitos()
+          : 'SEDUC' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 10).toUpperCase();
+      }
+
+      const chaveFormatada = (typeof formatarChave20 === 'function')
+        ? formatarChave20(chaveRaw)
+        : chaveRaw;
+
+      const txtChaveTopbar = document.getElementById('txt-chave-link-topbar');
+      if (txtChaveTopbar) txtChaveTopbar.textContent = chaveFormatada;
+
+      window._chaveLinkSessao = chaveRaw;
+
+      // Controle de Prazo Vinculado EXCLUSIVAMENTE a Chave Unica do Link (Elimina erro de 'nascer expirado')
+      const chaveStorage = 'seduc_prazo_token_' + chaveRaw.toUpperCase();
       let infoPrazo = null;
       try {
         const dados = localStorage.getItem(chaveStorage);
@@ -2251,8 +2296,9 @@
       const agora = Date.now();
       if (!infoPrazo || !infoPrazo.inicio) {
         infoPrazo = {
+          chave: chaveRaw,
           inicio: agora,
-          prazo: agora + (8 * 24 * 60 * 60 * 1000) // 8 dias
+          prazo: agora + (8 * 24 * 60 * 60 * 1000) // 8 dias completos a partir do 1Âº clique neste link Ãºnico
         };
         try {
           localStorage.setItem(chaveStorage, JSON.stringify(infoPrazo));
@@ -2271,21 +2317,28 @@
 
       if (_linkExpirado) {
         badge.className = 'badge-prazo expirado';
-        badge.textContent = '⚠️ Prazo Encerrado';
-        document.getElementById('prazo-status-titulo').innerHTML = '<span style="color:#ef4444;">⚠️ Link Expirado - O prazo de 8 dias para envio encerrou-se</span>';
+        badge.textContent = '&#9888;&#65039; Prazo Encerrado';
+        document.getElementById('prazo-status-titulo').innerHTML = '<span style="color:#ef4444;">&#9888;&#65039; Link Expirado - O prazo de 8 dias para envio encerrou-se</span>';
         if (submitBtn) {
           submitBtn.disabled = true;
           submitBtn.title = 'Envios bloqueados: o prazo de 8 dias deste link expirou.';
         }
       } else if (diasRestantes <= 2) {
         badge.className = 'badge-prazo alerta';
-        badge.textContent = `⏳ Atenção: restam ${diasRestantes} dia(s)`;
+        badge.textContent = `&#9203; Aten\u00E7\u00E3o: restam ${diasRestantes} dia(s)`;
+        document.getElementById('prazo-status-titulo').innerHTML = 'Prazo Oficial para Cadastro das Escolas';
+        if (submitBtn && !_linkExpirado) {
+          submitBtn.disabled = false;
+        }
       } else {
         badge.className = 'badge-prazo ativo';
-        badge.textContent = `⏳ Prazo Ativo: restam ${diasRestantes} dias`;
+        badge.textContent = `&#9203; Prazo Ativo: restam ${diasRestantes} dias`;
+        document.getElementById('prazo-status-titulo').innerHTML = 'Prazo Oficial para Cadastro das Escolas';
+        if (submitBtn && !_linkExpirado) {
+          submitBtn.disabled = false;
+        }
       }
     }
-
     // ============================================================
     // MÁSCARA & VALIDAÇÃO OFICIAL DE CNPJ (MARCAÇÃO VERDE IMAGEM 1)
     // ============================================================
@@ -4541,7 +4594,7 @@
               <span style="font-size:22px;">&#128424;&#65039;</span>
               <div>
                 <div class="siscam-modal-badge-title">
-                  <span class="siscam-delta">&#9650;</span> SiSCAM v1.142 <span class="siscam-delta">&#9650;</span>
+                  <span class="siscam-delta">&#9650;</span> SiSCAM v1.143 <span class="siscam-delta">&#9650;</span>
                 </div>
                 <div class="siscam-modal-subtag">Central de Impress&atilde;o e Relat&oacute;rios Oficiais</div>
               </div>

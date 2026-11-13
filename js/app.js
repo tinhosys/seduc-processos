@@ -891,7 +891,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.142';
+window.APP_VERSION = 'v1.143';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -11699,6 +11699,35 @@ function popularMunicipiosGeradorLink() {
 }
 window.popularMunicipiosGeradorLink = popularMunicipiosGeradorLink;
 
+// ============================================================
+// GERADOR DE CHAVE ÃšNICA DE 20 DÃGITOS SEM REPETIÃ‡ÃƒO (SiSCAM)
+// ============================================================
+function gerarChaveLink20Digitos() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
+  for (let i = chars.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [chars[i], chars[j]] = [chars[j], chars[i]];
+  }
+  return chars.slice(0, 20).join('');
+}
+window.gerarChaveLink20Digitos = gerarChaveLink20Digitos;
+
+function formatarChave20(chave) {
+  if (!chave || typeof chave !== 'string') return '';
+  const limpa = chave.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  return limpa.match(/.{1,4}/g)?.join('-') || limpa;
+}
+window.formatarChave20 = formatarChave20;
+
+let _chaveLinkAtual = '';
+
+function renovarChaveLinkGen() {
+  _chaveLinkAtual = gerarChaveLink20Digitos();
+  const elTxt = document.getElementById('txt-link-gen-chave');
+  if (elTxt) elTxt.textContent = formatarChave20(_chaveLinkAtual);
+  gerarLinkCadastroComParametros();
+}
+window.renovarChaveLinkGen = renovarChaveLinkGen;
 function gerarLinkCadastroComParametros() {
   let mun = (document.getElementById('link-gen-municipio')?.value || '').trim();
   if (!mun && window._linkGenData && window._linkGenData.municipio) {
@@ -11717,7 +11746,13 @@ function gerarLinkCadastroComParametros() {
 
   const currentPath = window.location.pathname;
   const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
-  const url = `${window.location.origin}${basePath}cadastro.html?mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}&parc=${encodeURIComponent(parc)}`;
+  if (!_chaveLinkAtual) {
+    _chaveLinkAtual = gerarChaveLink20Digitos();
+  }
+  const elTxtChave = document.getElementById('txt-link-gen-chave');
+  if (elTxtChave) elTxtChave.textContent = formatarChave20(_chaveLinkAtual);
+
+  const url = `${window.location.origin}${basePath}cadastro.html?mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}&parc=${encodeURIComponent(parc)}&chave=${encodeURIComponent(_chaveLinkAtual)}`;
 
   const inputOut = document.getElementById('link-gen-resultado');
   if (inputOut) inputOut.value = url;
