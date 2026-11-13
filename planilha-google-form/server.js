@@ -1363,18 +1363,17 @@ app.get("/api/escolas", async (req, res) => {
     const targetSheetId = process.env.ESCOLAS_SHEET_ID || process.env.ENTIDADES_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     let rows = [];
 
-    // Tentar ler da nova planilha de escolas (Aba ENTIDADES ou range A1:AC das 29 colunas)
     try {
       const respNova = await sheets.spreadsheets.values.get({
         spreadsheetId: targetSheetId,
-        range: "'ENTIDADES'!A1:AC"
+        range: "'ENTIDADES'!A1:BP"
       });
       rows = respNova.data.values || [];
     } catch(errAba) {
       try {
         const respNova = await sheets.spreadsheets.values.get({
           spreadsheetId: targetSheetId,
-          range: "A1:AC"
+          range: "A1:BP"
         });
         rows = respNova.data.values || [];
       } catch(errGeral) {
@@ -1383,16 +1382,93 @@ app.get("/api/escolas", async (req, res) => {
     }
 
     if (rows.length < 2) {
-      return res.json({ rows: [], total: 0, aviso: "Planilha oficial vazia ou permissão pendente (Qualquer pessoa com o link: Leitor)." });
+      return res.json({ rows: [], total: 0, aviso: "Planilha oficial vazia ou permissão pendente." });
     }
     
     const headers = rows[0];
     const dataRows = rows.slice(1).map((r, idx) => {
-      const mapped = mapRowToEscolaObj(headers, r);
+      const rowNum = idx + 2;
       return {
-        id: mapped.codigoInep || (idx + 2) + "__entidades",
+        id: r[5] || (rowNum + "__entidades"),
+        linhaPlanilha: rowNum,
         _tabName: "ENTIDADES",
-        ...mapped
+        municipio: r[0] || "",
+        categoria: r[1] || "",
+        nome: r[2] || "",
+        alunos: r[3] || "0",
+        totalMatricula: r[3] || "0",
+        modalidade: r[4] || "",
+        modalidadeStr: r[4] || "",
+        inep: r[5] || "",
+        codigoInep: r[5] || "",
+        cnpj: r[6] || "",
+        endereco: r[7] || "",
+        bairro: r[8] || "",
+        complemento: r[9] || "",
+        cep: r[10] || "",
+        competencia: r[11] || "",
+        linha: r[12] || "",
+        rodoviaKm: r[13] || "",
+        sitioRio: r[14] || "",
+        plusCode: r[15] || "",
+        super: r[16] || "",
+        codigoSuper: r[16] || "",
+        redesSociais: r[17] || "",
+        telefone: r[18] || "",
+        email: r[19] || "",
+        diretor: r[20] || "",
+        contatoDiretor: r[21] || "",
+        secretario: r[22] || "",
+        contatoSecretario: r[23] || "",
+        localidade: r[24] || "Urbana",
+        salasAula: r[25] || "",
+        salas: r[25] || "",
+        salasAdm: r[26] || "",
+        salaAEE: r[27] || "",
+        banheiros: r[28] || "",
+        patioCoberto: r[29] || "",
+        patio: r[29] || "",
+        auditorio: r[30] || "",
+        refeitorio: r[31] || "",
+        quadra: r[32] || "",
+        cozinha: r[33] || "",
+        areaCoccao: r[33] || "",
+        depositoSeco: r[34] || "",
+        depositoPereciveis: r[35] || "",
+        almoxarifadoAdm: r[36] || "",
+        depositoGeral: r[37] || "",
+        deposito: r[37] || "",
+        biblioteca: r[38] || "",
+        labInfo: r[39] || "",
+        hall: r[40] || "",
+        dml: r[41] || "",
+        quadraCoberta: r[42] || "",
+        quadraPiso: r[43] || "",
+        acessibilidade: r[44] || "",
+        ppci: r[45] || "",
+        fonteAgua: r[46] || "",
+        energiaSolar: r[47] || "",
+        muradaGradeada: r[48] || "",
+        tipoAbertura: r[49] || "",
+        tipoForro: r[50] || "",
+        tipoPiso: r[51] || "",
+        tipoTelhado: r[52] || "",
+        observacoes: r[53] || "",
+        instagram: r[54] || "",
+        facebook: r[55] || "",
+        youtube: r[56] || "",
+        outroSite: r[57] || "",
+        semRedeSocial: r[58] || "",
+        registradorNome: r[59] || "",
+        registradorTelefone: r[60] || "",
+        registradorEmail: r[61] || "",
+        registradorCargo: r[62] || "",
+        codigoLocalizador: r[63] || "",
+        dataHora: r[64] || "",
+        dataHoraRegistro: r[64] || "",
+        usuarioEditor: r[65] || "",
+        ip: r[66] || "",
+        dispositivo: r[67] || ""
       };
     }).filter(e => (e.nome && e.nome.length > 1) || (e.municipio && e.municipio.length > 1));
 
@@ -1407,72 +1483,16 @@ app.post("/api/escolas", async (req, res) => {
   try {
     const targetSheetId = process.env.ESCOLAS_SHEET_ID || process.env.ENTIDADES_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     const data = req.body || {};
-    const newRow = [
-      data.municipio || "",
-      data.categoria || "",
-      data.nome || "",
-      data.totalMatricula || data.alunos || "",
-      data.modalidade || data.modalidadeStr || "",
-      data.codigoInep || data.inep || "",
-      data.cnpj || "",
-      data.endereco || "",
-      data.bairro || "",
-      data.complemento || "",
-      data.cep || "",
-      data.competencia || "",
-      data.super || data.codigoSuper || "",
-      data.redesSociais || "",
-      data.telefone || "",
-      data.email || "",
-      data.diretor || "",
-      data.contatoDiretor || "",
-      data.secretario || "",
-      data.contatoSecretario || "",
-      data.salas || data.salasAula || "",
-      data.salasAdm || "",
-      data.salaAEE || "",
-      data.banheiros || "",
-      data.patioCoberto || data.patio || "",
-      data.auditorio || "",
-      data.refeitorio || "",
-      data.quadra || "",
-      data.localidade || data.localizacao || "Urbana",
-      // Endereço adicional (Rural & Plus Code):
-      data.linha || "",
-      data.rodoviaKm || "",
-      data.sitioRio || "",
-      data.plusCode || "",
-      // Infraestrutura e Espaços (Nova Versão):
-      data.acessibilidade || "",
-      data.cozinha || "",
-      data.depositoSeco || "",
-      data.depositoPereciveis || "",
-      data.almoxarifadoAdm || "",
-      data.depositoGeral || data.deposito || "",
-      data.biblioteca || "",
-      data.dml || "",
-      data.quadraCoberta || "",
-      data.quadraPiso || "",
-      data.labInfo || "",
-      data.hall || "",
-      data.ppci || "",
-      data.fonteAgua || "",
-      data.energiaSolar || "",
-      data.tipoAbertura || "",
-      data.tipoForro || "",
-      data.tipoPiso || "",
-      data.tipoTelhado || "",
-      data.muradaGradeada || ""
-    ];
+    const newRow = mapDataToOfficialRow(data, [], req);
 
     await sheets.spreadsheets.values.append({
       spreadsheetId: targetSheetId,
-      range: "'ENTIDADES'!A:AZ",
+      range: "'ENTIDADES'!A:BP",
       valueInputOption: "USER_ENTERED",
       insertDataOption: "INSERT_ROWS",
       requestBody: { values: [newRow] }
     });
-    res.json({ sucesso: true, mensagem: "Escola cadastrada com sucesso na planilha oficial." });
+    res.json({ sucesso: true, mensagem: "Escola cadastrada com sucesso na planilha oficial.", codigoLocalizador: newRow[63], dataHora: newRow[64] });
   } catch (error) {
     console.error("Erro ao cadastrar escola na planilha:", error);
     res.status(500).json({ erro: "Erro ao cadastrar na planilha: " + error.message });
@@ -1481,38 +1501,31 @@ app.post("/api/escolas", async (req, res) => {
 
 app.put("/api/escolas/:id", editorOnly, async (req, res) => {
   try {
+    const targetSheetId = process.env.ESCOLAS_SHEET_ID || process.env.ENTIDADES_SHEET_ID || "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
     const rawId = req.params.id;
     const parts = rawId.split("__");
     const rowNumber = Number(parts[0]);
 
     if (!rowNumber || rowNumber < 2) return res.status(400).json({ erro: "Linha inválida." });
 
-    const headerRes = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `escolas!A${rowNumber}:Z${rowNumber}`
+    const existingRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: targetSheetId,
+      range: `'ENTIDADES'!A${rowNumber}:BP${rowNumber}`
     });
-    const existingRow = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
+    const existingRow = (existingRes.data.values && existingRes.data.values[0]) ? existingRes.data.values[0] : [];
 
-    const headerDefRes = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `escolas!A1:Z1`
-    });
-    const headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
-
-    const updatedRow = mapDataToEscolaRow(req.body, headers, existingRow, req.sessao);
-    const lastColumn = columnToLetter(headers.length);
-    const range = `escolas!A${rowNumber}:${lastColumn}${rowNumber}`;
+    const updatedRow = mapDataToOfficialRow(req.body, existingRow, req);
 
     await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range,
+      spreadsheetId: targetSheetId,
+      range: `'ENTIDADES'!A${rowNumber}:BP${rowNumber}`,
       valueInputOption: "USER_ENTERED",
       requestBody: { values: [updatedRow] }
     });
-    res.json({ sucesso: true, mensagem: "Escola atualizada." });
+    res.json({ sucesso: true, mensagem: "Escola atualizada com sucesso na planilha oficial.", codigoLocalizador: updatedRow[63], dataHora: updatedRow[64] });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ erro: "Erro ao atualizar escola." });
+    res.status(500).json({ erro: "Erro ao atualizar escola: " + error.message });
   }
 });
 
@@ -1698,7 +1711,7 @@ function gerarCodigoLocalizador() {
   return `${l}${n}`;
 }
 
-const official64Headers = [
+const official68Headers = [
   "Município",
   "Categoria da entidade",
   "Nome da Escola / Conselho Escolar | prefeitura",
@@ -1762,11 +1775,16 @@ const official64Headers = [
   "Telefone celular registrador",
   "Email registrador",
   "Cargo",
-  "codigo localizador"
+  "codigo localizador",
+  "DATA_HORA",
+  "USUARIO_EDITOR",
+  "IP",
+  "DISPOSITIVO"
 ];
+const official64Headers = official68Headers; // Compatibilidade com referências legadas
 
-function mapDataToOfficial64Row(data, existingRow = []) {
-  const row = new Array(64).fill("");
+function mapDataToOfficialRow(data, existingRow = [], req = null) {
+  const row = new Array(68).fill("");
 
   const getVal = (novo, idx) => {
     if (novo !== undefined && novo !== null && novo !== "") {
@@ -1779,7 +1797,7 @@ function mapDataToOfficial64Row(data, existingRow = []) {
   row[1] = getVal(data.categoria, 1);
   row[2] = getVal(data.nome, 2);
   row[3] = getVal(data.alunos || data.totalMatricula, 3);
-  row[4] = getVal(data.modalidade, 4);
+  row[4] = getVal(data.modalidade || data.modalidadeStr, 4);
   row[5] = getVal(data.inep || data.codigoInep, 5);
   row[6] = getVal(data.cnpj, 6);
   row[7] = getVal(data.endereco, 7);
@@ -1791,7 +1809,7 @@ function mapDataToOfficial64Row(data, existingRow = []) {
   row[13] = getVal(data.rodoviaKm, 13);
   row[14] = getVal(data.sitioRio, 14);
   row[15] = getVal(data.plusCode, 15);
-  row[16] = getVal(data.super, 16);
+  row[16] = getVal(data.super || data.codigoSuper, 16);
   row[17] = getVal(data.redesSociais, 17);
   row[18] = getVal(data.telefone, 18);
   row[19] = getVal(data.email, 19);
@@ -1799,7 +1817,7 @@ function mapDataToOfficial64Row(data, existingRow = []) {
   row[21] = getVal(data.contatoDiretor, 21);
   row[22] = getVal(data.secretario, 22);
   row[23] = getVal(data.contatoSecretario, 23);
-  row[24] = getVal(data.localidade || "Urbana", 24);
+  row[24] = getVal(data.localidade || data.localizacao || "Urbana", 24);
   row[25] = getVal(data.salasAula || data.salas, 25);
   row[26] = getVal(data.salasAdm, 26);
   row[27] = getVal(data.salaAEE, 27);
@@ -1839,19 +1857,55 @@ function mapDataToOfficial64Row(data, existingRow = []) {
   row[61] = getVal(data.registradorEmail, 61);
   row[62] = getVal(data.registradorCargo || data.cargo, 62);
 
-  // Coluna 63 (64ª coluna): codigo localizador (3 letras e 3 números aleatórios não sequenciais em caixa alta)
+  // Coluna 63 (64ª coluna, index 63): codigo localizador
   let codLoc = getVal(data.codigoLocalizador, 63);
   if (!codLoc || codLoc.trim().length < 4) {
     codLoc = gerarCodigoLocalizador();
   }
   row[63] = codLoc.toUpperCase().trim();
 
+  // Coluna 64 (65ª coluna, index 64): DATA_HORA (Data e Hora da edição/registro no fuso de Rondônia)
+  const agoraFormatado = new Date().toLocaleString("pt-BR", { timeZone: "America/Porto_Velho" });
+  row[64] = data.dataHoraRegistro || data.dataHora || agoraFormatado;
+
+  // Coluna 65 (66ª coluna, index 65): USUARIO_EDITOR
+  let editor = "";
+  if (data.registradorNome) {
+    editor = data.registradorCargo ? `${data.registradorNome} (${data.registradorCargo})` : data.registradorNome;
+  } else if (req && req.sessao && req.sessao.nome) {
+    editor = `${req.sessao.nome} (${req.sessao.cargo || req.sessao.setor || 'CAM'})`;
+  } else {
+    editor = getVal(data.usuarioEditor, 65) || "Usuário do Formulário";
+  }
+  row[65] = editor;
+
+  // Coluna 66 (67ª coluna, index 66): IP
+  let ipDetectado = "";
+  if (req) {
+    ipDetectado = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.headers["x-real-ip"] || req.socket?.remoteAddress || req.ip || "";
+  }
+  row[66] = data.ip || ipDetectado || getVal(null, 66);
+
+  // Coluna 67 (68ª coluna, index 67): DISPOSITIVO
+  let dispDetectado = "";
+  if (data.dispositivo) {
+    dispDetectado = data.dispositivo;
+  } else if (req && req.headers && req.headers["user-agent"]) {
+    const ua = req.headers["user-agent"];
+    const os = ua.includes("Windows") ? "Windows" : ua.includes("Android") ? "Android" : ua.includes("iPhone") ? "iPhone (iOS)" : ua.includes("Mac") ? "MacOS" : ua.includes("Linux") ? "Linux" : "Outro";
+    const browser = ua.includes("Chrome") ? "Chrome" : ua.includes("Firefox") ? "Firefox" : ua.includes("Safari") ? "Safari" : ua.includes("Edge") ? "Edge" : "Navegador";
+    dispDetectado = `${browser} / ${os}`;
+  }
+  row[67] = dispDetectado || getVal(null, 67);
+
   return row;
 }
 
+const mapDataToOfficial64Row = mapDataToOfficialRow; // Alias retrocompatível
+
 const DEFAULT_AGENT_EMAIL = "planilha-seduc@gen-lang-client-0043658037.iam.gserviceaccount.com";
 
-// Rota de listagem de entidades da planilha oficial (63 colunas)
+// Rota de listagem de entidades da planilha oficial (68 colunas até BP)
 app.get("/api/entidades", async (req, res) => {
   try {
     const ENTIDADES_SHEET_ID = "1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI";
@@ -1871,7 +1925,7 @@ app.get("/api/entidades", async (req, res) => {
 
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: ENTIDADES_SHEET_ID,
-      range: `'${targetSheetTitle}'!A1:BL`
+      range: `'${targetSheetTitle}'!A1:BP`
     });
 
     const values = response.data.values || [];
@@ -1952,7 +2006,12 @@ app.get("/api/entidades", async (req, res) => {
         registradorTelefone: r[60] || "",
         registradorEmail: r[61] || "",
         registradorCargo: r[62] || "",
-        codigoLocalizador: r[63] || ""
+        codigoLocalizador: r[63] || "",
+        dataHora: r[64] || "",
+        dataHoraRegistro: r[64] || "",
+        usuarioEditor: r[65] || "",
+        ip: r[66] || "",
+        dispositivo: r[67] || ""
       };
     }).filter(e => e.nome && e.nome.trim().length > 0);
 
@@ -1986,31 +2045,23 @@ app.post("/api/entidades", async (req, res) => {
       console.warn("Aviso ao buscar metadados das abas:", errMeta.message);
     }
 
-    // Lê todas as linhas existentes até a coluna BL (coluna 64)
+    // Lê todas as linhas existentes até a coluna BP (68 colunas)
     const existingRes = await sheets.spreadsheets.values.get({
       spreadsheetId: ENTIDADES_SHEET_ID,
-      range: `'${targetSheetTitle}'!A:BL`
+      range: `'${targetSheetTitle}'!A:BP`
     });
     const allRows = existingRes.data.values || [];
 
-    // Se estiver sem cabeçalho, cria o cabeçalho oficial de 64 colunas
-    if (allRows.length === 0 || allRows[0].length === 0) {
+    // Se estiver sem cabeçalho ou com cabeçalho desatualizado (< 68 colunas), atualiza A1:BP1
+    if (allRows.length === 0 || allRows[0].length === 0 || allRows[0].length < official68Headers.length) {
       await sheets.spreadsheets.values.update({
         spreadsheetId: ENTIDADES_SHEET_ID,
-        range: `'${targetSheetTitle}'!A1:BL1`,
+        range: `'${targetSheetTitle}'!A1:BP1`,
         valueInputOption: "USER_ENTERED",
-        requestBody: { values: [official64Headers] }
+        requestBody: { values: [official68Headers] }
       });
-      allRows.push(official64Headers);
-    } else if (allRows[0].length < 64) {
-      // Atualiza linha de cabeçalho para garantir todas as 64 colunas até BL1
-      await sheets.spreadsheets.values.update({
-        spreadsheetId: ENTIDADES_SHEET_ID,
-        range: `'${targetSheetTitle}'!A1:BL1`,
-        valueInputOption: "USER_ENTERED",
-        requestBody: { values: [official64Headers] }
-      });
-      allRows[0] = official64Headers;
+      if (allRows.length === 0) allRows.push(official68Headers);
+      else allRows[0] = official68Headers;
     }
 
     // Identificação para UPDATE vs INSERT:
@@ -2022,80 +2073,107 @@ app.post("/api/entidades", async (req, res) => {
     let existingRowIndex = -1; // 0-based index no array allRows
     let existingRowData = null;
 
-    // Procura registro existente da linha 2 em diante (índice 1 em diante)
-    for (let i = 1; i < allRows.length; i++) {
-      const r = allRows[i] || [];
-      const rowInep = (r[5] || "").toString().replace(/\D/g, "");
-      const rowCnpj = (r[6] || "").toString().replace(/\D/g, "");
-      const rowNome = (r[2] || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      const rowMun = (r[0] || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-      // 1. Match forte por INEP (se tiver 4 ou mais dígitos)
-      if (inepInput.length >= 4 && rowInep === inepInput) {
-        existingRowIndex = i;
-        existingRowData = r;
-        break;
-      }
-
-      // 2. Match por CNPJ (se tiver 14 dígitos e bater)
-      if (cnpjInput.length === 14 && rowCnpj === cnpjInput) {
-        existingRowIndex = i;
-        existingRowData = r;
-        break;
-      }
-
-      // 3. Match por Nome da Escola + Município
-      if (nomeNorm.length >= 3 && rowNome === nomeNorm && (munNorm.length === 0 || rowMun === munNorm)) {
-        existingRowIndex = i;
-        existingRowData = r;
-        break;
+    // 0. Prioridade máxima: Linha exata informada pelo formulário de edição
+    const rowNumExplicit = Number(data.linhaPlanilha);
+    if (rowNumExplicit >= 2 && rowNumExplicit <= allRows.length) {
+      const candidate = allRows[rowNumExplicit - 1] || [];
+      const candInep = (candidate[5] || "").toString().replace(/\D/g, "");
+      const candNome = (candidate[2] || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      // Confirma que a linha realmente corresponde à escola antes de sobrescrever
+      if ((inepInput && candInep === inepInput) || (nomeNorm && (candNome.includes(nomeNorm) || nomeNorm.includes(candNome)))) {
+        existingRowIndex = rowNumExplicit - 1;
+        existingRowData = candidate;
       }
     }
 
-    const agoraDataHora = new Date().toLocaleString("pt-BR", { timeZone: "America/Porto_Velho" });
+    // Procura registro existente caso não tenha achado pela linha direta
+    if (existingRowIndex === -1) {
+      for (let i = 1; i < allRows.length; i++) {
+        const r = allRows[i] || [];
+        const rowInep = (r[5] || "").toString().replace(/\D/g, "");
+        const rowCnpj = (r[6] || "").toString().replace(/\D/g, "");
+        const rowNome = (r[2] || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const rowMun = (r[0] || "").toString().trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+        // 1. Match forte por INEP (se tiver 4 ou mais dígitos)
+        if (inepInput.length >= 4 && rowInep === inepInput) {
+          existingRowIndex = i;
+          existingRowData = r;
+          break;
+        }
+
+        // 2. Match por CNPJ (se tiver 14 dígitos e bater)
+        if (cnpjInput.length === 14 && rowCnpj === cnpjInput) {
+          existingRowIndex = i;
+          existingRowData = r;
+          break;
+        }
+
+        // 3. Match por Nome da Escola + Município
+        if (nomeNorm.length >= 3 && rowNome === nomeNorm && (munNorm.length === 0 || rowMun === munNorm)) {
+          existingRowIndex = i;
+          existingRowData = r;
+          break;
+        }
+      }
+    }
 
     if (existingRowIndex >= 1) {
-      // É EDIÇÃO! Deve gravar na MESMA LINHA que já está gravada.
+      // É EDIÇÃO! Grava exatamente na mesma linha existente, mantendo integridade
       const rowNumber = existingRowIndex + 1; // 1-indexed na planilha
-      const updatedRow = mapDataToOfficial64Row(data, existingRowData);
+      const updatedRow = mapDataToOfficialRow(data, existingRowData, req);
       const codigoLocalizadorFinal = updatedRow[63];
+      const dataHoraFinal = updatedRow[64];
+      const usuarioFinal = updatedRow[65];
 
       await sheets.spreadsheets.values.update({
         spreadsheetId: ENTIDADES_SHEET_ID,
-        range: `'${targetSheetTitle}'!A${rowNumber}:BL${rowNumber}`,
+        range: `'${targetSheetTitle}'!A${rowNumber}:BP${rowNumber}`,
         valueInputOption: "USER_ENTERED",
         requestBody: { values: [updatedRow] }
       });
 
-      console.log(`✅ Entidade ATUALIZADA com sucesso na linha ${rowNumber} da planilha oficial "${targetSheetTitle}": ${data.nome} (INEP: ${inepInput}) | Localizador: ${codigoLocalizadorFinal}`);
+      console.log(`✅ Entidade ATUALIZADA com sucesso na linha ${rowNumber} da planilha oficial "${targetSheetTitle}": ${data.nome} (INEP: ${inepInput}) | Localizador: ${codigoLocalizadorFinal} | Data/Hora: ${dataHoraFinal}`);
       return res.json({
         sucesso: true,
         acao: "atualizado",
         linha: rowNumber,
         codigoLocalizador: codigoLocalizadorFinal,
-        dataHora: agoraDataHora,
+        dataHora: dataHoraFinal,
+        usuarioEditor: usuarioFinal,
         mensagem: `Entidade "${data.nome}" atualizada com sucesso na linha ${rowNumber}!`,
         aba: targetSheetTitle
       });
     } else {
-      // É CADASTRO NOVO! Insere nova linha no final.
-      const newRow = mapDataToOfficial64Row(data, []);
+      // É CADASTRO NOVO! Sempre começa pela Coluna A ('Município') e anexa linha limpa
+      const newRow = mapDataToOfficialRow(data, [], req);
       const codigoLocalizadorFinal = newRow[63];
+      const dataHoraFinal = newRow[64];
+      const usuarioFinal = newRow[65];
 
-      await sheets.spreadsheets.values.append({
+      const appendRes = await sheets.spreadsheets.values.append({
         spreadsheetId: ENTIDADES_SHEET_ID,
-        range: `'${targetSheetTitle}'!A:BL`,
+        range: `'${targetSheetTitle}'!A:BP`,
         valueInputOption: "USER_ENTERED",
         insertDataOption: "INSERT_ROWS",
         requestBody: { values: [newRow] }
       });
 
-      console.log(`✅ Novo cadastro de entidade inserido na planilha oficial "${targetSheetTitle}": ${data.nome} (${data.municipio}) | Localizador: ${codigoLocalizadorFinal}`);
+      let insertedRow = null;
+      try {
+        const updatedRange = appendRes.data?.updates?.updatedRange || "";
+        const m = updatedRange.match(/!A(\d+):/);
+        if (m) insertedRow = Number(m[1]);
+      } catch(e) {}
+
+      console.log(`✅ Novo cadastro de entidade inserido na coluna A da planilha oficial "${targetSheetTitle}": ${data.nome} (${data.municipio}) | Linha: ${insertedRow || 'final'} | Localizador: ${codigoLocalizadorFinal}`);
       return res.json({
         sucesso: true,
         acao: "inserido",
+        linha: insertedRow,
         codigoLocalizador: codigoLocalizadorFinal,
-        dataHora: agoraDataHora,
+        dataHora: dataHoraFinal,
+        usuarioEditor: usuarioFinal,
         mensagem: `Nova entidade "${data.nome}" cadastrada com sucesso!`,
         aba: targetSheetTitle
       });

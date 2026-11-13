@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -1103,6 +1103,7 @@
 
         <form id="form-cadastro" novalidate onsubmit="salvarEntidade(event)">
           <input type="hidden" id="entidade-id">
+          <input type="hidden" id="entidade-linha-planilha">
           <input type="hidden" id="entidade-categoria" value="Conselho Escolar">
           <input type="hidden" id="entidade-parceria" value="Fomento (Termo de Fomento - F)">
 
@@ -1520,6 +1521,14 @@
             <div class="section-header">
               <span class="section-title"><span class="tab-num">4</span> Infraestrutura & Espaços</span>
               <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 4 de 4</span>
+            </div>
+
+            <!-- BARRA DE AJUDA DIDÁTICA SISCAM (PREENCHIMENTO RÁPIDO) -->
+            <div style="background: rgba(30, 41, 59, 0.85); border: 1px dashed rgba(56, 189, 248, 0.4); border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+              <span style="font-size: 12px; color: #cbd5e1;">💡 <strong>Dica SiSCAM:</strong> Se a unidade não possui algum dos 29 itens abaixo, você pode preencher os pendentes automaticamente com 1 clique:</span>
+              <button type="button" onclick="preencherInfraNaoSeAplica()" class="btn btn-sm" style="background: linear-gradient(135deg, rgba(56,189,248,0.25), rgba(14,165,233,0.35)); border: 1px solid #38bdf8; color: #38bdf8; font-weight: 800; padding: 6px 12px; border-radius: 6px; font-size: 11.5px; cursor: pointer;">
+                ⚡ Preencher Pendentes com "Não / Padrão"
+              </button>
             </div>
 
             <!-- LINHA 1: SALAS, SANITÁRIOS & ACESSIBILIDADE (1 A 4) -->
@@ -3748,6 +3757,7 @@
         };
 
         setVal('entidade-id', esc.id);
+        setVal('entidade-linha-planilha', esc.linhaPlanilha || '');
         setVal('entidade-nome', esc.nome);
         setVal('entidade-municipio', esc.municipio || '');
         setVal('entidade-cnpj', esc.cnpj);
@@ -3832,6 +3842,7 @@
     function duplicarEscola(jsonEncoded) {
       editarEscola(jsonEncoded);
       document.getElementById('entidade-id').value = '';
+      const elLinha = document.getElementById('entidade-linha-planilha'); if (elLinha) elLinha.value = '';
       const nomeEl = document.getElementById('entidade-nome');
       if (nomeEl) nomeEl.value = nomeEl.value + ' (Cópia)';
       const inepEl = document.getElementById('entidade-inep');
@@ -3860,7 +3871,7 @@
     // Limpar Formulário
     function limparFormulario() {
       const ids = [
-        'entidade-id', 'entidade-nome', 'entidade-cnpj', 'entidade-inep', 'entidade-alunos',
+        'entidade-id', 'entidade-linha-planilha', 'entidade-nome', 'entidade-cnpj', 'entidade-inep', 'entidade-alunos',
         'entidade-diretor', 'entidade-contato-diretor', 'entidade-telefone', 'entidade-email',
         'entidade-secretario', 'entidade-contato-secretario', 'entidade-redes',
         'entidade-endereco', 'entidade-bairro', 'entidade-complemento', 'entidade-cep',
@@ -3912,6 +3923,53 @@
       ativarAba(1);
       document.getElementById('entidade-nome')?.focus();
     }
+
+    // Preenchimento Didático Rápido de Infraestrutura (Padrão Não / Não se Aplica)
+    function preencherInfraNaoSeAplica() {
+      const setSeVazio = (id, val) => {
+        const el = document.getElementById(id);
+        if (el && (!el.value || el.value === '-' || el.value.trim() === '')) {
+          el.value = val;
+          el.style.borderColor = '';
+        }
+      };
+
+      setSeVazio('entidade-salas-aula', '1');
+      setSeVazio('entidade-salas-adm', '1');
+      setSeVazio('entidade-banheiros', '1');
+      setSeVazio('entidade-acessibilidade', 'Não');
+      setSeVazio('entidade-sala-aee', 'Não');
+      setSeVazio('entidade-auditorio', 'Não');
+      setSeVazio('entidade-biblioteca', 'Não');
+      setSeVazio('entidade-lab-info', 'Não');
+      setSeVazio('entidade-hall', 'Não');
+      setSeVazio('entidade-patio-coberto', 'Não');
+      setSeVazio('entidade-refeitorio', 'Não');
+      setSeVazio('entidade-cozinha', 'Não');
+      setSeVazio('entidade-deposito-seco', 'Não');
+      setSeVazio('entidade-deposito-pereciveis', 'Não');
+      setSeVazio('entidade-almoxarifado-adm', 'Não');
+      setSeVazio('entidade-deposito', 'Não');
+      setSeVazio('entidade-dml', 'Não');
+      setSeVazio('entidade-quadra', 'Não');
+      if (typeof aoMudarQuadraPoliesportiva === 'function') aoMudarQuadraPoliesportiva('Não');
+      setSeVazio('entidade-quadra-coberta', 'Não se aplica');
+      setSeVazio('entidade-quadra-piso', 'Não se aplica');
+      setSeVazio('entidade-murada-gradeada', 'Escola Murada');
+      setSeVazio('entidade-ppci', 'Não');
+      setSeVazio('entidade-spda', 'Não');
+      setSeVazio('entidade-energia-solar', 'Não');
+      setSeVazio('entidade-fonte-agua', 'Rede Pública');
+      setSeVazio('entidade-tipo-abertura', 'Madeira');
+      setSeVazio('entidade-tipo-forro', 'PVC');
+      setSeVazio('entidade-tipo-piso', 'Cerâmica / Esmaltado');
+      setSeVazio('entidade-tipo-telhado', 'Telhas de Fibrocimento');
+      setSeVazio('entidade-observacoes', 'Sem observações.');
+
+      if (typeof atualizarTodasDescricoesInfra === 'function') atualizarTodasDescricoesInfra();
+      if (typeof showToast === 'function') showToast('Campos pendentes preenchidos com valores padrão!');
+    }
+    window.preencherInfraNaoSeAplica = preencherInfraNaoSeAplica;
 
     // Gerador de Código Localizador: 3 letras e 3 números aleatórios em caixa alta (não sequenciais)
     function gerarCodigoLocalizador() {
@@ -4086,17 +4144,24 @@
 
       if (vaziosInfra.length > 0) {
         ativarAba(4);
-        const listaMsg = vaziosInfra.map(c => `• ${c}`).join('\n');
-        await exibirMensagemSiSCAM(
-          `Na Aba 4 (Infraestrutura & Espaços), todos os 29 campos são obrigatórios!\n\nForam encontrados ${vaziosInfra.length} campo(s) não preenchido(s):\n\n${listaMsg}\n\nPor favor, preencha todos os campos para salvar.`,
-          {
-            titulo: '∴ SiSCAM ∴',
-            subtitulo: 'Campos Obrigatórios de Infraestrutura',
-            tipo: 'requerido',
-            focoElemento: primeiroVazioEl
-          }
+        const listaAmostra = vaziosInfra.slice(0, 6).map(c => `• ${c}`).join('\n') + (vaziosInfra.length > 6 ? `\n... e mais ${vaziosInfra.length - 6} item(ns)` : '');
+        const autoPreencher = confirm(
+          `Atenção: Na Aba 4 (Infraestrutura & Espaços), constam ${vaziosInfra.length} campo(s) pendente(s):\n\n${listaAmostra}\n\n💡 Dica Didática SiSCAM:\nDeseja que o sistema preencha os campos pendentes com os padrões oficiais ("Não" / "Não se aplica") para você salvar agora?\n\n[OK] Sim, preencher padrão e salvar agora\n[Cancelar] Não, quero preencher manualmente`
         );
-        return;
+        if (autoPreencher) {
+          preencherInfraNaoSeAplica();
+        } else {
+          await exibirMensagemSiSCAM(
+            `Por favor, complete os campos destacados na Aba 4 (Infraestrutura) para prosseguir com o salvamento.`,
+            {
+              titulo: '∴ SiSCAM ∴',
+              subtitulo: 'Campos Pendentes de Infraestrutura',
+              tipo: 'requerido',
+              focoElemento: primeiroVazioEl
+            }
+          );
+          return;
+        }
       }
 
       // Salva Informante Padrão se checkbox ativo
@@ -4209,6 +4274,8 @@
         tipoPiso: getVal('entidade-tipo-piso'),
         tipoTelhado: getVal('entidade-tipo-telhado'),
         observacoes: getVal('entidade-observacoes'),
+        linhaPlanilha: getVal('entidade-linha-planilha') || '',
+        dispositivo: (navigator.userAgentData?.platform || navigator.platform || 'Dispositivo') + ' • ' + (navigator.userAgent.includes('Mobile') ? 'Celular/Tablet' : 'Computador'),
         codigoLocalizador: (_escolaAtual && (_escolaAtual.codigoLocalizador || _escolaAtual.localizador)) || gerarCodigoLocalizador(),
         dataHoraRegistro: new Date().toLocaleString('pt-BR', { timeZone: 'America/Porto_Velho', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) || new Date().toLocaleString('pt-BR')
       };
@@ -4236,7 +4303,7 @@
       const txtOriginalBtn = btnSalvar ? btnSalvar.innerHTML : '💾 Salvar';
       if (btnSalvar) {
         btnSalvar.disabled = true;
-        btnSalvar.innerHTML = '⏳ Gravando na Planilha...';
+        btnSalvar.innerHTML = '⏳ Sincronizando com a Planilha Oficial (SEDUC)...';
       }
 
       let gravouPlanilha = false;
@@ -4250,7 +4317,7 @@
           : 'https://seduc-backend.onrender.com';
         
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 45000);
+        const timeoutId = setTimeout(() => controller.abort(), 90000);
 
         const resp = await fetch(baseApi + '/api/entidades', {
           method: 'POST',
@@ -4297,13 +4364,42 @@
         }
       }
 
+            if (!gravouPlanilha) {
+        await exibirMensagemSiSCAM(`
+          <div style="text-align: center; margin-bottom: 14px;">
+            <div style="font-size: 15px; font-weight: 900; color: #ef4444; text-transform: uppercase; letter-spacing: 0.5px;">
+              ⚠️ Falha no Envio à Planilha Oficial
+            </div>
+            <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">
+              Não foi possível confirmar o salvamento no Google Sheets
+            </div>
+          </div>
+          <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 8px; padding: 14px 16px; font-size: 12.5px; line-height: 1.8; margin-bottom: 12px;">
+            <div>• <strong style="color: #f8fafc;">Escola / Entidade:</strong> <span style="color: #fef08a; font-weight: 700;">${nome}</span></div>
+            <div>• <strong style="color: #f8fafc;">Status:</strong> <span style="color: #fca5a5; font-weight: 700;">Pendente de Sincronização</span></div>
+            <div>• <strong style="color: #f8fafc;">Motivo:</strong> <span style="color: #fef08a;">${detalheErro || 'Tempo de resposta excedido ou conexão instável.'}</span></div>
+            <div style="margin-top: 10px; padding: 10px; background: rgba(30, 41, 59, 0.7); border-radius: 6px; color: #cbd5e1; font-size: 11.5px;">
+              🔒 <strong>Seus dados permanecem intactos neste formulário!</strong> Nada foi perdido. Por favor, aguarde alguns instantes e clique no botão <strong>Salvar</strong> novamente para reenviar.
+            </div>
+          </div>
+        `, {
+          titulo: '∴ SiSCAM ∴',
+          subtitulo: 'Falha de Sincronização Remota',
+          tipo: 'erro',
+          btnTexto: 'Revisar e Tentar Novamente'
+        });
+        return; // Não limpa o formulário!
+      }
+
+      const txtAcao = acaoRealizada === 'atualizado' ? `Registro atualizado na Linha ${linhaPlanilhaGravada || ''}` : `Novo registro inserido na Coluna A da Planilha Oficial (Linha ${linhaPlanilhaGravada || 'final'})`;
+
       await exibirMensagemSiSCAM(`
         <div style="text-align: center; margin-bottom: 14px;">
           <div style="font-size: 15px; font-weight: 900; color: #34d399; text-transform: uppercase; letter-spacing: 0.5px;">
-            ✅ Registro Salvo com Sucesso!
+            ✅ Registro Salvo com Sucesso na Planilha Oficial!
           </div>
           <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">
-            Dados registrados e validados com êxito no sistema estadual
+            ${txtAcao}
           </div>
         </div>
         <div style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; padding: 14px 16px; font-size: 12.5px; line-height: 1.8; margin-bottom: 12px;">
@@ -4322,12 +4418,12 @@
               ${codLocalizadorAtual}
             </span>
             <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 11px; color: #cbd5e1;">
-              🕒 Registrado em: <strong style="color: #f8fafc;">${dataHoraFormatada}</strong>
+              🕒 Gravado na Planilha em: <strong style="color: #f8fafc;">${dataHoraFormatada}</strong>
             </div>
           </div>
         </div>
         <div style="color: #94a3b8; font-size: 12px; text-align: center;">
-          ⚡ Os dados desta unidade já estão disponíveis para consulta e relatórios oficiais.
+          ⚡ Os dados desta unidade já constam na planilha oficial (Colunas A a BP) e estão disponíveis para consulta estadual.
         </div>
       `, {
         titulo: '∴ SiSCAM ∴',
@@ -4337,6 +4433,11 @@
       });
 
       limparFormulario();
+      try {
+        if (typeof carregarEscolasDoMunicipio === 'function') {
+          setTimeout(() => { carregarEscolasDoMunicipio(); }, 600);
+        }
+      } catch(e) {}
     }
 
     // ============================================================

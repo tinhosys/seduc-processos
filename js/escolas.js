@@ -1,4 +1,4 @@
-
+﻿
 // ============================================================
 // SEDUC - Formulário Individualizado de Escola (Página & Modal)
 // ============================================================
@@ -283,19 +283,26 @@ function _parseRow(row) {
   const v1 = val(1).toUpperCase();
   const v2 = val(2).toUpperCase();
 
-  // Pula linhas de cabeçalho
-  if (v0.includes('MUNICÍPIO') || v0.includes('MUNICIPIO') || v1.includes('CATEGORIA') || v2.includes('NOME DA ESCOLA') || v2.includes('ENTIDADE') || v2.includes('PREFEITURA')) {
+  // Pula linhas de cabecalho
+  if (v0.includes('MUNIC') || v1.includes('CATEGORIA') || v2.includes('NOME DA ESCOLA') || v2.includes('ENTIDADE') || v2.includes('PREFEITURA')) {
     return null;
   }
 
+  // Layout Oficial 68 colunas (Aba ENTIDADES da planilha oficial 1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI):
+  // Col 0: Municipio | Col 1: Categoria | Col 2: Nome | Col 3: No Alunos | Col 4: Modalidade | Col 5: INEP | Col 6: CNPJ...
   let municipio = '', categoria = '', nome = '', alunos = 0, modalidadeStr = '', codigoInep = '',
-      cnpj = '', endereco = '', bairro = '', complemento = '', cep = '', comp = '', superV = '',
-      redesSociais = '', telefone = '', email = '', diretor = '', contatoDiretor = '',
-      secretario = '', contatoSecretario = '', salas = 0, salasAdm = 0, salaAEE = '',
-      banheiros = '', patio = '', auditorio = '', refeitorio = '', quadra = '', localidade = '';
+      cnpj = '', endereco = '', bairro = '', complemento = '', cep = '', comp = '',
+      linha = '', rodoviaKm = '', sitioRio = '', plusCode = '', superV = '', redesSociais = '',
+      telefone = '', email = '', diretor = '', contatoDiretor = '', secretario = '', contatoSecretario = '',
+      localidade = 'Urbana', salas = 0, salasAdm = 0, salaAEE = '', banheiros = '', patio = '',
+      auditorio = '', refeitorio = '', quadra = '', cozinha = '', depositoSeco = '', depositoPereciveis = '',
+      almoxarifadoAdm = '', depositoGeral = '', biblioteca = '', labInfo = '', hall = '', dml = '',
+      quadraCoberta = '', quadraPiso = '', acessibilidade = '', ppci = '', fonteAgua = '', energiaSolar = '',
+      muradaGradeada = '', tipoAbertura = '', tipoForro = '', tipoPiso = '', tipoTelhado = '', observacoes = '',
+      instagram = '', facebook = '', youtube = '', outroSite = '', semRedeSocial = '',
+      registradorNome = '', registradorTelefone = '', registradorEmail = '', registradorCargo = '',
+      codigoLocalizador = '', dataHoraRegistro = '', usuarioEditor = '', ip = '', dispositivo = '';
 
-  // Layout Oficial 29 colunas (Imagem 3 da planilha oficial 1kOlpcEzduP_nCSvKo0DYNBnABYV_GWXBEN8Sfu1mCpI):
-  // Col 0: Município | Col 1: Categoria | Col 2: Nome | Col 3: Nº Alunos | Col 4: Modalidade | Col 5: INEP | Col 6: CNPJ...
   if (val(2) && !/^\d+$/.test(val(2))) {
     municipio         = val(0);
     categoria         = val(1);
@@ -303,102 +310,81 @@ function _parseRow(row) {
     alunos            = parseInt(val(3).replace(/[^\d]/g, '')) || 0;
     modalidadeStr     = val(4);
     codigoInep        = val(5);
-
-    // Validação estrita do CNPJ (Evita que endereço como 'ALMIRANTE BARROSO - 986' vá para o CNPJ - Imagem 2)
-    const cnpjCol6 = _limparEValidarCNPJ(val(6));
-    if (cnpjCol6) {
-      cnpj = cnpjCol6;
-      endereco = val(7);
-      bairro = val(8);
-      complemento = val(9);
-    } else {
-      let cFound = '';
-      for (let c = 5; c <= 10; c++) {
-        const cTest = _limparEValidarCNPJ(val(c));
-        if (cTest) { cFound = cTest; break; }
-      }
-      cnpj = cFound;
-      if (val(6) && /[a-zA-Z]/.test(val(6))) {
-        endereco = val(6);
-        bairro = val(7) || val(8);
-        complemento = val(8) || val(9);
-      } else {
-        endereco = val(7);
-        bairro = val(8);
-        complemento = val(9);
-      }
-    }
+    cnpj              = _limparEValidarCNPJ(val(6));
+    endereco          = val(7);
+    bairro            = val(8);
+    complemento       = val(9);
     cep               = val(10);
     comp              = val(11);
-    superV            = val(12);
-    redesSociais      = val(13);
-    telefone          = val(14);
-    email             = val(15);
-    diretor           = val(16);
-    contatoDiretor    = val(17);
-    secretario        = val(18);
-    contatoSecretario = val(19);
-    salas             = parseInt(val(20).replace(/[^\d]/g, '')) || 0;
-    salasAdm          = parseInt(val(21).replace(/[^\d]/g, '')) || 0;
-    salaAEE           = val(22);
-    banheiros         = val(23);
-    patio             = val(24);
-    auditorio         = val(25);
-    refeitorio        = val(26);
-    quadra            = val(27);
-    localidade        = val(28);
+    linha             = val(12);
+    rodoviaKm         = val(13);
+    sitioRio          = val(14);
+    plusCode          = val(15);
+    superV            = val(16);
+    redesSociais      = val(17);
+    telefone          = val(18);
+    email             = val(19);
+    diretor           = val(20);
+    contatoDiretor    = val(21);
+    secretario        = val(22);
+    contatoSecretario = val(23);
+    localidade        = val(24) || 'Urbana';
+    salas             = parseInt(val(25).replace(/[^\d]/g, '')) || 0;
+    salasAdm          = parseInt(val(26).replace(/[^\d]/g, '')) || 0;
+    salaAEE           = val(27);
+    banheiros         = val(28);
+    patio             = val(29);
+    auditorio         = val(30);
+    refeitorio        = val(31);
+    quadra            = val(32);
+    cozinha           = val(33);
+    depositoSeco      = val(34);
+    depositoPereciveis= val(35);
+    almoxarifadoAdm   = val(36);
+    depositoGeral     = val(37);
+    biblioteca        = val(38);
+    labInfo           = val(39);
+    hall              = val(40);
+    dml               = val(41);
+    quadraCoberta     = val(42);
+    quadraPiso        = val(43);
+    acessibilidade    = val(44);
+    ppci              = val(45);
+    fonteAgua         = val(46);
+    energiaSolar      = val(47);
+    muradaGradeada    = val(48);
+    tipoAbertura      = val(49);
+    tipoForro         = val(50);
+    tipoPiso          = val(51);
+    tipoTelhado       = val(52);
+    observacoes       = val(53);
+    instagram         = val(54);
+    facebook          = val(55);
+    youtube           = val(56);
+    outroSite         = val(57);
+    semRedeSocial     = val(58);
+    registradorNome   = val(59);
+    registradorTelefone = val(60);
+    registradorEmail  = val(61);
+    registradorCargo  = val(62);
+    codigoLocalizador = val(63);
+    dataHoraRegistro  = val(64);
+    usuarioEditor     = val(65);
+    ip                = val(66);
+    dispositivo       = val(67);
   } else if (val(1) && !/^\d+$/.test(val(1))) {
-    // Layout legado (Nome na coluna 1)
+    // Layout legado de contingencia
     municipio         = val(0);
-    categoria         = '';
     nome              = val(1);
     alunos            = parseInt(val(2).replace(/[^\d]/g, '')) || 0;
     modalidadeStr     = val(3);
     codigoInep        = val(4);
-    cnpj              = '';
     endereco          = val(5);
     bairro            = val(6);
-    complemento       = val(7);
-    cep               = val(8);
-    comp              = val(9);
-    superV            = val(10);
-    redesSociais      = val(11);
-    telefone          = val(12);
-    email             = val(13);
-    diretor           = val(14);
-    contatoDiretor    = val(15);
-    secretario        = val(16);
-    contatoSecretario = val(17);
-    salas             = parseInt(val(18).replace(/[^\d]/g, '')) || 0;
-    localidade        = val(26);
+    cep               = val(7);
   } else {
     return null;
   }
-
-  // Colunas estendidas (Nova Versão)
-  const linha              = val(29);
-  const rodoviaKm          = val(30);
-  const sitioRio           = val(31);
-  const plusCode           = val(32);
-  const acessibilidade     = val(33);
-  const cozinha            = val(34);
-  const depositoSeco       = val(35);
-  const depositoPereciveis = val(36);
-  const almoxarifadoAdm    = val(37);
-  const depositoGeral      = val(38);
-  const biblioteca         = val(39);
-  const dml                = val(40);
-  const quadraCoberta      = val(41);
-  const quadraPiso         = val(42);
-  const labInfo            = val(43);
-  const hall               = val(44);
-  const ppci               = val(45);
-  const fonteAgua          = val(46);
-  const energiaSolar       = val(47);
-  const tipoAbertura       = val(48);
-  const tipoForro          = val(49);
-  const tipoPiso           = val(50);
-  const muradaGradeada     = val(51);
 
   if (!nome || nome.length < 2) return null;
 
@@ -475,7 +461,25 @@ function _parseRow(row) {
     tipoAbertura: tipoAbertura,
     tipoForro: tipoForro,
     tipoPiso: tipoPiso,
+    tipoTelhado: tipoTelhado,
+    observacoes: observacoes,
     muradaGradeada: muradaGradeada,
+    fechamentoPerimetro: muradaGradeada,
+    instagram: instagram,
+    facebook: facebook,
+    youtube: youtube,
+    outroSite: outroSite,
+    semRedeSocial: semRedeSocial,
+    registradorNome: registradorNome,
+    registradorTelefone: registradorTelefone,
+    registradorEmail: registradorEmail,
+    registradorCargo: registradorCargo,
+    codigoLocalizador: codigoLocalizador,
+    dataHoraRegistro: dataHoraRegistro,
+    dataHora: dataHoraRegistro,
+    usuarioEditor: usuarioEditor,
+    ip: ip,
+    dispositivo: dispositivo,
     localidade: localidade || 'Urbana',
     localizacao: localidade || 'Urbana',
     modalidades: modalidadeStr ? [{ modalidade: modalidadeStr, alunos: alunos }] : []
