@@ -1,4 +1,4 @@
-
+﻿
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 // ===== HELPER DA ESCALA DE PROCESSO (0% a 100%, 21 ETAPAS E SETORES CAM / CCTE-GMAC) =====
 const ESCALA_ETAPAS = [
@@ -891,7 +891,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.141';
+window.APP_VERSION = 'v1.142';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴

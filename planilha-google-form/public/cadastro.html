@@ -603,6 +603,46 @@
       transform: translateY(-1px);
       box-shadow: 0 6px 18px rgba(16, 185, 129, 0.6);
     }
+        .btn-salvar.btn-salvar-concluido {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+      color: #ffffff !important;
+      border: 1.5px solid #34d399 !important;
+      box-shadow: 0 0 16px rgba(16, 185, 129, 0.85), 0 0 28px rgba(52, 211, 153, 0.45) !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.5px !important;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5) !important;
+      animation: pulse-sucesso-siscam 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulse-sucesso-siscam {
+      0%, 100% {
+        box-shadow: 0 0 14px rgba(16, 185, 129, 0.7);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 24px rgba(52, 211, 153, 0.95);
+        transform: scale(1.02);
+      }
+    }
+
+    .badge-status-salvar {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      animation: fadeIn 0.3s ease-out;
+    }
+    .badge-status-salvar.sucesso {
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid #10b981;
+      color: #34d399;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+    }
+
     .btn-salvar:disabled {
       background: #475569;
       cursor: not-allowed;
@@ -998,7 +1038,7 @@
     <div class="top-header-row">
       <div style="min-width: 130px; display:flex; align-items:center;">
         <div class="siscam-badge-delta" style="display:inline-flex; align-items:center; gap:6px; color:#38bdf8; font-size:12.5px; font-weight:900; letter-spacing:1.2px; background:rgba(56,189,248,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.35); text-shadow:0 0 8px rgba(56,189,248,0.7); font-family:'Segoe UI',monospace,sans-serif;" title="Sistema Integrado CAM - SEDUC/RO">
-          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.141 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
+          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.142 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
         </div>
       </div>
       <!-- NOME DA ENTIDADE E MUNICÍPIOS VINCULADOS: 2 LINHAS (IMAGEM 5) -->
@@ -1025,7 +1065,7 @@
            target="_blank" rel="noopener noreferrer"
            title="Fale conosco no WhatsApp: (69) 99906-4881">
           <img id="img-banner-lateral"
-               src="img/banner-cadastre-escolas-vertical.png?v=v1.141"
+               src="img/banner-cadastre-escolas-vertical.png?v=v1.142"
                alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
                class="sidebar-banner-img">
         </a>
@@ -1858,7 +1898,8 @@
               ⚡ Cadastros salvos são registrados e sincronizados instantaneamente com o sistema estadual.
             </div>
             <div class="form-actions-buttons">
-              <button type="button" onclick="imprimirRelatorioLista()" class="btn-form-action btn-imprimir-lista" id="btn-imprimir-lista" title="Emitir Relatório Oficial Consolidado das Escolas Sincronizadas aos Parâmetros">
+              <span id="badge-status-salvar" class="badge-status-salvar sucesso" style="display: none;"></span>
+              <button type="button" onclick="abrirModalEscolhaImpressao()" class="btn-form-action btn-imprimir-lista" id="btn-imprimir-lista" title="Emitir Relatório Oficial Consolidado das Escolas Sincronizadas aos Parâmetros">
                 🖨️ Imprimir Lista
               </button>
               <button type="button" onclick="novoRegistro()" class="btn-form-action btn-novo-registro" id="btn-novo-registro" title="Iniciar novo cadastro em branco">
@@ -1938,9 +1979,9 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=v1.141"></script>
-  <script src="js/escolas.js?v=v1.141"></script>
-  <script src="js/relatorios-impressao.js?v=v1.141"></script>
+  <script src="js/dados.js?v=v1.142"></script>
+  <script src="js/escolas.js?v=v1.142"></script>
+  <script src="js/relatorios-impressao.js?v=v1.142"></script>
 
   <script>
     /* ============================================================
@@ -2594,6 +2635,14 @@
     window.aoAlternarLembrarInformante = aoAlternarLembrarInformante;
 
     function novoRegistro() {
+      const btnSalvar = document.getElementById('btn-submit-salvar');
+      if (btnSalvar) {
+        btnSalvar.innerHTML = 'ðŸ’¾ Salvar';
+        btnSalvar.classList.remove('btn-salvar-concluido');
+        btnSalvar.title = 'Salvar e sincronizar entidade/escola';
+      }
+      const badgeStatus = document.getElementById('badge-status-salvar');
+      if (badgeStatus) badgeStatus.style.display = 'none';
       limparFormulario();
       ativarAba(1);
       window.scrollTo({ top: 100, behavior: 'smooth' });
@@ -4360,7 +4409,29 @@
       } finally {
         if (btnSalvar) {
           btnSalvar.disabled = false;
-          btnSalvar.innerHTML = txtOriginalBtn;
+          if (gravouPlanilha) {
+            btnSalvar.innerHTML = 'âœ“ GravaÃ§Ã£o ConcluÃ­da!';
+            btnSalvar.classList.add('btn-salvar-concluido');
+            btnSalvar.title = 'GravaÃ§Ã£o concluÃ­da com sucesso na Planilha Oficial!';
+
+            const badgeStatus = document.getElementById('badge-status-salvar');
+            if (badgeStatus) {
+              badgeStatus.innerHTML = `âœ“ GravaÃ§Ã£o ConcluÃ­da! (Linha ${linhaPlanilhaGravada || ''})`;
+              badgeStatus.style.display = 'inline-flex';
+            }
+
+            setTimeout(() => {
+              if (btnSalvar && btnSalvar.classList.contains('btn-salvar-concluido')) {
+                btnSalvar.innerHTML = txtOriginalBtn;
+                btnSalvar.classList.remove('btn-salvar-concluido');
+                btnSalvar.title = 'Salvar e sincronizar entidade/escola';
+              }
+              if (badgeStatus) badgeStatus.style.display = 'none';
+            }, 8000);
+          } else {
+            btnSalvar.innerHTML = txtOriginalBtn;
+            btnSalvar.classList.remove('btn-salvar-concluido');
+          }
         }
       }
 
@@ -4445,6 +4516,168 @@
     // ============================================================
 
     // Coleta dados completos da escola atual no formulário ou cache
+        // ============================================================
+    // ============================================================
+    // CENTRAL DE ESCOLHA DE IMPRESSAO (FICHA ATUAL VS LISTA)
+    // ============================================================
+    function abrirModalEscolhaImpressao() {
+      const modalExistente = document.getElementById('siscam-modal-impressao-escolha');
+      if (modalExistente) modalExistente.remove();
+
+      const getVal = id => (document.getElementById(id)?.value || '').trim();
+      const nomeNaTela = getVal('entidade-nome');
+      const inepNaTela = getVal('entidade-inep');
+      const temEscolaNaTela = !!nomeNaTela;
+
+      const overlay = document.createElement('div');
+      overlay.id = 'siscam-modal-impressao-escolha';
+      overlay.className = 'siscam-modal-overlay';
+      overlay.style.zIndex = '999999';
+
+      overlay.innerHTML = `
+        <div class="siscam-modal-card" style="max-width: 620px; width: 95%;" role="dialog" aria-modal="true">
+          <div class="siscam-modal-header">
+            <div class="siscam-modal-title-box">
+              <span style="font-size:22px;">&#128424;&#65039;</span>
+              <div>
+                <div class="siscam-modal-badge-title">
+                  <span class="siscam-delta">&#9650;</span> SiSCAM v1.142 <span class="siscam-delta">&#9650;</span>
+                </div>
+                <div class="siscam-modal-subtag">Central de Impress&atilde;o e Relat&oacute;rios Oficiais</div>
+              </div>
+            </div>
+            <button type="button" class="siscam-modal-close" onclick="fecharModalEscolhaImpressao()" title="Fechar (Esc)">&#10005;</button>
+          </div>
+          <div class="siscam-modal-body" style="padding: 22px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <div style="font-size: 16px; font-weight: 900; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px;">
+                Qual formato de impress&atilde;o voc&ecirc; deseja emitir?
+              </div>
+              <div style="font-size: 12.5px; color: #94a3b8; margin-top: 4px;">
+                Selecione se deseja a ficha cadastral do registro em tela ou a listagem consolidada:
+              </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+              <!-- OPCAO 1: REGISTRO DA TELA ATUAL -->
+              <div onclick="executarImpressaoOpcao('registro_atual')" 
+                   style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); 
+                          border: 1.5px solid ${temEscolaNaTela ? '#38bdf8' : 'rgba(148, 163, 184, 0.3)'}; 
+                          border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s ease;
+                          box-shadow: ${temEscolaNaTela ? '0 4px 16px rgba(56, 189, 248, 0.2)' : 'none'};"
+                   onmouseover="this.style.borderColor='#38bdf8'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(56, 189, 248, 0.35)';"
+                   onmouseout="this.style.borderColor='${temEscolaNaTela ? '#38bdf8' : 'rgba(148, 163, 184, 0.3)'}'; this.style.transform='none'; this.style.boxShadow='${temEscolaNaTela ? '0 4px 16px rgba(56, 189, 248, 0.2)' : 'none'}';">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                  <div style="font-size: 30px; background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 8px; width: 54px; height: 54px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    &#128196;
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+                      <strong style="color: #f8fafc; font-size: 14px;">1. Imprimir Registro da Tela Atual</strong>
+                      <span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.4);">FICHA INDIVIDUAL</span>
+                    </div>
+                    <div style="color: #cbd5e1; font-size: 12px; line-height: 1.5; margin-bottom: 6px;">
+                      Emite a <strong>Ficha Cadastral Oficial em 1 folha A4</strong> da unidade escolar atualmente em tela ou edi&ccedil;&atilde;o (Infraestrutura f&iacute;sica de 29 itens, Gest&atilde;o, Endere&ccedil;o e Contatos).
+                    </div>
+                    <div style="background: rgba(0, 0, 0, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 11.5px; color: ${temEscolaNaTela ? '#38bdf8' : '#94a3b8'}; display: flex; align-items: center; gap: 6px;">
+                      <span>&#127979;</span>
+                      <span style="font-weight: 700;">${temEscolaNaTela ? nomeNaTela : 'Nenhuma escola preenchida no formul\u00E1rio'}</span>
+                      ${inepNaTela ? `<span style="color:#34d399; font-weight:800; margin-left:auto;">INEP: ${inepNaTela}</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- OPCAO 2: IMPRIMIR LISTA COMPLETA -->
+              <div onclick="executarImpressaoOpcao('lista')" 
+                   style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); 
+                          border: 1.5px solid #10b981; border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s ease;
+                          box-shadow: 0 4px 16px rgba(16, 185, 129, 0.2);"
+                   onmouseover="this.style.borderColor='#34d399'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(16, 185, 129, 0.35)';"
+                   onmouseout="this.style.borderColor='#10b981'; this.style.transform='none'; this.style.boxShadow='0 4px 16px rgba(16, 185, 129, 0.2)';">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                  <div style="font-size: 30px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; width: 54px; height: 54px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    &#128209;
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px;">
+                      <strong style="color: #f8fafc; font-size: 14px;">2. Imprimir Lista de Entidades</strong>
+                      <span style="background: rgba(16, 185, 129, 0.2); color: #34d399; font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.4);">RELAT&Oacute;RIO CONSOLIDADO</span>
+                    </div>
+                    <div style="color: #cbd5e1; font-size: 12px; line-height: 1.5; margin-bottom: 6px;">
+                      Emite o <strong>Relat&oacute;rio Oficial Consolidado em formato A4 Retrato</strong> contendo a listagem tabular das escolas sincronizadas aos filtros e par&acirc;metros municipais atuais.
+                    </div>
+                    <div style="background: rgba(0, 0, 0, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 11.5px; color: #34d399; display: flex; align-items: center; gap: 6px;">
+                      <span>&#128203;</span>
+                      <span>Listagem geral de entidades cadastradas e vinculadas aos par&acirc;metros</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="siscam-modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; padding: 14px 22px;">
+            <button type="button" class="siscam-modal-btn-ok" style="background: #334155;" onclick="fecharModalEscolhaImpressao()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(overlay);
+
+      const escHandler = (e) => {
+        if (e.key === 'Escape') fecharModalEscolhaImpressao();
+      };
+      document.addEventListener('keydown', escHandler);
+      overlay._escHandler = escHandler;
+    }
+
+    function fecharModalEscolhaImpressao() {
+      const modal = document.getElementById('siscam-modal-impressao-escolha');
+      if (modal) {
+        if (modal._escHandler) document.removeEventListener('keydown', modal._escHandler);
+        modal.remove();
+      }
+    }
+
+    function executarImpressaoOpcao(tipo) {
+      fecharModalEscolhaImpressao();
+      if (tipo === 'registro_atual') {
+        const getVal = id => (document.getElementById(id)?.value || '').trim();
+        const nomeNaTela = getVal('entidade-nome');
+        if (!nomeNaTela) {
+          if (typeof exibirMensagemSiSCAM === 'function') {
+            exibirMensagemSiSCAM(
+              'Nenhuma escola est\u00E1 preenchida no formul\u00E1rio atualmente.\n\nPor favor, preencha os dados da escola ou clique em \u270F\uFE0F Editar na tabela abaixo para carregar a escola na tela antes de emitir a Ficha Individual.',
+              { titulo: '\u25B2 SiSCAM \u25B2', subtitulo: 'Ficha Cadastral Individual', tipo: 'aviso' }
+            );
+          } else {
+            alert('Nenhuma escola preenchida no formul\u00E1rio para imprimir.');
+          }
+          return;
+        }
+
+        const dados = typeof obterDadosEscolaAtual === 'function' ? obterDadosEscolaAtual() : null;
+        if (typeof imprimirRelatorioRegistroAtual === 'function') {
+          imprimirRelatorioRegistroAtual(dados);
+        } else {
+          console.warn('Funcao imprimirRelatorioRegistroAtual nao encontrada.');
+        }
+      } else if (tipo === 'lista') {
+        if (typeof imprimirRelatorioLista === 'function') {
+          imprimirRelatorioLista();
+        } else if (typeof imprimirRelatorioTodosRegistros === 'function') {
+          imprimirRelatorioTodosRegistros();
+        } else {
+          console.warn('Funcao imprimirRelatorioLista nao encontrada.');
+        }
+      }
+    }
+    window.abrirModalEscolhaImpressao = abrirModalEscolhaImpressao;
+    window.fecharModalEscolhaImpressao = fecharModalEscolhaImpressao;
+    window.executarImpressaoOpcao = executarImpressaoOpcao;
+
     function obterDadosEscolaAtual() {
       const getVal = id => (document.getElementById(id)?.value || '').trim();
       const nome = getVal('entidade-nome');
