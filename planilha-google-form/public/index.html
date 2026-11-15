@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=v1.146">
+  <link rel="stylesheet" href="css/style.css?v=v1.147">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -792,7 +792,7 @@
     margin: auto;
   ">
     <!-- ARTE OFICIAL COMPLETA DA TELA INICIAL (IMAGEM 100% FIEL) -->
-    <img src="img/tela-inicial-siscam.png?v=v1.146"
+    <img src="img/tela-inicial-siscam.png?v=v1.147"
          alt="SiSCAM - Sistema Integrado CAM / SEDUC-RO"
          style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none;">
 
@@ -2260,29 +2260,24 @@
                     <input type="text" id="popup-novo-cnpj" name="popup_cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="width:100%; height:40px; font-family:monospace; font-weight:600; font-size:13px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1.5px solid #38bdf8; border-radius:6px; color:#fff; box-sizing:border-box;" oninput="mascaraCNPJInputPopup(this); aoDigitarCNPJPopup(this.value);" onblur="autoPreencherCNPJPopup(this); aoSairCNPJPopup(this.value);">
                   </div>
 
-                  <!-- Lilás / Roxo Checkbox Inadimplente (Popup - Imagem 4) -->
-                  <label id="popup-novo-label-check-inadimplente" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 14px; background:rgba(168,85,247,0.15); border:1.5px solid #a855f7; border-radius:6px; color:#f3e8ff; font-weight:700; font-size:12.5px; cursor:pointer; user-select:none; white-space:nowrap; transition:all 0.2s;" title="Marcar entidade como inadimplente">
-                    <input type="checkbox" id="popup-novo-check-inadimplente" style="width:18px; height:18px; cursor:pointer; accent-color:#9333ea;" onchange="aoAlternarCheckInadimplentePopup(this.checked)">
+                  <!-- Checkbox Inadimplente (Discreto e solto sem borda quando inativo; destaque de alerta quando ativado) -->
+                  <label id="popup-novo-label-check-inadimplente" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 8px; background:transparent; border:none; border-radius:6px; color:#94a3b8; font-weight:500; font-size:12.5px; cursor:pointer; user-select:none; white-space:nowrap; transition:all 0.2s;" title="Marcar entidade como inadimplente">
+                    <input type="checkbox" id="popup-novo-check-inadimplente" style="width:18px; height:18px; cursor:pointer; accent-color:#ef4444;" onchange="aoAlternarCheckInadimplentePopup(this.checked)">
                     <span>Inadimplente</span>
                   </label>
-
-                  <!-- Caixa de Texto Amarela Readonly (Adimplente / INADIMPLENTE - Popup - Imagem 4) -->
-                  <div style="flex:0 0 170px; min-width:150px;">
-                    <input type="text" id="popup-novo-status-adimplencia" readonly value="Adimplente" style="width:100%; height:40px; text-align:center; font-weight:900; font-size:13px; letter-spacing:0.5px; border-radius:6px; border:2px solid #eab308; background:#fef08a; color:#15803d; cursor:not-allowed; box-sizing:border-box; box-shadow:0 2px 8px rgba(234,179,8,0.25);" title="Status de Adimplência da Entidade">
-                  </div>
                 </div>
 
                 <!-- BARRA DE AÇÕES DO CNPJ (POPUP) -->
                 <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
-                  <button type="button" onclick="consultarCNPJPopupManualmente()" style="flex:1.4 1 160px; height:36px; background:#059669; border:1px solid #10b981; color:#fff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; transition:all 0.2s;" title="Consultar dados oficiais desta entidade na Receita Federal">
-                    <span>🔍</span> <span>Consultar na Receita Federal</span>
+                  <button type="button" id="popup-novo-btn-consultar" onclick="consultarCNPJPopupManualmente()" style="flex:1 1 0; min-width:0; height:38px; background:#059669; border:1px solid #10b981; color:#fff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; transition:all 0.2s; box-sizing:border-box;" title="Consultar dados oficiais desta entidade na Receita Federal">
+                    <span>&#128269;</span> <span>Consultar na Receita Federal</span>
                   </button>
-                  <button type="button" onclick="abrirSiteReceitaFederalPopup()" style="flex:1.2 1 140px; height:36px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; font-weight:700; font-size:11px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px;" title="Abrir página oficial da Receita Federal em nova aba e copiar CNPJ">
+                  <button type="button" id="popup-novo-btn-abrir-site" onclick="abrirSiteReceitaFederalPopup()" style="flex:1 1 0; min-width:0; height:38px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; box-sizing:border-box;" title="Abrir pÃ¡gina oficial da Receita Federal em nova aba e copiar CNPJ">
                     <img src="img/logo-receita-federal.png" alt="RFB" style="height:16px; width:auto; object-fit:contain; vertical-align:middle; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));">
                     <span>Abrir Receita Federal</span>
                   </button>
-                  <button type="button" onclick="copiarCNPJPopup(this)" style="flex:1 1 100px; height:36px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; font-size:11px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Copiar CNPJ">
-                    <span>📋</span> <span>Copiar CNPJ</span>
+                  <button type="button" id="popup-novo-btn-copiar" onclick="copiarCNPJPopup(this)" style="flex:1 1 0; min-width:0; height:38px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; box-sizing:border-box;" title="Copiar CNPJ">
+                    <span>&#128203;</span> <span>Copiar CNPJ</span>
                   </button>
                 </div>
 
@@ -2703,32 +2698,26 @@
                   </div>
 
                   <!-- Lilás / Roxo Checkbox Inadimplente -->
-                  <label id="label-check-inadimplente" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 14px; background:rgba(168,85,247,0.15); border:1.5px solid #a855f7; border-radius:6px; color:#f3e8ff; font-weight:700; font-size:12.5px; cursor:pointer; user-select:none; white-space:nowrap; transition:all 0.2s;" title="Marcar entidade como inadimplente">
-                    <input type="checkbox" id="form-check-inadimplente" style="width:18px; height:18px; cursor:pointer; accent-color:#9333ea;" onchange="aoAlternarCheckInadimplente(this.checked)">
+                  <label id="label-check-inadimplente" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 8px; background:transparent; border:none; border-radius:6px; color:#94a3b8; font-weight:500; font-size:12.5px; cursor:pointer; user-select:none; white-space:nowrap; transition:all 0.2s;" title="Marcar entidade como inadimplente">
+                    <input type="checkbox" id="form-check-inadimplente" style="width:18px; height:18px; cursor:pointer; accent-color:#ef4444;" onchange="aoAlternarCheckInadimplente(this.checked)">
                     <span>Inadimplente</span>
                   </label>
-
-                  <!-- Caixa de Texto Amarela Readonly (Adimplente / INADIMPLENTE) -->
-                  <div style="flex:0 0 170px; min-width:150px;">
-                    <input type="text" id="form-status-adimplencia" readonly value="Adimplente" style="width:100%; height:40px; text-align:center; font-weight:900; font-size:13px; letter-spacing:0.5px; border-radius:6px; border:2px solid #eab308; background:#fef08a; color:#15803d; cursor:not-allowed; box-sizing:border-box; box-shadow:0 2px 8px rgba(234,179,8,0.25);" title="Status de Adimplência da Entidade">
-                  </div>
                 </div>
 
                 <!-- BARRA DE AÇÕES DO CNPJ (IMAGENS 2, 3 E 4) -->
                 <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
-                  <button type="button" id="btn-consultar-cnpj-form" onclick="recarregarDadosReceitaFederal()" style="flex:1.4 1 170px; height:38px; background:#059669; border:1px solid #10b981; color:#ffffff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" title="Consultar dados oficiais desta entidade na Receita Federal">
-                    <span>🔍</span> <span>Consultar na Receita Federal</span>
+                  <button type="button" id="btn-consultar-cnpj-form" onclick="recarregarDadosReceitaFederal()" style="flex:1 1 0; min-width:0; height:38px; background:#059669; border:1px solid #10b981; color:#ffffff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; box-sizing:border-box;" title="Consultar dados oficiais desta entidade na Receita Federal">
+                    <span>&#128269;</span> <span>Consultar na Receita Federal</span>
                   </button>
-                  <button type="button" onclick="abrirSiteReceitaFederalProcesso()" style="flex:1.2 1 145px; height:38px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px;" title="Abrir página oficial da Receita Federal em nova aba e copiar CNPJ">
+                  <button type="button" onclick="abrirSiteReceitaFederalProcesso()" style="flex:1 1 0; min-width:0; height:38px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; box-sizing:border-box;" title="Abrir pÃ¡gina oficial da Receita Federal em nova aba e copiar CNPJ">
                     <img src="img/logo-receita-federal.png" alt="RFB" style="height:16px; width:auto; object-fit:contain; vertical-align:middle; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));">
                     <span>Abrir Receita Federal</span>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                   </button>
-                  <button type="button" onclick="copiarCNPJDoFormulario(this)" style="flex:1 1 110px; height:38px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;" title="Copiar número do CNPJ para a área de transferência">
-                    <span>📋</span> <span>Copiar CNPJ</span>
+                  <button type="button" onclick="copiarCNPJDoFormulario(this)" style="flex:1 1 0; min-width:0; height:38px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-sizing:border-box;" title="Copiar nÃºmero do CNPJ para a Ã¡rea de transferÃªncia">
+                    <span>&#128203;</span> <span>Copiar CNPJ</span>
                   </button>
-                  <button type="button" id="btn-extrair-cnpj-plano" onclick="extrairEPreencherCNPJPlano()" style="flex:1 1 125px; height:38px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.4); color:#fbbf24; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;" title="Localizar nos anexos (Plano de Trabalho e/ou Ofício) o CNPJ da Entidade Proponente">
-                    <span>⚡ Extrair do Plano</span>
+                  <button type="button" id="btn-extrair-cnpj-plano" onclick="extrairEPreencherCNPJPlano()" style="flex:0.8 1 0; min-width:0; height:38px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.4); color:#fbbf24; font-weight:700; font-size:11px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-sizing:border-box;" title="Localizar nos anexos o CNPJ">
+                    <span>&#9889; Extrair</span>
                   </button>
                 </div>
 
@@ -6711,15 +6700,15 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/combobox-dynamic.js?v=v1.146"></script>
-  <script src="js/multi-select.js?v=v1.146"></script>
-  <script src="js/auth-sap.js?v=v1.146"></script>
-  <script src="js/dados.js?v=v1.146"></script>
-  <script src="js/app.js?v=v1.146"></script>
-  <script src="js/escolas.js?v=v1.146" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=v1.146"></script>
-  <script src="js/mapa.js?v=v1.146"></script>
-  <script src="js/contatos.js?v=v1.146"></script>
+  <script src="js/combobox-dynamic.js?v=v1.147"></script>
+  <script src="js/multi-select.js?v=v1.147"></script>
+  <script src="js/auth-sap.js?v=v1.147"></script>
+  <script src="js/dados.js?v=v1.147"></script>
+  <script src="js/app.js?v=v1.147"></script>
+  <script src="js/escolas.js?v=v1.147" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=v1.147"></script>
+  <script src="js/mapa.js?v=v1.147"></script>
+  <script src="js/contatos.js?v=v1.147"></script>
 
 
   <script>
@@ -6912,12 +6901,12 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=v1.146"></script>
-  <script src="js/gmac.js?v=v1.146"></script>
-  <script src="js/orcamento.js?v=v1.146"></script>
-  <script src="js/gdsm.js?v=v1.146"></script>
-  <script src="js/print-proalfa.js?v=v1.146"></script>
-  <script src="js/proalfa.js?v=v1.146"></script>
+  <script src="js/diarias.js?v=v1.147"></script>
+  <script src="js/gmac.js?v=v1.147"></script>
+  <script src="js/orcamento.js?v=v1.147"></script>
+  <script src="js/gdsm.js?v=v1.147"></script>
+  <script src="js/print-proalfa.js?v=v1.147"></script>
+  <script src="js/proalfa.js?v=v1.147"></script>
 
 
 
@@ -8574,8 +8563,15 @@ function mudarAbaDiarias(aba, el) {
     <!-- BOTÃO (X) PARA FECHAR IMEDIATAMENTE -->
     <button type="button" onclick="fecharAvisoEnormeInadimplente()" style="position:absolute; top:24px; right:28px; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.35); color:#fff; font-size:24px; font-weight:900; width:48px; height:48px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s; box-shadow:0 4px 14px rgba(0,0,0,0.5); line-height:1;" onmouseover="this.style.background='rgba(239,68,68,0.85)'; this.style.borderColor='#ef4444';" onmouseout="this.style.background='rgba(255,255,255,0.12)'; this.style.borderColor='rgba(255,255,255,0.35)';" title="Fechar aviso (ESC)">✕</button>
 
-    <div style="display:inline-block; font-size:72px; font-weight:900; color:#ef4444; letter-spacing:6px; line-height:1.1; text-transform:uppercase; text-shadow:0 0 35px rgba(239,68,68,0.95);" class="texto-inadimplente-piscando">
-      ⚠️ INADIMPLENTE ⚠️
+    <!-- MARCACAO AMARELA: CNPJ -->
+    <div id="aviso-inadimplente-cnpj" style="display:none; font-size:20px; font-weight:800; color:#facc15; font-family:monospace; background:rgba(234,179,8,0.15); border:1.5px solid rgba(234,179,8,0.5); padding:6px 18px; border-radius:8px; margin-bottom:10px; letter-spacing:1px; box-shadow:0 0 15px rgba(234,179,8,0.2);"></div>
+
+    <!-- MARCACAO VERDE: NOME DA ESCOLA / ENTIDADE -->
+    <div id="aviso-inadimplente-entidade" style="display:none; font-size:20px; font-weight:800; color:#4ade80; text-transform:uppercase; margin-bottom:16px; max-width:850px; line-height:1.3; text-shadow:0 2px 10px rgba(0,0,0,0.8); background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); padding:8px 20px; border-radius:8px;"></div>
+
+    <!-- MARCACAO AZUL: PALAVRA INADIMPLENTE DIMINUIDA EM 50% -->
+    <div style="display:inline-block; font-size:36px; font-weight:900; color:#ef4444; letter-spacing:4px; line-height:1.1; text-transform:uppercase; text-shadow:0 0 25px rgba(239,68,68,0.95);" class="texto-inadimplente-piscando">
+      &#9888;&#65039; INADIMPLENTE &#9888;&#65039;
     </div>
     <div style="margin-top:24px; font-size:22px; font-weight:700; color:#fca5a5; max-width:680px; text-shadow:0 2px 8px rgba(0,0,0,0.7);">
       Atenção: Este CNPJ já consta registrado com pendência/inadimplência no sistema!

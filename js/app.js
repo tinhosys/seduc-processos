@@ -702,23 +702,25 @@ window.navegarFiltroEscala = navegarFiltroEscala;
 
 // ===== LÓGICA DE ADIMPLÊNCIA / INADIMPLÊNCIA (COLUNA AG) =====
 function atualizarVisualAdimplencia(inadimplente) {
-  const box = document.getElementById('form-status-adimplencia');
+  const lbl = document.getElementById('label-check-inadimplente');
   const chk = document.getElementById('form-check-inadimplente');
   const isTrue = (inadimplente === '1' || inadimplente === 1 || inadimplente === true);
   if (chk) chk.checked = isTrue;
-  if (box) {
+  if (lbl) {
     if (isTrue) {
-      box.value = 'INADIMPLENTE';
-      box.style.background = '#fef08a';
-      box.style.border = '2px solid #ef4444';
-      box.style.color = '#dc2626';
-      box.style.boxShadow = '0 0 10px rgba(239,68,68,0.35)';
+      lbl.style.background = 'rgba(239, 68, 68, 0.2)';
+      lbl.style.border = '1.5px solid #ef4444';
+      lbl.style.color = '#fca5a5';
+      lbl.style.fontWeight = '800';
+      lbl.style.boxShadow = '0 0 12px rgba(239, 68, 68, 0.4)';
+      lbl.style.padding = '4px 12px';
     } else {
-      box.value = 'Adimplente';
-      box.style.background = '#fef08a';
-      box.style.border = '2px solid #eab308';
-      box.style.color = '#15803d';
-      box.style.boxShadow = '0 2px 8px rgba(234,179,8,0.25)';
+      lbl.style.background = 'transparent';
+      lbl.style.border = 'none';
+      lbl.style.color = '#94a3b8';
+      lbl.style.fontWeight = '500';
+      lbl.style.boxShadow = 'none';
+      lbl.style.padding = '0 8px';
     }
   }
 }
@@ -726,27 +728,32 @@ window.atualizarVisualAdimplencia = atualizarVisualAdimplencia;
 
 function aoAlternarCheckInadimplente(checked) {
   atualizarVisualAdimplencia(checked);
+  if (checked) {
+    mostrarAvisoEnormeInadimplente();
+  }
 }
 window.aoAlternarCheckInadimplente = aoAlternarCheckInadimplente;
 
 function atualizarVisualAdimplenciaPopup(inadimplente) {
-  const box = document.getElementById('popup-novo-status-adimplencia');
+  const lbl = document.getElementById('popup-novo-label-check-inadimplente');
   const chk = document.getElementById('popup-novo-check-inadimplente');
   const isTrue = (inadimplente === '1' || inadimplente === 1 || inadimplente === true);
   if (chk) chk.checked = isTrue;
-  if (box) {
+  if (lbl) {
     if (isTrue) {
-      box.value = 'INADIMPLENTE';
-      box.style.background = '#fef08a';
-      box.style.border = '2px solid #ef4444';
-      box.style.color = '#dc2626';
-      box.style.boxShadow = '0 0 10px rgba(239,68,68,0.35)';
+      lbl.style.background = 'rgba(239, 68, 68, 0.2)';
+      lbl.style.border = '1.5px solid #ef4444';
+      lbl.style.color = '#fca5a5';
+      lbl.style.fontWeight = '800';
+      lbl.style.boxShadow = '0 0 12px rgba(239, 68, 68, 0.4)';
+      lbl.style.padding = '4px 12px';
     } else {
-      box.value = 'Adimplente';
-      box.style.background = '#fef08a';
-      box.style.border = '2px solid #eab308';
-      box.style.color = '#15803d';
-      box.style.boxShadow = '0 2px 8px rgba(234,179,8,0.25)';
+      lbl.style.background = 'transparent';
+      lbl.style.border = 'none';
+      lbl.style.color = '#94a3b8';
+      lbl.style.fontWeight = '500';
+      lbl.style.boxShadow = 'none';
+      lbl.style.padding = '0 8px';
     }
   }
 }
@@ -754,6 +761,9 @@ window.atualizarVisualAdimplenciaPopup = atualizarVisualAdimplenciaPopup;
 
 function aoAlternarCheckInadimplentePopup(checked) {
   atualizarVisualAdimplenciaPopup(checked);
+  if (checked) {
+    mostrarAvisoEnormeInadimplente();
+  }
 }
 window.aoAlternarCheckInadimplentePopup = aoAlternarCheckInadimplentePopup;
 
@@ -786,7 +796,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 let _ultimoAvisoEnormeTimestamp = 0;
-function mostrarAvisoEnormeInadimplente() {
+function mostrarAvisoEnormeInadimplente(cnpjInfo, entidadeInfo) {
   const agora = Date.now();
   if (agora - _ultimoAvisoEnormeTimestamp < 2500) {
     return; // Evita disparos duplicados ou em sequência rápida
@@ -795,6 +805,36 @@ function mostrarAvisoEnormeInadimplente() {
 
   const overlay = document.getElementById('aviso-enorme-inadimplente');
   if (!overlay) return;
+
+  // Preenche CNPJ (marcação amarela)
+  const elCnpj = document.getElementById('aviso-inadimplente-cnpj');
+  const cnpjVal = cnpjInfo || 
+    (document.getElementById('popup-novo-cnpj') ? document.getElementById('popup-novo-cnpj').value : '') ||
+    (document.getElementById('form-cnpj') ? document.getElementById('form-cnpj').value : '');
+  if (elCnpj) {
+    if (cnpjVal) {
+      const cnpjFmt = (typeof formatCNPJ === 'function') ? formatCNPJ(cnpjVal) : cnpjVal;
+      elCnpj.textContent = 'CNPJ: ' + cnpjFmt;
+      elCnpj.style.display = 'inline-block';
+    } else {
+      elCnpj.style.display = 'none';
+    }
+  }
+
+  // Preenche Nome da Escola / Entidade (marcação verde)
+  const elEntidade = document.getElementById('aviso-inadimplente-entidade');
+  const entidadeVal = entidadeInfo ||
+    (document.getElementById('popup-novo-interessado') ? document.getElementById('popup-novo-interessado').value : '') ||
+    (document.getElementById('form-interessado') ? document.getElementById('form-interessado').value : '');
+  if (elEntidade) {
+    if (entidadeVal) {
+      elEntidade.textContent = entidadeVal;
+      elEntidade.style.display = 'block';
+    } else {
+      elEntidade.style.display = 'none';
+    }
+  }
+
   overlay.style.display = 'flex';
   
   if (_timerAvisoInadimplente) clearTimeout(_timerAvisoInadimplente);
@@ -804,6 +844,12 @@ function mostrarAvisoEnormeInadimplente() {
   if (chk) chk.checked = true;
   if (typeof atualizarVisualAdimplencia === 'function') {
     atualizarVisualAdimplencia(true);
+  }
+
+  const chkPopup = document.getElementById('popup-novo-check-inadimplente');
+  if (chkPopup) chkPopup.checked = true;
+  if (typeof atualizarVisualAdimplenciaPopup === 'function') {
+    atualizarVisualAdimplenciaPopup(true);
   }
 
   let segundosRestantes = 15;
@@ -825,6 +871,56 @@ function mostrarAvisoEnormeInadimplente() {
   }, 15000);
 }
 window.mostrarAvisoEnormeInadimplente = mostrarAvisoEnormeInadimplente;
+
+function verificarInadimplenciaPopupNovo() {
+  const cnpjInput = document.getElementById('popup-novo-cnpj');
+  const interessadoInput = document.getElementById('popup-novo-interessado');
+  const selectEntidades = document.getElementById('popup-novo-select-entidades');
+  const chkInad = document.getElementById('popup-novo-check-inadimplente');
+
+  let cnpjVal = cnpjInput ? cnpjInput.value : '';
+  let interessadoVal = (interessadoInput ? interessadoInput.value : '') || (selectEntidades ? selectEntidades.value : '');
+
+  // Se CNPJ não estiver digitado ainda, tenta inferir pelo nome da entidade
+  if (!cnpjVal && interessadoVal) {
+    const limpoNome = (typeof normalizarTexto === 'function') ? normalizarTexto(interessadoVal) : interessadoVal.toLowerCase().trim();
+    const procs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []);
+    if (Array.isArray(procs)) {
+      const match = procs.find(p => p.cnpj && ((typeof normalizarTexto === 'function') ? normalizarTexto(p.interessado) : String(p.interessado).toLowerCase().trim()) === limpoNome);
+      if (match && match.cnpj) {
+        cnpjVal = match.cnpj;
+      }
+    }
+  }
+
+  const limpoCnpj = String(cnpjVal || '').replace(/\D/g, '');
+  if (limpoCnpj.length === 14) {
+    const isInad = verificarCNPJInadimplenteHistorico(limpoCnpj);
+    if (isInad) {
+      if (chkInad) chkInad.checked = true;
+      atualizarVisualAdimplenciaPopup(true);
+      if (limpoCnpj !== _ultimoCNPJChecadoPopup) {
+        _ultimoCNPJChecadoPopup = limpoCnpj;
+        mostrarAvisoEnormeInadimplente(limpoCnpj, interessadoVal);
+      }
+      return true;
+    }
+  }
+  return false;
+}
+window.verificarInadimplenciaPopupNovo = verificarInadimplenciaPopupNovo;
+
+// Checagem imediata em tempo real no ato de cadastro e de verificacao de qualquer campo desse registro (Imagem 5)
+document.addEventListener('input', function(e) {
+  if (e.target && e.target.closest('#modal-popup-novo-processo')) {
+    verificarInadimplenciaPopupNovo();
+  }
+});
+document.addEventListener('change', function(e) {
+  if (e.target && e.target.closest('#modal-popup-novo-processo')) {
+    verificarInadimplenciaPopupNovo();
+  }
+});
 
 function verificarCNPJInadimplenteHistorico(cnpjDigitado) {
   if (!cnpjDigitado) return false;
@@ -892,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.146';
+window.APP_VERSION = 'v1.147';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -4037,40 +4133,58 @@ function abrirDetalhe(id) {
     `;
   }
 
+  const isAdminModal = userNivel === 'adm' || (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin());
   document.getElementById('modal-overlay').classList.add('open');
   document.getElementById('modal-content').innerHTML = `
     <div class="detail-header" style="display:flex; flex-direction:column; gap:20px;">
+      <!-- TOP 3 BOTÕES RIGOROSAMENTE EQUIPARADOS NO MESMO TAMANHO -->
       <div style="display:flex; gap:12px; width:100%;">
         ${p.numero ? `
-        <button style="flex:1; padding:12px; font-size:16px; display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; background:#3b82f6; color:#ffffff; cursor:pointer;" onclick="copiarProcessoSelecionado()" title="Copiar Número">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copiar
+        <button style="flex:1 1 0; min-width:0; height:44px; padding:0 12px; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; background:#3b82f6; color:#ffffff; cursor:pointer; box-sizing:border-box;" onclick="copiarProcessoSelecionado()" title="Copiar Número">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> <span>Copiar</span>
         </button>
-        <a href="https://sei.sistemas.ro.gov.br/sip/login.php?sigla_orgao_sistema=RO&sigla_sistema=SEI" target="_blank" class="btn btn-ghost" style="flex:1; padding:12px; display:flex; align-items:center; justify-content:center; background:white; border:1px solid var(--border); border-radius:6px;" title="Acessar SEI">
-          <img src="img/logo-sei.png" style="height:24px; object-fit:contain" alt="SEI">
+        <a href="https://sei.sistemas.ro.gov.br/sip/login.php?sigla_orgao_sistema=RO&sigla_sistema=SEI" target="_blank" class="btn btn-ghost" style="flex:1 1 0; min-width:0; height:44px; padding:0 12px; display:flex; align-items:center; justify-content:center; background:white; border:1px solid var(--border); border-radius:6px; box-sizing:border-box;" title="Acessar SEI">
+          <img src="img/logo-sei.png" style="height:22px; width:auto; object-fit:contain" alt="SEI">
         </a>
         ` : ''}
-        <button style="flex:1; padding:12px; font-size:16px; display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; background:#10b981; color:#ffffff; cursor:pointer;" onclick="editarProcesso('${p.id}');fecharModal()" class="action-editor">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> Editar
+        <button style="flex:1 1 0; min-width:0; height:44px; padding:0 12px; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:6px; background:#10b981; color:#ffffff; cursor:pointer; box-sizing:border-box;" onclick="editarProcesso('${p.id}');fecharModal()" class="action-editor">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> <span>Editar</span>
         </button>
       </div>
 
       <!-- Indicadores de Autorização (Estilo Moderno) -->
-      <div style="display:flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-top: 4px; margin-bottom: 4px;">
-        <div style="display:flex; align-items: center; gap: 8px;">
-          <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${p.CAM === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 8px ${p.CAM === '1' ? '#10b981' : '#ef4444'};"></div>
-          <span style="font-size: 13px; font-weight: 600; color: ${p.CAM === '1' ? '#f8fafc' : '#94a3b8'};">CAM</span>
+      <div style="display:flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 12px 18px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); margin-top: 4px; margin-bottom: 2px;">
+        <div style="display:flex; align-items: center; gap: 14px;">
+          <div style="display:flex; align-items: center; gap: 8px;">
+            <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${p.CAM === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 8px ${p.CAM === '1' ? '#10b981' : '#ef4444'};"></div>
+            <span style="font-size: 13px; font-weight: 600; color: ${p.CAM === '1' ? '#f8fafc' : '#94a3b8'};">CAM</span>
+          </div>
+          <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.1);"></div>
+          <div style="display:flex; align-items: center; gap: 8px;">
+            <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${p.GAB === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 8px ${p.GAB === '1' ? '#10b981' : '#ef4444'};"></div>
+            <span style="font-size: 13px; font-weight: 600; color: ${p.GAB === '1' ? '#f8fafc' : '#94a3b8'};">GABINETE</span>
+          </div>
+          <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.1);"></div>
+          <div style="display:flex; align-items: center; gap: 8px;">
+            <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${p.CC === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 8px ${p.CC === '1' ? '#10b981' : '#ef4444'};"></div>
+            <span style="font-size: 13px; font-weight: 600; color: ${p.CC === '1' ? '#f8fafc' : '#94a3b8'};">CASA CIVIL</span>
+          </div>
         </div>
-        <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.1);"></div>
-        <div style="display:flex; align-items: center; gap: 8px;">
-          <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${p.GAB === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 8px ${p.GAB === '1' ? '#10b981' : '#ef4444'};"></div>
-          <span style="font-size: 13px; font-weight: 600; color: ${p.GAB === '1' ? '#f8fafc' : '#94a3b8'};">GABINETE</span>
+
+        <!-- COR ROSA: (grupo(digito)) - SOMENTE PERFIL ADMIN -->
+        ${isAdminModal ? `
+        <div style="display:inline-flex; align-items:center; font-size:12px; font-weight:700; color:#e2e8f0; font-family:monospace; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);" title="Grupo e Dígito (Visível apenas para Administrador)">
+          (${p.agrupamento || p.grupo || '-'}(${(typeof window.limparDigitoValor === 'function') ? window.limparDigitoValor(p.digito || p.DIGITO || '-') : (p.digito || p.DIGITO || '-')}))
         </div>
-        <div style="width: 1px; height: 20px; background: rgba(255,255,255,0.1);"></div>
-        <div style="display:flex; align-items: center; gap: 8px;">
-          <div style="width: 10px; height: 10px; border-radius: 50%; background-color: ${p.CC === '1' ? '#10b981' : '#ef4444'}; box-shadow: 0 0 8px ${p.CC === '1' ? '#10b981' : '#ef4444'};"></div>
-          <span style="font-size: 13px; font-weight: 600; color: ${p.CC === '1' ? '#f8fafc' : '#94a3b8'};">CASA CIVIL</span>
-        </div>
+        ` : ''}
       </div>
+
+      <!-- MARCAÇÃO VERMELHA: AGRUPAMENTO EM FONTE 6 PEQUENA ALINHADO À DIREITA COM O DÍGITO - SOMENTE PERFIL ADMIN -->
+      ${isAdminModal ? `
+      <div style="text-align:right; font-size:6pt; line-height:1; color:#94a3b8; font-family:monospace; margin-top:-2px; margin-bottom:4px; padding-right:4px;" title="Agrupamento / Dígito (Exclusivo Administrador)">
+        ${p.agrupamento || p.grupo ? 'Agrupamento: ' + (p.agrupamento || p.grupo) : ''}${p.digito || p.DIGITO ? ' | Dígito: ' + ((typeof window.limparDigitoValor === 'function') ? window.limparDigitoValor(p.digito || p.DIGITO) : (p.digito || p.DIGITO)) : ''}
+      </div>
+      ` : ''}
 
       <div>
         ${p.prefixo ? `<div style="margin-bottom:8px"><span class="badge-prefixo">${p.prefixo}</span></div>` : ''}
@@ -4101,7 +4215,12 @@ function abrirDetalhe(id) {
       <div class="info-item"><label>Objeto</label><p>${p.objeto || '—'}</p></div>
       <div class="info-item"><label>Localização</label><p>${p.localizacao || '—'}</p></div>
       <div class="info-item"><label>Data</label><p>${formatDate(p.data)}</p></div>
-      ${(typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin() && p.executivo) ? `<div class="info-item action-adm"><label>Executivo</label><p>${p.executivo}</p></div>` : ''}
+      <div class="info-item"><label>Executivo</label><p>${p.executivo || '—'}</p></div>
+      ${isAdminModal ? `
+      <div class="info-item" style="background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.25); border-radius:6px; padding:6px 10px;">
+        <label style="color:#38bdf8; font-weight:700;">Analista</label>
+        <p style="color:#e0f2fe; font-weight:600;">${p.analista || '—'}</p>
+      </div>` : ''}
     </div>
 
 
@@ -5926,6 +6045,8 @@ window.consultarCNPJPopupManualmente = consultarCNPJPopupManualmente;
 function limparDadosReceitaPopup() {
   const el = document.getElementById('popup-novo-cnpj');
   if (el) el.value = '';
+  const formEl = document.getElementById('form-cnpj');
+  if (formEl) formEl.value = '';
   const box = document.getElementById('popup-novo-container-receita');
   if (box) box.style.display = 'none';
   const badgeSit = document.getElementById('popup-novo-badge-situacao');
@@ -5941,8 +6062,24 @@ function limparDadosReceitaPopup() {
     sug.style.display = 'none';
     sug.innerHTML = '';
   }
+
+  // Limpa check e visual de inadimplência
+  const chkInad = document.getElementById('popup-novo-check-inadimplente');
+  if (chkInad) chkInad.checked = false;
+  if (typeof atualizarVisualAdimplenciaPopup === 'function') atualizarVisualAdimplenciaPopup(false);
+
+  // Limpa o que está na memória/cache
   window._popupUltimoResultadoCNPJReceitaTexto = '';
   window._dadosReceitaPopupAtual = null;
+  window._ultimoResultadoCNPJReceitaTexto = '';
+  window._dadosReceitaProcessoAtual = null;
+  _ultimoCNPJChecadoPopup = '';
+  _ultimoCNPJChecadoAviso = '';
+  window._ultimoCNPJPesquisadoReceita = '';
+
+  if (typeof fecharAvisoEnormeInadimplente === 'function') {
+    fecharAvisoEnormeInadimplente();
+  }
 }
 window.limparDadosReceitaPopup = limparDadosReceitaPopup;
 
@@ -15316,8 +15453,22 @@ function abrirSiteReceitaFederalProcesso() {
 window.abrirSiteReceitaFederalProcesso = abrirSiteReceitaFederalProcesso;
 
 function limparDadosReceitaFederal(silencioso) {
+  const el = document.getElementById('form-cnpj');
+  if (el) el.value = '';
+  const popupEl = document.getElementById('popup-novo-cnpj');
+  if (popupEl) popupEl.value = '';
   window._ultimoResultadoCNPJReceitaTexto = '';
   window._dadosReceitaProcessoAtual = null;
+  window._popupUltimoResultadoCNPJReceitaTexto = '';
+  window._dadosReceitaPopupAtual = null;
+  _ultimoCNPJChecadoPopup = '';
+  _ultimoCNPJChecadoAviso = '';
+  window._ultimoCNPJPesquisadoReceita = '';
+
+  const chkInad = document.getElementById('form-check-inadimplente');
+  if (chkInad) chkInad.checked = false;
+  if (typeof atualizarVisualAdimplencia === 'function') atualizarVisualAdimplencia(false);
+
   const lbl = document.getElementById('label-resultado-cnpj-receita');
   const box = document.getElementById('container-resultado-cnpj-receita');
   const badgeSit = document.getElementById('badge-situacao-receita-processo');
