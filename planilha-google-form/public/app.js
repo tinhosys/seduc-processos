@@ -1,82 +1,350 @@
 
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
+// ===== HELPER DA ESCALA DE PROCESSO (0% a 100%, 21 ETAPAS E SETORES CAM / CCTE-GMAC) =====
 const ESCALA_ETAPAS = [
-  { nivel: 0, label: '0 - PROCESSO ABERTO', nome: 'PROCESSO ABERTO', cor: '#dc2626' },
-  { nivel: 1, label: '1 - RECEBIDO CAM', nome: 'RECEBIDO CAM', cor: '#e11d48' },
-  { nivel: 2, label: '2 - NOTIFICADO', nome: 'NOTIFICADO', cor: '#ea580c' },
-  { nivel: 3, label: '3 - AUTORIZO SEDUC', nome: 'AUTORIZO SEDUC', cor: '#f97316' },
-  { nivel: 4, label: '4 - AUTORIZO CASA CIVIL', nome: 'AUTORIZO CASA CIVIL', cor: '#d97706' },
-  { nivel: 5, label: '5 - RECEBIDO GCF', nome: 'RECEBIDO GCF', cor: '#eab308' },
-  { nivel: 6, label: '6 - PRE EMPENHO', nome: 'PRE EMPENHO', cor: '#a3e635' },
-  { nivel: 7, label: '7 - EMPENHO', nome: 'EMPENHO', cor: '#84cc16' },
-  { nivel: 8, label: '8 - PGE', nome: 'PGE', cor: '#22c55e' },
-  { nivel: 9, label: '9 - CONVENIADO', nome: 'CONVENIADO', cor: '#10b981' },
-  { nivel: 10, label: '10 - PAGO', nome: 'PAGO', cor: '#059669' }
+  { nivel: 0, pct: '0%', label: '0% - Processo aberto', nome: 'Processo aberto', setor: 'CAM', cor: '#ef4444' },
+  { nivel: 1, pct: '5%', label: '5% - Recebido na CAM', nome: 'Recebido na CAM', setor: 'CAM', cor: '#f87171' },
+  { nivel: 2, pct: '10%', label: '10% - Prosseguimento GDSM', nome: 'Prosseguimento GDSM', setor: 'CAM', cor: '#fb923c' },
+  { nivel: 3, pct: '15%', label: '15% - Prestação de Contas - CPC', nome: 'Prestação de Contas - CPC', setor: 'CAM', cor: '#f97316' },
+  { nivel: 4, pct: '20%', label: '20% - Notificação GDSM', nome: 'Notificação GDSM', setor: 'CAM', cor: '#ea580c' },
+  { nivel: 5, pct: '25%', label: '25% - Manifestação CAM', nome: 'Manifestação CAM', setor: 'CAM', cor: '#f59e0b' },
+  { nivel: 6, pct: '30%', label: '30% - Autorizo Gabinete SEDUC', nome: 'Autorizo Gabinete SEDUC', setor: 'CAM', cor: '#eab308' },
+  { nivel: 7, pct: '35%', label: '35% - Autorizo Casa Civil', nome: 'Autorizo Casa Civil', setor: 'CAM', cor: '#ca8a04' },
+  { nivel: 8, pct: '40%', label: '40% - CCTE / GMAC', nome: 'CCTE / GMAC', setor: 'CCTE / GMAC', cor: '#3b82f6' },
+  { nivel: 9, pct: '45%', label: '45% - GCF (1º Fase)', nome: 'GCF (1º Fase)', setor: 'CCTE / GMAC', cor: '#60a5fa' },
+  { nivel: 10, pct: '50%', label: '50% - Especialidade', nome: 'Especialidade', setor: 'CCTE / GMAC', cor: '#eab308' },
+  { nivel: 11, pct: '55%', label: '55% - Pré empenho', nome: 'Pré empenho', setor: 'CCTE / GMAC', cor: '#a855f7' },
+  { nivel: 12, pct: '60%', label: '60% - Empenho CFIN', nome: 'Empenho CFIN', setor: 'CCTE / GMAC', cor: '#8b5cf6' },
+  { nivel: 13, pct: '65%', label: '65% - GCF (2º Fase)', nome: 'GCF (2º Fase)', setor: 'CCTE / GMAC', cor: '#6366f1' },
+  { nivel: 14, pct: '70%', label: '70% - PGE (emissão de parecer)', nome: 'PGE (emissão de parecer)', setor: 'CCTE / GMAC', cor: '#0ea5e9' },
+  { nivel: 15, pct: '75%', label: '75% - Autorizo convênio - SEDUC', nome: 'Autorizo convênio - SEDUC', setor: 'CCTE / GMAC', cor: '#14b8a6' },
+  { nivel: 16, pct: '80%', label: '80% - GCF (3º Fase)', nome: 'GCF (3º Fase)', setor: 'CCTE / GMAC', cor: '#10b981' },
+  { nivel: 17, pct: '85%', label: '85% - PGE - Termo de Convênio', nome: 'PGE - Termo de Convênio', setor: 'CCTE / GMAC', cor: '#059669' },
+  { nivel: 18, pct: '90%', label: '90% - Controle Interno', nome: 'Controle Interno', setor: 'CCTE / GMAC', cor: '#047857' },
+  { nivel: 19, pct: '95%', label: '95% - Emissão da NL', nome: 'Emissão da NL', setor: 'CCTE / GMAC', cor: '#065f46' },
+  { nivel: 20, pct: '100%', label: '100% - Emissão da OB', nome: 'Emissão da OB', setor: 'CCTE / GMAC', cor: '#10b981' }
 ];
 window.ESCALA_ETAPAS = ESCALA_ETAPAS;
 
 function getEscalaInfo(val) {
-  const n = parseInt(val, 10);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+  const parts = String(val !== undefined && val !== null ? val : '').split(';');
+  const n = parseInt(parts[0], 10);
+  const subOpcao = (parts[1] || '').trim();
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(20, n));
   const etapa = ESCALA_ETAPAS[safeN] || ESCALA_ETAPAS[0];
+  let label = etapa.label;
+  let nome = etapa.nome;
+  if (safeN === 10 && subOpcao) {
+    label = `50% - ${subOpcao}`;
+    nome = subOpcao;
+  }
   return {
     nivel: safeN,
-    label: etapa.label,
-    nome: etapa.nome,
+    pct: etapa.pct,
+    label: label,
+    nome: nome,
+    setor: etapa.setor,
+    subOpcao: subOpcao,
     cor: etapa.cor,
     bgBar: etapa.cor
   };
 }
 window.getEscalaInfo = getEscalaInfo;
 
-function atualizarDisplayEscala(val) {
-  const info = getEscalaInfo(val);
+function toggleFormProcesso() {
+  const card = document.getElementById('card-form-processo');
+  const btn = document.getElementById('btn-toggle-form-processo');
+  if (!card) return;
+  const isHidden = (card.style.display === 'none');
+  if (isHidden) {
+    card.style.display = 'block';
+    if (btn) btn.innerHTML = '&#128065; <span class="btn-text">Ocultar Formulário</span>';
+  } else {
+    card.style.display = 'none';
+    if (btn) btn.innerHTML = '&#128065; <span class="btn-text">Mostrar Formulário</span>';
+  }
+}
+window.toggleFormProcesso = toggleFormProcesso;
+
+function passarFaseEscala(direcao) {
+  const slider = document.getElementById('form-escala');
+  let currentVal = slider ? parseInt(slider.value, 10) : 0;
+  if (isNaN(currentVal)) currentVal = 0;
+  let nextVal = currentVal + direcao;
+  if (nextVal < 0) nextVal = 0;
+  if (nextVal > 20) nextVal = 20;
+  selecionarEtapaEscala(nextVal);
+}
+window.passarFaseEscala = passarFaseEscala;
+
+function onCardCAMTrackClick(event) {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+  const step = Math.round(ratio * 7);
+  selecionarEtapaEscala(step);
+}
+window.onCardCAMTrackClick = onCardCAMTrackClick;
+
+function onCardGCFTrackClick(event) {
+  const rect = event.currentTarget.getBoundingClientRect();
+  const ratio = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+  const step = 8 + Math.round(ratio * 12);
+  selecionarEtapaEscala(step);
+}
+window.onCardGCFTrackClick = onCardGCFTrackClick;
+
+function atualizarDisplayEscala(val, triggerModalSeVazio = false) {
+  const slider = document.getElementById('form-escala');
+  const parts = String(val !== undefined && val !== null ? val : (slider ? slider.value : 0)).split(';');
+  const n = parseInt(parts[0], 10);
+  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(20, n));
+  
+  let subOpcao = (parts[1] || '').trim();
+  if (!subOpcao && slider && slider.dataset.subOpcao) {
+    subOpcao = slider.dataset.subOpcao;
+  }
+
+  if (slider) {
+    slider.value = safeN;
+    if (safeN === 10) {
+      if (subOpcao) slider.dataset.subOpcao = subOpcao;
+    } else {
+      slider.dataset.subOpcao = '';
+    }
+  }
+
+  const info = getEscalaInfo(safeN === 10 && subOpcao ? `10;${subOpcao}` : safeN);
+  
+  const setorBadge = document.getElementById('header-escala-setor');
+  if (setorBadge) {
+    setorBadge.textContent = info.setor;
+    if (info.setor === 'CAM') {
+      setorBadge.style.background = '#1e3a5f';
+      setorBadge.style.color = '#60a5fa';
+      setorBadge.style.borderColor = '#2563eb';
+    } else {
+      setorBadge.style.background = 'rgba(168,85,247,0.2)';
+      setorBadge.style.color = '#d8b4fe';
+      setorBadge.style.borderColor = '#9333ea';
+    }
+  }
+
   const badge = document.getElementById('header-escala-badge');
   if (badge) {
     badge.textContent = info.label;
     badge.style.background = info.cor;
     badge.style.boxShadow = '0 0 10px ' + info.cor + '80';
   }
-  const slider = document.getElementById('form-escala');
+
   if (slider) {
     slider.style.background = info.cor;
   }
-  const n = parseInt(val, 10);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
-  const ball = document.getElementById('escala-thumb-ball');
-  if (ball) {
-    ball.textContent = String(safeN);
-    ball.style.left = `calc(13px + (100% - 26px) * ${safeN} / 10)`;
+
+  // Botão de Opção da Fase 10 (Fixo e Ancorado - Abre popup apenas quando clicado)
+  const btnEdit10 = document.getElementById('btn-editar-etapa10');
+  const labelEdit10 = document.getElementById('label-opcao-etapa10');
+  if (btnEdit10) {
+    if (safeN === 10) {
+      btnEdit10.style.visibility = 'visible';
+      btnEdit10.style.opacity = '1';
+      btnEdit10.style.pointerEvents = 'auto';
+      if (labelEdit10) labelEdit10.textContent = info.subOpcao ? info.subOpcao : 'Opção';
+    } else {
+      btnEdit10.style.visibility = 'hidden';
+      btnEdit10.style.opacity = '0';
+      btnEdit10.style.pointerEvents = 'none';
+    }
   }
-  // Sincronizar estado visual top das linhas cinza (ticks)
-  const ticks = document.querySelectorAll('.escala-tick');
+
+  // Card 1: Fase CAM (etapas 0 a 7 -> 0% a 35%)
+  const cardCAM = document.getElementById('card-escala-cam');
+  const cardCAMTitle = document.getElementById('card-cam-title');
+  const cardCAMStatus = document.getElementById('card-cam-status');
+  const cardCAMFill = document.getElementById('card-cam-fill');
+  const cardCAMBall = document.getElementById('card-cam-ball');
+
+  // Card 2: Fase GCF / CCTE (etapas 8 a 20 -> 40% a 100%)
+  const cardGCF = document.getElementById('card-escala-gcf');
+  const cardGCFTitle = document.getElementById('card-gcf-title');
+  const cardGCFStatus = document.getElementById('card-gcf-status');
+  const cardGCFFill = document.getElementById('card-gcf-fill');
+  const cardGCFBall = document.getElementById('card-gcf-ball');
+
+  if (safeN <= 7) {
+    // CAM em andamento
+    if (cardCAM) {
+      cardCAM.style.background = 'rgba(30,41,59,0.7)';
+      cardCAM.style.borderColor = '#334155';
+      cardCAM.style.boxShadow = 'none';
+      if (cardCAMTitle) {
+        cardCAMTitle.style.color = '#60a5fa';
+        cardCAMTitle.textContent = 'FASE CAM (0% - 35%)';
+      }
+      if (cardCAMStatus) {
+        cardCAMStatus.style.color = '#94a3b8';
+        cardCAMStatus.textContent = 'Em andamento';
+      }
+      if (cardCAMFill) {
+        cardCAMFill.style.width = `${(safeN / 7) * 100}%`;
+        cardCAMFill.style.background = info.cor;
+      }
+      if (cardCAMBall) {
+        cardCAMBall.style.display = 'flex';
+        cardCAMBall.style.left = `calc(6px + (100% - 12px) * ${safeN} / 7)`;
+        cardCAMBall.style.borderColor = info.cor;
+        cardCAMBall.textContent = info.pct;
+      }
+    }
+    // GCF aguardando CAM
+    if (cardGCF) {
+      cardGCF.style.background = 'rgba(30,41,59,0.4)';
+      cardGCF.style.borderColor = '#1e293b';
+      cardGCF.style.opacity = '0.7';
+      cardGCF.style.boxShadow = 'none';
+      if (cardGCFTitle) {
+        cardGCFTitle.style.color = '#64748b';
+        cardGCFTitle.textContent = 'FASE GCF / CCTE (40% - 100%)';
+      }
+      if (cardGCFStatus) {
+        cardGCFStatus.style.color = '#475569';
+        cardGCFStatus.textContent = 'Aguardando CAM';
+      }
+      if (cardGCFFill) {
+        cardGCFFill.style.width = '0%';
+      }
+      if (cardGCFBall) {
+        cardGCFBall.style.display = 'none';
+      }
+    }
+  } else {
+    // safeN >= 8: CAM Concluída (Fica verde!)
+    if (cardCAM) {
+      cardCAM.style.background = 'rgba(16,185,129,0.18)';
+      cardCAM.style.borderColor = '#10b981';
+      cardCAM.style.boxShadow = '0 0 12px rgba(16,185,129,0.3)';
+      if (cardCAMTitle) {
+        cardCAMTitle.style.color = '#34d399';
+        cardCAMTitle.textContent = 'FASE CAM';
+      }
+      if (cardCAMStatus) {
+        cardCAMStatus.style.color = '#10b981';
+        cardCAMStatus.innerHTML = '&#10004; Concluída';
+      }
+      if (cardCAMFill) {
+        cardCAMFill.style.width = '100%';
+        cardCAMFill.style.background = '#10b981';
+      }
+      if (cardCAMBall) {
+        cardCAMBall.style.display = 'none';
+      }
+    }
+    // GCF em andamento (ou concluído no 20)
+    if (cardGCF) {
+      cardGCF.style.background = (safeN === 20) ? 'rgba(16,185,129,0.18)' : 'rgba(30,41,59,0.85)';
+      cardGCF.style.borderColor = (safeN === 20) ? '#10b981' : '#475569';
+      cardGCF.style.opacity = '1';
+      cardGCF.style.boxShadow = (safeN === 20) ? '0 0 12px rgba(16,185,129,0.3)' : 'none';
+      if (cardGCFTitle) {
+        cardGCFTitle.style.color = (safeN === 20) ? '#34d399' : '#c084fc';
+        cardGCFTitle.textContent = 'FASE GCF / CCTE (40% - 100%)';
+      }
+      if (cardGCFStatus) {
+        cardGCFStatus.style.color = (safeN === 20) ? '#10b981' : '#c084fc';
+        cardGCFStatus.innerHTML = (safeN === 20) ? '&#10004; Concluído' : 'Em andamento';
+      }
+      const gcfStep = safeN - 8; // 0 a 12
+      if (cardGCFFill) {
+        cardGCFFill.style.width = `${(gcfStep / 12) * 100}%`;
+        cardGCFFill.style.background = info.cor;
+      }
+      if (cardGCFBall) {
+        cardGCFBall.style.display = 'flex';
+        cardGCFBall.style.left = `calc(6px + (100% - 12px) * ${gcfStep} / 12)`;
+        cardGCFBall.style.borderColor = info.cor;
+        cardGCFBall.textContent = info.pct;
+      }
+    }
+  }
+
+  // Compatibilidade com escala-thumb-ball legado (se existir na página)
+  const legacyBall = document.getElementById('escala-thumb-ball');
+  if (legacyBall) {
+    legacyBall.textContent = info.pct;
+    legacyBall.style.left = `calc(13px + (100% - 26px) * ${safeN} / 20)`;
+  }
+
+  // Sincronizar estado visual das marcações (ticks) mantendo as 21 cores individuais
+  const ticks = document.querySelectorAll('#header-escala-wrapper .escala-tick');
   ticks.forEach(t => {
     const tVal = parseInt(t.getAttribute('data-val'), 10);
+    const stepInfo = ESCALA_ETAPAS[tVal] || ESCALA_ETAPAS[0];
+    const stepCor = stepInfo.cor;
     if (tVal === safeN) {
       t.style.background = '#ffffff';
       t.style.height = '14px';
+      t.style.width = '4px';
+      t.style.borderRadius = '999px';
+      t.style.border = '2px solid ' + stepCor;
       t.style.opacity = '1';
-      t.style.boxShadow = '0 0 8px rgba(255,255,255,0.95)';
-    } else if (tVal < safeN) {
-      t.style.background = '#94a3b8';
-      t.style.height = '10px';
-      t.style.opacity = '0.85';
-      t.style.boxShadow = 'none';
+      t.style.boxShadow = '0 0 10px ' + stepCor;
+      t.style.zIndex = '4';
     } else {
-      t.style.background = '#64748b';
-      t.style.height = '9px';
-      t.style.opacity = '0.55';
-      t.style.boxShadow = 'none';
+      t.style.background = stepCor;
+      t.style.border = 'none';
+      t.style.width = '3px';
+      t.style.borderRadius = '999px';
+      t.style.zIndex = '1';
+      if (tVal < safeN) {
+        t.style.height = '9px';
+        t.style.opacity = '1';
+        t.style.boxShadow = '0 0 5px ' + stepCor + '90';
+      } else {
+        t.style.height = '7px';
+        t.style.opacity = '0.65';
+        t.style.boxShadow = 'none';
+      }
     }
   });
+
+  // Observação: NÃO abre o modal automaticamente. O usuário deve clicar no botão "Opção".
 }
 window.atualizarDisplayEscala = atualizarDisplayEscala;
+
+function abrirModalEtapa10Opcoes() {
+  const modal = document.getElementById('modal-escala-etapa10');
+  if (modal) modal.style.display = 'flex';
+}
+window.abrirModalEtapa10Opcoes = abrirModalEtapa10Opcoes;
+
+function fecharModalEtapa10Opcoes() {
+  const modal = document.getElementById('modal-escala-etapa10');
+  if (modal) modal.style.display = 'none';
+}
+window.fecharModalEtapa10Opcoes = fecharModalEtapa10Opcoes;
+
+function selecionarOpcaoEtapa10(opcao) {
+  const slider = document.getElementById('form-escala');
+  if (slider) {
+    slider.value = 10;
+    slider.dataset.subOpcao = opcao;
+  }
+  fecharModalEtapa10Opcoes();
+  atualizarDisplayEscala(`10;${opcao}`, false);
+  if (slider) {
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+    slider.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  if (typeof toast === 'function') {
+    toast(`Fase 10 definida como: 10;${opcao}`, 'success');
+  }
+}
+window.selecionarOpcaoEtapa10 = selecionarOpcaoEtapa10;
 
 function selecionarEtapaEscala(val) {
   const slider = document.getElementById('form-escala');
   if (slider) {
     slider.value = val;
-    atualizarDisplayEscala(val);
+    atualizarDisplayEscala(val, true);
     slider.dispatchEvent(new Event('input', { bubbles: true }));
     slider.dispatchEvent(new Event('change', { bubbles: true }));
   }
@@ -84,47 +352,56 @@ function selecionarEtapaEscala(val) {
 window.selecionarEtapaEscala = selecionarEtapaEscala;
 
 function renderMiniEscalaBar(val) {
-  const n = parseInt(val, 10);
   const info = getEscalaInfo(val);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
-  const pct = (safeN / 10) * 100;
+  const pctNum = (info.nivel / 20) * 100;
   return `
-    <div class="mini-escala-container" title="Escala de Nível: ${info.label}" style="margin-top:6px;display:flex;align-items:center;gap:6px;user-select:none;">
+    <div class="mini-escala-container" title="Escala: ${info.label}" style="margin-top:6px;display:flex;align-items:center;gap:6px;user-select:none;">
       <div style="position:relative;width:105px;height:8px;border-radius:999px;background:${info.cor};box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);overflow:visible;">
-        <div style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:12px;height:12px;border-radius:50%;background:#ffffff;border:2.5px solid ${info.cor};box-shadow:0 0 6px rgba(0,0,0,0.8);cursor:default;"></div>
+        <div style="position:absolute;top:50%;left:${pctNum}%;transform:translate(-50%, -50%);width:12px;height:12px;border-radius:50%;background:#ffffff;border:2.5px solid ${info.cor};box-shadow:0 0 6px rgba(0,0,0,0.8);cursor:default;"></div>
       </div>
-      <span style="font-size:10px;font-weight:900;color:${info.cor};font-family:monospace;line-height:1;">${safeN}/10</span>
+      <span style="font-size:10px;font-weight:900;color:${info.cor};font-family:monospace;line-height:1;">${info.pct}</span>
     </div>
   `;
 }
 window.renderMiniEscalaBar = renderMiniEscalaBar;
 
 function renderRelatorioEscalaBar(val) {
-  const n = parseInt(val, 10);
   const info = getEscalaInfo(val);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
-  const pct = (safeN / 10) * 100;
+  const pctNum = (info.nivel / 20) * 100;
   return `
-    <div class="relatorio-escala-container" title="Escala de Nível: ${info.label}" style="margin-top:3px;display:flex;align-items:center;gap:5px;user-select:none;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
+    <div class="relatorio-escala-container" title="Escala: ${info.label}" style="margin-top:3px;display:flex;align-items:center;gap:5px;user-select:none;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
       <div class="relatorio-escala-track" style="position:relative;width:75px;height:6px;border-radius:999px;background:${info.cor} !important;box-shadow:inset 0 1px 2px rgba(0,0,0,0.3);overflow:visible;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">
-        <div class="relatorio-escala-thumb" style="position:absolute;top:50%;left:${pct}%;transform:translate(-50%, -50%);width:9px;height:9px;border-radius:50%;background:#ffffff !important;border:2px solid ${info.cor} !important;box-shadow:0 0 3px rgba(0,0,0,0.5);-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;"></div>
+        <div class="relatorio-escala-thumb" style="position:absolute;top:50%;left:${pctNum}%;transform:translate(-50%, -50%);width:9px;height:9px;border-radius:50%;background:#ffffff !important;border:2px solid ${info.cor} !important;box-shadow:0 0 3px rgba(0,0,0,0.5);-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;"></div>
       </div>
-      <span class="relatorio-escala-text" style="font-size:8.5px;font-weight:900;color:${info.cor} !important;font-family:monospace;line-height:1;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">${safeN}/10</span>
+      <span class="relatorio-escala-text" style="font-size:8.5px;font-weight:900;color:${info.cor} !important;font-family:monospace;line-height:1;-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;">${info.pct}</span>
     </div>
   `;
 }
 window.renderRelatorioEscalaBar = renderRelatorioEscalaBar;
 
-function atualizarDisplayFiltroEscala(val, ativo) {
-  const info = getEscalaInfo(val);
+function atualizarDisplayFiltroEscala(minVal, maxVal, ativo) {
   const chk = document.getElementById('filtro-escala-ativo');
   const badge = document.getElementById('filtro-escala-badge');
-  const slider = document.getElementById('filtro-escala-range');
-  const ball = document.getElementById('filtro-escala-thumb-ball');
+  const rangeMin = document.getElementById('filtro-escala-range-min');
+  const rangeMax = document.getElementById('filtro-escala-range-max');
+  const ballMin = document.getElementById('filtro-escala-ball-min');
+  const ballMax = document.getElementById('filtro-escala-ball-max');
+  const activeBar = document.getElementById('filtro-escala-active-bar');
   const trackWrap = document.getElementById('filtro-escala-track-wrap');
   const ticks = document.querySelectorAll('.escala-tick-filtro');
-  const n = parseInt(val, 10);
-  const safeN = isNaN(n) ? 0 : Math.max(0, Math.min(10, n));
+
+  let nMin = parseInt(minVal !== undefined && minVal !== null ? minVal : (rangeMin ? rangeMin.value : 0), 10);
+  let nMax = parseInt(maxVal !== undefined && maxVal !== null ? maxVal : (rangeMax ? rangeMax.value : 20), 10);
+  if (isNaN(nMin)) nMin = 0;
+  if (isNaN(nMax)) nMax = 20;
+  nMin = Math.max(0, Math.min(20, nMin));
+  nMax = Math.max(0, Math.min(20, nMax));
+
+  const startVal = Math.min(nMin, nMax);
+  const endVal = Math.max(nMin, nMax);
+
+  const infoMin = getEscalaInfo(startVal);
+  const infoMax = getEscalaInfo(endVal);
 
   if (chk) chk.checked = !!ativo;
 
@@ -134,13 +411,17 @@ function atualizarDisplayFiltroEscala(val, ativo) {
 
   if (badge) {
     if (ativo) {
-      badge.textContent = info.label;
-      badge.style.background = info.cor;
+      if (startVal === endVal) {
+        badge.textContent = `${infoMin.pct} - ${infoMin.nome}`;
+      } else {
+        badge.textContent = `${infoMin.pct} a ${infoMax.pct} (${infoMin.nome} ➔ ${infoMax.nome})`;
+      }
+      badge.style.background = infoMax.cor;
       badge.style.color = '#ffffff';
-      badge.style.borderColor = info.cor;
-      badge.style.boxShadow = '0 0 8px ' + info.cor + '80';
+      badge.style.borderColor = infoMax.cor;
+      badge.style.boxShadow = '0 0 8px ' + infoMax.cor + '80';
     } else {
-      badge.textContent = 'TODAS AS ESCALAS';
+      badge.textContent = 'TODAS AS ESCALAS (0% - 100%)';
       badge.style.background = '#1e293b';
       badge.style.color = '#94a3b8';
       badge.style.borderColor = '#334155';
@@ -148,16 +429,39 @@ function atualizarDisplayFiltroEscala(val, ativo) {
     }
   }
 
-  if (slider) {
-    slider.value = safeN;
-    slider.style.background = ativo ? info.cor : '#475569';
+  if (rangeMin) rangeMin.value = startVal;
+  if (rangeMax) rangeMax.value = endVal;
+
+  if (ballMin) {
+    ballMin.textContent = infoMin.pct;
+    ballMin.style.left = `calc(10px + (100% - 20px) * ${startVal} / 20)`;
+    ballMin.style.borderColor = ativo ? infoMin.cor : '#ffffff';
+    ballMin.style.boxShadow = ativo ? '0 0 8px ' + infoMin.cor : '0 1px 5px rgba(0,0,0,0.6)';
   }
 
-  if (ball) {
-    ball.textContent = String(safeN);
-    ball.style.left = `calc(10px + (100% - 20px) * ${safeN} / 10)`;
-    ball.style.borderColor = ativo ? info.cor : '#ffffff';
-    ball.style.boxShadow = ativo ? '0 0 8px ' + info.cor : '0 1px 5px rgba(0,0,0,0.6)';
+  if (ballMax) {
+    ballMax.textContent = infoMax.pct;
+    ballMax.style.left = `calc(10px + (100% - 20px) * ${endVal} / 20)`;
+    ballMax.style.borderColor = ativo ? infoMax.cor : '#ffffff';
+    ballMax.style.boxShadow = ativo ? '0 0 8px ' + infoMax.cor : '0 1px 5px rgba(0,0,0,0.6)';
+  }
+
+  if (activeBar) {
+    if (ativo) {
+      activeBar.style.left = `calc(10px + (100% - 20px) * ${startVal} / 20)`;
+      activeBar.style.right = `calc(100% - (10px + (100% - 20px) * ${endVal} / 20))`;
+      if (startVal === endVal) {
+        activeBar.style.background = infoMin.cor;
+      } else {
+        activeBar.style.background = `linear-gradient(90deg, ${infoMin.cor} 0%, ${infoMax.cor} 100%)`;
+      }
+      activeBar.style.boxShadow = '0 0 8px ' + infoMax.cor + '80';
+    } else {
+      activeBar.style.left = '10px';
+      activeBar.style.right = 'calc(100% - 10px)';
+      activeBar.style.background = '#475569';
+      activeBar.style.boxShadow = 'none';
+    }
   }
 
   ticks.forEach(t => {
@@ -167,77 +471,427 @@ function atualizarDisplayFiltroEscala(val, ativo) {
       t.style.height = '7px';
       t.style.opacity = '0.5';
       t.style.boxShadow = 'none';
-    } else if (tVal === safeN) {
+    } else if (tVal === startVal || tVal === endVal) {
       t.style.background = '#ffffff';
       t.style.height = '12px';
       t.style.opacity = '1';
       t.style.boxShadow = '0 0 6px rgba(255,255,255,0.95)';
-    } else if (tVal < safeN) {
-      t.style.background = '#94a3b8';
-      t.style.height = '8px';
-      t.style.opacity = '0.8';
+    } else if (tVal > startVal && tVal < endVal) {
+      t.style.background = '#e2e8f0';
+      t.style.height = '9px';
+      t.style.opacity = '0.9';
       t.style.boxShadow = 'none';
     } else {
       t.style.background = '#64748b';
       t.style.height = '7px';
-      t.style.opacity = '0.5';
+      t.style.opacity = '0.4';
       t.style.boxShadow = 'none';
     }
   });
+
+  if (typeof atualizarEstiloBolasFiltroEscala === 'function') {
+    atualizarEstiloBolasFiltroEscala();
+  }
 }
 window.atualizarDisplayFiltroEscala = atualizarDisplayFiltroEscala;
+
+let filtroEscalaAlvoAtivo = null; // Inicia sem foco para que ambas as bolas fiquem exatamente do mesmo tamanho
+window.filtroEscalaAlvoAtivo = filtroEscalaAlvoAtivo;
+
+function ativarAlvoFiltroEscala(alvo, event) {
+  if (event && event.stopPropagation) {
+    event.stopPropagation();
+  }
+  if (alvo !== 'min' && alvo !== 'max') alvo = 'max';
+  filtroEscalaAlvoAtivo = alvo;
+  window.filtroEscalaAlvoAtivo = alvo;
+  atualizarEstiloBolasFiltroEscala();
+}
+window.ativarAlvoFiltroEscala = ativarAlvoFiltroEscala;
+
+function desativarFocoBolasFiltroEscala() {
+  filtroEscalaAlvoAtivo = null;
+  window.filtroEscalaAlvoAtivo = null;
+  atualizarEstiloBolasFiltroEscala();
+}
+window.desativarFocoBolasFiltroEscala = desativarFocoBolasFiltroEscala;
+
+// Ao clicar em qualquer outro elemento fora da régua, remove o foco e ambas voltam ao tamanho normal idêntico
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', (e) => {
+    const container = document.getElementById('filtro-escala-buscador-container');
+    if (container && !container.contains(e.target)) {
+      desativarFocoBolasFiltroEscala();
+    }
+  });
+}
+
+function atualizarEstiloBolasFiltroEscala() {
+  const ballMin = document.getElementById('filtro-escala-ball-min');
+  const ballMax = document.getElementById('filtro-escala-ball-max');
+  const rMin = document.getElementById('filtro-escala-range-min');
+  const rMax = document.getElementById('filtro-escala-range-max');
+  if (filtroEscalaAlvoAtivo === 'min') {
+    if (ballMin) ballMin.classList.add('filtro-escala-ball-active');
+    if (ballMax) ballMax.classList.remove('filtro-escala-ball-active');
+    if (rMin) rMin.style.zIndex = '26';
+    if (rMax) rMax.style.zIndex = '24';
+  } else if (filtroEscalaAlvoAtivo === 'max') {
+    if (ballMax) ballMax.classList.add('filtro-escala-ball-active');
+    if (ballMin) ballMin.classList.remove('filtro-escala-ball-active');
+    if (rMax) rMax.style.zIndex = '26';
+    if (rMin) rMin.style.zIndex = '24';
+  } else {
+    // Sem foco ativo: ambas as bolas voltam ao tamanho normal exatamente idênticas
+    if (ballMin) ballMin.classList.remove('filtro-escala-ball-active');
+    if (ballMax) ballMax.classList.remove('filtro-escala-ball-active');
+    if (rMax) rMax.style.zIndex = '25';
+    if (rMin) rMin.style.zIndex = '24';
+  }
+}
+window.atualizarEstiloBolasFiltroEscala = atualizarEstiloBolasFiltroEscala;
 
 function toggleFiltroEscalaAtivo(ativo) {
   if (typeof state !== 'undefined' && state && state.filtros) {
     state.filtros.escalaAtivo = !!ativo;
-    const slider = document.getElementById('filtro-escala-range');
-    const val = slider ? slider.value : (state.filtros.escala || 0);
-    state.filtros.escala = parseInt(val, 10);
-    atualizarDisplayFiltroEscala(val, state.filtros.escalaAtivo);
+    const rMin = document.getElementById('filtro-escala-range-min');
+    const rMax = document.getElementById('filtro-escala-range-max');
+    let vMin = rMin ? parseInt(rMin.value, 10) : (state.filtros.escalaMin !== null ? state.filtros.escalaMin : 0);
+    let vMax = rMax ? parseInt(rMax.value, 10) : (state.filtros.escalaMax !== null ? state.filtros.escalaMax : 20);
+    if (isNaN(vMin)) vMin = 0;
+    if (isNaN(vMax)) vMax = 20;
+    const sMin = Math.min(vMin, vMax);
+    const sMax = Math.max(vMin, vMax);
+    state.filtros.escalaMin = sMin;
+    state.filtros.escalaMax = sMax;
+    state.filtros.escala = sMin;
+    atualizarDisplayFiltroEscala(sMin, sMax, state.filtros.escalaAtivo);
     state.paginaAtual = 1;
     if (typeof renderProcessos === 'function') renderProcessos();
   }
 }
 window.toggleFiltroEscalaAtivo = toggleFiltroEscalaAtivo;
 
-function onInputFiltroEscala(val) {
+function onInputFiltroEscalaMin(val) {
   if (typeof state !== 'undefined' && state && state.filtros) {
+    ativarAlvoFiltroEscala('min');
+    const rMax = document.getElementById('filtro-escala-range-max');
+    let vMin = parseInt(val, 10);
+    let vMax = rMax ? parseInt(rMax.value, 10) : 20;
+    if (isNaN(vMin)) vMin = 0;
+    if (isNaN(vMax)) vMax = 20;
+    if (vMin > vMax) {
+      vMax = vMin;
+      if (rMax) rMax.value = vMax;
+    }
     state.filtros.escalaAtivo = true;
-    state.filtros.escala = parseInt(val, 10);
-    atualizarDisplayFiltroEscala(val, true);
+    state.filtros.escalaMin = vMin;
+    state.filtros.escalaMax = vMax;
+    state.filtros.escala = vMin;
+    atualizarDisplayFiltroEscala(vMin, vMax, true);
     state.paginaAtual = 1;
     if (typeof renderProcessos === 'function') renderProcessos();
   }
 }
-window.onInputFiltroEscala = onInputFiltroEscala;
+window.onInputFiltroEscalaMin = onInputFiltroEscalaMin;
 
-function selecionarFiltroEscala(val) {
-  const slider = document.getElementById('filtro-escala-range');
-  if (slider) slider.value = val;
-  onInputFiltroEscala(val);
+function onInputFiltroEscalaMax(val) {
+  if (typeof state !== 'undefined' && state && state.filtros) {
+    ativarAlvoFiltroEscala('max');
+    const rMin = document.getElementById('filtro-escala-range-min');
+    let vMax = parseInt(val, 10);
+    let vMin = rMin ? parseInt(rMin.value, 10) : 0;
+    if (isNaN(vMax)) vMax = 20;
+    if (isNaN(vMin)) vMin = 0;
+    if (vMax < vMin) {
+      vMin = vMax;
+      if (rMin) rMin.value = vMin;
+    }
+    state.filtros.escalaAtivo = true;
+    state.filtros.escalaMin = vMin;
+    state.filtros.escalaMax = vMax;
+    state.filtros.escala = vMin;
+    atualizarDisplayFiltroEscala(vMin, vMax, true);
+    state.paginaAtual = 1;
+    if (typeof renderProcessos === 'function') renderProcessos();
+  }
 }
-window.selecionarFiltroEscala = selecionarFiltroEscala;
+window.onInputFiltroEscalaMax = onInputFiltroEscalaMax;
+
+function selecionarFiltroEscalaPonto(val) {
+  if (typeof state !== 'undefined' && state && state.filtros) {
+    const p = parseInt(val, 10);
+    const safeP = isNaN(p) ? 0 : Math.max(0, Math.min(20, p));
+    state.filtros.escalaAtivo = true;
+    state.filtros.escalaMin = safeP;
+    state.filtros.escalaMax = safeP;
+    state.filtros.escala = safeP;
+    const rMin = document.getElementById('filtro-escala-range-min');
+    const rMax = document.getElementById('filtro-escala-range-max');
+    if (rMin) rMin.value = safeP;
+    if (rMax) rMax.value = safeP;
+    atualizarDisplayFiltroEscala(safeP, safeP, true);
+    state.paginaAtual = 1;
+    if (typeof renderProcessos === 'function') renderProcessos();
+  }
+}
+window.selecionarFiltroEscalaPonto = selecionarFiltroEscalaPonto;
+window.selecionarFiltroEscala = selecionarFiltroEscalaPonto;
 
 function limparFiltroEscala() {
   if (typeof state !== 'undefined' && state && state.filtros) {
     state.filtros.escalaAtivo = false;
     state.filtros.escala = null;
-    const slider = document.getElementById('filtro-escala-range');
-    const val = slider ? slider.value : 0;
-    atualizarDisplayFiltroEscala(val, false);
+    state.filtros.escalaMin = 0;
+    state.filtros.escalaMax = 20;
+    const rMin = document.getElementById('filtro-escala-range-min');
+    const rMax = document.getElementById('filtro-escala-range-max');
+    if (rMin) rMin.value = 0;
+    if (rMax) rMax.value = 20;
+    atualizarDisplayFiltroEscala(0, 20, false);
     state.paginaAtual = 1;
     if (typeof renderProcessos === 'function') renderProcessos();
   }
 }
 window.limparFiltroEscala = limparFiltroEscala;
-// ===================================================
 
+function navegarFiltroEscala(direcao) {
+  if (typeof state === 'undefined' || !state || !state.filtros) return;
+  const rMin = document.getElementById('filtro-escala-range-min');
+  const rMax = document.getElementById('filtro-escala-range-max');
+  let vMin = rMin ? parseInt(rMin.value, 10) : 0;
+  let vMax = rMax ? parseInt(rMax.value, 10) : 20;
+  if (isNaN(vMin)) vMin = 0;
+  if (isNaN(vMax)) vMax = 20;
+
+  // Se nenhuma bola estiver explicitamente focada, ativa o Máximo (Y) por padrão e o destaca
+  if (!filtroEscalaAlvoAtivo) {
+    filtroEscalaAlvoAtivo = 'max';
+    window.filtroEscalaAlvoAtivo = 'max';
+    atualizarEstiloBolasFiltroEscala();
+  }
+
+  // Movimenta o parâmetro atualmente ativado: 'min' (X) ou 'max' (Y)
+  if (filtroEscalaAlvoAtivo === 'min') {
+    if (direcao > 0) {
+      vMin = Math.min(vMax, vMin + 1);
+    } else {
+      vMin = Math.max(0, vMin - 1);
+    }
+  } else {
+    // Alvo 'max' (Parâmetro Y)
+    if (direcao > 0) {
+      vMax = Math.min(20, vMax + 1);
+    } else {
+      vMax = Math.max(vMin, vMax - 1);
+    }
+  }
+
+  if (rMin) rMin.value = vMin;
+  if (rMax) rMax.value = vMax;
+  state.filtros.escalaAtivo = true;
+  state.filtros.escalaMin = vMin;
+  state.filtros.escalaMax = vMax;
+  state.filtros.escala = vMin;
+  atualizarDisplayFiltroEscala(vMin, vMax, true);
+  state.paginaAtual = 1;
+  if (typeof renderProcessos === 'function') renderProcessos();
+}
+window.navegarFiltroEscala = navegarFiltroEscala;
+
+// ===== LÓGICA DE ADIMPLÊNCIA / INADIMPLÊNCIA (COLUNA AG) =====
+function atualizarVisualAdimplencia(inadimplente) {
+  const box = document.getElementById('form-status-adimplencia');
+  const chk = document.getElementById('form-check-inadimplente');
+  const isTrue = (inadimplente === '1' || inadimplente === 1 || inadimplente === true);
+  if (chk) chk.checked = isTrue;
+  if (box) {
+    if (isTrue) {
+      box.value = 'INADIMPLENTE';
+      box.style.background = '#fef08a';
+      box.style.border = '2px solid #ef4444';
+      box.style.color = '#dc2626';
+      box.style.boxShadow = '0 0 10px rgba(239,68,68,0.35)';
+    } else {
+      box.value = 'Adimplente';
+      box.style.background = '#fef08a';
+      box.style.border = '2px solid #eab308';
+      box.style.color = '#15803d';
+      box.style.boxShadow = '0 2px 8px rgba(234,179,8,0.25)';
+    }
+  }
+}
+window.atualizarVisualAdimplencia = atualizarVisualAdimplencia;
+
+function aoAlternarCheckInadimplente(checked) {
+  atualizarVisualAdimplencia(checked);
+}
+window.aoAlternarCheckInadimplente = aoAlternarCheckInadimplente;
+
+function atualizarVisualAdimplenciaPopup(inadimplente) {
+  const box = document.getElementById('popup-novo-status-adimplencia');
+  const chk = document.getElementById('popup-novo-check-inadimplente');
+  const isTrue = (inadimplente === '1' || inadimplente === 1 || inadimplente === true);
+  if (chk) chk.checked = isTrue;
+  if (box) {
+    if (isTrue) {
+      box.value = 'INADIMPLENTE';
+      box.style.background = '#fef08a';
+      box.style.border = '2px solid #ef4444';
+      box.style.color = '#dc2626';
+      box.style.boxShadow = '0 0 10px rgba(239,68,68,0.35)';
+    } else {
+      box.value = 'Adimplente';
+      box.style.background = '#fef08a';
+      box.style.border = '2px solid #eab308';
+      box.style.color = '#15803d';
+      box.style.boxShadow = '0 2px 8px rgba(234,179,8,0.25)';
+    }
+  }
+}
+window.atualizarVisualAdimplenciaPopup = atualizarVisualAdimplenciaPopup;
+
+function aoAlternarCheckInadimplentePopup(checked) {
+  atualizarVisualAdimplenciaPopup(checked);
+}
+window.aoAlternarCheckInadimplentePopup = aoAlternarCheckInadimplentePopup;
+
+
+let _timerAvisoInadimplente = null;
+let _intervalAvisoInadimplente = null;
+
+function fecharAvisoEnormeInadimplente() {
+  const overlay = document.getElementById('aviso-enorme-inadimplente');
+  if (overlay) overlay.style.display = 'none';
+  if (_timerAvisoInadimplente) {
+    clearTimeout(_timerAvisoInadimplente);
+    _timerAvisoInadimplente = null;
+  }
+  if (_intervalAvisoInadimplente) {
+    clearInterval(_intervalAvisoInadimplente);
+    _intervalAvisoInadimplente = null;
+  }
+}
+window.fecharAvisoEnormeInadimplente = fecharAvisoEnormeInadimplente;
+
+// Fecha ao pressionar a tecla Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' || e.key === 'Esc') {
+    const overlay = document.getElementById('aviso-enorme-inadimplente');
+    if (overlay && overlay.style.display !== 'none') {
+      fecharAvisoEnormeInadimplente();
+    }
+  }
+});
+
+let _ultimoAvisoEnormeTimestamp = 0;
+function mostrarAvisoEnormeInadimplente() {
+  const agora = Date.now();
+  if (agora - _ultimoAvisoEnormeTimestamp < 2500) {
+    return; // Evita disparos duplicados ou em sequência rápida
+  }
+  _ultimoAvisoEnormeTimestamp = agora;
+
+  const overlay = document.getElementById('aviso-enorme-inadimplente');
+  if (!overlay) return;
+  overlay.style.display = 'flex';
+  
+  if (_timerAvisoInadimplente) clearTimeout(_timerAvisoInadimplente);
+  if (_intervalAvisoInadimplente) clearInterval(_intervalAvisoInadimplente);
+
+  const chk = document.getElementById('form-check-inadimplente');
+  if (chk) chk.checked = true;
+  if (typeof atualizarVisualAdimplencia === 'function') {
+    atualizarVisualAdimplencia(true);
+  }
+
+  let segundosRestantes = 15;
+  const contEl = document.getElementById('aviso-inadimplente-contagem');
+  if (contEl) contEl.textContent = String(segundosRestantes);
+
+  _intervalAvisoInadimplente = setInterval(() => {
+    segundosRestantes--;
+    if (contEl) contEl.textContent = String(segundosRestantes);
+    if (segundosRestantes <= 0) {
+      clearInterval(_intervalAvisoInadimplente);
+      _intervalAvisoInadimplente = null;
+    }
+  }, 1000);
+
+  // Alerta aumentado para 15 segundos conforme solicitado
+  _timerAvisoInadimplente = setTimeout(() => {
+    fecharAvisoEnormeInadimplente();
+  }, 15000);
+}
+window.mostrarAvisoEnormeInadimplente = mostrarAvisoEnormeInadimplente;
+
+function verificarCNPJInadimplenteHistorico(cnpjDigitado) {
+  if (!cnpjDigitado) return false;
+  const limpo = String(cnpjDigitado).replace(/\D/g, '');
+  if (limpo.length !== 14 || /^0+$/.test(limpo)) return false;
+  
+  const procs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []);
+  if (!Array.isArray(procs)) return false;
+
+  return procs.some(p => {
+    const pCnpj = String(p.cnpj || '').replace(/\D/g, '');
+    const pInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1' || p.CONTAS === 1);
+    return pCnpj === limpo && pInad;
+  });
+}
+window.verificarCNPJInadimplenteHistorico = verificarCNPJInadimplenteHistorico;
+
+let _ultimoCNPJChecadoAviso = '';
+function aoDigitarCNPJFormulario(val) {
+  const limpo = String(val || '').replace(/\D/g, '');
+  if (limpo.length === 14 && limpo !== _ultimoCNPJChecadoAviso) {
+    if (verificarCNPJInadimplenteHistorico(limpo)) {
+      _ultimoCNPJChecadoAviso = limpo;
+      mostrarAvisoEnormeInadimplente();
+    }
+  }
+}
+window.aoDigitarCNPJFormulario = aoDigitarCNPJFormulario;
+
+function aoSairCNPJFormulario(val) {
+  const limpo = String(val || '').replace(/\D/g, '');
+  if (limpo.length === 14 && limpo !== _ultimoCNPJChecadoAviso) {
+    if (verificarCNPJInadimplenteHistorico(limpo)) {
+      _ultimoCNPJChecadoAviso = limpo;
+      mostrarAvisoEnormeInadimplente();
+    }
+  }
+}
+window.aoSairCNPJFormulario = aoSairCNPJFormulario;
+
+let _ultimoCNPJChecadoPopup = '';
+function aoDigitarCNPJPopup(val) {
+  const limpo = String(val || '').replace(/\D/g, '');
+  if (limpo.length === 14 && limpo !== _ultimoCNPJChecadoPopup) {
+    if (verificarCNPJInadimplenteHistorico(limpo)) {
+      _ultimoCNPJChecadoPopup = limpo;
+      mostrarAvisoEnormeInadimplente();
+    }
+  }
+}
+window.aoDigitarCNPJPopup = aoDigitarCNPJPopup;
+
+function aoSairCNPJPopup(val) {
+  const limpo = String(val || '').replace(/\D/g, '');
+  if (limpo.length === 14 && limpo !== _ultimoCNPJChecadoPopup) {
+    if (verificarCNPJInadimplenteHistorico(limpo)) {
+      _ultimoCNPJChecadoPopup = limpo;
+      mostrarAvisoEnormeInadimplente();
+    }
+  }
+}
+window.aoSairCNPJPopup = aoSairCNPJPopup;
 
 // ============================================================
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
-// Versão do Sistema: v1.3.117
+// Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.3.117';
+window.APP_VERSION = 'v1.144';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -444,8 +1098,8 @@ window.formatarDigitoInteiro = window.limparDigitoValor;
 // Função global para limpar todos os filtros de processos
 window.limparFiltros = function() {
   if (typeof state !== 'undefined' && state && state.filtros) {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaAtivo: false };
-    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, false);
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaMin: 0, escalaMax: 20, escalaAtivo: false };
+    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, 20, false);
     state.paginaAtual = 1;
   }
   const fb = document.getElementById('filtro-busca');
@@ -668,6 +1322,8 @@ window.recarregarDadosGlobais = async function() {
     if (typeof recarregarEscolas === 'function') recarregarEscolas();
     if (typeof carregarOrcamentoData === 'function') carregarOrcamentoData();
     if (typeof carregarDiariasData === 'function') carregarDiariasData();
+    if (typeof window.renderProcessos === 'function') window.renderProcessos();
+    if (typeof window.popularFiltrosProcessos === 'function') window.popularFiltrosProcessos();
     if (typeof toast === 'function') toast('Dados atualizados com sucesso!', 'success');
   } catch(e) {
     console.error('Erro ao recarregar dados globais:', e);
@@ -864,6 +1520,8 @@ let state = {
     gab: false,
     cc: false,
     escala: null,
+    escalaMin: 0,
+    escalaMax: 20,
     escalaAtivo: false
   },
   paginaAtual: 1,
@@ -930,6 +1588,7 @@ function navegar(pagina) {
   });
 
   const titles = {
+    galeria: '🎨 Galeria Graphite (Template & Forms)',
     financeiro: '💳 Gestão Financeira & Lançamentos',
     dashboard: 'Dashboard',
     processos: 'Processos',
@@ -1748,7 +2407,7 @@ function getFiltrados() {
       normalizar(p.municipio).includes(q) ||
       normalizar(p.objeto).includes(q) ||
       normalizar(p.analista).includes(q) ||
-      ((typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) && normalizar(p.executivo).includes(q)) ||
+      normalizar(p.executivo).includes(q) ||
       normalizar(p.obs).includes(q) ||
       normalizar(p.anotacao).includes(q) ||
       normalizar(p.prefixo).includes(q) ||
@@ -1794,7 +2453,7 @@ function getFiltrados() {
   filterByMultiple('municipio', municipio);
   filterByMultiple('objeto', objeto);
   filterByMultiple('analista', analista);
-  if (typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin()) { filterByMultiple('executivo', executivo); }
+  filterByMultiple('executivo', executivo);
   filterByMultiple('categoria', categoria);
   filterByMultiple('tipo', tipo);
   filterByMultiple('ano', ano);
@@ -1847,14 +2506,21 @@ function getFiltrados() {
   }
   filterIncludesMultiple('prefixo', state.filtros.prefixo);
 
-  // Filtro por Escala (Buscador instantâneo - Imagem 5)
-  if (state.filtros.escalaAtivo && state.filtros.escala !== null && state.filtros.escala !== undefined && state.filtros.escala !== '') {
-    const escalaAlvo = parseInt(state.filtros.escala, 10);
+  // Filtro por Escala Intervalo (Buscador instantâneo de 0% a 100%, 0 a 20)
+  if (state.filtros.escalaAtivo) {
+    const minE = (state.filtros.escalaMin !== null && state.filtros.escalaMin !== undefined)
+      ? parseInt(state.filtros.escalaMin, 10)
+      : (state.filtros.escala !== null && state.filtros.escala !== undefined ? parseInt(state.filtros.escala, 10) : 0);
+    const maxE = (state.filtros.escalaMax !== null && state.filtros.escalaMax !== undefined)
+      ? parseInt(state.filtros.escalaMax, 10)
+      : (state.filtros.escala !== null && state.filtros.escala !== undefined ? parseInt(state.filtros.escala, 10) : 20);
+    const sMin = Math.min(isNaN(minE) ? 0 : minE, isNaN(maxE) ? 20 : maxE);
+    const sMax = Math.max(isNaN(minE) ? 0 : minE, isNaN(maxE) ? 20 : maxE);
     lista = lista.filter(p => {
       const pEscala = (p.escala !== undefined && p.escala !== null && String(p.escala).trim() !== '')
-        ? parseInt(p.escala, 10)
+        ? parseInt(String(p.escala).split(';')[0], 10)
         : 0;
-      return !isNaN(pEscala) && pEscala === escalaAlvo;
+      return !isNaN(pEscala) && pEscala >= sMin && pEscala <= sMax;
     });
   }
 
@@ -2100,19 +2766,8 @@ function renderProcessos() {
   }
   const _isAdmRender = typeof window.isUsuarioAdmin === 'function' && window.isUsuarioAdmin();
   const _contFiltroExec = document.getElementById('container-filtro-executivo');
-  if (_contFiltroExec) _contFiltroExec.style.setProperty('display', _isAdmRender ? 'block' : 'none', 'important');
-  if (_isAdmRender) {
-    preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
-  } else {
-    state.filtros.executivo = [];
-    const _selExec = document.getElementById('filtro-executivo');
-    if (_selExec) {
-      _selExec.innerHTML = '<option value="">EXECUTIVO</option>';
-      if (_selExec._multiSelectInstance && _selExec._multiSelectInstance.wrapper) {
-        _selExec._multiSelectInstance.wrapper.style.setProperty('display', 'none', 'important');
-      }
-    }
-  }
+  if (_contFiltroExec) _contFiltroExec.style.setProperty('display', 'block', 'important');
+  preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')));
   preencherSelectFiltro('filtro-ano',         [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b)=>b-a));
   preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
   // Mapeamento de categorias e tipos para exibição amigável
@@ -2235,8 +2890,15 @@ function renderProcessos() {
         ${renderMiniEscalaBar(p.escala)}
       </td>
       <td class="col-interessado" title="${p.interessado}">
-        <span class="desktop-cell-view">${hl(p.interessado, busca) || '—'}</span>
-        <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado, 9)}</span>
+        <div style="display:flex; flex-direction:column; gap:3px;">
+          <span class="desktop-cell-view">${hl(p.interessado, busca) || '—'}</span>
+          <span class="mobile-cell-view">${renderMobileCell('Interessado', p.interessado, 9)}</span>
+          ${(p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1') ? `
+            <span style="display:inline-flex; align-items:center; gap:3px; background:rgba(239,68,68,0.18); border:1px solid #ef4444; color:#ef4444; font-size:9.5px; font-weight:800; padding:1px 6px; border-radius:4px; width:fit-content; text-transform:uppercase; letter-spacing:0.4px;" title="Entidade Inadimplente">
+              ⚠️ Inadimplente
+            </span>
+          ` : ''}
+        </div>
       </td>
       <td class="col-objeto" title="${p.objeto}">
         <span class="desktop-cell-view">${p.objeto || '—'}</span>
@@ -2328,7 +2990,7 @@ function renderProcessos() {
       fByMulti('localizacao', localizacao);
       fByMulti('municipio', municipio);
       fByMulti('objeto', objeto);
-      if (_isAdmRender) { fByMulti('executivo', executivo); }
+      fByMulti('executivo', executivo);
       fByMulti('categoria', categoria);
       fByMulti('tipo', tipo);
       fByMulti('ano', ano);
@@ -2669,7 +3331,7 @@ function adicionarCampoNumero(val = '') {
   div.style.alignItems = 'center';
   div.innerHTML = `
     <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()" style="padding:0 12px;height:42px;border-radius:6px;font-weight:700;font-size:16px;flex-shrink:0;" title="Remover processo">-</button>
-    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${val}">
+    <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${val}" onblur="verificarProcessoExistentePrincipal(this)" onchange="verificarProcessoExistentePrincipal(this)">
     <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
     </button>
@@ -2726,8 +3388,10 @@ function renderFormulario() {
     const inputEscalaForm = document.getElementById('form-escala');
     if (inputEscalaForm) {
       const valEscala = (p && p.escala !== undefined && p.escala !== null && p.escala !== '') ? p.escala : 0;
-      inputEscalaForm.value = valEscala;
-      atualizarDisplayEscala(valEscala);
+      const parts = String(valEscala).split(';');
+      inputEscalaForm.value = parseInt(parts[0], 10) || 0;
+      inputEscalaForm.dataset.subOpcao = parts[1] || '';
+      atualizarDisplayEscala(valEscala, false);
     }
     if (inputFormExec) inputFormExec.value = isAdminForm ? (p.executivo || '') : '';
     document.getElementById('form-digito').value = window.limparDigitoValor(p.digito || p.DIGITO || '');
@@ -2768,7 +3432,7 @@ function renderFormulario() {
         containerNum.innerHTML = `
           <div style="display:flex;gap:6px;align-items:center;">
             <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 12px;height:42px;border:1px solid var(--border);border-radius:6px;font-weight:700;font-size:16px;color:#10b981;flex-shrink:0;" title="Adicionar número">+</button>
-            <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${num}">
+            <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${num}" onblur="verificarProcessoExistentePrincipal(this)" onchange="verificarProcessoExistentePrincipal(this)">
             <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
@@ -2787,6 +3451,14 @@ function renderFormulario() {
       cnpjEl.required = false;
       cnpjEl.value = p.cnpj || '';
     }
+    // Ao abrir para edição, vai direto e fecha aviso prévio (evita gerar o aviso duas vezes)
+    if (typeof fecharAvisoEnormeInadimplente === 'function') {
+      fecharAvisoEnormeInadimplente();
+    }
+    const isInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1' || p.CONTAS === 1);
+    atualizarVisualAdimplencia(isInad);
+    const _cLimpo = String(p.cnpj || '').replace(/\D/g, '');
+    _ultimoCNPJChecadoAviso = _cLimpo;
     document.getElementById('form-objeto').value      = p.objeto      || '';
     const fValOf = document.getElementById('form-valorOf');
     if (fValOf) fValOf.value = p.valorOf ? maskCurrency((p.valorOf * 100).toFixed(0)) : '';
@@ -2936,6 +3608,13 @@ function renderFormulario() {
     document.getElementById('form-categoria').value   = '';
     document.getElementById('form-tipo').value        = '';
     if (document.getElementById('form-cnpj')) document.getElementById('form-cnpj').value = '';
+    const inputEscalaForm = document.getElementById('form-escala');
+    if (inputEscalaForm) {
+      inputEscalaForm.value = 0;
+      inputEscalaForm.dataset.subOpcao = '';
+      atualizarDisplayEscala(0, false);
+    }
+    atualizarVisualAdimplencia(false);
     if (typeof limparDadosReceitaFederal === 'function') {
       limparDadosReceitaFederal(true);
     } else if (typeof atualizarLabelResultadoCNPJReceita === 'function') {
@@ -2946,7 +3625,7 @@ function renderFormulario() {
     document.getElementById('container-numeros').innerHTML = `
       <div style="display:flex;gap:6px;align-items:center;">
         <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 12px;height:42px;border:1px solid var(--border);border-radius:6px;font-weight:700;font-size:16px;color:#10b981;flex-shrink:0;" title="Adicionar número">+</button>
-        <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;">
+        <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" onblur="verificarProcessoExistentePrincipal(this)" onchange="verificarProcessoExistentePrincipal(this)">
         <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
         </button>
@@ -3126,8 +3805,26 @@ function salvarFormulario(e) {
     marca:       document.getElementById('form-marca').checked ? '1' : '',
     ano:         document.getElementById('form-ano').value,
     agrupamento: document.getElementById('form-agrupamento').value.trim(),
-    escala: document.getElementById('form-escala') ? String(document.getElementById('form-escala').value).trim() : '0',
-    ESCALA: document.getElementById('form-escala') ? String(document.getElementById('form-escala').value).trim() : '0',
+    escala: (() => {
+      const slider = document.getElementById('form-escala');
+      const n = slider ? parseInt(slider.value, 10) || 0 : 0;
+      if (n === 10) {
+        const sub = (slider && slider.dataset.subOpcao) ? slider.dataset.subOpcao : '';
+        return sub ? `10;${sub}` : '10';
+      }
+      return String(n);
+    })(),
+    ESCALA: (() => {
+      const slider = document.getElementById('form-escala');
+      const n = slider ? parseInt(slider.value, 10) || 0 : 0;
+      if (n === 10) {
+        const sub = (slider && slider.dataset.subOpcao) ? slider.dataset.subOpcao : '';
+        return sub ? `10;${sub}` : '10';
+      }
+      return String(n);
+    })(),
+    inadimplente: document.getElementById('form-check-inadimplente')?.checked ? '1' : '0',
+    CONTAS: document.getElementById('form-check-inadimplente')?.checked ? '1' : '0',
     digito: window.limparDigitoValor(document.getElementById('form-digito')?.value || ''),
     DIGITO: window.limparDigitoValor(document.getElementById('form-digito')?.value || ''),
     categoria:   document.getElementById('form-categoria').value,
@@ -3281,6 +3978,11 @@ window.confirmarExcluirForm = function() {
 function abrirDetalhe(id) {
   const p = buscarProcessoPorId(id);
   if (!p) return;
+
+  const isInad = (p.inadimplente === '1' || p.inadimplente === 1 || p.inadimplente === true || p.CONTAS === '1' || p.CONTAS === 1);
+  if (isInad || (p.cnpj && verificarCNPJInadimplenteHistorico(p.cnpj))) {
+    mostrarAvisoEnormeInadimplente();
+  }
 
   let contatosHtml = '';
   if (p.contatos && p.contatos.length > 0) {
@@ -3593,6 +4295,12 @@ function abrirModalNovoProcesso() {
   }
 
   // Preencher campos INATIVOS com dados padrão da tela (Status, Localização, Data de Hoje)
+  const escalaPopupEl = document.getElementById('popup-novo-escala');
+  if (escalaPopupEl) escalaPopupEl.value = '1';
+  const chkInadPopup = document.getElementById('popup-novo-check-inadimplente');
+  if (chkInadPopup) chkInadPopup.checked = false;
+  if (typeof atualizarVisualAdimplenciaPopup === 'function') atualizarVisualAdimplenciaPopup(false);
+
   const statusEl = document.getElementById('popup-novo-status');
   if (statusEl) {
     statusEl.value = 'REG. DEMANDA';
@@ -3615,11 +4323,16 @@ function abrirModalNovoProcesso() {
     anoEl.value = new Date().getFullYear();
   }
 
-  // Reset do campo CNPJ e Analista e container Receita Federal do popup
+  // Reset do campo CNPJ, Analista, Executivo, Dígito e container Receita Federal do popup
   const analistaPopupEl = document.getElementById('popup-novo-analista');
   if (analistaPopupEl) analistaPopupEl.value = '';
+  const executivoPopupEl = document.getElementById('popup-novo-executivo');
+  if (executivoPopupEl) executivoPopupEl.value = '';
+  const digitoPopupEl = document.getElementById('popup-novo-digito');
+  if (digitoPopupEl) digitoPopupEl.value = '';
   const cnpjPopupEl = document.getElementById('popup-novo-cnpj');
   if (cnpjPopupEl) cnpjPopupEl.value = '';
+  _ultimoCNPJChecadoPopup = '';
   const containerReceitaPopup = document.getElementById('popup-novo-container-receita');
   if (containerReceitaPopup) containerReceitaPopup.style.display = 'none';
   const labelReceitaPopup = document.getElementById('popup-novo-label-receita');
@@ -3900,6 +4613,11 @@ function aplicarSugestaoCNPJPopup(cnpjFormatado) {
   const inputCnpj = document.getElementById('popup-novo-cnpj');
   if (inputCnpj && cnpjFormatado) {
     inputCnpj.value = cnpjFormatado;
+    const cLimpo = String(cnpjFormatado).replace(/\D/g, '');
+    if (verificarCNPJInadimplenteHistorico(cLimpo)) {
+      _ultimoCNPJChecadoPopup = cLimpo;
+      mostrarAvisoEnormeInadimplente();
+    }
     if (typeof consultarCNPJPopup === 'function') {
       consultarCNPJPopup(cnpjFormatado, false);
     }
@@ -3950,7 +4668,7 @@ window.sugerirDadosEscolaPopup = sugerirDadosEscolaPopup;
 function aoMudarTipoEntidadeNovoProcesso(tipo) {
   const catSel = document.getElementById('popup-novo-categoria');
   const tipoVal = (tipo || '').trim();
-  if (tipoVal === 'Conselho' || tipoVal === 'APAE' || tipoVal === 'EFA') {
+  if (tipoVal === 'Conselho' || tipoVal === 'APAE' || tipoVal === 'EFA' || tipoVal === 'Associação Educacional' || tipoVal === 'Associacao' || tipoVal.toLowerCase().includes('associa')) {
     if (catSel) catSel.value = 'F';
   } else if (tipoVal === 'Prefeitura') {
     if (catSel) catSel.value = 'C';
@@ -4099,6 +4817,7 @@ function atualizarEntidadesMunicipioPopup() {
     const nomeUpper = nomeOriginal.toUpperCase();
     const isApae = nomeUpper.includes('APAE');
     const isEfa = nomeUpper.includes('EFA') || nomeUpper.includes('FAMILIA AGRICOLA') || nomeUpper.includes('AGRÍCOLA');
+    const isAssoc = nomeUpper.includes('ASSOCIAÇÃO') || nomeUpper.includes('ASSOCIACAO');
 
     let nomeFormatado = nomeOriginal;
     if (!isApae && !isEfa && !nomeUpper.includes('CONSELHO')) {
@@ -4109,7 +4828,7 @@ function atualizarEntidadesMunicipioPopup() {
       nome: nomeFormatado,
       cnpj: e.cnpj || '',
       grupo: 'Fomento',
-      tipoLabel: isApae ? 'APAE' : (isEfa ? 'EFA' : 'Conselho Escolar Municipal'),
+      tipoLabel: isApae ? 'APAE' : (isEfa ? 'EFA' : (isAssoc ? 'Associação Educacional' : 'Conselho Escolar Municipal')),
       diretor: e.diretor || '',
       telefone: e.telefone || e.contatoDiretor || ''
     };
@@ -4382,6 +5101,11 @@ function onSelecionarSelectEntidadePopup(selEl) {
   if (inputCnpj) {
     if (cnpjAplicado) {
       inputCnpj.value = cnpjAplicado;
+      const cLimpo = String(cnpjAplicado).replace(/\D/g, '');
+      if (verificarCNPJInadimplenteHistorico(cLimpo)) {
+        _ultimoCNPJChecadoPopup = cLimpo;
+        mostrarAvisoEnormeInadimplente();
+      }
       if (typeof consultarCNPJPopup === 'function') {
         consultarCNPJPopup(cnpjAplicado, true);
       }
@@ -4729,6 +5453,11 @@ async function salvarNovoProcessoPopup(e) {
     GAB:         '',
     CC:          '',
     executivo:   (document.getElementById('popup-novo-executivo')?.value || '').trim(),
+    escala:      document.getElementById('popup-novo-escala')?.value || '1',
+    ESCALA:      document.getElementById('popup-novo-escala')?.value || '1',
+    inadimplente: document.getElementById('popup-novo-check-inadimplente')?.checked ? '1' : '0',
+    CONTAS:      document.getElementById('popup-novo-check-inadimplente')?.checked ? '1' : '0',
+    INADIMPLENTE: document.getElementById('popup-novo-check-inadimplente')?.checked ? '1' : '0',
     anotacao:    '',
     ultimaEdicao:   user ? (user.nome || user.whatsapp) : 'Sistema',
     dataHoraEdicao: dataHoraStr,
@@ -4801,6 +5530,10 @@ function mascaraCNPJInputPopup(el) {
   }
 
   if (rawDigits.length === 14) {
+    if (rawDigits !== _ultimoCNPJChecadoPopup && verificarCNPJInadimplenteHistorico(rawDigits)) {
+      _ultimoCNPJChecadoPopup = rawDigits;
+      mostrarAvisoEnormeInadimplente();
+    }
     consultarCNPJPopup(el.value, true);
   }
 }
@@ -4814,6 +5547,10 @@ function autoPreencherCNPJPopup(el) {
   const digits = raw.replace(/\D/g, '');
 
   if (digits.length === 14 && !/^0+$/.test(digits)) {
+    if (digits !== _ultimoCNPJChecadoPopup && verificarCNPJInadimplenteHistorico(digits)) {
+      _ultimoCNPJChecadoPopup = digits;
+      mostrarAvisoEnormeInadimplente();
+    }
     consultarCNPJPopup(el.value.trim(), true);
     return;
   }
@@ -5021,6 +5758,11 @@ async function consultarCNPJPopup(cnpjInput, silencioso) {
       toast('Informe um CNPJ válido de 14 dígitos para consultar.', 'warning');
     }
     return null;
+  }
+
+  if (verificarCNPJInadimplenteHistorico(cnpjLimpo)) {
+    _ultimoCNPJChecadoPopup = cnpjLimpo;
+    mostrarAvisoEnormeInadimplente();
   }
 
   const cnpjFmt = typeof formatarCNPJ === 'function' ? formatarCNPJ(cnpjLimpo) : cnpjLimpo;
@@ -5574,8 +6316,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.limparFiltros = function() {
-    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaAtivo: false };
-    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, false);
+    state.filtros = { busca: '', status: [], localizacao: [], municipio: [], super: [], objeto: [], executivo: [], prefixo: [], alerta: '', marca: '', categoria: [], tipo: [], autorizacao: '', ano: [], agrupamento: [], digito: '', digitoCond: 'todos', escala: null, escalaMin: 0, escalaMax: 20, escalaAtivo: false };
+    if (typeof atualizarDisplayFiltroEscala === 'function') atualizarDisplayFiltroEscala(0, 20, false);
     state.paginaAtual = 1;
     const fb = document.getElementById('filtro-busca');
     if (fb) fb.value = '';
@@ -5681,19 +6423,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       const _contExecPop = document.getElementById('container-filtro-executivo');
-      if (_contExecPop) _contExecPop.style.setProperty('display', _isAdmPop ? 'block' : 'none', 'important');
-      if (_isAdmPop) {
-        preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort());
-      } else {
-        state.filtros.executivo = [];
-        const _selExecPop = document.getElementById('filtro-executivo');
-        if (_selExecPop) {
-          _selExecPop.innerHTML = '<option value="">EXECUTIVO</option>';
-          if (_selExecPop._multiSelectInstance && _selExecPop._multiSelectInstance.wrapper) {
-            _selExecPop._multiSelectInstance.wrapper.style.setProperty('display', 'none', 'important');
-          }
-        }
-      }
+      if (_contExecPop) _contExecPop.style.setProperty('display', 'block', 'important');
+      preencherSelectFiltro('filtro-executivo', [...new Set(todosProcs.map(p => p.executivo).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR')));
       preencherSelectFiltro('filtro-ano', [...new Set(todosProcs.map(p => p.ano).filter(Boolean))].sort((a,b) => b - a));
       preencherSelectFiltro('filtro-agrupamento', [...new Set(todosProcs.map(p => p.agrupamento).filter(Boolean))].sort());
 
@@ -6484,6 +7215,289 @@ function imprimirAlfa(filtrados = getFiltrados()) {
 window.imprimirAlfa = imprimirAlfa;
 
 // ============= RELATÓRIO ADM 2 (AGRUPADO POR DÍGITO C/ LINHA MEMORANDO) =============
+
+// ============= NOVO RELATÓRIO EXECUTIVO (AGRUPADO POR EXECUTIVO, SOMANDO E CONTANDO) =============
+function imprimirRelatorioExecutivo(filtrados = getFiltrados()) {
+  // Question antes de abrir: mostrar ou esconder anotações internas / agrupamentos (detalhamentos na impressão)
+  let incluirDetalhes = true;
+  try {
+    incluirDetalhes = window.confirm("Deseja exibir as linhas de detalhamento (Comentários de Agrupamento e Anotação Interna) na impressão do Relatório Executivo?\n\n[OK] = SIM (Mostrar detalhamentos)\n[Cancelar] = NÃO (Ocultar apontamentos e compactar linhas)");
+  } catch (e) {
+    incluirDetalhes = true;
+  }
+
+  // Agrupamento por campo 'Executivo'
+  const grupos = {};
+  filtrados.forEach(p => {
+    const execRaw = String(p.executivo || '').trim();
+    const chave = execRaw || 'SEM EXECUTIVO DEFINIDO';
+    if (!grupos[chave]) grupos[chave] = [];
+    grupos[chave].push(p);
+  });
+
+  const chavesOrdenadas = Object.keys(grupos).sort((a, b) => {
+    if (a === 'SEM EXECUTIVO DEFINIDO') return 1;
+    if (b === 'SEM EXECUTIVO DEFINIDO') return -1;
+    return a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' });
+  });
+
+  let globalIndex = 0;
+  let rowsHtml = '';
+
+  // Distância / padding entre as linhas: mais compacto quando sem detalhes
+  const paddingLinha = incluirDetalhes ? '3px 2px' : '2px 2px';
+  const paddingValor = incluirDetalhes ? '3px 4px' : '2px 4px';
+  const fontSizeCorpo = incluirDetalhes ? '9.5px' : '9px';
+
+  chavesOrdenadas.forEach(chave => {
+    const procs = grupos[chave];
+    const totalGrupo = procs.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+
+    // Linha de Cabeçalho do Grupo do Executivo (Somando e Contando)
+    rowsHtml += `
+      <tr class="no-page-break group-header-digito" style="page-break-inside: avoid; break-inside: avoid; background-color: #008080 !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <td colspan="8" style="border: 1px solid #005f5f; background-color: #008080 !important; color: #ffffff !important; padding: 5px 8px; font-size: 10px; font-weight: normal; text-transform: uppercase; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <span style="color: #ffffff !important; font-weight: normal; letter-spacing: 0.5px;">${chave}</span>
+          <span style="margin-left: 12px; font-weight: normal; font-size: 9px; color: #ffffff !important;">(${procs.length} processos &bull; R$ ${formatNumberOnly(totalGrupo)})</span>
+        </td>
+      </tr>
+    `;
+
+    procs.forEach(p => {
+      globalIndex++;
+      const zebraBg = globalIndex % 2 === 1 ? 'background-color:#f8fafc;' : 'background-color:#ffffff;';
+
+      // Linha Principal do Processo (Excluída a coluna DATA)
+      rowsHtml += `
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; ${zebraBg}">
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; text-align:center; font-size:${fontSizeCorpo}; font-weight:normal; color:#475569; width:3%;">${globalIndex}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:${fontSizeCorpo}; font-weight:normal; width:13%;">${p.municipio || '-'}</td>
+          <td class="col-numero" style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:9px; font-weight:normal; width:14%;"><div style="white-space:nowrap !important; font-weight:600; color:#0f172a; margin-bottom:2px;">${p.numero || '-'}</div>${typeof renderRelatorioEscalaBar === 'function' ? renderRelatorioEscalaBar(p.escala) : ''}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:${fontSizeCorpo}; font-weight:normal; width:18%;">${p.interessado || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:${fontSizeCorpo}; font-weight:normal; white-space:normal; word-wrap:break-word; width:26%;">${p.objeto || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; text-transform: uppercase; font-size:${fontSizeCorpo}; font-weight:normal; width:9%;">${p.status || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingLinha}; font-size:${fontSizeCorpo}; font-weight:normal; width:8%;">${p.localizacao || '-'}</td>
+          <td style="border: 1px solid #cbd5e1; padding: ${paddingValor}; text-align:right; font-size:${fontSizeCorpo}; font-weight:normal; width:13%; white-space:nowrap;">${formatNumberOnly(p.valorOf)}</td>
+        </tr>
+      `;
+
+      // Linhas com apontamento de 'agrupamento' e 'Anotação Interna' (mostra se sim, oculta se nao)
+      if (incluirDetalhes) {
+        const partesMemo = [];
+        if (p.agrupamento && String(p.agrupamento).trim()) {
+          partesMemo.push(String(p.agrupamento).trim());
+        }
+        if (p.anotacao && String(p.anotacao).trim()) {
+          partesMemo.push(String(p.anotacao).trim());
+        }
+
+        if (partesMemo.length > 0) {
+          const memoTexto = partesMemo.join(' - ');
+          rowsHtml += `
+            <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color: #fff9f9;">
+              <td colspan="8" style="border: 1px solid #cbd5e1; border-top: none; padding: 2px 8px 3px 12px; font-size: 8.5px; font-style: italic; color: #dc2626; line-height: 1.3;">
+                ${memoTexto}
+              </td>
+            </tr>
+          `;
+        }
+      }
+    });
+  });
+
+  const totalValor = filtrados.reduce((acc, p) => acc + (p.valorOf || 0), 0);
+  const totalRow = `
+    <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background:#f1f5f9; border-top:2px solid #0f172a; border-bottom:2px solid #0f172a;">
+      <td colspan="7" style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:11.5px; color:#0f172a; text-transform:uppercase; font-weight:bold; white-space:nowrap;">TOTAL GERAL (${filtrados.length} processos):</td>
+      <td style="border: 1px solid #cbd5e1; padding: 6px 8px; text-align:right; font-size:12.5px; color:#0f172a; font-weight:bold; white-space:nowrap !important;">${formatNumberOnly(totalValor)}</td>
+    </tr>`;
+  rowsHtml += totalRow;
+
+  const html = `
+    <table style="width:100%; font-family: Arial, sans-serif; border-collapse:collapse;">
+      <thead>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 2.5px solid #0f172a; padding-bottom: 6px; margin-bottom: 10px; font-family: Arial, sans-serif;">
+              <div>
+                <div style="font-size: 13px; font-weight: normal; color: #0f172a; letter-spacing: 0.5px; text-transform: uppercase;">LISTA DE PROCESSO | EXECUTIVO</div>
+              </div>
+              <div style="text-align:right; font-size: 9.5px; color: #475569; font-weight: normal;">
+                <span>Total: <span style="color:#0f172a;">${filtrados.length} processos</span></span>
+                <span style="margin: 0 8px; color: #cbd5e1;">|</span>
+                <span>Valor Total: <span style="color:#0f172a;">R$ ${formatNumberOnly(totalValor)}</span></span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <table class="print-table-adm" style="width:100%; table-layout:fixed; border-collapse:collapse; font-family:Arial; word-wrap:break-word; margin-bottom:10px;">
+              <colgroup>
+                <col style="width: 3%;">
+                <col style="width: 13%;">
+                <col style="width: 14%;">
+                <col style="width: 18%;">
+                <col style="width: 26%;">
+                <col style="width: 9%;">
+                <col style="width: 8%;">
+                <col style="width: 13%;">
+              </colgroup>
+              <thead>
+                <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid; background-color:#0f172a;">
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:center; width:3%; font-size:10px; font-weight:normal;">Nº</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:13%; font-size:10px; font-weight:normal;">MUNICÍPIO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:14%; font-size:10px; font-weight:normal;">PROCESSO SEI</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:18%; font-size:10px; font-weight:normal;">INTERESSADO</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:26%; font-size:10px; font-weight:normal;">OBJETO / FINALIDADE</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:9%; font-size:10px; font-weight:normal;">STATUS</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 2px; text-align:left; width:8%; font-size:10px; font-weight:normal;">LOCAL</th>
+                  <th style="color:#ffffff; background-color:#0f172a; border: 1px solid #334155; padding: 4px 3px; text-align:right; width:13%; font-size:10px; font-weight:normal; white-space:nowrap;">VALOR R$</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${rowsHtml || '<tr><td colspan="8" style="text-align:center; padding: 10px; font-size:10px;">Nenhum processo encontrado.</td></tr>'}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr class="no-page-break" style="page-break-inside: avoid; break-inside: avoid;">
+          <td>
+            <div style="margin-top: 8px; border-top: 1.5px solid #cbd5e1; padding-top: 5px; font-family: Arial, sans-serif; font-size: 8px; color: #334155; line-height: 1.4;">
+              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span style="color: #0f172a; text-transform: uppercase; font-weight: normal;">LEGENDA:</span>
+                  <span>C = Convênio &nbsp;|&nbsp; F = Fomento &nbsp;|&nbsp; OB = Obras &nbsp;|&nbsp; MP = Material Permanente &nbsp;|&nbsp; MC = Material Consumo</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 4px;">
+                  <span style="color: #0f172a; text-transform: uppercase; font-weight: normal;">AUTORIZAÇÕES:</span>
+                  <span>(1ª CAM &nbsp;|&nbsp; 2ª GAB SEDUC &nbsp;|&nbsp; 3ª CASA CIVIL) &nbsp;&bull;&nbsp; <span style="font-size: 9px; line-height: 1;">●</span> Autorizado &nbsp;|&nbsp; <span style="font-size: 9px; line-height: 1;">○</span> Pendente</span>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  `;
+
+  let container = document.getElementById('print-layout-relatorio-executivo');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'print-layout-relatorio-executivo';
+    container.className = 'print-only-layout';
+    document.body.appendChild(container);
+  }
+  container.innerHTML = html;
+
+  // Oculta os outros layouts
+  ['print-layout-padrao', 'print-layout-padrao-adm', 'print-layout-padrao-adm-2', 'print-layout-alfa', 'print-layout-detalhado', 'print-layout-analise'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  container.style.display = 'block';
+
+  const pageProcessos = document.getElementById('page-processos');
+  if (pageProcessos) pageProcessos.style.display = 'none';
+
+  const appLayout = document.querySelector('.app-layout');
+  const origAppLayoutDisplay = appLayout ? appLayout.style.display : '';
+  if (appLayout) appLayout.style.display = 'none';
+
+  const tickerContainer = document.getElementById('seduc-news-ticker-container');
+  const origTickerDisplay = tickerContainer ? tickerContainer.style.display : '';
+  if (tickerContainer) tickerContainer.style.display = 'none';
+
+  const restoreTickerBtn = document.getElementById('btn-restore-news-ticker');
+  const origRestoreBtnDisplay = restoreTickerBtn ? restoreTickerBtn.style.display : '';
+  if (restoreTickerBtn) restoreTickerBtn.style.display = 'none';
+
+  document.body.classList.add('print-mode-relatorio-executivo');
+  document.body.classList.remove('print-mode-padrao', 'print-mode-padrao-adm', 'print-mode-padrao-adm-2', 'print-mode-alfa', 'print-mode-detalhado', 'print-mode-analise');
+
+  const origTitle = document.title;
+  document.title = 'RELATORIO_EXECUTIVO_' + getFormattedDateForTitle();
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    @media print {
+      @page {
+        size: A4 landscape !important;
+        margin: 8mm !important;
+      }
+      html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+      }
+      .app-layout, .sidebar, .topbar, .section-header, .filters-bar, .table-wrap, .pagination,
+      #export-buttons, .charts-grid, .dashboard, .modal-overlay, #page-processos, .page,
+      #seduc-news-ticker-container, #btn-restore-news-ticker, .siscam-modal-overlay, #siscam-modal-root,
+      .print-footer, .official-print-footer {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+      }
+      #print-layout-relatorio-executivo {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      table.print-table-adm th {
+        background-color: #0f172a !important;
+        color: #ffffff !important;
+        border: 1px solid #334155 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      .relatorio-escala-container, .relatorio-escala-track, .relatorio-escala-thumb, .relatorio-escala-text {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      table.print-table-adm tr:nth-child(even) td {
+        background-color: #f8fafc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      table.print-table-adm td:last-child, table.print-table-adm th:last-child {
+        white-space: nowrap !important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  const cleanupPrint = () => {
+    document.title = origTitle;
+    if (document.head.contains(style)) document.head.removeChild(style);
+    document.body.classList.remove('print-mode-relatorio-executivo');
+    container.style.display = 'none';
+    if (pageProcessos) pageProcessos.style.display = '';
+    if (appLayout) appLayout.style.display = origAppLayoutDisplay;
+    if (tickerContainer) tickerContainer.style.display = origTickerDisplay;
+    if (restoreTickerBtn) restoreTickerBtn.style.display = origRestoreBtnDisplay;
+    window.removeEventListener('afterprint', cleanupPrint);
+  };
+
+  window.addEventListener('afterprint', cleanupPrint);
+
+  window.print();
+
+  setTimeout(cleanupPrint, 1000);
+}
+
+window.imprimirRelatorioExecutivo = imprimirRelatorioExecutivo;
+
 function imprimirPadraoAdm2(filtrados = getFiltrados()) {
   if (typeof window.isUsuarioAdmin === 'function' && !window.isUsuarioAdmin()) {
     alert('Acesso restrito ao perfil Administrador.');
@@ -9380,19 +10394,37 @@ window.somenteNumeros2Digitos = somenteNumeros2Digitos;
 
 function aoMudarQuadraPoliesportivaModal(val) {
   const elCob = document.getElementById('entidade-quadra-coberta');
-  if (!elCob) return;
+  const elPiso = document.getElementById('entidade-quadra-piso');
   if (val === 'Sim') {
-    elCob.disabled = false;
-    elCob.style.opacity = '1';
-    elCob.style.cursor = 'default';
-    if (elCob.value === 'Não se aplica' || elCob.value === 'N?o se aplica') {
-      elCob.value = '';
+    if (elCob) {
+      elCob.disabled = false;
+      elCob.style.opacity = '1';
+      elCob.style.cursor = 'default';
+      if (elCob.value === 'Não se aplica' || elCob.value === 'Não se aplica') {
+        elCob.value = '';
+      }
+    }
+    if (elPiso) {
+      elPiso.disabled = false;
+      elPiso.style.opacity = '1';
+      elPiso.style.cursor = 'default';
+      if (elPiso.value === 'Não se aplica' || elPiso.value === 'Não se aplica') {
+        elPiso.value = '';
+      }
     }
   } else {
-    elCob.value = 'Não se aplica';
-    elCob.disabled = true;
-    elCob.style.opacity = '0.6';
-    elCob.style.cursor = 'not-allowed';
+    if (elCob) {
+      elCob.value = 'Não se aplica';
+      elCob.disabled = true;
+      elCob.style.opacity = '0.6';
+      elCob.style.cursor = 'not-allowed';
+    }
+    if (elPiso) {
+      elPiso.value = 'Não se aplica';
+      elPiso.disabled = true;
+      elPiso.style.opacity = '0.6';
+      elPiso.style.cursor = 'not-allowed';
+    }
   }
 }
 window.aoMudarQuadraPoliesportivaModal = aoMudarQuadraPoliesportivaModal;
@@ -9508,7 +10540,6 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
 
     aoSelecionarTipoEntidadeForm(tipoRadio);
-    aoMudarQuadraPoliesportivaModal('');
     ativarGrupoFormEntidade(1);
   } else {
     if (tituloEl) tituloEl.textContent = 'Cadastro Geral de Entidade / Escola';
@@ -9561,6 +10592,35 @@ function toggleDropdownModalidadeModal(e) {
 }
 window.toggleDropdownModalidadeModal = toggleDropdownModalidadeModal;
 
+function alterarQtdModalidade(btn, delta, isModal = true) {
+  const row = btn.closest('.mod-item-row');
+  if (!row) return;
+  const cb = row.querySelector(isModal ? '.mod-checkbox-modal' : '.mod-checkbox');
+  const inp = row.querySelector(isModal ? '.mod-qtd-input-modal' : '.mod-qtd-input') || row.querySelector('input[type="number"]');
+  const stepperWrap = row.querySelector('.mod-stepper-wrap');
+  if (!inp) return;
+  if (cb && !cb.checked) {
+    cb.checked = true;
+    inp.disabled = false;
+    inp.style.opacity = '1';
+    if (stepperWrap) {
+      stepperWrap.style.opacity = '1';
+      stepperWrap.style.borderColor = '#38bdf8';
+    }
+  }
+  if (inp.disabled) return;
+  let val = parseInt(inp.value, 10);
+  if (isNaN(val)) val = 0;
+  val = Math.max(0, Math.floor(val + delta));
+  inp.value = val;
+  if (isModal) {
+    if (typeof calcularTotalAlunosModalidadesModal === 'function') calcularTotalAlunosModalidadesModal();
+  } else {
+    if (typeof calcularTotalAlunosModalidades === 'function') calcularTotalAlunosModalidades();
+  }
+}
+window.alterarQtdModalidade = alterarQtdModalidade;
+
 function aoMudarModalidadeModalCheck(targetCheckbox) {
   const container = document.getElementById('drop-modalidade-modal-opcoes');
   if (!container) return;
@@ -9568,17 +10628,26 @@ function aoMudarModalidadeModalCheck(targetCheckbox) {
   if (targetCheckbox) {
     const row = targetCheckbox.closest('.mod-item-row');
     const inputQtd = row ? row.querySelector('.mod-qtd-input-modal') : null;
+    const stepperWrap = row ? row.querySelector('.mod-stepper-wrap') : null;
     if (inputQtd) {
       if (targetCheckbox.checked) {
         inputQtd.disabled = false;
         inputQtd.style.opacity = '1';
         inputQtd.style.borderColor = '#38bdf8';
+        if (stepperWrap) {
+          stepperWrap.style.opacity = '1';
+          stepperWrap.style.borderColor = '#38bdf8';
+        }
         if (!inputQtd.value || inputQtd.value === '0') inputQtd.value = '';
         setTimeout(() => inputQtd.focus(), 50);
       } else {
         inputQtd.disabled = true;
         inputQtd.style.opacity = '0.35';
         inputQtd.style.borderColor = '#334155';
+        if (stepperWrap) {
+          stepperWrap.style.opacity = '0.35';
+          stepperWrap.style.borderColor = '#334155';
+        }
         inputQtd.value = '';
       }
     }
@@ -10104,7 +11173,7 @@ function salvarCadastroEntidade(e) {
     dml: getV('entidade-dml'),
     quadra: getV('entidade-quadra'),
     quadraCoberta: (getV('entidade-quadra') === 'Sim' ? getV('entidade-quadra-coberta') : 'Não se aplica'),
-    quadraPiso: getV('entidade-quadra-piso'),
+    quadraPiso: (getV('entidade-quadra') === 'Sim' ? getV('entidade-quadra-piso') : 'Não se aplica'),
     fechamentoPerimetro: getV('entidade-murada-gradeada'),
     muradaGradeada: getV('entidade-murada-gradeada'),
     ppci: getV('entidade-ppci'),
@@ -10642,27 +11711,18 @@ function fecharModalGeradorLink() {
 window.fecharModalGeradorLink = fecharModalGeradorLink;
 
 function toggleTemaClaroSuave() {
-  const isLight = document.body.classList.toggle('tema-claro');
-  localStorage.setItem('seduc_tema_suave_imagem2', isLight ? '1' : '0');
-  const btnText = document.getElementById('btn-toggle-tema-text');
-  const btnIcon = document.getElementById('btn-toggle-tema-icon');
-  if (btnText) btnText.textContent = isLight ? 'Tema Escuro' : 'Tema Suave';
-  if (btnIcon) btnIcon.textContent = isLight ? '🌙' : '☀️';
+  document.documentElement.setAttribute('data-theme', 'graphite');
+  document.body.classList.remove('tema-claro');
+  localStorage.setItem('seduc_tema_suave_imagem2', '0');
   if (typeof toast === 'function') {
-    toast(isLight ? 'Tema Suave (Padrão Imagem 2) ativado' : 'Tema Escuro ativado', 'info');
+    toast('O sistema opera exclusivamente no padrão Graphite Minimal.', 'info');
   }
 }
 window.toggleTemaClaroSuave = toggleTemaClaroSuave;
 
 function aplicarTemaSalvo() {
-  const salvo = localStorage.getItem('seduc_tema_suave_imagem2');
-  if (salvo === '1') {
-    document.body.classList.add('tema-claro');
-    const btnText = document.getElementById('btn-toggle-tema-text');
-    const btnIcon = document.getElementById('btn-toggle-tema-icon');
-    if (btnText) btnText.textContent = 'Tema Escuro';
-    if (btnIcon) btnIcon.textContent = '🌙';
-  }
+  document.documentElement.setAttribute('data-theme', 'graphite');
+  document.body.classList.remove('tema-claro');
 }
 window.aplicarTemaSalvo = aplicarTemaSalvo;
 
@@ -10694,6 +11754,35 @@ function popularMunicipiosGeradorLink() {
 }
 window.popularMunicipiosGeradorLink = popularMunicipiosGeradorLink;
 
+// ============================================================
+// GERADOR DE CHAVE ÃšNICA DE 20 DÃGITOS SEM REPETIÃ‡ÃƒO (SiSCAM)
+// ============================================================
+function gerarChaveLink20Digitos() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'.split('');
+  for (let i = chars.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [chars[i], chars[j]] = [chars[j], chars[i]];
+  }
+  return chars.slice(0, 20).join('');
+}
+window.gerarChaveLink20Digitos = gerarChaveLink20Digitos;
+
+function formatarChave20(chave) {
+  if (!chave || typeof chave !== 'string') return '';
+  const limpa = chave.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+  return limpa.match(/.{1,4}/g)?.join('-') || limpa;
+}
+window.formatarChave20 = formatarChave20;
+
+let _chaveLinkAtual = '';
+
+function renovarChaveLinkGen() {
+  _chaveLinkAtual = gerarChaveLink20Digitos();
+  const elTxt = document.getElementById('txt-link-gen-chave');
+  if (elTxt) elTxt.textContent = formatarChave20(_chaveLinkAtual);
+  gerarLinkCadastroComParametros();
+}
+window.renovarChaveLinkGen = renovarChaveLinkGen;
 function gerarLinkCadastroComParametros() {
   let mun = (document.getElementById('link-gen-municipio')?.value || '').trim();
   if (!mun && window._linkGenData && window._linkGenData.municipio) {
@@ -10712,7 +11801,13 @@ function gerarLinkCadastroComParametros() {
 
   const currentPath = window.location.pathname;
   const basePath = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
-  const url = `${window.location.origin}${basePath}cadastro.html?mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}&parc=${encodeURIComponent(parc)}`;
+  if (!_chaveLinkAtual) {
+    _chaveLinkAtual = gerarChaveLink20Digitos();
+  }
+  const elTxtChave = document.getElementById('txt-link-gen-chave');
+  if (elTxtChave) elTxtChave.textContent = formatarChave20(_chaveLinkAtual);
+
+  const url = `${window.location.origin}${basePath}cadastro.html?mun=${encodeURIComponent(mun)}&cat=${encodeURIComponent(cat)}&comp=${encodeURIComponent(comp)}&sup=${encodeURIComponent(sup)}&parc=${encodeURIComponent(parc)}&chave=${encodeURIComponent(_chaveLinkAtual)}`;
 
   const inputOut = document.getElementById('link-gen-resultado');
   if (inputOut) inputOut.value = url;
@@ -18925,3 +20020,59 @@ window.aplicarAuditoriaAntiGravityNaManifestacao = aplicarAuditoriaAntiGravityNa
 
 
 
+
+
+function verificarProcessoExistentePrincipal(inputEl) {
+  if (!inputEl) return;
+  const valRaw = String(inputEl.value || '').trim();
+  const digits = valRaw.replace(/\D/g, '');
+  if (digits.length < 5) return;
+
+  const currentId = (typeof state !== 'undefined' && state) ? state.editandoId : null;
+  const procs = typeof carregarProcessos === 'function' ? carregarProcessos() : (window.processosCache || []);
+  const encontrado = procs.find(p => {
+    if (currentId && String(p.id) === String(currentId)) return false;
+    if (!p.numero) return false;
+    const nums = String(p.numero).split(/[,;\/]/);
+    return nums.some(n => {
+      const d = n.replace(/\D/g, '');
+      return d && (d === digits || (digits.length >= 10 && d.includes(digits)));
+    });
+  });
+
+  if (encontrado) {
+    const valFmt = typeof formatCurrency === 'function' ? formatCurrency(encontrado.valorOf || 0) : (encontrado.valorOf || '0,00');
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      exibirMensagemSiSCAM(
+        `<div style="text-align:center; padding:5px 0 14px 0;">
+           <div style="display:inline-flex; align-items:center; justify-content:center; width:72px; height:72px; border-radius:50%; background:rgba(239,68,68,0.2); border:2.5px solid #ef4444; box-shadow:0 0 25px rgba(239,68,68,0.5); margin-bottom:10px;">
+             <span style="font-size:36px;">⚠️</span>
+           </div>
+           <div style="font-size:16px; font-weight:900; color:#ef4444; text-transform:uppercase; letter-spacing:0.5px;">
+             PROCESSO JÁ EXISTE NO SISTEMA
+           </div>
+           <div style="font-size:12px; color:#cbd5e1; margin-top:2px;">Chave Primária não requerida já cadastrada</div>
+         </div>
+         <div style="background:rgba(0,0,0,0.35); border:1.5px solid rgba(239,68,68,0.4); border-radius:8px; padding:12px 14px; margin-bottom:12px; font-size:13px; line-height:1.6; color:#f1f5f9;">
+           <strong>Atenção:</strong> O número do processo <strong>${valRaw}</strong> já se encontra cadastrado em outro registro:<br>
+           • <strong>ID:</strong> #${encontrado.id || '-'}<br>
+           • <strong>PREFIXO:</strong> ${encontrado.prefixo || '-'}<br>
+           • <strong>INTERESSADO / ESCOLA:</strong> ${encontrado.interessado || '-'}<br>
+           • <strong>VALOR OFICIAL:</strong> ${valFmt}<br>
+           • <strong>STATUS:</strong> ${encontrado.status || '-'}<br>
+           • <strong>LOCALIZAÇÃO:</strong> ${encontrado.localizacao || '-'}
+         </div>
+         <div style="background:rgba(15,23,42,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px 12px; font-size:12px; color:#94a3b8;">
+           ℹ️ O número do processo funciona como uma chave primária opcional. Se desejar acessar o processo já existente, utilize a busca do sistema.
+         </div>`,
+        {
+          titulo: 'Processo Já Existe',
+          subtitulo: 'Chave Primária Duplicada',
+          tipo: 'aviso',
+          focoElemento: inputEl
+        }
+      );
+    }
+  }
+}
+window.verificarProcessoExistentePrincipal = verificarProcessoExistentePrincipal;

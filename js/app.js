@@ -1,4 +1,4 @@
-﻿
+
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 // ===== HELPER DA ESCALA DE PROCESSO (0% a 100%, 21 ETAPAS E SETORES CAM / CCTE-GMAC) =====
 const ESCALA_ETAPAS = [
@@ -10394,19 +10394,37 @@ window.somenteNumeros2Digitos = somenteNumeros2Digitos;
 
 function aoMudarQuadraPoliesportivaModal(val) {
   const elCob = document.getElementById('entidade-quadra-coberta');
-  if (!elCob) return;
+  const elPiso = document.getElementById('entidade-quadra-piso');
   if (val === 'Sim') {
-    elCob.disabled = false;
-    elCob.style.opacity = '1';
-    elCob.style.cursor = 'default';
-    if (elCob.value === 'Não se aplica' || elCob.value === 'N?o se aplica') {
-      elCob.value = '';
+    if (elCob) {
+      elCob.disabled = false;
+      elCob.style.opacity = '1';
+      elCob.style.cursor = 'default';
+      if (elCob.value === 'Não se aplica' || elCob.value === 'Não se aplica') {
+        elCob.value = '';
+      }
+    }
+    if (elPiso) {
+      elPiso.disabled = false;
+      elPiso.style.opacity = '1';
+      elPiso.style.cursor = 'default';
+      if (elPiso.value === 'Não se aplica' || elPiso.value === 'Não se aplica') {
+        elPiso.value = '';
+      }
     }
   } else {
-    elCob.value = 'Não se aplica';
-    elCob.disabled = true;
-    elCob.style.opacity = '0.6';
-    elCob.style.cursor = 'not-allowed';
+    if (elCob) {
+      elCob.value = 'Não se aplica';
+      elCob.disabled = true;
+      elCob.style.opacity = '0.6';
+      elCob.style.cursor = 'not-allowed';
+    }
+    if (elPiso) {
+      elPiso.value = 'Não se aplica';
+      elPiso.disabled = true;
+      elPiso.style.opacity = '0.6';
+      elPiso.style.cursor = 'not-allowed';
+    }
   }
 }
 window.aoMudarQuadraPoliesportivaModal = aoMudarQuadraPoliesportivaModal;
@@ -10522,7 +10540,6 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
     else if (catUpper.includes('EFA') || catUpper.includes('AGRICOLA') || catUpper.includes('AGRÍCOLA')) tipoRadio = 'EFA';
 
     aoSelecionarTipoEntidadeForm(tipoRadio);
-    aoMudarQuadraPoliesportivaModal('');
     ativarGrupoFormEntidade(1);
   } else {
     if (tituloEl) tituloEl.textContent = 'Cadastro Geral de Entidade / Escola';
@@ -10575,6 +10592,35 @@ function toggleDropdownModalidadeModal(e) {
 }
 window.toggleDropdownModalidadeModal = toggleDropdownModalidadeModal;
 
+function alterarQtdModalidade(btn, delta, isModal = true) {
+  const row = btn.closest('.mod-item-row');
+  if (!row) return;
+  const cb = row.querySelector(isModal ? '.mod-checkbox-modal' : '.mod-checkbox');
+  const inp = row.querySelector(isModal ? '.mod-qtd-input-modal' : '.mod-qtd-input') || row.querySelector('input[type="number"]');
+  const stepperWrap = row.querySelector('.mod-stepper-wrap');
+  if (!inp) return;
+  if (cb && !cb.checked) {
+    cb.checked = true;
+    inp.disabled = false;
+    inp.style.opacity = '1';
+    if (stepperWrap) {
+      stepperWrap.style.opacity = '1';
+      stepperWrap.style.borderColor = '#38bdf8';
+    }
+  }
+  if (inp.disabled) return;
+  let val = parseInt(inp.value, 10);
+  if (isNaN(val)) val = 0;
+  val = Math.max(0, Math.floor(val + delta));
+  inp.value = val;
+  if (isModal) {
+    if (typeof calcularTotalAlunosModalidadesModal === 'function') calcularTotalAlunosModalidadesModal();
+  } else {
+    if (typeof calcularTotalAlunosModalidades === 'function') calcularTotalAlunosModalidades();
+  }
+}
+window.alterarQtdModalidade = alterarQtdModalidade;
+
 function aoMudarModalidadeModalCheck(targetCheckbox) {
   const container = document.getElementById('drop-modalidade-modal-opcoes');
   if (!container) return;
@@ -10582,17 +10628,26 @@ function aoMudarModalidadeModalCheck(targetCheckbox) {
   if (targetCheckbox) {
     const row = targetCheckbox.closest('.mod-item-row');
     const inputQtd = row ? row.querySelector('.mod-qtd-input-modal') : null;
+    const stepperWrap = row ? row.querySelector('.mod-stepper-wrap') : null;
     if (inputQtd) {
       if (targetCheckbox.checked) {
         inputQtd.disabled = false;
         inputQtd.style.opacity = '1';
         inputQtd.style.borderColor = '#38bdf8';
+        if (stepperWrap) {
+          stepperWrap.style.opacity = '1';
+          stepperWrap.style.borderColor = '#38bdf8';
+        }
         if (!inputQtd.value || inputQtd.value === '0') inputQtd.value = '';
         setTimeout(() => inputQtd.focus(), 50);
       } else {
         inputQtd.disabled = true;
         inputQtd.style.opacity = '0.35';
         inputQtd.style.borderColor = '#334155';
+        if (stepperWrap) {
+          stepperWrap.style.opacity = '0.35';
+          stepperWrap.style.borderColor = '#334155';
+        }
         inputQtd.value = '';
       }
     }
@@ -11118,7 +11173,7 @@ function salvarCadastroEntidade(e) {
     dml: getV('entidade-dml'),
     quadra: getV('entidade-quadra'),
     quadraCoberta: (getV('entidade-quadra') === 'Sim' ? getV('entidade-quadra-coberta') : 'Não se aplica'),
-    quadraPiso: getV('entidade-quadra-piso'),
+    quadraPiso: (getV('entidade-quadra') === 'Sim' ? getV('entidade-quadra-piso') : 'Não se aplica'),
     fechamentoPerimetro: getV('entidade-murada-gradeada'),
     muradaGradeada: getV('entidade-murada-gradeada'),
     ppci: getV('entidade-ppci'),

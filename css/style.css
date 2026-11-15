@@ -4470,3 +4470,41 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   text-shadow: 0 0 10px rgba(56, 189, 248, 0.95);
   font-weight: 900;
 }
+
+/* ============================================================ */
+/* STEPPER DE ALUNOS POR MODALIDADE (IMAGEM 1)                  */
+/* ============================================================ */
+.mod-stepper-wrap {
+  display: inline-flex !important;
+  align-items: stretch !important;
+  width: 98px !important;
+  height: 36px !important;
+  background: #1e293b !important;
+  border: 1.5px solid #334155 !important;
+  border-radius: 6px !important;
+  overflow: hidden !important;
+  transition: all 0.2s ease !important;
+}
+.mod-stepper-wrap:focus-within {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3) !important;
+}
+.mod-stepper-wrap input[type=number]::-webkit-inner-spin-button,
+.mod-stepper-wrap input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+.mod-stepper-wrap input[type=number] {
+  -moz-appearance: textfield !important;
+}
+.btn-step-arrow {
+  transition: background 0.15s, color 0.15s, transform 0.08s !important;
+}
+.btn-step-arrow:hover {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+.btn-step-arrow:active {
+  background: #0369a1 !important;
+  transform: scale(0.95) !important;
+}
