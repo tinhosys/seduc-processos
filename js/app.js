@@ -988,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.147';
+window.APP_VERSION = 'v1.148';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -1714,6 +1714,7 @@ function navegar(pagina) {
         'gdsm-demais': '📁 GDSM — Demais Processos',
     'gdsm-doacoes': '🎁 GDSM — [Temporário] Doações',
     'gdsm-novoregime': '🚀 GDSM — Novo Regime',
+    'cnpjs-inadimplentes': '⚠️ CNPJs Inadimplentes & Adimplência',
     'sistema-info': '🖥️ Informações do Sistema & Diagnóstico'
   };
   document.getElementById('topbar-title').textContent = titles[pagina] || pagina;
@@ -1728,6 +1729,7 @@ function navegar(pagina) {
     cancelarEdicaoAcesso();
   }
   if (pagina === 'repetidos') renderProcessosRepetidos();
+  if (pagina === 'cnpjs-inadimplentes' && typeof carregarCnpjsInadimplentes === 'function') carregarCnpjsInadimplentes();
   if (pagina === 'escolas') iniciarPaginaEscolas();
   if (pagina === 'mapa-escolas') {
     if (typeof iniciarMapaEscolas === 'function') {
