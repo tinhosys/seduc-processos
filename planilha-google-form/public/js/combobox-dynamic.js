@@ -1,31 +1,72 @@
 /**
- * SISCAM - DYNAMIC COMBOBOX ENGINE (v1.145)
+ * SISCAM - DYNAMIC COMBOBOX ENGINE (v1.146)
  * Combobox ultra-rápido, dinâmico e responsivo em tempo real para todos os campos e formulários.
  * Substitui o datalist nativo do navegador por um dropdown inteligente com:
  * 1. Filtragem instantânea (< 1ms) a cada tecla digitada (insensível a acentos e maiúsculas/minúsculas).
- * 2. Disponibilidade imediata de novos dados digitados ("Usar novo").
- * 3. Abertura filtrada pelo texto atual ao clicar na seta ou focar.
- * 4. Navegação completa por teclado (Setas, Enter, Esc, Tab).
- * 5. Compatibilidade total com os formulários e eventos do SiSCAM.
+ * 2. Disponibilidade imediata de novos dados digitados ("Usar novo" nos campos permitidos).
+ * 3. Restrição estrita aos 52 Municípios Oficiais de Rondônia (sem "+", sem duplicidades).
+ * 4. Abertura filtrada pelo texto atual ao clicar na seta ou focar.
+ * 5. Navegação completa por teclado (Setas, Enter, Esc, Tab).
+ * 6. Compatibilidade total com os formulários e eventos do SiSCAM.
  */
 
 (function() {
   'use strict';
 
-  // 52 Municípios Oficiais de Rondônia para fallback universal
+  // 52 Municípios Oficiais de Rondônia (Lista Canônica Estrita - SEDUC/RO)
   const MUNICIPIOS_RO_PADRAO = [
-    "ALTA FLORESTA DO OESTE", "ALTO ALEGRE DOS PARECIS", "ALTO PARAISO", "ALVORADA DO OESTE",
-    "ARIQUEMES", "BURITIS", "CABIXI", "CACAULÂNDIA", "CACOAL", "CAMPO NOVO DE RONDÔNIA",
-    "CANDEIAS DO JAMARI", "CASTANHEIRAS", "CEREJEIRAS", "CHUPINGUAIA", "COLORADO DO OESTE",
-    "CORUMBIARA", "COSTA MARQUES", "CUJUBIM", "ESPIGÃO DO OESTE", "GOVERNADOR JORGE TEIXEIRA",
-    "GUAJARÁ MIRIM", "ITAPUÃ DO OESTE", "JARU", "JI-PARANÁ", "MACHADINHO D’OESTE",
-    "MINISTRO ANDREAZZA", "MIRANTE DA SERRA", "MONTE NEGRO", "NOVA BRASILÂNDIA DO OESTE",
-    "NOVA MAMORÉ", "NOVA UNIÃO", "NOVO HORIZONTE DO OESTE", "OURO PRETO DO OESTE",
-    "PARECIS", "PIMENTA BUENO", "PIMENTEIRAS DO OESTE", "PORTO VELHO", "PRESIDENTE MEDICI",
-    "PRIMAVERA DE RONDÔNIA", "RIO CRESPO", "ROLIM DE MOURA", "SANTA LUZIA DO OESTE",
-    "SÃO FELIPE DO OESTE", "SÃO FRANCISCO DO GUAPORÉ", "SÃO MIGUEL DO GUAPORÉ",
-    "SERINGUEIRAS", "TEIXEIRÓPOLIS", "THEOBROMA", "URUPÁ", "VALE DO ANARI",
-    "VALE DO PARAISO", "VILHENA", "Dist. Nova Califórnia", "Dist. de Abunã", "Dist. Vista Alegre do Abunã"
+    "Alta Floresta do Oeste",
+    "Alto Alegre dos Parecis",
+    "Alto Paraíso",
+    "Alvorada do Oeste",
+    "Ariquemes",
+    "Buritis",
+    "Cabixi",
+    "Cacaulândia",
+    "Cacoal",
+    "Campo Novo de Rondônia",
+    "Candeias do Jamari",
+    "Castanheiras",
+    "Cerejeiras",
+    "Chupinguaia",
+    "Colorado do Oeste",
+    "Corumbiara",
+    "Costa Marques",
+    "Cujubim",
+    "Espigão do Oeste",
+    "Governador Jorge Teixeira",
+    "Guajará-Mirim",
+    "Itapuã do Oeste",
+    "Jaru",
+    "Ji-Paraná",
+    "Machadinho do Oeste",
+    "Ministro Andreazza",
+    "Mirante da Serra",
+    "Monte Negro",
+    "Nova Brasilândia do Oeste",
+    "Nova Mamoré",
+    "Nova União",
+    "Novo Horizonte do Oeste",
+    "Ouro Preto do Oeste",
+    "Parecis",
+    "Pimenta Bueno",
+    "Pimenteiras do Oeste",
+    "Porto Velho",
+    "Presidente Médici",
+    "Primavera de Rondônia",
+    "Rio Crespo",
+    "Rolim de Moura",
+    "Santa Luzia do Oeste",
+    "São Felipe do Oeste",
+    "São Francisco do Guaporé",
+    "São Miguel do Guaporé",
+    "Seringueiras",
+    "Teixeirópolis",
+    "Theobroma",
+    "Urupá",
+    "Vale do Anari",
+    "Vale do Paraíso",
+    "Vilhena"
   ];
 
   // Armazenamento em memória de novos dados adicionados dinamicamente
@@ -221,11 +262,29 @@
     }, 2200);
   }
 
+  // Verifica se o campo refere-se estritamente a Município (onde APENAS os 52 são permitidos, sem "+")
+  function isMunicipioField(listId, inputEl) {
+    const lid = (listId || '').toLowerCase();
+    const iid = (inputEl?.id || '').toLowerCase();
+    const iname = (inputEl?.name || '').toLowerCase();
+    return lid.includes('municipio') || iid.includes('municipio') || iname.includes('municipio');
+  }
+
   // Obtém todas as opções de uma lista / datalist
   function getRawOptionsForList(listId, inputEl) {
+    // 1. Se for campo de município: utiliza ESTRITAMENTE e EXCLUSIVAMENTE os 52 municípios oficiais de Rondônia
+    if (isMunicipioField(listId, inputEl)) {
+      return MUNICIPIOS_RO_PADRAO.map(m => ({
+        value: m,
+        label: 'Município Oficial de RO',
+        _normValue: norm(m),
+        _normLabel: norm('Município Oficial de RO')
+      }));
+    }
+
     const optionsMap = new Map();
 
-    // 1. Carrega do datalist no DOM se existir
+    // 2. Carrega do datalist no DOM se existir
     if (listId) {
       const dl = document.getElementById(listId);
       if (dl && dl.children) {
@@ -244,20 +303,6 @@
       }
     }
 
-    // 2. Se for de município e estiver vazio ou com poucas opções, inclui todos os 52 municípios
-    if (listId === 'list-municipios' || listId === 'list-municipios-ancorados' || inputEl?.id?.includes('municipio')) {
-      MUNICIPIOS_RO_PADRAO.forEach(m => {
-        if (!optionsMap.has(m)) {
-          optionsMap.set(m, { value: m, label: 'Município de Rondônia' });
-        }
-      });
-      if (window.LISTA_52_MUNICIPIOS_RO && Array.isArray(window.LISTA_52_MUNICIPIOS_RO)) {
-        window.LISTA_52_MUNICIPIOS_RO.forEach(m => {
-          if (!optionsMap.has(m)) optionsMap.set(m, { value: m, label: 'Município Oficial' });
-        });
-      }
-    }
-
     // 3. Se for lista de Interessados / Escolas do popup
     if (listId === 'popup-list-interessados' || inputEl?.id === 'popup-novo-interessado') {
       if (window._popupEntidadesCacheMap && window._popupEntidadesCacheMap.size > 0) {
@@ -272,7 +317,7 @@
       }
     }
 
-    // 4. Carrega novos dados em memória adicionados nesta sessão
+    // 4. Carrega novos dados em memória adicionados nesta sessão (apenas se não for município)
     if (listId && window._dynamicComboCustomData[listId]) {
       window._dynamicComboCustomData[listId].forEach(val => {
         if (!optionsMap.has(val)) {
@@ -293,7 +338,7 @@
   }
 
   // Algoritmo de filtragem inteligente e ranqueamento
-  function filterAndRankOptions(options, query) {
+  function filterAndRankOptions(options, query, isMunicipio = false) {
     const qTrim = (query || '').trim();
     if (!qTrim) {
       return {
@@ -356,8 +401,9 @@
 
     const items = scoredList.slice(0, 100);
 
-    // Se não há match exato, insere a opção dinâmica no topo para uso imediato
-    if (!exactMatch && qTrim.length > 0) {
+    // Se não há match exato e NÃO for campo de município, insere a opção dinâmica no topo para uso imediato
+    // ATENÇÃO: Para município NÃO EXISTE colocar "+" ou novo dado, somente os 52 oficiais de RO
+    if (!isMunicipio && !exactMatch && qTrim.length > 0) {
       items.unshift({
         value: qTrim,
         label: 'Adicionar e usar este novo valor',
@@ -380,9 +426,10 @@
     if (!inputEl) return;
     const listId = inputEl.dataset.dynamicList;
     const query = inputEl.value || '';
+    const isMun = isMunicipioField(listId, inputEl);
 
     const allOptions = getRawOptionsForList(listId, inputEl);
-    const { items, totalCount } = filterAndRankOptions(allOptions, query);
+    const { items, totalCount } = filterAndRankOptions(allOptions, query, isMun);
 
     currentFilteredList = items;
     highlightedIndex = items.length > 0 ? 0 : -1;
@@ -400,32 +447,35 @@
       document.body.appendChild(activeDropdownEl);
     }
 
-    renderDropdownContent(items, query, totalCount, listId);
+    renderDropdownContent(items, query, totalCount, listId, isMun);
     positionDropdown(inputEl, activeDropdownEl);
   }
 
   // Renderiza o HTML interno do menu dropdown
-  function renderDropdownContent(items, query, totalCount, listId) {
+  function renderDropdownContent(items, query, totalCount, listId, isMunicipio = false) {
     if (!activeDropdownEl) return;
 
     if (items.length === 0) {
       activeDropdownEl.innerHTML = `
         <div class="siscam-combo-header">
-          <span>NENHUMA SUGESTÃO</span>
+          <span>${isMunicipio ? '52 MUNICÍPIOS DE RO' : 'NENHUMA SUGESTÃO'}</span>
           <span>0 encontrados</span>
         </div>
         <div class="siscam-combo-empty">
-          Nenhuma opção encontrada para "${escapeHTML(query)}".
+          ${isMunicipio ? `Nenhum dos 52 municípios oficiais encontrado para "${escapeHTML(query)}".` : `Nenhuma opção encontrada para "${escapeHTML(query)}".`}
         </div>
       `;
       return;
     }
 
-    const countLabel = query.trim() ? `${items.length} de ${totalCount} encontrados` : `${items.length} disponíveis`;
+    const headerTitle = isMunicipio ? '52 MUNICÍPIOS OFICIAIS DE RONDÔNIA' : 'SUGESTÕES DINÂMICAS';
+    const countLabel = isMunicipio
+      ? (query.trim() ? `${items.length} de 52 encontrados` : '52 municípios oficiais')
+      : (query.trim() ? `${items.length} de ${totalCount} encontrados` : `${items.length} disponíveis`);
 
     let html = `
       <div class="siscam-combo-header">
-        <span>SUGESTÕES DINÂMICAS</span>
+        <span>${headerTitle}</span>
         <span style="color:#34d399; font-weight:800;">${countLabel}</span>
       </div>
     `;
@@ -499,8 +549,8 @@
     const val = item.value;
     inputEl.value = val;
 
-    // Se for um novo dado dinâmico, registra imediatamente no pool em memória e no datalist
-    if (item.isNew) {
+    // Se for um novo dado dinâmico (e NÃO for município), registra imediatamente no pool em memória e no datalist
+    if (item.isNew && !isMunicipioField(inputEl.dataset.dynamicList, inputEl)) {
       const listId = inputEl.dataset.dynamicList;
       if (listId) {
         if (!window._dynamicComboCustomData[listId]) {

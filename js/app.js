@@ -5,7 +5,7 @@ const ESCALA_ETAPAS = [
   { nivel: 0, pct: '0%', label: '0% - Processo aberto', nome: 'Processo aberto', setor: 'CAM', cor: '#ef4444' },
   { nivel: 1, pct: '5%', label: '5% - Recebido na CAM', nome: 'Recebido na CAM', setor: 'CAM', cor: '#f87171' },
   { nivel: 2, pct: '10%', label: '10% - Prosseguimento GDSM', nome: 'Prosseguimento GDSM', setor: 'CAM', cor: '#fb923c' },
-  { nivel: 3, pct: '15%', label: '15% - Prestação de Contas - CPC', nome: 'Prestação de Contas - CPC', setor: 'CAM', cor: '#f97316' },
+  { nivel: 3, pct: '15%', label: '15% - Prestação de Contas - CPC (Opcional)', nome: 'Prestação de Contas - CPC (Opcional)', setor: 'CAM', cor: '#f97316', opcional: true, detalhe: 'Etapa Opcional — para dar mais segurança ao analista, não sendo impeditivo de procedimento, a critério da gerência do GDSM.' },
   { nivel: 4, pct: '20%', label: '20% - Notificação GDSM', nome: 'Notificação GDSM', setor: 'CAM', cor: '#ea580c' },
   { nivel: 5, pct: '25%', label: '25% - Manifestação CAM', nome: 'Manifestação CAM', setor: 'CAM', cor: '#f59e0b' },
   { nivel: 6, pct: '30%', label: '30% - Autorizo Gabinete SEDUC', nome: 'Autorizo Gabinete SEDUC', setor: 'CAM', cor: '#eab308' },
@@ -892,7 +892,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.145';
+window.APP_VERSION = 'v1.146';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -9911,8 +9911,20 @@ document.addEventListener('keydown', (e) => {
 // ============================================================
 // 52 MUNICÍPIOS OFICIAIS DE RONDÔNIA (SEDUC/RO)
 const LISTA_52_MUNICIPIOS_RO = [
-  "ALTA FLORESTA DO OESTE", "ALTO ALEGRE DOS PARECIS", "ALTO PARAISO", "ALVORADA DO OESTE", "ARIQUEMES", "BURITIS", "CABIXI", "CACAULÂNDIA", "CACOAL", "CAMPO NOVO DE RONDÔNIA", "CANDEIAS DO JAMARI", "CASTANHEIRAS", "CEREJEIRAS", "CHUPINGUAIA", "COLORADO DO OESTE", "CORUMBIARA", "COSTA MARQUES", "CUJUBIM", "ESPIGÃO DO OESTE", "GOVERNADOR JORGE TEIXEIRA", "GUAJARÁ MIRIM", "ITAPUÃ DO OESTE", "JARU", "JI-PARANÁ", "MACHADINHO D’OESTE", "MINISTRO ANDREAZZA", "MIRANTE DA SERRA", "MONTE NEGRO", "NOVA BRASILÂNDIA DO OESTE", "NOVA MAMORÉ", "NOVA UNIÃO", "NOVO HORIZONTE DO OESTE", "OURO PRETO DO OESTE", "PARECIS", "PIMENTA BUENO", "PIMENTEIRAS DO OESTE", "PORTO VELHO", "PRESIDENTE MEDICI", "PRIMAVERA DE RONDÔNIA", "RIO CRESPO", "ROLIM DE MOURA", "SANTA LUZIA DO OESTE", "SÃO FELIPE DO OESTE", "SÃO FRANCISCO DO GUAPORÉ", "SÃO MIGUEL DO GUAPORÉ", "SERINGUEIRAS", "TEIXEIRÓPOLIS", "THEOBROMA", "URUPÁ", "VALE DO ANARI", "VALE DO PARAISO", "VILHENA"
+  "Alta Floresta do Oeste", "Alto Alegre dos Parecis", "Alto ParaÃ­so", "Alvorada do Oeste",
+  "Ariquemes", "Buritis", "Cabixi", "CacaulÃ¢ndia", "Cacoal", "Campo Novo de RondÃ´nia",
+  "Candeias do Jamari", "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste",
+  "Corumbiara", "Costa Marques", "Cujubim", "EspigÃ£o do Oeste", "Governador Jorge Teixeira",
+  "GuajarÃ¡-Mirim", "ItapuÃ£ do Oeste", "Jaru", "Ji-ParanÃ¡", "Machadinho do Oeste",
+  "Ministro Andreazza", "Mirante da Serra", "Monte Negro", "Nova BrasilÃ¢ndia do Oeste",
+  "Nova MamorÃ©", "Nova UniÃ£o", "Novo Horizonte do Oeste", "Ouro Preto do Oeste",
+  "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente MÃ©dici",
+  "Primavera de RondÃ´nia", "Rio Crespo", "Rolim de Moura", "Santa Luzia do Oeste",
+  "SÃ£o Felipe do Oeste", "SÃ£o Francisco do GuaporÃ©", "SÃ£o Miguel do GuaporÃ©",
+  "Seringueiras", "TeixeirÃ³polis", "Theobroma", "UrupÃ¡", "Vale do Anari",
+  "Vale do ParaÃ­so", "Vilhena"
 ];
+window.LISTA_52_MUNICIPIOS_RO = LISTA_52_MUNICIPIOS_RO;
 
 function _normMun(str) {
   if (!str) return '';
@@ -9923,33 +9935,12 @@ function _normMun(str) {
 
 // Popula os datalists com os 52 municípios ancorados e quaisquer outros novos inseridos
 function popularMunicipiosAncorados() {
-  const mSet = new Set(LISTA_52_MUNICIPIOS_RO);
-
-  const pools = [
-    typeof _teCache !== 'undefined' ? _teCache : [],
-    typeof _escolasCache !== 'undefined' ? _escolasCache : []
-  ];
-  try {
-    const loc = JSON.parse(localStorage.getItem('seduc_entidades_cadastradas_local') || '[]');
-    pools.push(loc);
-  } catch(e) {}
-
-  pools.forEach(arr => {
-    if (Array.isArray(arr)) {
-      arr.forEach(item => {
-        if (item && item.municipio && String(item.municipio).trim().length > 1) {
-          mSet.add(String(item.municipio).trim());
-        }
-      });
-    }
-  });
-
-  const mList = Array.from(mSet).sort((a,b) => a.localeCompare(b, 'pt-BR'));
+  const mList = [...LISTA_52_MUNICIPIOS_RO].sort((a,b) => a.localeCompare(b, 'pt-BR'));
 
   ['list-municipios-ancorados', 'list-municipios'].forEach(dlId => {
     const dl = document.getElementById(dlId);
     if (dl) {
-      dl.innerHTML = mList.map(m => `<option value="${m}">${m}</option>`).join('');
+      dl.innerHTML = mList.map(m => <option value="${m}">${m}</option>).join('');
     }
   });
 }

@@ -1,4 +1,49 @@
 
+// ============================================================
+// 52 MUNICÃPIOS OFICIAIS DE RONDÃ”NIA (SEDUC/RO - LISTA CANÃ”NICA)
+// ============================================================
+const LISTA_52_MUNICIPIOS_CANONICOS = [
+  "Alta Floresta do Oeste", "Alto Alegre dos Parecis", "Alto ParaÃ­so", "Alvorada do Oeste",
+  "Ariquemes", "Buritis", "Cabixi", "CacaulÃ¢ndia", "Cacoal", "Campo Novo de RondÃ´nia",
+  "Candeias do Jamari", "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste",
+  "Corumbiara", "Costa Marques", "Cujubim", "EspigÃ£o do Oeste", "Governador Jorge Teixeira",
+  "GuajarÃ¡-Mirim", "ItapuÃ£ do Oeste", "Jaru", "Ji-ParanÃ¡", "Machadinho do Oeste",
+  "Ministro Andreazza", "Mirante da Serra", "Monte Negro", "Nova BrasilÃ¢ndia do Oeste",
+  "Nova MamorÃ©", "Nova UniÃ£o", "Novo Horizonte do Oeste", "Ouro Preto do Oeste",
+  "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente MÃ©dici",
+  "Primavera de RondÃ´nia", "Rio Crespo", "Rolim de Moura", "Santa Luzia do Oeste",
+  "SÃ£o Felipe do Oeste", "SÃ£o Francisco do GuaporÃ©", "SÃ£o Miguel do GuaporÃ©",
+  "Seringueiras", "TeixeirÃ³polis", "Theobroma", "UrupÃ¡", "Vale do Anari",
+  "Vale do ParaÃ­so", "Vilhena"
+];
+window.LISTA_52_MUNICIPIOS_CANONICOS = LISTA_52_MUNICIPIOS_CANONICOS;
+
+function normalizarMunicipioRO(mun) {
+  if (!mun) return '';
+  const s = String(mun).trim();
+  if (!s) return '';
+  const clean = s.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/d['\u2019]oeste/g, 'do oeste')
+    .replace(/d['\u2019]este/g, 'do oeste')
+    .replace(/doeste/g, 'do oeste')
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  // Distritos conhecidos vinculados aos municÃ­pios
+  if (clean.indexOf('surpresa') !== -1) return 'GuajarÃ¡-Mirim';
+  if (clean.indexOf('abuna') !== -1 || clean.indexOf('nova california') !== -1 || clean.indexOf('vista alegre') !== -1) return 'Porto Velho';
+
+  for (let i = 0; i < LISTA_52_MUNICIPIOS_CANONICOS.length; i++) {
+    const c = LISTA_52_MUNICIPIOS_CANONICOS[i];
+    const cClean = c.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (clean === cClean) return c;
+  }
+  return s;
+}
+window.normalizarMunicipioRO = normalizarMunicipioRO;
+
 function formatarDigitoInteiro(val) {
   if (val === null || val === undefined) return '';
   let s = String(val).trim();
@@ -667,7 +712,7 @@ async function importarExcel(file) {
           const processo = {
             id:          gerarId(),
             prefixo:     idxPrefixo >= 0 ? String(row[idxPrefixo] || '').trim().toUpperCase() : '',
-            municipio:   idxMunicipio   >= 0 ? String(row[idxMunicipio]   || '').trim() : '',
+            municipio:   idxMunicipio   >= 0 ? normalizarMunicipioRO(String(row[idxMunicipio]   || '').trim()) : '',
             numero:      numero,
             interessado: idxInteressado >= 0 ? String(row[idxInteressado] || '').trim() : '',
             objeto:      idxObjeto      >= 0 ? String(row[idxObjeto]      || '').trim() : '',
