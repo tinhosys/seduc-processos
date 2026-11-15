@@ -313,6 +313,7 @@ window.atualizarDisplayEscala = atualizarDisplayEscala;
 function abrirModalEtapa10Opcoes() {
   const modal = document.getElementById('modal-escala-etapa10');
   if (modal) modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
 }
 window.abrirModalEtapa10Opcoes = abrirModalEtapa10Opcoes;
 
@@ -891,7 +892,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.144';
+window.APP_VERSION = 'v1.145';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -1048,6 +1049,7 @@ if (typeof window.abrirModalPrestacaoContas !== 'function') {
     }
     const modal = document.getElementById('modal-prestacao-contas');
     if (modal) modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
   };
 }
 
@@ -2792,7 +2794,13 @@ function renderProcessos() {
   const preencherDatalist = (id, prop) => {
     const dl = document.getElementById(id);
     if (dl) {
-      const itens = [...new Set(carregarProcessos().map(p => p[prop]).filter(Boolean))].sort();
+      let itens = [...new Set(carregarProcessos().map(p => p[prop]).filter(Boolean))];
+      if (id === 'list-municipios' || id === 'list-municipios-ancorados') {
+        const munOficiais = (typeof LISTA_52_MUNICIPIOS_RO !== 'undefined' ? LISTA_52_MUNICIPIOS_RO : (window.LISTA_52_MUNICIPIOS_RO || []));
+        const setMun = new Set([...munOficiais, ...itens]);
+        itens = Array.from(setMun);
+      }
+      itens.sort((a,b) => a.localeCompare(b, 'pt-BR'));
       dl.innerHTML = itens.map(i => `<option value="${i}">`).join('');
     }
   };
@@ -4367,6 +4375,7 @@ function abrirModalNovoProcesso() {
 
   // Exibir popup modal com display flex
   modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
   setTimeout(() => {
     document.getElementById('popup-novo-prefixo')?.focus();
   }, 120);
@@ -4973,6 +4982,7 @@ function atualizarEntidadesMunicipioPopup() {
     });
   }
   dl.innerHTML = htmlDatalist;
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
 
   // Guarda o mapa geral para busca instantânea de CNPJ
   window._popupEntidadesCacheMap = mapaGeral;
@@ -8911,6 +8921,7 @@ function abrirModalManifestoTCE(p) {
 
   const modal = document.getElementById('modal-manifesto-tce');
   if (modal) modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
 }
 
 function fecharModalManifestoTCE() {
@@ -10573,6 +10584,7 @@ function abrirModalCadastroEntidade(dadosExistentes = null) {
   atualizarLinkAcessoPlusCode(dadosExistentes ? dadosExistentes.plusCode : '');
 
   modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
 }
 window.abrirModalCadastroEntidade = abrirModalCadastroEntidade;
 
@@ -11699,6 +11711,7 @@ function abrirModalGeradorLink() {
   }
   const modal = document.getElementById('modal-gerador-link-cadastro');
   if (modal) modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
   gerarLinkCadastroComParametros();
 }
 window.abrirModalGeradorLink = abrirModalGeradorLink;
@@ -11911,6 +11924,7 @@ function iniciarModoCadastroExterno(urlParams) {
   if (!modal) return;
 
   modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
   modal.style.position = 'fixed';
   modal.style.inset = '0';
   modal.style.zIndex = '999999';
@@ -13074,6 +13088,7 @@ window.confirmarContraNotificacaoPadronizacao = function() {
   if (modal) {
     modal.classList.add('open');
     modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
     modal.style.opacity = '1';
     modal.style.pointerEvents = 'all';
   }
@@ -14779,6 +14794,7 @@ async function gerarManifestacaoJPG() {
 
   if (modal) {
     modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
     if (loading) loading.style.display = 'block';
     if (imgEl) imgEl.style.display = 'none';
   }
@@ -15949,6 +15965,7 @@ async function abrirModalPrestacaoContas() {
 
   if (modal) {
     modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
     if (loading) loading.style.display = 'block';
     if (imgEl) imgEl.style.display = 'none';
   }
@@ -16566,6 +16583,7 @@ function abrirEditorScriptCAM() {
   }
   if (modal) {
     modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
   }
 }
 window.abrirEditorScriptCAM = abrirEditorScriptCAM;
@@ -16667,6 +16685,7 @@ function mostrarRazoesCriterio(index) {
   }
 
   if (modal) modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
 }
 window.mostrarRazoesCriterio = mostrarRazoesCriterio;
 
@@ -17700,6 +17719,7 @@ function abrirModalEditorTxtApontamentosCAM(filtroInicial) {
   const modal = document.getElementById('modal-editor-txt-apontamentos-cam');
   preencherEditorTxtApontamentosCAM(filtroInicial || 'todos');
   if (modal) modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
 }
 window.abrirModalEditorTxtApontamentosCAM = abrirModalEditorTxtApontamentosCAM;
 
@@ -18065,6 +18085,7 @@ function abrirModalIncoerenciasCAM() {
   }
 
   modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
 }
 window.abrirModalIncoerenciasCAM = abrirModalIncoerenciasCAM;
 
@@ -18152,6 +18173,7 @@ function abrirEditorScriptFundamentos() {
   }
   if (modal) {
     modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
   }
 }
 window.abrirEditorScriptFundamentos = abrirEditorScriptFundamentos;
@@ -18840,6 +18862,7 @@ function abrirEditorScriptAntiGravityV2() {
   if (statusMsg) statusMsg.textContent = '';
   if (txtArea) txtArea.value = obterScriptAntiGravityV2Atual();
   if (modal) modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
 }
 window.abrirEditorScriptAntiGravityV2 = abrirEditorScriptAntiGravityV2;
 
@@ -19518,6 +19541,7 @@ ${linhasPlanoMd}
   if (abrirModal) {
     const modal = document.getElementById('modal-documento-antigravity-v2');
     if (modal) modal.style.display = 'flex';
+  if (window.SiSCAMCombobox && typeof window.SiSCAMCombobox.refreshAll === 'function') { window.SiSCAMCombobox.refreshAll(); }
     toast('🛡️ Auditoria AntiGravity v2.0 concluída e Documento gerado!', contemErrosCriticosOuAltos ? 'warning' : 'success');
   }
   return resultadoAuditoria;

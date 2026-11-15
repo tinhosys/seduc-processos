@@ -8,6 +8,7 @@ const files = [
   { src: 'cadastro.html',     dst: 'cadastro.html' },
   { src: 'js/dados.js',       dst: 'js/dados.js' },
   { src: 'js/app.js',         dst: 'js/app.js' },
+  { src: 'js/combobox-dynamic.js',dst: 'js/combobox-dynamic.js' },
   { src: 'js/multi-select.js',dst: 'js/multi-select.js' },
   { src: 'js/escolas.js',     dst: 'js/escolas.js' },
   { src: 'js/mapa.js',        dst: 'js/mapa.js' },

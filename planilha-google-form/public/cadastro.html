@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -1029,6 +1029,30 @@
       50% { transform: scale(1.02); box-shadow: 0 0 28px rgba(234, 179, 8, 0.95); border-color: #fef08a; }
       100% { transform: scale(1); box-shadow: 0 0 18px rgba(56, 189, 248, 0.85); }
     }
+      /* Estilos do Stepper de Alunos por Modalidade (Imagem 1) */
+    .mod-stepper-wrap:focus-within {
+      border-color: #38bdf8 !important;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3) !important;
+    }
+    .mod-stepper-wrap input[type=number]::-webkit-inner-spin-button,
+    .mod-stepper-wrap input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+      margin: 0 !important;
+    }
+    .mod-stepper-wrap input[type=number] {
+      -moz-appearance: textfield !important;
+    }
+    .btn-step-arrow {
+      transition: background 0.15s, color 0.15s, transform 0.08s !important;
+    }
+    .btn-step-arrow:hover {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+    }
+    .btn-step-arrow:active {
+      background: #0369a1 !important;
+      transform: scale(0.95) !important;
+    }
   </style>
 </head>
 <body>
@@ -1038,7 +1062,7 @@
     <div class="top-header-row">
       <div style="min-width: 130px; display:flex; align-items:center;">
         <div class="siscam-badge-delta" style="display:inline-flex; align-items:center; gap:6px; color:#38bdf8; font-size:12.5px; font-weight:900; letter-spacing:1.2px; background:rgba(56,189,248,0.12); padding:4px 10px; border-radius:6px; border:1px solid rgba(56,189,248,0.35); text-shadow:0 0 8px rgba(56,189,248,0.7); font-family:'Segoe UI',monospace,sans-serif;" title="Sistema Integrado CAM - SEDUC/RO">
-          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.144 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
+          <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.145 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
         </div>
       </div>
       <!-- NOME DA ENTIDADE E MUNICÍPIOS VINCULADOS: 2 LINHAS (IMAGEM 5) -->
@@ -1065,7 +1089,7 @@
            target="_blank" rel="noopener noreferrer"
            title="Fale conosco no WhatsApp: (69) 99906-4881">
           <img id="img-banner-lateral"
-               src="img/banner-cadastre-escolas-vertical.png?v=v1.144"
+               src="img/banner-cadastre-escolas-vertical.png?v=v1.145"
                alt="Cadastre Todas as Escolas do Seu Município - CAM SEDUC/RO - Chame no WhatsApp (69) 99906-4881"
                class="sidebar-banner-img">
         </a>
@@ -1214,57 +1238,122 @@
                   <span id="txt-modalidade-trigger" style="color:#94a3b8; font-size:12px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
                     Selecione a(s) Modalidade(s)...
                   </span>
-                  <span style="font-size:11px; color:#38bdf8; margin-left:6px;">▼</span>
+                  <span style="font-size:11px; color:#38bdf8; margin-left:6px;">&#9660;</span>
                 </div>
                 
                 <!-- DROPDOWN COM CHECKBOXES E COLUNA DE ALUNOS (IMAGEM 1) -->
-                <div id="drop-modalidade-opcoes" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; min-width:320px; max-height:260px; overflow-y:auto; background:#0f172a; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 12px 35px rgba(0,0,0,0.85); z-index:9999; padding:6px 8px;">
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Ensino Fundamental" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Ensino Fundamental</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                <div id="drop-modalidade-opcoes" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; min-width:380px; max-height:300px; overflow-y:auto; background:#0f172a; border:2px solid #38bdf8; border-radius:8px; box-shadow:0 12px 35px rgba(0,0,0,0.85); z-index:9999; padding:6px 8px;">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Ensino Fundamental" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Ensino Fundamental</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Ensino Médio" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Ensino Médio</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Ensino Médio" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Ensino Médio</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Infantil" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Infantil</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Infantil" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Educação Infantil</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Creche" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Creche</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Creche" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Creche</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="EJA (Fund.)" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> EJA (Fund.)</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="EJA (Fund.)" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> EJA (Fund.)</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="EJA (Médio)" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> EJA (Médio)</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="EJA (Médio)" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> EJA (Médio)</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Especial / AEE" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Especial / AEE</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Especial / AEE" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Educação Especial / AEE</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Profissional" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Profissional</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Profissional" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Educação Profissional</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação do Campo" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação do Campo</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação do Campo" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Educação do Campo</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Indígena" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Educação Indígena</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Educação Indígena" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Educação Indígena</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
-                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:5px 6px; border-radius:4px;">
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Outra / Geral" onchange="aoMudarModalidadeCheck(this)" style="width:16px; height:16px; accent-color:#0284c7; cursor:pointer;"> Outra / Geral</label>
-                    <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled style="width:68px; height:26px; background:#1e293b; border:1px solid #334155; border-radius:4px; color:#38bdf8; text-align:center; font-weight:800; font-size:12px; outline:none; opacity:0.35;" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();">
+                  <div class="mod-item-row" style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.06); border-radius:4px;">
+                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; flex:1; margin:0; font-size:12.5px; font-weight:700; color:#f1f5f9;"><input type="checkbox" class="mod-checkbox" value="Outra / Geral" onchange="aoMudarModalidadeCheck(this)" style="width:17px; height:17px; accent-color:#0284c7; cursor:pointer;"> Outra / Geral</label>
+                    <div class="mod-stepper-wrap" style="display:inline-flex; align-items:stretch; width:98px; height:36px; background:#1e293b; border:1.5px solid #334155; border-radius:6px; overflow:hidden; opacity:0.35; transition:all 0.2s;">
+                      <input type="number" min="0" step="1" class="mod-qtd-input" placeholder="0" disabled inputmode="numeric" pattern="[0-9]*" onkeydown="if(['.',',','-','+','e','E'].includes(event.key)) event.preventDefault();" oninput="this.value = this.value.replace(/\D/g, ''); calcularTotalAlunosModalidades();" onchange="calcularTotalAlunosModalidades();" style="width:62px; height:100%; background:transparent; border:none; color:#38bdf8; text-align:center; font-weight:800; font-size:15px; outline:none; padding:0 2px;">
+                      <div style="display:flex; flex-direction:column; width:36px; height:100%; border-left:1.5px solid #334155;">
+                        <button type="button" class="btn-step-arrow btn-step-up" tabindex="-1" onclick="alterarQtdModalidade(this, 1, false)" style="flex:1; background:#0f172a; border:none; border-bottom:1px solid #334155; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Aumentar (+1)">&#9650;</button>
+                        <button type="button" class="btn-step-arrow btn-step-down" tabindex="-1" onclick="alterarQtdModalidade(this, -1, false)" style="flex:1; background:#0f172a; border:none; color:#38bdf8; font-size:12px; font-weight:900; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; line-height:1; user-select:none;" title="Diminuir (-1)">&#9660;</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                
                 <input type="hidden" id="entidade-modalidade" value="">
                 
                 <!-- RELAÇÃO VISUAL ABAIXO SEPARADA POR VÍRGULA (IMAGEM 5) -->
@@ -1562,7 +1651,7 @@
           <!-- SEÇÃO 4: INFRAESTRUTURA -->
           <div class="form-group-section" id="sec-aba-4" style="display: none;">
             <div class="section-header">
-              <span class="section-title"><span class="tab-num">4</span> Infraestrutura & Espaços</span>
+              <span class="section-title"><span class="tab-num">4</span> Infraestrutura / Espaços</span>
               <span style="font-size: 11.5px; color: var(--text-muted);">Etapa 4 de 4</span>
             </div>
 
@@ -1739,12 +1828,12 @@
               </div>
               <div>
                 <label>4.20 - Piso da Quadra *</label>
-                <select id="entidade-quadra-piso" class="form-control">
+                <select id="entidade-quadra-piso" class="form-control" disabled style="opacity:0.6; cursor:not-allowed;">
                   <option value="">-</option>
                   <option value="Granelite">Granelite</option>
                   <option value="Concreto">Concreto</option>
                   <option value="Outro">Outro</option>
-                  <option value="Não se aplica">Não se aplica</option>
+                  <option value="Não se aplica" selected>Não se aplica</option>
                 </select>
               </div>
               <div>
@@ -1982,9 +2071,10 @@
   <div id="toast-msg"></div>
 
   <!-- SCRIPTS ESSENCIAIS -->
-  <script src="js/dados.js?v=v1.144"></script>
-  <script src="js/escolas.js?v=v1.144"></script>
-  <script src="js/relatorios-impressao.js?v=v1.144"></script>
+  <script src="js/combobox-dynamic.js?v=v1.145"></script>
+  <script src="js/dados.js?v=v1.145"></script>
+  <script src="js/escolas.js?v=v1.145"></script>
+  <script src="js/relatorios-impressao.js?v=v1.145"></script>
 
   <script>
     /* ============================================================
@@ -3105,6 +3195,31 @@
       drop.style.display = (drop.style.display === 'block') ? 'none' : 'block';
     }
 
+        function alterarQtdModalidade(btn, delta, isModal) {
+      const row = btn.closest('.mod-item-row');
+      if (!row) return;
+      const cb = row.querySelector('.mod-checkbox');
+      const inp = row.querySelector('.mod-qtd-input');
+      const stepperWrap = row.querySelector('.mod-stepper-wrap');
+      if (!inp) return;
+      if (cb && !cb.checked) {
+        cb.checked = true;
+        inp.disabled = false;
+        inp.style.opacity = '1';
+        if (stepperWrap) {
+          stepperWrap.style.opacity = '1';
+          stepperWrap.style.borderColor = '#38bdf8';
+        }
+      }
+      if (inp.disabled) return;
+      let val = parseInt(inp.value, 10);
+      if (isNaN(val)) val = 0;
+      val = Math.max(0, Math.floor(val + delta));
+      inp.value = val;
+      calcularTotalAlunosModalidades();
+    }
+    window.alterarQtdModalidade = alterarQtdModalidade;
+
     function aoMudarModalidadeCheck(targetCheckbox) {
       const drop = document.getElementById('drop-modalidade-opcoes');
       if (!drop) return;
@@ -3112,17 +3227,26 @@
       if (targetCheckbox) {
         const row = targetCheckbox.closest('.mod-item-row');
         const inputQtd = row ? row.querySelector('.mod-qtd-input') : null;
+        const stepperWrap = row ? row.querySelector('.mod-stepper-wrap') : null;
         if (inputQtd) {
           if (targetCheckbox.checked) {
             inputQtd.disabled = false;
             inputQtd.style.opacity = '1';
             inputQtd.style.borderColor = '#38bdf8';
+            if (stepperWrap) {
+              stepperWrap.style.opacity = '1';
+              stepperWrap.style.borderColor = '#38bdf8';
+            }
             if (!inputQtd.value || inputQtd.value === '0') inputQtd.value = '';
             setTimeout(() => inputQtd.focus(), 50);
           } else {
             inputQtd.disabled = true;
             inputQtd.style.opacity = '0.35';
             inputQtd.style.borderColor = '#334155';
+            if (stepperWrap) {
+              stepperWrap.style.opacity = '0.35';
+              stepperWrap.style.borderColor = '#334155';
+            }
             inputQtd.value = '';
           }
         }
@@ -3819,19 +3943,37 @@
     window.aoMudarComboInfra = aoMudarComboInfra;
     function aoMudarQuadraPoliesportiva(val) {
       const elCob = document.getElementById('entidade-quadra-coberta');
-      if (!elCob) return;
+      const elPiso = document.getElementById('entidade-quadra-piso');
       if (val === 'Sim') {
-        elCob.disabled = false;
-        elCob.style.opacity = '1';
-        elCob.style.cursor = 'default';
-        if (elCob.value === 'Não se aplica') {
-          elCob.value = '';
+        if (elCob) {
+          elCob.disabled = false;
+          elCob.style.opacity = '1';
+          elCob.style.cursor = 'default';
+          if (elCob.value === 'Não se aplica' || elCob.value === 'Não se aplica') {
+            elCob.value = '';
+          }
+        }
+        if (elPiso) {
+          elPiso.disabled = false;
+          elPiso.style.opacity = '1';
+          elPiso.style.cursor = 'default';
+          if (elPiso.value === 'Não se aplica' || elPiso.value === 'Não se aplica') {
+            elPiso.value = '';
+          }
         }
       } else {
-        elCob.value = 'Não se aplica';
-        elCob.disabled = true;
-        elCob.style.opacity = '0.6';
-        elCob.style.cursor = 'not-allowed';
+        if (elCob) {
+          elCob.value = 'Não se aplica';
+          elCob.disabled = true;
+          elCob.style.opacity = '0.6';
+          elCob.style.cursor = 'not-allowed';
+        }
+        if (elPiso) {
+          elPiso.value = 'Não se aplica';
+          elPiso.disabled = true;
+          elPiso.style.opacity = '0.6';
+          elPiso.style.cursor = 'not-allowed';
+        }
       }
     }
     window.aoMudarQuadraPoliesportiva = aoMudarQuadraPoliesportiva;
@@ -4192,7 +4334,7 @@
       if (!await validarObrigatorio('entidade-endereco', 'Endereço (Rua / Av / Linha) *', 3)) return;
       if (!await validarObrigatorio('entidade-bairro', '3.3 - Bairro / Distrito / Linha *', 3)) return;
 
-      // Validação da Aba 4 (Infraestrutura & Espaços - 29 campos obrigatórios)
+      // Validação da Aba 4 (Infraestrutura / Espaços - 29 campos obrigatórios)
       const camposInfra29 = [
         { id: 'entidade-salas-aula', nome: 'Salas de Aula (Qtde)' },
         { id: 'entidade-salas-adm', nome: 'Salas Administrativas (Qtde)' },
@@ -4243,7 +4385,7 @@
         ativarAba(4);
         const listaAmostra = vaziosInfra.slice(0, 6).map(c => `• ${c}`).join('\n') + (vaziosInfra.length > 6 ? `\n... e mais ${vaziosInfra.length - 6} item(ns)` : '');
         const autoPreencher = confirm(
-          `Atenção: Na Aba 4 (Infraestrutura & Espaços), constam ${vaziosInfra.length} campo(s) pendente(s):\n\n${listaAmostra}\n\n💡 Dica Didática SiSCAM:\nDeseja que o sistema preencha os campos pendentes com os padrões oficiais ("Não" / "Não se aplica") para você salvar agora?\n\n[OK] Sim, preencher padrão e salvar agora\n[Cancelar] Não, quero preencher manualmente`
+          `Atenção: Na Aba 4 (Infraestrutura / Espaços), constam ${vaziosInfra.length} campo(s) pendente(s):\n\n${listaAmostra}\n\n💡 Dica Didática SiSCAM:\nDeseja que o sistema preencha os campos pendentes com os padrões oficiais ("Não" / "Não se aplica") para você salvar agora?\n\n[OK] Sim, preencher padrão e salvar agora\n[Cancelar] Não, quero preencher manualmente`
         );
         if (autoPreencher) {
           preencherInfraNaoSeAplica();
@@ -4337,7 +4479,7 @@
         rodoviaKm: getVal('entidade-rodovia-km'),
         sitioRio: getVal('entidade-sitio-rio'),
         plusCode: getVal('entidade-plus-code'),
-        // Campos de Infraestrutura & Espaços (29 Campos + Observações):
+        // Campos de Infraestrutura / Espaços (29 Campos + Observações):
         salasAula: getVal('entidade-salas-aula'),
         salasAdm: getVal('entidade-salas-adm'),
         banheiros: getVal('entidade-banheiros'),
@@ -4589,7 +4731,7 @@
               <span style="font-size:22px;">&#128424;&#65039;</span>
               <div>
                 <div class="siscam-modal-badge-title">
-                  <span class="siscam-delta">&#9650;</span> SiSCAM v1.144 <span class="siscam-delta">&#9650;</span>
+                  <span class="siscam-delta">&#9650;</span> SiSCAM v1.145 <span class="siscam-delta">&#9650;</span>
                 </div>
                 <div class="siscam-modal-subtag">Central de Impress&atilde;o e Relat&oacute;rios Oficiais</div>
               </div>
