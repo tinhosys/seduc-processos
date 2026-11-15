@@ -988,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.150';
+window.APP_VERSION = 'v1.151';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴

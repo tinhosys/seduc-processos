@@ -290,80 +290,7 @@
 
     const inp = document.getElementById(`input-padronizar-nome-${cnpjLimpo}`);
     const novoNome = inp ? inp.value.trim() : '';
-
-    if (!novoNome) {
-      if (typeof toast === 'function') toast('Informe um nome válido para padronizar.', 'warning');
-      return;
-    }
-
-    const procs = item.processos || [];
-    const qtdProcessos = procs.length;
-
-    let confirmado = false;
-    const msgConfirm = `
-      <div style="font-size:13.5px; line-height:1.5; color:#cbd5e1;">
-        <p style="margin-bottom:12px; font-size:14px; font-weight:700; color:#10b981;">
-          Deseja aplicar e padronizar este nome em <u>TODOS</u> os processos vinculados?
-        </p>
-        <div style="background:rgba(16,185,129,0.1); border:1.5px solid rgba(16,185,129,0.4); border-radius:8px; padding:10px 14px; margin-bottom:12px;">
-          <div style="font-size:11.5px; color:#94a3b8;">Nome Atual no Sistema:</div>
-          <div style="text-decoration:line-through; color:#cbd5e1; margin-bottom:6px;">${item.entidade}</div>
-          <div style="font-size:11.5px; color:#34d399; font-weight:700;">Novo Nome Padronizado:</div>
-          <div style="font-size:13.5px; font-weight:800; color:#ffffff;">${novoNome}</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.04); border-left:4px solid #10b981; padding:8px 12px; border-radius:4px; font-size:12.5px;">
-          Esta padronização será aplicada em <strong style="color:#34d399; font-size:13.5px;">${qtdProcessos} processo(s)</strong> vinculados ao CNPJ ${item.cnpjFormatado}.
-        </div>
-      </div>
-    `;
-
-    if (typeof exibirMensagemSiSCAM === 'function') {
-      confirmado = await exibirMensagemSiSCAM(msgConfirm, {
-        titulo: '📥 Padronizar Nome em Todos os Processos',
-        tipo: 'confirm',
-        confirmacao: true,
-        btnTexto: `Sim, Padronizar ${qtdProcessos} Processo(s)`,
-        btnCancelarTexto: 'Cancelar'
-      });
-    } else {
-      confirmado = window.confirm(`Deseja padronizar o nome para "${novoNome}" em todos os ${qtdProcessos} processo(s) vinculados a este CNPJ?`);
-    }
-
-    if (!confirmado) return;
-
-    // Atualiza processos locais
-    const todosProcs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []) || [];
-    const afetados = todosProcs.filter(p => String(p.cnpj || '').replace(/\D/g, '') === cnpjLimpo);
-
-    afetados.forEach(p => {
-      p.interessado = novoNome;
-      p.entidade = novoNome;
-    });
-
-    item.entidade = novoNome;
-
-    if (typeof salvarProcessos === 'function') {
-      salvarProcessos(todosProcs);
-    }
-
-    // Salva auditoria (data, hora, login)
-    salvarAuditoriaCNPJ(cnpjLimpo, 'Padronizado Receita');
-
-    // Sincroniza remotamente
-    afetados.forEach(p => {
-      if (p.id && !String(p.id).startsWith('temp-') && typeof atualizarProcesso === 'function') {
-        atualizarProcesso(p.id, {
-          interessado: novoNome
-        }).catch(err => console.warn('Erro ao atualizar interessado remoto:', p.id, err));
-      }
-    });
-
-    if (typeof toast === 'function') {
-      toast(`✅ Nome padronizado aplicado em ${afetados.length} processo(s)!`, 'success');
-    }
-
-    // Recarrega e manda para o início da fila
-    carregarCnpjsInadimplentes();
+    solicitarConfirmacaoInadimplencia(cnpjLimpo, null, 'ambos', novoNome || item.entidade);
   }
   window.aplicarNomePadronizadoReceita = aplicarNomePadronizadoReceita;
 
@@ -799,131 +726,395 @@
   }
   window.editarCNPJVinculado = editarCNPJVinculado;
 
-  // CONFIRMAÇÃO PRÉVIA ANTES DE MUDANÇA DE STATUS (CÍRCULOS VERMELHOS IMAGEM 1)
-  async function solicitarConfirmacaoInadimplencia(cnpjLimpo, novoStatusInadimplente) {
+    // ============================================================
+  // MODAL EXCLUSIVO: "O QUE DESEJA FAZER?"
+  // Oferece 3 opções:
+  // 1. MUDAR O STATUS (Adimplente para Inadimplente ou vice-versa)
+  // 2. PADRONIZAR O NOME DA ENTIDADE (editável para abreviações)
+  // 3. OU AMBOS (Mudar Status E Padronizar Nome)
+  // ============================================================
+  function fecharModalAcaoCNPJ() {
+    const el = document.getElementById('siscam-modal-acao-cnpj-root');
+    if (el) el.remove();
+  }
+  window.fecharModalAcaoCNPJ = fecharModalAcaoCNPJ;
+
+  async function carregarReceitaNoModal(cnpjLimpo) {
+    const btn = document.getElementById('modal-btn-buscar-receita');
+    const inp = document.getElementById('modal-input-nome-padrao');
+    if (btn) btn.innerHTML = '<span>🔄</span> <span>Buscando...</span>';
+    try {
+      const dados = await consultarReceitaNaTela(cnpjLimpo, true);
+      if (dados && dados.razao_social) {
+        if (inp) inp.value = dados.razao_social;
+        if (typeof toast === 'function') toast('Razão Social oficial carregada da Receita Federal!', 'success');
+      } else {
+        if (typeof toast === 'function') toast('Não foi possível obter a Razão Social da Receita.', 'warning');
+      }
+    } catch (e) {
+      console.warn('Erro ao buscar receita:', e);
+    } finally {
+      if (btn) btn.innerHTML = '<span>🏛️</span> <span>Buscar Receita</span>';
+    }
+  }
+  window.carregarReceitaNoModal = carregarReceitaNoModal;
+
+  function selecionarOpcaoModalCNPJ(opcao) {
+    const rStatus = document.getElementById('modal-opt-status');
+    const rNome = document.getElementById('modal-opt-nome');
+    const rAmbos = document.getElementById('modal-opt-ambos');
+
+    if (opcao === 'status' && rStatus) rStatus.checked = true;
+    if (opcao === 'nome' && rNome) rNome.checked = true;
+    if (opcao === 'ambos' && rAmbos) rAmbos.checked = true;
+
+    // Atualiza visual dos cards
+    document.querySelectorAll('.modal-card-opcao-item').forEach(card => {
+      card.style.background = 'rgba(255,255,255,0.03)';
+      card.style.borderColor = 'rgba(255,255,255,0.12)';
+      card.style.boxShadow = 'none';
+    });
+    const cardAtivo = document.getElementById(`modal-card-${opcao}`);
+    if (cardAtivo) {
+      cardAtivo.style.background = 'rgba(56,189,248,0.14)';
+      cardAtivo.style.borderColor = '#38bdf8';
+      cardAtivo.style.boxShadow = '0 0 14px rgba(56,189,248,0.25)';
+    }
+
+    // Atualiza texto e cor do botão
+    const btn = document.getElementById('modal-btn-confirmar-acao');
+    const qtd = btn ? btn.getAttribute('data-qtd') || '0' : '0';
+    if (btn) {
+      if (opcao === 'status') {
+        btn.textContent = `Confirmar Mudança de Status (${qtd} Proc.)`;
+        btn.style.background = 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)';
+      } else if (opcao === 'nome') {
+        btn.textContent = `Confirmar Padronização de Nome (${qtd} Proc.)`;
+        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+      } else {
+        btn.textContent = `Confirmar Mudança de Status + Padronizar Nome (${qtd} Proc.)`;
+        btn.style.background = 'linear-gradient(135deg, #0284c7 0%, #10b981 100%)';
+      }
+    }
+
+    if (opcao === 'nome' || opcao === 'ambos') {
+      const inp = document.getElementById('modal-input-nome-padrao');
+      if (inp) {
+        inp.style.borderColor = '#38bdf8';
+        inp.style.boxShadow = '0 0 10px rgba(56,189,248,0.4)';
+      }
+    }
+  }
+  window.selecionarOpcaoModalCNPJ = selecionarOpcaoModalCNPJ;
+
+  async function confirmarAcaoModalCNPJ(cnpjLimpo) {
+    const item = _cnpjsDistintosCache.find(c => c.cnpj === cnpjLimpo);
+    if (!item) return;
+
+    const rStatus = document.getElementById('modal-opt-status');
+    const rNome = document.getElementById('modal-opt-nome');
+
+    let opcao = 'ambos';
+    if (rStatus && rStatus.checked) opcao = 'status';
+    else if (rNome && rNome.checked) opcao = 'nome';
+    else opcao = 'ambos';
+
+    const inp = document.getElementById('modal-input-nome-padrao');
+    const novoNome = inp ? inp.value.trim() : '';
+
+    if ((opcao === 'nome' || opcao === 'ambos') && !novoNome) {
+      if (typeof toast === 'function') toast('Informe um nome válido para padronizar a entidade.', 'warning');
+      if (inp) inp.focus();
+      return;
+    }
+
+    const radioStatusSel = document.querySelector('input[name="modal_radio_novo_status"]:checked');
+    let novoStatusInadimplente = !item.inadimplente;
+    if (radioStatusSel) {
+      novoStatusInadimplente = (radioStatusSel.value === '1');
+    }
+
+    fecharModalAcaoCNPJ();
+    await executarAcaoCNPJ(cnpjLimpo, opcao, novoStatusInadimplente, novoNome);
+  }
+  window.confirmarAcaoModalCNPJ = confirmarAcaoModalCNPJ;
+
+  async function solicitarConfirmacaoInadimplencia(cnpjLimpo, novoStatusSugerido = null, opcaoInicial = null, nomePreenchido = null) {
     const item = _cnpjsDistintosCache.find(c => c.cnpj === cnpjLimpo);
     if (!item) return;
 
     const procs = item.processos || [];
     const qtdProcessos = procs.length;
     const cnpjFmt = item.cnpjFormatado || cnpjLimpo;
-    const nomeEntidade = item.entidade || 'Entidade';
+    const nomeAtual = item.entidade || 'Entidade';
+    const isInadAtual = !!item.inadimplente;
 
-    let titulo = '';
-    let mensagemHtml = '';
-    let btnTexto = '';
+    let novoStatus = novoStatusSugerido;
+    if (novoStatus === null || novoStatus === undefined) {
+      novoStatus = !isInadAtual;
+    }
 
-    if (novoStatusInadimplente) {
-      titulo = '⚠️ Confirmação: Negativar CNPJ';
-      btnTexto = `Sim, Negativar ${qtdProcessos} Processo(s)`;
-      mensagemHtml = `
-        <div style="font-size:13.5px; line-height:1.5; color:#cbd5e1;">
-          <p style="margin-bottom:12px; font-size:14.5px; font-weight:700; color:#fca5a5;">
-            Deseja realmente <u>NEGATIVAR</u> e marcar como <strong>INADIMPLENTE</strong> o CNPJ abaixo?
-          </p>
-          <div style="background:rgba(239,68,68,0.12); border:1.5px solid rgba(239,68,68,0.4); border-radius:8px; padding:10px 14px; margin-bottom:14px;">
-            <div style="font-family:monospace; font-weight:800; font-size:14px; color:#f87171; margin-bottom:4px;">${cnpjFmt}</div>
-            <div style="font-weight:700; color:#ffffff;">${nomeEntidade}</div>
-            <div style="font-size:12px; color:#94a3b8; margin-top:2px;">${item.municipio}</div>
+    // Pré-preenchimento do nome da entidade (prioriza nomePreenchido, dadosReceita, ou atual)
+    const dadosReceita = _dadosReceitaCache[cnpjLimpo];
+    let nomeSugerido = nomePreenchido || (dadosReceita && dadosReceita.razao_social ? dadosReceita.razao_social : nomeAtual);
+
+    let opcPadrao = opcaoInicial || 'ambos';
+
+    fecharModalAcaoCNPJ();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'siscam-modal-acao-cnpj-root';
+    overlay.className = 'siscam-modal-overlay';
+    overlay.style.zIndex = '999999';
+
+    overlay.innerHTML = `
+      <div class="siscam-modal-card" style="max-width:580px; width:100%; border:1.5px solid #38bdf8; box-shadow:0 25px 60px rgba(0,0,0,0.95), 0 0 25px rgba(56,189,248,0.35);">
+        
+        <!-- Cabeçalho SiSCAM Padrão Imagem -->
+        <div class="siscam-modal-header" style="background:#0f172a; border-bottom:1px solid rgba(56,189,248,0.3); padding:13px 20px;">
+          <div class="siscam-modal-title-box" style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:18px;">⚠️</span>
+            <div style="display:flex; flex-direction:column;">
+              <span class="siscam-modal-badge-title" style="color:#38bdf8; font-size:14px; font-weight:900; letter-spacing:1.5px;">.·. SiSCAM .·.</span>
+              <span style="color:#94a3b8; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px;">CONFIRMAÇÃO DE AÇÃO EM LOTE</span>
+            </div>
           </div>
-          <div style="background:rgba(255,255,255,0.04); border-left:4px solid #ef4444; padding:8px 12px; border-radius:4px; font-size:12.5px; color:#f8fafc;">
-            Esta ação tornará <strong>INADIMPLENTE</strong> um total de <strong style="color:#ef4444; font-size:14px;">${qtdProcessos} processo(s)</strong> vinculados a este CNPJ em todo o sistema.
-          </div>
+          <button type="button" class="siscam-modal-close" onclick="fecharModalAcaoCNPJ()" style="background:transparent; border:none; color:#94a3b8; font-size:18px; cursor:pointer;" title="Fechar">✕</button>
         </div>
-      `;
-    } else {
-      titulo = '🟢 Confirmação: Regularizar CNPJ';
-      btnTexto = `Sim, Tirar Inadimplência (${qtdProcessos} Proc.)`;
-      mensagemHtml = `
-        <div style="font-size:13.5px; line-height:1.5; color:#cbd5e1;">
-          <p style="margin-bottom:12px; font-size:14.5px; font-weight:700; color:#86efac;">
-            Deseja realmente <u>TIRAR A INADIMPLÊNCIA</u> e marcar como <strong>REGULAR</strong> o CNPJ abaixo?
-          </p>
-          <div style="background:rgba(34,197,94,0.12); border:1.5px solid rgba(34,197,94,0.4); border-radius:8px; padding:10px 14px; margin-bottom:14px;">
-            <div style="font-family:monospace; font-weight:800; font-size:14px; color:#4ade80; margin-bottom:4px;">${cnpjFmt}</div>
-            <div style="font-weight:700; color:#ffffff;">${nomeEntidade}</div>
-            <div style="font-size:12px; color:#94a3b8; margin-top:2px;">${item.municipio}</div>
+
+        <!-- Corpo do Modal -->
+        <div class="siscam-modal-body" style="padding:18px 22px; max-height:75vh; overflow-y:auto; color:#cbd5e1; font-size:13px;">
+          
+          <!-- Card de Identificação do CNPJ (Estilo Exato da Imagem) -->
+          <div style="background:rgba(6,34,38,0.7); border:1.5px solid rgba(16,185,129,0.5); border-radius:10px; padding:12px 16px; margin-bottom:16px;">
+            <div style="font-family:monospace; font-weight:800; font-size:14.5px; color:#4ade80; margin-bottom:4px; letter-spacing:0.5px;">
+              ${cnpjFmt}
+            </div>
+            <div style="font-weight:800; font-size:13.5px; color:#ffffff; margin-bottom:4px; line-height:1.35;">
+              ${nomeAtual}
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:11.5px; color:#94a3b8; margin-top:6px; border-top:1px solid rgba(255,255,255,0.08); padding-top:6px;">
+              <span>📍 ${item.municipio} • <strong style="color:#38bdf8;">${qtdProcessos} processo(s) vinculado(s)</strong></span>
+              <span>Situação Atual: <strong style="color:${isInadAtual ? '#f87171' : '#4ade80'};">${isInadAtual ? '⚠️ INADIMPLENTE' : '🟢 REGULAR / ADIMPLENTE'}</strong></span>
+            </div>
           </div>
-          <div style="background:rgba(255,255,255,0.04); border-left:4px solid #10b981; padding:8px 12px; border-radius:4px; font-size:12.5px; color:#f8fafc;">
-            Esta ação irá <strong>REGULARIZAR</strong> e remover o bloqueio de pendência em <strong style="color:#34d399; font-size:14px;">${qtdProcessos} processo(s)</strong> vinculados a este CNPJ em todo o sistema.
+
+          <!-- Título da Pergunta Solicitada pelo Usuário -->
+          <div style="margin-bottom:12px;">
+            <div style="font-size:15px; font-weight:900; color:#38bdf8; letter-spacing:0.5px; text-transform:uppercase; display:flex; align-items:center; gap:8px;">
+              <span>⚖️</span>
+              <span>O QUE DESEJA FAZER?</span>
+            </div>
+            <div style="font-size:11.5px; color:#94a3b8; margin-top:2px;">
+              Escolha uma das opções abaixo para aplicar em todos os <strong>${qtdProcessos} processo(s)</strong> vinculados:
+            </div>
           </div>
+
+          <!-- As 3 Opções Solicitadas -->
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;">
+            
+            <!-- OPÇÃO 1: MUDAR O STATUS -->
+            <div id="modal-card-status" class="modal-card-opcao-item" onclick="selecionarOpcaoModalCNPJ('status')" style="border-radius:8px; padding:11px 14px; cursor:pointer; transition:all 0.2s; border:1.5px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.03); display:flex; align-items:flex-start; gap:12px;">
+              <input type="radio" id="modal-opt-status" name="modal_opcao_escolha" value="status" ${opcPadrao === 'status' ? 'checked' : ''} style="margin-top:3px; cursor:pointer; accent-color:#38bdf8; width:16px; height:16px;" onclick="event.stopPropagation(); selecionarOpcaoModalCNPJ('status');">
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:13px; color:#f8fafc; display:flex; align-items:center; gap:6px;">
+                  <span>MUDAR O STATUS</span>
+                  <span style="font-size:11px; font-weight:700; color:${isInadAtual ? '#86efac' : '#fca5a5'};">
+                    (${isInadAtual ? 'Inadimplente ➔ Regular' : 'Adimplente ➔ Inadimplente'})
+                  </span>
+                </div>
+                <div style="font-size:11.5px; color:#94a3b8; margin-top:2px;">
+                  Altera a situação de adimplência em todos os ${qtdProcessos} processos deste CNPJ (mantendo o nome da entidade).
+                </div>
+              </div>
+            </div>
+
+            <!-- OPÇÃO 2: PADRONIZAR O NOME DA ENTIDADE -->
+            <div id="modal-card-nome" class="modal-card-opcao-item" onclick="selecionarOpcaoModalCNPJ('nome')" style="border-radius:8px; padding:11px 14px; cursor:pointer; transition:all 0.2s; border:1.5px solid rgba(255,255,255,0.12); background:rgba(255,255,255,0.03); display:flex; align-items:flex-start; gap:12px;">
+              <input type="radio" id="modal-opt-nome" name="modal_opcao_escolha" value="nome" ${opcPadrao === 'nome' ? 'checked' : ''} style="margin-top:3px; cursor:pointer; accent-color:#10b981; width:16px; height:16px;" onclick="event.stopPropagation(); selecionarOpcaoModalCNPJ('nome');">
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:13px; color:#f8fafc;">
+                  PADRONIZAR O NOME DA ENTIDADE
+                </div>
+                <div style="font-size:11.5px; color:#94a3b8; margin-top:2px;">
+                  Atualiza o nome da entidade em todos os ${qtdProcessos} processos vinculados (sem alterar a situação de adimplência).
+                </div>
+              </div>
+            </div>
+
+            <!-- OPÇÃO 3: OU AMBOS -->
+            <div id="modal-card-ambos" class="modal-card-opcao-item" onclick="selecionarOpcaoModalCNPJ('ambos')" style="border-radius:8px; padding:11px 14px; cursor:pointer; transition:all 0.2s; border:1.5px solid #38bdf8; background:rgba(56,189,248,0.12); box-shadow:0 0 14px rgba(56,189,248,0.25); display:flex; align-items:flex-start; gap:12px;">
+              <input type="radio" id="modal-opt-ambos" name="modal_opcao_escolha" value="ambos" ${opcPadrao === 'ambos' ? 'checked' : ''} style="margin-top:3px; cursor:pointer; accent-color:#38bdf8; width:16px; height:16px;" onclick="event.stopPropagation(); selecionarOpcaoModalCNPJ('ambos');">
+              <div style="flex:1;">
+                <div style="font-weight:900; font-size:13px; color:#ffffff; display:flex; align-items:center; gap:8px;">
+                  <span>OU AMBOS (MUDAR STATUS E PADRONIZAR NOME)</span>
+                  <span style="background:rgba(56,189,248,0.25); color:#7dd3fc; border:1px solid #38bdf8; padding:1px 6px; border-radius:4px; font-size:9.5px; font-weight:800; letter-spacing:0.5px;">RECOMENDADO</span>
+                </div>
+                <div style="font-size:11.5px; color:#cbd5e1; margin-top:2px;">
+                  Aplica simultaneamente a alteração de status <u>E</u> a padronização do nome em todos os ${qtdProcessos} processos vinculados.
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- SELETOR DE STATUS DEFINIDO (PARA STATUS OU AMBOS) -->
+          <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:9px 14px; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <div style="font-size:11.5px; font-weight:700; color:#cbd5e1;">
+              Status a Definir:
+            </div>
+            <div style="display:flex; align-items:center; gap:14px;">
+              <label style="display:inline-flex; align-items:center; gap:5px; cursor:pointer; font-size:12px; font-weight:700; color:#86efac;">
+                <input type="radio" name="modal_radio_novo_status" value="0" ${!novoStatus ? 'checked' : ''} style="accent-color:#22c55e;">
+                <span>🟢 REGULAR (Tirar Inadimplência)</span>
+              </label>
+              <label style="display:inline-flex; align-items:center; gap:5px; cursor:pointer; font-size:12px; font-weight:800; color:#fca5a5;">
+                <input type="radio" name="modal_radio_novo_status" value="1" ${novoStatus ? 'checked' : ''} style="accent-color:#ef4444;">
+                <span>⚠️ INADIMPLENTE (Negativar)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- CAMPO EDITÁVEL DE NOME DA ENTIDADE P/ PADRONIZAR (COM BOTÃO RECEITA) -->
+          <div id="modal-box-nome-entidade" style="background:rgba(15,23,42,0.85); border:1.5px solid #10b981; border-radius:8px; padding:12px 14px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label for="modal-input-nome-padrao" style="font-size:12px; font-weight:800; color:#6ee7b7; display:flex; align-items:center; gap:5px;">
+                <span>📝</span>
+                <span>Nome da Entidade a ser Padronizado (Editável para Abreviar):</span>
+              </label>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <input type="text" id="modal-input-nome-padrao" value="${nomeSugerido.replace(/"/g, '&quot;')}" style="flex:1; background:#020617; border:1px solid #38bdf8; color:#ffffff; font-weight:700; font-size:12.5px; padding:8px 10px; border-radius:6px; outline:none;" placeholder="Digite ou abrevie o nome da entidade...">
+              <button type="button" id="modal-btn-buscar-receita" onclick="carregarReceitaNoModal('${cnpjLimpo}')" style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid #38bdf8; padding:8px 12px; border-radius:6px; font-weight:700; font-size:11.5px; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;" title="Buscar Razão Social Oficial na Receita Federal">
+                <span>🏛️</span>
+                <span>Buscar Receita</span>
+              </button>
+            </div>
+            <div style="font-size:11px; color:#94a3b8; margin-top:6px;">
+              💡 Dica: Você pode abreviar o nome acima (ex: usar <em>CE EMEF...</em> em vez do nome longo) antes de confirmar.
+            </div>
+          </div>
+
+          <!-- Nota de Auditoria e Fila -->
+          <div style="background:rgba(34,197,94,0.08); border-left:4px solid #22c55e; padding:8px 12px; border-radius:4px; font-size:11.5px; color:#cbd5e1;">
+            Esta alteração afetará <strong style="color:#4ade80;">${qtdProcessos} processo(s)</strong> vinculados a este CNPJ e moverá este registro para o <strong style="color:#38bdf8;">início da fila</strong> com auditoria de data, hora e usuário.
+          </div>
+
         </div>
-      `;
-    }
 
-    let confirmado = false;
-    if (typeof exibirMensagemSiSCAM === 'function') {
-      confirmado = await exibirMensagemSiSCAM(mensagemHtml, {
-        titulo: titulo,
-        tipo: 'confirm',
-        confirmacao: true,
-        btnTexto: btnTexto,
-        btnCancelarTexto: 'Cancelar'
-      });
-    } else {
-      const acaoTexto = novoStatusInadimplente ? 'NEGATIVAR (marcar como INADIMPLENTE)' : 'TIRAR A INADIMPLÊNCIA (marcar como REGULAR)';
-      confirmado = window.confirm(`Atenção:\n\nDeseja realmente ${acaoTexto} o CNPJ ${cnpjFmt} (${nomeEntidade})?\n\nEsta alteração afetará ${qtdProcessos} processo(s) vinculado(s)!`);
-    }
+        <!-- Rodapé com Botões de Ação -->
+        <div class="siscam-modal-footer" style="background:#0f172a; border-top:1px solid rgba(56,189,248,0.25); padding:13px 20px; display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" onclick="fecharModalAcaoCNPJ()" style="background:rgba(255,255,255,0.08); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); padding:9px 18px; border-radius:7px; font-weight:700; font-size:12.5px; cursor:pointer;">
+            Cancelar
+          </button>
+          <button type="button" id="modal-btn-confirmar-acao" data-qtd="${qtdProcessos}" onclick="confirmarAcaoModalCNPJ('${cnpjLimpo}')" class="siscam-modal-btn-ok" style="background:linear-gradient(135deg, #0284c7 0%, #10b981 100%); min-width:240px; padding:9px 22px; font-size:13px; font-weight:800; border-radius:7px; cursor:pointer; box-shadow:0 0 16px rgba(56,189,248,0.5);">
+            Confirmar Mudança de Status + Padronizar Nome (${qtdProcessos} Proc.)
+          </button>
+        </div>
 
-    if (!confirmado) {
-      renderTabelaCnpjsInadimplentes();
-      return;
-    }
+      </div>
+    `;
 
-    await alternarInadimplenciaCNPJ(cnpjLimpo, novoStatusInadimplente);
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) fecharModalAcaoCNPJ();
+    });
+
+    document.body.appendChild(overlay);
+
+    // Ajusta o botão e seleção de acordo com a opção inicial
+    selecionarOpcaoModalCNPJ(opcPadrao);
   }
   window.solicitarConfirmacaoInadimplencia = solicitarConfirmacaoInadimplencia;
 
-  // Alterna inadimplência de um CNPJ em TODOS os processos vinculados
-  async function alternarInadimplenciaCNPJ(cnpjLimpo, novoStatusInadimplente) {
-    const procs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []) || [];
-    const statusStr = novoStatusInadimplente ? '1' : '0';
-
-    const afetados = procs.filter(p => {
-      const c = String(p.cnpj || '').replace(/\D/g, '');
-      return c === cnpjLimpo;
-    });
+  // Executa a ação escolhida (status, nome ou ambos)
+  async function executarAcaoCNPJ(cnpjLimpo, opcao, novoStatusInadimplente, novoNome) {
+    const todosProcs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []) || [];
+    const afetados = todosProcs.filter(p => String(p.cnpj || '').replace(/\D/g, '') === cnpjLimpo);
 
     if (afetados.length === 0) {
       if (typeof toast === 'function') toast('Nenhum processo vinculado a este CNPJ.', 'warning');
       return;
     }
 
-    afetados.forEach(p => {
-      p.inadimplente = statusStr;
-      p.CONTAS = statusStr;
-      p.INADIMPLENTE = statusStr;
-    });
-
     const itemDist = _cnpjsDistintosCache.find(c => c.cnpj === cnpjLimpo);
-    if (itemDist) {
-      itemDist.inadimplente = novoStatusInadimplente;
-    }
-
-    if (typeof salvarProcessos === 'function') {
-      salvarProcessos(procs);
-    }
-
-    salvarAuditoriaCNPJ(cnpjLimpo, novoStatusInadimplente ? 'Negativado' : 'Regularizado');
-
     const cnpjFmt = (itemDist ? itemDist.cnpjFormatado : cnpjLimpo);
-    const msg = novoStatusInadimplente
-      ? `⚠️ CNPJ ${cnpjFmt} negativado em ${afetados.length} processo(s)!`
-      : `✅ Inadimplência retirada! CNPJ ${cnpjFmt} regularizado em todos os ${afetados.length} processo(s).`;
-    if (typeof toast === 'function') toast(msg, novoStatusInadimplente ? 'warning' : 'success');
+    const statusStr = novoStatusInadimplente ? '1' : '0';
+
+    const alterouStatus = (opcao === 'status' || opcao === 'ambos');
+    const alterouNome = (opcao === 'nome' || opcao === 'ambos') && !!novoNome;
 
     afetados.forEach(p => {
-      if (p.id && !String(p.id).startsWith('temp-') && typeof atualizarProcesso === 'function') {
-        atualizarProcesso(p.id, {
-          inadimplente: statusStr,
-          CONTAS: statusStr
-        }).catch(err => console.warn('Erro ao atualizar processo remoto:', p.id, err));
+      if (alterouStatus) {
+        p.inadimplente = statusStr;
+        p.CONTAS = statusStr;
+        p.INADIMPLENTE = statusStr;
+      }
+      if (alterouNome) {
+        p.interessado = novoNome;
+        p.entidade = novoNome;
       }
     });
 
+    if (alterouStatus && itemDist) {
+      itemDist.inadimplente = novoStatusInadimplente;
+    }
+    if (alterouNome && itemDist) {
+      itemDist.entidade = novoNome;
+    }
+
+    if (typeof salvarProcessos === 'function') {
+      salvarProcessos(todosProcs);
+    }
+
+    // Salva auditoria com data, hora e login (manda para o início da fila)
+    let descAuditoria = 'Atualizado';
+    if (alterouStatus && alterouNome) {
+      descAuditoria = novoStatusInadimplente ? 'Negativado + Nome' : 'Regularizado + Nome';
+    } else if (alterouStatus) {
+      descAuditoria = novoStatusInadimplente ? 'Negativado' : 'Regularizado';
+    } else if (alterouNome) {
+      descAuditoria = 'Nome Padronizado';
+    }
+    salvarAuditoriaCNPJ(cnpjLimpo, descAuditoria);
+
+    // Sincronização remota via API
+    afetados.forEach(p => {
+      if (p.id && !String(p.id).startsWith('temp-') && typeof atualizarProcesso === 'function') {
+        const payload = {};
+        if (alterouStatus) {
+          payload.inadimplente = statusStr;
+          payload.CONTAS = statusStr;
+        }
+        if (alterouNome) {
+          payload.interessado = novoNome;
+        }
+        atualizarProcesso(p.id, payload).catch(err => console.warn('Erro ao atualizar processo remoto:', p.id, err));
+      }
+    });
+
+    if (typeof toast === 'function') {
+      if (alterouStatus && alterouNome) {
+        toast(`✅ Status e Nome atualizados com sucesso em ${afetados.length} processo(s)!`, 'success');
+      } else if (alterouStatus) {
+        const msg = novoStatusInadimplente
+          ? `⚠️ CNPJ ${cnpjFmt} negativado em ${afetados.length} processo(s)!`
+          : `🟢 Inadimplência retirada! CNPJ ${cnpjFmt} regularizado em ${afetados.length} processo(s).`;
+        toast(msg, novoStatusInadimplente ? 'warning' : 'success');
+      } else {
+        toast(`✅ Nome padronizado para "${novoNome}" em ${afetados.length} processo(s)!`, 'success');
+      }
+    }
+
     carregarCnpjsInadimplentes();
   }
+  window.executarAcaoCNPJ = executarAcaoCNPJ;
+
+  // Alterna inadimplência de um CNPJ em TODOS os processos vinculados (compatibilidade)
+  async function alternarInadimplenciaCNPJ(cnpjLimpo, novoStatusInadimplente) {
+    return executarAcaoCNPJ(cnpjLimpo, 'status', novoStatusInadimplente, null);
+  }
   window.alternarInadimplenciaCNPJ = alternarInadimplenciaCNPJ;
+
 
   // GERA E IMPRIME O RELATÓRIO PROFISSIONAL A4
   function imprimirRelatorioCNPJs() {
