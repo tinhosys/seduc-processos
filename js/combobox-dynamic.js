@@ -68,6 +68,8 @@
     "Vale do Paraíso",
     "Vilhena"
   ];
+  window.MUNICIPIOS_RO_PADRAO = MUNICIPIOS_RO_PADRAO;
+  window.LISTA_52_MUNICIPIOS_RO = MUNICIPIOS_RO_PADRAO;
 
   // Armazenamento em memória de novos dados adicionados dinamicamente
   window._dynamicComboCustomData = window._dynamicComboCustomData || {};

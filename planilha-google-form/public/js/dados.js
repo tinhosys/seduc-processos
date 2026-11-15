@@ -1,27 +1,9 @@
 
-// ============================================================
-// 52 MUNICÃPIOS OFICIAIS DE RONDÃ”NIA (SEDUC/RO - LISTA CANÃ”NICA)
-// ============================================================
-const LISTA_52_MUNICIPIOS_CANONICOS = [
-  "Alta Floresta do Oeste", "Alto Alegre dos Parecis", "Alto ParaÃ­so", "Alvorada do Oeste",
-  "Ariquemes", "Buritis", "Cabixi", "CacaulÃ¢ndia", "Cacoal", "Campo Novo de RondÃ´nia",
-  "Candeias do Jamari", "Castanheiras", "Cerejeiras", "Chupinguaia", "Colorado do Oeste",
-  "Corumbiara", "Costa Marques", "Cujubim", "EspigÃ£o do Oeste", "Governador Jorge Teixeira",
-  "GuajarÃ¡-Mirim", "ItapuÃ£ do Oeste", "Jaru", "Ji-ParanÃ¡", "Machadinho do Oeste",
-  "Ministro Andreazza", "Mirante da Serra", "Monte Negro", "Nova BrasilÃ¢ndia do Oeste",
-  "Nova MamorÃ©", "Nova UniÃ£o", "Novo Horizonte do Oeste", "Ouro Preto do Oeste",
-  "Parecis", "Pimenta Bueno", "Pimenteiras do Oeste", "Porto Velho", "Presidente MÃ©dici",
-  "Primavera de RondÃ´nia", "Rio Crespo", "Rolim de Moura", "Santa Luzia do Oeste",
-  "SÃ£o Felipe do Oeste", "SÃ£o Francisco do GuaporÃ©", "SÃ£o Miguel do GuaporÃ©",
-  "Seringueiras", "TeixeirÃ³polis", "Theobroma", "UrupÃ¡", "Vale do Anari",
-  "Vale do ParaÃ­so", "Vilhena"
-];
-window.LISTA_52_MUNICIPIOS_CANONICOS = LISTA_52_MUNICIPIOS_CANONICOS;
-
 function normalizarMunicipioRO(mun) {
   if (!mun) return '';
   const s = String(mun).trim();
   if (!s) return '';
+  const list = window.MUNICIPIOS_RO_PADRAO || [];
   const clean = s.toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/d['\u2019]oeste/g, 'do oeste')
@@ -31,12 +13,11 @@ function normalizarMunicipioRO(mun) {
     .replace(/\s+/g, ' ')
     .trim();
 
-  // Distritos conhecidos vinculados aos municÃ­pios
-  if (clean.indexOf('surpresa') !== -1) return 'GuajarÃ¡-Mirim';
-  if (clean.indexOf('abuna') !== -1 || clean.indexOf('nova california') !== -1 || clean.indexOf('vista alegre') !== -1) return 'Porto Velho';
+  if (clean.includes('surpresa')) return 'Guajará-Mirim';
+  if (clean.includes('abuna') || clean.includes('nova california') || clean.includes('vista alegre')) return 'Porto Velho';
 
-  for (let i = 0; i < LISTA_52_MUNICIPIOS_CANONICOS.length; i++) {
-    const c = LISTA_52_MUNICIPIOS_CANONICOS[i];
+  for (let i = 0; i < list.length; i++) {
+    const c = list[i];
     const cClean = c.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
     if (clean === cClean) return c;
   }
@@ -231,7 +212,7 @@ const mapToApp = (row) => {
     return parseFloat(cleaned.replace(/\./g, '').replace(',', '.')) || 0;
   };
   
-  let mun = (row['MUNICIPIO'] || row['Município'] || row.municipio || row['Municipio'] || '').trim();
+  let mun = normalizarMunicipioRO((row['MUNICIPIO'] || row['Município'] || row.municipio || row['Municipio'] || '').trim());
   let agrupamentoCalculado = AGRUPAMENTOS_REGIONAIS[mun] || mun;
   
 function formatarDataParaApp(raw) {
