@@ -988,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.149';
+window.APP_VERSION = 'v1.150';
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -4175,15 +4175,15 @@ function abrirDetalhe(id) {
 
         <!-- COR ROSA: (grupo(digito)) - SOMENTE PERFIL ADMIN -->
         ${isAdminModal ? `
-        <div style="display:inline-flex; align-items:center; font-size:12px; font-weight:700; color:#e2e8f0; font-family:monospace; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);" title="Grupo e Dígito (Visível apenas para Administrador)">
-          (${p.agrupamento || p.grupo || '-'}(${(typeof window.limparDigitoValor === 'function') ? window.limparDigitoValor(p.digito || p.DIGITO || '-') : (p.digito || p.DIGITO || '-')}))
+        <div style="margin-left:auto; display:inline-flex; align-items:center; font-size:12px; font-weight:800; color:#e2e8f0; font-family:monospace; background:rgba(255,255,255,0.06); padding:4px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);" title="Dígito do Grupo (Exclusivo Administrador)">
+          (${((typeof window.limparDigitoValor === 'function') ? window.limparDigitoValor(p.digito || p.DIGITO || '-') : (p.digito || p.DIGITO || '-'))})
         </div>
         ` : ''}
       </div>
 
       <!-- MARCAÇÃO VERMELHA: AGRUPAMENTO EM FONTE 6 PEQUENA ALINHADO À DIREITA COM O DÍGITO - SOMENTE PERFIL ADMIN -->
       ${isAdminModal ? `
-      <div style="text-align:right; font-size:6pt; line-height:1; color:#94a3b8; font-family:monospace; margin-top:-2px; margin-bottom:4px; padding-right:4px;" title="Agrupamento / Dígito (Exclusivo Administrador)">
+      <div style="text-align:right; font-size:9pt; font-weight:600; line-height:1.2; color:#94a3b8; font-family:monospace; margin-top:2px; margin-bottom:6px; padding-right:4px;" title="Agrupamento / Dígito (Exclusivo Administrador)">
         ${p.agrupamento || p.grupo ? 'Agrupamento: ' + (p.agrupamento || p.grupo) : ''}${p.digito || p.DIGITO ? ' | Dígito: ' + ((typeof window.limparDigitoValor === 'function') ? window.limparDigitoValor(p.digito || p.DIGITO) : (p.digito || p.DIGITO)) : ''}
       </div>
       ` : ''}

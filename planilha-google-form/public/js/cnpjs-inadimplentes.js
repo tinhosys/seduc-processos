@@ -1,6 +1,6 @@
 // ============================================================
 // SEDUC PROCESSOS — MÓDULO CNPJs INADIMPLENTES & RELATÓRIO
-// Versão: v1.149
+// Versão: v1.150
 // ============================================================
 
 (function () {
@@ -9,6 +9,16 @@
   let _estadoChecksImpressao = new Map(); // cnpj -> boolean
   let _expandidosProcessos = new Set(); // cnpjs com sub-tabela aberta
   let _edicoesAtivas = new Set(); // cnpjs com input de edição aberto
+  let _receitasAbertas = new Set(); // cnpjs com painel Receita Federal aberto (mostra/esconde)
+  let _receitasCarregando = new Set(); // cnpjs consultando na API
+
+  // Cache persistente de consultas da Receita Federal
+  let _dadosReceitaCache = {};
+  try {
+    _dadosReceitaCache = JSON.parse(localStorage.getItem('siscam_cnpj_receita_cache') || '{}');
+  } catch(e) {
+    _dadosReceitaCache = {};
+  }
 
   // Auditoria de alterações (Data, Hora e Login do usuário)
   function carregarAuditoriaCNPJs() {
@@ -105,7 +115,7 @@
     });
 
     // "Mande para o início da fila":
-    // Itens que sofreram alterações recentes (com timestamp na auditoria) vão primeiro para o topo da fila!
+    // Registros com alterações recentes (com timestamp na auditoria) vão primeiro para o topo da fila!
     return Array.from(mapa.values()).sort((a, b) => {
       const tA = a.ultimaAuditoria ? a.ultimaAuditoria.timestamp : 0;
       const tB = b.ultimaAuditoria ? b.ultimaAuditoria.timestamp : 0;
@@ -180,6 +190,183 @@
   }
   window.filtrarTabelaCnpjsInadimplentes = filtrarTabelaCnpjsInadimplentes;
 
+  // CONSULTA RECEITA FEDERAL NA TELA (BrasilAPI com fallback para CNPJ.ws)
+  async function consultarReceitaNaTela(cnpjLimpo, forcar = false) {
+    if (!cnpjLimpo || cnpjLimpo.length !== 14) return null;
+
+    if (!forcar && _dadosReceitaCache[cnpjLimpo]) {
+      return _dadosReceitaCache[cnpjLimpo];
+    }
+
+    _receitasCarregando.add(cnpjLimpo);
+    renderTabelaCnpjsInadimplentes();
+
+    let dados = null;
+
+    // 1. Tenta BrasilAPI
+    try {
+      const resp = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${cnpjLimpo}`, { method: 'GET' });
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json && (json.razao_social || json.cnpj)) {
+          dados = {
+            razao_social: (json.razao_social || '').trim(),
+            nome_fantasia: (json.nome_fantasia || '').trim(),
+            logradouro: (json.logradouro || '').trim(),
+            numero: (json.numero || '').trim(),
+            bairro: (json.bairro || '').trim(),
+            municipio: (json.municipio || '').trim(),
+            uf: (json.uf || 'RO').trim(),
+            cep: (json.cep || '').trim(),
+            telefone: (json.ddd_telefone_1 || '').trim(),
+            situacao: (json.descricao_situacao_cadastral || 'ATIVA').trim()
+          };
+        }
+      }
+    } catch (e) {
+      console.warn('BrasilAPI CNPJ fallback:', e);
+    }
+
+    // 2. Fallback: CNPJ.ws
+    if (!dados) {
+      try {
+        const resp3 = await fetch(`https://publica.cnpj.ws/cnpj/${cnpjLimpo}`, { method: 'GET' });
+        if (resp3.ok) {
+          const j3 = await resp3.json();
+          const estab = j3.estabelecimento || {};
+          dados = {
+            razao_social: (j3.razao_social || '').trim(),
+            nome_fantasia: (estab.nome_fantasia || '').trim(),
+            logradouro: (estab.logradouro || '').trim(),
+            numero: (estab.numero || '').trim(),
+            bairro: (estab.bairro || '').trim(),
+            municipio: (estab.cidade ? estab.cidade.nome : '').trim(),
+            uf: (estab.estado ? estab.estado.sigla : 'RO').trim(),
+            cep: (estab.cep || '').trim(),
+            telefone: (estab.telefone1 || '').trim(),
+            situacao: (estab.situacao_cadastral || 'ATIVA').trim()
+          };
+        }
+      } catch (e3) {
+        console.warn('CNPJ.ws fallback:', e3);
+      }
+    }
+
+    _receitasCarregando.delete(cnpjLimpo);
+
+    if (dados) {
+      _dadosReceitaCache[cnpjLimpo] = dados;
+      try {
+        localStorage.setItem('siscam_cnpj_receita_cache', JSON.stringify(_dadosReceitaCache));
+      } catch(e) {}
+    } else {
+      if (typeof toast === 'function') toast('Não foi possível obter dados automáticos da Receita Federal. Você pode consultar no site oficial.', 'warning');
+    }
+
+    renderTabelaCnpjsInadimplentes();
+    return dados;
+  }
+  window.consultarReceitaNaTela = consultarReceitaNaTela;
+
+  // Mostra e Esconde o Card da Receita Federal
+  function toggleReceitaFederalNaTela(cnpjLimpo) {
+    if (_receitasAbertas.has(cnpjLimpo)) {
+      _receitasAbertas.delete(cnpjLimpo);
+      renderTabelaCnpjsInadimplentes();
+    } else {
+      _receitasAbertas.add(cnpjLimpo);
+      renderTabelaCnpjsInadimplentes();
+      if (!_dadosReceitaCache[cnpjLimpo]) {
+        consultarReceitaNaTela(cnpjLimpo);
+      }
+    }
+  }
+  window.toggleReceitaFederalNaTela = toggleReceitaFederalNaTela;
+
+  // APLICAR NOME PADRONIZADO (EDITÁVEL) A TODOS OS PROCESSOS VINCULADOS
+  async function aplicarNomePadronizadoReceita(cnpjLimpo) {
+    const item = _cnpjsDistintosCache.find(c => c.cnpj === cnpjLimpo);
+    if (!item) return;
+
+    const inp = document.getElementById(`input-padronizar-nome-${cnpjLimpo}`);
+    const novoNome = inp ? inp.value.trim() : '';
+
+    if (!novoNome) {
+      if (typeof toast === 'function') toast('Informe um nome válido para padronizar.', 'warning');
+      return;
+    }
+
+    const procs = item.processos || [];
+    const qtdProcessos = procs.length;
+
+    let confirmado = false;
+    const msgConfirm = `
+      <div style="font-size:13.5px; line-height:1.5; color:#cbd5e1;">
+        <p style="margin-bottom:12px; font-size:14px; font-weight:700; color:#10b981;">
+          Deseja aplicar e padronizar este nome em <u>TODOS</u> os processos vinculados?
+        </p>
+        <div style="background:rgba(16,185,129,0.1); border:1.5px solid rgba(16,185,129,0.4); border-radius:8px; padding:10px 14px; margin-bottom:12px;">
+          <div style="font-size:11.5px; color:#94a3b8;">Nome Atual no Sistema:</div>
+          <div style="text-decoration:line-through; color:#cbd5e1; margin-bottom:6px;">${item.entidade}</div>
+          <div style="font-size:11.5px; color:#34d399; font-weight:700;">Novo Nome Padronizado:</div>
+          <div style="font-size:13.5px; font-weight:800; color:#ffffff;">${novoNome}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.04); border-left:4px solid #10b981; padding:8px 12px; border-radius:4px; font-size:12.5px;">
+          Esta padronização será aplicada em <strong style="color:#34d399; font-size:13.5px;">${qtdProcessos} processo(s)</strong> vinculados ao CNPJ ${item.cnpjFormatado}.
+        </div>
+      </div>
+    `;
+
+    if (typeof exibirMensagemSiSCAM === 'function') {
+      confirmado = await exibirMensagemSiSCAM(msgConfirm, {
+        titulo: '📥 Padronizar Nome em Todos os Processos',
+        tipo: 'confirm',
+        confirmacao: true,
+        btnTexto: `Sim, Padronizar ${qtdProcessos} Processo(s)`,
+        btnCancelarTexto: 'Cancelar'
+      });
+    } else {
+      confirmado = window.confirm(`Deseja padronizar o nome para "${novoNome}" em todos os ${qtdProcessos} processo(s) vinculados a este CNPJ?`);
+    }
+
+    if (!confirmado) return;
+
+    // Atualiza processos locais
+    const todosProcs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []) || [];
+    const afetados = todosProcs.filter(p => String(p.cnpj || '').replace(/\D/g, '') === cnpjLimpo);
+
+    afetados.forEach(p => {
+      p.interessado = novoNome;
+      p.entidade = novoNome;
+    });
+
+    item.entidade = novoNome;
+
+    if (typeof salvarProcessos === 'function') {
+      salvarProcessos(todosProcs);
+    }
+
+    // Salva auditoria (data, hora, login)
+    salvarAuditoriaCNPJ(cnpjLimpo, 'Padronizado Receita');
+
+    // Sincroniza remotamente
+    afetados.forEach(p => {
+      if (p.id && !String(p.id).startsWith('temp-') && typeof atualizarProcesso === 'function') {
+        atualizarProcesso(p.id, {
+          interessado: novoNome
+        }).catch(err => console.warn('Erro ao atualizar interessado remoto:', p.id, err));
+      }
+    });
+
+    if (typeof toast === 'function') {
+      toast(`✅ Nome padronizado aplicado em ${afetados.length} processo(s)!`, 'success');
+    }
+
+    // Recarrega e manda para o início da fila
+    carregarCnpjsInadimplentes();
+  }
+  window.aplicarNomePadronizadoReceita = aplicarNomePadronizadoReceita;
+
   // Renderiza as linhas da tabela
   function renderTabelaCnpjsInadimplentes() {
     const tbody = document.getElementById('table-cnpjs-inadimplentes-body');
@@ -188,11 +375,9 @@
     const termo = (document.getElementById('filtro-busca-cnpjs')?.value || '').toLowerCase().trim();
 
     let itens = _cnpjsDistintosCache.filter(item => {
-      // Filtro de tipo
       if (_filtroTipoCnpjAtual === 'inadimplentes' && !item.inadimplente) return false;
       if (_filtroTipoCnpjAtual === 'adimplentes' && item.inadimplente) return false;
 
-      // Filtro de busca textual
       if (termo) {
         const matchCnpj = item.cnpj.includes(termo) || item.cnpjFormatado.includes(termo);
         const matchEnt = item.entidade.toLowerCase().includes(termo);
@@ -220,52 +405,58 @@
       const isCheckedImp = item.imprimir !== false;
       const isInad = item.inadimplente;
       const isEditando = _edicoesAtivas.has(item.cnpj);
+      const isReceitaAberta = _receitasAbertas.has(item.cnpj);
+      const isCarregandoReceita = _receitasCarregando.has(item.cnpj);
+      const dadosReceita = _dadosReceitaCache[item.cnpj] || null;
 
       return `
         <tr style="border-bottom:1px solid rgba(255,255,255,0.06); background:${idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.1)'}; transition:background 0.15s;" onmouseover="this.style.background='rgba(56,189,248,0.05)';" onmouseout="this.style.background='${idx % 2 === 0 ? 'rgba(255,255,255,0.015)' : 'rgba(0,0,0,0.1)'}';">
           <!-- 1. Check de Impressão -->
-          <td style="padding:10px 8px; text-align:center; vertical-align:middle;">
+          <td style="padding:10px 8px; width:44px; text-align:center; vertical-align:middle;">
             <input type="checkbox" class="check-imp-item" data-cnpj="${item.cnpj}" ${isCheckedImp ? 'checked' : ''} onchange="toggleCheckImpressao('${item.cnpj}', this.checked)" style="width:16px; height:16px; cursor:pointer; accent-color:#0284c7;" title="Incluir ou remover este CNPJ do relatório impresso">
           </td>
 
-          <!-- 2. CNPJ com botão de checagem da Receita Federal padrão e copiar (Marcação Amarela Imagem 2) -->
-          <td style="padding:10px 12px; vertical-align:middle; font-family:monospace; font-weight:700; font-size:12.5px; color:${isInad ? '#fca5a5' : '#38bdf8'}; white-space:nowrap;">
+          <!-- 2. CNPJ Formatado e Limpo com botão Copiar -->
+          <td style="padding:10px 12px; width:175px; vertical-align:middle; font-family:monospace; font-weight:700; font-size:12.5px; color:${isInad ? '#fca5a5' : '#38bdf8'}; white-space:nowrap;">
             <div style="display:inline-flex; align-items:center; gap:6px;">
               <span style="border-bottom:1px dashed ${isInad ? '#ef4444' : '#38bdf8'}; cursor:pointer;" onclick="editarCNPJVinculado('${item.cnpj}')" title="Clique para editar este CNPJ em todos os processos vinculados">${item.cnpjFormatado}</span>
-              
-              <!-- Botão Copiar -->
               <button type="button" onclick="navigator.clipboard.writeText('${item.cnpjFormatado}'); if(typeof toast==='function') toast('CNPJ copiado!', 'info');" style="background:transparent; border:none; color:#94a3b8; cursor:pointer; font-size:12px; padding:2px;" title="Copiar CNPJ">📋</button>
-              
-              <!-- MARCAÇÃO AMARELA IMAGEM 2: BOTÃO CHECAGEM RECEITA FEDERAL PADRÃO -->
-              <button type="button" class="btn-receita-cnpj" onclick="abrirChecagemReceitaCNPJ('${item.cnpj}', '${item.cnpjFormatado}')" style="background:linear-gradient(135deg,rgba(16,185,129,0.22),rgba(5,150,105,0.35)); border:1px solid #10b981; color:#6ee7b7; cursor:pointer; font-size:11px; font-weight:800; padding:3px 7px; border-radius:5px; display:inline-flex; align-items:center; gap:4px; box-shadow:0 0 8px rgba(16,185,129,0.25); transition:all 0.2s;" title="Checagem oficial na Receita Federal (abre Receita Federal e copia CNPJ automaticamente)">
-                <span>🏛️</span>
-                <span style="font-size:10.5px; letter-spacing:0.3px;">Receita</span>
-              </button>
             </div>
           </td>
 
-          <!-- 3. Entidade / Escola (Linha Vermelha Editável + Marcação Verde Imagem 2: Data, Hora e Usuário) -->
+          <!-- 3. ENTIDADE / ESCOLA COM BOTÃO DA IMAGEM 2 NA MARCA AMARELA -->
           <td style="padding:10px 12px; vertical-align:middle;">
             <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
               
-              <!-- Modo Visualização / Edição -->
-              ${!isEditando ? `
-                <div style="display:inline-flex; align-items:center; gap:8px; flex:1; min-width:200px;">
-                  <span style="font-weight:600; font-size:12.5px; color:#f8fafc; line-height:1.35; border-bottom:1.5px dashed rgba(239,68,68,0.45); padding-bottom:1px; cursor:pointer;" onclick="iniciarEdicaoEntidadeCNPJ('${item.cnpj}')" title="Clique no botão de lápis para editar o nome da entidade em todos os processos">${item.entidade}</span>
-                  <button type="button" onclick="iniciarEdicaoEntidadeCNPJ('${item.cnpj}')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:#cbd5e1; cursor:pointer; font-size:11px; padding:2px 6px; border-radius:4px; display:inline-flex; align-items:center; gap:3px;" title="Editar nome da entidade/escola em todos os ${item.processos.length} processos vinculados">
-                    <span>✏️</span>
-                    <span style="font-size:10px;">Editar</span>
-                  </button>
-                </div>
-              ` : `
-                <div style="display:inline-flex; align-items:center; gap:6px; flex:1; min-width:280px;">
-                  <input type="text" id="input-entidade-${item.cnpj}" value="${(item.entidade || '').replace(/"/g, '&quot;')}" style="background:#0f172a; border:1.5px solid #38bdf8; color:#fff; padding:5px 8px; border-radius:5px; font-size:12px; font-weight:600; flex:1;" onkeydown="if(event.key==='Enter') salvarEdicaoEntidadeCNPJ('${item.cnpj}'); if(event.key==='Escape') cancelarEdicaoEntidadeCNPJ('${item.cnpj}');" placeholder="Nome da entidade / escola">
-                  <button type="button" onclick="salvarEdicaoEntidadeCNPJ('${item.cnpj}')" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:5px 10px; border-radius:5px; font-size:11px; font-weight:700; cursor:pointer;" title="Confirmar e salvar alteração em todos os processos vinculados">✔️ Salvar</button>
-                  <button type="button" onclick="cancelarEdicaoEntidadeCNPJ('${item.cnpj}')" style="background:rgba(255,255,255,0.1); color:#cbd5e1; border:none; padding:5px 8px; border-radius:5px; font-size:11px; cursor:pointer;" title="Cancelar edição">✕</button>
-                </div>
-              `}
+              <!-- Bloco da Esquerda: Botão Receita (Marcação Amarela) + Nome da Entidade -->
+              <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:260px;">
+                
+                <!-- BOTAO DA IMAGEM 2: CONSULTAR NA RECEITA FEDERAL (Mostra/Esconde) -->
+                <button type="button" onclick="toggleReceitaFederalNaTela('${item.cnpj}')" style="background:${isReceitaAberta ? 'linear-gradient(135deg,#047857,#065f46)' : 'linear-gradient(135deg,#059669,#047857)'}; border:1px solid #10b981; color:#ffffff; font-weight:700; font-size:11px; border-radius:6px; padding:4px 9px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; box-shadow:0 0 8px rgba(16,185,129,0.3); transition:all 0.2s;" title="Consultar dados oficiais desta entidade na Receita Federal (mostra/esconde detalhes)">
+                  <span>🔍</span>
+                  <span>Consultar na Receita Federal</span>
+                  <span style="font-size:9px; opacity:0.8;">${isReceitaAberta ? '▲' : '▼'}</span>
+                </button>
 
-              <!-- MARCAÇÃO VERDE IMAGEM 2: DATA, HORA E USUÁRIO QUE FEZ A INFORMAÇÃO -->
+                <!-- Nome da Entidade / Edição Rápida -->
+                ${!isEditando ? `
+                  <div style="display:inline-flex; align-items:center; gap:6px;">
+                    <span style="font-weight:600; font-size:12.5px; color:#f8fafc; line-height:1.35; border-bottom:1.5px dashed rgba(239,68,68,0.45); padding-bottom:1px; cursor:pointer;" onclick="iniciarEdicaoEntidadeCNPJ('${item.cnpj}')" title="Clique no lápis para editar o nome">${item.entidade}</span>
+                    <button type="button" onclick="iniciarEdicaoEntidadeCNPJ('${item.cnpj}')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:#cbd5e1; cursor:pointer; font-size:11px; padding:2px 6px; border-radius:4px; display:inline-flex; align-items:center; gap:3px;" title="Editar nome da entidade manualmente">
+                      <span>✏️</span>
+                      <span style="font-size:10px;">Editar</span>
+                    </button>
+                  </div>
+                ` : `
+                  <div style="display:inline-flex; align-items:center; gap:6px; flex:1;">
+                    <input type="text" id="input-entidade-${item.cnpj}" value="${(item.entidade || '').replace(/"/g, '&quot;')}" style="background:#0f172a; border:1.5px solid #38bdf8; color:#fff; padding:4px 8px; border-radius:5px; font-size:12px; font-weight:600; flex:1;" onkeydown="if(event.key==='Enter') salvarEdicaoEntidadeCNPJ('${item.cnpj}'); if(event.key==='Escape') cancelarEdicaoEntidadeCNPJ('${item.cnpj}');">
+                    <button type="button" onclick="salvarEdicaoEntidadeCNPJ('${item.cnpj}')" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:4px 8px; border-radius:5px; font-size:11px; font-weight:700; cursor:pointer;">✔️ Salvar</button>
+                    <button type="button" onclick="cancelarEdicaoEntidadeCNPJ('${item.cnpj}')" style="background:rgba(255,255,255,0.1); color:#cbd5e1; border:none; padding:4px 6px; border-radius:5px; font-size:11px; cursor:pointer;">✕</button>
+                  </div>
+                `}
+              </div>
+
+              <!-- Marcação Verde: Data, Hora e Usuário/Login -->
               ${item.ultimaAuditoria ? `
                 <div style="background:rgba(34,197,94,0.14); border:1px solid rgba(34,197,94,0.45); color:#86efac; border-radius:6px; padding:3px 8px; font-size:10.5px; font-family:monospace; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; box-shadow:0 0 10px rgba(34,197,94,0.18);" title="Última informação/alteração: ${item.ultimaAuditoria.acao}">
                   <span>🕒</span>
@@ -283,12 +474,12 @@
           </td>
 
           <!-- 4. Município -->
-          <td style="padding:10px 12px; vertical-align:middle; font-size:12px; color:#cbd5e1; white-space:nowrap;">
+          <td style="padding:10px 12px; width:160px; vertical-align:middle; font-size:12px; color:#cbd5e1; white-space:nowrap;">
             ${item.municipio}
           </td>
 
-          <!-- 5. Situação - Check/Toggle com Confirmação Prévia Obrigatória (Círculos Vermelhos Imagem 1) -->
-          <td style="padding:10px 12px; vertical-align:middle; text-align:center; white-space:nowrap;">
+          <!-- 5. Situação - Check/Toggle com Confirmação Prévia -->
+          <td style="padding:10px 12px; width:160px; vertical-align:middle; text-align:center; white-space:nowrap;">
             ${isInad ? `
               <label onclick="solicitarConfirmacaoInadimplencia('${item.cnpj}', false); return false;" style="display:inline-flex; align-items:center; gap:7px; cursor:pointer; background:rgba(239,68,68,0.18); border:1.5px solid #ef4444; border-radius:6px; padding:4px 10px; color:#fca5a5; font-weight:800; font-size:11.5px; box-shadow:0 0 10px rgba(239,68,68,0.3); transition:all 0.2s;" title="Clique para TIRAR A INADIMPLÊNCIA em todos os ${item.processos.length} processos vinculados">
                 <input type="checkbox" checked onclick="event.stopPropagation(); solicitarConfirmacaoInadimplencia('${item.cnpj}', false); return false;" style="width:16px; height:16px; cursor:pointer; accent-color:#ef4444;">
@@ -303,13 +494,80 @@
           </td>
 
           <!-- 6. Processos Vinculados & Botão Expandir -->
-          <td style="padding:10px 12px; vertical-align:middle; text-align:center; white-space:nowrap;">
+          <td style="padding:10px 12px; width:110px; vertical-align:middle; text-align:center; white-space:nowrap;">
             <button type="button" onclick="toggleExpandirProcessosCNPJ('${item.cnpj}')" style="background:${isExp ? 'rgba(56,189,248,0.2)' : 'rgba(255,255,255,0.06)'}; color:${isExp ? '#38bdf8' : '#cbd5e1'}; border:1px solid ${isExp ? '#38bdf8' : 'rgba(255,255,255,0.15)'}; padding:4px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Ver processos vinculados a este CNPJ">
               <span>${isExp ? '▲' : '▼'}</span>
               <span>${item.processos.length} proc.</span>
             </button>
           </td>
         </tr>
+
+        <!-- PAINEL MOSTRA E ESCONDE A RECEITA FEDERAL (PADRÃO IMAGEM 2) -->
+        ${isReceitaAberta ? `
+        <tr style="background:#071a2b; border-bottom:2px solid #059669;">
+          <td colspan="6" style="padding:14px 20px;">
+            <div style="background:rgba(0,0,0,0.45); border:1px solid rgba(16,185,129,0.4); border-radius:8px; padding:14px 18px; box-shadow:0 6px 18px rgba(0,0,0,0.5);">
+              
+              <!-- Cabeçalho do Card com Mostra/Esconde -->
+              <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:17px;">🏛️</span>
+                  <strong style="color:#6ee7b7; font-size:13px; letter-spacing:0.5px; text-transform:uppercase;">Receita Federal do Brasil</strong>
+                  <span style="font-size:11.5px; color:#94a3b8; font-family:monospace;">• CNPJ: ${item.cnpjFormatado}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                  ${dadosReceita ? `
+                    <span style="background:${dadosReceita.situacao === 'ATIVA' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'}; color:${dadosReceita.situacao === 'ATIVA' ? '#4ade80' : '#f87171'}; border:1px solid ${dadosReceita.situacao === 'ATIVA' ? '#22c55e' : '#ef4444'}; padding:2px 8px; border-radius:4px; font-weight:800; font-size:11px;">
+                      🟢 ${dadosReceita.situacao || 'ATIVA'}
+                    </span>
+                  ` : ''}
+                  <button type="button" onclick="toggleReceitaFederalNaTela('${item.cnpj}')" style="background:transparent; border:none; color:#cbd5e1; font-size:12px; font-weight:700; cursor:pointer;" title="Recolher dados da Receita Federal">▲ Recolher</button>
+                </div>
+              </div>
+
+              ${isCarregandoReceita ? `
+                <div style="padding:22px; text-align:center; color:#38bdf8; font-size:13px;">
+                  <span style="display:inline-block; animation:spin 1s linear infinite; margin-right:8px;">🔄</span>
+                  Consultando base oficial da Receita Federal sem Captcha...
+                </div>
+              ` : dadosReceita ? `
+                <!-- Dados Oficiais da Receita (Estilo Imagem 2) -->
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px; font-size:12px; line-height:1.45; color:#cbd5e1; margin-bottom:14px;">
+                  <div><strong style="color:#f8fafc;">Razão Social:</strong> <span style="color:#facc15; font-weight:700;">${dadosReceita.razao_social || '—'}</span></div>
+                  <div><strong style="color:#f8fafc;">Nome Fantasia:</strong> <span>${dadosReceita.nome_fantasia || '—'}</span></div>
+                  <div><strong style="color:#f8fafc;">Endereço:</strong> <span>${dadosReceita.logradouro || '—'}, nº ${dadosReceita.numero || 'SN'} ${dadosReceita.bairro ? '- ' + dadosReceita.bairro : ''}</span></div>
+                  <div><strong style="color:#f8fafc;">Localidade:</strong> <span>${dadosReceita.municipio || '—'}/${dadosReceita.uf || 'RO'} | CEP: ${dadosReceita.cep || '—'}</span></div>
+                  <div><strong style="color:#f8fafc;">Telefone:</strong> <span>${dadosReceita.telefone || '—'}</span></div>
+                  <div><strong style="color:#f8fafc;">Situação Cadastral:</strong> <span style="color:#34d399; font-weight:700;">${dadosReceita.situacao || 'ATIVA'}</span></div>
+                </div>
+
+                <!-- BARRA DE PADRONIZAÇÃO DO NOME (EDITÁVEL) P/ APLICAR A TODOS OS PROCESSOS -->
+                <div style="background:rgba(16,185,129,0.12); border:1.5px solid #10b981; border-radius:8px; padding:12px 16px; display:flex; flex-direction:column; gap:8px;">
+                  <div style="font-size:12px; font-weight:700; color:#6ee7b7; display:flex; align-items:center; gap:6px;">
+                    <span>📝</span>
+                    <span>Padronizar Nome da Entidade em Todos os Processos Vinculados (Editável para Abreviar):</span>
+                  </div>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                    <input type="text" id="input-padronizar-nome-${item.cnpj}" value="${(dadosReceita.razao_social || item.entidade || '').replace(/"/g, '&quot;')}" style="flex:1; min-width:300px; background:#0f172a; border:1px solid #38bdf8; color:#ffffff; font-weight:700; font-size:13px; padding:8px 12px; border-radius:6px; outline:none;" placeholder="Digite ou abrevie o nome padrão da entidade...">
+                    
+                    <button type="button" onclick="aplicarNomePadronizadoReceita('${item.cnpj}')" style="background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:1px solid #34d399; padding:8px 18px; border-radius:6px; font-weight:800; font-size:12.5px; cursor:pointer; display:inline-flex; align-items:center; gap:7px; box-shadow:0 0 12px rgba(16,185,129,0.4); white-space:nowrap;">
+                      <span>📥</span>
+                      <span>Aplicar a Todos os Processos</span>
+                    </button>
+                  </div>
+                  <div style="font-size:11px; color:#94a3b8;">
+                    💡 Dica: Você pode abreviar o nome acima (ex: usar <em>CE EMEF...</em> em vez de <em>CONSELHO ESCOLAR DA ESCOLA MUNICIPAL...</em>) antes de clicar em aplicar. O nome definido aqui será padronizado em <strong>todos os ${item.processos.length} processos</strong> vinculados a este CNPJ.
+                  </div>
+                </div>
+              ` : `
+                <div style="padding:10px; color:#f87171; font-size:12px;">
+                  Não foi possível carregar os dados automaticamente. <button type="button" onclick="consultarReceitaNaTela('${item.cnpj}', true)" style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; padding:3px 8px; border-radius:4px; cursor:pointer; font-weight:700;">Tentar novamente</button> ou <a href="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/" target="_blank" style="color:#6ee7b7; text-decoration:underline;">abrir site oficial da Receita</a>.
+                </div>
+              `}
+            </div>
+          </td>
+        </tr>
+        ` : ''}
 
         <!-- Sub-linha expansível de processos -->
         ${isExp ? `
@@ -381,19 +639,7 @@
   }
   window.alternarTodosChecksImpressao = alternarTodosChecksImpressao;
 
-  // MARCAÇÃO AMARELA: BOTÃO CHECAGEM RECEITA FEDERAL PADRÃO
-  function abrirChecagemReceitaCNPJ(cnpjLimpo, cnpjFmt) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(cnpjFmt || cnpjLimpo).catch(() => {});
-    }
-    window.open('https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/', '_blank', 'noopener,noreferrer');
-    if (typeof toast === 'function') {
-      toast(`🏛️ CNPJ ${cnpjFmt} copiado! Abrindo checagem oficial na Receita Federal...`, 'info');
-    }
-  }
-  window.abrirChecagemReceitaCNPJ = abrirChecagemReceitaCNPJ;
-
-  // EDIÇÃO DE ENTIDADE / ESCOLA EM TODOS OS PROCESSOS VINCULADOS
+  // EDIÇÃO MANUAL DE ENTIDADE / ESCOLA
   function iniciarEdicaoEntidadeCNPJ(cnpjLimpo) {
     _edicoesAtivas.add(cnpjLimpo);
     renderTabelaCnpjsInadimplentes();
@@ -468,7 +714,6 @@
       return;
     }
 
-    // 1. Atualiza nos processos locais
     const todosProcs = window.processosCache || (typeof state !== 'undefined' && state ? state.processos : []) || [];
     const afetados = todosProcs.filter(p => String(p.cnpj || '').replace(/\D/g, '') === cnpjLimpo);
 
@@ -480,15 +725,12 @@
     item.entidade = novoNome;
     _edicoesAtivas.delete(cnpjLimpo);
 
-    // 2. Salva localmente
     if (typeof salvarProcessos === 'function') {
       salvarProcessos(todosProcs);
     }
 
-    // 3. Salva auditoria (data, hora, login)
     salvarAuditoriaCNPJ(cnpjLimpo, 'Nome Editado');
 
-    // 4. Sincroniza assincronamente com a API/Planilha
     afetados.forEach(p => {
       if (p.id && !String(p.id).startsWith('temp-') && typeof atualizarProcesso === 'function') {
         atualizarProcesso(p.id, {
@@ -501,7 +743,6 @@
       toast(`✅ Nome atualizado para "${novoNome}" em ${afetados.length} processo(s)!`, 'success');
     }
 
-    // 5. Recarrega dados -> "Mande para o início da fila"!
     carregarCnpjsInadimplentes();
   }
   window.salvarEdicaoEntidadeCNPJ = salvarEdicaoEntidadeCNPJ;
@@ -573,7 +814,6 @@
     let btnTexto = '';
 
     if (novoStatusInadimplente) {
-      // Negativar / Marcar Inadimplente
       titulo = '⚠️ Confirmação: Negativar CNPJ';
       btnTexto = `Sim, Negativar ${qtdProcessos} Processo(s)`;
       mensagemHtml = `
@@ -592,7 +832,6 @@
         </div>
       `;
     } else {
-      // Tirar inadimplência / Regularizar
       titulo = '🟢 Confirmação: Regularizar CNPJ';
       btnTexto = `Sim, Tirar Inadimplência (${qtdProcessos} Proc.)`;
       mensagemHtml = `
@@ -631,7 +870,6 @@
       return;
     }
 
-    // Executa a alteração
     await alternarInadimplenciaCNPJ(cnpjLimpo, novoStatusInadimplente);
   }
   window.solicitarConfirmacaoInadimplencia = solicitarConfirmacaoInadimplencia;
@@ -651,35 +889,29 @@
       return;
     }
 
-    // 1. Atualiza imediatamente na memória local em todos os processos vinculados
     afetados.forEach(p => {
       p.inadimplente = statusStr;
       p.CONTAS = statusStr;
       p.INADIMPLENTE = statusStr;
     });
 
-    // 2. Atualiza no cache de CNPJs distintos da tela
     const itemDist = _cnpjsDistintosCache.find(c => c.cnpj === cnpjLimpo);
     if (itemDist) {
       itemDist.inadimplente = novoStatusInadimplente;
     }
 
-    // 3. Persiste no localStorage/memória global
     if (typeof salvarProcessos === 'function') {
       salvarProcessos(procs);
     }
 
-    // 4. Salva auditoria (data, hora, login)
     salvarAuditoriaCNPJ(cnpjLimpo, novoStatusInadimplente ? 'Negativado' : 'Regularizado');
 
-    // 5. Notifica o usuário com feedback rápido e claro
     const cnpjFmt = (itemDist ? itemDist.cnpjFormatado : cnpjLimpo);
     const msg = novoStatusInadimplente
       ? `⚠️ CNPJ ${cnpjFmt} negativado em ${afetados.length} processo(s)!`
       : `✅ Inadimplência retirada! CNPJ ${cnpjFmt} regularizado em todos os ${afetados.length} processo(s).`;
     if (typeof toast === 'function') toast(msg, novoStatusInadimplente ? 'warning' : 'success');
 
-    // 6. Envia sincronização assíncrona com a API/Planilha para cada processo
     afetados.forEach(p => {
       if (p.id && !String(p.id).startsWith('temp-') && typeof atualizarProcesso === 'function') {
         atualizarProcesso(p.id, {
@@ -689,14 +921,12 @@
       }
     });
 
-    // 7. Recarrega dados -> "Mande para o início da fila"!
     carregarCnpjsInadimplentes();
   }
   window.alternarInadimplenciaCNPJ = alternarInadimplenciaCNPJ;
 
   // GERA E IMPRIME O RELATÓRIO PROFISSIONAL A4
   function imprimirRelatorioCNPJs() {
-    // Filtra apenas os CNPJs marcados para impressão
     const itensImpressao = _cnpjsDistintosCache.filter(c => c.imprimir !== false);
 
     if (itensImpressao.length === 0) {
@@ -842,7 +1072,7 @@
           </div>
           <div class="rel-meta">
             <div><strong>Emissão:</strong> ${dataHora}</div>
-            <div><strong>Sistema:</strong> SiSCAM v1.149</div>
+            <div><strong>Sistema:</strong> SiSCAM v1.150</div>
           </div>
         </div>
 
