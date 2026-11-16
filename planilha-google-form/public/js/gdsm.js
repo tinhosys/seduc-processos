@@ -147,47 +147,47 @@ function getColunaStyleGDSM(colName) {
   const c = String(colName).toLowerCase();
   
   if (c.includes('munic')) {
-    return { width: '130px', minWidth: '120px', align: 'left', whiteSpace: 'nowrap' };
+    return { width: '180px', minWidth: '170px', align: 'left', whiteSpace: 'nowrap' };
   }
   if (c.includes('processo sei') || c === 'processo') {
-    return { width: '150px', minWidth: '140px', align: 'left', whiteSpace: 'nowrap' };
+    return { width: '210px', minWidth: '190px', align: 'left', whiteSpace: 'nowrap' };
   }
   if (c === 'status') {
-    return { width: '95px', minWidth: '90px', align: 'center', whiteSpace: 'nowrap' };
+    return { width: '140px', minWidth: '130px', align: 'center', whiteSpace: 'nowrap' };
   }
   if (c.includes('tipo objeto') || c === 'tipo' || c === 'categoria') {
-    return { width: '95px', minWidth: '85px', align: 'left', whiteSpace: 'nowrap' };
+    return { width: '140px', minWidth: '120px', align: 'left', whiteSpace: 'nowrap' };
   }
   if (c === 'quant' || c === 'qtd' || c === 'quantidade') {
-    return { width: '60px', minWidth: '55px', align: 'center', whiteSpace: 'nowrap' };
+    return { width: '75px', minWidth: '65px', align: 'center', whiteSpace: 'nowrap' };
   }
   if (c.includes('valor') || c.includes('contrapartida')) {
-    return { width: '115px', minWidth: '110px', align: 'right', whiteSpace: 'nowrap' };
+    return { width: '140px', minWidth: '130px', align: 'right', whiteSpace: 'nowrap' };
   }
   if (c.includes('data') || c.includes('vigência') || c.includes('vigencia')) {
-    return { width: '90px', minWidth: '85px', align: 'center', whiteSpace: 'nowrap' };
+    return { width: '125px', minWidth: '115px', align: 'center', whiteSpace: 'nowrap' };
   }
   if (c.includes('situação') || c.includes('situacao')) {
-    return { width: '120px', minWidth: '110px', align: 'left', whiteSpace: 'normal' };
+    return { width: '180px', minWidth: '150px', align: 'left', whiteSpace: 'normal' };
   }
   if (c.includes('convenente') || c.includes('escola') || c.includes('entidade')) {
-    return { width: '170px', minWidth: '150px', align: 'left', whiteSpace: 'normal' };
+    return { width: '250px', minWidth: '200px', align: 'left', whiteSpace: 'normal' };
   }
   if (c.includes('objeto')) {
-    return { width: '220px', minWidth: '180px', align: 'left', whiteSpace: 'normal' };
+    return { width: '320px', minWidth: '250px', align: 'left', whiteSpace: 'normal' };
   }
   if (c === 'autorização' || c === 'autorizacao') {
-    return { width: '100px', minWidth: '90px', align: 'center', whiteSpace: 'nowrap' };
+    return { width: '140px', minWidth: '125px', align: 'center', whiteSpace: 'nowrap' };
   }
   if (c === 'forma' || c.includes('forma de')) {
-    return { width: '80px', minWidth: '75px', align: 'left', whiteSpace: 'nowrap' };
+    return { width: '110px', minWidth: '95px', align: 'left', whiteSpace: 'nowrap' };
   }
   if (c === 'termo' || c === 'regional' || c === 'setor' || c === 'técnico' || c === 'tecnico') {
-    return { width: '100px', minWidth: '90px', align: 'left', whiteSpace: 'nowrap' };
+    return { width: '130px', minWidth: '110px', align: 'left', whiteSpace: 'nowrap' };
   }
 
-  // Padrão compacto
-  return { width: '120px', minWidth: '110px', align: 'left', whiteSpace: 'normal' };
+  // Padrão organizado
+  return { width: '150px', minWidth: '130px', align: 'left', whiteSpace: 'normal' };
 }
 
 // Abrir link direto na planilha oficial
@@ -513,7 +513,7 @@ function renderTabelaGDSM(tabKey, filtrados) {
     const stickyClass = isMun ? 'class="col-municipio-sticky"' : '';
 
     return `
-      <th ${stickyClass} onclick="ordenarGDSM('${tabKey}', '${col}')" style="padding:7px 10px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.08); position:sticky; top:0; z-index:${isMun ? 25 : 10}; cursor:pointer; user-select:none; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap; ${styleAlign}" title="Clique para ordenar por ${colDisplay}">
+      <th ${stickyClass} onclick="ordenarGDSM('${tabKey}', '${col}')" style="padding:9px 14px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8; background:#1e293b; border-bottom:2px solid rgba(255,255,255,0.08); position:sticky; top:0; z-index:10; cursor:pointer; user-select:none; width:${st.width}; min-width:${st.minWidth}; box-sizing:border-box; white-space:nowrap; ${styleAlign}" title="Clique para ordenar por ${colDisplay}">
         ${colDisplay}${arrow}
       </th>
     `;
@@ -526,10 +526,10 @@ function renderTabelaGDSM(tabKey, filtrados) {
       const colNorm = col.toLowerCase();
       const st = getColunaStyleGDSM(col);
 
-      // 1. MUNICÍPIO (Destaque institucional e fixação lateral)
+      // 1. MUNICÍPIO (Destaque institucional)
       if (colNorm.includes('munic')) {
         return `
-          <td class="col-municipio-sticky" style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.05); font-weight:700; color:#f8fafc; font-size:12px; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
+          <td class="col-municipio-sticky" style="padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-weight:700; color:#f8fafc; font-size:12px; width:${st.width}; min-width:${st.minWidth}; box-sizing:border-box; white-space:nowrap;">
             ${val}
           </td>
         `;
@@ -544,8 +544,8 @@ function renderTabelaGDSM(tabKey, filtrados) {
         else if (stLower.includes('encerrado') || stLower.includes('cancelado')) badgeBg = 'background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3);';
         else if (stLower.includes('suspenso') || stLower.includes('notificar') || stLower.includes('pendente')) badgeBg = 'background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.3);';
         return `
-          <td style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:center; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
-            <span style="display:inline-block; padding:2px 8px; border-radius:4px; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; ${badgeBg}">
+          <td style="padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:center; width:${st.width}; min-width:${st.minWidth}; box-sizing:border-box; white-space:nowrap;">
+            <span style="display:inline-block; padding:3px 10px; border-radius:4px; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px; ${badgeBg}">
               ${val}
             </span>
           </td>
@@ -555,7 +555,7 @@ function renderTabelaGDSM(tabKey, filtrados) {
       // 3. PROCESSO SEI
       if (colNorm.includes('processo sei') || colNorm === 'processo') {
         return `
-          <td style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.05); font-family:monospace; font-weight:700; color:#38bdf8; font-size:11.5px; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
+          <td style="padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.05); font-family:monospace; font-weight:700; color:#38bdf8; font-size:11.5px; width:${st.width}; min-width:${st.minWidth}; box-sizing:border-box; white-space:nowrap;">
             ${val}
           </td>
         `;
@@ -566,7 +566,7 @@ function renderTabelaGDSM(tabKey, filtrados) {
         const num = parseMoedaGDSM(val);
         const formatado = num > 0 ? formatMoedaGDSM(num) : (val.trim() === '0,00' ? 'R$ 0,00' : val);
         return `
-          <td style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:right; font-family:monospace; font-weight:700; color:#34d399; font-size:11.5px; width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
+          <td style="padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:right; font-family:monospace; font-weight:700; color:#34d399; font-size:11.5px; width:${st.width}; min-width:${st.minWidth}; box-sizing:border-box; white-space:nowrap;">
             ${formatado}
           </td>
         `;
@@ -577,7 +577,7 @@ function renderTabelaGDSM(tabKey, filtrados) {
         const aut = String(val).toUpperCase();
         const autCor = aut.includes('AUTORIZADO') ? 'color:#34d399;' : (aut.includes('NÃO') || aut.includes('PENDENTE') ? 'color:#fbbf24;' : 'color:#94a3b8;');
         return `
-          <td style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:center; font-weight:700; font-size:10.5px; ${autCor} width:${st.width}; min-width:${st.minWidth}; white-space:nowrap;">
+          <td style="padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.05); text-align:center; font-weight:700; font-size:10.5px; ${autCor} width:${st.width}; min-width:${st.minWidth}; box-sizing:border-box; white-space:nowrap;">
             ${val}
           </td>
         `;
@@ -585,7 +585,7 @@ function renderTabelaGDSM(tabKey, filtrados) {
 
       // 6. DEMAIS COLUNAS DE TEXTO
       return `
-        <td style="padding:6px 10px; border-bottom:1px solid rgba(255,255,255,0.05); color:#cbd5e1; font-size:11.5px; line-height:1.35; width:${st.width}; min-width:${st.minWidth}; white-space:${st.whiteSpace};">
+        <td style="padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.05); color:#cbd5e1; font-size:11.5px; line-height:1.35; width:${st.width}; min-width:${st.minWidth}; box-sizing:border-box; white-space:${st.whiteSpace};">
           ${val}
         </td>
       `;
@@ -610,11 +610,9 @@ function renderTabelaGDSM(tabKey, filtrados) {
     </div>
   `;
 
-  const minTableWidth = Math.max(1600, colunasExibidas.length * 135);
-
   container.innerHTML = `
     <div class="table-wrap gdsm-table-wrap" style="flex:1; min-height:0; overflow-x:auto !important; overflow-y:auto !important; width:100%; max-width:100%; box-sizing:border-box; border-radius:8px 8px 0 0;">
-      <table style="width:100%; min-width:${minTableWidth}px; border-collapse:separate; border-spacing:0; text-align:left; font-size:11.5px;">
+      <table style="width:max-content !important; min-width:100% !important; table-layout:auto !important; border-collapse:separate; border-spacing:0; text-align:left; font-size:11.5px;">
         <thead>
           <tr>${theadHtml}</tr>
         </thead>

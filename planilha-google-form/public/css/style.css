@@ -2353,8 +2353,8 @@ input:checked ~ .toggle-text {
 /* ============================================================
    GBZ v1.2.77 - COLUNAS ANCORADAS: CHECKBOX (left: 0) E PREFIXO (left: 40px)
    ============================================================ */
-.table-wrap th:first-child,
-.table-wrap td:first-child {
+#page-processos .table-wrap th:first-child,
+#page-processos .table-wrap td:first-child {
   position: sticky !important;
   left: 0 !important;
   z-index: 25 !important;
@@ -2364,8 +2364,8 @@ input:checked ~ .toggle-text {
   background-color: var(--surface, #1B2230) !important;
 }
 
-.table-wrap th[data-sort="prefixo"],
-.table-wrap td.col-prefixo {
+#page-processos .table-wrap th[data-sort="prefixo"],
+#page-processos .table-wrap td.col-prefixo {
   position: sticky !important;
   left: 40px !important;
   z-index: 25 !important;
@@ -2380,12 +2380,12 @@ input:checked ~ .toggle-text {
   vertical-align: middle !important;
 }
 
-.table-wrap thead th:first-child {
+#page-processos .table-wrap thead th:first-child {
   z-index: 35 !important;
   background-color: var(--surface-raised, #222B3B) !important;
 }
 
-.table-wrap thead th[data-sort="prefixo"] {
+#page-processos .table-wrap thead th[data-sort="prefixo"] {
   z-index: 35 !important;
   background-color: var(--surface-raised, #222B3B) !important;
 }
@@ -3204,28 +3204,36 @@ thead th {
   background: #090e1a !important;
 }
 
-/* Fixação da coluna Município nas tabelas GDSM no Scroll Horizontal */
-.gdsm-table-wrap th.col-municipio-sticky {
-  position: sticky !important;
-  left: 0 !important;
-  top: 0 !important;
-  z-index: 25 !important;
-  background: #1e293b !important;
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.4) !important;
+/* Coluna Município nas tabelas GDSM - Sem sobreposição */
+.gdsm-table-wrap th:first-child,
+.gdsm-table-wrap td:first-child,
+.gdsm-table-wrap th.col-municipio-sticky,
+.gdsm-table-wrap td.col-municipio-sticky {
+  position: static !important;
+  left: auto !important;
+  width: 180px !important;
+  min-width: 170px !important;
+  box-shadow: none !important;
+  white-space: nowrap !important;
 }
 
-.gdsm-table-wrap td.col-municipio-sticky {
+.gdsm-table-wrap th:first-child,
+.gdsm-table-wrap th.col-municipio-sticky {
   position: sticky !important;
-  left: 0 !important;
-  z-index: 5 !important;
-  background: #0f172a !important;
+  top: 0 !important;
+  z-index: 10 !important;
+  background: #1e293b !important;
+}
+
+.gdsm-table-wrap td:first-child,
+.gdsm-table-wrap td.col-municipio-sticky {
   font-weight: 700 !important;
   color: #f8fafc !important;
-  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.4) !important;
+  background: transparent !important;
 }
 
 .gdsm-table-wrap tr:hover td.col-municipio-sticky {
-  background: #1e293b !important;
+  background: transparent !important;
 }
 
 /* Confinamento de viewport nos formulários GDSM */
@@ -3471,8 +3479,6 @@ thead th {
 
 /* 5. TABELAS: LARGURA 100% COM COMPATIBILIDADE RESPONSIVA */
 .table-wrap table,
-.gdsm-table-wrap table,
-.gmac-table-wrap table,
 .data-table-wrap table,
 #page-processos .table-wrap table,
 #page-repetidos .table-wrap table {
@@ -3480,6 +3486,23 @@ thead th {
   min-width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
+}
+
+.gdsm-table-wrap table,
+.gmac-table-wrap table {
+  width: max-content !important;
+  min-width: 100% !important;
+  table-layout: auto !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+}
+
+.gdsm-table-wrap th,
+.gdsm-table-wrap td,
+.gmac-table-wrap th,
+.gmac-table-wrap td {
+  box-sizing: border-box !important;
+  vertical-align: middle !important;
 }
 
 /* 6. PAGINAÇÃO: FIXA NA BASE (SEMPRE VISÍVEL) */
