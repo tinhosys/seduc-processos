@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR" data-theme="graphite">
 
 <head>
@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=v1.152">
+  <link rel="stylesheet" href="css/style.css?v=v1.154">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -783,127 +783,123 @@
   <div class="login-screen-card" style="
     position: relative;
     width: 100%;
-    max-width: 901px;
-    aspect-ratio: 901 / 665;
-    background: transparent;
+    max-width: 900px;
+    background: #1e293b;
+    border: 1.5px solid rgba(255, 255, 255, 0.12);
     border-radius: 28px;
-    box-shadow: 0 25px 70px rgba(0,0,0,0.8), 0 0 35px rgba(0, 168, 89, 0.45);
-    overflow: hidden;
+    box-shadow: 0 25px 70px rgba(0,0,0,0.85), 0 0 35px rgba(56, 189, 248, 0.18);
+    padding: 18px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 16px;
     margin: auto;
   ">
-    <!-- ARTE OFICIAL COMPLETA DA TELA INICIAL (IMAGEM 100% FIEL) -->
-    <img src="img/tela-inicial-siscam.png?v=v1.152"
-         alt="SiSCAM - Sistema Integrado CAM / SEDUC-RO"
-         style="width: 100%; height: 100%; object-fit: fill; display: block; pointer-events: none; user-select: none;">
-
-    <!-- LINK CLICÁVEL DO WHATSAPP DE SUPORTE NO FLYER DA ESQUERDA -->
+    <!-- COLUNA ESQUERDA: FLYER DA CAM COM LINK DIRETO PARA WHATSAPP -->
     <a href="https://wa.me/5569999064881?text=Ol%C3%A1%2C%20equipe%20da%20CAM!%20Preciso%20de%20suporte%20no%20SiSCAM." 
        target="_blank" rel="noopener noreferrer" 
-       title="Precisa de ajuda? Clique para suporte da equipe da CAM pelo WhatsApp: (69) 99906-4881"
+       title="Precisa de ajuda? Clique para solicitar suporte da equipe da CAM pelo WhatsApp: (69) 99906-4881"
        style="
-         position: absolute; left: 3.11%; top: 4.36%; width: 44.84%; height: 91.28%;
-         z-index: 10; cursor: pointer; border-radius: 20px; text-decoration: none;
-         transition: all 0.25s ease;
+         display: flex; align-items: stretch; justify-content: center;
+         flex: 1.1 1 0; max-width: 450px; min-width: 280px; text-decoration: none;
+         border-radius: 20px; overflow: hidden;
+         box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+         background: transparent;
+         cursor: pointer;
        "
-       onmouseover="this.style.boxShadow='inset 0 0 0 3px rgba(255,255,255,0.4), 0 0 20px rgba(56,189,248,0.5)';"
-       onmouseout="this.style.boxShadow='none';"
-    ></a>
-
-    <!-- CAMPO INTERATIVO: WHATSAPP DE ACESSO -->
-    <input type="text" id="login-whatsapp" placeholder="(00) 0 0000-0000" autocomplete="new-password"
-      style="
-        position: absolute;
-        left: 56.60%; top: 40.15%; width: 36.74%; height: 9.02%;
-        z-index: 20;
-        background: transparent;
-        border: none;
-        outline: none;
-        color: #0f172a;
-        font-size: clamp(14px, 1.9vw, 18px);
-        font-weight: 700;
-        padding: 0 16px;
-        box-sizing: border-box;
-      "
-      onfocus="this.style.background='rgba(2, 132, 199, 0.06)'; this.style.borderRadius='12px';"
-      onblur="this.style.background='transparent';"
-      oninput="this.value = maskCelular(this.value)"
-      onkeydown="if(event.key==='Enter') realizarLogin()"
+       onmouseover="this.style.transform='translateY(-2px) scale(1.01)'; this.style.boxShadow='0 14px 35px rgba(0,0,0,0.6)';"
+       onmouseout="this.style.transform='none'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.4)';"
     >
+      <img src="img/banner_suporte_cam.png?v=v1.154" alt="Suporte da equipe da CAM - WhatsApp (69) 99906-4881" 
+           style="width: 100%; height: 100%; object-fit: fill; display: block; border-radius: 20px;">
+    </a>
 
-    <!-- CAMPO INTERATIVO: SENHA (4 DÍGITOS) -->
-    <input type="password" id="login-senha" placeholder="****" maxlength="4" pattern="[0-9]*" inputmode="numeric" autocomplete="new-password"
-      style="
-        position: absolute;
-        left: 56.60%; top: 53.53%; width: 36.74%; height: 9.17%;
-        z-index: 20;
-        background: transparent;
-        border: none;
-        outline: none;
-        color: #0f172a;
-        font-size: clamp(16px, 2.2vw, 22px);
-        font-weight: 900;
-        text-align: center;
-        letter-spacing: 8px;
-        padding: 0 16px;
-        box-sizing: border-box;
-      "
-      onfocus="this.style.background='rgba(2, 132, 199, 0.06)'; this.style.borderRadius='12px';"
-      onblur="this.style.background='transparent';"
-      oninput="this.value = this.value.replace(/\D/g, '')"
-      onkeydown="if(event.key==='Enter') realizarLogin()"
-    >
-
-    <!-- BOTÃO INTERATIVO: ENTRAR NO SISTEMA -->
-    <button onclick="realizarLogin()" id="btn-login"
-      title="Clique para entrar no SiSCAM"
-      style="
-        position: absolute;
-        left: 56.60%; top: 71.58%; width: 36.63%; height: 8.72%;
-        z-index: 20;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        border-radius: 12px;
-        transition: background 0.2s;
-      "
-      onmouseover="this.style.background='rgba(255,255,255,0.18)'"
-      onmouseout="this.style.background='transparent'"
-    ></button>
-
-    <!-- MENSAGEM DE FEEDBACK E ERRO -->
-    <div id="login-error" style="
-      position: absolute;
-      left: 56.60%; top: 81.20%; width: 36.63%;
-      z-index: 20;
-      color: #dc2626;
-      font-size: clamp(10px, 1.3vw, 13px);
-      font-weight: 800;
-      text-align: center;
-      text-shadow: 0 1px 2px rgba(255,255,255,0.9);
-      pointer-events: none;
-    "></div>
-    <div id="login-loading" style="
-      position: absolute;
-      left: 56.60%; top: 81.20%; width: 36.63%;
-      z-index: 20;
-      color: #0284c7;
-      font-size: clamp(10px, 1.3vw, 13px);
-      font-weight: 800;
-      text-align: center;
-      display: none;
-      pointer-events: none;
-    ">Verificando acesso...</div>
-
-    <!-- BADGE OFICIAL DE VERSÃO DINÂMICA (SUBSTITUINDO O v1.127 PELO DELTA ATUALIZADO) -->
+    <!-- COLUNA DIREITA: CARD DE LOGIN LIMPO E MODERNO -->
     <div style="
-      position: absolute;
-      left: 56.60%; top: 89.62%; width: 36.63%; height: 4.51%;
-      z-index: 25;
       background: #ffffff;
-      display: flex; align-items: center; justify-content: center;
-      color: #0284c7; font-size: clamp(11px, 1.4vw, 13.5px); font-weight: 800; letter-spacing: 0.8px;
-      pointer-events: none;
-    ">∴ SiSCAM v1.146 ∴</div>
+      border-radius: 20px;
+      padding: 30px 28px;
+      width: 100%;
+      flex: 1 1 0;
+      max-width: 410px;
+      min-width: 280px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+      position: relative;
+    ">
+      <!-- LOGO CAM -->
+      <div style="text-align: center; margin-bottom: 18px;">
+        <img src="img/logo-cam-login.png?v=v1.154" alt="CAM - Coordenadoria de Articulação com os Municípios - SEDUC / RO"
+             style="width: 100%; max-width: 270px; height: auto; object-fit: contain; display: inline-block;">
+      </div>
+
+      <!-- WHATSAPP DE ACESSO -->
+      <div style="text-align: left; margin-bottom: 14px;">
+        <label for="login-whatsapp" style="color: #1e293b; font-size: 12px; font-weight: 800; display: block; margin-bottom: 6px; letter-spacing: 0.4px; text-transform: uppercase;">
+          WHATSAPP DE ACESSO
+        </label>
+        <input type="text" id="login-whatsapp" placeholder="(00) 0 0000-0000" autocomplete="new-password"
+          style="
+            width: 100%; padding: 13px 16px; border-radius: 12px;
+            background: #ffffff; border: 2.2px solid #0284c7;
+            color: #0f172a; font-size: 15px; font-weight: 700; outline: none; box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+          "
+          onfocus="this.style.borderColor='#0369a1'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.2)';"
+          onblur="this.style.borderColor='#0284c7'; this.style.boxShadow='none';"
+          oninput="this.value = maskCelular(this.value)"
+          onkeydown="if(event.key==='Enter') realizarLogin()"
+        >
+      </div>
+
+      <!-- SENHA (4 DÍGITOS) - CAIXA VAZIA CONFORME SOLICITAÇÃO -->
+      <div style="text-align: left; margin-bottom: 20px;">
+        <label for="login-senha" style="color: #1e293b; font-size: 12px; font-weight: 800; display: block; margin-bottom: 6px; letter-spacing: 0.4px; text-transform: uppercase;">
+          SENHA (4 DÍGITOS)
+        </label>
+        <input type="password" id="login-senha" placeholder="" maxlength="4" pattern="[0-9]*" inputmode="numeric" autocomplete="new-password"
+          style="
+            width: 100%; padding: 13px 16px; border-radius: 12px;
+            background: #ffffff; border: 2.2px solid #0284c7;
+            color: #0f172a; font-size: 20px; font-weight: 900; text-align: center; letter-spacing: 8px; outline: none; box-sizing: border-box;
+            transition: border-color 0.2s, box-shadow 0.2s;
+          "
+          onfocus="this.style.borderColor='#0369a1'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.2)';"
+          onblur="this.style.borderColor='#0284c7'; this.style.boxShadow='none';"
+          oninput="this.value = this.value.replace(/\D/g, '')"
+          onkeydown="if(event.key==='Enter') realizarLogin()"
+        >
+      </div>
+
+      <!-- BOTÃO INTERATIVO TÁTIL (AÇÃO APERTE E SOLTE) -->
+      <button onclick="realizarLogin()" id="btn-login" class="btn-login-tactile"
+        title="Clique para entrar no SiSCAM"
+      >
+        Entrar no Sistema
+      </button>
+
+      <!-- FEEDBACK DE ERRO E CARREGAMENTO -->
+      <div id="login-error" style="color: #dc2626; font-size: 12px; font-weight: 800; text-align: center; margin-top: 8px; min-height: 18px;"></div>
+      <div id="login-loading" style="color: #0284c7; font-size: 12px; font-weight: 800; text-align: center; margin-top: 8px; display: none;">Verificando acesso...</div>
+
+      <!-- BADGE DE VERSÃO DINÂMICA (SUBSTITUINDO O v1.154 FIXO) -->
+      <div id="badge-versao-login" class="siscam-badge-versao" data-app-version="true" style="
+        text-align: center;
+        color: #0284c7;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        margin-top: 12px;
+        user-select: none;
+      ">
+        <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.154 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1226,7 +1222,7 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
-          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.146 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
+          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.154 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
         </div>
 
         <!-- PAINÉIS DE INFORMAÇÃO DE VALORES E CONTAGEM NA TOPBAR (IMAGEM 3) -->
@@ -2563,310 +2559,320 @@
             </div>
   
             <!-- GUIA 1: OBJETO -->
-            <div id="tab-content-objeto">
+            <div id="tab-content-objeto" class="stack" style="display:grid; gap:16px;">
               
-            <input type="hidden" id="form-categoria" name="categoria" value="">
-            <input type="hidden" id="form-tipo" name="tipo" value="">
+              <input type="hidden" id="form-categoria" name="categoria" value="">
+              <input type="hidden" id="form-tipo" name="tipo" value="">
 
-            <!-- Autorizações -->
-            <div class="form-group full card-autorizacoes-header" style="position: relative; margin-bottom: 20px; padding: 14px 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%;">
-                <label style="margin: 0; text-align: left; color: var(--text-primary); font-size: 13.5px; font-weight: 700; letter-spacing: 0.5px;">AUTORIZAÇÕES</label>
-                <!-- MARCAR PROCESSO NO CANTO SUPERIOR DIREITO NA LINHA DA AUTORIZAÇÃO -->
-                <div id="container-form-marca" style="display: flex; align-items: center; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.28); border-radius: 6px; padding: 5px 12px; transition: all 0.2s;">
-                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 700; color: #fca5a5; user-select: none; margin: 0; font-size: 12px;">
-                    <input type="checkbox" id="form-marca" style="width: 16px; height: 16px; cursor: pointer; accent-color: #ef4444;">
-                    <span>📌 Marcar Processo (Chamar Atenção)</span>
-                  </label>
-                </div>
-              </div>
-              <div class="autorizacao-toggles" id="form-autorizacoes-container" style="display: flex; justify-content: space-evenly; width: 100%;">
-                <div class="toggle-item">
-                  <label class="toggle-switch">
-                    <input type="checkbox" id="form-cam">
-                    <span class="slider"></span>
-                  </label>
-                  <span class="toggle-label">CAM</span>
-                </div>
-                <div class="toggle-item">
-                  <label class="toggle-switch">
-                    <input type="checkbox" id="form-gab">
-                    <span class="slider"></span>
-                  </label>
-                  <span class="toggle-label">GABINETE SEDUC</span>
-                </div>
-                <div class="toggle-item">
-                  <label class="toggle-switch">
-                    <input type="checkbox" id="form-cc">
-                    <span class="slider"></span>
-                  </label>
-                  <span class="toggle-label">CASA CIVIL</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-grid">
-
-              <!-- LINHA 1 HARMONIOSA: PREFIXO, ANO (METADE), MUNICÍPIO (DOBRO), DÍGITO (COMPACTO) -->
-              <div class="form-row-topo full" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: flex-start !important; gap: 16px !important; width: 100% !important; grid-column: 1 / -1 !important; margin-bottom: 0 !important; box-sizing: border-box !important;">
-                
-                <!-- PREFIXO -->
-                <div class="form-group" style="flex: 1.2 1 180px; min-width: 160px;">
-                  <label for="form-prefixo">Prefixo</label>
-                  <input type="text" id="form-prefixo" placeholder="Digite ou selecione..." maxlength="20"
-                    list="list-prefixos" autocomplete="off" style="height: 42px; padding: 10px 14px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); width: 100%; box-sizing: border-box;">
-                  <datalist id="list-prefixos"></datalist>
+              <!-- 1. IDENTIFICAÇÃO DO PROCESSO (GRAPHITE TEMPLATE - IMAGEM 2) -->
+              <div class="card" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
+                <div class="sectionhead" style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--border);">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <h2 style="font-size:16px; font-weight:700; color:var(--text-primary); margin:0;">Identificação do processo</h2>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="siscam-badge-delta" style="font-size:11px; padding:2px 8px; border-radius:6px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); color:#38bdf8; font-weight:700;">
+                      <span class="siscam-delta" style="font-size:11px;">∴</span> SiSCAM <span class="siscam-delta" style="font-size:11px;">∴</span>
+                    </div>
+                    <span class="badge blue" id="badge-ano-card-identificacao" style="background:#2563eb; color:#ffffff; padding:2px 8px; border-radius:6px; font-weight:700; font-size:11px;">2026</span>
+                  </div>
                 </div>
 
-                <!-- ANO: LARGURA REDUZIDA PELA METADE -->
-                <div class="form-group" style="flex: 0 0 110px; width: 110px; min-width: 95px; max-width: 120px;">
-                  <label for="form-ano">Ano</label>
-                  <input type="text" id="form-ano" placeholder="AAAA" maxlength="4" list="list-anos" autocomplete="off" style="height: 42px; text-align: center; font-weight: 700; width: 100%; padding: 10px 8px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); box-sizing: border-box;">
-                  <datalist id="list-anos"></datalist>
-                </div>
+                <div class="formgrid">
+                  <!-- Número do processo SEI * (span4) -->
+                  <div class="field span4" id="group-form-processo-num">
+                    <label>Número do processo SEI *</label>
+                    <div id="container-numeros" style="display:flex; flex-direction:column; gap:8px;">
+                      <div style="display:flex; gap:6px; align-items:center;">
+                        <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()"
+                          style="padding:0 12px; height:42px; border:1px solid var(--border); border-radius:6px; font-weight:700; font-size:16px; color:#10b981; flex-shrink:0;"
+                          title="Adicionar outro processo">+</button>
+                        <input type="text" name="numero[]" class="control form-numero-item" placeholder="Ex: 0029.028135/2026-69"
+                          style="width:100%; height:42px; font-family:monospace; font-size:13.5px; font-weight:600; padding:0 10px;">
+                        <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)"
+                          style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;"
+                          title="Copiar número do processo (SEI)">
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
-                <!-- MUNICÍPIO: AJUSTADO PARA CEDER ESPAÇO AO DÍGITO -->
-                <div class="form-group" style="flex: 2.2 1 270px; min-width: 220px;">
-                  <label for="form-municipio">MUNICÍPIO *</label>
-                  <input type="text" id="form-municipio" placeholder="Ex: Porto Velho" required list="list-municipios" style="height: 42px; width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); box-sizing: border-box;">
-                  <datalist id="list-municipios"></datalist>
-                </div>
+                  <!-- Município * (span4) -->
+                  <div class="field span4">
+                    <label for="form-municipio">Município *</label>
+                    <input type="text" id="form-municipio" class="control" placeholder="Ex: Porto Velho" required list="list-municipios" style="height:42px; width:100%;">
+                    <datalist id="list-municipios"></datalist>
+                  </div>
 
-                <!-- GRUPO (DÍGITO): EXPANDIDO E LIVRE PARA QUALQUER QUANTIDADE DE CARACTERES -->
-                <div class="form-group" id="group-form-digito" style="flex: 1.2 1 240px; min-width: 200px;">
-                  <label for="form-digito" style="text-align:center;">Grupo (Dígito)</label>
-                  <input type="text" id="form-digito" placeholder="Ex: Grupo / Dígito livre" autocomplete="off" style="width: 100%; height: 42px; text-align: center; font-weight: 700; font-size: 14px; padding: 10px 12px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); box-sizing: border-box; letter-spacing: 0.5px;">
-                </div>
+                  <!-- Categoria * (span4) -->
+                  <div class="field span4">
+                    <label for="form-categoria-select">Categoria *</label>
+                    <select id="form-categoria-select" class="control" style="height:42px; width:100%;" onchange="aoMudarCategoriaSelect(this.value)">
+                      <option value="">Selecione a Categoria...</option>
+                      <option value="F">Fomento</option>
+                      <option value="C">Convênio</option>
+                      <option value="T">Termo de Cooperação</option>
+                    </select>
+                  </div>
 
-              </div>
+                  <!-- Linha de controle administrativo: Prefixo, Ano, Grupo (Dígito) -->
+                  <div class="field span4">
+                    <label for="form-prefixo">Prefixo</label>
+                    <input type="text" id="form-prefixo" class="control" placeholder="Digite ou selecione..." maxlength="20" list="list-prefixos" autocomplete="off" style="height:42px; width:100%;">
+                    <datalist id="list-prefixos"></datalist>
+                  </div>
 
-              <!-- LINHA 2 HARMONIOSA: PROCESSO (REDUZIDO COM COPIAR JUNTO), AGRUPAMENTO (EXPANDIDO), ÚLTIMA ATUALIZAÇÃO (EXPANDIDO) -->
-              <div class="form-row-meio full" style="display: flex !important; flex-direction: row !important; flex-wrap: nowrap !important; align-items: flex-start !important; gap: 16px !important; width: 100% !important; grid-column: 1 / -1 !important; margin-bottom: 0 !important; box-sizing: border-box !important;">
-                
-                <!-- 1. Nº DO PROCESSO: REDUZIDO, COM BOTÃO COPIAR TRAZIDO PARA JUNTO DO INPUT -->
-                <div class="form-group" id="group-form-processo-num" style="flex: 0 0 auto; width: 330px; min-width: 310px; max-width: 350px;">
-                  <label>Nº do Processo</label>
-                  <div id="container-numeros" style="display:flex; flex-direction:column; gap:8px;">
-                    <div style="display:flex; gap:6px; align-items:center;">
-                      <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()"
-                        style="padding:0 12px; height:42px; border:1px solid var(--border); border-radius:6px; font-weight:700; font-size:16px; color:#10b981; flex-shrink:0;"
-                        title="Adicionar outro processo">+</button>
-                      <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47"
-                        style="width: 220px; flex: 1; height: 42px; font-family: monospace; font-size: 13.5px; font-weight: 600; padding: 0 10px;">
-                      <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)"
-                        style="padding:0 10px; height:42px; border:1px solid var(--border); border-radius:6px; cursor:pointer; color:#38bdf8; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center;"
-                        title="Copiar número do processo (SEI)">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                  <div class="field span4">
+                    <label for="form-ano">Ano</label>
+                    <input type="text" id="form-ano" class="control" placeholder="AAAA" maxlength="4" list="list-anos" autocomplete="off" style="height:42px; text-align:center; font-weight:700; width:100%;" oninput="atualizarBadgeAnoForm(this.value)">
+                    <datalist id="list-anos"></datalist>
+                  </div>
+
+                  <div class="field span4" id="group-form-digito">
+                    <label for="form-digito">Grupo (Dígito)</label>
+                    <input type="text" id="form-digito" class="control" placeholder="Ex: Grupo / Dígito livre" autocomplete="off" style="height:42px; text-align:center; font-weight:700; width:100%;">
+                  </div>
+
+                  <!-- Interessado / escola * (span8) -->
+                  <div class="field span8">
+                    <label for="form-interessado">Interessado / escola *</label>
+                    <input type="text" id="form-interessado" class="control" placeholder="Nome da escola ou entidade" required list="list-interessados" style="height:42px; width:100%;">
+                    <datalist id="list-interessados"></datalist>
+                  </div>
+
+                  <!-- CNPJ (span4) -->
+                  <div class="field span4">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                      <label for="form-cnpj" style="margin-bottom:0;">CNPJ</label>
+                      <div id="cnpj-status-box-form" style="font-size:11px; font-weight:700; min-height:16px;"></div>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                      <input type="text" id="form-cnpj" name="cnpj" class="control" placeholder="00.000.000/0000-00" maxlength="18" style="height:42px; width:100%; font-family:monospace; font-weight:600;" oninput="mascaraCNPJInput(this); aoDigitarCNPJFormulario(this.value);" onblur="autoPreencherCNPJSeVazio(this); aoSairCNPJFormulario(this.value);">
+                      <label id="label-check-inadimplente" class="toggle" style="margin:0; white-space:nowrap; cursor:pointer;" title="Marcar entidade como inadimplente">
+                        <input type="checkbox" id="form-check-inadimplente" style="width:16px; height:16px; accent-color:#ef4444;" onchange="aoAlternarCheckInadimplente(this.checked)">
+                        <span style="font-size:12px; font-weight:600; color:#ef4444;">Inadimplente</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Ações e Card Receita Federal (span12) -->
+                  <div class="field span12" style="margin-top:-6px;">
+                    <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+                      <button type="button" id="btn-consultar-cnpj-form" onclick="recarregarDadosReceitaFederal()" style="flex:1 1 0; min-width:0; height:36px; background:#059669; border:1px solid #10b981; color:#ffffff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" title="Consultar dados oficiais desta entidade na Receita Federal">
+                        <span>🔍</span> <span>Consultar na Receita Federal</span>
+                      </button>
+                      <button type="button" onclick="abrirSiteReceitaFederalProcesso()" style="flex:1 1 0; min-width:0; height:36px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px;" title="Abrir página oficial da Receita Federal em nova aba e copiar CNPJ">
+                        <img src="img/logo-receita-federal.png" alt="RFB" style="height:15px; width:auto; object-fit:contain; vertical-align:middle;">
+                        <span>Abrir Receita Federal</span>
+                      </button>
+                      <button type="button" onclick="copiarCNPJDoFormulario(this)" style="flex:1 1 0; min-width:0; height:36px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;" title="Copiar número do CNPJ">
+                        <span>📋</span> <span>Copiar CNPJ</span>
+                      </button>
+                      <button type="button" id="btn-extrair-cnpj-plano" onclick="extrairEPreencherCNPJPlano()" style="flex:0.8 1 0; min-width:0; height:36px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.4); color:#fbbf24; font-weight:700; font-size:11px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;" title="Localizar nos anexos o CNPJ">
+                        <span>⚡ Extrair</span>
                       </button>
                     </div>
-                  </div>
-                </div>
 
-                <!-- 2. AGRUPAMENTO: RECEBE METADE DA SOBRA -->
-                <div class="form-group action-adm" id="group-form-agrupamento" style="flex: 1 1 200px; min-width: 180px;">
-                  <label for="form-agrupamento">Agrupamento</label>
-                  <input type="text" id="form-agrupamento" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="width: 100%; height:42px; padding: 10px 14px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); box-sizing: border-box;">
-                  <datalist id="list-agrupamentos"></datalist>
-                </div>
-
-                <!-- 3. ÚLTIMA ATUALIZAÇÃO: RECEBE A OUTRA METADE DA SOBRA -->
-                <div class="form-group" id="legend-ultima-edicao" style="display:none; flex: 1.2 1 260px; min-width: 240px;">
-                  <label>Última atualização</label>
-                  <div style="padding: 0 14px; height: 42px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-left: 3px solid var(--yellow); border-radius: var(--radius-sm); font-size: 13px; color: var(--text-secondary); display: flex; flex-direction: row; align-items: center; gap: 8px; white-space: nowrap; box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; width: 100%;">
-                    <span id="ultima-edicao-nome" style="font-weight: 700; color: var(--text-primary); font-size: 13px; display:inline-flex; align-items:center; gap:4px;">-</span>
-                    <span id="ultima-edicao-sep" style="color: var(--text-muted); font-size: 12px;">—</span>
-                    <span id="ultima-edicao-data" style="font-size: 12px; color: #94a3b8; font-family: monospace; display:inline-flex; align-items:center; gap:4px;">-</span>
-                  </div>
-                </div>
-
-              </div>
-
-            <div class="form-group full">
-                <label for="form-interessado">Interessado / Escola *</label>
-                <input type="text" id="form-interessado" placeholder="Nome da escola ou entidade" required
-                  list="list-interessados">
-                <datalist id="list-interessados"></datalist>
-              </div>
-
-              <!-- CNPJ & CONSULTA DA RECEITA FEDERAL (LAYOUT PADRONIZADO IMAGEM 2 & 4) -->
-              <div class="form-group full" style="display:flex; flex-direction:column; gap:6px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                  <label for="form-cnpj" style="margin-bottom:0; font-weight:700; color:#cbd5e1; font-size:12px;">1.3 - CNPJ</label>
-                  <div id="cnpj-status-box-form" style="font-size:11px; font-weight:700; min-height:16px;"></div>
-                </div>
-
-                <div style="display:flex; align-items:center; gap:10px; width:100%; flex-wrap:wrap;">
-                  <!-- CNPJ input (marcação azul) -->
-                  <div style="flex:1 1 240px; min-width:200px;">
-                    <input type="text" id="form-cnpj" name="cnpj" placeholder="00.000.000/0000-00" maxlength="18" style="width:100%; height:40px; font-family:monospace; font-weight:600; font-size:13.5px; padding:8px 12px; background:rgba(0,0,0,0.25); border:1.5px solid #38bdf8; border-radius:6px; color:#fff; box-sizing:border-box;" oninput="mascaraCNPJInput(this); aoDigitarCNPJFormulario(this.value);" onblur="autoPreencherCNPJSeVazio(this); aoSairCNPJFormulario(this.value);">
-                  </div>
-
-                  <!-- Lilás / Roxo Checkbox Inadimplente -->
-                  <label id="label-check-inadimplente" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 8px; background:transparent; border:none; border-radius:6px; color:#94a3b8; font-weight:500; font-size:12.5px; cursor:pointer; user-select:none; white-space:nowrap; transition:all 0.2s;" title="Marcar entidade como inadimplente">
-                    <input type="checkbox" id="form-check-inadimplente" style="width:18px; height:18px; cursor:pointer; accent-color:#ef4444;" onchange="aoAlternarCheckInadimplente(this.checked)">
-                    <span>Inadimplente</span>
-                  </label>
-                </div>
-
-                <!-- BARRA DE AÇÕES DO CNPJ (IMAGENS 2, 3 E 4) -->
-                <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:2px;">
-                  <button type="button" id="btn-consultar-cnpj-form" onclick="recarregarDadosReceitaFederal()" style="flex:1 1 0; min-width:0; height:38px; background:#059669; border:1px solid #10b981; color:#ffffff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; box-sizing:border-box;" title="Consultar dados oficiais desta entidade na Receita Federal">
-                    <span>&#128269;</span> <span>Consultar na Receita Federal</span>
-                  </button>
-                  <button type="button" onclick="abrirSiteReceitaFederalProcesso()" style="flex:1 1 0; min-width:0; height:38px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.2); color:#e2e8f0; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; box-sizing:border-box;" title="Abrir pÃ¡gina oficial da Receita Federal em nova aba e copiar CNPJ">
-                    <img src="img/logo-receita-federal.png" alt="RFB" style="height:16px; width:auto; object-fit:contain; vertical-align:middle; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));">
-                    <span>Abrir Receita Federal</span>
-                  </button>
-                  <button type="button" onclick="copiarCNPJDoFormulario(this)" style="flex:1 1 0; min-width:0; height:38px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-sizing:border-box;" title="Copiar nÃºmero do CNPJ para a Ã¡rea de transferÃªncia">
-                    <span>&#128203;</span> <span>Copiar CNPJ</span>
-                  </button>
-                  <button type="button" id="btn-extrair-cnpj-plano" onclick="extrairEPreencherCNPJPlano()" style="flex:0.8 1 0; min-width:0; height:38px; background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.4); color:#fbbf24; font-weight:700; font-size:11px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-sizing:border-box;" title="Localizar nos anexos o CNPJ">
-                    <span>&#9889; Extrair</span>
-                  </button>
-                </div>
-
-                <!-- CARD DE RESULTADOS DA RECEITA FEDERAL (PADRÃO IMAGEM 2 & 4 COM SETA RECOLHÍVEL) -->
-                <div id="container-resultado-cnpj-receita" style="width:100%; display:flex; flex-direction:column; background:rgba(15,23,42,0.95); border:1.5px solid #10b981; border-radius:8px; padding:12px 14px; box-shadow:0 4px 15px rgba(0,0,0,0.45); box-sizing:border-box; margin-top:6px;">
-                  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px; margin-bottom:8px;" onclick="togglePainelReceitaCNPJ()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                      <!-- LOGO RECEITA FEDERAL MINIMALISTA -->
-                      <img src="img/logo-receita-federal.png" alt="RFB" style="height:20px; width:auto; object-fit:contain; vertical-align:middle; filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5));">
-                      <span style="color:#6ee7b7; font-size:12.5px; font-weight:800; letter-spacing:0.3px;">Receita Federal do Brasil</span>
-                    </div>
-
-                    <div style="display:flex; align-items:center; gap:8px;">
-                      <span id="badge-situacao-receita-processo" style="background:rgba(16,185,129,0.25); color:#34d399; border:1px solid #10b981; padding:2px 8px; border-radius:4px; font-weight:800; font-size:11px;">🟢 ATIVA</span>
-                      <!-- SETA DE MOSTRA E ESCONDE (IMAGEM 4) -->
-                      <button type="button" id="btn-toggle-detalhes-receita" onclick="event.stopPropagation(); togglePainelReceitaCNPJ();" style="background:transparent; border:none; color:#6ee7b7; cursor:pointer; padding:2px 4px; display:inline-flex; align-items:center; justify-content:center;" title="Mostrar / Esconder detalhes">
-                        <svg id="svg-seta-detalhes-receita" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                      </button>
+                    <!-- CARD DE RESULTADOS DA RECEITA FEDERAL -->
+                    <div id="container-resultado-cnpj-receita" style="width:100%; display:flex; flex-direction:column; background:rgba(15,23,42,0.95); border:1.5px solid #10b981; border-radius:8px; padding:10px 14px; box-shadow:0 4px 15px rgba(0,0,0,0.45); box-sizing:border-box;">
+                      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; cursor:pointer; user-select:none; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:6px; margin-bottom:6px;" onclick="togglePainelReceitaCNPJ()" title="Clique para expandir ou recolher os dados cadastrais da Receita Federal">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                          <img src="img/logo-receita-federal.png" alt="RFB" style="height:18px; width:auto; object-fit:contain; vertical-align:middle;">
+                          <span style="color:#6ee7b7; font-size:12px; font-weight:800;">Receita Federal do Brasil</span>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                          <span id="badge-situacao-receita-processo" style="background:rgba(16,185,129,0.25); color:#34d399; border:1px solid #10b981; padding:2px 8px; border-radius:4px; font-weight:800; font-size:11px;">🟢 ATIVA</span>
+                          <button type="button" id="btn-toggle-detalhes-receita" onclick="event.stopPropagation(); togglePainelReceitaCNPJ();" style="background:transparent; border:none; color:#6ee7b7; cursor:pointer; padding:2px 4px; display:inline-flex; align-items:center; justify-content:center;" title="Mostrar / Esconder detalhes">
+                            <svg id="svg-seta-detalhes-receita" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease; transform:rotate(180deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                          </button>
+                        </div>
+                      </div>
+                      <div id="corpo-detalhes-receita-cnpj" style="display:block;">
+                        <div id="label-resultado-cnpj-receita" style="font-size:12px; color:#cbd5e1; line-height:1.55; user-select:text;">
+                          <div style="color:#94a3b8; font-style:italic;">Clique em <strong>"Consultar na Receita Federal"</strong> ou <strong>"⚡ Extrair do Plano"</strong> para obter dados cadastrais oficiais.</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <!-- CORPO DO CARD COM OS DADOS COLETADOS (PADRÃO IMAGEM 2) -->
-                  <div id="corpo-detalhes-receita-cnpj" style="display:block;">
-                    <div id="label-resultado-cnpj-receita" style="font-size:12px; color:#cbd5e1; line-height:1.55; user-select:text;">
-                      <div style="color:#94a3b8; font-style:italic;">Clique em <strong>"Consultar na Receita Federal"</strong> ou <strong>"⚡ Extrair do Plano"</strong> para obter dados cadastrais oficiais.</div>
+                  <!-- Tipo (span6) -->
+                  <div class="field span6">
+                    <label for="form-tipo-select">Tipo</label>
+                    <select id="form-tipo-select" class="control" style="height:42px; width:100%;" onchange="aoMudarTipoSelect(this.value)">
+                      <option value="">Selecione o Tipo...</option>
+                      <option value="MP">Material permanente</option>
+                      <option value="OB">Obras</option>
+                      <option value="MC">Material de consumo</option>
+                      <option value="SI">Sistema</option>
+                      <option value="TR">Treinamento</option>
+                      <option value="OUT">Outros</option>
+                    </select>
+                  </div>
+
+                  <!-- Status (span6) -->
+                  <div class="field span6">
+                    <label for="form-status">Status</label>
+                    <input type="text" id="form-status" class="control" list="list-status" autocomplete="off" placeholder="Selecione ou digite..." style="height:42px; width:100%;">
+                    <datalist id="list-status"></datalist>
+                  </div>
+
+                  <!-- Descrição do objeto (span12) -->
+                  <div class="field span12">
+                    <label for="form-objeto">Descrição do objeto</label>
+                    <textarea id="form-objeto" class="control textarea" placeholder="Descrição detalhada do objeto da parceria..." style="min-height:75px; width:100%;"></textarea>
+                    <datalist id="list-objetos"></datalist>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. VALORES E ACOMPANHAMENTO (GRAPHITE TEMPLATE - IMAGEM 3) -->
+              <div class="card" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
+                <div class="sectionhead" style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--border);">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <h2 style="font-size:16px; font-weight:700; color:var(--text-primary); margin:0;">Valores e acompanhamento</h2>
+                  </div>
+                  <span class="subtle" style="font-size:11px; color:var(--muted); font-weight:600;">Layout de referência Graphite</span>
+                </div>
+
+                <div class="formgrid">
+                  <!-- Valor oficial (R$) (span4) -->
+                  <div class="field span4">
+                    <label for="form-valorOf">Valor oficial (R$)</label>
+                    <input type="text" id="form-valorOf" class="control input-currency" placeholder="0,00" style="height:42px; width:100%; font-weight:600;" oninput="calcularDiferencaValoresForm()">
+                  </div>
+
+                  <!-- Valor planilha (R$) (span4) -->
+                  <div class="field span4">
+                    <label for="form-valorPlan">Valor planilha (R$)</label>
+                    <input type="text" id="form-valorPlan" class="control input-currency" placeholder="0,00" style="height:42px; width:100%; font-weight:600;" oninput="calcularDiferencaValoresForm()">
+                  </div>
+
+                  <!-- Diferença (span4) -->
+                  <div class="field span4">
+                    <label for="form-diferenca">Diferença</label>
+                    <input type="text" id="form-diferenca" class="control" value="0,00" readonly style="height:42px; width:100%; font-weight:700; background:rgba(0,0,0,0.25);">
+                  </div>
+
+                  <!-- Localização (span6) -->
+                  <div class="field span6">
+                    <label for="form-localizacao">Localização</label>
+                    <input type="text" id="form-localizacao" class="control" list="list-localizacao" autocomplete="off" placeholder="Selecione ou digite..." style="height:42px; width:100%;">
+                    <datalist id="list-localizacao"></datalist>
+                  </div>
+
+                  <!-- Agrupamento (span6) -->
+                  <div class="field span6" id="group-form-agrupamento">
+                    <label for="form-agrupamento">Agrupamento</label>
+                    <input type="text" id="form-agrupamento" class="control" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="height:42px; width:100%;">
+                    <datalist id="list-agrupamentos"></datalist>
+                  </div>
+
+                  <!-- Data (span4) -->
+                  <div class="field span4">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                      <label for="form-data" style="margin-bottom:0;">Data</label>
+                      <button type="button" onclick="inserirDataHoje()" style="background:rgba(59,130,246,0.2); color:#60a5fa; border:1px solid rgba(59,130,246,0.4); border-radius:4px; padding:2px 8px; font-size:11px; font-weight:700; cursor:pointer;">Hoje</button>
+                    </div>
+                    <input type="date" id="form-data" class="control" style="height:42px; width:100%;">
+                  </div>
+
+                  <!-- Analista (span4) -->
+                  <div class="field span4" id="group-form-analista">
+                    <label for="form-analista">Analista</label>
+                    <input type="text" id="form-analista" class="control" list="list-analistas" autocomplete="off" placeholder="Selecione ou digite o analista..." style="height:42px; width:100%;">
+                    <datalist id="list-analistas"></datalist>
+                  </div>
+
+                  <!-- Executivo (span4) -->
+                  <div class="field span4 action-adm" id="group-form-executivo" style="display:none;">
+                    <label for="form-executivo">Executivo</label>
+                    <input type="text" id="form-executivo" class="control" list="list-executivos" autocomplete="off" placeholder="Selecione ou digite..." style="height:42px; width:100%;">
+                    <datalist id="list-executivos"></datalist>
+                  </div>
+
+                  <!-- Observações / Detalhamento (span12) -->
+                  <div class="field span12">
+                    <label for="form-obs">Observações</label>
+                    <textarea id="form-obs" class="control textarea" placeholder="Registre informações relevantes sem alterar o histórico original." style="min-height:75px; width:100%;"></textarea>
+                  </div>
+
+                  <!-- Contatos / WhatsApp (span12) -->
+                  <div class="field span12" style="background:rgba(0,0,0,0.15); padding:14px; border-radius:8px; border:1px solid var(--border);">
+                    <label style="margin-bottom:8px; display:block; color:var(--blue); font-weight:700;">📞 Contatos WhatsApp</label>
+                    <div id="lista-contatos" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;"></div>
+                    <div style="display:grid; grid-template-columns: 180px 1fr 40px; gap:8px; align-items:start;">
+                      <input type="text" id="form-contato-whatsapp" class="control" placeholder="(00) 0 0000-0000" maxlength="20" oninput="maskTelefone(this)" style="height:38px;">
+                      <input type="text" id="form-contato-detalhes" class="control" placeholder="Nome/Detalhe (ex: Maria Diretora)" maxlength="100" style="height:38px;">
+                      <button type="button" class="btn btn-primary" onclick="adicionarContato()" style="padding:0; display:flex; justify-content:center; align-items:center; height:38px; font-weight:bold; font-size:20px;" title="Adicionar Contato">+</button>
+                    </div>
+                  </div>
+
+                  <!-- Anotação Interna (span12) -->
+                  <div class="field span12 action-adm" id="group-form-anotacao">
+                    <label for="form-anotacao">Anotação Interna</label>
+                    <textarea id="form-anotacao" class="control textarea" placeholder="Anotações internas..." style="min-height:60px; width:100%;"></textarea>
+                  </div>
+
+                  <!-- Histórico de Apontamentos (span12) -->
+                  <div class="field span12 action-adm" id="group-historico-apontamentos" style="display:none; border:1px solid rgba(245,158,11,0.5); padding:16px; border-radius:8px; background:rgba(245,158,11,0.05);">
+                    <div style="margin-bottom:12px;">
+                      <label style="color:#f59e0b; font-weight:bold; font-size:13px; display:block; margin-bottom:10px;">📋 HISTÓRICO DE APONTAMENTOS</label>
+                      <textarea id="form-historico-acumulado-texto" style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.3); color:#fff; font-size:13px; outline:none; margin-bottom:16px; line-height:1.5; font-family:inherit; resize:vertical;" placeholder="Nenhum histórico de apontamentos registrado." readonly></textarea>
+                      <label style="color:#10b981; font-weight:bold; font-size:13px; display:block; margin-bottom:8px;">📝 NOVO APONTAMENTO</label>
+                      <textarea id="form-novo-apontamento" style="width:100%; min-height:50px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:16px; font-family:inherit; resize:vertical;" placeholder="Digite um novo apontamento aqui..."></textarea>
+                      <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:8px;">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:8px 12px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size:13px; color:#cbd5e1; user-select:none; margin:0; height:38px;">
+                          <input type="checkbox" id="form-alerta-toggle" style="width:18px; height:18px; cursor:pointer; accent-color:#f59e0b;">
+                          <span>Ativar Alarme</span>
+                        </label>
+                        <button type="button" class="btn" style="background:#2563eb; color:#fff; padding:0 16px; height:38px; font-size:13px; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;" id="btn-gravar-apontamento-edicao" onclick="gravarApontamentoImediato()">
+                          <span>💾</span> Gravar
+                        </button>
+                        <button type="button" class="btn" style="background:#ef4444; color:#fff; padding:0 16px; height:38px; font-size:13px; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;" onclick="limparApontamentoEdicao()">
+                          <span>🧹</span> Limpar Apontamento
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Última atualização (span12) -->
+                  <div class="field span12" id="legend-ultima-edicao" style="display:none;">
+                    <label>Última atualização</label>
+                    <div style="padding:0 14px; height:42px; background:rgba(255,255,255,0.02); border:1px solid var(--border); border-left:3px solid var(--yellow); border-radius:var(--radius-sm); font-size:13px; color:var(--text-secondary); display:flex; flex-direction:row; align-items:center; gap:8px; white-space:nowrap; box-sizing:border-box; width:100%;">
+                      <span id="ultima-edicao-nome" style="font-weight:700; color:var(--text-primary); font-size:13px;">-</span>
+                      <span id="ultima-edicao-sep" style="color:var(--text-muted); font-size:12px;">—</span>
+                      <span id="ultima-edicao-data" style="font-size:12px; color:#94a3b8; font-family:monospace;">-</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div class="form-group full">
-                <label for="form-objeto">Objeto</label>
-                <input type="text" id="form-objeto" placeholder="Descrição do objeto" list="list-objetos">
-                <datalist id="list-objetos"></datalist>
-              </div>
-
-              <div class="form-group">
-                <label for="form-valorOf">Valor Oficial (R$)</label>
-                <input type="text" id="form-valorOf" placeholder="0,00" class="input-currency">
-              </div>
-
-              <div class="form-group">
-                <label for="form-status">Status</label>
-                <input type="text" id="form-status" list="list-status" autocomplete="off" placeholder="Selecione ou digite..." style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 13px;">
-                <datalist id="list-status"></datalist>
-              </div>
-
-              <div class="form-group">
-                <label for="form-localizacao">Localização</label>
-                <input type="text" id="form-localizacao" list="list-localizacao" autocomplete="off" placeholder="Selecione ou digite..." style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 13px;">
-                <datalist id="list-localizacao"></datalist>
-              </div>
-
-
-
-              <div class="form-group">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                  <label for="form-data" style="margin-bottom: 0;">Data</label>
-                  <button type="button" onclick="inserirDataHoje()" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: all 0.2s ease;" onmouseover="this.style.background='rgba(59,130,246,0.35)'; this.style.color='#fff';" onmouseout="this.style.background='rgba(59,130,246,0.2)'; this.style.color='#60a5fa';">Hoje</button>
-                </div>
-                <input type="date" id="form-data">
-              </div>
-
-              <div class="form-group" id="group-form-analista">
-                <label for="form-analista">Analista</label>
-                <input type="text" id="form-analista" list="list-analistas" autocomplete="off" placeholder="Selecione ou digite o analista..." style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 13px;">
-                <datalist id="list-analistas"></datalist>
-              </div>
-
-              <div class="form-group action-adm" id="group-form-executivo" style="display: none;">
-                <label for="form-executivo">Executivo</label>
-                <input type="text" id="form-executivo" list="list-executivos" autocomplete="off" placeholder="Selecione ou digite..." style="width: 100%; padding: 11px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text-primary); font-size: 13px;">
-                <datalist id="list-executivos"></datalist>
-              </div>
-
-
-              <!-- Contatos / WhatsApp -->
-              <div class="form-group full"
-                style="margin-top: 8px; background: rgba(0,0,0,0.1); padding: 12px; border-radius: 8px;">
-                <label style="margin-bottom: 8px; display: block; color: var(--blue);">📞 Contatos WhatsApp</label>
-
-                <div id="lista-contatos" style="display:flex; flex-direction:column; gap:8px; margin-bottom: 8px;">
-                </div>
-
-                <div style="display:grid; grid-template-columns: 180px 1fr 40px; gap: 8px; align-items: start;">
-                  <input type="text" id="form-contato-whatsapp" placeholder="(00) 0 0000-0000" maxlength="20"
-                    oninput="maskTelefone(this)">
-                  <input type="text" id="form-contato-detalhes" placeholder="Nome/Detalhe (ex: Maria Diretora)"
-                    maxlength="100">
-                  <button type="button" class="btn btn-primary" onclick="adicionarContato()"
-                    style="padding: 0; display:flex; justify-content:center; align-items:center; height: 38px; font-weight: bold; font-size: 20px;"
-                    title="Adicionar Contato">+</button>
-                </div>
-              </div>
-
-
-              <div class="form-group full">
-                <label for="form-obs">Detalhamento</label>
-                <textarea id="form-obs" placeholder="Detalhamento sobre o processo..."></textarea>
-              </div>
-
-              <div class="form-group full action-adm" id="group-form-anotacao">
-                <label for="form-anotacao">Anotação Interna</label>
-                <textarea id="form-anotacao" placeholder="Anotações internas..."></textarea>
-              </div>
-
-              <div class="form-group full action-adm" id="group-historico-apontamentos" style="display:none; margin-top:16px; border: 1px solid rgba(245,158,11,0.5); padding:16px; border-radius:8px; background: rgba(245,158,11,0.05);">
-                <div style="margin-bottom:12px;">
-                  <label style="color:#f59e0b; font-weight:bold; font-size:13px; display:block; margin-bottom:10px;">&#128203; HIST&Oacute;RICO DE APONTAMENTOS</label>
-                  <textarea id="form-historico-acumulado-texto" style="width:100%; min-height:80px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.3); color:#fff; font-size:13px; outline:none; margin-bottom:16px; line-height:1.5; font-family:inherit; resize:vertical;" placeholder="Nenhum histórico de apontamentos registrado." readonly></textarea>
-                  
-                  <label style="color:#10b981; font-weight:bold; font-size:13px; display:block; margin-bottom:8px;">📝 NOVO APONTAMENTO</label>
-                  <textarea id="form-novo-apontamento" style="width:100%; min-height:50px; padding:10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2); color:#fff; font-size:13px; outline:none; margin-bottom:16px; font-family:inherit; resize:vertical;" placeholder="Digite um novo apontamento aqui..."></textarea>
-                  
-                  <div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin-top:8px;">
-                    <!-- Checkbox Ativar Alarme -->
-                    <label style="display:flex; align-items:center; gap:8px; cursor:pointer; padding:8px 12px; background:rgba(0,0,0,0.2); border-radius:8px; border:1px solid rgba(255,255,255,0.1); font-size:13px; color:#cbd5e1; user-select:none; margin:0; height:38px;">
-                      <input type="checkbox" id="form-alerta-toggle" style="width:18px; height:18px; cursor:pointer; accent-color:#f59e0b;">
-                      <span>Ativar Alarme</span>
-                    </label>
-                    
-                    <!-- Botão Gravar Apontamento (Grava imediatamente via API) -->
-                    <button type="button" class="btn" style="background:#2563eb; color:#fff; padding:0 16px; height:38px; font-size:13px; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;" id="btn-gravar-apontamento-edicao" onclick="gravarApontamentoImediato()">
-                      <span>💾</span> Gravar
-                    </button>
-                    
-                    <!-- Botão Limpar Apontamento (Limpa histórico e desativa alarme) -->
-                    <button type="button" class="btn" style="background:#ef4444; color:#fff; padding:0 16px; height:38px; font-size:13px; border:none; border-radius:8px; cursor:pointer; font-weight:600; display:flex; align-items:center; gap:6px;" onclick="limparApontamentoEdicao()">
-                      <span>🧹</span> Limpar Apontamento
-                    </button>
+              <!-- 3. AUTORIZAÇÕES (GRAPHITE TEMPLATE - IMAGEM 3) -->
+              <div class="card" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
+                <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+                  <div>
+                    <h2 style="font-size:15px; margin:0; font-weight:700; color:var(--text-primary);">Autorizações</h2>
+                    <p style="margin:4px 0 0; color:var(--muted); font-size:12px;">Controles discretos com rótulos sempre visíveis.</p>
+                  </div>
+                  <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:center;">
+                    <label class="toggle" style="font-size:13px; font-weight:600; cursor:pointer;"><input type="checkbox" id="form-cam"> CAM</label>
+                    <label class="toggle" style="font-size:13px; font-weight:600; cursor:pointer;"><input type="checkbox" id="form-gab"> Gabinete SEDUC</label>
+                    <label class="toggle" style="font-size:13px; font-weight:600; cursor:pointer;"><input type="checkbox" id="form-cc"> Casa Civil</label>
+                    <label class="toggle" style="font-size:13px; font-weight:700; color:#fca5a5; cursor:pointer;"><input type="checkbox" id="form-marca" style="accent-color:#ef4444;"> 📌 Marcar Processo</label>
                   </div>
                 </div>
+              </div>
+
+              <!-- BOTÃO EXCLUIR REGISTRO (APENAS NA ABA 1: OBJETO) -->
+              <div id="container-excluir-form" style="display:none; margin-top:16px; padding-top:16px; border-top:1px solid rgba(239, 68, 68, 0.25); justify-content:flex-end; width:100%;">
+                <button type="button" class="btn btn-danger" id="btn-excluir-form" onclick="confirmarExcluirForm()" style="background-color:#dc2626; color:white; border:none; padding:12px 24px; border-radius:8px; font-weight:600; cursor:pointer; font-size:14px; display:inline-flex; align-items:center; gap:8px;">
+                  🗑️ Excluir definitivamente este registro da planilha
+                </button>
               </div>
 
             </div>
 
-          
-                        <!-- BOTÃO EXCLUIR REGISTRO (APENAS NA ABA 1: OBJETO) -->
-            <div id="container-excluir-form" style="display:none; margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(239, 68, 68, 0.25); justify-content: flex-end; width: 100%;">
-              <button type="button" class="btn btn-danger" id="btn-excluir-form" onclick="confirmarExcluirForm()" style="background-color: #dc2626; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='#b91c1c'" onmouseout="this.style.backgroundColor='#dc2626'">
-                🗑️ Excluir definitivamente este registro da planilha
-              </button>
-            </div>
-</div>
-            
             <!-- GUIA 2: OBJETIVO (CAMPOS DA PLANILHA & DEMAIS OBSERVAÇÕES) -->
             <div id="tab-content-objetivo" style="display:none; padding:24px; background:rgba(255,255,255,0.02); border:1px solid rgba(16,185,129,0.25); border-radius:14px; margin-bottom:24px; box-shadow:0 8px 24px rgba(0,0,0,0.3);">
               
@@ -3370,7 +3376,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.146</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.154</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -4051,7 +4057,7 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.146 ∴</span>
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.154 ∴</span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
@@ -4323,7 +4329,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.146] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.154] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6784,15 +6790,15 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/combobox-dynamic.js?v=v1.152"></script>
-  <script src="js/multi-select.js?v=v1.152"></script>
-  <script src="js/auth-sap.js?v=v1.152"></script>
-  <script src="js/dados.js?v=v1.152"></script>
-  <script src="js/app.js?v=v1.152"></script>
-  <script src="js/escolas.js?v=v1.152" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=v1.152"></script>
-  <script src="js/mapa.js?v=v1.152"></script>
-  <script src="js/contatos.js?v=v1.152"></script>
+  <script src="js/combobox-dynamic.js?v=v1.154"></script>
+  <script src="js/multi-select.js?v=v1.154"></script>
+  <script src="js/auth-sap.js?v=v1.154"></script>
+  <script src="js/dados.js?v=v1.154"></script>
+  <script src="js/app.js?v=v1.154"></script>
+  <script src="js/escolas.js?v=v1.154" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=v1.154"></script>
+  <script src="js/mapa.js?v=v1.154"></script>
+  <script src="js/contatos.js?v=v1.154"></script>
 
 
   <script>
@@ -6985,13 +6991,13 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=v1.152"></script>
-  <script src="js/gmac.js?v=v1.152"></script>
-  <script src="js/orcamento.js?v=v1.152"></script>
-  <script src="js/gdsm.js?v=v1.152"></script>
-  <script src="js/print-proalfa.js?v=v1.152"></script>
-  <script src="js/proalfa.js?v=v1.152"></script>
-  <script src="js/cnpjs-inadimplentes.js?v=v1.152"></script>
+  <script src="js/diarias.js?v=v1.154"></script>
+  <script src="js/gmac.js?v=v1.154"></script>
+  <script src="js/orcamento.js?v=v1.154"></script>
+  <script src="js/gdsm.js?v=v1.154"></script>
+  <script src="js/print-proalfa.js?v=v1.154"></script>
+  <script src="js/proalfa.js?v=v1.154"></script>
+  <script src="js/cnpjs-inadimplentes.js?v=v1.154"></script>
 
 
 

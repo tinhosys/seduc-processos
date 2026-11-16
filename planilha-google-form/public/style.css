@@ -809,6 +809,43 @@ select option { background: var(--gbz-surface-raised, #222B3B); color: var(--gbz
 
 .btn-sm { padding: 6px 12px; font-size: 12px; }
 
+/* ============================================================
+   BOTÃO TÁTIL DE ALTA FIDELIDADE: AÇÃO APERTE E SOLTE (3D PUSH)
+   ============================================================ */
+.btn-login-tactile,
+.btn-tactile {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 20px;
+  border-radius: 12px;
+  border: 1px solid #0369a1;
+  cursor: pointer;
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 0 #075985, 0 6px 14px rgba(2, 132, 199, 0.4);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
+  transform: translateY(0);
+  user-select: none;
+  outline: none;
+}
+.btn-login-tactile:hover,
+.btn-tactile:hover {
+  background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+  box-shadow: 0 4px 0 #0369a1, 0 8px 18px rgba(56, 189, 248, 0.45);
+}
+.btn-login-tactile:active,
+.btn-tactile:active {
+  transform: translateY(4px) !important;
+  box-shadow: 0 0 0 #075985, 0 2px 5px rgba(2, 132, 199, 0.3) !important;
+}
+
 /* ============================================
    FORMULÁRIO (SiSCAM CAM - GRAPHITE TEMPLATE)
    ============================================ */

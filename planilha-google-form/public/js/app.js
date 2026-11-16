@@ -1,4 +1,4 @@
-
+﻿
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 // ===== HELPER DA ESCALA DE PROCESSO (0% a 100%, 21 ETAPAS E SETORES CAM / CCTE-GMAC) =====
 const ESCALA_ETAPAS = [
@@ -988,7 +988,65 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.152';
+window.APP_VERSION = 'v1.154';
+
+// ---- GRAPHITE FORM HELPERS & SINCRONIZACAO (IMAGENS 2 E 3) ----
+function calcularDiferencaValoresForm() {
+  const fOf = document.getElementById('form-valorOf');
+  const fPlan = document.getElementById('form-valorPlan');
+  const fDif = document.getElementById('form-diferenca');
+  if (!fDif) return;
+  const parseMoeda = (val) => {
+    if (!val) return 0;
+    if (typeof parseCurrency === 'function') return parseCurrency(val);
+    const n = parseFloat(String(val).replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, ''));
+    return isNaN(n) ? 0 : n;
+  };
+  const vOf = parseMoeda(fOf ? fOf.value : '0');
+  const vPlan = parseMoeda(fPlan ? fPlan.value : '0');
+  const dif = Math.abs(vOf - vPlan);
+  fDif.value = (typeof maskCurrency === 'function') ? maskCurrency((dif * 100).toFixed(0)) : dif.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  if (dif > 0.009) {
+    fDif.style.color = '#f87171';
+  } else {
+    fDif.style.color = '#34d399';
+  }
+}
+window.calcularDiferencaValoresForm = calcularDiferencaValoresForm;
+
+window.aoMudarCategoriaSelect = function(val) {
+  const h = document.getElementById('form-categoria');
+  if (h) h.value = val || '';
+  if (typeof updateSegmentControl === 'function') updateSegmentControl('categoria', val || '');
+};
+
+window.aoMudarTipoSelect = function(val) {
+  const h = document.getElementById('form-tipo');
+  if (h) h.value = val || '';
+  if (typeof updateSegmentControl === 'function') updateSegmentControl('tipo', val || '');
+};
+
+window.atualizarBadgeAnoForm = function(val) {
+  const b = document.getElementById('badge-ano-card-identificacao');
+  if (b) b.textContent = val || '2026';
+};
+
+function sincronizarVersaoSiscam() {
+  const v = window.APP_VERSION || 'v1.154';
+  document.querySelectorAll('#badge-versao-login, #badge-versao-topbar, .siscam-badge-versao, [data-app-version]').forEach(el => {
+    if (el) {
+      el.innerHTML = '<span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM ' + v + ' <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>';
+    }
+  });
+}
+window.sincronizarVersaoSiscam = sincronizarVersaoSiscam;
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', sincronizarVersaoSiscam);
+  } else {
+    sincronizarVersaoSiscam();
+  }
+}
 
 // ============================================================
 // MODAL PROFISSIONAL PADRONIZADO ∴ SiSCAM ∴
@@ -3572,6 +3630,9 @@ function renderFormulario() {
     if (fValPlan) fValPlan.value = p.valorPlan ? maskCurrency((p.valorPlan * 100).toFixed(0)) : '';
     const fData = document.getElementById('form-data');
     if (fData) fData.value = formatarDataParaInputHTML(p.data);
+    if (typeof calcularDiferencaValoresForm === 'function') calcularDiferencaValoresForm();
+    const bAnoCard = document.getElementById('badge-ano-card-identificacao');
+    if (bAnoCard) bAnoCard.textContent = p.ano || '2026';
     
     // Set toggles
     const setToggle = (id, val) => {
@@ -3697,6 +3758,14 @@ function renderFormulario() {
       if (txt) txt.textContent = 'OFF';
     });
     document.getElementById('form-marca').checked = false;
+    const bAnoCardReset = document.getElementById('badge-ano-card-identificacao');
+    if (bAnoCardReset) bAnoCardReset.textContent = String(new Date().getFullYear());
+    const fDifReset = document.getElementById('form-diferenca');
+    if (fDifReset) fDifReset.value = '0,00';
+    const selCatReset = document.getElementById('form-categoria-select');
+    if (selCatReset) selCatReset.value = '';
+    const selTipoReset = document.getElementById('form-tipo-select');
+    if (selTipoReset) selTipoReset.value = '';
     if (typeof setManifestacaoTipo === 'function') setManifestacaoTipo('favoravel');
     document.getElementById('form-ano').value = new Date().getFullYear();
     const fDataNovo = document.getElementById('form-data');
