@@ -988,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.155';
+window.APP_VERSION = 'v1.156';
 
 // ---- GRAPHITE FORM HELPERS & SINCRONIZACAO (IMAGENS 2 E 3) ----
 function calcularDiferencaValoresForm() {
@@ -5594,6 +5594,10 @@ async function salvarNovoProcessoPopup(e) {
     valorPlan:   valPlan,
     diferenca:   valOf - valPlan,
     status:      document.getElementById('popup-novo-status')?.value || 'REG. DEMANDA',
+    cam:         document.getElementById('popup-novo-cam')?.checked || false,
+    gab:         document.getElementById('popup-novo-gab')?.checked || false,
+    cc:          document.getElementById('popup-novo-cc')?.checked || false,
+    marca:       document.getElementById('popup-novo-marca')?.checked || false,
     localizacao: document.getElementById('popup-novo-localizacao')?.value || 'CAM | GDSM | GMAC',
     data:        dataFmt,
     obs:         (document.getElementById('popup-novo-obs')?.value || '').trim(),
