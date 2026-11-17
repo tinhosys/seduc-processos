@@ -116,7 +116,13 @@
 .control::placeholder{color:#728097}
 .textarea{padding:12px;min-height:90px;resize:vertical}
 .formgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:15px}
+.span1{grid-column:span 1}
+.span2{grid-column:span 2}
 .span3{grid-column:span 3}
+.span5{grid-column:span 5}
+.span7{grid-column:span 7}
+.span10{grid-column:span 10}
+.span11{grid-column:span 11}
 .span4{grid-column:span 4}
 .span6{grid-column:span 6}
 .span8{grid-column:span 8}

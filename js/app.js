@@ -988,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.154';
+window.APP_VERSION = 'v1.155';
 
 // ---- GRAPHITE FORM HELPERS & SINCRONIZACAO (IMAGENS 2 E 3) ----
 function calcularDiferencaValoresForm() {
@@ -1032,7 +1032,7 @@ window.atualizarBadgeAnoForm = function(val) {
 };
 
 function sincronizarVersaoSiscam() {
-  const v = window.APP_VERSION || 'v1.154';
+  const v = window.APP_VERSION || 'v1.155';
   document.querySelectorAll('#badge-versao-login, #badge-versao-topbar, .siscam-badge-versao, [data-app-version]').forEach(el => {
     if (el) {
       el.innerHTML = '<span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM ' + v + ' <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>';
@@ -12416,12 +12416,42 @@ function selectSegment(group, value) {
 }
 
 function updateSegmentControl(group, activeValue) {
+  let normVal = activeValue || '';
+  if (group === 'categoria') {
+    const c = String(normVal).trim().toUpperCase();
+    if (c.startsWith('F')) normVal = 'F';
+    else if (c.startsWith('C')) normVal = 'C';
+    else if (c.startsWith('T') || c.startsWith('O')) normVal = 'T';
+    else normVal = '';
+  } else if (group === 'tipo') {
+    const t = String(normVal).trim().toUpperCase();
+    if (t.startsWith('OB')) normVal = 'OB';
+    else if (t.startsWith('MP')) normVal = 'MP';
+    else if (t.startsWith('MC')) normVal = 'MC';
+    else if (t.startsWith('SI')) normVal = 'SI';
+    else if (t.startsWith('TR')) normVal = 'TR';
+    else if (t.startsWith('OUT')) normVal = 'OUT';
+    else normVal = '';
+  }
+
+  // Sincroniza hidden input se houver
+  const hiddenInput = document.getElementById(`form-${group}`);
+  if (hiddenInput && hiddenInput.value !== normVal) {
+    hiddenInput.value = normVal;
+  }
+
+  // Sincroniza o select no form se houver (form-categoria-select ou form-categoria)
+  const selectEl = document.getElementById(`form-${group}-select`) || document.getElementById(`form-${group}`);
+  if (selectEl && selectEl.value !== normVal) {
+    selectEl.value = normVal;
+  }
+
   const control = document.getElementById(`control-${group}`);
   if (!control) return;
   const buttons = control.querySelectorAll('.segment-btn');
   buttons.forEach(btn => {
     const val = btn.getAttribute('data-value');
-    if (val === activeValue) {
+    if (val === normVal) {
       btn.style.background = getActiveBgColor(group, val);
       btn.style.borderColor = getActiveBorderColor(group, val);
       btn.style.border = `1px solid ${getActiveBorderColor(group, val)}`;
