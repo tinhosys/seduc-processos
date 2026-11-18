@@ -988,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.160';
+window.APP_VERSION = 'v1.161';
 
 // ---- GRAPHITE FORM HELPERS & SINCRONIZACAO (IMAGENS 2 E 3) ----
 function formatarMoedaBR(val) {
@@ -1067,7 +1067,7 @@ window.atualizarBadgeAnoForm = function(val) {
 };
 
 function sincronizarVersaoSiscam() {
-  const v = window.APP_VERSION || 'v1.160';
+  const v = window.APP_VERSION || 'v1.161';
   document.querySelectorAll('#badge-versao-login, #badge-versao-topbar, .siscam-badge-versao, [data-app-version]').forEach(el => {
     if (el) {
       el.innerHTML = '<span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM ' + v + ' <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>';
@@ -3630,7 +3630,7 @@ function renderFormulario() {
       if (i === 0) {
         containerNum.innerHTML = `
           <div style="display:flex;gap:6px;align-items:center;">
-            <button type="button" class="btn btn-ghost" onclick="adicionarCampoNumero()" style="padding:0 12px;height:42px;border:1px solid var(--border);border-radius:6px;font-weight:700;font-size:16px;color:#10b981;flex-shrink:0;" title="Adicionar número">+</button>
+            
             <input type="text" name="numero[]" class="form-numero-item" placeholder="Ex: 0029.059244/2025-47" style="width:220px;flex:1;height:42px;font-family:monospace;font-size:13.5px;font-weight:600;padding:0 10px;" value="${num}">
             <button type="button" class="btn btn-ghost btn-copiar-sei" onclick="copiarSeiLinha(this)" style="padding:0 10px;height:42px;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:#38bdf8;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;" title="Copiar SEI">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
