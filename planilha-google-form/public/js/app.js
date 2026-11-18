@@ -988,9 +988,29 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.159';
+window.APP_VERSION = 'v1.160';
 
 // ---- GRAPHITE FORM HELPERS & SINCRONIZACAO (IMAGENS 2 E 3) ----
+function formatarMoedaBR(val) {
+  if (val === undefined || val === null || val === '') return 'R$ 0,00';
+  if (typeof val === 'number') {
+    if (isNaN(val)) return 'R$ 0,00';
+    return 'R$ ' + val.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  const s = String(val).trim();
+  if (!s || s === '0' || s === '0,00') return 'R$ 0,00';
+  const limpo = s.replace(/R\$/g, '').trim();
+  let num;
+  if (limpo.includes(',')) {
+    num = parseFloat(limpo.replace(/\./g, '').replace(',', '.'));
+  } else {
+    num = parseFloat(limpo);
+  }
+  if (isNaN(num)) return 'R$ 0,00';
+  return 'R$ ' + num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+window.formatarMoedaBR = formatarMoedaBR;
+
 function atualizarResumoTopoProcesso(convenente, municipio, valor) {
   const elConv = document.getElementById('resumo-topo-convenente');
   const elMun = document.getElementById('resumo-topo-municipio');
@@ -1001,12 +1021,7 @@ function atualizarResumoTopoProcesso(convenente, municipio, valor) {
   if (elConv) elConv.textContent = (c && c.trim()) ? c.trim() : '-';
   if (elMun) elMun.textContent = (m && m.trim()) ? m.trim() : '-';
   if (elVal) {
-    const vStr = String(v || '').trim();
-    if (!vStr || vStr === '0,00' || vStr === '0') {
-      elVal.textContent = 'R$ 0,00';
-    } else {
-      elVal.textContent = vStr.startsWith('R$') ? vStr : ('R$ ' + vStr);
-    }
+    elVal.textContent = formatarMoedaBR(v);
   }
 }
 window.atualizarResumoTopoProcesso = atualizarResumoTopoProcesso;
@@ -1052,7 +1067,7 @@ window.atualizarBadgeAnoForm = function(val) {
 };
 
 function sincronizarVersaoSiscam() {
-  const v = window.APP_VERSION || 'v1.159';
+  const v = window.APP_VERSION || 'v1.160';
   document.querySelectorAll('#badge-versao-login, #badge-versao-topbar, .siscam-badge-versao, [data-app-version]').forEach(el => {
     if (el) {
       el.innerHTML = '<span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM ' + v + ' <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>';
