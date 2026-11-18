@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=v1.157">
+  <link rel="stylesheet" href="css/style.css?v=v1.158">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -812,7 +812,7 @@
        onmouseover="this.style.transform='translateY(-2px) scale(1.01)'; this.style.boxShadow='0 14px 35px rgba(0,0,0,0.6)';"
        onmouseout="this.style.transform='none'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.4)';"
     >
-      <img src="img/banner_suporte_cam.png?v=v1.157" alt="Suporte da equipe da CAM - WhatsApp (69) 99906-4881" 
+      <img src="img/banner_suporte_cam.png?v=v1.158" alt="Suporte da equipe da CAM - WhatsApp (69) 99906-4881" 
            style="width: 100%; height: 100%; object-fit: fill; display: block; border-radius: 20px;">
     </a>
 
@@ -834,7 +834,7 @@
     ">
       <!-- LOGO CAM -->
       <div style="text-align: center; margin-bottom: 18px;">
-        <img src="img/logo-cam-login.png?v=v1.157" alt="CAM - Coordenadoria de Articulação com os Municípios - SEDUC / RO"
+        <img src="img/logo-cam-login.png?v=v1.158" alt="CAM - Coordenadoria de Articulação com os Municípios - SEDUC / RO"
              style="width: 100%; max-width: 270px; height: auto; object-fit: contain; display: inline-block;">
       </div>
 
@@ -887,7 +887,7 @@
       <div id="login-error" style="color: #dc2626; font-size: 12px; font-weight: 800; text-align: center; margin-top: 8px; min-height: 18px;"></div>
       <div id="login-loading" style="color: #0284c7; font-size: 12px; font-weight: 800; text-align: center; margin-top: 8px; display: none;">Verificando acesso...</div>
 
-      <!-- BADGE DE VERSÃO DINÂMICA (SUBSTITUINDO O v1.157 FIXO) -->
+      <!-- BADGE DE VERSÃO DINÂMICA (SUBSTITUINDO O v1.158 FIXO) -->
       <div id="badge-versao-login" class="siscam-badge-versao" data-app-version="true" style="
         text-align: center;
         color: #0284c7;
@@ -897,7 +897,7 @@
         margin-top: 12px;
         user-select: none;
       ">
-        <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.157 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
+        <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.158 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
       </div>
     </div>
   </div>
@@ -1222,7 +1222,7 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
-          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.157 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
+          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.158 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
         </div>
 
         <!-- PAINÉIS DE INFORMAÇÃO DE VALORES E CONTAGEM NA TOPBAR (IMAGEM 3) -->
@@ -2613,6 +2613,24 @@
               <input type="hidden" id="form-categoria" name="categoria" value="">
               <input type="hidden" id="form-tipo" name="tipo" value="">
 
+              <!-- RESUMO TOPO: CONVENENTE • MUNICÍPIO • VALOR (IMAGEM 1 VERDE / IMAGEM 3 LARANJA - BORDA INVISÍVEL, FUNDO INVISÍVEL, FONTE ÚNICA 10PT, ALINHADO À ESQUERDA) -->
+              <div id="card-topo-resumo-processo" style="display:flex; align-items:center; gap:20px; flex-wrap:wrap; padding:8px 2px; margin-bottom:4px; background:transparent; border:none; font-size:10pt; color:var(--text-secondary); line-height:1.4; user-select:text; text-align:left;">
+                <div style="display:inline-flex; align-items:center; gap:6px;">
+                  <span style="color:var(--text-muted); font-size:10pt;">Convenente:</span>
+                  <span id="resumo-topo-convenente" style="color:var(--text-primary); font-weight:700; font-size:10pt;">-</span>
+                </div>
+                <span style="color:var(--border); opacity:0.6; font-size:10pt;">•</span>
+                <div style="display:inline-flex; align-items:center; gap:6px;">
+                  <span style="color:var(--text-muted); font-size:10pt;">Município:</span>
+                  <span id="resumo-topo-municipio" style="color:var(--text-primary); font-weight:700; font-size:10pt;">-</span>
+                </div>
+                <span style="color:var(--border); opacity:0.6; font-size:10pt;">•</span>
+                <div style="display:inline-flex; align-items:center; gap:6px;">
+                  <span style="color:var(--text-muted); font-size:10pt;">Valor:</span>
+                  <span id="resumo-topo-valor" style="color:#10b981; font-weight:700; font-size:10pt;">R$ 0,00</span>
+                </div>
+              </div>
+
               <!-- 1. AUTORIZAÇÕES (GRAPHITE TEMPLATE - CONFORME IMAGEM 3 NO TOPO) -->
               <div class="card card-autorizacoes-header" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px;">
                 <div class="rowbetween" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
@@ -2635,18 +2653,14 @@
                   <div style="display:flex; align-items:center; gap:10px;">
                     <h2 style="font-size:16px; font-weight:700; color:var(--text-primary); margin:0;">Identificação do processo</h2>
                   </div>
-                  <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="siscam-badge-delta" style="font-size:11px; padding:2px 8px; border-radius:6px; background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.3); color:#38bdf8; font-weight:700;">
-                      <span class="siscam-delta" style="font-size:11px;">∴</span> SiSCAM <span class="siscam-delta" style="font-size:11px;">∴</span>
-                    </div>
-                    <span class="badge blue" id="badge-ano-card-identificacao" style="background:#2563eb; color:#ffffff; padding:2px 8px; border-radius:6px; font-weight:700; font-size:11px;">2026</span>
-                  </div>
+                  <!-- Badge SiSCAM / Ano removido conforme Imagem 1 com X vermelho -->
+                  <span id="badge-ano-card-identificacao" style="display:none;">2026</span>
                 </div>
 
                 <div class="formgrid">
-                  <!-- Linha 1: Prefixo (span3) + Número do processo SEI * (span6) + Ano (span3) -->
-                  <div class="field span3">
-                    <label for="form-prefixo">Prefixo</label>
+                  <!-- Linha 1: Prefixo (span3, action-adm) + Número do processo SEI * (span6) + Ano (span3) -->
+                  <div class="field span3 action-adm" id="group-form-prefixo">
+                    <label for="form-prefixo">Prefixo <span style="font-size:10.5px; color:#f87171; font-weight:bold;">(Admin)</span></label>
                     <input type="text" id="form-prefixo" class="control" placeholder="Digite ou selecione..." maxlength="20" list="list-prefixos" autocomplete="off" style="height:42px; width:100%;">
                     <datalist id="list-prefixos"></datalist>
                   </div>
@@ -2675,17 +2689,16 @@
                     <datalist id="list-anos"></datalist>
                   </div>
 
-                  <!-- Linha 2: Município * (span6) + Agrupamento (span6) -->
+                  <!-- Linha 2: Município * (span6) + Grupo (Dígito) (span6 - reacomodado com Município) -->
                   <div class="field span6">
                     <label for="form-municipio">Município *</label>
-                    <input type="text" id="form-municipio" class="control" placeholder="Ex: Porto Velho" required list="list-municipios" style="height:42px; width:100%;">
+                    <input type="text" id="form-municipio" class="control" placeholder="Ex: Porto Velho" required list="list-municipios" style="height:42px; width:100%;" oninput="if(typeof atualizarResumoTopoProcesso==='function') atualizarResumoTopoProcesso();">
                     <datalist id="list-municipios"></datalist>
                   </div>
 
-                  <div class="field span6" id="group-form-agrupamento">
-                    <label for="form-agrupamento">Agrupamento</label>
-                    <input type="text" id="form-agrupamento" class="control" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="height:42px; width:100%;">
-                    <datalist id="list-agrupamentos"></datalist>
+                  <div class="field span6" id="group-form-digito">
+                    <label for="form-digito">Grupo (Dígito)</label>
+                    <input type="text" id="form-digito" class="control" placeholder="Ex: Grupo / Dígito livre" autocomplete="off" style="height:42px; text-align:center; font-weight:700; width:100%;">
                   </div>
                 </div>
               </div>
@@ -2700,14 +2713,14 @@
                 </div>
 
                 <div class="formgrid">
-                  <!-- Linha 1: CNPJ (span5) + Interessado / escola * (span7) -->
-                  <div class="field span5">
+                  <!-- Linha 1: CNPJ (span4 - campo diminuído, fonte +2pt conforme Imagem 1) + Interessado / escola * (span8) -->
+                  <div class="field span4" id="group-form-cnpj">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                       <label for="form-cnpj" style="margin-bottom:0;">CNPJ</label>
                       <div id="cnpj-status-box-form" style="font-size:11px; font-weight:700; min-height:16px;"></div>
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                      <input type="text" id="form-cnpj" name="cnpj" class="control" placeholder="00.000.000/0000-00" maxlength="18" style="height:42px; width:100%; font-family:monospace; font-weight:600;" oninput="mascaraCNPJInput(this); aoDigitarCNPJFormulario(this.value);" onblur="autoPreencherCNPJSeVazio(this); aoSairCNPJFormulario(this.value);">
+                      <input type="text" id="form-cnpj" name="cnpj" class="control" placeholder="00.000.000/0000-00" maxlength="18" style="height:42px; width:100%; font-family:monospace; font-weight:700; font-size:16px; letter-spacing:0.5px;" oninput="mascaraCNPJInput(this); aoDigitarCNPJFormulario(this.value);" onblur="autoPreencherCNPJSeVazio(this); aoSairCNPJFormulario(this.value);">
                       <label id="label-check-inadimplente" class="toggle" style="margin:0; white-space:nowrap; cursor:pointer;" title="Marcar entidade como inadimplente">
                         <input type="checkbox" id="form-check-inadimplente" style="width:16px; height:16px; accent-color:#ef4444;" onchange="aoAlternarCheckInadimplente(this.checked)">
                         <span style="font-size:12px; font-weight:600; color:#ef4444;">Inadimplente</span>
@@ -2715,9 +2728,9 @@
                     </div>
                   </div>
 
-                  <div class="field span7">
+                  <div class="field span8">
                     <label for="form-interessado">Interessado / escola *</label>
-                    <input type="text" id="form-interessado" class="control" placeholder="Nome da escola ou entidade" required list="list-interessados" style="height:42px; width:100%;">
+                    <input type="text" id="form-interessado" class="control" placeholder="Nome da escola ou entidade" required list="list-interessados" style="height:42px; width:100%; font-size:14px; font-weight:600;" oninput="if(typeof atualizarResumoTopoProcesso==='function') atualizarResumoTopoProcesso();">
                     <datalist id="list-interessados"></datalist>
                   </div>
 
@@ -2799,7 +2812,7 @@
 
                   <div class="field span4">
                     <label for="form-valorOf">Valor oficial (R$)</label>
-                    <input type="text" id="form-valorOf" class="control input-currency" placeholder="0,00" style="height:42px; width:100%; font-weight:700; color:#10b981; font-size:15px;">
+                    <input type="text" id="form-valorOf" class="control input-currency" placeholder="0,00" style="height:42px; width:100%; font-weight:700; color:#10b981; font-size:15px;" oninput="if(typeof atualizarResumoTopoProcesso==='function') atualizarResumoTopoProcesso();">
                     <input type="hidden" id="form-valorPlan" name="valorPlan" value="">
                     <input type="hidden" id="form-diferenca" name="diferenca" value="">
                   </div>
@@ -2813,7 +2826,7 @@
                 </div>
               </div>
 
-              <!-- 4. ACOMPANHAMENTO / APONTAMENTOS -->
+              <!-- 4. ACOMPANHAMENTO / APONTAMENTOS (REORGANIZADO CONFORME IMAGEM 2 E 4) -->
               <div class="card card-form-grupo" id="card-grupo-acompanhamento-apontamentos" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
                 <div class="sectionhead" style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--border);">
                   <div style="display:flex; align-items:center; gap:10px;">
@@ -2823,7 +2836,7 @@
                 </div>
 
                 <div class="formgrid">
-                  <!-- Linha 1: Status (span4) + Localização (span4) + Grupo (Dígito) (span4) -->
+                  <!-- Linha 1: Status (span4) + Localização (span4) + Data (span4 - movido pela seta vermelha) -->
                   <div class="field span4">
                     <label for="form-status">Status</label>
                     <input type="text" id="form-status" class="control" list="list-status" autocomplete="off" placeholder="Selecione ou digite..." style="height:42px; width:100%;">
@@ -2836,12 +2849,6 @@
                     <datalist id="list-localizacao"></datalist>
                   </div>
 
-                  <div class="field span4" id="group-form-digito">
-                    <label for="form-digito">Grupo (Dígito)</label>
-                    <input type="text" id="form-digito" class="control" placeholder="Ex: Grupo / Dígito livre" autocomplete="off" style="height:42px; text-align:center; font-weight:700; width:100%;">
-                  </div>
-
-                  <!-- Linha 2: Data (span4) + Analista (span4) + Executivo (span4) -->
                   <div class="field span4">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                       <label for="form-data" style="margin-bottom:0;">Data</label>
@@ -2850,6 +2857,7 @@
                     <input type="date" id="form-data" class="control" style="height:42px; width:100%;">
                   </div>
 
+                  <!-- Linha 2: Analista (span4 - movido pela seta verde) + Executivo (span4, action-adm - movido pela seta laranja) + Agrupamento (span4, action-adm - movido pela seta ciano) -->
                   <div class="field span4" id="group-form-analista">
                     <label for="form-analista">Analista</label>
                     <input type="text" id="form-analista" class="control" list="list-analistas" autocomplete="off" placeholder="Selecione ou digite o analista..." style="height:42px; width:100%;">
@@ -2857,18 +2865,24 @@
                   </div>
 
                   <div class="field span4 action-adm" id="group-form-executivo" style="display:none;">
-                    <label for="form-executivo">Executivo</label>
+                    <label for="form-executivo">Executivo <span style="font-size:10.5px; color:#f87171; font-weight:bold;">(Admin)</span></label>
                     <input type="text" id="form-executivo" class="control" list="list-executivos" autocomplete="off" placeholder="Selecione ou digite..." style="height:42px; width:100%;">
                     <datalist id="list-executivos"></datalist>
                   </div>
 
-                  <!-- Observações / Detalhamento (span12) -->
+                  <div class="field span4 action-adm" id="group-form-agrupamento" style="display:none;">
+                    <label for="form-agrupamento">Agrupamento <span style="font-size:10.5px; color:#f87171; font-weight:bold;">(Admin)</span></label>
+                    <input type="text" id="form-agrupamento" class="control" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="height:42px; width:100%;">
+                    <datalist id="list-agrupamentos"></datalist>
+                  </div>
+
+                  <!-- Linha 3: Observações / Detalhamento (span12) -->
                   <div class="field span12">
                     <label for="form-obs">Observações / Detalhamento</label>
                     <textarea id="form-obs" class="control textarea" placeholder="Registre informações relevantes sem alterar o histórico original." style="min-height:75px; width:100%;"></textarea>
                   </div>
 
-                  <!-- Contatos / WhatsApp (span12) -->
+                  <!-- Linha 4: Contatos / WhatsApp (span12) -->
                   <div class="field span12" style="background:rgba(0,0,0,0.15); padding:14px; border-radius:8px; border:1px solid var(--border);">
                     <label style="margin-bottom:8px; display:block; color:var(--blue); font-weight:700;">📞 Contatos WhatsApp</label>
                     <div id="lista-contatos" style="display:flex; flex-direction:column; gap:8px; margin-bottom:8px;"></div>
@@ -2879,13 +2893,13 @@
                     </div>
                   </div>
 
-                  <!-- Anotação Interna (span12) -->
+                  <!-- Linha 5: Anotação Interna (span12, action-adm) -->
                   <div class="field span12 action-adm" id="group-form-anotacao">
-                    <label for="form-anotacao">Anotação Interna</label>
+                    <label for="form-anotacao">Anotação Interna <span style="font-size:10.5px; color:#f87171; font-weight:bold;">(Admin)</span></label>
                     <textarea id="form-anotacao" class="control textarea" placeholder="Anotações internas..." style="min-height:60px; width:100%;"></textarea>
                   </div>
 
-                  <!-- Histórico de Apontamentos (span12) -->
+                  <!-- Linha 6: Histórico de Apontamentos (span12, action-adm) -->
                   <div class="field span12 action-adm" id="group-historico-apontamentos" style="display:none; border:1px solid rgba(245,158,11,0.5); padding:16px; border-radius:8px; background:rgba(245,158,11,0.05);">
                     <div style="margin-bottom:12px;">
                       <label style="color:#f59e0b; font-weight:bold; font-size:13px; display:block; margin-bottom:10px;">📋 HISTÓRICO DE APONTAMENTOS</label>
@@ -2907,7 +2921,7 @@
                     </div>
                   </div>
 
-                  <!-- Última atualização (span12) -->
+                  <!-- Linha 7: Última atualização (span12) -->
                   <div class="field span12" id="legend-ultima-edicao" style="display:none;">
                     <label>Última atualização</label>
                     <div style="padding:0 14px; height:42px; background:rgba(255,255,255,0.02); border:1px solid var(--border); border-left:3px solid var(--yellow); border-radius:var(--radius-sm); font-size:13px; color:var(--text-secondary); display:flex; flex-direction:row; align-items:center; gap:8px; white-space:nowrap; box-sizing:border-box; width:100%;">
@@ -3429,7 +3443,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.157</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.158</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -4110,7 +4124,7 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.157 ∴</span>
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.158 ∴</span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
@@ -4382,7 +4396,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.157] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.158] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6843,15 +6857,15 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/combobox-dynamic.js?v=v1.157"></script>
-  <script src="js/multi-select.js?v=v1.157"></script>
-  <script src="js/auth-sap.js?v=v1.157"></script>
-  <script src="js/dados.js?v=v1.157"></script>
-  <script src="js/app.js?v=v1.157"></script>
-  <script src="js/escolas.js?v=v1.157" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=v1.157"></script>
-  <script src="js/mapa.js?v=v1.157"></script>
-  <script src="js/contatos.js?v=v1.157"></script>
+  <script src="js/combobox-dynamic.js?v=v1.158"></script>
+  <script src="js/multi-select.js?v=v1.158"></script>
+  <script src="js/auth-sap.js?v=v1.158"></script>
+  <script src="js/dados.js?v=v1.158"></script>
+  <script src="js/app.js?v=v1.158"></script>
+  <script src="js/escolas.js?v=v1.158" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=v1.158"></script>
+  <script src="js/mapa.js?v=v1.158"></script>
+  <script src="js/contatos.js?v=v1.158"></script>
 
 
   <script>
@@ -7044,13 +7058,13 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=v1.157"></script>
-  <script src="js/gmac.js?v=v1.157"></script>
-  <script src="js/orcamento.js?v=v1.157"></script>
-  <script src="js/gdsm.js?v=v1.157"></script>
-  <script src="js/print-proalfa.js?v=v1.157"></script>
-  <script src="js/proalfa.js?v=v1.157"></script>
-  <script src="js/cnpjs-inadimplentes.js?v=v1.157"></script>
+  <script src="js/diarias.js?v=v1.158"></script>
+  <script src="js/gmac.js?v=v1.158"></script>
+  <script src="js/orcamento.js?v=v1.158"></script>
+  <script src="js/gdsm.js?v=v1.158"></script>
+  <script src="js/print-proalfa.js?v=v1.158"></script>
+  <script src="js/proalfa.js?v=v1.158"></script>
+  <script src="js/cnpjs-inadimplentes.js?v=v1.158"></script>
 
 
 

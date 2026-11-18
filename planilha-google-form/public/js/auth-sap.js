@@ -170,15 +170,34 @@ function aplicarPermissoes(nivel) {
     el.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
   });
 
-  // Controle estrito do filtro e campo EXECUTIVO (exclusivo ADMIN)
-  const containerFiltroExec = document.getElementById('container-filtro-executivo');
-  if (containerFiltroExec) {
-    containerFiltroExec.style.setProperty('display', isAdminUser ? 'block' : 'none', 'important');
+
+  // Controle estrito dos campos de formulário PREFIXO, AGRUPAMENTO e EXECUTIVO (SOMENTE ADMIN - REGRA SINE QUA NON)
+  const groupFormPref = document.getElementById('group-form-prefixo');
+  if (groupFormPref) {
+    groupFormPref.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
   }
-  const selFiltroExec = document.getElementById('filtro-executivo');
-  if (selFiltroExec && selFiltroExec._multiSelectInstance && selFiltroExec._multiSelectInstance.wrapper) {
-    selFiltroExec._multiSelectInstance.wrapper.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  const inputFormPref = document.getElementById('form-prefixo');
+  if (inputFormPref) {
+    inputFormPref.disabled = !isAdminUser;
+    if (!isAdminUser) inputFormPref.style.setProperty('display', 'none', 'important');
+    else inputFormPref.style.removeProperty('display');
   }
+  const groupFormProcessoNum = document.getElementById('group-form-processo-num');
+  if (groupFormProcessoNum) {
+    groupFormProcessoNum.style.gridColumn = isAdminUser ? 'span 6' : 'span 9';
+  }
+
+  const groupFormAgrup = document.getElementById('group-form-agrupamento');
+  if (groupFormAgrup) {
+    groupFormAgrup.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  }
+  const inputFormAgrup = document.getElementById('form-agrupamento');
+  if (inputFormAgrup) {
+    inputFormAgrup.disabled = !isAdminUser;
+    if (!isAdminUser) inputFormAgrup.style.setProperty('display', 'none', 'important');
+    else inputFormAgrup.style.removeProperty('display');
+  }
+
   const groupFormExec = document.getElementById('group-form-executivo');
   if (groupFormExec) {
     groupFormExec.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
@@ -189,6 +208,21 @@ function aplicarPermissoes(nivel) {
     if (!isAdminUser) inputFormExec.style.setProperty('display', 'none', 'important');
     else inputFormExec.style.removeProperty('display');
   }
+  const groupFormAnalista = document.getElementById('group-form-analista');
+  if (groupFormAnalista) {
+    groupFormAnalista.style.gridColumn = isAdminUser ? 'span 4' : 'span 12';
+  }
+
+  // Controle estrito do filtro e campo EXECUTIVO (exclusivo ADMIN)
+  const containerFiltroExec = document.getElementById('container-filtro-executivo');
+  if (containerFiltroExec) {
+    containerFiltroExec.style.setProperty('display', isAdminUser ? 'block' : 'none', 'important');
+  }
+  const selFiltroExec = document.getElementById('filtro-executivo');
+  if (selFiltroExec && selFiltroExec._multiSelectInstance && selFiltroExec._multiSelectInstance.wrapper) {
+    selFiltroExec._multiSelectInstance.wrapper.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
+  }
+
   if (!isAdminUser && typeof state !== 'undefined' && state && state.filtros) {
     state.filtros.executivo = [];
   }

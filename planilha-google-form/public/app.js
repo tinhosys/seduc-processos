@@ -988,9 +988,29 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.157';
+window.APP_VERSION = 'v1.158';
 
 // ---- GRAPHITE FORM HELPERS & SINCRONIZACAO (IMAGENS 2 E 3) ----
+function atualizarResumoTopoProcesso(convenente, municipio, valor) {
+  const elConv = document.getElementById('resumo-topo-convenente');
+  const elMun = document.getElementById('resumo-topo-municipio');
+  const elVal = document.getElementById('resumo-topo-valor');
+  const c = convenente !== undefined ? convenente : (document.getElementById('form-interessado')?.value || '-');
+  const m = municipio !== undefined ? municipio : (document.getElementById('form-municipio')?.value || '-');
+  const v = valor !== undefined ? valor : (document.getElementById('form-valorOf')?.value || 'R$ 0,00');
+  if (elConv) elConv.textContent = (c && c.trim()) ? c.trim() : '-';
+  if (elMun) elMun.textContent = (m && m.trim()) ? m.trim() : '-';
+  if (elVal) {
+    const vStr = String(v || '').trim();
+    if (!vStr || vStr === '0,00' || vStr === '0') {
+      elVal.textContent = 'R$ 0,00';
+    } else {
+      elVal.textContent = vStr.startsWith('R$') ? vStr : ('R$ ' + vStr);
+    }
+  }
+}
+window.atualizarResumoTopoProcesso = atualizarResumoTopoProcesso;
+
 function calcularDiferencaValoresForm() {
   const fOf = document.getElementById('form-valorOf');
   const fPlan = document.getElementById('form-valorPlan');
@@ -1032,7 +1052,7 @@ window.atualizarBadgeAnoForm = function(val) {
 };
 
 function sincronizarVersaoSiscam() {
-  const v = window.APP_VERSION || 'v1.157';
+  const v = window.APP_VERSION || 'v1.158';
   document.querySelectorAll('#badge-versao-login, #badge-versao-topbar, .siscam-badge-versao, [data-app-version]').forEach(el => {
     if (el) {
       el.innerHTML = '<span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM ' + v + ' <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>';
@@ -3742,9 +3762,18 @@ function renderFormulario() {
 
     if (typeof alternarGuiaFormulario === 'function') alternarGuiaFormulario('objeto');
 
-    renderizarContatosForm();
+        renderizarContatosForm();
+    atualizarResumoTopoProcesso(p.interessado, p.municipio, p.valorOf);
+    ['form-interessado', 'form-municipio', 'form-valorOf'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !el._resumoTopoBound) {
+        el._resumoTopoBound = true;
+        el.addEventListener('input', () => atualizarResumoTopoProcesso());
+      }
+    });
   } else {
-    document.getElementById('form-processo').reset();
+        document.getElementById('form-processo').reset();
+    atualizarResumoTopoProcesso('', '', '');
     window._repositorioArquivosAtuais = [];
     window._linkGoogleDriveAtual = '';
     window._analiseCamAtual = null;
