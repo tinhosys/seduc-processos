@@ -20,7 +20,7 @@
     rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/style.css?v=v1.156">
+  <link rel="stylesheet" href="css/style.css?v=v1.157">
 
   <!-- SheetJS (Excel) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
@@ -812,7 +812,7 @@
        onmouseover="this.style.transform='translateY(-2px) scale(1.01)'; this.style.boxShadow='0 14px 35px rgba(0,0,0,0.6)';"
        onmouseout="this.style.transform='none'; this.style.boxShadow='0 10px 30px rgba(0,0,0,0.4)';"
     >
-      <img src="img/banner_suporte_cam.png?v=v1.156" alt="Suporte da equipe da CAM - WhatsApp (69) 99906-4881" 
+      <img src="img/banner_suporte_cam.png?v=v1.157" alt="Suporte da equipe da CAM - WhatsApp (69) 99906-4881" 
            style="width: 100%; height: 100%; object-fit: fill; display: block; border-radius: 20px;">
     </a>
 
@@ -834,7 +834,7 @@
     ">
       <!-- LOGO CAM -->
       <div style="text-align: center; margin-bottom: 18px;">
-        <img src="img/logo-cam-login.png?v=v1.156" alt="CAM - Coordenadoria de Articulação com os Municípios - SEDUC / RO"
+        <img src="img/logo-cam-login.png?v=v1.157" alt="CAM - Coordenadoria de Articulação com os Municípios - SEDUC / RO"
              style="width: 100%; max-width: 270px; height: auto; object-fit: contain; display: inline-block;">
       </div>
 
@@ -887,7 +887,7 @@
       <div id="login-error" style="color: #dc2626; font-size: 12px; font-weight: 800; text-align: center; margin-top: 8px; min-height: 18px;"></div>
       <div id="login-loading" style="color: #0284c7; font-size: 12px; font-weight: 800; text-align: center; margin-top: 8px; display: none;">Verificando acesso...</div>
 
-      <!-- BADGE DE VERSÃO DINÂMICA (SUBSTITUINDO O v1.156 FIXO) -->
+      <!-- BADGE DE VERSÃO DINÂMICA (SUBSTITUINDO O v1.157 FIXO) -->
       <div id="badge-versao-login" class="siscam-badge-versao" data-app-version="true" style="
         text-align: center;
         color: #0284c7;
@@ -897,7 +897,7 @@
         margin-top: 12px;
         user-select: none;
       ">
-        <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.156 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
+        <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.157 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>
       </div>
     </div>
   </div>
@@ -1222,7 +1222,7 @@
           <button class="btn btn-ghost sidebar-toggle" onclick="toggleSidebar()" style="display:none; font-size:20px; background:none; border:none; color:white; cursor:pointer; padding: 4px 8px;">☰</button>
           <div id="topbar-title" style="display: none;"></div>
           <!-- VERSÃO DESTACADA NO TOPO (TOPBAR) -->
-          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.156 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
+          <div id="badge-versao-topbar" class="siscam-badge-delta" style="text-align: center; color: #38bdf8; font-size: 12.5px; font-weight: 900; letter-spacing: 1.2px; background: rgba(56,189,248,0.14); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(56,189,248,0.45); display: inline-flex; align-items: center; gap: 6px; user-select: none; white-space: nowrap; box-shadow: 0 0 12px rgba(56,189,248,0.3); text-shadow: 0 0 8px rgba(56,189,248,0.8);"><span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM v1.157 <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span></div>
         </div>
 
         <!-- PAINÉIS DE INFORMAÇÃO DE VALORES E CONTAGEM NA TOPBAR (IMAGEM 3) -->
@@ -2629,8 +2629,8 @@
                 </div>
               </div>
 
-              <!-- 2. IDENTIFICAÇÃO DO PROCESSO (GRAPHITE TEMPLATE - IMAGEM 1 E 2) -->
-              <div class="card" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
+              <!-- 1. IDENTIFICAÇÃO DO PROCESSO (GRAPHITE DESIGN SYSTEM) -->
+              <div class="card card-form-grupo" id="card-grupo-identificacao-processo" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
                 <div class="sectionhead" style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--border);">
                   <div style="display:flex; align-items:center; gap:10px;">
                     <h2 style="font-size:16px; font-weight:700; color:var(--text-primary); margin:0;">Identificação do processo</h2>
@@ -2644,8 +2644,14 @@
                 </div>
 
                 <div class="formgrid">
-                  <!-- Linha 1: Número do processo SEI * (span8) + Município * (span4) -->
-                  <div class="field span8" id="group-form-processo-num">
+                  <!-- Linha 1: Prefixo (span3) + Número do processo SEI * (span6) + Ano (span3) -->
+                  <div class="field span3">
+                    <label for="form-prefixo">Prefixo</label>
+                    <input type="text" id="form-prefixo" class="control" placeholder="Digite ou selecione..." maxlength="20" list="list-prefixos" autocomplete="off" style="height:42px; width:100%;">
+                    <datalist id="list-prefixos"></datalist>
+                  </div>
+
+                  <div class="field span6" id="group-form-processo-num">
                     <label>Número do processo SEI *</label>
                     <div id="container-numeros" style="display:flex; flex-direction:column; gap:8px;">
                       <div style="display:flex; gap:6px; align-items:center;">
@@ -2663,23 +2669,17 @@
                     </div>
                   </div>
 
-                  <div class="field span4">
-                    <label for="form-municipio">Município *</label>
-                    <input type="text" id="form-municipio" class="control" placeholder="Ex: Porto Velho" required list="list-municipios" style="height:42px; width:100%;">
-                    <datalist id="list-municipios"></datalist>
-                  </div>
-
-                  <!-- Linha 2 (Verde): Prefixo (span4) + Ano (span2) + Agrupamento (span6 - trocado com Grupo/Dígito) -->
-                  <div class="field span4">
-                    <label for="form-prefixo">Prefixo</label>
-                    <input type="text" id="form-prefixo" class="control" placeholder="Digite ou selecione..." maxlength="20" list="list-prefixos" autocomplete="off" style="height:42px; width:100%;">
-                    <datalist id="list-prefixos"></datalist>
-                  </div>
-
-                  <div class="field span2">
+                  <div class="field span3">
                     <label for="form-ano">Ano</label>
                     <input type="text" id="form-ano" class="control" placeholder="AAAA" maxlength="4" list="list-anos" autocomplete="off" style="height:42px; text-align:center; font-weight:700; width:100%;" oninput="atualizarBadgeAnoForm(this.value)">
                     <datalist id="list-anos"></datalist>
+                  </div>
+
+                  <!-- Linha 2: Município * (span6) + Agrupamento (span6) -->
+                  <div class="field span6">
+                    <label for="form-municipio">Município *</label>
+                    <input type="text" id="form-municipio" class="control" placeholder="Ex: Porto Velho" required list="list-municipios" style="height:42px; width:100%;">
+                    <datalist id="list-municipios"></datalist>
                   </div>
 
                   <div class="field span6" id="group-form-agrupamento">
@@ -2687,8 +2687,20 @@
                     <input type="text" id="form-agrupamento" class="control" placeholder="Digite ou selecione..." list="list-agrupamentos" autocomplete="off" style="height:42px; width:100%;">
                     <datalist id="list-agrupamentos"></datalist>
                   </div>
+                </div>
+              </div>
 
-                  <!-- Linha 3 (Ciano): CNPJ (span5 - primeiro!) + Interessado / escola * (span7) -->
+              <!-- 2. IDENTIFICAÇÃO DO CONVENENTE (ENTIDADE / ESCOLA / RECEITA FEDERAL) -->
+              <div class="card card-form-grupo" id="card-grupo-identificacao-convenente" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
+                <div class="sectionhead" style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--border);">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <h2 style="font-size:16px; font-weight:700; color:var(--text-primary); margin:0;">Identificação do convenente</h2>
+                  </div>
+                  <span class="subtle" style="font-size:11px; color:var(--muted); font-weight:600;">Entidade Proponente / Escola / Receita Federal</span>
+                </div>
+
+                <div class="formgrid">
+                  <!-- Linha 1: CNPJ (span5) + Interessado / escola * (span7) -->
                   <div class="field span5">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                       <label for="form-cnpj" style="margin-bottom:0;">CNPJ</label>
@@ -2709,7 +2721,7 @@
                     <datalist id="list-interessados"></datalist>
                   </div>
 
-                  <!-- Linha 4: Ações e Card Receita Federal (span12) -->
+                  <!-- Linha 2: Ações da Receita Federal e Card de Resultados (span12) -->
                   <div class="field span12" style="margin-top:-6px;">
                     <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
                       <button type="button" id="btn-consultar-cnpj-form" onclick="recarregarDadosReceitaFederal()" style="flex:1 1 0; min-width:0; height:36px; background:#059669; border:1px solid #10b981; color:#ffffff; font-weight:700; font-size:11.5px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;" title="Consultar dados oficiais desta entidade na Receita Federal">
@@ -2748,9 +2760,31 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
 
-                  <!-- Linha 5: Tipo (span6) + Status (span6) -->
-                  <div class="field span6">
+              <!-- 3. OBJETO / CATEGORIA / VALOR -->
+              <div class="card card-form-grupo" id="card-grupo-objeto-categoria-valor" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
+                <div class="sectionhead" style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--border);">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <h2 style="font-size:16px; font-weight:700; color:var(--text-primary); margin:0;">Objeto / Categoria / Valor</h2>
+                  </div>
+                  <span class="subtle" style="font-size:11px; color:var(--muted); font-weight:600;">Classificação e montante financeiro</span>
+                </div>
+
+                <div class="formgrid">
+                  <!-- Linha 1: Categoria * (span4) + Tipo (span4) + Valor oficial (R$) (span4) -->
+                  <div class="field span4">
+                    <label for="form-categoria-select">Categoria *</label>
+                    <select id="form-categoria-select" class="control" style="height:42px; width:100%;" onchange="aoMudarCategoriaSelect(this.value)">
+                      <option value="">Selecione a Categoria...</option>
+                      <option value="F">Fomento</option>
+                      <option value="C">Convênio</option>
+                      <option value="T">Termo de Cooperação</option>
+                    </select>
+                  </div>
+
+                  <div class="field span4">
                     <label for="form-tipo-select">Tipo</label>
                     <select id="form-tipo-select" class="control" style="height:42px; width:100%;" onchange="aoMudarTipoSelect(this.value)">
                       <option value="">Selecione o Tipo...</option>
@@ -2763,61 +2797,51 @@
                     </select>
                   </div>
 
-                  <div class="field span6">
+                  <div class="field span4">
+                    <label for="form-valorOf">Valor oficial (R$)</label>
+                    <input type="text" id="form-valorOf" class="control input-currency" placeholder="0,00" style="height:42px; width:100%; font-weight:700; color:#10b981; font-size:15px;">
+                    <input type="hidden" id="form-valorPlan" name="valorPlan" value="">
+                    <input type="hidden" id="form-diferenca" name="diferenca" value="">
+                  </div>
+
+                  <!-- Linha 2: Descrição do objeto (span12) -->
+                  <div class="field span12">
+                    <label for="form-objeto">Descrição do objeto</label>
+                    <textarea id="form-objeto" class="control textarea" placeholder="Descrição detalhada do objeto da parceria..." style="min-height:75px; width:100%;"></textarea>
+                    <datalist id="list-objetos"></datalist>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. ACOMPANHAMENTO / APONTAMENTOS -->
+              <div class="card card-form-grupo" id="card-grupo-acompanhamento-apontamentos" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
+                <div class="sectionhead" style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--border);">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <h2 style="font-size:16px; font-weight:700; color:var(--text-primary); margin:0;">Acompanhamento / Apontamentos</h2>
+                  </div>
+                  <span class="subtle" style="font-size:11px; color:var(--muted); font-weight:600;">Status, tramitação e apontamentos</span>
+                </div>
+
+                <div class="formgrid">
+                  <!-- Linha 1: Status (span4) + Localização (span4) + Grupo (Dígito) (span4) -->
+                  <div class="field span4">
                     <label for="form-status">Status</label>
                     <input type="text" id="form-status" class="control" list="list-status" autocomplete="off" placeholder="Selecione ou digite..." style="height:42px; width:100%;">
                     <datalist id="list-status"></datalist>
                   </div>
 
-                  <!-- Linha 6 (Azul): Descrição do objeto (span8) + Categoria * (span4 - ao lado do Objeto!) -->
-                  <div class="field span8">
-                    <label for="form-objeto">Descrição do objeto</label>
-                    <textarea id="form-objeto" class="control textarea" placeholder="Descrição detalhada do objeto da parceria..." style="min-height:75px; width:100%;"></textarea>
-                    <datalist id="list-objetos"></datalist>
-                  </div>
-
                   <div class="field span4">
-                    <label for="form-categoria-select">Categoria *</label>
-                    <select id="form-categoria-select" class="control" style="height:42px; width:100%;" onchange="aoMudarCategoriaSelect(this.value)">
-                      <option value="">Selecione a Categoria...</option>
-                      <option value="F">Fomento</option>
-                      <option value="C">Convênio</option>
-                      <option value="T">Termo de Cooperação</option>
-                    </select>
-                  </div>
-
-                </div>
-              </div>
-
-              <!-- 3. VALORES E ACOMPANHAMENTO (GRAPHITE TEMPLATE - IMAGEM 1 E 3) -->
-              <div class="card" style="background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px;">
-                <div class="sectionhead" style="display:flex; align-items:center; justify-content:space-between; padding-bottom:14px; margin-bottom:18px; border-bottom:1px solid var(--border);">
-                  <div style="display:flex; align-items:center; gap:10px;">
-                    <h2 style="font-size:16px; font-weight:700; color:var(--text-primary); margin:0;">Valores e acompanhamento</h2>
-                  </div>
-                  <span class="subtle" style="font-size:11px; color:var(--muted); font-weight:600;">Layout padronizado Graphite</span>
-                </div>
-
-                <div class="formgrid">
-                  <!-- Linha 7 (X Vermelho): Valor oficial (R$) (span12 - Valor planilha e Diferença excluídos) -->
-                  <div class="field span12">
-                    <label for="form-valorOf">Valor oficial (R$)</label>
-                    <input type="text" id="form-valorOf" class="control input-currency" placeholder="0,00" style="height:42px; width:100%; font-weight:700; color:#10b981; font-size:15px;">
-                  </div>
-
-                  <!-- Linha 8 (Verde): Localização (span6) + Grupo (Dígito) (span6 - trocado com Agrupamento) -->
-                  <div class="field span6">
                     <label for="form-localizacao">Localização</label>
                     <input type="text" id="form-localizacao" class="control" list="list-localizacao" autocomplete="off" placeholder="Selecione ou digite..." style="height:42px; width:100%;">
                     <datalist id="list-localizacao"></datalist>
                   </div>
 
-                  <div class="field span6" id="group-form-digito">
+                  <div class="field span4" id="group-form-digito">
                     <label for="form-digito">Grupo (Dígito)</label>
                     <input type="text" id="form-digito" class="control" placeholder="Ex: Grupo / Dígito livre" autocomplete="off" style="height:42px; text-align:center; font-weight:700; width:100%;">
                   </div>
 
-                  <!-- Linha 9: Data (span4) + Analista (span4) + Executivo (span4) -->
+                  <!-- Linha 2: Data (span4) + Analista (span4) + Executivo (span4) -->
                   <div class="field span4">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                       <label for="form-data" style="margin-bottom:0;">Data</label>
@@ -3405,7 +3429,7 @@
                     <div style="display:flex; flex-direction:column; line-height:1.15;">
                       <div style="display:flex; align-items:center; gap:6px;">
                         <span style="font-size:11.5px; font-weight:900; color:#f3e8ff; letter-spacing:0.6px; text-shadow:0 0 8px rgba(168,85,247,0.6); white-space:nowrap;">ANÁLISE INTELIGENTE</span>
-                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.156</span>
+                        <span style="background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; padding:1px 5px; border-radius:4px; font-size:9.5px; font-weight:900; letter-spacing:0.4px; box-shadow:0 0 8px rgba(56,189,248,0.5); white-space:nowrap;">v1.157</span>
                       </div>
                       <span style="font-size:10px; color:#c084fc; font-weight:700; white-space:nowrap;">Motor Neural CAM • Conexão Integral</span>
                     </div>
@@ -4086,7 +4110,7 @@
             <span class="badge" style="background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.3); font-weight:700; padding:6px 12px; font-size:12px; border-radius:6px;">
               🟢 Sistema Online
             </span>
-            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.156 ∴</span>
+            <span class="badge" style="background:rgba(59,130,246,0.25); color:#93c5fd; border:1.5px solid #60a5fa; font-weight:900; padding:6px 14px; font-size:12.5px; border-radius:8px; box-shadow:0 0 10px rgba(59,130,246,0.4); letter-spacing:0.8px;">∴ SiSCAM v1.157 ∴</span>
             <button type="button" class="btn btn-ghost btn-sm" onclick="atualizarPainelSistemaCompleto(this)" style="display:flex; align-items:center; gap:6px; background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:8px 14px; border-radius:6px; cursor:pointer;" title="Recarregar todos os dados e atualizar o formulário atual">
               🔄 Atualizar Painel
             </button>
@@ -4358,7 +4382,7 @@
             
             <!-- Terminal Header -->
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,102,0.2); padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#00ff66;">
-              <span style="font-weight:bold;">SEDUC-CLI [v1.156] — Módulo de Integridade e Padronização</span>
+              <span style="font-weight:bold;">SEDUC-CLI [v1.157] — Módulo de Integridade e Padronização</span>
 
               <span id="cmd-status-indicator" style="color:#34d399;">STATUS: PRONTO</span>
             </div>
@@ -6819,15 +6843,15 @@
   <div id="toast-container"></div>
 
   <!-- Scripts -->
-  <script src="js/combobox-dynamic.js?v=v1.156"></script>
-  <script src="js/multi-select.js?v=v1.156"></script>
-  <script src="js/auth-sap.js?v=v1.156"></script>
-  <script src="js/dados.js?v=v1.156"></script>
-  <script src="js/app.js?v=v1.156"></script>
-  <script src="js/escolas.js?v=v1.156" charset="utf-8"></script>
-  <script src="js/open-location-code.js?v=v1.156"></script>
-  <script src="js/mapa.js?v=v1.156"></script>
-  <script src="js/contatos.js?v=v1.156"></script>
+  <script src="js/combobox-dynamic.js?v=v1.157"></script>
+  <script src="js/multi-select.js?v=v1.157"></script>
+  <script src="js/auth-sap.js?v=v1.157"></script>
+  <script src="js/dados.js?v=v1.157"></script>
+  <script src="js/app.js?v=v1.157"></script>
+  <script src="js/escolas.js?v=v1.157" charset="utf-8"></script>
+  <script src="js/open-location-code.js?v=v1.157"></script>
+  <script src="js/mapa.js?v=v1.157"></script>
+  <script src="js/contatos.js?v=v1.157"></script>
 
 
   <script>
@@ -7020,13 +7044,13 @@
   <!-- ============= PRINT LAYOUT: SINTÉTICO (PAGO E STATUS POR PREFIXO) ============= -->
   <div id="print-layout-sintetico" class="print-only-layout" style="display:none;"></div>
 
-  <script src="js/diarias.js?v=v1.156"></script>
-  <script src="js/gmac.js?v=v1.156"></script>
-  <script src="js/orcamento.js?v=v1.156"></script>
-  <script src="js/gdsm.js?v=v1.156"></script>
-  <script src="js/print-proalfa.js?v=v1.156"></script>
-  <script src="js/proalfa.js?v=v1.156"></script>
-  <script src="js/cnpjs-inadimplentes.js?v=v1.156"></script>
+  <script src="js/diarias.js?v=v1.157"></script>
+  <script src="js/gmac.js?v=v1.157"></script>
+  <script src="js/orcamento.js?v=v1.157"></script>
+  <script src="js/gdsm.js?v=v1.157"></script>
+  <script src="js/print-proalfa.js?v=v1.157"></script>
+  <script src="js/proalfa.js?v=v1.157"></script>
+  <script src="js/cnpjs-inadimplentes.js?v=v1.157"></script>
 
 
 
@@ -7962,45 +7986,48 @@
               </div>
             </div>
 
-            <!-- CARD 2: IDENTIFICAÇÃO DO PROCESSO -->
+            <!-- CARD 1: IDENTIFICAÇÃO DO PROCESSO -->
             <div class="card">
               <div class="sectionhead"><h2>Identificação do processo</h2><div style="display:flex;align-items:center;gap:8px;"><div class="siscam-badge-delta" style="font-size:11px;padding:2px 7px;"><span class="siscam-delta" style="font-size:12px;">∴</span> SiSCAM <span class="siscam-delta" style="font-size:12px;">∴</span></div><span class="badge blue">2026</span></div></div>
               <div class="formgrid">
-                <!-- Linha 1: Processo SEI + Município -->
-                <div class="field span8"><label>Número do processo SEI *</label><input class="control" value="0029.028135/2026-69"></div>
-                <div class="field span4"><label>Município *</label><select class="control"><option>Porto Velho</option><option>Ariquemes</option><option>Ji-Paraná</option></select></div>
+                <!-- Linha 1: Prefixo + Processo SEI + Ano -->
+                <div class="field span3"><label>Prefixo</label><input class="control" value="PROCESSO"></div>
+                <div class="field span6"><label>Número do processo SEI *</label><input class="control" value="0029.028135/2026-69"></div>
+                <div class="field span3"><label>Ano</label><input class="control" value="2026" style="text-align:center;"></div>
                 
-                <!-- Linha 2: Prefixo + Ano + Agrupamento (verde: trocado com Grupo/Dígito) -->
-                <div class="field span4"><label>Prefixo</label><input class="control" value="PROCESSO"></div>
-                <div class="field span2"><label>Ano</label><input class="control" value="2026" style="text-align:center;"></div>
+                <!-- Linha 2: Município + Agrupamento -->
+                <div class="field span6"><label>Município *</label><select class="control"><option>Porto Velho</option><option>Ariquemes</option><option>Ji-Paraná</option></select></div>
                 <div class="field span6"><label>Agrupamento</label><input class="control" value="AGUARDANDO DOCUMENTAÇÃO"></div>
-
-                <!-- Linha 3: CNPJ (seta ciano: CNPJ primeiro) + Interessado / escola * -->
-                <div class="field span4"><label>CNPJ</label><input class="control" placeholder="00.000.000/0000-00"></div>
-                <div class="field span8"><label>Interessado / escola *</label><input class="control" value="CONSELHO ESCOLAR EMEIEF TARUMÃ"></div>
-
-                <!-- Linha 4: Tipo + Status -->
-                <div class="field span6"><label>Tipo</label><select class="control"><option>Material permanente</option><option>Obras</option><option>Material de consumo</option><option>Sistema</option><option>Treinamento</option><option>Outros</option></select></div>
-                <div class="field span6"><label>Status</label><select class="control"><option>Tramitando</option><option>Pré-empenho</option><option>Aguardando documentos</option></select></div>
-
-                <!-- Linha 5: Descrição do objeto + Categoria * (azul: Categoria movida para o lado do Objeto) -->
-                <div class="field span8"><label>Descrição do objeto</label><textarea class="control textarea">Aquisição de materiais permanentes para atendimento das necessidades da unidade escolar.</textarea></div>
-                <div class="field span4"><label>Categoria *</label><select class="control"><option>Fomento</option><option>Convênio</option><option>Termo de Cooperação</option></select></div>
               </div>
             </div>
 
-            <!-- CARD 3: VALORES E ACOMPANHAMENTO -->
+            <!-- CARD 2: IDENTIFICAÇÃO DO CONVENENTE -->
             <div class="card">
-              <div class="sectionhead"><h2>Valores e acompanhamento</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Layout de referência Graphite</span></div>
+              <div class="sectionhead"><h2>Identificação do convenente</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Entidade / Escola / RFB</span></div>
               <div class="formgrid">
-                <!-- Linha 1: Valor oficial (R$) - Valor planilha e Diferença excluídos conforme X vermelho -->
-                <div class="field span12"><label>Valor oficial (R$)</label><input class="control" value="319.831,00"></div>
+                <div class="field span5"><label>CNPJ</label><input class="control" placeholder="00.000.000/0000-00"></div>
+                <div class="field span7"><label>Interessado / escola *</label><input class="control" value="CONSELHO ESCOLAR EMEIEF TARUMÃ"></div>
+              </div>
+            </div>
 
-                <!-- Linha 2: Localização + Grupo (Dígito) (verde: trocado com Agrupamento) -->
-                <div class="field span6"><label>Localização</label><select class="control"><option>CCTE</option><option>GCP</option><option>GCF</option><option>CAM | GDSM | GMAC</option></select></div>
-                <div class="field span6"><label>Grupo (Dígito)</label><input class="control" placeholder="Ex: Grupo / Dígito livre"></div>
+            <!-- CARD 3: OBJETO / CATEGORIA / VALOR -->
+            <div class="card">
+              <div class="sectionhead"><h2>Objeto / Categoria / Valor</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Classificação e montante</span></div>
+              <div class="formgrid">
+                <div class="field span4"><label>Categoria *</label><select class="control"><option>Fomento</option><option>Convênio</option><option>Termo de Cooperação</option></select></div>
+                <div class="field span4"><label>Tipo</label><select class="control"><option>Material permanente</option><option>Obras</option><option>Material de consumo</option><option>Sistema</option><option>Treinamento</option><option>Outros</option></select></div>
+                <div class="field span4"><label>Valor oficial (R$)</label><input class="control" value="319.831,00"></div>
+                <div class="field span12"><label>Descrição do objeto</label><textarea class="control textarea">Aquisição de materiais permanentes para atendimento das necessidades da unidade escolar.</textarea></div>
+              </div>
+            </div>
 
-                <!-- Linha 3: Observações / Detalhamento -->
+            <!-- CARD 4: ACOMPANHAMENTO / APONTAMENTOS -->
+            <div class="card">
+              <div class="sectionhead"><h2>Acompanhamento / Apontamentos</h2><span class="subtle" style="font-size:11px; color:var(--muted);">Status, tramitação e notas</span></div>
+              <div class="formgrid">
+                <div class="field span4"><label>Status</label><select class="control"><option>Tramitando</option><option>Pré-empenho</option><option>Aguardando documentos</option></select></div>
+                <div class="field span4"><label>Localização</label><select class="control"><option>CCTE</option><option>GCP</option><option>GCF</option><option>CAM | GDSM | GMAC</option></select></div>
+                <div class="field span4"><label>Grupo (Dígito)</label><input class="control" placeholder="Ex: Grupo / Dígito livre"></div>
                 <div class="field span12"><label>Observações</label><textarea class="control textarea" placeholder="Registre informações relevantes sem alterar o histórico original."></textarea></div>
               </div>
             </div>
