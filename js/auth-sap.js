@@ -182,11 +182,6 @@ function aplicarPermissoes(nivel) {
     if (!isAdminUser) inputFormPref.style.setProperty('display', 'none', 'important');
     else inputFormPref.style.removeProperty('display');
   }
-  const groupFormProcessoNum = document.getElementById('group-form-processo-num');
-  if (groupFormProcessoNum) {
-    groupFormProcessoNum.style.gridColumn = isAdminUser ? 'span 6' : 'span 9';
-  }
-
   const groupFormAgrup = document.getElementById('group-form-agrupamento');
   if (groupFormAgrup) {
     groupFormAgrup.style.setProperty('display', isAdminUser ? '' : 'none', 'important');
@@ -208,11 +203,6 @@ function aplicarPermissoes(nivel) {
     if (!isAdminUser) inputFormExec.style.setProperty('display', 'none', 'important');
     else inputFormExec.style.removeProperty('display');
   }
-  const groupFormAnalista = document.getElementById('group-form-analista');
-  if (groupFormAnalista) {
-    groupFormAnalista.style.gridColumn = isAdminUser ? 'span 4' : 'span 12';
-  }
-
   // Controle estrito do filtro e campo EXECUTIVO (exclusivo ADMIN)
   const containerFiltroExec = document.getElementById('container-filtro-executivo');
   if (containerFiltroExec) {
