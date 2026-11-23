@@ -2662,7 +2662,8 @@ thead th {
   white-space: nowrap !important;
 }
 
-.filter-row-grid-6 .btn-limpar-grid {
+.filter-row-grid-6 .btn-limpar-grid,
+.btn-limpar-grid {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -2670,44 +2671,27 @@ thead th {
   height: 38px !important;
   min-height: 38px !important;
   max-height: 38px !important;
-  padding: 0 14px !important;
+  padding: 8px 14px !important;
   border-radius: 8px !important;
-  background: #1e293b !important;
-  border: 1px solid #334155 !important;
-  color: #cbd5e1 !important;
-  font-weight: 700 !important;
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
   font-size: 11.5px !important;
   cursor: pointer !important;
   text-transform: uppercase !important;
   letter-spacing: 0.4px !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3) !important;
   transition: all 0.2s ease !important;
   box-sizing: border-box !important;
   white-space: nowrap !important;
 }
 
-.filter-row-grid-6 .btn-limpar-grid {
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 6px !important;
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
-  padding: 0 14px !important;
-  border-radius: 8px !important;
-  background: #1e293b !important;
-  border: 1px solid #334155 !important;
-  color: #cbd5e1 !important;
-  font-weight: 700 !important;
-  font-size: 11.5px !important;
-  cursor: pointer !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.4px !important;
-  box-shadow: none !important;
-  transition: all 0.2s ease !important;
-  box-sizing: border-box !important;
-  white-space: nowrap !important;
+.filter-row-grid-6 .btn-limpar-grid:hover,
+.btn-limpar-grid:hover {
+  background: linear-gradient(135deg, #d97706, #b45309) !important;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.45) !important;
+  transform: translateY(-1px) !important;
 }
 
 @media (max-width: 1200px) {
@@ -4592,140 +4576,18 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
 }
 
 /* ============================================================
-   PADRONIZAÇÃO DE BOTÕES GRAPHITE (POUCA COR, CORES SÓLIDAS) - IMAGENS 2 E 3
+   GRID DE BOTÕES DE AÇÃO / RELATÓRIO DO TOPO (2 LINHAS DE 6 BOTÕES ALINHADOS)
+   TAMANHO PADRONIZADO NO TAMANHO DO COMPARTILHAR (128px)
    ============================================================ */
-.btn-graphite,
-.action-report,
-.action-report.action-adm,
-.btn-toggle-mobile {
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
-  background: #1e293b !important;
-  border: 1px solid #334155 !important;
-  border-radius: 8px !important;
-  color: #cbd5e1 !important;
-  font-weight: 600 !important;
-  font-size: 11.5px !important;
-  letter-spacing: 0.4px !important;
-  box-shadow: none !important;
-  transition: all 0.2s ease !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+.top-reports-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, 128px) !important;
   gap: 6px !important;
-  cursor: pointer !important;
-  box-sizing: border-box !important;
-}
-
-.btn-graphite:hover,
-.action-report:hover,
-.action-report.action-adm:hover,
-.btn-toggle-mobile:hover {
-  background: #2d3b52 !important;
-  border-color: #475569 !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
-}
-
-.btn-graphite:active,
-.action-report:active,
-.action-report.action-adm:active,
-.btn-toggle-mobile:active {
-  background: #1e293b !important;
-  transform: translateY(1px) !important;
-}
-
-/* Modo mobile ativo */
-.btn-toggle-mobile.active,
-body.mobile-mode-active .btn-toggle-mobile {
-  background: #2563eb !important;
-  border-color: #3b82f6 !important;
-  color: #ffffff !important;
-}
-
-/* Botão Novo Processo - Sólido Primário (Igual Imagem 2 Abrir Modal Exemplo) */
-#btn-novo-processo-topo {
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
-  padding: 0 16px !important;
-  font-size: 11.5px !important;
-  display: inline-flex !important;
+  justify-content: end !important;
   align-items: center !important;
-  justify-content: center !important;
-  gap: 6px !important;
-  border: 1px solid transparent !important;
-  border-radius: 8px !important;
-  background: #2563eb !important;
-  color: #ffffff !important;
-  cursor: pointer !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.5px !important;
-  text-transform: uppercase !important;
-  box-shadow: none !important;
-  transition: all 0.2s ease !important;
-}
-#btn-novo-processo-topo:hover {
-  background: #1d4ed8 !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
+  margin-left: auto !important;
 }
 
-/* Botão Limpar Parâmetros */
-#btn-limpar-filtros {
-  background: #1e293b !important;
-  border: 1px solid #334155 !important;
-  color: #cbd5e1 !important;
-  border-radius: 8px !important;
-  font-weight: 700 !important;
-  font-size: 11.5px !important;
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
-  box-shadow: none !important;
-  text-transform: uppercase !important;
-  letter-spacing: 0.4px !important;
-}
-#btn-limpar-filtros:hover {
-  background: #334155 !important;
-  border-color: #475569 !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
-  transform: none !important;
-}
-
-/* Botão Sair - Sólido Discreto */
-.topbar-actions .btn-danger {
-  background: #2a171d !important;
-  border: 1px solid #4a222c !important;
-  color: #f87171 !important;
-  border-radius: 8px !important;
-  height: 38px !important;
-  min-height: 38px !important;
-  max-height: 38px !important;
-  font-weight: 600 !important;
-  box-shadow: none !important;
-  transition: all 0.2s ease !important;
-}
-.topbar-actions .btn-danger:hover {
-  background: #47272F !important;
-  color: #ffffff !important;
-  border-color: #7C3E49 !important;
-}
-
-/* Indicador de Processando Compartilhar */
-#indicador-compartilhar-processando {
-  background: #1e293b !important;
-  border: 1px solid #334155 !important;
-  color: #cbd5e1 !important;
-  box-shadow: none !important;
-}
-
-
-/* ============================================================
-   BOTÕES DE AÇÃO / RELATÓRIO DO TOPO (PADRONIZADOS NO TAMANHO DO COMPARTILHAR)
-   ============================================================ */
 .btn-top-acao {
   width: 128px !important;
   min-width: 128px !important;
@@ -4745,11 +4607,120 @@ body.mobile-mode-active .btn-toggle-mobile {
   flex: 0 0 128px !important;
 }
 
+/* ============================================================
+   LADO ESQUERDO: BOTÕES LIMPAR + NOVO PROCESSO E CAMPO DE BUSCA
+   CAMPO DE BUSCA (AZUL CLARO) COM LARGURA EXATA DOS DOIS BOTÕES (308px)
+   ============================================================ */
+#grupo-botoes-topo-acao {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+#btn-limpar-filtros {
+  width: 160px !important;
+  min-width: 160px !important;
+  max-width: 160px !important;
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+  color: #cbd5e1 !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 11.5px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  box-shadow: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.4px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+#btn-limpar-filtros:hover {
+  background: #334155 !important;
+  border-color: #475569 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+#btn-novo-processo-topo {
+  width: 140px !important;
+  min-width: 140px !important;
+  max-width: 140px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  padding: 0 12px !important;
+  font-size: 11.5px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  border: 1px solid transparent !important;
+  border-radius: 8px !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.5px !important;
+  text-transform: uppercase !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+}
+
+#btn-novo-processo-topo:hover {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+#filtro-busca-container,
+.search-box-topo {
+  flex: 0 0 308px !important;
+  width: 308px !important;
+  min-width: 308px !important;
+  max-width: 308px !important;
+  height: 38px !important;
+  box-sizing: border-box !important;
+}
+
 @media (max-width: 768px) {
+  .top-reports-grid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
   .btn-top-acao {
     width: auto !important;
     min-width: 0 !important;
     max-width: none !important;
+    flex: 1 1 calc(50% - 6px) !important;
+  }
+  #filtro-busca-container,
+  .search-box-topo {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+  #grupo-botoes-topo-acao {
+    width: 100% !important;
+  }
+  #btn-limpar-filtros,
+  #btn-novo-processo-topo {
     flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
   }
 }

@@ -72,67 +72,13 @@
 .eyebrow{color:var(--blue);font-size:11px;text-transform:uppercase;letter-spacing:.16em;font-weight:800}
 .pageactions{display:flex;gap:9px;flex-wrap:wrap}
 
-
-/* Buttons - Graphite Design System (Low color, solid colors - Imagens 2 e 3) */
-.btn {
-  height: 38px;
-  padding: 0 14px;
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  color: #cbd5e1;
-  font-weight: 600;
-  font-size: 12px;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: none;
-}
-.btn:hover {
-  background: #2d3b52;
-  border-color: #475569;
-  color: #ffffff;
-}
-.btn.primary, .btn-primary {
-  background: #2563eb !important;
-  color: #ffffff !important;
-  border-color: transparent !important;
-  font-weight: 700 !important;
-}
-.btn.primary:hover, .btn-primary:hover {
-  background: #1d4ed8 !important;
-  color: #ffffff !important;
-}
-.btn.danger, .btn-danger {
-  background: #2a171d !important;
-  color: #f87171 !important;
-  border-color: #4a222c !important;
-  font-weight: 600 !important;
-}
-.btn.danger:hover, .btn-danger:hover {
-  background: #47272F !important;
-  color: #ffffff !important;
-  border-color: #7C3E49 !important;
-}
-.btn.ghost, .btn-ghost {
-  background: #1e293b !important;
-  border: 1px solid #334155 !important;
-  color: #cbd5e1 !important;
-}
-.btn.ghost:hover, .btn-ghost:hover {
-  background: #2d3b52 !important;
-  color: #ffffff !important;
-  border-color: #475569 !important;
-}
-.btn.small, .btn-sm {
-  height: 32px;
-  padding: 0 10px;
-  font-size: 11px;
-}
+/* Buttons */
+.btn{height:38px;padding:0 14px;background:var(--raised);border:1px solid var(--line);border-radius:9px;color:var(--text);font-weight:650;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn:hover{background:var(--hover)}
+.btn.primary{background:var(--blue);color:#0a1429;border-color:transparent}
+.btn.green{background:#17473c;color:#81edc7;border-color:#276c57}
+.btn.soft{background:transparent}
+.btn.small{height:30px;padding:0 10px;font-size:11px}
 
 /* Grid & Cards */
 .grid{display:grid;gap:15px}
@@ -170,13 +116,7 @@
 .control::placeholder{color:#728097}
 .textarea{padding:12px;min-height:90px;resize:vertical}
 .formgrid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:15px}
-.span1{grid-column:span 1}
-.span2{grid-column:span 2}
 .span3{grid-column:span 3}
-.span5{grid-column:span 5}
-.span7{grid-column:span 7}
-.span10{grid-column:span 10}
-.span11{grid-column:span 11}
 .span4{grid-column:span 4}
 .span6{grid-column:span 6}
 .span8{grid-column:span 8}
