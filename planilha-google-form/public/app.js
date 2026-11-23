@@ -1,4 +1,4 @@
-﻿
+
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 // ===== HELPER DA ESCALA DE PROCESSO (0% a 100%, 21 ETAPAS E SETORES CAM / CCTE-GMAC) =====
 const ESCALA_ETAPAS = [
@@ -988,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.161';
+window.APP_VERSION = 'v1.162';
 
 // ---- GRAPHITE FORM HELPERS & SINCRONIZACAO (IMAGENS 2 E 3) ----
 function formatarMoedaBR(val) {
@@ -1067,7 +1067,7 @@ window.atualizarBadgeAnoForm = function(val) {
 };
 
 function sincronizarVersaoSiscam() {
-  const v = window.APP_VERSION || 'v1.161';
+  const v = window.APP_VERSION || 'v1.162';
   document.querySelectorAll('#badge-versao-login, #badge-versao-topbar, .siscam-badge-versao, [data-app-version]').forEach(el => {
     if (el) {
       el.innerHTML = '<span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM ' + v + ' <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>';

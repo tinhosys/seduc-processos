@@ -4722,3 +4722,34 @@ body.mobile-mode-active .btn-toggle-mobile {
   box-shadow: none !important;
 }
 
+
+/* ============================================================
+   BOTÕES DE AÇÃO / RELATÓRIO DO TOPO (PADRONIZADOS NO TAMANHO DO COMPARTILHAR)
+   ============================================================ */
+.btn-top-acao {
+  width: 128px !important;
+  min-width: 128px !important;
+  max-width: 128px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+  padding: 0 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  font-size: 12.5px !important;
+  border-radius: 8px !important;
+  flex: 0 0 128px !important;
+}
+
+@media (max-width: 768px) {
+  .btn-top-acao {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    flex: 1 1 auto !important;
+  }
+}
