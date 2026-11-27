@@ -1,4 +1,4 @@
-
+﻿
 // ===== HELPER DA ESCALA DE PROCESSO (0 a 10) =====
 // ===== HELPER DA ESCALA DE PROCESSO (0% a 100%, 21 ETAPAS E SETORES CAM / CCTE-GMAC) =====
 const ESCALA_ETAPAS = [
@@ -988,7 +988,7 @@ window.aoSairCNPJPopup = aoSairCNPJPopup;
 // SEDUC PROCESSOS — SISTEMA DE GESTÃO E ANÁLISE TÉCNICA
 // Versão do Sistema: v1.139
 // ============================================================
-window.APP_VERSION = 'v1.163';
+window.APP_VERSION = 'v1.164';
 
 // ---- GRAPHITE FORM HELPERS & SINCRONIZACAO (IMAGENS 2 E 3) ----
 function formatarMoedaBR(val) {
@@ -1067,7 +1067,7 @@ window.atualizarBadgeAnoForm = function(val) {
 };
 
 function sincronizarVersaoSiscam() {
-  const v = window.APP_VERSION || 'v1.163';
+  const v = window.APP_VERSION || 'v1.164';
   document.querySelectorAll('#badge-versao-login, #badge-versao-topbar, .siscam-badge-versao, [data-app-version]').forEach(el => {
     if (el) {
       el.innerHTML = '<span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span> SiSCAM ' + v + ' <span class="siscam-delta" style="font-size:14px; color:#38bdf8;">∴</span>';
@@ -1268,6 +1268,37 @@ window.filtrarPorCancelados = function() {
 
 window.filtrarPorCanceladosDashboard = function() {
   window.filtrarPorCancelados();
+  if (typeof navegar === 'function') {
+    navegar('processos');
+  }
+};
+
+// ============================================================
+// v1.164 - TRATAMENTO DE PROCESSOS PAGOS & BALAO DE AVISO
+// ============================================================
+window.filtrarPorPagos = function() {
+  const selStatus = document.getElementById('filtro-status');
+  let pagoOptVal = 'PAGO';
+  if (selStatus) {
+    const optFound = Array.from(selStatus.options).find(o => normalizar(o.value) === 'pago' || normalizar(o.value).includes('pago'));
+    if (optFound) pagoOptVal = optFound.value;
+  }
+  state.filtros.status = [pagoOptVal];
+  state.paginaAtual = 1;
+
+  if (selStatus) {
+    Array.from(selStatus.options).forEach(opt => {
+      opt.selected = (normalizar(opt.value) === 'pago' || normalizar(opt.value).includes('pago'));
+    });
+    if (selStatus._multiSelectInstance) {
+      selStatus._multiSelectInstance.update();
+    }
+  }
+  renderProcessos();
+};
+
+window.filtrarPorPagosDashboard = function() {
+  window.filtrarPorPagos();
   if (typeof navegar === 'function') {
     navegar('processos');
   }
@@ -2642,6 +2673,13 @@ function getFiltrados() {
   if (!statusParametrizadoCancelado) {
     lista = lista.filter(p => normalizar(p.status) !== 'cancelado');
   }
+  // Regra v1.164: Nao mostrar PAGO na relacao, exceto se for explicitamente parametrizado no filtro de status
+  const statusParametrizadoPago = Array.isArray(status)
+    ? status.some(s => normalizar(s) === 'pago' || normalizar(s).includes('pago'))
+    : (normalizar(status) === 'pago' || normalizar(status).includes('pago'));
+  if (!statusParametrizadoPago) {
+    lista = lista.filter(p => normalizar(p.status) !== 'pago' && !normalizar(p.status).includes('pago'));
+  }
   filterByMultiple('localizacao', localizacao);
   filterByMultiple('municipio', municipio);
   filterByMultiple('objeto', objeto);
@@ -3237,6 +3275,24 @@ function renderProcessos() {
       elBalaoCancelados.title = qtdCanceladosNoParametro + (qtdCanceladosNoParametro === 1 ? ' processo cancelado no parâmetro atual. Clique para exibir.' : ' processos cancelados no parâmetro atual. Clique para exibir.');
     } else {
       elBalaoCancelados.style.display = 'none';
+    }
+  }
+
+  // v1.164: Balao de aviso verde com contagem de pagos no parametro atual
+  const elBalaoPagos = document.getElementById('balao-aviso-pagos');
+  const elBalaoQtdPagos = document.getElementById('balao-qtd-pagos');
+  if (elBalaoPagos && elBalaoQtdPagos) {
+    const qtdPagosNoParametro = procsNoParametro.filter(p => normalizar(p.status) === 'pago' || normalizar(p.status).includes('pago')).length;
+    const jaFiltradoPago = Array.isArray(state.filtros.status)
+      ? state.filtros.status.some(s => normalizar(s) === 'pago' || normalizar(s).includes('pago'))
+      : (normalizar(state.filtros.status) === 'pago' || normalizar(state.filtros.status).includes('pago'));
+
+    if (qtdPagosNoParametro > 0 && !jaFiltradoPago) {
+      elBalaoPagos.style.display = 'inline-flex';
+      elBalaoQtdPagos.textContent = qtdPagosNoParametro.toLocaleString('pt-BR');
+      elBalaoPagos.title = qtdPagosNoParametro + (qtdPagosNoParametro === 1 ? ' processo pago no parâmetro atual. Clique para exibir.' : ' processos pagos no parâmetro atual. Clique para exibir.');
+    } else {
+      elBalaoPagos.style.display = 'none';
     }
   }
 

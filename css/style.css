@@ -4134,6 +4134,45 @@ body.funcao-mobile-ativa .table-wrap td.col-localizacao {
   100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
 }
 
+/* BALAO AVISO PAGOS */
+.balao-aviso-pagos {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  height: 34px;
+  box-sizing: border-box;
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  border-radius: 8px;
+  color: #6ee7b7;
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease-in-out;
+}
+
+.balao-aviso-pagos:hover {
+  background: rgba(16, 185, 129, 0.35);
+  border-color: #34d399;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+}
+
+.balao-aviso-pagos .balao-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.balao-aviso-pagos .balao-num {
+  font-weight: 800;
+  font-size: 14px;
+  color: #d1fae5;
+}
+
 /* Especificação Técnica dos Combos de Infraestrutura */
 .combo-desc-box {
   font-size: 11px;

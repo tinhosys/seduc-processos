@@ -1557,7 +1557,25 @@ app.delete("/api/escolas/:id", editorOnly, async (req, res) => {
 });
 
 
-// ====== ENDPOINTS: CONTATOS ======
+// ====== ENDPOINTS: CONTATOS (52 MUNICIPIOS - GID 1855271818) ======
+const CONTATOS_SPREADSHEET_ID = process.env.CONTATOS_SHEET_ID || "1V28gTVd_7DmroxXR6fF0vfHSl5sRtt9L6fr6tVnuz08";
+
+async function getContatosSheetTitle() {
+  try {
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: CONTATOS_SPREADSHEET_ID });
+    const matchGid = (meta.data.sheets || []).find(s => s.properties && Number(s.properties.sheetId) === 1855271818);
+    if (matchGid && matchGid.properties && matchGid.properties.title) {
+      return matchGid.properties.title;
+    }
+    if (meta.data.sheets && meta.data.sheets.length > 0) {
+      return meta.data.sheets[0].properties.title;
+    }
+  } catch (err) {
+    console.warn("[Contatos] Aviso ao buscar titulo da aba:", err.message);
+  }
+  return "contatos";
+}
+
 const defaultContatosHeaders = [
   "Municipio", "Nome do Prefeito", "celular prefeito", "Nome secretario", "celular secretario", "E-MAIL", "OBSERVACOES", "QTDE ESCOLAS", "QTDE ALUNOS"
 ];
@@ -1657,24 +1675,7 @@ app.get("/api/contatos", async (req, res) => {
 });
 
 app.post("/api/contatos", editorOnly, async (req, res) => {
-  try {
-    const headerDefRes = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: "contatos!A1:Z1" });
-    let headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
-    if (headers.length === 0) {
-      headers = defaultContatosHeaders;
-      await sheets.spreadsheets.values.update({
-        spreadsheetId: SPREADSHEET_ID, range: "contatos!A1", valueInputOption: "USER_ENTERED", requestBody: { values: [headers] }
-      });
-    }
-    const newRow = mapDataToContatoRow(req.body, headers, []);
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID, range: "contatos!A:A", valueInputOption: "USER_ENTERED", insertDataOption: "INSERT_ROWS", requestBody: { values: [newRow] }
-    });
-    res.json({ sucesso: true, mensagem: "Contato cadastrado." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ erro: "Erro ao cadastrar contato." });
-  }
+  return res.status(403).json({ erro: "Nao e permitido adicionar novas linhas. A planilha possui 52 municipios fixos (linhas 2 a 53)." });
 });
 
 // ====== ENDPOINT: CADASTRO GERAL DE ENTIDADES (VERSÃO ESTENDIDA 64 COLUNAS - ABA ENTIDADES) ======
@@ -2187,53 +2188,56 @@ app.post("/api/entidades", async (req, res) => {
 app.put("/api/contatos/:id", editorOnly, async (req, res) => {
   try {
     const rawId = req.params.id;
-    const rowNumber = Number(rawId.split("_")[0]);
-    if (!rowNumber || rowNumber < 2) return res.status(400).json({ erro: "Linha invalida." });
-    
-    const headerRes = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: "contatos!A:Z" });
-    const existingRow = (headerRes.data.values && headerRes.data.values[0]) ? headerRes.data.values[0] : [];
-    const headerDefRes = await sheets.spreadsheets.values.get({ spreadsheetId: SPREADSHEET_ID, range: "contatos!A1:Z1" });
-    const headers = (headerDefRes.data.values && headerDefRes.data.values[0]) ? headerDefRes.data.values[0] : [];
+    const rowNumber = Number(String(rawId).split("_")[0]);
+    if (!rowNumber || rowNumber < 2 || rowNumber > 60) {
+      return res.status(400).json({ erro: "Linha de municipio invalida. A planilha oficial possui 52 municipios nas linhas 2 a 53." });
+    }
 
-    const updatedRow = mapDataToContatoRow(req.body, headers, existingRow);
-    const lastColumn = columnToLetter(headers.length);
-    const range = "contatos!A" + rowNumber + ":Z" + rowNumber;
-    
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID, range, valueInputOption: "USER_ENTERED", requestBody: { values: [updatedRow] }
+    const sheetTitle = await getContatosSheetTitle();
+    const safeTitle = sheetTitle.replace(/'/g, "''");
+
+    const existingRes = await sheets.spreadsheets.values.get({
+      spreadsheetId: CONTATOS_SPREADSHEET_ID,
+      range: `'${safeTitle}'!A${rowNumber}:I${rowNumber}`
     });
-    res.json({ sucesso: true, mensagem: "Contato atualizado." });
+    const existingRow = (existingRes.data.values && existingRes.data.values[0]) ? existingRes.data.values[0] : [];
+
+    const body = req.body || {};
+    const updatedRow = [
+      body.municipio !== undefined && body.municipio !== '' ? body.municipio : (existingRow[0] || ''),
+      body.nomePrefeito !== undefined ? body.nomePrefeito : (existingRow[1] || ''),
+      body.celularPrefeito !== undefined ? body.celularPrefeito : (existingRow[2] || ''),
+      body.nomeSecretario !== undefined ? body.nomeSecretario : (existingRow[3] || ''),
+      body.celularSecretario !== undefined ? body.celularSecretario : (existingRow[4] || ''),
+      body.email !== undefined ? body.email : (existingRow[5] || ''),
+      body.observacoes !== undefined ? body.observacoes : (existingRow[6] || ''),
+      body.qtdeEscolas !== undefined ? body.qtdeEscolas : (existingRow[7] || ''),
+      body.qtdeAlunos !== undefined ? body.qtdeAlunos : (existingRow[8] || '')
+    ];
+
+    const range = `'${safeTitle}'!A${rowNumber}:I${rowNumber}`;
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: CONTATOS_SPREADSHEET_ID,
+      range,
+      valueInputOption: "USER_ENTERED",
+      requestBody: { values: [updatedRow] }
+    });
+
+    console.log(`[CONTATOS] Linha ${rowNumber} da planilha atualizada diretamente:`, updatedRow);
+    res.json({
+      sucesso: true,
+      mensagem: `Linha ${rowNumber} atualizada com sucesso na planilha oficial.`,
+      linha: rowNumber,
+      dados: updatedRow
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ erro: "Erro ao atualizar contato." });
+    console.error("Erro ao atualizar contato na planilha:", error);
+    res.status(500).json({ erro: "Erro ao atualizar contato na planilha: " + error.message });
   }
 });
 
 app.delete("/api/contatos/:id", editorOnly, async (req, res) => {
-  try {
-    const rawId = req.params.id;
-    const rowNumber = Number(rawId.split("_")[0]);
-    if (!rowNumber || rowNumber < 2) return res.status(400).json({ erro: "Linha invalida." });
-
-    const meta = await sheets.spreadsheets.get({ spreadsheetId: SPREADSHEET_ID });
-    const sheet = meta.data.sheets.find(s => s.properties.title.toLowerCase() === 'contatos');
-    if (!sheet) return res.status(404).json({ erro: "Aba contatos nao encontrada." });
-
-    await sheets.spreadsheets.batchUpdate({
-      spreadsheetId: SPREADSHEET_ID,
-      requestBody: {
-        requests: [{
-          deleteDimension: {
-            range: { sheetId: sheet.properties.sheetId, dimension: "ROWS", startIndex: rowNumber - 1, endIndex: rowNumber }
-          }
-        }]
-      }
-    });
-    res.json({ sucesso: true, mensagem: "Contato excluido." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ erro: "Erro ao excluir contato." });
-  }
+  return res.status(403).json({ erro: "Nao e permitido excluir municipios. A planilha possui 52 municipios fixos (linhas 2 a 53)." });
 });
 async function garantirColunasAdicionais() {
   try {
